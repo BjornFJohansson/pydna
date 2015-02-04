@@ -45,7 +45,7 @@ setup(  name='pydna',
         description='''Contains classes and code for representing double
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
-        long_description=open('README.txt').read(),
+        long_description=open('README.rst').read(),
         install_requires =[ "networkx>=1.8.1",
         "biopython>=1.63",
         "prettytable>=0.7.2",
