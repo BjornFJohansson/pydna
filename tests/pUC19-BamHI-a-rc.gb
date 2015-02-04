@@ -1,0 +1,56 @@
+LOCUS       pUC19_a                 2772 bp ds-DNA     circular     18-OCT-2012
+DEFINITION  .
+SOURCE      .
+  ORGANISM  .
+COMMENT     
+COMMENT     
+COMMENT     ApEinfo:methylated:1
+ORIGIN
+        1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+       61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+      121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+      181 accatatgcg gtgtgaaata ccgcacagat gcgtaaggag aaaataccgc atcaggcgcc
+      241 attcgccatt caggctgcgc aactgttggg aagggcgatc ggtgcgggcc tcttcgctat
+      301 tacgccagct ggcgaaaggg ggatgtgctg caaggcgatt aagttgggta acgccagggt
+      361 tttcccagtc acgacgttgt aaaacgacgg ccagtgaatt cgagctcggt acccggGGAT
+      421 CCacgcgcat atatatataa ttatagagag taccgatgat gagcagcaga atagatcagt
+      481 acgctacgat gatagtagat gaGGATCCtc tagagtcgac ctgcaggcat gcaagcttgg
+      541 cgtaatcatg gtcatagctg tttcctgtgt gaaattgtta tccgctcaca attccacaca
+      601 acatacgagc cggaagcata aagtgtaaag cctggggtgc ctaatgagtg agctaactca
+      661 cattaattgc gttgcgctca ctgcccgctt tccagtcggg aaacctgtcg tgccagctgc
+      721 attaatgaat cggccaacgc gcggggagag gcggtttgcg tattgggcgc tcttccgctt
+      781 cctcgctcac tgactcgctg cgctcggtcg ttcggctgcg gcgagcggta tcagctcact
+      841 caaaggcggt aatacggtta tccacagaat caggggataa cgcaggaaag aacatgtgag
+      901 caaaaggcca gcaaaaggcc aggaaccgta aaaaggccgc gttgctggcg tttttccata
+      961 ggctccgccc ccctgacgag catcacaaaa atcgacgctc aagtcagagg tggcgaaacc
+     1021 cgacaggact ataaagatac caggcgtttc cccctggaag ctccctcgtg cgctctcctg
+     1081 ttccgaccct gccgcttacc ggatacctgt ccgcctttct cccttcggga agcgtggcgc
+     1141 tttctcatag ctcacgctgt aggtatctca gttcggtgta ggtcgttcgc tccaagctgg
+     1201 gctgtgtgca cgaacccccc gttcagcccg accgctgcgc cttatccggt aactatcgtc
+     1261 ttgagtccaa cccggtaaga cacgacttat cgccactggc agcagccact ggtaacagga
+     1321 ttagcagagc gaggtatgta ggcggtgcta cagagttctt gaagtggtgg cctaactacg
+     1381 gctacactag aagaacagta tttggtatct gcgctctgct gaagccagtt accttcggaa
+     1441 aaagagttgg tagctcttga tccggcaaac aaaccaccgc tggtagcggt ggtttttttg
+     1501 tttgcaagca gcagattacg cgcagaaaaa aaggatctca agaagatcct ttgatctttt
+     1561 ctacggggtc tgacgctcag tggaacgaaa actcacgtta agggattttg gtcatgagat
+     1621 tatcaaaaag gatcttcacc tagatccttt taaattaaaa atgaagtttt aaatcaatct
+     1681 aaagtatata tgagtaaact tggtctgaca gttaccaatg cttaatcagt gaggcaccta
+     1741 tctcagcgat ctgtctattt cgttcatcca tagttgcctg actccccgtc gtgtagataa
+     1801 ctacgatacg ggagggctta ccatctggcc ccagtgctgc aatgataccg cgagacccac
+     1861 gctcaccggc tccagattta tcagcaataa accagccagc cggaagggcc gagcgcagaa
+     1921 gtggtcctgc aactttatcc gcctccatcc agtctattaa ttgttgccgg gaagctagag
+     1981 taagtagttc gccagttaat agtttgcgca acgttgttgc cattgctaca ggcatcgtgg
+     2041 tgtcacgctc gtcgtttggt atggcttcat tcagctccgg ttcccaacga tcaaggcgag
+     2101 ttacatgatc ccccatgttg tgcaaaaaag cggttagctc cttcggtcct ccgatcgttg
+     2161 tcagaagtaa gttggccgca gtgttatcac tcatggttat ggcagcactg cataattctc
+     2221 ttactgtcat gccatccgta agatgctttt ctgtgactgg tgagtactca accaagtcat
+     2281 tctgagaata gtgtatgcgg cgaccgagtt gctcttgccc ggcgtcaata cgggataata
+     2341 ccgcgccaca tagcagaact ttaaaagtgc tcatcattgg aaaacgttct tcggggcgaa
+     2401 aactctcaag gatcttaccg ctgttgagat ccagttcgat gtaacccact cgtgcaccca
+     2461 actgatcttc agcatctttt actttcacca gcgtttctgg gtgagcaaaa acaggaaggc
+     2521 aaaatgccgc aaaaaaggga ataagggcga cacggaaatg ttgaatactc atactcttcc
+     2581 tttttcaata ttattgaagc atttatcagg gttattgtct catgagcgga tacatatttg
+     2641 aatgtattta gaaaaataaa caaatagggg ttccgcgcac atttccccga aaagtgccac
+     2701 ctgacgtcta agaaaccatt attatcatga cattaaccta taaaaatagg cgtatcacga
+     2761 ggccctttcg tc    
+//

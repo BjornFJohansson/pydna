@@ -1,0 +1,258 @@
+LOCUS       pUC_LAC4__copy_         6389 bp ds-DNA     circular     28-JAN-2014
+DEFINITION  Cloning vector pUC19c, complete sequence.
+ACCESSION   L09137 X02514
+VERSION     L09137.2  GI:20141090
+KEYWORDS    .
+SOURCE      Cloning vector pUC19c
+  ORGANISM  Cloning vector pUC19c other sequences; _artificial_ sequences;
+            vectors.
+REFERENCE   1  (bases 1 to 2686)
+  AUTHORS   Yanisch-Perron,C., Vieira,J. and Messing,J.
+  TITLE     Improved M13 phage cloning vectors and host strains: nucleotide
+            sequences of the M13mp18 and pUC19 vectors
+  JOURNAL   Gene 33 (1), 103-119 (1985)
+   PUBMED   2985470
+REFERENCE   2  (bases 1 to 2686)
+  AUTHORS   Chambers,S.P., Prior,S.E., Barstow,D.A. and Minton,N.P.
+  TITLE     The pMTL nic- cloning vectors. I. Improved pUC polylinker regions
+            to facilitate the use of sonicated DNA for nucleotide sequencing
+  JOURNAL   Gene 68 (1), 139-149 (1988)
+   PUBMED   2851488
+REFERENCE   3  (bases 1 to 2686)
+  AUTHORS   Gilbert,W.
+  TITLE     Obtained from VecBase 3.0
+  JOURNAL   Unpublished
+REFERENCE   4  (bases 1 to 2686)
+  AUTHORS   Messing,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (27-APR-1993) Department of Biochemistry, University of
+            Minnesota, St. Paul, MN 55108, USA
+REFERENCE   5  (bases 1 to 2686)
+  AUTHORS   Messing,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (11-APR-2002) Rutgers, The State University of New
+            Jersey, Waksman Institute of Microbiology, 190 Frelinghuysen Road,
+            Piscataway, NJ 08854-8020, USA
+  REMARK    Sequence update by submitter
+COMMENT     On Apr 11, 2002 this sequence version replaced gi:209213. These
+            data and their annotation were supplied to GenBank by Will Gilbert
+            under the auspices of the GenBank Currator Program. pUC19c -
+            Cloning vector (beta-galactosidase mRNA on complementary strand)
+            ENTRY PUC19C                    #TYPE DNA CIRCULAR TITLE pUC19c -
+            Cloning vector               (beta-galactosidase mRNA on
+            complementary strand) DATE      03-FEB-1986    #sequence
+            16-DEC-1986 ACCESSION VB0033 SOURCE    artificial COLLECTION  ATCC
+            37254 REFERENCE    #number    #authors  Norrander J., Kempe T.,
+            Messing J.    #journal Gene (1983) 26: 101-106 REFERENCE    #number
+            1    #authors  Yanisch-Perron C., Vieira J., Messing J.    #journal
+            Gene (1985) 33: 103-119    #comment shows the complete compiled
+            sequence REFERENCE    #number  2    #authors  Chambers,S.P., et al.
+            #journal Gene (1988) 68: 139-149    #describes mutation at nt1308
+            and its effect on copy number REFERENCE    #number    #authors
+            Pouwels P.H., Enger-Valk B.E., Brammar W.J.    #book    Cloning
+            Vectors, Elsvier 1985 and supplements    #comment  vector I-A-iv-20
+            COMMENT    This Sequence was obtained 3-MAR-1986 from J. Messing,
+            Waksman    Institute, NJ on floppy disk.    Revised 16-DEC-1986 by
+            F. Pfeiffer:    1062/3 'AT' to 'TA' to match revised sequence of
+            PBR322    The beta-galactosidase mRNA sequence including the
+            multiple    cloning site of M13mp19 is on the strand complementary
+            to that    shown. KEYWORDS CROSSREFERENCE    #complement
+            VecBase(3):pUC19    #prerevised      GenBank(50):M11662,
+            EMBL(11):ARPuc19    #parent      VecBase(3):pUC13,
+            VecBase(3):M13mp19, VecSource(3):bGal19 PARENT    Features of
+            pUC19c (2686 bp)      residue     source       1- 137  2074-2210
+            pBR322     138- 237  2252-2351 pBR322     238- 395  1461-1304 (c)
+            Lac-Operon     396- 452    57-   1 (c) polylinker of M13mp19 455-
+            682  1298-1071 (c) Lac-Operon     683-2686  2352-4355 pBR322
+            Conflict (cfl) and Mutations (mut):         pUC19c  source    mut
+            1308  A  G  2977   pBR322   linked to increased copy number    mut
+            1942  A  G  3611   pBR322    mut 2243  T  C  3912   pBR322 FEATURE
+            1629-2417 789-1 (c) Ap-R; b-lactamase POLYLINKER
+            HindIII-SphI-PstI-SalI-XbaI-BamHI-SmaI-KpnI-SacI-EcoRI SELECTION
+            #resistance  Ap    #indicator beta-galactosidase SUMMARY  pUC19c
+            #length 2686   #checksum 4465.
+COMMENT     
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     source          join(4118..6389,1..414)
+                     /organism="Cloning vector pUC19c"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:174689"
+                     /label=source:Cloning vector pUC19c
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+     source          415..4117
+                     /organism="Kluyveromyces lactis"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:28985"
+                     /tissue_lib="CBS2359"
+                     /label=source:Kluyveromyces lactis
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+     gene            423..3820
+                     /gene="LAC4"
+                     /label=LAC4
+                     /ApEinfo_fwdcolor=#ffc02c
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+     TATA_signal     423..426
+                     /gene="LAC4"
+                     /note="putative"
+                     /label=LAC4(1)
+                     /ApEinfo_label=LAC4
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+     CDS             457..3534
+                     /gene="LAC4"
+                     /EC_number="3.2.1.23"
+                     /codon_start=1
+                     /product="beta-D-galactosidase"
+                     /protein_id="AAA35265.1"
+                     /db_xref="GI:173305"
+                     /translation="MSCLIPENLRNPKKVHENRLPTRAYYYDQDIFESLNGPWAFALF
+                     DAPLDAPDAKNLDWETAKKWSTISVPSHWELQEDWKYGKPIYTNVQYPIPIDIPNPPT
+                     VNPTGVYARTFELDSKSIESFEHRLRFEGVDNCYELYVNGQYVGFNKGSRNGAEFDIQ
+                     KYVSEGENLVVVKVFKWSDSTYIEDQDQWWLSGIYRDVSLLKLPKKAHIEDVRVTTTF
+                     VDSQYQDAELSVKVDVQGSSYDHINFTLYEPEDGSKVYDASSLLNEENGNTTFSTKEF
+                     ISFSTKKNEETAFKINVKAPEHWTAENPTLYKYQLDLIGSDGSVIQSIKHHVGFRQVE
+                     LKDGNITVNGKDILFRGVNRHDHHPRFGRAVPLDFVVRDLILMKKFNINAVRNSHYPN
+                     HPKVYDLFDKLGFWVIDEADLETHGVQEPFNRHTNLEAEYPDTKNKLYDVNAHYLSDN
+                     PEYEVAYLDRASQLVLRDVNHPSIIIWSLGNEACYGRNHKAMYKLIKQLDPTRLVHYE
+                     GDLNALSADIFSFMYPTFEIMERWRKNHTDENGKFEKPLILCEYGHAMGNGPGSLKEY
+                     QELFYKEKFYQGGFIWEWANHGIEFEDVSTADGKLHKAYAYGGDFKEEVHDGVFIMDG
+                     LCNSEHNPTPGLVEYKKVIEPVHIKIAHGSVTITNKHDFITTDHLLFIDKDTGKTIDV
+                     PSLKPEESVTIPSDTTYVVAVLKDDAGVLKAGHEIAWGQAELPLKVPDFVTETAEKAA
+                     KINDGKRYVSVESSGLHFILDKLLGKIESLKVKGKEISSKFEGSSITFWRPPTNNDEP
+                     RDFKNWKKYNIDLMKQNIHGVSVEKGSNGSLAVVTVNSRISPVVFYYGFETVQKYTIF
+                     ANKINLNTSMKLTGEYQPPDFPRVGYEFWLGDSYESFEWLGRGPGESYPDKKESQRFG
+                     LYDSKDVEEFVYDYPQENGNHTDTHFLNIKFEGAGKLSIFQKEKPFNFKISDEYGVDE
+                     AAHACDVKRYGRHYLRLDHAIHGVGSEACGPAVLDQYRLKAQDFNFEFDLAFE"
+                     /label=beta-D-galactosidase
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+     polyA_signal    3815..3820
+                     /gene="LAC4"
+                     /label=LAC4(2)
+                     /ApEinfo_label=LAC4
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+ORIGIN
+        1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+       61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+      121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+      181 accatatgcg gtgtgaaata ccgcacagat gcgtaaggag aaaataccgc atcaggcgcc
+      241 attcgccatt caggctgcgc aactgttggg aagggcgatc ggtgcgggcc tcttcgctat
+      301 tacgccagct ggcgaaaggg ggatgtgctg caaggcgatt aagttgggta acgccagggt
+      361 tttcccagtc acgacgttgt aaaacgacgg ccagtgaatt cgagctcggt acccAAAAAA
+      421 AAAATAAACA CACATACTCA TCGAGAACTG AAAGATATGT CTTGCCTTAT TCCTGAGAAT
+      481 TTAAGGAACC CCAAAAAGGT TCACGAAAAT AGATTGCCTA CTAGGGCTTA CTACTATGAT
+      541 CAGGATATTT TCGAATCTCT CAATGGGCCT TGGGCTTTTG CGTTGTTTGA TGCACCTCTT
+      601 GACGCTCCGG ATGCTAAGAA TTTAGACTGG GAAACGGCAA AGAAATGGAG CACCATTTCT
+      661 GTGCCATCCC ATTGGGAACT TCAGGAAGAC TGGAAGTACG GTAAACCAAT TTACACGAAC
+      721 GTACAGTACC CTATCCCAAT CGACATCCCA AATCCTCCCA CTGTAAATCC TACTGGTGTT
+      781 TATGCTAGAA CTTTTGAATT AGATTCGAAA TCGATTGAGT CGTTCGAGCA CAGATTGAGA
+      841 TTTGAGGGTG TGGACAATTG TTACGAGCTT TATGTTAATG GTCAATATGT GGGTTTCAAT
+      901 AAGGGGTCCC GTAACGGGGC TGAATTTGAT ATCCAAAAGT ACGTTTCTGA GGGCGAAAAC
+      961 TTAGTGGTCG TCAAGGTTTT CAAGTGGTCC GATTCCACTT ATATCGAGGA CCAAGATCAA
+     1021 TGGTGGCTCT CTGGTATTTA CAGAGACGTT TCTTTACTAA AATTGCCTAA GAAGGCCCAT
+     1081 ATTGAAGACG TTAGGGTCAC TACAACTTTT GTGGACTCTC AGTATCAGGA TGCAGAGCTT
+     1141 TCTGTGAAAG TTGATGTCCA GGGTTCTTCT TATGATCACA TCAATTTCAC ACTTTACGAA
+     1201 CCTGAAGATG GATCTAAAGT TTACGATGCA AGCTCTTTGT TGAACGAGGA GAATGGGAAC
+     1261 ACGACTTTTT CAACTAAAGA ATTTATTTCC TTCTCCACCA AAAAGAACGA AGAAACAGCT
+     1321 TTCAAGATCA ACGTCAAGGC CCCAGAACAT TGGACCGCAG AAAATCCTAC TTTGTACAAG
+     1381 TACCAGTTGG ATTTAATTGG ATCTGATGGC AGTGTGATTC AATCTATTAA GCACCATGTT
+     1441 GGTTTCAGAC AAGTGGAGTT GAAGGACGGT AACATTACTG TTAATGGCAA AGACATTCTC
+     1501 TTTAGAGGTG TCAACAGACA TGATCACCAT CCAAGGTTCG GTAGAGCTGT GCCATTAGAT
+     1561 TTTGTTGTTA GGGACTTGAT TCTAATGAAG AAGTTTAACA TCAATGCTGT TCGTAACTCG
+     1621 CATTATCCAA ACCATCCTAA GGTGTATGAC CTCTTCGATA AGCTGGGCTT CTGGGTCATT
+     1681 GACGAGGCAG ATCTTGAAAC TCATGGTGTT CAAGAGCCAT TTAATCGTCA TACGAACTTG
+     1741 GAGGCTGAAT ATCCAGATAC TAAAAATAAA CTCTACGATG TTAATGCCCA TTACTTATCA
+     1801 GATAATCCAG AGTACGAGGT CGCGTACTTA GACAGAGCTT CCCAACTTGT CCTAAGAGAT
+     1861 GTCAATCATC CTTCGATTAT TATCTGGTCC TTGGGTAACG AAGCTTGTTA TGGCAGAAAC
+     1921 CACAAAGCCA TGTACAAGTT AATTAAACAA TTGGATCCTA CCAGACTTGT GCATTATGAG
+     1981 GGTGACTTGA ACGCTTTGAG TGCAGATATC TTTAGTTTCA TGTACCCAAC ATTTGAAATT
+     2041 ATGGAAAGGT GGAGGAAGAA CCACACTGAT GAAAATGGTA AGTTTGAAAA GCCTTTGATC
+     2101 TTGTGTGAGT ACGGCCATGC AATGGGTAAC GGTCCTGGCT CTTTGAAAGA ATATCAAGAG
+     2161 TTGTTCTACA AGGAGAAGTT TTACCAAGGT GGCTTTATCT GGGAATGGGC AAATCACGGT
+     2221 ATTGAATTCG AAGATGTTAG TACTGCAGAT GGTAAGTTGC ATAAAGCTTA TGCTTATGGT
+     2281 GGTGACTTTA AGGAAGAGGT TCATGACGGA GTGTTCATCA TGGATGGTTT GTGTAACAGT
+     2341 GAGCATAATC CTACTCCGGG CCTTGTAGAG TATAAGAAGG TTATTGAACC CGTTCATATT
+     2401 AAAATTGCGC ACGGATCTGT AACAATCACA AATAAGCACG ACTTCATTAC GACAGACCAC
+     2461 TTATTGTTTA TCGACAAGGA CACGGGAAAG ACAATCGACG TTCCATCTTT AAAGCCAGAA
+     2521 GAATCTGTTA CTATTCCTTC TGATACAACT TATGTTGTTG CCGTGTTGAA AGATGATGCT
+     2581 GGTGTTCTAA AGGCAGGTCA TGAAATTGCC TGGGGCCAAG CTGAACTTCC ATTGAAGGTA
+     2641 CCCGATTTTG TTACAGAGAC AGCAGAAAAA GCTGCGAAGA TCAACGACGG TAAACGTTAT
+     2701 GTCTCAGTTG AATCCAGTGG ATTGCATTTT ATCTTGGACA AATTGTTGGG TAAAATTGAA
+     2761 AGCCTAAAGG TCAAGGGTAA GGAAATTTCC AGCAAGTTTG AGGGTTCTTC AATCACTTTC
+     2821 TGGAGACCTC CAACGAATAA TGATGAACCT AGGGACTTTA AGAACTGGAA GAAGTACAAT
+     2881 ATTGATTTAA TGAAGCAAAA CATCCATGGA GTGAGTGTCG AAAAAGGTTC TAATGGTTCT
+     2941 CTAGCTGTAG TCACGGTTAA CTCTCGTATA TCCCCAGTTG TATTTTACTA TGGGTTTGAG
+     3001 ACTGTTCAGA AGTACACGAT CTTTGCTAAC AAAATAAACT TGAACACTTC TATGAAGCTT
+     3061 ACTGGCGAAT ATCAGCCTCC TGATTTCCCA AGAGTTGGGT ACGAATTCTG GCTAGGAGAT
+     3121 AGTTATGAAT CATTTGAATG GTTAGGTCGC GGGCCCGGCG AATCATATCC GGATAAGAAG
+     3181 GAATCTCAAA GATTCGGTCT TTACGATTCC AAAGATGTAG AGGAATTCGT ATATGACTAT
+     3241 CCTCAAGAAA ATGGAAATCA TACAGATACC CACTTTTTGA ACATCAAATT TGAAGGTGCA
+     3301 GGAAAACTAT CGATCTTCCA AAAGGAGAAG CCATTTAACT TCAAGATTTC AGACGAATAC
+     3361 GGGGTTGATG AAGCTGCCCA CGCTTGTGAC GTTAAAAGAT ACGGCAGACA CTATCTAAGG
+     3421 TTGGACCATG CAATCCATGG TGTTGGTAGC GAAGCATGCG GACCTGCTGT TCTGGACCAG
+     3481 TACAGATTGA AAGCTCAAGA TTTCAACTTT GAGTTTGATC TCGCTTTTGA ATAAGAATTT
+     3541 TATACTTAGA TAAGTATGTA CTTACAGGTA TATTTCTATG AGATACTGAT GTATACATGC
+     3601 ATGATAATAT TTAAACGGTT ATTAGTGCCG ATTGTCTTGT GCGATAATGA CGTTCCTATC
+     3661 AAAGCAATAC ACTTACCACC TATTACATGG GCCAAGAAAA TATTTTCGAA CTTGTTTAGA
+     3721 ATATTAGCAC AGAGTATATG ATGATATCCG TTAGATTATG CATGATTCAT TCCTACAACT
+     3781 TTTTCGTAGC ATAAGGATTA ATTACTTGGA TGCCAATAAA AAAAAAAAAC ATCGAGAAAA
+     3841 TTTCAGCATG CTCAGAAACA ATTGCAGTGT ATCAAAGTAA AAAAAAGATT TTCACTACAT
+     3901 GTTCCTTTTG AAGAAAGAAA ATCATGGAAC ATTAGATTTA CAAAAATTTA ACCACCGCTG
+     3961 ATTAACGATT AGACCGTTAA GCGCACAACA GGTTATTAGT ACAGAGAAAG CATTCTGTGG
+     4021 TGTTGCCCCG GACTTTCTTT TGCGACATAG GTAAATCGAA TACCATCATA CTATCTTTTC
+     4081 CAATGACTCC CTAAAGAAAG ACTCTTCTTC GATGTTGggg gatcctctag agtcgacctg
+     4141 caggcatgca agcttggcgt aatcatggtc atagctgttt cctgtgtgaa attgttatcc
+     4201 gctcacaatt ccacacaaca tacgagccgg aagcataaag tgtaaagcct ggggtgccta
+     4261 atgagtgagc taactcacat taattgcgtt gcgctcactg cccgctttcc agtcgggaaa
+     4321 cctgtcgtgc cagctgcatt aatgaatcgg ccaacgcgcg gggagaggcg gtttgcgtat
+     4381 tgggcgctct tccgcttcct cgctcactga ctcgctgcgc tcggtcgttc ggctgcggcg
+     4441 agcggtatca gctcactcaa aggcggtaat acggttatcc acagaatcag gggataacgc
+     4501 aggaaagaac atgtgagcaa aaggccagca aaaggccagg aaccgtaaaa aggccgcgtt
+     4561 gctggcgttt ttccataggc tccgcccccc tgacgagcat cacaaaaatc gacgctcaag
+     4621 tcagaggtgg cgaaacccga caggactata aagataccag gcgtttcccc ctggaagctc
+     4681 cctcgtgcgc tctcctgttc cgaccctgcc gcttaccgga tacctgtccg cctttctccc
+     4741 ttcgggaagc gtggcgcttt ctcatagctc acgctgtagg tatctcagtt cggtgtaggt
+     4801 cgttcgctcc aagctgggct gtgtgcacga accccccgtt cagcccgacc gctgcgcctt
+     4861 atccggtaac tatcgtcttg agtccaaccc ggtaagacac gacttatcgc cactggcagc
+     4921 agccactggt aacaggatta gcagagcgag gtatgtaggc ggtgctacag agttcttgaa
+     4981 gtggtggcct aactacggct acactagaag aacagtattt ggtatctgcg ctctgctgaa
+     5041 gccagttacc ttcggaaaaa gagttggtag ctcttgatcc ggcaaacaaa ccaccgctgg
+     5101 tagcggtggt ttttttgttt gcaagcagca gattacgcgc agaaaaaaag gatctcaaga
+     5161 agatcctttg atcttttcta cggggtctga cgctcagtgg aacgaaaact cacgttaagg
+     5221 gattttggtc atgagattat caaaaaggat cttcacctag atccttttaa attaaaaatg
+     5281 aagttttaaa tcaatctaaa gtatatatga gtaaacttgg tctgacagtt accaatgctt
+     5341 aatcagtgag gcacctatct cagcgatctg tctatttcgt tcatccatag ttgcctgact
+     5401 ccccgtcgtg tagataacta cgatacggga gggcttacca tctggcccca gtgctgcaat
+     5461 gataccgcga gacccacgct caccggctcc agatttatca gcaataaacc agccagccgg
+     5521 aagggccgag cgcagaagtg gtcctgcaac tttatccgcc tccatccagt ctattaattg
+     5581 ttgccgggaa gctagagtaa gtagttcgcc agttaatagt ttgcgcaacg ttgttgccat
+     5641 tgctacaggc atcgtggtgt cacgctcgtc gtttggtatg gcttcattca gctccggttc
+     5701 ccaacgatca aggcgagtta catgatcccc catgttgtgc aaaaaagcgg ttagctcctt
+     5761 cggtcctccg atcgttgtca gaagtaagtt ggccgcagtg ttatcactca tggttatggc
+     5821 agcactgcat aattctctta ctgtcatgcc atccgtaaga tgcttttctg tgactggtga
+     5881 gtactcaacc aagtcattct gagaatagtg tatgcggcga ccgagttgct cttgcccggc
+     5941 gtcaatacgg gataataccg cgccacatag cagaacttta aaagtgctca tcattggaaa
+     6001 acgttcttcg gggcgaaaac tctcaaggat cttaccgctg ttgagatcca gttcgatgta
+     6061 acccactcgt gcacccaact gatcttcagc atcttttact ttcaccagcg tttctgggtg
+     6121 agcaaaaaca ggaaggcaaa atgccgcaaa aaagggaata agggcgacac ggaaatgttg
+     6181 aatactcata ctcttccttt ttcaatatta ttgaagcatt tatcagggtt attgtctcat
+     6241 gagcggatac atatttgaat gtatttagaa aaataaacaa ataggggttc cgcgcacatt
+     6301 tccccgaaaa gtgccacctg acgtctaaga aaccattatt atcatgacat taacctataa
+     6361 aaataggcgt atcacgaggc cctttcgtc   
+//

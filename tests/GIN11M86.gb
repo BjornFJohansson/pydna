@@ -1,0 +1,65 @@
+LOCUS       GIN11M86                 860 bp    DNA     linear   PLN 10-MAR-2006
+DEFINITION  Saccharomyces cerevisiae growth inhibitory gene GIN11, complete
+            sequence.
+ACCESSION   D28150
+VERSION     D28150.2  GI:4651175
+KEYWORDS    GIN11; X element of telomere ARS homologue; growth inhibitory.
+SOURCE      Saccharomyces cerevisiae (baker's yeast)
+  ORGANISM  Saccharomyces cerevisiae
+            Eukaryota; Fungi; Dikarya; Ascomycota; Saccharomycotina;
+            Saccharomycetes; Saccharomycetales; Saccharomycetaceae;
+            Saccharomyces.
+REFERENCE   1
+  AUTHORS   Akada,R., Yamamoto,J. and Yamashita,I.
+  TITLE     Screening and identification of yeast sequences that cause growth
+            inhibition when overexpressed
+  JOURNAL   Mol. Gen. Genet. 254 (3), 267-274 (1997)
+   PUBMED   9150260
+REFERENCE   2  (bases 1 to 860)
+  AUTHORS   Akada,R.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (02-FEB-1994) Rinji Akada, Faculty of Engineering,
+            Yamaguchi University, Dept. of Applied Chem. and Chemical Eng.;
+            2557 Tokiwadai, Ube, Yamaguchi 755, Japan
+            (E-mail:rinji@po.cc.yamaguchi-u.ac.jp, Tel:81-836-35-9932,
+            Fax:81-836-35-9933)
+COMMENT     On Apr 23, 1999 this sequence version replaced gi:457579.
+            Sequence updated (20-Apr-1999).
+FEATURES             Location/Qualifiers
+     source          1..860
+                     /organism="Saccharomyces cerevisiae"
+                     /mol_type="genomic DNA"
+                     /strain="X2180-1A"
+                     /db_xref="taxon:4932"
+                     /clone="pGA108"
+                     /clone_lib="YEp51B library of R.Akada"
+     gene            1..860
+                     /gene="GIN11"
+     misc_feature    1..860
+                     /gene="GIN11"
+                     /experiment="experimental evidence, no additional details
+                     recorded"
+                     /note="GIN11 gene; complete sequence, homology to X
+                     element of telomere ARS"
+                     /citation=[1]
+                     /phenotype="growth inhibitory effect when overexpressed"
+     misc_feature    433..444
+                     /gene="GIN11"
+                     /note="ARS consensus sequence (ACS)"
+ORIGIN
+        1 gatcaataac agtgtttgtg gagcattttc tgaatacaat aaacccaaaa cagaaacttc
+       61 ccttttgtat cactgttctg gaaaaggggt gggcggtaat aaagctaata gggtgtgtcc
+      121 ataagtaata ctgaacttgg aaatgtgcgg ctttgcagca ttttgtcttt ctataaaaat
+      181 gtgtcgttcc tttttttcat tttttggcgc gtcgcctcgg ggtcgtatag aatatgcgtc
+      241 acttttaaaa ataagattgc agatcagggc aaaacaagta gcaaatcata gcaagagacc
+      301 ctgatttttg tgacataaat atttttactt ctgtgttagg ttaacttttt atgtaactgt
+      361 aaatggaata gagttgaggg gatagtgccc acaagtcaat atgtttattt tgtaaagttg
+      421 aaagataatt atttttatgC tCaggtgatt ttggtgttga attttctgta atattaacat
+      481 aagagtaata cattgagtgg ttagtatatg gtgtaaaagt ggtataacgc atgtattaag
+      541 agcagttata caatatttgg ggccgctgaa tgagatatag atattaaaat gtggataatc
+      601 atgggcttta tgggtaaatg gaacagggta tagaccactg aggcaagtgc cgtgcataat
+      661 gatatgagtg catctagtac tgatttagtg agagatgggc cgtggagtgg aatgtgagag
+      721 tagggtaagt tgagagtggt atatacttgt agcatccgtg tgcgtatgcc atatcagtat
+      781 acaagtgaag gtgagtatgg caagtggtgg tgggattggt ataaagtggt agggtaagta
+      841 tgtgtgtatt atttacgatc
+//
