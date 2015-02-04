@@ -223,7 +223,7 @@ class Contig(Dseqrecord):
             fig +=" {space}".format(space="-"*(space+3))
         return pretty_str(dedent(fig))
 
-class Assembly2(object):
+class Assembly(object):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
     The Assembly2 is meant to replace the Assembly method as it is easier to use.
     Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.
