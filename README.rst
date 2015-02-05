@@ -2,8 +2,8 @@
 pydna
 =====
 
-.. image:: https://drone.io/bjorn/pydna/status.png 
-  :target: https://drone.io/bjorn/pydna/latest
+.. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
+  :target: https://travis-ci.org/BjornFJohansson/pydna
   
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste

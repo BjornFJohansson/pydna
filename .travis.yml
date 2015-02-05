@@ -6,5 +6,24 @@ install:
   - "pip install ."
   - "pip install -r requirements.txt"
 # command to run tests
-script: nosetests
+script: run_tests.py
+
+
+
+#pip install -r requirements.txt --use-mirrors
+#python run_tests.py
+#python setup.py install
+#mkdir mydir
+#cd mydir
+#python -c "import pydna; print pydna.__version__"
+#cd ..
+#pip install wheel --use-mirrors
+#python setup.py sdist --formats=gztar,zip
+#python setup.py bdist_wheel
+#python setup.py bdist_egg
+#python setup.py build --plat-name=win32 bdist_wininst
+#
+#pip install pep8 pip-tools coverage
+#nosetests --with-coverage 2> test_result
+
 
