@@ -10,8 +10,8 @@ script: python run_tests.py
 
 deploy:
   provider: pypi
-  user: ...
-  password: ...
+  user: pypi_username
+  password: pypi_password
   on:
     tags: true
 
