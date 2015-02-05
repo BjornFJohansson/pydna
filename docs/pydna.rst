@@ -59,14 +59,6 @@ pydna.findsubstrings_suffix_arrays_python module
     :undoc-members:
     :show-inheritance:
 
-pydna.gel module
-----------------
-
-.. automodule:: pydna.gel
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pydna.primer_design module
 --------------------------
 

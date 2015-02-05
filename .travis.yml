@@ -8,6 +8,13 @@ install:
 # command to run tests
 script: python run_tests.py
 
+deploy:
+  provider: pypi
+  user: ...
+  password: ...
+  on:
+    tags: true
+
 
 
 #pip install -r requirements.txt --use-mirrors
