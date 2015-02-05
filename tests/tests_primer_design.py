@@ -27,8 +27,6 @@ class test_primer_design(unittest.TestCase):
 
         asm=Assembly(frags)
 
-        asm.assemble_gibson_linear()
-
         self.assertEqual(asm.linear_products[0].seguid(), "1eNv3d/1PqDPP8qJZIVoA45Www8")
 
         frags=[]
@@ -42,8 +40,6 @@ class test_primer_design(unittest.TestCase):
 
         asm=Assembly(frags)
 
-        asm.assemble_gibson_circular()
-
         self.assertEqual(asm.circular_products[0].cseguid(), "V3Mi8zilejgyoH833UbjJOtDMbc")
 
 
@@ -52,7 +48,7 @@ class test_primer_design(unittest.TestCase):
         ''' test_primer_design'''
 
 
-        from pydna import Dseqrecord, Assembly2, pcr, assembly_primers
+        from pydna import Dseqrecord, Assembly, pcr, assembly_primers
 
         b  = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
         l  = Dseqrecord("AAATTTCCCGGG")
@@ -63,7 +59,7 @@ class test_primer_design(unittest.TestCase):
         nb = pcr((bf,br),b)
         nc = pcr((cf,cr),c)
 
-        asm1 = Assembly2((nb,nc))
+        asm1 = Assembly((nb,nc))
 
         self.assertEqual(asm1.linear_products[0].seguid(),(b+l+c).seguid(),'l95igKB8iKAKrvvqE9CYksyNx40')
 
@@ -77,7 +73,7 @@ class test_primer_design(unittest.TestCase):
         nb = pcr((bf,br),b)
         nc = pcr((cf,cr),c)
 
-        asm = Assembly2((nb,nc))
+        asm = Assembly((nb,nc))
 
         self.assertEqual((b+l+c).looped().cseguid(), asm.circular_products[0].cseguid(), 'qMEHxKkTsWIXkbqGA5O35631eMU')
 

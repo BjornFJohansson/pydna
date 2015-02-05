@@ -395,20 +395,17 @@ def assembly_primers(templates,
     [Amplicon(82), Amplicon(101), Amplicon(84)]
     >>> assemblyobj = pydna.Assembly(p)
     >>> assemblyobj
-    Assembly object:
-    Sequences........................: 82, 101, 84
-    Sequences with shared homologies.: No analyzed sequences
+    Assembly:
+    Sequences........................: [82] [101] [84]
+    Sequences with shared homologies.: [82] [101] [84]
     Homology limit (bp)..............: 25
-    Number of overlaps...............: No overlaps
-    Nodes in graph...................: No graph
-    Assembly protocol................: No protocol
-    Circular products................: No circular products
-    Linear products..................: No linear products
-    >>>
-    >>> assemblyobj.assemble_gibson_linear()
-    '5 linear products were formed with the following sizes (bp): 195, 149, 147, 36, 36'
+    Number of overlaps...............: 2
+    Nodes in graph(incl. 5' & 3')....: 4
+    Only terminal overlaps...........: No
+    Circular products................: 
+    Linear products..................: [195] [149] [147] [36] [36]
     >>> assemblyobj.linear_products
-    [Dseqrecord(-195), Dseqrecord(-149), Dseqrecord(-147), Dseqrecord(-36), Dseqrecord(-36)]
+    [Contig(-195), Contig(-149), Contig(-147), Contig(-36), Contig(-36)]
     >>> assemblyobj.linear_products[0].seguid()
     '1eNv3d/1PqDPP8qJZIVoA45Www8'
     >>> (a+b+c).seguid()

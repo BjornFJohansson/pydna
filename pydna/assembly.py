@@ -225,7 +225,7 @@ class Contig(Dseqrecord):
 
 class Assembly(object):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
-    The Assembly2 is meant to replace the Assembly method as it is easier to use.
+    The Assembly is meant to replace the Assembly method as it is easier to use.
     Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.
     Several methods are available for analysis of overlapping sequences, graph construction
     and assembly.
@@ -239,11 +239,11 @@ class Assembly(object):
     Examples
     --------
 
-    >>> from pydna import Assembly2, Dseqrecord
+    >>> from pydna import Assembly, Dseqrecord
     >>> a = Dseqrecord("acgatgctatactgCCCCCtgtgctgtgctcta")
     >>> b = Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatc")
     >>> c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg")
-    >>> x = Assembly2((a,b,c), limit=14)
+    >>> x = Assembly((a,b,c), limit=14)
     >>> x
     Assembly:
     Sequences........................: [33] [34] [35]
@@ -309,7 +309,7 @@ class Assembly(object):
 
     def _compare(self, cached):
         if str(self) != str(cached):
-            module_logger.warning('assembly2 error')
+            module_logger.warning('Assembly error')
 
     def _save(self):
         cache = shelve.open(os.path.join(os.environ["datadir"], "assembly.shelf"), protocol=2, writeback=False)

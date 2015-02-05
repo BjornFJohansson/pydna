@@ -32,13 +32,7 @@ class test_empty(unittest.TestCase):
 
         lin_vect, his3 = pGREG505.cut(SalI)
 
-        a = pydna.Assembly([insert, lin_vect])
-        
-        print a.analyze_overlaps(limit=28)
-        print
-        print a.create_graph()
-        print
-        print a.assemble_hr_circular()
+        a = pydna.Assembly([insert, lin_vect], limit=28)
         
         pGUP1 = a.circular_products[0]
        
@@ -53,7 +47,7 @@ class test_empty(unittest.TestCase):
         self.assertEqual(pGUP1.seguid(), "42wIByERn2kSe/Exn405RYwhffU")       
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 1)
+    runner = unittest.TextTestRunner(verbosity = 3)
     unittest.main(testRunner=runner)
 
 

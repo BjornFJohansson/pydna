@@ -60,10 +60,7 @@ class test_empty(unittest.TestCase):
         a=Assembly( ( A_AgTEFp_b,
                      B_hph_c,
                      C_KlLEU2tt_d,
-                     pCAPs_pSU0_E_Z) )
-        a.analyze_overlaps(limit=28)
-        a.create_graph()
-        a.assemble_hr_circular()
+                     pCAPs_pSU0_E_Z) , limit=28)
 
         YPK0_AgTEFp_hph_KlLEU2tt = a.circular_products[0]
 
@@ -76,21 +73,14 @@ class test_empty(unittest.TestCase):
         a=Assembly(( A_KlLEU2tt_b,
                      B_gal1_ISceI_c,
                      C_AgTEFt_d,
-                     pCAPs_pSU0_E_Z))
-        a.analyze_overlaps(limit=25)
-        a.create_graph()
-        a.assemble_hr_circular()
+                     pCAPs_pSU0_E_Z), limit=25)
         YPK0_KlLEU2tt_gal1_ISceI_AgTEFt = a.circular_products[0]
 
         KlLEU2tt_gal1_ISceI_AgTEFt_2 =  pcr(primer[166],primer[167], YPK0_KlLEU2tt_gal1_ISceI_AgTEFt)
 
         a=Assembly(( AgTEFp_hph_KlLEU2tt_2,
                      KlLEU2tt_gal1_ISceI_AgTEFt_2,
-                     pCAPs_pSU0_E_Z))
-
-        a.analyze_overlaps(limit=61)
-        a.create_graph()
-        a.assemble_hr_circular()
+                     pCAPs_pSU0_E_Z), limit=61)
 
         pCAPs_MX4blaster1 = a.circular_products[0]
 
@@ -131,12 +121,7 @@ class test_empty(unittest.TestCase):
 
         pCAPs_MX4blaster1_AgeI.seq = pCAPs_MX4blaster1_AgeI.seq.fill_in()
 
-        a=Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI])
-
-        print a.analyze_overlaps(limit=29)
-        print a.create_graph()
-        print a.assemble_hr_circular()
-
+        a=Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=29)
 
         pCAPs_MX4blaster2 = a.circular_products[0]
 

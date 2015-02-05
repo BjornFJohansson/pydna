@@ -44,10 +44,8 @@ class test_empty(unittest.TestCase):
         self.assertEqual( YEp24PGK_XK_correct.seguid() ,"HRVpCEKWcFsKhw/W+25ednUfldI" )
         self.assertEqual( YEp24PGK_XK.seguid() ,"HRVpCEKWcFsKhw/W+25ednUfldI" )
 
-        
-
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 1)
+    runner = unittest.TextTestRunner(verbosity = 3)
     unittest.main(testRunner=runner)
 
 

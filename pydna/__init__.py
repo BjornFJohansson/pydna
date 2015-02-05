@@ -18,10 +18,10 @@
 
 '''
 
-__version__      = "0.7.2"
-__date__         = "2014-11-21"
+__version__      = "0.8.0"
+__date__         = "2015-01-05"
 __author__       = "Björn Johansson"
-__copyright__    = "Copyright 2013, 2014 Björn Johansson"
+__copyright__    = "Copyright 2013, 2014, 2015 Björn Johansson"
 __credits__      = ["Björn Johansson", "Mark Budde"]
 __license__      = "BSD"
 __maintainer__   = "Björn Johansson"
@@ -38,24 +38,21 @@ which can have three different values:
 "cached"        if possible, cached results are returned
                 if chashed results are not available
                 new results are created and cached.
-                This is default.
+                This is the default.
 
 "nocache"       results are not cached or read from cache
 
 "refresh"       new results are made and old are overwritten if they
                 exist.
 
-"compare"       The compare functionality is not fully implemented yet.
+"compare"       The compare functionality is not implemented yet.
                 Results are made new and compared with cached results.
-                If cached results are not available
-                an exception is raised.
+                If cached results are not available an exception is raised.
 
                 If new results are not identical with cached, a warning is raised
-                raised and details written to a log located in the data_dir
-                The log entry should give the name of the
-                calling script if possible and as
+                and details written to a log located in the data_dir
+                The log entry should give the name of the calling script if possible and as
                 much details as possible.
-
                 http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
 
