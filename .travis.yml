@@ -10,10 +10,10 @@ script: python run_tests.py
 
 deploy:
   provider: pypi
-  user: pypi_username
-  password: pypi_password
+  user: pypi_username==$pypi_username
+  password: pypi_password==$pypi_password
   on:
-    tags: true
+    tags: false
     all_branches: true
 
 
