@@ -14,6 +14,7 @@ deploy:
   password: pypi_password
   on:
     tags: true
+    all_branches: true
 
 
 
