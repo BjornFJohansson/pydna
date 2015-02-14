@@ -7,6 +7,9 @@ pydna
   
 .. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
   :target: https://travis-ci.org/BjornFJohansson/pydna
+
+.. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg 
+  :target: https://coveralls.io/r/BjornFJohansson/pydna
   
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
