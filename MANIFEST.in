@@ -1,0 +1,18 @@
+# MANIFEST.in
+# This tells distutils what files to distribute.
+
+include LICENSE.txt
+include README.txt
+include MANIFEST.in
+include setup.py
+include run_tests.py
+include distribute_setup.py
+include setup_build.py
+
+recursive-include pydna *
+recursive-include tests *
+recursive-include docs *
+recursive-include scripts *
+recursive-include pydna/py_rstr_max *
+global-exclude *.pyc
+global-exclude *~
