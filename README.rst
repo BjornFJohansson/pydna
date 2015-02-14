@@ -2,6 +2,9 @@
 pydna
 =====
 
+.. image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
+  :target: https://drone.io/github.com/BjornFJohansson/pydna
+  
 .. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
   :target: https://travis-ci.org/BjornFJohansson/pydna
   
@@ -114,6 +117,8 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =============================================================
 version   date       comment
 =======   ========== =============================================================
+0.8.0	  2015-02-06 Mapping abi reads added.
+
 0.7.2	  2014-11-21 First public release with the changes from 0.7.0 and 0.7.1
 					 Added a Pretty_str class to beautify output of strings in
 					 the IPython shell. 

@@ -25,6 +25,9 @@ import textwrap
 import math
 import glob
 import colorsys
+import shelve
+
+from prettytable import PrettyTable
 
 from Bio                    import SeqIO
 from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA
@@ -34,20 +37,21 @@ from Bio.Seq                import _maketrans
 from Bio.Data.IUPACData     import ambiguous_dna_complement as amb_compl
 from Bio.SeqRecord          import SeqRecord
 from Bio.SeqFeature         import SeqFeature
-from Bio.SeqFeature         import FeatureLocation, CompoundLocation
+from Bio.SeqFeature         import FeatureLocation
+from Bio.SeqFeature         import CompoundLocation
 from Bio.SeqUtils.CheckSum  import seguid
 from Bio.SeqUtils           import GC
 from Bio.GenBank            import RecordParser
 from Bio.Data.CodonTable    import TranslationError
 
-
+from sequencetrace          import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils import cseguid
-from prettytable import PrettyTable
 from pydna.pretty import pretty_str
 
-import shelve
+
+
 
 amb_compl.update({"U":"A"})
 _complement_table = _maketrans(amb_compl)
@@ -1404,6 +1408,8 @@ class Dseqrecord(SeqRecord):
         if not 'date' in self.annotations:
             self.annotations.update({"date": datetime.date.today().strftime("%d-%b-%Y").upper()})
 
+        self.map_target = None
+
     @property
     def linear(self):
         '''The linear property'''
@@ -1815,11 +1821,11 @@ class Dseqrecord(SeqRecord):
         s = SeqRecord.format(self, f).strip()
         if f in ("genbank","gb"):
             if self.circular:
-                return s[:55]+"circular"+s[63:]
+                return pretty_str(s[:55]+"circular"+s[63:])
             else:
-                return s[:55]+"linear"+s[61:]
+                return pretty_str(s[:55]+"linear"+s[61:])
         else:
-            return s
+            return pretty_str(s)
 
     def write(self, filename=None, f="gb"):
         '''Writes the Dseqrecord to a file using the format f, which must
@@ -1902,52 +1908,81 @@ class Dseqrecord(SeqRecord):
     def find_aa(self, other):
         other = str(other).lower()
         assert self.seq.watson == "".join(self.seq.watson.split())
-        s = self.seq.watson  # .replace(" ","")
+        s = self.seq.watson
         ln  = len(s)
         spc = 3-ln%3 if ln%3 else 0
-        #s = "n" * spc + s + "nnn"
         s = s + "n"*spc + "nnn"
-        #assert len(s)%3 == 0
-        #print ">>>",ln, len(s)
+        start = None
         for frame in range(3):
             try:
-                #print "-->", frame, frame+ln, len(s[frame:frame+ln+spc]),len(s[frame:frame+ln])%3
                 start = translate(s[frame:frame+ln+spc]).lower().index(other)
                 break
             except ValueError:
                 pass
         oh = self.seq.ovhg if self.seq.ovhg>0 else 0
-        #print "abc", self.seq.ovhg, oh
-        return slice(frame+start*3+oh, frame+(start+len(other))*3+oh)
+        if start == None:
+            return None
+        else:
+            return slice(frame+start*3+oh, frame+(start+len(other))*3+oh)
 
-    def map_abi_reads(self, pth):
-        from Bio.SeqIO import read as abiread
+    def map_trace_files(self, pth):
         import glob
         traces = []
+        stf = SequenceTraceFactory()
         for name in glob.glob(pth):
-            traces.append( abiread(name, "abi") )
+            traces.append( stf.loadTraceFile( name ))
         if not traces:
             raise(Exception("no trace files found!"))
-
-        if hasattr( self.area, "step" ):
-            area = self.area
-        elif hasattr( self.area, "extract" ):
-            area = slice(self.area.location.start, self.area.location.end)
+        if hasattr( self.map_target, "step" ):
+            area = self.map_target
+        elif hasattr( self.map_target, "extract" ):
+            area = slice(self.map_target.location.start, self.map_target.location.end)
         else:
-            raise(TypeError("self.area has to be a slice or a SeqFeature"))
+            area = None
 
-        self.matching_reads     = []
-        self.not_matching_reads = []
+        if area:
+            self.matching_reads     = []
+            self.not_matching_reads = []
+            target    = str(self[area].seq).lower()
+            target_rc = str(self[area].seq.rc()).lower()
+            for trace in traces:
+                if target in str(trace.basecalls).lower() or target_rc in str(trace.basecalls).lower():
+                   self.matching_reads.append(trace)
+                else:
+                    self.not_matching_reads.append(trace)
+            reads = self.matching_reads
+        else:
+            self.matching_reads     = None
+            self.not_matching_reads = None
+            reads = traces
 
-        target    = str(self[area].seq).lower()
-        target_rc = str(self[area].seq.rc()).lower()
-
-        for trace in traces:
-            if target in str(trace.seq).lower() or target_rc in str(trace.seq).lower():
-               self.matching_reads.append(trace)
+        for read in reads:
+            matches = common_sub_strings(str(self.seq).lower(), read.basecalls.lower(), 25)
+            if len(matches)>1:
+                newmatches = [matches[0],]
+                for i, x in enumerate(matches[1:]):
+                    g,f,h = matches[i]
+                    if g+h < x[0] and f+h < x[1]:
+                        newmatches.append(x)
+            elif len(matches)==1:
+                newmatches = matches
             else:
-                self.not_matching_reads.append(trace)
-        return [x.id for x in self.matching_reads]
+                continue
+
+            if len(newmatches)>1:
+                ms = []
+                for m in newmatches:
+                    ms.append(FeatureLocation(m[0], m[0]+m[2]))
+                loc = CompoundLocation(ms)
+            else:
+                a,b,c = newmatches[0]
+                loc = FeatureLocation(a,a+c)
+
+            self.features.append( SeqFeature(loc,
+                                             qualifiers = {"label": read.getFileName()},
+                                             type="trace") )
+
+        return [x.getFileName() for x in reads]
 
     def __repr__(self):
         return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
@@ -2644,111 +2679,4 @@ def parse(data, ds = True):
 
 if __name__=="__main__":
     import doctest
-    #doctest.testmod()
-
-    pCR_MCT1_HA46_ = read("pCR_MCT1_HA46.gb")
-
-    print pCR_MCT1_HA46_.seguid()
-
-    slc = pCR_MCT1_HA46_.find_aa("VFFKE YPYDVPDYA IEG".replace(" ", ""))
-
-    pCR_MCT1_HA46_.area = slc
-
-    print slc
-    print pCR_MCT1_HA46_[slc].seq
-    print len(pCR_MCT1_HA46_[slc].seq)/3.0
-
-    print pCR_MCT1_HA46_[slc].seq.translate()
-
-
-    from Bio.SeqIO import read as abiread
-
-    s = abiread( "02-G1_B01_013.ab1", "abi")
-
-    ds = Dseqrecord(s)
-
-
-    #import sys;sys.exit()
-
-    tag = "tat cca tat gac gtt cca gac tat gca"
-    trc = "ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
-
-    s = Dseqrecord(Dseq(tag,trc))
-    sl = s.find_aa("YPYDVPDYA")
-    assert str( s[sl].seq.translate() ) == "YPYDVPDYA"
-    assert "YPYDVPDYA" in s
-
-
-
-
-
-
-
-    tag = "AAA tat cca tat gac gtt cca gac tat gca"
-    trc = "    ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
-
-    s = Dseqrecord(Dseq(tag,trc))
-    sl = s.find_aa("YPYDVPDYA")
-    assert str( s[sl].seq.translate() ) == "YPYDVPDYA"
-    assert "YPYDVPDYA" in s
-
-    tag = "    tat cca tat gac gtt cca gac tat gca"
-    trc = "AAA ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
-
-    s = Dseqrecord(Dseq(tag,trc))
-    sl = s.find_aa("YPYDVPDYA")
-    assert str( s[sl].seq.translate() ) == "YPYDVPDYA"
-    assert "YPYDVPDYA" in s
-
-    tag = "    tat cca tat gac gtt cca gac tat gca"
-    trc = "AAA ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
-
-    s = Dseqrecord(Dseq(tag,trc))
-    sl = s.find_aa("YPYDVPDYA")
-    assert str( s[sl].seq.translate() ) == "YPYDVPDYA"
-
-    tag = "tat cca tat gac gtt cca gac tat gca"
-    trc = "ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
-
-    tag, trc = trc, tag
-
-    s = Dseqrecord(Dseq(tag,trc))
-    sl = s.rc().find_aa("YPYDVPDYA")
-
-    assert str( s.rc()[sl].seq.translate()) == "YPYDVPDYA"
-    assert "YPYDVPDYA" in s.rc()
-
-
-    tag = "aaa tat cca tat gac gtt cca gac tat gca"
-    trc = "ttt ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
-
-    s = Dseqrecord(Dseq(tag,trc, circular=True))
-    sl = s.find_aa("YPYDVPDYA")
-    assert str( s[sl].seq.translate() ) == "YPYDVPDYA"
-    assert "YPYDVPDYA" in s
-
-    traces = []
-    import glob
-    import os
-    print os.getcwd()
-    for name in glob.glob('/home/bjorn/Desktop/python_packages/pydna-dev/tests/abi/*'):
-        traces.append( abiread( name, "abi") )
-
-    assert len(traces) == 117
-
-    dsrs = []
-    for trace in traces:
-        dsrs.append(Dseqrecord(trace))
-
-    for d in dsrs:
-        if "ITVFFKEYPYDVPDYAIEGIFHAT" in d:
-            print d.id
-    print
-    for d in dsrs:
-        if "tatccatatgacgttccagactatgca".capitalize() in d:
-            print d.id
-
-    print
-    for d in dsrs:
-        if "tatccatatgacgttccagac" in d:
-            print d.id
+    doctest.testmod()

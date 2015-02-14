@@ -6,6 +6,7 @@ import re
 import os
 import urllib2
 import warnings
+import sys
 
 from urlparse               import urlparse
 from urlparse               import urlunparse
@@ -17,6 +18,27 @@ import shelve
 
 from pydna.pretty import pretty_str
 from pydna.dsdna import Dseqrecord
+
+def _get_proxy_from_global_settings():
+    """Get proxy settings from linux/gnome"""
+    if sys.platform.startswith('linux'):
+        try:
+            from gi.repository import Gio
+        except ImportError:
+            return ''
+        mode = Gio.Settings.new('org.gnome.system.proxy').get_string('mode')
+        if mode == 'none' or mode == 'auto':
+            return None
+        http_settings = Gio.Settings.new('org.gnome.system.proxy.http')
+        host = http_settings.get_string('host')
+        port = http_settings.get_int('port')
+        if http_settings.get_boolean('use-authentication'):
+            username = http_settings.get_string('authentication_user')
+            password = http_settings.get_string('authentication_password')
+        else:
+            username = password = None
+            return 'http://{}:{}'.format(host, port)
+    return None
 
 class GenbankRecord(Dseqrecord):
 
@@ -70,7 +92,7 @@ class Genbank():
                 response=urllib2.urlopen(test, timeout=1)
             except urllib2.URLError as err:
                 warnings.warn("could not contact proxy server")
-            print { scheme : parsed.geturl() }
+            #print { scheme : parsed.geturl() }
             self.proxy = urllib2.ProxyHandler({ scheme : parsed.geturl() })
         else:
             proxy_handler = urllib2.ProxyHandler({})
@@ -141,7 +163,7 @@ class Genbank():
 
         if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
 
-            if item.lower().startswith(("ftp","http")):
+            if item.lower().startswith(("ftp","http", "https")):
                 try:
                     url = urlparse(item)
                 except (AttributeError, TypeError):
@@ -216,12 +238,61 @@ class Genbank():
         cache.close()
         return result
 
-def web(url):
-    cache = shelve.open(os.path.join(os.environ["datadir"], "web.shelf"), protocol=2, writeback=False)
-    from pydna import Genbank, read
-    import urllib2
-    response = urllib2.urlopen(url)
-    return response.read()
+class web():
+
+    def __init__(self, proxy = None):
+        if proxy:
+            parsed = urlparse(proxy)
+            scheme = parsed.scheme
+            hostname = parsed.hostname
+            test = urlunparse((scheme, hostname,'','','','',))
+            try:
+                response=urllib2.urlopen(test, timeout=1)
+            except urllib2.URLError as err:
+                warnings.warn("could not contact proxy server")
+            self.proxy = urllib2.ProxyHandler({ scheme : parsed.geturl() })
+        else:
+            proxy_handler = urllib2.ProxyHandler({})
+            opener = urllib2.build_opener(proxy_handler)
+            urllib2.install_opener(opener)
+            #os.environ['http_proxy']=''
+            #self.proxy = urllib2.ProxyHandler()
+        #self.opener = urllib2.urlopen #build_opener(self.proxy)
+        #urllib2.install_opener(self.opener)
+
+
+    def download(self, url):
+        cached  = False
+        refresh = False
+        cache = shelve.open(os.path.join(os.environ["datadir"], "web.shelf"), protocol=2, writeback=False)
+        key = str(url)
+
+        if os.environ["pydna_cache"] in ("compare", "cached"):
+            try:
+                cached = cache[key]
+            except KeyError:
+                if os.environ["pydna_cache"] == "compare":
+                    raise Exception("no result for this key!")
+                else:
+                    refresh = True
+
+        if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
+            response = urllib2.urlopen(url)
+            result = response.read()
+
+        if os.environ["pydna_cache"] == "compare":
+            if result!=cached:
+                module_logger.warning('download error')
+
+        if refresh or os.environ["pydna_cache"] == "refresh":
+            cache[key] = result
+
+        elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
+            result = cached
+
+        cache.close()
+
+        return result
 
 if __name__=="__main__":
     import doctest
