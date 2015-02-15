@@ -6,8 +6,8 @@ install:
 before_script:
   - pip install -r requirements.txt
 script: 
-  #- python run_tests.py
-  #- py.test pydna/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+# - python run_tests.py
+# - py.test pydna/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
   - nosetests -w tests -v --with-coverage
   - nosetests -w pydna --with-coverage --with-doctest -v
 
@@ -22,8 +22,6 @@ after_success:
 #  on:
 #    tags: false
 #    all_branches: true
-
-
 
 #pip install -r requirements.txt --use-mirrors
 #python run_tests.py

@@ -11,6 +11,10 @@ pydna
 .. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg 
   :target: https://coveralls.io/r/BjornFJohansson/pydna
   
+.. image:: https://readthedocs.org/projects/pydna/badge/?version=latest
+  :target: https://readthedocs.org/projects/pydna/?badge=latest
+  :alt: Documentation Status
+  
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below).
