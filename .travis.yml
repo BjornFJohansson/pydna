@@ -7,7 +7,7 @@ before_script:
   - pip install -r requirements.txt
 script: 
   - python run_tests.py
-#  - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+  - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
 after_success:
   - coveralls
 
