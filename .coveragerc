@@ -1,0 +1,8 @@
+[report]
+omit =  
+    */python?.?/*
+    */site-packages/nose/*
+    */site-packages/Bio/*
+    */site-packages/networkx/*
+    *__init__*
+
