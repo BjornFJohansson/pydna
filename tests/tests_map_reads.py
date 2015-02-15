@@ -86,6 +86,8 @@ class test_map_reads(unittest.TestCase):
 
         map_ = pCR_MCT1_HA46.map_trace_files("./abi/*.ab1")
 
+        print "*" * 80
+        print map_
         self.assertTrue(map_==['28-1rev_D04_026.ab1', '32-3rev_H04_018.ab1', '36-5rev_D05_041.ab1'])
 
         self.assertTrue([x.fname for x in pCR_MCT1_HA46.matching_reads]==['./abi/28-1rev_D04_026.ab1', './abi/32-3rev_H04_018.ab1', './abi/36-5rev_D05_041.ab1'])
@@ -103,3 +105,10 @@ if __name__ == '__main__':
     runner = unittest.TextTestRunner(verbosity = 3)
     unittest.main(testRunner=runner)
 
+    pCR_MCT1_HA46 = read("pCR_MCT1_HA46.gb")
+
+    slc = pCR_MCT1_HA46.find_aa("VFFKE YPYDVPDYA IEG".replace(" ", ""))
+
+    pCR_MCT1_HA46.map_target = slc
+
+    print pCR_MCT1_HA46.map_trace_files("./abi/*.ab1") == ['28-1rev_D04_026.ab1', '32-3rev_H04_018.ab1', '36-5rev_D05_041.ab1']
