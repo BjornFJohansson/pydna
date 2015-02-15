@@ -272,8 +272,7 @@ class test_pcr(unittest.TestCase):
             self.assertEqual(tst[0], seguid(pcr(tst[1:]).seq))
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 2)
-    unittest.main(testRunner=runner)
+    unittest.main()
 
 
 

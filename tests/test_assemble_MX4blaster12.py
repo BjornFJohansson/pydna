@@ -134,8 +134,7 @@ class test_empty(unittest.TestCase):
         self.assertEqual( pCAPs_MX4blaster2.seguid(), "7B4KKAeM2x8npjkp5U942rtMbB8" )
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 2)
-    unittest.main(testRunner=runner)
+    unittest.main()
 
 
 

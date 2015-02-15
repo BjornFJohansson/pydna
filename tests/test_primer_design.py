@@ -79,8 +79,7 @@ class test_primer_design(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 3)
-    unittest.main(testRunner=runner)
+    unittest.main()
 
 
 

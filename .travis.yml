@@ -1,20 +1,24 @@
 language: python
 python:
   - "2.7"
-# command to install dependencies
 install:
-  - "pip install ."
-  - "pip install -r requirements.txt"
-# command to run tests
-script: python run_tests.py
+  - pip install -e . --use-mirrors
+before_script:
+  - pip install -r requirements.txt --use-mirrors
+script: 
+  - python run_tests.py
+#  - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+after_success:
+  - coveralls
 
-deploy:
-  provider: pypi
-  user: pypi_username==$pypi_username
-  password: pypi_password==$pypi_password
-  on:
-    tags: false
-    all_branches: true
+
+#deploy:
+#  provider: pypi
+#  user: pypi_username==$pypi_username
+#  password: pypi_password==$pypi_password
+#  on:
+#    tags: false
+#    all_branches: true
 
 
 
@@ -33,5 +37,3 @@ deploy:
 #
 #pip install pep8 pip-tools coverage
 #nosetests --with-coverage 2> test_result
-
-

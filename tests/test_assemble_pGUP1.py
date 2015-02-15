@@ -47,8 +47,7 @@ class test_empty(unittest.TestCase):
         self.assertEqual(pGUP1.seguid(), "42wIByERn2kSe/Exn405RYwhffU")       
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 3)
-    unittest.main(testRunner=runner)
+    unittest.main()
 
 
 

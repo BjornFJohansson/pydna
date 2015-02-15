@@ -15,7 +15,7 @@ class test_map_reads(unittest.TestCase):
 		traces = []
 
 		import glob
-		for name in glob.glob('./abi/*.ab1'):
+		for name in glob.glob('*.ab1'):
 			traces.append( abiread( name, "abi") )
 
 		for t in traces:
@@ -66,8 +66,6 @@ class test_map_reads(unittest.TestCase):
 				self.assertTrue( str( s.rc()[sl].seq.translate()) == "YPYDVPDYA" )
 				self.assertTrue( "YPYDVPDYA" in s.rc() )
 
-
-
 				tag = "aaa tat cca tat gac gtt cca gac tat gca"
 				trc = "ttt ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
 
@@ -84,21 +82,22 @@ class test_map_reads(unittest.TestCase):
 
         pCR_MCT1_HA46.map_target = slc
 
-        map_ = pCR_MCT1_HA46.map_trace_files("./abi/*.ab1")
+        map_ = pCR_MCT1_HA46.map_trace_files("*.ab1")
+        
+        print "/" * 500
+        
+        print map_
 
         self.assertTrue(map_==['28-1rev_D04_026.ab1', '32-3rev_H04_018.ab1', '36-5rev_D05_041.ab1'])
 
-        self.assertTrue([x.fname for x in pCR_MCT1_HA46.matching_reads]==['./abi/28-1rev_D04_026.ab1', './abi/32-3rev_H04_018.ab1', './abi/36-5rev_D05_041.ab1'])
+        self.assertTrue([x.fname for x in pCR_MCT1_HA46.matching_reads]==['28-1rev_D04_026.ab1', '32-3rev_H04_018.ab1', '36-5rev_D05_041.ab1'])
 
-        self.assertTrue([x.fname for x in pCR_MCT1_HA46.not_matching_reads]==['./abi/02-G1_B01_013.ab1'])
+        self.assertTrue([x.fname for x in pCR_MCT1_HA46.not_matching_reads]==['02-G1_B01_013.ab1'])
 
         self.assertTrue(pCR_MCT1_HA46.find_aa("YPYDVPDYA".replace(" ", "")) == slice(1088, 1115, None))
 
         self.assertTrue(pCR_MCT1_HA46.find_aa("VFFKE YPYDVPDYA IEG".replace(" ", "")) == slice(1073, 1124, None))
 
 
-
-
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner(verbosity = 3)
-    unittest.main(testRunner=runner)
+    unittest.main()
