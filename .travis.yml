@@ -25,5 +25,5 @@ deploy:
     repo: BjornFJohansson/pydna
 condition: "$TOXENV == py27 && $TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
 
-
+# try again
 #   condition: "$TOXENV == py27 && $TRAVIS_TAG =~ ^[0-9][.][0-9]*[02468][.]"
