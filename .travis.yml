@@ -18,12 +18,12 @@ deploy:
   provider: pypi
   distributions: "sdist bdist_wheel"
   user: bjorn
-  password:
-	secure: "PLNlCt++35qR1sLrlzT0ys/WUxUNPh8isnxpEvAbfDWvgLBZc2vMWMr4HHNqv6UK4jvu9cwfAHJIcH+1tUxdMfs9Q8InqtyrFJgTU+VREhO/nyJgLah1CdmJ9ZixynOTUu8tuZNjX17ycPDM2fRxv0svY/mT2Z0U6nqX4eFFjic="
+  password: secure: "PLNlCt++35qR1sLrlzT0ys/WUxUNPh8isnxpEvAbfDWvgLBZc2vMWMr4HHNqv6UK4jvu9cwfAHJIcH+1tUxdMfs9Q8InqtyrFJgTU+VREhO/nyJgLah1CdmJ9ZixynOTUu8tuZNjX17ycPDM2fRxv0svY/mT2Z0U6nqX4eFFjic="
   on:
     tags: true
     all_branches: true
     repo: BjornFJohansson/pydna
-    condition: "$TOXENV == py27 && $TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
+condition: "$TOXENV == py27 && $TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
+
 
 #   condition: "$TOXENV == py27 && $TRAVIS_TAG =~ ^[0-9][.][0-9]*[02468][.]"

@@ -18,8 +18,8 @@
 
 '''
 
-__version__      = "0.8.0"
-__date__         = "2015-01-05"
+__version__      = "0.8.1"
+__date__         = "2015-02-16"
 __author__       = "Björn Johansson"
 __copyright__    = "Copyright 2013, 2014, 2015 Björn Johansson"
 __credits__      = ["Björn Johansson", "Mark Budde"]
