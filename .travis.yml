@@ -14,27 +14,16 @@ script:
 after_success:
   - coveralls
 
+deploy:
+  provider: pypi
+  distributions: "sdist bdist_wheel"
+  user: bjorn
+  password:
+	secure: "PLNlCt++35qR1sLrlzT0ys/WUxUNPh8isnxpEvAbfDWvgLBZc2vMWMr4HHNqv6UK4jvu9cwfAHJIcH+1tUxdMfs9Q8InqtyrFJgTU+VREhO/nyJgLah1CdmJ9ZixynOTUu8tuZNjX17ycPDM2fRxv0svY/mT2Z0U6nqX4eFFjic="
+  on:
+    tags: true
+    all_branches: true
+    repo: BjornFJohansson/pydna
+    condition: "$TOXENV == py27 && $TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
 
-#deploy:
-#  provider: pypi
-#  user: pypi_username==$pypi_username
-#  password: pypi_password==$pypi_password
-#  on:
-#    tags: false
-#    all_branches: true
-
-#pip install -r requirements.txt --use-mirrors
-#python run_tests.py
-#python setup.py install
-#mkdir mydir
-#cd mydir
-#python -c "import pydna; print pydna.__version__"
-#cd ..
-#pip install wheel --use-mirrors
-#python setup.py sdist --formats=gztar,zip
-#python setup.py bdist_wheel
-#python setup.py bdist_egg
-#python setup.py build --plat-name=win32 bdist_wininst
-#
-#pip install pep8 pip-tools coverage
-#nosetests --with-coverage 2> test_result
+#   condition: "$TOXENV == py27 && $TRAVIS_TAG =~ ^[0-9][.][0-9]*[02468][.]"

@@ -1,10 +1,7 @@
 =====
 pydna
 =====
-
-.. image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
-  :target: https://drone.io/github.com/BjornFJohansson/pydna
-  
+ 
 .. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
   :target: https://travis-ci.org/BjornFJohansson/pydna
 
@@ -12,7 +9,7 @@ pydna
   :target: https://coveralls.io/r/BjornFJohansson/pydna
   
 .. image:: https://readthedocs.org/projects/pydna/badge/?version=latest
-  :target: http://pydna.readthedocs.org/en/latest/pydna.html
+  :target: https://readthedocs.org/projects/pydna/?badge=latest
   :alt: Documentation Status
   
 Pydna provide functions for molecular biology using python.

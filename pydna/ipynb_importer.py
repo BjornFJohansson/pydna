@@ -6,7 +6,8 @@
 # This is made difficult by the fact that Notebooks are not plain Python files,
 # and thus cannot be imported by the regular Python machinery.
 #
-# Fortunately, Python provides some fairly sophisticated [hooks](http://www.python.org/dev/peps/pep-0302/) into the import machinery,
+# Fortunately, Python provides some fairly sophisticated [hooks]
+# (http://www.python.org/dev/peps/pep-0302/) into the import machinery,
 # so we can actually make IPython notebooks importable without much difficulty,
 # and only using public APIs.
 

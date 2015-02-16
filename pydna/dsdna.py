@@ -44,7 +44,7 @@ from Bio.SeqUtils           import GC
 from Bio.GenBank            import RecordParser
 from Bio.Data.CodonTable    import TranslationError
 
-from sequencetrace          import SequenceTraceFactory
+from _sequencetrace         import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils import cseguid
@@ -1906,6 +1906,37 @@ class Dseqrecord(SeqRecord):
         return False
 
     def find_aa(self, other):
+        return self.find_aminoacids(other)
+
+    def find_aminoacids(self, other):
+        '''
+        >>> import pydna
+        >>> s=pydna.Dseqrecord("atgtacgatcgtatgctggttatattttag")
+        >>> s.seq.translate()
+        Seq('MYDRMLVIF*', HasStopCodon(ExtendedIUPACProtein(), '*'))
+        >>> "RML" in s
+        True
+        >>> "MMM" in s
+        False
+        >>> s.seq.rc().translate()
+        Seq('LKYNQHTIVH', ExtendedIUPACProtein())
+        >>> "QHT" in s.rc()
+        True
+        >>> "QHT" in s
+        False
+        >>> slc = s.find_aa("RML")
+        >>> slc
+        slice(9, 18, None)
+        >>> s[slc]
+        Dseqrecord(-9)
+        >>> code = s[slc].seq
+        >>> code
+        Dseq(-9)
+        cgtatgctg
+        gcatacgac
+        >>> code.translate()
+        Seq('RML', ExtendedIUPACProtein())
+        '''
         other = str(other).lower()
         assert self.seq.watson == "".join(self.seq.watson.split())
         s = self.seq.watson

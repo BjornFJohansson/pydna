@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from pydna import Dseqrecord, Dseq, parse, read,  eq
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord as Srec
+from pydna import Dseqrecord, Dseq, read
 
 from Bio.SeqIO import read as abiread
 
