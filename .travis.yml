@@ -4,10 +4,11 @@ python:
 install:
   - pip install -e .
 before_script:
+  - echo $TRAVIS_TAG
   - pip install -r requirements.txt
 script:
-  - nosetests -w tests -v --with-coverage
-  - nosetests -w pydna --with-coverage --with-doctest -v
+  #- nosetests -w tests -v --with-coverage
+  #- nosetests -w pydna --with-coverage --with-doctest -v
 
 deploy:
   provider: pypi
