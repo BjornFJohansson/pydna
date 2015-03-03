@@ -7,7 +7,7 @@ from Bio.SeqUtils.CheckSum  import seguid
 from itertools import tee, izip
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
-from pydna.pretty import pretty_str
+from pydna.pretty import pretty_string
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -404,7 +404,7 @@ def cseguid(seq):
     Only defined for circular sequences.
     '''
     from Bio.Seq import reverse_complement as rc
-    return pretty_str(seguid( min( SmallestRotation(str(seq)), SmallestRotation(str(rc(seq))))))
+    return pretty_string(seguid( min( SmallestRotation(str(seq)), SmallestRotation(str(rc(seq))))))
 
 if __name__ == "__main__":
     import doctest
