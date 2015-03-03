@@ -5,8 +5,8 @@ pydna
 .. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
     :target: https://travis-ci.org/BjornFJohansson/pydna
 
-.. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg 
-    :target: https://coveralls.io/r/BjornFJohansson/pydna
+.. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master  
+    :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master 
   
 .. image:: https://readthedocs.org/projects/pydna/badge/?version=latest
     :target: https://readthedocs.org/projects/pydna/?badge=latest
