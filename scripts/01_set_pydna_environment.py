@@ -1,24 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 import os
 import sys
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
-
-dna_dir  = u"/home/bjorn/Dropbox/pydna-DNA-assembly/constructs"
-
+dna_dir  = u"/home/bjorn/Dropbox/Public/pydna-DNA-assembly/constructs"
 dna_dirs = [x[0] for x in os.walk(dna_dir)]
 
 sys.path = dna_dirs + sys.path
-
 os.environ["pydna_dna_dirs"] = os.pathsep.join(dna_dirs)
-
 os.environ["PYTHONPATH"] = os.environ["pydna_dna_dirs"]
-
-#os.chdir( dna_dir )
 
 import pydna
 

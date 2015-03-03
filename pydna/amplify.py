@@ -487,7 +487,7 @@ class Anneal(object):
                   template,
                   limit=13):
 
-        key = template.seguid()+ "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
+        key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
         cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
 
         refresh = False

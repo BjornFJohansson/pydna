@@ -33,7 +33,7 @@ def find_notebook(fullname, path=None):
     """
     name = fullname.rsplit('.', 1)[-1]
     if not path:
-        path = ['']
+         path = sys.path #['']
     for d in path:
         nb_path = os.path.join(d, name + ".ipynb")
         if os.path.isfile(nb_path):
@@ -57,7 +57,7 @@ class NotebookLoader(object):
         """import a notebook as a module"""
         path = find_notebook(fullname, self.path)
 
-        print ("importing IPython notebook from %s" % path)
+        #print ("importing IPython notebook from %s" % path)
 
         # load the notebook object
         with io.open(path, 'r', encoding='utf-8') as f:

@@ -7,6 +7,14 @@ class pretty_str(unicode):
     ''' Thanks to Min RK, UC Berkeley for this'''
     def _repr_pretty_(self, p, cycle):
         p.text(self)
+   
+class pretty_unicode(unicode):
+    def _repr_pretty_(self, p, cycle):
+        p.text(self)
+             
+class pretty_string(str):
+    def _repr_pretty_(self, p, cycle):
+        p.text(self)
 
 if __name__=="__main__":
     a = ''' a

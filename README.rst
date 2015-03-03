@@ -1,17 +1,33 @@
 =====
 pydna
 =====
- 
+
 .. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
-  :target: https://travis-ci.org/BjornFJohansson/pydna
+    :target: https://travis-ci.org/BjornFJohansson/pydna
 
 .. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg 
-  :target: https://coveralls.io/r/BjornFJohansson/pydna
+    :target: https://coveralls.io/r/BjornFJohansson/pydna
   
 .. image:: https://readthedocs.org/projects/pydna/badge/?version=latest
-  :target: https://readthedocs.org/projects/pydna/?badge=latest
-  :alt: Documentation Status
-  
+    :target: https://readthedocs.org/projects/pydna/?badge=latest
+    :alt: Documentation Status
+    
+.. image:: https://badge.waffle.io/BjornFJohansson/pydna.svg?label=ready&title=Ready 
+    :target: https://waffle.io/BjornFJohansson/pydna 
+    :alt: 'Stories in Ready'
+
+.. image:: https://pypip.in/download/pydna/badge.svg
+    :target: https://pypi.python.org/pypi//pydna/
+    :alt: Downloads
+    
+.. image:: https://pypip.in/version/pydna/badge.svg
+    :target: https://pypi.python.org/pypi/pydna/
+    :alt: Latest Version
+
+.. image:: https://pypip.in/wheel/pydna/badge.svg
+    :target: https://pypi.python.org/pypi/pydna/
+    :alt: Wheel Status
+
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below).
@@ -118,12 +134,14 @@ for pydna if you have problems, questions or comments.
 
 Feedback in the form of questions, comments or criticism is very welcome!
 
-=======   ========== =============================================================
+=======   ========== =====================================================================
 version   date       comment
-=======   ========== =============================================================
-0.8.0	  2015-02-06 Mapping abi reads added.
+=======   ========== =====================================================================
+next      ?          ?
 
-0.7.2	  2014-11-21 First public release with the changes from 0.7.0 and 0.7.1
+0.8.0	  2015-02-06 Mapping reads added.
+
+0.7.2	  2014-11-21 First public release with the changes from 0.7.0 and 0.7.1.
 					 Added a Pretty_str class to beautify output of strings in
 					 the IPython shell. 
 
@@ -209,7 +227,7 @@ version   date       comment
                      SeqRecords.
 
 0.1.3     2013-04-09 pydna created from Python-dna.
-=======   ========== =============================================================
+=======   ========== =====================================================================
 
 System Requirements
 ===================
@@ -217,6 +235,7 @@ System Requirements
 - `Python 2.7 <http://www.python.org>`_.
 - `Biopython >= 1.60 <http://pypi.python.org/pypi/biopython>`_.
 - `networkx >= 1.7 <http://pypi.python.org/pypi/networkx>`_.
+- `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdir>`_.
 
 Python 2.x
 ----------
@@ -267,9 +286,13 @@ python setup.py install
 Binary distribution
 -------------------
 
-`Binary installers <http://pypi.python.org/pypi/pydna/#downloads>`_ for 32 and 64 bit editions of MS Windows are provided.
+There are no binary distributions available.
 
-The dependencies have to be installed separately. This can be done using the
+
+Windows
+-------
+
+If dependencies have to be installed separately, this can be done using the
 binary installers for Windows for those who are not comfortable at the
 command line:
 
@@ -286,7 +309,7 @@ networkx (32,64) <http://www.lfd.uci.edu/~gohlke/pythonlibs/#networkx>
 Source Code Repository
 ----------------------
 
-Pydna is hosted by google code: http://code.google.com/p/pydna/
+Pydna is hosted by google code: 
 
 
 Distribution Structure
@@ -311,9 +334,4 @@ tests/              -- Testing code.
 Todo
 ====
 
-* fix Dseq & Dseqrecord lower() methods so they return Dseq & Dseqrecord objects
-* inverse PCR on circular templates does not seem to preserve features of Dseqrecord objects
 * Add identification of each fragment in the Contig.small_figure method.
-
-
-

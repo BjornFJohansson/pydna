@@ -48,7 +48,7 @@ from _sequencetrace         import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils import cseguid
-from pydna.pretty import pretty_str
+from pydna.pretty import pretty_str, pretty_string
 
 
 
@@ -1436,7 +1436,7 @@ class Dseqrecord(SeqRecord):
        .. [#] http://wiki.christophchamp.com/index.php/SEGUID
 
        '''
-        return seguid(self.seq)
+        return pretty_string(seguid(self.seq))
 
     def isorf(self, table=1):
         '''Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
@@ -1866,10 +1866,12 @@ class Dseqrecord(SeqRecord):
                     # update last change time
                 else:
                     name, ext = os.path.splitext(filename)
-                    new_filename = "{}_NEW{}".format(name, ext)
-                    print("\n\nseguid(old) = {} in file {}"
-                           "\nseguid(new) = {} in file {}\n").format(seguid_old, filename, seguid_new, new_filename)
-                    with open(new_filename, "w") as fp:
+                    old_filename = "{}_OLD{}".format(name, ext)
+                    os.rename(filename, old_filename)
+                    print('Sequence change\n'
+                          '{} {} bp seguid {}\n'
+                          '{} {} bp seguid {}\n').format(old_filename, len(old_file), seguid_old, filename, len(self), seguid_new )
+                    with open(filename, "w") as fp:
                         fp.write(self.format(f))
 
             else:
@@ -2410,12 +2412,12 @@ class Dseqrecord(SeqRecord):
 
         csh = os.environ["pydna_cache"]
 
-        key = self.seguid()+"|"+rs+"|"+str(limit)
+        key = str(self.seguid())+"|"+rs+"|"+str(limit)
         cache = shelve.open(os.path.join(os.environ["datadir"],"synced.shelf"), protocol=2, writeback=False)
 
         if csh in ("compare", "cached"):
             try:
-                cached = cache[key]
+                cached = cache[str(key)]
             except KeyError:
                 if os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
