@@ -11,7 +11,7 @@ pydna
 .. image:: https://readthedocs.org/projects/pydna/badge/?version=latest
     :target: https://readthedocs.org/projects/pydna/?badge=latest
     :alt: Documentation Status
-    
+
 .. image:: https://badge.waffle.io/BjornFJohansson/pydna.svg?label=ready&title=Ready 
     :target: https://waffle.io/BjornFJohansson/pydna 
     :alt: 'Stories in Ready'
