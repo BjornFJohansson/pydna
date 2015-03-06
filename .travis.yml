@@ -9,8 +9,6 @@ before_script:
   - pip install coveralls
   
 script:
-   - nosetests -w tests -v --with-coverage
-   - nosetests -w pydna --with-coverage --with-doctest -v
    - mkdir test_install_directory
    - python setup.py sdist
    - cp ./dist/pydna* ./test_install_directory/
@@ -20,6 +18,8 @@ script:
    - python setup.py install
    - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    - cd ..
+   - nosetests -v -w tests --with-coverage
+   - nosetests -v -w pydna --with-coverage --with-doctest 
 
 
 deploy:
