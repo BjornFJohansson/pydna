@@ -1,0 +1,123 @@
+LOCUS       pUC19                   2686 bp    DNA     circular     18-OCT-2007
+DEFINITION  Cloning vector pUC19, complete sequence.
+ACCESSION
+VERSION
+KEYWORDS    .
+SOURCE      Cloning vector pUC19
+  ORGANISM  Cloning vector pUC19
+            other sequences; artificial sequences; vectors.
+REFERENCE   1  (bases 1 to 2686)
+  AUTHORS   New England Biolabs.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (18-OCT-2007) Research Department, New England Biolabs,
+            240 County Road, Ipswich, MA 01938, USA
+COMMENT     See also GenBank accession L09137.
+FEATURES             Location/Qualifiers
+     source          1..2686
+                     /organism="Cloning vector pUC19"
+                     /mol_type="other DNA"
+     gene            complement(146..469)
+                     /gene="lacZalpha"
+     CDS             complement(146..469)
+                     /gene="lacZalpha"
+                     /codon_start=1
+                     /product="beta-galactosidase alpha fragment"
+                     /translation="MTMITPSLHACRSTLEDPRVPSSNSLAVVLQRRDWENPGVTQLN
+                     RLAAHPPFASWRNSEEARTDRPSQQLRSLNGEWRLMRYFLLTHLCGISHRIWCTLSTI
+                     CSDAA"
+     misc_feature    396..452
+                     /gene="lacZalpha"
+                     /note="multiple cloning site (EcoRI-HindIII)"
+     -10_signal      complement(514..519)
+                     /note="Plac promoter (drives lacZalpha;
+                     counter-clockwise); TATGTT"
+     -35_signal      complement(538..543)
+                     /note="Plac promoter (drives lacZalpha;
+                     counter-clockwise); TTTACA"
+     protein_bind    complement(563..575)
+                     /note="CAP protein binding site"
+                     /bound_moiety="catabolite activator protein (CAP)"
+     rep_origin      complement(867..1455)
+                     /note="pMB1 origin of replication (counter-clockwise)
+                     (RNAII -35 to RNA/DNA switch point)"
+     misc_RNA        complement(867..1419)
+                     /note="RNAII transcript (complementary strand)"
+     -35_signal      1273..1278
+                     /note="RNAI promoter (clockwise); TTGAAG"
+     -10_signal      1295..1300
+                     /note="RNAI promoter (clockwise); GCTACA"
+     misc_RNA        1309..1416
+                     /note="RNAI transcript"
+     -10_signal      complement(1429..1434)
+                     /note="RNAII promoter (counter-clockwise); CGTAAT"
+     -35_signal      complement(1450..1455)
+                     /note="RNAII promoter (counter-clockwise); TTGAGA"
+     gene            complement(1626..2486)
+                     /gene="bla"
+     CDS             complement(1626..2486)
+                     /gene="bla"
+                     /note="ampR (confers resistance to ampicillin)"
+                     /codon_start=1
+                     /product="beta-lactamase"
+                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGY
+                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVE
+                     YSPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRL
+                     DRWEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPL
+                     LRSALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIA
+                     EIGASLIKHW"
+     sig_peptide     complement(2418..2486)
+                     /gene="bla"
+                     /note="required for secretion to the periplasm; cleaved
+                     off to form the mature beta-lactamase protein."
+     -10_signal      complement(2530..2535)
+                     /note="bla promoter (counter-clockwise); GAGACA"
+     -35_signal      complement(2551..2556)
+                     /note="bla promoter (counter-clockwise); TTCAAA"
+BASE COUNT      667 a    675 c    685 g    659 t
+ORIGIN
+        1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+       61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+      121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+      181 accatatgcg gtgtgaaata ccgcacagat gcgtaaggag aaaataccgc atcaggcgcc
+      241 attcgccatt caggctgcgc aactgttggg aagggcgatc ggtgcgggcc tcttcgctat
+      301 tacgccagct ggcgaaaggg ggatgtgctg caaggcgatt aagttgggta acgccagggt
+      361 tttcccagtc acgacgttgt aaaacgacgg ccagtgaatt cgagctcggt acccggggat
+      421 cctctagagt cgacctgcag gcatgcaagc ttggcgtaat catggtcata gctgtttcct
+      481 gtgtgaaatt gttatccgct cacaattcca cacaacatac gagccggaag cataaagtgt
+      541 aaagcctggg gtgcctaatg agtgagctaa ctcacattaa ttgcgttgcg ctcactgccc
+      601 gctttccagt cgggaaacct gtcgtgccag ctgcattaat gaatcggcca acgcgcgggg
+      661 agaggcggtt tgcgtattgg gcgctcttcc gcttcctcgc tcactgactc gctgcgctcg
+      721 gtcgttcggc tgcggcgagc ggtatcagct cactcaaagg cggtaatacg gttatccaca
+      781 gaatcagggg ataacgcagg aaagaacatg tgagcaaaag gccagcaaaa ggccaggaac
+      841 cgtaaaaagg ccgcgttgct ggcgtttttc cataggctcc gcccccctga cgagcatcac
+      901 aaaaatcgac gctcaagtca gaggtggcga aacccgacag gactataaag ataccaggcg
+      961 tttccccctg gaagctccct cgtgcgctct cctgttccga ccctgccgct taccggatac
+     1021 ctgtccgcct ttctcccttc gggaagcgtg gcgctttctc atagctcacg ctgtaggtat
+     1081 ctcagttcgg tgtaggtcgt tcgctccaag ctgggctgtg tgcacgaacc ccccgttcag
+     1141 cccgaccgct gcgccttatc cggtaactat cgtcttgagt ccaacccggt aagacacgac
+     1201 ttatcgccac tggcagcagc cactggtaac aggattagca gagcgaggta tgtaggcggt
+     1261 gctacagagt tcttgaagtg gtggcctaac tacggctaca ctagaagaac agtatttggt
+     1321 atctgcgctc tgctgaagcc agttaccttc ggaaaaagag ttggtagctc ttgatccggc
+     1381 aaacaaacca ccgctggtag cggtggtttt tttgtttgca agcagcagat tacgcgcaga
+     1441 aaaaaaggat ctcaagaaga tcctttgatc ttttctacgg ggtctgacgc tcagtggaac
+     1501 gaaaactcac gttaagggat tttggtcatg agattatcaa aaaggatctt cacctagatc
+     1561 cttttaaatt aaaaatgaag ttttaaatca atctaaagta tatatgagta aacttggtct
+     1621 gacagttacc aatgcttaat cagtgaggca cctatctcag cgatctgtct atttcgttca
+     1681 tccatagttg cctgactccc cgtcgtgtag ataactacga tacgggaggg cttaccatct
+     1741 ggccccagtg ctgcaatgat accgcgagac ccacgctcac cggctccaga tttatcagca
+     1801 ataaaccagc cagccggaag ggccgagcgc agaagtggtc ctgcaacttt atccgcctcc
+     1861 atccagtcta ttaattgttg ccgggaagct agagtaagta gttcgccagt taatagtttg
+     1921 cgcaacgttg ttgccattgc tacaggcatc gtggtgtcac gctcgtcgtt tggtatggct
+     1981 tcattcagct ccggttccca acgatcaagg cgagttacat gatcccccat gttgtgcaaa
+     2041 aaagcggtta gctccttcgg tcctccgatc gttgtcagaa gtaagttggc cgcagtgtta
+     2101 tcactcatgg ttatggcagc actgcataat tctcttactg tcatgccatc cgtaagatgc
+     2161 ttttctgtga ctggtgagta ctcaaccaag tcattctgag aatagtgtat gcggcgaccg
+     2221 agttgctctt gcccggcgtc aatacgggat aataccgcgc cacatagcag aactttaaaa
+     2281 gtgctcatca ttggaaaacg ttcttcgggg cgaaaactct caaggatctt accgctgttg
+     2341 agatccagtt cgatgtaacc cactcgtgca cccaactgat cttcagcatc ttttactttc
+     2401 accagcgttt ctgggtgagc aaaaacagga aggcaaaatg ccgcaaaaaa gggaataagg
+     2461 gcgacacgga aatgttgaat actcatactc ttcctttttc aatattattg aagcatttat
+     2521 cagggttatt gtctcatgag cggatacata tttgaatgta tttagaaaaa taaacaaata
+     2581 ggggttccgc gcacatttcc ccgaaaagtg ccacctgacg tctaagaaac cattattatc
+     2641 atgacattaa cctataaaaa taggcgtatc acgaggccct ttcgtc
+//

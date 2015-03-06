@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pydna.utils &mdash; Pydna 0.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pydna 0.6.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pydna.utils</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;This module provides miscellaneous functions.</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils.CheckSum</span>  <span class="kn">import</span> <span class="n">seguid</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">tee</span><span class="p">,</span> <span class="n">izip</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">SeqFeature</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">FeatureLocation</span>
+
+
+<div class="viewcode-block" id="pairwise"><a class="viewcode-back" href="../../pydna.html#pydna.utils.pairwise">[docs]</a><span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="s">&quot;s -&gt; (s0,s1), (s1,s2), (s2, s3), ...&quot;</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">izip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="eq"><a class="viewcode-back" href="../../pydna.html#pydna.utils.eq">[docs]</a><span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Compares two or more DNA sequences for equality i.e. they</span>
+<span class="sd">    represent the same DNA molecule. Comparisons are case insensitive.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    args : iterable</span>
+<span class="sd">        iterable containing sequences</span>
+<span class="sd">        args can be strings, Biopython Seq or SeqRecord, Dseqrecord</span>
+<span class="sd">        or dsDNA objects.</span>
+<span class="sd">    circular : bool, optional</span>
+<span class="sd">        Consider all molecules circular or linear</span>
+<span class="sd">    linear : bool, optional</span>
+<span class="sd">        Consider all molecules circular or linear</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eq : bool</span>
+<span class="sd">        Returns True or False</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Compares two or more DNA sequences for equality i.e. if they</span>
+<span class="sd">    represent the same DNA molecule.</span>
+
+<span class="sd">    Two linear sequences are considiered equal if either:</span>
+
+<span class="sd">    * They have the same sequence (case insensitive)</span>
+<span class="sd">    * One sequence is the reverse complement of the other (case insensitive)</span>
+
+<span class="sd">    Two circular sequences are considered equal if they are circular permutations:</span>
+
+<span class="sd">    1. They have the same lengt, AND</span>
+<span class="sd">    2. One sequence or can be found in the concatenation of the other sequence with itself, OR</span>
+<span class="sd">    3. The reverse complement can be found in the concatenation of the other sequence with itself.</span>
+
+<span class="sd">    The topology for the comparison can be set using one of the keywords</span>
+<span class="sd">    linear or circular to True or False.</span>
+
+<span class="sd">    If circular or linear is not set, it will be deduced from the topology of</span>
+<span class="sd">    each sequence for sequences that have a linear or circular attribute</span>
+<span class="sd">    (like Dseq and Dseqrecord).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; from pydna import eq, Dseqrecord</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;,&quot;TTT&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;,&quot;TTT&quot;,&quot;tTt&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;,&quot;TTT&quot;,&quot;tTt&quot;, linear=True)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;Taaa&quot;,&quot;aTaa&quot;, linear = True)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;Taaa&quot;,&quot;aTaa&quot;, circular = True)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; a=Dseqrecord(&quot;Taaa&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; b=Dseqrecord(&quot;aTaa&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,circular=True)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; a=a.looped()</span>
+<span class="sd">    &gt;&gt;&gt; b=b.looped()</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,circular=False)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,linear=True)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,linear=False)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;ggatcc&quot;,&quot;GGATCC&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;ggatcca&quot;,&quot;GGATCCa&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;ggatcca&quot;,&quot;tGGATCC&quot;)</span>
+<span class="sd">    True</span>
+
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">reverse_complement</span>
+    <span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+    <span class="kn">import</span> <span class="nn">itertools</span>
+    <span class="n">args</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;__iter__&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">SeqRecord</span><span class="p">):</span>
+            <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+
+    <span class="n">topology</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="s">&quot;linear&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&quot;linear&quot;</span><span class="p">]</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&quot;linear&quot;</span><span class="p">]</span><span class="o">==</span><span class="bp">False</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s">&quot;circular&quot;</span>
+    <span class="k">elif</span> <span class="s">&quot;circular&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&quot;circular&quot;</span><span class="p">]</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s">&quot;circular&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&quot;circular&quot;</span><span class="p">]</span><span class="o">==</span><span class="bp">False</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># topology keyword not set, look for topology associated to each sequence</span>
+        <span class="c"># otherwise raise exception</span>
+        <span class="n">topology</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">arg</span><span class="o">.</span><span class="n">circular</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;circular&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;sequences have different topologies&quot;</span><span class="p">)</span>
+        <span class="n">topology</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">topology</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span>
+        <span class="k">elif</span> <span class="n">topology</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s">&quot;circular&quot;</span>
+
+    <span class="c">#args_string_list    = [str(arg.seq).lower() if hasattr(arg,&quot;seq&quot;) else str(arg).lower() for arg in args]</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">seq</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;seq&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    <span class="n">args_string_list</span>    <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">watson</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;watson&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">set</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">args_string_list</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="n">same</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">if</span> <span class="n">topology</span> <span class="o">==</span> <span class="s">&quot;circular&quot;</span><span class="p">:</span>
+        <span class="c"># force circular comparison of all given sequences</span>
+        <span class="k">for</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">args_string_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span> <span class="n">s1</span> <span class="ow">in</span> <span class="n">s2</span><span class="o">+</span><span class="n">s2</span> <span class="ow">or</span> <span class="n">reverse_complement</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">s2</span><span class="o">+</span><span class="n">s2</span><span class="p">):</span>
+                <span class="n">same</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">elif</span> <span class="n">topology</span> <span class="o">==</span> <span class="s">&quot;linear&quot;</span><span class="p">:</span>
+        <span class="c"># force linear comparison of all given sequences</span>
+        <span class="k">for</span> <span class="n">s1</span><span class="p">,</span><span class="n">s2</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">args_string_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span> <span class="n">s1</span><span class="o">==</span><span class="n">s2</span> <span class="ow">or</span> <span class="n">s1</span><span class="o">==</span><span class="n">reverse_complement</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span> <span class="p">):</span>
+                <span class="n">same</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">same</span>
+</div>
+<div class="viewcode-block" id="shift_origin"><a class="viewcode-back" href="../../pydna.html#pydna.utils.shift_origin">[docs]</a><span class="k">def</span> <span class="nf">shift_origin</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">shift</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Shift the origin of seq which is assumed to be a circular</span>
+<span class="sd">    sequence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq : string, Biopython Seq, Biopython SeqRecord, Dseq or Dseqrecord</span>
+<span class="sd">        sequence to be shifted.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    new_seq : string, Biopython Seq, Biopython SeqRecord, Dseq or Dseqrecord</span>
+<span class="sd">        sequence with a new origin.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import pydna</span>
+<span class="sd">    &gt;&gt;&gt; pydna.shift_origin(&quot;taaa&quot;,1)</span>
+<span class="sd">    &#39;aaat&#39;</span>
+<span class="sd">    &gt;&gt;&gt; pydna.shift_origin(&quot;taaa&quot;,0)</span>
+<span class="sd">    &#39;taaa&#39;</span>
+<span class="sd">    &gt;&gt;&gt; pydna.shift_origin(&quot;taaa&quot;,2)</span>
+<span class="sd">    &#39;aata&#39;</span>
+<span class="sd">    &gt;&gt;&gt; pydna.shift_origin(&quot;gatc&quot;,2)</span>
+<span class="sd">    &#39;tcga&#39;</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    pydna.dsdna.Dseqrecord.shifted</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">SeqFeature</span>
+    <span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">FeatureLocation</span><span class="p">,</span> <span class="n">CompoundLocation</span>
+    <span class="kn">from</span> <span class="nn">Bio.SeqRecord</span>  <span class="kn">import</span> <span class="n">SeqRecord</span>
+    <span class="kn">import</span> <span class="nn">copy</span>
+
+    <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">shift</span><span class="o">&lt;</span><span class="n">length</span><span class="p">:</span>
+        <span class="k">raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;shift ({}) has to be 0&lt;=shift&lt;length({})&quot;</span><span class="p">,</span><span class="n">format</span><span class="p">((</span><span class="n">shift</span><span class="p">,</span><span class="n">length</span><span class="p">,))))</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="s">&quot;linear&quot;</span><span class="p">):</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">tolinear</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">seq</span>
+
+    <span class="n">new</span> <span class="o">=</span> <span class="p">(</span><span class="n">new</span><span class="o">+</span><span class="n">new</span><span class="p">)[</span><span class="n">shift</span><span class="p">:</span><span class="n">shift</span><span class="o">+</span><span class="n">length</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">wraparound</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+        <span class="n">new_start</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span><span class="p">(</span><span class="n">shift</span><span class="o">-</span><span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">new_end</span>   <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">end</span><span class="o">-</span><span class="n">shift</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">SeqFeature</span><span class="p">(</span><span class="n">CompoundLocation</span><span class="p">(</span> <span class="p">[</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">new_end</span><span class="p">),</span>
+                                          <span class="n">FeatureLocation</span><span class="p">(</span><span class="n">new_start</span><span class="p">,</span> <span class="n">length</span><span class="p">)]),</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                       <span class="n">location_operator</span><span class="o">=</span><span class="s">&quot;join&quot;</span><span class="p">,</span>
+                       <span class="n">strand</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">,</span>
+                       <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                       <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">)</span>
+        <span class="n">sub_features</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">feature</span><span class="o">.</span><span class="n">sub_features</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">end</span><span class="o">&lt;</span><span class="n">shift</span><span class="p">:</span>
+                <span class="n">sub_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SeqFeature</span><span class="p">(</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                                                               <span class="n">length</span><span class="o">-</span><span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">end</span><span class="p">),</span>
+                                    <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                    <span class="n">location_operator</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">location_operator</span><span class="p">,</span>
+                                    <span class="n">strand</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">,</span>
+                                    <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                    <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">,</span>
+                                    <span class="n">sub_features</span><span class="o">=</span><span class="bp">None</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">start</span><span class="o">&gt;</span><span class="n">shift</span><span class="p">:</span>
+                <span class="n">sub_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SeqFeature</span><span class="p">(</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">start</span><span class="o">-</span><span class="n">shift</span><span class="p">,</span>
+                                                               <span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">end</span><span class="o">-</span><span class="n">shift</span><span class="p">),</span>
+                                    <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                    <span class="n">location_operator</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">location_operator</span><span class="p">,</span>
+                                    <span class="n">strand</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">,</span>
+                                    <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                    <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">,</span>
+                                     <span class="n">sub_features</span><span class="o">=</span><span class="bp">None</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sub_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">wraparound</span><span class="p">(</span><span class="n">sf</span><span class="p">))</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">sub_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="s">&quot;features&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">seq</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">shift</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
+                <span class="n">new</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wraparound</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="s">&quot;linear&quot;</span><span class="p">):</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">new</span>
+</div>
+<div class="viewcode-block" id="copy_features"><a class="viewcode-back" href="../../pydna.html#pydna.utils.copy_features">[docs]</a><span class="k">def</span> <span class="nf">copy_features</span><span class="p">(</span><span class="n">source_sr</span><span class="p">,</span> <span class="n">target_sr</span><span class="p">,</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function tries to copy all features in source_seq and copy</span>
+<span class="sd">    them to target_seq. Source_sr and target_sr are objects with</span>
+<span class="sd">    a features property, such as Dseqrecord or Biopython SeqRecord.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    source_seq : SeqRecord or Dseqrecord</span>
+<span class="sd">        The sequence to copy features from</span>
+
+<span class="sd">    target_seq : SeqRecord or Dseqrecord</span>
+<span class="sd">        The sequence to copy features to</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool : True</span>
+<span class="sd">        This function acts on target_seq in place.</span>
+<span class="sd">        No data is returned.</span>
+
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">reverse_complement</span> <span class="k">as</span> <span class="n">rc</span>
+    <span class="n">target_length</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_sr</span><span class="p">)</span>
+    <span class="n">target_string</span>    <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_sr</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">circular</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">target_sr</span><span class="o">.</span><span class="n">circular</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">circular</span><span class="o">=</span><span class="bp">False</span>
+
+    <span class="n">newfeatures</span><span class="o">=</span><span class="p">[]</span>
+
+    <span class="n">trgt_string</span> <span class="o">=</span> <span class="n">target_string</span>
+    <span class="n">trgt_string_rc</span> <span class="o">=</span> <span class="n">rc</span><span class="p">(</span><span class="n">trgt_string</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">source_sr</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">&gt;</span><span class="n">limit</span><span class="p">]:</span>
+        <span class="n">fsr</span>            <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">source_sr</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">featurelength</span>  <span class="o">=</span> <span class="mi">0</span><span class="c"># len(fsr)</span>
+
+        <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+            <span class="n">trgt_string</span> <span class="o">=</span> <span class="n">target_string</span><span class="o">+</span><span class="n">target_string</span><span class="p">[:</span><span class="n">featurelength</span><span class="p">]</span>
+            <span class="n">trgt_string_rc</span> <span class="o">=</span> <span class="n">rc</span><span class="p">(</span><span class="n">trgt_string</span><span class="p">)</span>
+
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[(</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">(),</span> <span class="mi">1</span><span class="p">,)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fsr</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span><span class="n">trgt_string</span><span class="p">)]</span>
+        <span class="o">+</span>
+        <span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">trgt_string_rc</span><span class="p">)</span><span class="o">-</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">(),</span><span class="nb">len</span><span class="p">(</span><span class="n">trgt_string_rc</span><span class="p">)</span><span class="o">-</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span>
+                      <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fsr</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span><span class="n">trgt_string_rc</span><span class="p">)])</span>
+
+        <span class="k">for</span> <span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">strand</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">circular</span> <span class="ow">and</span> <span class="n">begin</span><span class="o">&lt;</span><span class="n">target_length</span><span class="o">&lt;</span><span class="n">end</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">end</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span>
+                              <span class="n">target_sr</span><span class="p">)</span>
+                <span class="n">sf1</span> <span class="o">=</span> <span class="n">SeqFeature</span><span class="p">(</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">trgt_length</span><span class="p">),</span>
+                                 <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                 <span class="n">location_operator</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">location_operator</span><span class="p">,</span>
+                                 <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+                                 <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                 <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">,</span>
+                                 <span class="n">sub_features</span><span class="o">=</span><span class="bp">None</span><span class="p">,)</span>
+                <span class="n">sf2</span> <span class="o">=</span> <span class="n">SeqFeature</span><span class="p">(</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span>
+                                 <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                 <span class="n">location_operator</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">location_operator</span><span class="p">,</span>
+                                 <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+                                 <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                 <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">,</span>
+                                 <span class="n">sub_features</span><span class="o">=</span><span class="bp">None</span><span class="p">,)</span>
+                <span class="n">nf</span> <span class="o">=</span>  <span class="n">SeqFeature</span><span class="p">(</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span>
+                                 <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                 <span class="n">location_operator</span><span class="o">=</span><span class="s">&quot;join&quot;</span><span class="p">,</span>
+                                 <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+                                 <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                 <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">,</span>
+                                 <span class="n">sub_features</span><span class="o">=</span><span class="p">[</span><span class="n">sf1</span><span class="p">,</span><span class="n">sf2</span><span class="p">],)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nf</span> <span class="o">=</span> <span class="n">SeqFeature</span><span class="p">(</span><span class="n">FeatureLocation</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">),</span>
+                     <span class="nb">type</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                     <span class="n">location_operator</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">location_operator</span><span class="p">,</span>
+                     <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+                     <span class="nb">id</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                     <span class="n">qualifiers</span><span class="o">=</span><span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">,</span>
+                     <span class="n">sub_features</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+            <span class="n">newfeatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nf</span><span class="p">)</span>
+    <span class="n">target_sr</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">newfeatures</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+
+</div>
+<div class="viewcode-block" id="ChenFoxLyndonBreakpoints"><a class="viewcode-back" href="../../pydna.html#pydna.utils.ChenFoxLyndonBreakpoints">[docs]</a><span class="k">def</span> <span class="nf">ChenFoxLyndonBreakpoints</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find starting positions of Chen-Fox-Lyndon decomposition of s.</span>
+<span class="sd">    The decomposition is a set of Lyndon words that start at 0 and</span>
+<span class="sd">    continue until the next position. 0 itself is not output, but</span>
+<span class="sd">    the final breakpoint at the end of s is. The argument s must be</span>
+<span class="sd">    of a type that can be indexed (e.g. a list, tuple, or string).</span>
+<span class="sd">    The algorithm follows Duval, J. Algorithms 1983, but uses 0-based</span>
+<span class="sd">    indexing rather than Duval&#39;s choice of 1-based indexing.</span>
+
+<span class="sd">    Algorithms on strings and sequences based on Lyndon words.</span>
+<span class="sd">    David Eppstein, October 2011.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="o">=</span> <span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="ow">and</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">k</span>     <span class="c"># Python cond?yes:no syntax</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="n">j</span><span class="o">-</span><span class="n">i</span>
+            <span class="k">yield</span> <span class="n">k</span>
+</div>
+<div class="viewcode-block" id="ChenFoxLyndon"><a class="viewcode-back" href="../../pydna.html#pydna.utils.ChenFoxLyndon">[docs]</a><span class="k">def</span> <span class="nf">ChenFoxLyndon</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decompose s into Lyndon words according to the Chen-Fox-Lyndon theorem.</span>
+<span class="sd">    The arguments are the same as for ChenFoxLyndonBreakpoints but the</span>
+<span class="sd">    return values are subsequences of s rather than indices of breakpoints.</span>
+<span class="sd">    </span>
+<span class="sd">    Algorithms on strings and sequences based on Lyndon words.</span>
+<span class="sd">    David Eppstein, October 2011.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">old</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ChenFoxLyndonBreakpoints</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">s</span><span class="p">[</span><span class="n">old</span><span class="p">:</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="n">k</span>
+</div>
+<div class="viewcode-block" id="SmallestRotation"><a class="viewcode-back" href="../../pydna.html#pydna.utils.SmallestRotation">[docs]</a><span class="k">def</span> <span class="nf">SmallestRotation</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the rotation of s that is smallest in lexicographic order.</span>
+<span class="sd">    Duval 1983 describes how to modify his algorithm to do so but I think</span>
+<span class="sd">    it&#39;s cleaner and more general to work from the ChenFoxLyndon output.</span>
+<span class="sd">    </span>
+<span class="sd">    Algorithms on strings and sequences based on Lyndon words.</span>
+<span class="sd">    David Eppstein, October 2011.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prev</span><span class="p">,</span><span class="n">rep</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ChenFoxLyndon</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="n">prev</span><span class="p">:</span>
+            <span class="n">rep</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prev</span><span class="p">,</span><span class="n">rep</span> <span class="o">=</span> <span class="n">w</span><span class="p">,</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">*</span><span class="n">rep</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">w</span><span class="o">*</span><span class="n">rep</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Reached end of factorization with no shortest rotation&quot;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="cseguid"><a class="viewcode-back" href="../../pydna.html#pydna.utils.cseguid">[docs]</a><span class="k">def</span> <span class="nf">cseguid</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Returns the cSEGUID for the sequence. The cSEGUID is the SEGUID checksum </span>
+<span class="sd">    calculated for the lexicographically minimal string rotation of a DNA sequence.</span>
+<span class="sd">    Only defined for circular sequences.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">reverse_complement</span> <span class="k">as</span> <span class="n">rc</span>
+    <span class="k">return</span> <span class="n">seguid</span><span class="p">(</span> <span class="nb">min</span><span class="p">(</span> <span class="n">SmallestRotation</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">seq</span><span class="p">)),</span> <span class="n">SmallestRotation</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rc</span><span class="p">(</span><span class="n">seq</span><span class="p">)))))</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+
+    
+    
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Björn Johansson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

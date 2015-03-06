@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pydna.download &mdash; Pydna 0.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pydna 0.6.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pydna.download</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;Provides a class for downloading sequences from genbank.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">urlparse</span>               <span class="kn">import</span> <span class="n">urlparse</span>
+<span class="kn">from</span> <span class="nn">urlparse</span>               <span class="kn">import</span> <span class="n">urlunparse</span>
+<span class="kn">from</span> <span class="nn">Bio</span>                    <span class="kn">import</span> <span class="n">SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio</span>                    <span class="kn">import</span> <span class="n">Entrez</span>
+<span class="kn">from</span> <span class="nn">Bio.Alphabet.IUPAC</span>     <span class="kn">import</span> <span class="n">IUPACAmbiguousDNA</span>
+<span class="kn">from</span> <span class="nn">Bio.GenBank</span>            <span class="kn">import</span> <span class="n">RecordParser</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils.CheckSum</span>  <span class="kn">import</span> <span class="n">seguid</span>
+
+<span class="kn">from</span> <span class="nn">pydna.dsdna</span> <span class="kn">import</span> <span class="n">read</span>
+
+<div class="viewcode-block" id="Genbank"><a class="viewcode-back" href="../../pydna.html#pydna.download.Genbank">[docs]</a><span class="k">class</span> <span class="nc">Genbank</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Class to facilitate download from genbank.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    users_email : string</span>
+<span class="sd">        Has to be a valid email address. You should always tell</span>
+<span class="sd">        Genbanks who you are, so that they can contact you.</span>
+<span class="sd">    proxy : string, optional</span>
+<span class="sd">        String containing a proxy url:</span>
+<span class="sd">        &quot;proxy = &quot;http://umiho.proxy.com:3128&quot;</span>
+<span class="sd">    tool : string, optional</span>
+<span class="sd">        Default is &quot;pydna&quot;. This is to tell Genbank which tool you are</span>
+<span class="sd">        using.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import pydna </span>
+<span class="sd">    &gt;&gt;&gt; gb=pydna.Genbank(&quot;me@mail.se&quot;, proxy = &quot;http://proxy.com:3128&quot;)                  #doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; rec = gb.nucleotide(&quot;L09137&quot;) # &lt;- pUC19 from genbank                            #doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; print len(rec)                                                                   #doctest: +SKIP</span>
+<span class="sd">    2686                                                                                 #doctest: +SKIP</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users_email</span><span class="p">,</span> <span class="n">proxy</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s">&quot;pydna&quot;</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">&quot;[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}&quot;</span><span class="p">,</span><span class="n">users_email</span><span class="p">,</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Not a valid email address!&quot;</span><span class="p">))</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="o">=</span><span class="n">users_email</span> <span class="c">#Always tell NCBI who you are</span>
+
+        <span class="k">if</span> <span class="n">proxy</span><span class="p">:</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span>
+            <span class="n">scheme</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span>
+            <span class="n">hostname</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">urlunparse</span><span class="p">((</span><span class="n">scheme</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">=</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;could not contact proxy server&quot;</span><span class="p">)</span>
+            <span class="k">print</span> <span class="p">{</span> <span class="n">scheme</span> <span class="p">:</span> <span class="n">parsed</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">ProxyHandler</span><span class="p">({</span> <span class="n">scheme</span> <span class="p">:</span> <span class="n">parsed</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proxy_handler</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">ProxyHandler</span><span class="p">({})</span>
+            <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">proxy_handler</span><span class="p">)</span>
+            <span class="n">urllib2</span><span class="o">.</span><span class="n">install_opener</span><span class="p">(</span><span class="n">opener</span><span class="p">)</span>
+            <span class="c">#os.environ[&#39;http_proxy&#39;]=&#39;&#39;</span>
+            <span class="c">#self.proxy = urllib2.ProxyHandler()</span>
+        <span class="c">#self.opener = urllib2.urlopen #build_opener(self.proxy)</span>
+        <span class="c">#urllib2.install_opener(self.opener)</span>
+
+<div class="viewcode-block" id="Genbank.test"><a class="viewcode-back" href="../../pydna.html#pydna.download.Genbank.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Test downloading the pUC19 plasmid sequence from genbank</span>
+<span class="sd">        returns True if successful. Can be used to test proxy</span>
+<span class="sd">        and other network settings.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleotide</span><span class="p">(</span><span class="s">&quot;L09137&quot;</span><span class="p">)</span> <span class="c"># pUC19</span>
+        <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">seguid</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;71B4PwSgBZ3htFjJXwHPxtUIPYE&quot;</span>
+</div>
+<div class="viewcode-block" id="Genbank.nucleotide"><a class="viewcode-back" href="../../pydna.html#pydna.download.Genbank.nucleotide">[docs]</a>    <span class="k">def</span> <span class="nf">nucleotide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s">&quot;watson&quot;</span> <span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Download a genbank nuclotide record. </span>
+
+<span class="sd">       Item is a string containing one genbank acession number [#]_</span>
+<span class="sd">       for a nucleotide file. Start and stop are intervals to be</span>
+<span class="sd">       downloaded. This is useful as some genbank records are large.</span>
+<span class="sd">       If strand is &quot;c&quot;, &quot;C&quot;, &quot;crick&quot;, &quot;Crick&quot;, &quot;antisense&quot;,&quot;Antisense&quot;, </span>
+<span class="sd">       &quot;2&quot; or 2, the watson(antisense) strand is returned, otherwise</span>
+<span class="sd">       the sense strand is returned.</span>
+<span class="sd">       </span>
+<span class="sd">       Alternatively, item can be a string containing an url that returns a </span>
+<span class="sd">       sequence in genbank or FASTA format.</span>
+<span class="sd">       </span>
+<span class="sd">       The genbank E-utilities can provide such urls [#]_.</span>
+<span class="sd">       </span>
+<span class="sd">       Result is returned as a Dseqrecord object.</span>
+<span class="sd">       </span>
+<span class="sd">       Genbank nucleotide accession numbers have this format:</span>
+
+<span class="sd">       | A12345   = 1 letter  + 5 numerals</span>
+<span class="sd">       | AB123456 = 2 letters + 6 numerals</span>
+<span class="sd">       </span>
+
+<span class="sd">       References</span>
+<span class="sd">       ----------</span>
+
+<span class="sd">       .. [#]   http://www.dsimb.inserm.fr/~fuchs/M2BI/AnalSeq/Annexes/Sequences/Accession_Numbers.htm</span>
+<span class="sd">       .. [#]   http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EFetch</span>
+<span class="sd">       &#39;&#39;&#39;</span>
+       
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s">&quot;ftp&quot;</span><span class="p">,</span><span class="s">&quot;http&quot;</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">read</span><span class="p">(</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="p">)</span>
+        
+        <span class="n">matches</span> <span class="o">=</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&quot;(REGION:\s(?P&lt;start&gt;\d+)\.\.(?P&lt;stop&gt;\d+))&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&quot;(REGION: complement\((?P&lt;start&gt;\d+)\.\.(?P&lt;stop&gt;\d+)\))&quot;</span><span class="p">,</span><span class="n">item</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&quot;:(?P&lt;start&gt;\d+)-(?P&lt;stop&gt;\d+)&quot;</span><span class="p">,</span><span class="n">item</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&quot;:c(?P&lt;start&gt;\d+)-(?P&lt;stop&gt;\d+)&quot;</span><span class="p">,</span><span class="n">item</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+
+        <span class="c"># BK006936.2 REGION: complement(613900..615202)</span>
+        <span class="c"># NM_005546 REGION: 1..100</span>
+        <span class="c"># NM_005546 REGION: complement(1..100)</span>
+        <span class="c"># 21614549:1-100</span>
+        <span class="c"># 21614549:c100-1</span>
+        
+        <span class="c"># http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=BK006936.2&amp;strand=2&amp;seq_start=613900&amp;seq_stop=615202&amp;rettype=fasta&amp;retmode=text</span>
+        <span class="c"># http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=21614549&amp;strand=1&amp;seq_start=1&amp;seq_stop=100&amp;rettype=fasta&amp;retmode=text</span>
+        <span class="c"># http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=21614549&amp;strand=2&amp;seq_start=1&amp;seq_stop=100&amp;rettype=fasta&amp;retmode=text</span>
+        <span class="c"># http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=21614549&amp;strand=1&amp;seq_start=1&amp;seq_stop=100&amp;rettype=gb&amp;retmode=text</span>
+        <span class="c"># http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=21614549&amp;strand=2&amp;seq_start=1&amp;seq_stop=100&amp;rettype=gb&amp;retmode=text</span>
+        
+
+        <span class="k">for</span> <span class="n">strand</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;start&quot;</span><span class="p">)</span>
+                <span class="n">stop</span>  <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;stop&quot;</span><span class="p">)</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">[:</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span>
+                <span class="k">break</span>
+            
+    <span class="c">#        if not strand:</span>
+    <span class="c">#            raise Exception(&quot;\nACESSION string is malformed!\n&quot;</span>
+    <span class="c">#                              &quot;NM_005546 REGION: 1..100\n&quot;</span>
+    <span class="c">#                              &quot;NM_005546 REGION: complement(1..100)\n&quot;</span>
+    <span class="c">#                              &quot;21614549:1-100\n&quot;</span>
+    <span class="c">#                              &quot;21614549:c100-1\n&quot;)</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">strand</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="s">&quot;crick&quot;</span><span class="p">,</span> <span class="s">&quot;antisense&quot;</span><span class="p">,</span> <span class="s">&quot;2&quot;</span><span class="p">):</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="mi">1</span>
+            
+        <span class="n">Entrez</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span>
+        
+<span class="c">#        print item</span>
+<span class="c">#        print start</span>
+<span class="c">#        print stop</span>
+<span class="c">#        print strand</span>
+
+        <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">Entrez</span><span class="o">.</span><span class="n">efetch</span><span class="p">(</span><span class="n">db</span>        <span class="o">=</span><span class="s">&quot;nucleotide&quot;</span><span class="p">,</span>
+                                  <span class="nb">id</span>        <span class="o">=</span> <span class="n">item</span><span class="p">,</span>
+                                  <span class="n">rettype</span>   <span class="o">=</span> <span class="s">&quot;gb&quot;</span><span class="p">,</span>
+                                  <span class="n">seq_start</span> <span class="o">=</span> <span class="n">start</span><span class="p">,</span>
+                                  <span class="n">seq_stop</span>  <span class="o">=</span> <span class="n">stop</span><span class="p">,</span>
+                                  <span class="n">strand</span>    <span class="o">=</span> <span class="n">strand</span><span class="p">,</span>
+                                  <span class="n">retmode</span>   <span class="o">=</span> <span class="s">&quot;text&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+    <span class="n">gb</span> <span class="o">=</span> <span class="n">Genbank</span><span class="p">(</span><span class="s">&quot;bjornjobbb@gmail.com&quot;</span><span class="p">)</span>
+    <span class="c">#print gb.email</span>
+    
+
+    <span class="n">gene</span> <span class="o">=</span> <span class="n">gb</span><span class="o">.</span><span class="n">nucleotide</span><span class="p">(</span><span class="s">&quot;BK006936.2 REGION: complement(613900..615202)&quot;</span><span class="p">)</span>
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Björn Johansson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

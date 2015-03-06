@@ -1,0 +1,143 @@
+LOCUS       pUC19                   2733 bp ds-DNA     circular     18-OCT-2012
+DEFINITION  Cloning vector pUC19c, complete sequence.
+ACCESSION   L09137 X02514
+VERSION     L09137.2  GI:20141090
+KEYWORDS    .
+SOURCE      Cloning vector pUC19c
+  ORGANISM  Cloning vector pUC19c other sequences; artificial sequences;
+            vectors.
+REFERENCE   1  (bases 1 to 2686)
+  AUTHORS   Yanisch-Perron,C., Vieira,J. and Messing,J.
+  TITLE     Improved M13 phage cloning vectors and host strains: nucleotide
+            sequences of the M13mp18 and pUC19 vectors
+  JOURNAL   Gene 33 (1), 103-119 (1985)
+   PUBMED   2985470
+REFERENCE   2  (bases 1 to 2686)
+  AUTHORS   Chambers,S.P., Prior,S.E., Barstow,D.A. and Minton,N.P.
+  TITLE     The pMTL nic- cloning vectors. I. Improved pUC polylinker regions
+            to facilitate the use of sonicated DNA for nucleotide sequencing
+  JOURNAL   Gene 68 (1), 139-149 (1988)
+   PUBMED   2851488
+REFERENCE   3  (bases 1 to 2686)
+  AUTHORS   Gilbert,W.
+  TITLE     Obtained from VecBase 3.0
+  JOURNAL   Unpublished
+REFERENCE   4  (bases 1 to 2686)
+  AUTHORS   Messing,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (27-APR-1993) Department of Biochemistry, University of
+            Minnesota, St. Paul, MN 55108, USA
+REFERENCE   5  (bases 1 to 2686)
+  AUTHORS   Messing,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (11-APR-2002) Rutgers, The State University of New
+            Jersey, Waksman Institute of Microbiology, 190 Frelinghuysen Road,
+            Piscataway, NJ 08854-8020, USA
+  REMARK    Sequence update by submitter
+COMMENT     On Apr 11, 2002 this sequence version replaced gi:209213. These
+            data and their annotation were supplied to GenBank by Will Gilbert
+            under the auspices of the GenBank Currator Program. pUC19c -
+            Cloning vector (beta-galactosidase mRNA on complementary strand)
+            ENTRY PUC19C                    #TYPE DNA CIRCULAR TITLE pUC19c -
+            Cloning vector               (beta-galactosidase mRNA on
+            complementary strand) DATE      03-FEB-1986    #sequence
+            16-DEC-1986 ACCESSION VB0033 SOURCE    artificial COLLECTION  ATCC
+            37254 REFERENCE    #number    #authors  Norrander J., Kempe T.,
+            Messing J.    #journal Gene (1983) 26: 101-106 REFERENCE    #number
+            1    #authors  Yanisch-Perron C., Vieira J., Messing J.    #journal
+            Gene (1985) 33: 103-119    #comment shows the complete compiled
+            sequence REFERENCE    #number  2    #authors  Chambers,S.P., et al.
+            #journal Gene (1988) 68: 139-149    #describes mutation at nt1308
+            and its effect on copy number REFERENCE    #number    #authors
+            Pouwels P.H., Enger-Valk B.E., Brammar W.J.    #book    Cloning
+            Vectors, Elsvier 1985 and supplements    #comment  vector I-A-iv-20
+            COMMENT    This Sequence was obtained 3-MAR-1986 from J. Messing,
+            Waksman    Institute, NJ on floppy disk.    Revised 16-DEC-1986 by
+            F. Pfeiffer:    1062/3 'AT' to 'TA' to match revised sequence of
+            PBR322    The beta-galactosidase mRNA sequence including the
+            multiple    cloning site of M13mp19 is on the strand complementary
+            to that    shown. KEYWORDS CROSSREFERENCE    #complement
+            VecBase(3):pUC19    #prerevised      GenBank(50):M11662,
+            EMBL(11):ARPuc19    #parent      VecBase(3):pUC13,
+            VecBase(3):M13mp19, VecSource(3):bGal19 PARENT    Features of
+            pUC19c (2686 bp)      residue     source       1- 137  2074-2210
+            pBR322     138- 237  2252-2351 pBR322     238- 395  1461-1304 (c)
+            Lac-Operon     396- 452    57-   1 (c) polylinker of M13mp19
+            455- 682  1298-1071 (c) Lac-Operon     683-2686  2352-4355 pBR322
+            Conflict (cfl) and Mutations (mut):         pUC19c  source    mut
+            1308  A  G  2977   pBR322   linked to increased copy number    mut
+            1942  A  G  3611   pBR322    mut 2243  T  C  3912   pBR322 FEATURE
+            1629-2417 789-1 (c) Ap-R; b-lactamase POLYLINKER
+            HindIII-SphI-PstI-SalI-XbaI-BamHI-SmaI-KpnI-SacI-EcoRI SELECTION
+            #resistance  Ap    #indicator beta-galactosidase SUMMARY  pUC19c
+            #length 2686   #checksum 4465.
+COMMENT     
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     source          1..395
+                     /organism="Cloning vector pUC19c"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:174689"
+                     /label=source:Cloning vector pUC19c
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+     source          488..2733
+                     /organism="Cloning vector pUC19c"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:174689"
+                     /label=source:Cloning vector pUC19c(1)
+                     /ApEinfo_label=source:Cloning vector pUC19c
+                     /ApEinfo_fwdcolor=pink
+                     /ApEinfo_revcolor=pink
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+ORIGIN
+        1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+       61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+      121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+      181 accatatgcg gtgtgaaata ccgcacagat gcgtaaggag aaaataccgc atcaggcgcc
+      241 attcgccatt caggctgcgc aactgttggg aagggcgatc ggtgcgggcc tcttcgctat
+      301 tacgccagct ggcgaaaggg ggatgtgctg caaggcgatt aagttgggta acgccagggt
+      361 tttcccagtc acgacgttgt aaaacgacgg ccagtGAATT Cacgcgcata tatatataat
+      421 tatagagagt accgatgatg agcagcagaa tagatcagta cgctacgatg atagtagatg
+      481 aCTGCAGgca tgcaagcttg gcgtaatcat ggtcatagct gtttcctgtg tgaaattgtt
+      541 atccgctcac aattccacac aacatacgag ccggaagcat aaagtgtaaa gcctggggtg
+      601 cctaatgagt gagctaactc acattaattg cgttgcgctc actgcccgct ttccagtcgg
+      661 gaaacctgtc gtgccagctg cattaatgaa tcggccaacg cgcggggaga ggcggtttgc
+      721 gtattgggcg ctcttccgct tcctcgctca ctgactcgct gcgctcggtc gttcggctgc
+      781 ggcgagcggt atcagctcac tcaaaggcgg taatacggtt atccacagaa tcaggggata
+      841 acgcaggaaa gaacatgtga gcaaaaggcc agcaaaaggc caggaaccgt aaaaaggccg
+      901 cgttgctggc gtttttccat aggctccgcc cccctgacga gcatcacaaa aatcgacgct
+      961 caagtcagag gtggcgaaac ccgacaggac tataaagata ccaggcgttt ccccctggaa
+     1021 gctccctcgt gcgctctcct gttccgaccc tgccgcttac cggatacctg tccgcctttc
+     1081 tcccttcggg aagcgtggcg ctttctcata gctcacgctg taggtatctc agttcggtgt
+     1141 aggtcgttcg ctccaagctg ggctgtgtgc acgaaccccc cgttcagccc gaccgctgcg
+     1201 ccttatccgg taactatcgt cttgagtcca acccggtaag acacgactta tcgccactgg
+     1261 cagcagccac tggtaacagg attagcagag cgaggtatgt aggcggtgct acagagttct
+     1321 tgaagtggtg gcctaactac ggctacacta gaagaacagt atttggtatc tgcgctctgc
+     1381 tgaagccagt taccttcgga aaaagagttg gtagctcttg atccggcaaa caaaccaccg
+     1441 ctggtagcgg tggttttttt gtttgcaagc agcagattac gcgcagaaaa aaaggatctc
+     1501 aagaagatcc tttgatcttt tctacggggt ctgacgctca gtggaacgaa aactcacgtt
+     1561 aagggatttt ggtcatgaga ttatcaaaaa ggatcttcac ctagatcctt ttaaattaaa
+     1621 aatgaagttt taaatcaatc taaagtatat atgagtaaac ttggtctgac agttaccaat
+     1681 gcttaatcag tgaggcacct atctcagcga tctgtctatt tcgttcatcc atagttgcct
+     1741 gactccccgt cgtgtagata actacgatac gggagggctt accatctggc cccagtgctg
+     1801 caatgatacc gcgagaccca cgctcaccgg ctccagattt atcagcaata aaccagccag
+     1861 ccggaagggc cgagcgcaga agtggtcctg caactttatc cgcctccatc cagtctatta
+     1921 attgttgccg ggaagctaga gtaagtagtt cgccagttaa tagtttgcgc aacgttgttg
+     1981 ccattgctac aggcatcgtg gtgtcacgct cgtcgtttgg tatggcttca ttcagctccg
+     2041 gttcccaacg atcaaggcga gttacatgat cccccatgtt gtgcaaaaaa gcggttagct
+     2101 ccttcggtcc tccgatcgtt gtcagaagta agttggccgc agtgttatca ctcatggtta
+     2161 tggcagcact gcataattct cttactgtca tgccatccgt aagatgcttt tctgtgactg
+     2221 gtgagtactc aaccaagtca ttctgagaat agtgtatgcg gcgaccgagt tgctcttgcc
+     2281 cggcgtcaat acgggataat accgcgccac atagcagaac tttaaaagtg ctcatcattg
+     2341 gaaaacgttc ttcggggcga aaactctcaa ggatcttacc gctgttgaga tccagttcga
+     2401 tgtaacccac tcgtgcaccc aactgatctt cagcatcttt tactttcacc agcgtttctg
+     2461 ggtgagcaaa aacaggaagg caaaatgccg caaaaaaggg aataagggcg acacggaaat
+     2521 gttgaatact catactcttc ctttttcaat attattgaag catttatcag ggttattgtc
+     2581 tcatgagcgg atacatattt gaatgtattt agaaaaataa acaaataggg gttccgcgca
+     2641 catttccccg aaaagtgcca cctgacgtct aagaaaccat tattatcatg acattaacct
+     2701 ataaaaatag gcgtatcacg aggccctttc gtc  
+//

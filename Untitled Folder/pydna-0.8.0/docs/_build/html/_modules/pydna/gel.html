@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pydna.gel &mdash; Pydna 0.6.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pydna 0.6.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pydna.gel</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#</span>
+<span class="c"># Copyright 2013 by Björn Johansson.  All rights reserved.</span>
+<span class="c"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c"># as part of this package.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This module contain experimental functionality for smulation of agarose gel electrophoresis of DNA.</span>
+
+<span class="sd">Note</span>
+<span class="sd">----</span>
+
+<span class="sd">This code is in a very early stage of development and documentation.</span>
+<span class="sd">Read the source code to get an idea for how it works.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">webbrowser</span>
+
+<div class="viewcode-block" id="gamma"><a class="viewcode-back" href="../../pydna.html#pydna.gel.gamma">[docs]</a><span class="k">def</span> <span class="nf">gamma</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">t</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">k</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">+=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span>
+</div>
+<div class="viewcode-block" id="testColour"><a class="viewcode-back" href="../../pydna.html#pydna.gel.testColour">[docs]</a><span class="k">def</span> <span class="nf">testColour</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convert integer to colour, which saturates if &gt; 255 &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="mi">255</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span>
+
+<span class="c">#def display(width, height, image):</span>
+<span class="c">#    &quot;&quot;&quot; Create a Pygame image of dimensions width x height and show image &quot;&quot;&quot;</span>
+<span class="c">#</span>
+<span class="c">#    screen = pygame.display.set_mode((width, height))</span>
+<span class="c">#    screen.blit(image, (60, 30))</span>
+<span class="c">#    pygame.display.flip()</span>
+    <span class="c">#running = True</span>
+    <span class="c">#while running:</span>
+    <span class="c">#    for event in pygame.event.get():</span>
+    <span class="c">#        if event.type == pygame.QUIT:</span>
+    <span class="c">#            running = False</span>
+</div>
+<div class="viewcode-block" id="Gel"><a class="viewcode-back" href="../../pydna.html#pydna.gel.Gel">[docs]</a><span class="k">class</span> <span class="nc">Gel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; A Gel contains lanes into which DNA can be loaded and run. </span>
+<span class="sd">        The Gel is exposured to see the location and intensity of DNA. &quot;&quot;&quot;</span>
+
+    <span class="n">LANE_WIDTH</span> <span class="o">=</span> <span class="mf">30.</span>
+    <span class="n">LANE_HEIGHT</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">LANE_MARGIN</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">BORDER</span> <span class="o">=</span> <span class="mi">40</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">agarose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span> <span class="o">+</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">Gel</span><span class="o">.</span><span class="n">LANE_WIDTH</span> <span class="o">+</span> <span class="n">Gel</span><span class="o">.</span><span class="n">LANE_MARGIN</span><span class="p">)</span> <span class="o">-</span> <span class="n">Gel</span><span class="o">.</span><span class="n">LANE_MARGIN</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">agarose</span> <span class="o">=</span> <span class="n">agarose</span>      <span class="c"># Should test whether value is reasonable (say, 0.5% - 3%)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimum_DNA_length</span> <span class="o">=</span> <span class="mi">2000</span> <span class="o">/</span> <span class="n">agarose</span> <span class="o">**</span> <span class="mi">3</span>   <span class="c"># Best separate based on agarose hole size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+        <span class="k">for</span> <span class="n">lane</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">lane</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Gel.loadSample"><a class="viewcode-back" href="../../pydna.html#pydna.gel.Gel.loadSample">[docs]</a>    <span class="k">def</span> <span class="nf">loadSample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lane</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add list containing tuple of DNA length and concentrations to lane in gel. &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">dna</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">dna</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+                      <span class="s">&#39;conc&#39;</span><span class="p">:</span> <span class="n">dna</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.</span><span class="o">/</span><span class="n">Gel</span><span class="o">.</span><span class="n">LANE_HEIGHT</span><span class="p">,</span> 
+                      <span class="s">&#39;position&#39;</span><span class="p">:</span> <span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">lane</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strand</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Gel.run"><a class="viewcode-back" href="../../pydna.html#pydna.gel.Gel.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">voltage</span><span class="o">=</span><span class="mf">20.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move loaded DNA down the gel at a rate dependent on voltage, DNA length and agarose concentration. &quot;&quot;&quot;</span>
+
+        <span class="n">max_dist</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">time</span> <span class="o">*</span> <span class="n">voltage</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dna</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">(</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">20</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimum_DNA_length</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span> <span class="p">)</span>
+                <span class="n">dna</span><span class="p">[</span><span class="s">&#39;position&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">max_dist</span> <span class="o">*</span> <span class="n">g</span>
+</div>
+<div class="viewcode-block" id="Gel.expose"><a class="viewcode-back" href="../../pydna.html#pydna.gel.Gel.expose">[docs]</a>    <span class="k">def</span> <span class="nf">expose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exposure</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">aperture</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns an image of the gel with the DNA highlighted&quot;&quot;&quot;</span>
+
+        <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">exposure</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">exposure</span> <span class="o">*</span> <span class="mi">200</span>
+        <span class="n">fill_colour</span> <span class="o">=</span> <span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">fill_colour</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">edge_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">set_colorkey</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">edge_colour</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_findDNAConcentrations</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">lane</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lane</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">lane</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                    <span class="n">brightness</span> <span class="o">=</span> <span class="n">lane</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">*</span> <span class="n">exposure</span> <span class="o">/</span> <span class="n">aperture</span> <span class="o">+</span> <span class="n">c1</span>
+                    <span class="n">colour1</span> <span class="o">=</span> <span class="n">testColour</span><span class="p">(</span><span class="n">brightness</span><span class="p">)</span>
+                    <span class="n">colour2</span> <span class="o">=</span> <span class="n">testColour</span><span class="p">(</span><span class="n">brightness</span><span class="o">*</span><span class="mf">0.6</span><span class="p">)</span>
+                    <span class="n">colour3</span> <span class="o">=</span> <span class="n">testColour</span><span class="p">(</span><span class="n">brightness</span><span class="o">*</span><span class="mf">0.3</span><span class="p">)</span>
+                    
+                    <span class="c"># draw bands</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">colour3</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">position</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">),(</span><span class="n">x</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">LANE_WIDTH</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">position</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">))</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">colour2</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">),(</span><span class="n">x</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">LANE_WIDTH</span><span class="p">,</span> <span class="n">position</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">))</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">colour1</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">position</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">),(</span><span class="n">x</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">LANE_WIDTH</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">position</span><span class="o">+</span><span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">))</span>
+    
+            <span class="c"># draw well</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">edge_colour</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Gel</span><span class="o">.</span><span class="n">BORDER</span><span class="p">,</span> <span class="n">Gel</span><span class="o">.</span><span class="n">LANE_WIDTH</span><span class="p">,</span> <span class="n">Gel</span><span class="o">.</span><span class="n">LANE_HEIGHT</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">Gel</span><span class="o">.</span><span class="n">LANE_WIDTH</span> <span class="o">+</span> <span class="n">Gel</span><span class="o">.</span><span class="n">LANE_MARGIN</span>
+
+        <span class="n">image</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">image</span>
+</div>
+    <span class="k">def</span> <span class="nf">_findDNAConcentrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determines where in the concentration of DNA in every part of the gel&quot;&quot;&quot;</span>
+
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">dna</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">x</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Gel</span><span class="o">.</span><span class="n">LANE_HEIGHT</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dna</span><span class="p">[</span><span class="s">&#39;position&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="n">y</span>
+                    <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">length</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span>
+                        <span class="c"># Very crude way to create blurred line</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">pos</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.06</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;conc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">pos</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.12</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;conc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">pos</span><span class="p">]</span>   <span class="o">+=</span> <span class="mf">0.2</span>  <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;conc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.12</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;conc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">lanes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">pos</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.06</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;conc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dna</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+                        
+</div>
+<div class="viewcode-block" id="AgaroseGel"><a class="viewcode-back" href="../../pydna.html#pydna.gel.AgaroseGel">[docs]</a><span class="k">def</span> <span class="nf">AgaroseGel</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="n">myGel</span> <span class="o">=</span> <span class="n">Gel</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">360</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)),</span> <span class="n">agarose</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">myGel</span><span class="o">.</span><span class="n">loadSample</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+            
+    <span class="n">myGel</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+    <span class="n">my_image</span> <span class="o">=</span> <span class="n">myGel</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="n">exposure</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">my_image</span><span class="p">,</span> <span class="s">&#39;test_run.jpg&#39;</span><span class="p">)</span>
+    <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;test_run.jpg&#39;</span><span class="p">)</span>
+    
+    
+    <span class="c">#display(360, 360, my_image)   </span>
+    <span class="c">#from PIL import Image                                                                                </span>
+    <span class="c">#img = Image.open(&#39;test_run.png&#39;)</span>
+    <span class="c">#img.show()</span>
+    <span class="c">#display(360, 360, my_image)</span>
+    <span class="c">#import sys;sys.exit()</span>
+    <span class="c"># Or save image as a PNG</span>
+    <span class="c">#import os</span>
+    <span class="c">#os.startfile(&#39;test_run.png&#39;)</span>
+    
+
+    
+    </div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">pydna</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="n">lambda_</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;../tests/lambda.gb&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">PstI</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">lambda_</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">PstI</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+    <span class="n">AgaroseGel</span><span class="p">([</span><span class="n">samples</span><span class="p">,])</span>
+    
+    <span class="n">LADDER_1KB</span> <span class="o">=</span><span class="p">[</span>
+    <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
+
+    <span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">8000</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">14000</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">24000</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+    
+    <span class="c"># Samples are list of tuples in the form (length, concentration)</span>
+    <span class="n">sample1</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">200</span><span class="p">)]</span>
+    <span class="n">sample2</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">200</span><span class="p">)]</span>
+    <span class="n">sample3</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">4100</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">4900</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+
+    <span class="c"># Set up gel, giving its size and % agarose</span>
+    
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Björn Johansson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

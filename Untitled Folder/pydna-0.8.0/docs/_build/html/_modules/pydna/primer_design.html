@@ -1,0 +1,538 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pydna.primer_design &mdash; Pydna 0.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pydna 0.6.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pydna.primer_design</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#</span>
+<span class="c"># Copyright 2013 by Björn Johansson.  All rights reserved.</span>
+<span class="c"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c"># as part of this package.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This module contain functions for primer design.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils</span> <span class="kn">import</span> <span class="n">GC</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="kn">from</span> <span class="nn">pydna.amplify</span> <span class="kn">import</span> <span class="n">Anneal</span><span class="p">,</span> <span class="n">tmbresluc</span><span class="p">,</span> <span class="n">basictm</span><span class="p">,</span> <span class="n">tmstaluc98</span><span class="p">,</span> <span class="n">tmbreslauer86</span>
+
+<div class="viewcode-block" id="primer_pair"><a class="viewcode-back" href="../../pydna.html#pydna.primer_design.primer_pair">[docs]</a><span class="k">def</span> <span class="nf">primer_pair</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">f</span><span class="p">,</span><span class="n">r</span> <span class="o">=</span> <span class="n">cloning_primers</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">+</span><span class="n">f</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;fasta&quot;</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">+</span><span class="n">r</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;fasta&quot;</span><span class="p">)</span>
+    <span class="k">return</span> 
+</div>
+<div class="viewcode-block" id="cloning_primers"><a class="viewcode-back" href="../../pydna.html#pydna.primer_design.cloning_primers">[docs]</a><span class="k">def</span> <span class="nf">cloning_primers</span><span class="p">(</span><span class="n">template</span><span class="p">,</span>
+                    <span class="n">minlength</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                    <span class="n">maxlength</span><span class="o">=</span><span class="mi">29</span><span class="p">,</span>
+                    <span class="n">fp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">rp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">fp_tail</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">rp_tail</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">target_tm</span><span class="o">=</span><span class="mf">55.0</span><span class="p">,</span> 
+                    <span class="n">primerc</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span>
+                    <span class="n">saltc</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
+                    <span class="n">formula</span> <span class="o">=</span> <span class="n">tmbresluc</span> <span class="p">):</span>
+                    
+    <span class="sd">&#39;&#39;&#39;This function can design primers for PCR amplification of a given sequence. </span>
+<span class="sd">    This function accepts a Dseqrecord object containing the template sequence and </span>
+<span class="sd">    returns a tuple cntaining two ::mod`Bio.SeqRecord.SeqRecord` objects describing </span>
+<span class="sd">    the primers.</span>
+<span class="sd">    </span>
+<span class="sd">    Primer tails can optionally be given in the form of strings.</span>
+<span class="sd">    </span>
+<span class="sd">    An predesigned primer can be given, either the forward or reverse primers. In this </span>
+<span class="sd">    case this function tries to design a primer with a Tm to match the given primer. </span>
+<span class="sd">        </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    template : Dseqrecord</span>
+<span class="sd">        a Dseqrecord object.</span>
+<span class="sd">        </span>
+<span class="sd">    minlength : int, optional</span>
+<span class="sd">        Minimum length of the annealing part of the primer</span>
+<span class="sd">    </span>
+<span class="sd">    maxlength : int, optional</span>
+<span class="sd">        Maximum length (including tail) for designed primers.</span>
+<span class="sd">        </span>
+<span class="sd">    fp, rp : SeqRecord, optional</span>
+<span class="sd">        optional Biopython SeqRecord objects containing one primer each.</span>
+
+<span class="sd">    fp_tail, rp_tail : string, optional</span>
+<span class="sd">        optional tails to be added to the forwars or reverse primers</span>
+<span class="sd">        </span>
+<span class="sd">    target_tm : float, optional</span>
+<span class="sd">        target tm for the primers        </span>
+
+<span class="sd">    primerc : float, optional </span>
+<span class="sd">        Concentration of each primer in nM, set to 1000.0 nM by default </span>
+<span class="sd">    </span>
+<span class="sd">    saltc  : float, optional</span>
+<span class="sd">        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default</span>
+
+<span class="sd">    formula : function</span>
+<span class="sd">        formula used for tm calculation</span>
+<span class="sd">        this is the name of a function.</span>
+<span class="sd">        built in options are:</span>
+<span class="sd">        </span>
+<span class="sd">        1. :func:`pydna.amplify.tmbresluc` (default)</span>
+<span class="sd">        2. :func:`pydna.amplify.basictm`</span>
+<span class="sd">        3. :func:`pydna.amplify.tmstaluc98` </span>
+<span class="sd">        4. :func:`pydna.amplify.tmbreslauer86`</span>
+<span class="sd">        </span>
+<span class="sd">        These functions are imported from the :mod:`pydna.amplify` module, but can be </span>
+<span class="sd">        substituted for some other custom made function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fp, rp : tuple</span>
+<span class="sd">        fp is a :mod:Bio.SeqRecord object describing the forward primer</span>
+<span class="sd">        rp is a :mod:Bio.SeqRecord object describing the reverse primer</span>
+
+<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import pydna</span>
+<span class="sd">    &gt;&gt;&gt; t=pydna.Dseqrecord(&quot;atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; t</span>
+<span class="sd">    Dseqrecord(-64)</span>
+<span class="sd">    &gt;&gt;&gt; pf,pr = pydna.cloning_primers(t)</span>
+<span class="sd">    &gt;&gt;&gt; pf</span>
+<span class="sd">    SeqRecord(seq=Seq(&#39;atgactgctaacccttc&#39;, Alphabet()), id=&#39;pfw64&#39;, name=&#39;pfw64&#39;, description=&#39;pfw64&#39;, dbxrefs=[])</span>
+<span class="sd">    &gt;&gt;&gt; pr</span>
+<span class="sd">    SeqRecord(seq=Seq(&#39;catcgtaagtttcgaac&#39;, Alphabet()), id=&#39;prv64&#39;, name=&#39;prv64&#39;, description=&#39;prv64&#39;, dbxrefs=[])</span>
+<span class="sd">    &gt;&gt;&gt; pcr_prod = pydna.pcr(pf, pr, t)</span>
+<span class="sd">    &gt;&gt;&gt; pcr_prod</span>
+<span class="sd">    Amplicon(64)</span>
+<span class="sd">    &gt;&gt;&gt;               </span>
+<span class="sd">    &gt;&gt;&gt; print pcr_prod.figure()</span>
+<span class="sd">    5atgactgctaacccttc...gttcgaaacttacgatg3</span>
+<span class="sd">                         ||||||||||||||||| tm 42.4 (dbd) 52.9</span>
+<span class="sd">                        3caagctttgaatgctac5</span>
+<span class="sd">    5atgactgctaacccttc3</span>
+<span class="sd">     ||||||||||||||||| tm 44.5 (dbd) 54.0</span>
+<span class="sd">    3tactgacgattgggaag...caagctttgaatgctac5</span>
+<span class="sd">    &gt;&gt;&gt; pf,pr = pydna.cloning_primers(t, fp_tail=&quot;GGATCC&quot;, rp_tail=&quot;GAATTC&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; pf</span>
+<span class="sd">    SeqRecord(seq=Seq(&#39;GGATCCatgactgctaacccttc&#39;, Alphabet()), id=&#39;pfw64&#39;, name=&#39;pfw64&#39;, description=&#39;pfw64&#39;, dbxrefs=[])</span>
+<span class="sd">    &gt;&gt;&gt; pr</span>
+<span class="sd">    SeqRecord(seq=Seq(&#39;GAATTCcatcgtaagtttcgaac&#39;, Alphabet()), id=&#39;prv64&#39;, name=&#39;prv64&#39;, description=&#39;prv64&#39;, dbxrefs=[])</span>
+<span class="sd">    &gt;&gt;&gt; pcr_prod = pydna.pcr(pf, pr, t)</span>
+<span class="sd">    &gt;&gt;&gt; print pcr_prod.figure()</span>
+<span class="sd">          5atgactgctaacccttc...gttcgaaacttacgatg3</span>
+<span class="sd">                               ||||||||||||||||| tm 42.4 (dbd) 52.9</span>
+<span class="sd">                              3caagctttgaatgctacCTTAAG5</span>
+<span class="sd">    5GGATCCatgactgctaacccttc3</span>
+<span class="sd">           ||||||||||||||||| tm 44.5 (dbd) 54.0</span>
+<span class="sd">          3tactgacgattgggaag...caagctttgaatgctac5</span>
+<span class="sd">    &gt;&gt;&gt; print pcr_prod.seq</span>
+<span class="sd">    GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGAATTC</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; from Bio.Seq import Seq</span>
+<span class="sd">    &gt;&gt;&gt; from Bio.SeqRecord import SeqRecord</span>
+<span class="sd">    &gt;&gt;&gt; pf = SeqRecord(Seq(&quot;atgactgctaacccttccttggtgttg&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; pf,pr = pydna.cloning_primers(t, fp = pf, fp_tail=&quot;GGATCC&quot;, rp_tail=&quot;GAATTC&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; pf</span>
+<span class="sd">    SeqRecord(seq=Seq(&#39;GGATCCatgactgctaacccttccttggtgttg&#39;, Alphabet()), id=&#39;pfw64&#39;, name=&#39;pfw64&#39;, description=&#39;pfw64&#39;, dbxrefs=[])</span>
+<span class="sd">    &gt;&gt;&gt; pr</span>
+<span class="sd">    SeqRecord(seq=Seq(&#39;GAATTCcatcgtaagtttcgaacgaaatgtcgtc&#39;, Alphabet()), id=&#39;prv64&#39;, name=&#39;prv64&#39;, description=&#39;prv64&#39;, dbxrefs=[])</span>
+<span class="sd">    &gt;&gt;&gt; ampl = pydna.pcr(pf,pr,t)</span>
+<span class="sd">    &gt;&gt;&gt; print ampl.figure()</span>
+<span class="sd">          5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3</span>
+<span class="sd">                                         |||||||||||||||||||||||||||| tm 57.5 (dbd) 72.2</span>
+<span class="sd">                                        3ctgctgtaaagcaagctttgaatgctacCTTAAG5</span>
+<span class="sd">    5GGATCCatgactgctaacccttccttggtgttg3</span>
+<span class="sd">           ||||||||||||||||||||||||||| tm 59.0 (dbd) 72.3</span>
+<span class="sd">          3tactgacgattgggaaggaaccacaac...ctgctgtaaagcaagctttgaatgctac5</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">fp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rp</span><span class="p">:</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">fp_tail</span><span class="p">))</span> <span class="o">+</span> <span class="n">fp</span>
+        <span class="n">p</span>  <span class="o">=</span> <span class="n">Anneal</span><span class="p">([</span><span class="n">fp</span><span class="p">],</span> <span class="n">template</span><span class="p">)</span><span class="o">.</span><span class="n">fwd_primers</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">footprint</span><span class="p">)</span>
+        <span class="n">fp_tail</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">tail</span><span class="p">)</span>
+        <span class="n">rp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">maxlength</span><span class="o">*</span><span class="mi">3</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">rp_tail</span><span class="p">)):]</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span><span class="o">.</span><span class="n">seq</span><span class="p">)))</span>
+        <span class="n">target_tm</span> <span class="o">=</span> <span class="n">formula</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">primerc</span><span class="o">=</span><span class="n">primerc</span><span class="p">,</span> <span class="n">saltc</span><span class="o">=</span><span class="n">saltc</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">fp</span> <span class="ow">and</span> <span class="n">rp</span><span class="p">:</span>
+        <span class="n">rp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">rp_tail</span><span class="p">))</span> <span class="o">+</span> <span class="n">rp</span>
+        <span class="n">p</span> <span class="o">=</span>  <span class="n">Anneal</span><span class="p">([</span><span class="n">rp</span><span class="p">],</span> <span class="n">template</span><span class="p">)</span><span class="o">.</span><span class="n">rev_primers</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">rp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">footprint</span><span class="p">)</span>
+        <span class="n">rp_tail</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">tail</span><span class="p">)</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="p">[:</span><span class="n">maxlength</span><span class="o">*</span><span class="mi">3</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">fp_tail</span><span class="p">)]</span><span class="o">.</span><span class="n">seq</span><span class="p">)))</span>
+        <span class="n">target_tm</span> <span class="o">=</span> <span class="n">formula</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rp</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">primerc</span><span class="o">=</span><span class="n">primerc</span><span class="p">,</span> <span class="n">saltc</span><span class="o">=</span><span class="n">saltc</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">fp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rp</span><span class="p">:</span>        
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="p">[:</span><span class="n">maxlength</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">fp_tail</span><span class="p">)]</span><span class="o">.</span><span class="n">seq</span><span class="p">)))</span>
+        <span class="n">rp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="o">-</span><span class="n">maxlength</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">rp_tail</span><span class="p">):]</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span><span class="o">.</span><span class="n">seq</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Specify one or none of the primers, not both.&quot;</span><span class="p">)</span>
+
+    <span class="n">lowtm</span><span class="p">,</span> <span class="n">hightm</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span> <span class="p">[(</span> <span class="n">formula</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span> <span class="n">primerc</span><span class="p">,</span> <span class="n">saltc</span><span class="p">),</span> <span class="n">fp</span><span class="p">,</span> <span class="s">&quot;f&quot;</span> <span class="p">),</span>
+                             <span class="p">(</span> <span class="n">formula</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rp</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span> <span class="n">primerc</span><span class="p">,</span> <span class="n">saltc</span><span class="p">),</span> <span class="n">rp</span><span class="p">,</span> <span class="s">&quot;r&quot;</span> <span class="p">)</span> <span class="p">]</span> <span class="p">)</span> 
+    
+    <span class="k">while</span> <span class="n">lowtm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">target_tm</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">lowtm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">&gt;</span><span class="n">minlength</span><span class="p">:</span>
+        <span class="n">shorter</span> <span class="o">=</span> <span class="n">lowtm</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tm</span>      <span class="o">=</span> <span class="n">formula</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">shorter</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">primerc</span><span class="o">=</span><span class="n">primerc</span><span class="p">,</span> <span class="n">saltc</span><span class="o">=</span><span class="n">saltc</span><span class="p">)</span>
+        <span class="n">lowtm</span>   <span class="o">=</span> <span class="p">(</span><span class="n">tm</span><span class="p">,</span> <span class="n">shorter</span><span class="p">,</span> <span class="n">lowtm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        
+    <span class="k">while</span> <span class="n">hightm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">lowtm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hightm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">&gt;</span><span class="n">minlength</span><span class="p">:</span>
+        <span class="n">shorter</span> <span class="o">=</span> <span class="n">hightm</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tm</span> <span class="o">=</span> <span class="n">formula</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">shorter</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">primerc</span> <span class="o">=</span> <span class="n">primerc</span><span class="p">,</span> <span class="n">saltc</span> <span class="o">=</span> <span class="n">saltc</span><span class="p">)</span>
+        <span class="n">hightm</span> <span class="o">=</span> <span class="p">(</span><span class="n">tm</span><span class="p">,</span> <span class="n">shorter</span><span class="p">,</span> <span class="n">hightm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">fp</span><span class="p">,</span> <span class="n">rp</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">lowtm</span><span class="p">,</span> <span class="n">hightm</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">fp_tail</span> <span class="o">+</span> <span class="n">fp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>    
+    <span class="n">rp</span> <span class="o">=</span> <span class="n">rp_tail</span> <span class="o">+</span> <span class="n">rp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s">&quot;pfw{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">template</span><span class="p">))</span>
+    <span class="n">rp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s">&quot;prv{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">template</span><span class="p">))</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">description</span><span class="p">[:</span><span class="mi">15</span><span class="p">]</span>
+    <span class="n">rp</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">description</span><span class="p">[:</span><span class="mi">15</span><span class="p">]</span>
+    
+    <span class="n">fp</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">rp</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="c">#assert minlength&lt;=len(fp)&lt;=maxlength</span>
+    <span class="c">#assert minlength&lt;=len(rp)&lt;=maxlength</span>
+    
+    <span class="k">return</span> <span class="n">fp</span><span class="p">,</span> <span class="n">rp</span>
+    
+
+</div>
+<div class="viewcode-block" id="assembly_primers"><a class="viewcode-back" href="../../pydna.html#pydna.primer_design.assembly_primers">[docs]</a><span class="k">def</span> <span class="nf">assembly_primers</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span>
+                     <span class="n">minlength</span>  <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+                     <span class="n">maxlength</span>  <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                     <span class="n">min_olap</span>   <span class="o">=</span> <span class="mi">35</span><span class="p">,</span>
+                     <span class="n">target_tm</span>  <span class="o">=</span> <span class="mf">55.0</span><span class="p">,</span> 
+                     <span class="n">primerc</span>    <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span>
+                     <span class="n">saltc</span>      <span class="o">=</span> <span class="mf">50.0</span><span class="p">,</span>
+                     <span class="n">formula</span>    <span class="o">=</span> <span class="n">tmbresluc</span> <span class="p">):</span>
+                     
+
+    <span class="sd">&#39;&#39;&#39;This function return primer pairs that are useful for fusion of DNA sequences given in template.</span>
+<span class="sd">    Given two sequences that we wish to fuse (a and b) to form fragment c.  </span>
+
+<span class="sd">    ::</span>
+<span class="sd">    </span>
+<span class="sd">       _________ a _________           __________ b ________</span>
+<span class="sd">      /                     \\         /                     \\</span>
+<span class="sd">      agcctatcatcttggtctctgca   &lt;--&gt;  TTTATATCGCATGACTCTTCTTT</span>
+<span class="sd">      |||||||||||||||||||||||         |||||||||||||||||||||||</span>
+<span class="sd">      tcggatagtagaaccagagacgt   &lt;--&gt;  AAATATAGCGTACTGAGAAGAAA</span>
+<span class="sd">     </span>
+<span class="sd">     </span>
+<span class="sd">           agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT</span>
+<span class="sd">           ||||||||||||||||||||||||||||||||||||||||||||||</span>
+<span class="sd">           tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA  </span>
+<span class="sd">           \\___________________ c ______________________/</span>
+<span class="sd">                      </span>
+<span class="sd">    </span>
+<span class="sd">    We can design tailed primers to fuse a and b by fusion PCR, Gibson assembly or </span>
+<span class="sd">    in-vivo homologous recombination. The basic requirements for the primers for </span>
+<span class="sd">    the three techniques are the same.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Design tailed primers incorporating a part of the next or previous fragment to be assembled.  </span>
+<span class="sd">    </span>
+<span class="sd">    ::</span>
+<span class="sd">    </span>
+
+<span class="sd">      agcctatcatcttggtctctgca     </span>
+<span class="sd">      |||||||||||||||||||||||     </span>
+<span class="sd">                      gagacgtAAATATA</span>
+<span class="sd">                                  </span>
+<span class="sd">      |||||||||||||||||||||||     </span>
+<span class="sd">      tcggatagtagaaccagagacgt</span>
+<span class="sd">      </span>
+<span class="sd">           </span>
+<span class="sd">                             TTTATATCGCATGACTCTTCTTT</span>
+<span class="sd">                             |||||||||||||||||||||||</span>
+<span class="sd">                             </span>
+<span class="sd">                      ctctgcaTTTATAT</span>
+<span class="sd">                             |||||||||||||||||||||||</span>
+<span class="sd">                             AAATATAGCGTACTGAGAAGAAA</span>
+<span class="sd">     </span>
+<span class="sd">    PCR products with flanking sequences are formed in the PCR process.</span>
+<span class="sd">    </span>
+<span class="sd">    ::</span>
+<span class="sd">     </span>
+<span class="sd">      agcctatcatcttggtctctgcaTTTATAT     </span>
+<span class="sd">      ||||||||||||||||||||||||||||||     </span>
+<span class="sd">      tcggatagtagaaccagagacgtAAATATA</span>
+<span class="sd">                      \\____________/</span>
+<span class="sd">                      </span>
+<span class="sd">                         identical </span>
+<span class="sd">                         sequences</span>
+<span class="sd">                       ____________        </span>
+<span class="sd">                      /            \\        </span>
+<span class="sd">                      ctctgcaTTTATATCGCATGACTCTTCTTT</span>
+<span class="sd">                      ||||||||||||||||||||||||||||||</span>
+<span class="sd">                      gagacgtAAATATAGCGTACTGAGAAGAAA</span>
+<span class="sd">    </span>
+<span class="sd">    The fragments can be fused by any of the techniques mentioned earlier.</span>
+<span class="sd">       </span>
+<span class="sd">    ::</span>
+<span class="sd">     </span>
+<span class="sd">      agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT</span>
+<span class="sd">      ||||||||||||||||||||||||||||||||||||||||||||||</span>
+<span class="sd">      tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA  </span>
+
+<span class="sd">    </span>
+<span class="sd">                        </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    templates : list of Dseqrecord</span>
+<span class="sd">        list Dseqrecord object for which fusion primers should be constructed.</span>
+<span class="sd">        </span>
+<span class="sd">    minlength : int, optional</span>
+<span class="sd">        Minimum length of the annealing part of the primer.</span>
+<span class="sd">    </span>
+<span class="sd">    maxlength : int, optional</span>
+<span class="sd">        Maximum length (including tail) for designed primers.</span>
+<span class="sd">        </span>
+<span class="sd">    tot_length : int, optional</span>
+<span class="sd">        Maximum total length of a the primers</span>
+<span class="sd">        </span>
+<span class="sd">    target_tm : float, optional</span>
+<span class="sd">        target tm for the primers        </span>
+
+<span class="sd">    primerc : float, optional </span>
+<span class="sd">        Concentration of each primer in nM, set to 1000.0 nM by default </span>
+<span class="sd">    </span>
+<span class="sd">    saltc  : float, optional</span>
+<span class="sd">        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default</span>
+
+<span class="sd">    formula : function</span>
+<span class="sd">        formula used for tm calculation</span>
+<span class="sd">        this is the name of a function.</span>
+<span class="sd">        built in options are:</span>
+<span class="sd">        </span>
+<span class="sd">        1. :func:`pydna.amplify.tmbresluc` (default)</span>
+<span class="sd">        2. :func:`pydna.amplify.basictm`</span>
+<span class="sd">        3. :func:`pydna.amplify.tmstaluc98` </span>
+<span class="sd">        4. :func:`pydna.amplify.tmbreslauer86`</span>
+<span class="sd">        </span>
+<span class="sd">        These functions are imported from the :mod:`pydna.amplify` module, but can be </span>
+<span class="sd">        substituted for some other custom made function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    primer_pairs : list of tuples of :mod:`Bio.Seqrecord` objects</span>
+<span class="sd">    </span>
+<span class="sd">        ::</span>
+<span class="sd">    </span>
+<span class="sd">          [(forward_primer_1, reverse_primer_1),</span>
+<span class="sd">           (forward_primer_2, reverse_primer_2), ...]</span>
+<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import pydna</span>
+<span class="sd">    &gt;&gt;&gt; a=pydna.Dseqrecord(&quot;atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; b=pydna.Dseqrecord(&quot;ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; c=pydna.Dseqrecord(&quot;tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; primer_pairs = pydna.assembly_primers([a,b,c])</span>
+<span class="sd">    &gt;&gt;&gt; p=[]                                      </span>
+<span class="sd">    &gt;&gt;&gt; for t, (f,r) in zip([a,b,c], primer_pairs): p.append(pydna.pcr(f,r,t))  </span>
+<span class="sd">    &gt;&gt;&gt; p</span>
+<span class="sd">    [Amplicon(82), Amplicon(101), Amplicon(84)]</span>
+<span class="sd">    &gt;&gt;&gt; assemblyobj = pydna.Assembly(p)     </span>
+<span class="sd">    &gt;&gt;&gt; assemblyobj</span>
+<span class="sd">    Assembly object:</span>
+<span class="sd">    Sequences........................: 82, 101, 84</span>
+<span class="sd">    Sequences with shared homologies.: No analyzed sequences</span>
+<span class="sd">    Homology limit (bp)..............: 25</span>
+<span class="sd">    Number of overlaps...............: No overlaps</span>
+<span class="sd">    Nodes in graph...................: No graph</span>
+<span class="sd">    Assembly protocol................: No protocol</span>
+<span class="sd">    Circular products................: No circular products</span>
+<span class="sd">    Linear products..................: No linear products</span>
+<span class="sd">    &gt;&gt;&gt;    </span>
+<span class="sd">    &gt;&gt;&gt; assemblyobj.assemble_gibson_linear()</span>
+<span class="sd">    &#39;5 linear products were formed with the following sizes (bp): 195, 149, 147, 36, 36&#39;</span>
+<span class="sd">    &gt;&gt;&gt; assemblyobj.linear_products</span>
+<span class="sd">    [Dseqrecord(-195), Dseqrecord(-149), Dseqrecord(-147), Dseqrecord(-36), Dseqrecord(-36)]</span>
+<span class="sd">    &gt;&gt;&gt; assemblyobj.linear_products[0].seguid()</span>
+<span class="sd">    &#39;1eNv3d/1PqDPP8qJZIVoA45Www8&#39;</span>
+<span class="sd">    &gt;&gt;&gt; (a+b+c).seguid()</span>
+<span class="sd">    &#39;1eNv3d/1PqDPP8qJZIVoA45Www8&#39;</span>
+<span class="sd">    &gt;&gt;&gt; pydna.eq(a+b+c, assemblyobj.linear_products[0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; print assemblyobj.linear_products[0].small_fig()</span>
+<span class="sd">    82bp_PCR_prod|36</span>
+<span class="sd">                  \\/</span>
+<span class="sd">                  /\\</span>
+<span class="sd">                  36|101bp_PCR_prod|36</span>
+<span class="sd">                                    \\/</span>
+<span class="sd">                                    /\\</span>
+<span class="sd">                                    36|84bp_PCR_prod</span>
+<span class="sd">    &gt;&gt;&gt;                                </span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="s">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;argument has to be an iterable&quot;</span><span class="p">)</span>
+        
+    <span class="n">tail_length</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">min_olap</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="n">tails</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">templates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span><span class="p">[:</span><span class="n">tail_length</span><span class="p">]</span><span class="o">.</span><span class="n">rc</span><span class="p">()))]</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">templates</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">tails</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="nb">str</span><span class="p">(</span><span class="n">templates</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span><span class="p">)[</span><span class="o">-</span><span class="n">tail_length</span><span class="p">:],</span>
+                       <span class="nb">str</span><span class="p">(</span><span class="n">templates</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span><span class="p">[:</span><span class="n">tail_length</span><span class="p">]</span><span class="o">.</span><span class="n">rc</span><span class="p">()))))</span>
+
+    <span class="n">tails</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">templates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span><span class="p">)[</span><span class="o">-</span><span class="n">tail_length</span><span class="p">:],</span> <span class="s">&quot;&quot;</span><span class="p">))</span>
+    
+    <span class="n">primer_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+  
+    <span class="k">for</span> <span class="n">template</span><span class="p">,</span> <span class="p">(</span><span class="n">fp_tail</span><span class="p">,</span> <span class="n">rp_tail</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">tails</span><span class="p">):</span>
+
+        <span class="n">fp</span><span class="p">,</span> <span class="n">rp</span> <span class="o">=</span> <span class="n">cloning_primers</span><span class="p">(</span>   <span class="n">template</span><span class="p">,</span>
+                                    <span class="n">minlength</span>  <span class="o">=</span> <span class="n">minlength</span><span class="p">,</span>
+                                    <span class="n">maxlength</span>  <span class="o">=</span> <span class="n">maxlength</span><span class="p">,</span>
+                                    <span class="n">target_tm</span>  <span class="o">=</span> <span class="n">target_tm</span><span class="p">,</span> 
+                                    <span class="n">primerc</span>    <span class="o">=</span> <span class="n">primerc</span><span class="p">,</span>
+                                    <span class="n">saltc</span>      <span class="o">=</span> <span class="n">saltc</span><span class="p">,</span>
+                                    <span class="n">formula</span>    <span class="o">=</span> <span class="n">formula</span><span class="p">)</span>
+        
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">fp_tail</span><span class="p">))</span> <span class="o">+</span> <span class="n">fp</span>
+        <span class="n">rp</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">rp_tail</span><span class="p">))</span> <span class="o">+</span> <span class="n">rp</span>
+                                    
+        <span class="n">primer_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fp</span><span class="p">,</span> <span class="n">rp</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="n">primer_pairs</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+    
+    <span class="kn">import</span> <span class="nn">pydna</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">pydna</span><span class="o">.</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s">&quot;atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg&quot;</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">pydna</span><span class="o">.</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s">&quot;ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc&quot;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">pydna</span><span class="o">.</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s">&quot;tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt&quot;</span><span class="p">)</span>
+    <span class="n">primer_pairs</span> <span class="o">=</span> <span class="n">pydna</span><span class="o">.</span><span class="n">assembly_primers</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">])</span>
+    <span class="n">frags</span><span class="o">=</span><span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">r</span><span class="p">),</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">primer_pairs</span><span class="p">,[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">]):</span>
+        <span class="n">frags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pydna</span><span class="o">.</span><span class="n">pcr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">t</span><span class="p">))</span>
+    
+    <span class="n">a</span><span class="o">=</span><span class="n">pydna</span><span class="o">.</span><span class="n">Assembly</span><span class="p">(</span><span class="n">frags</span><span class="p">)</span>
+    
+    <span class="n">a</span><span class="o">.</span><span class="n">assemble_gibson_linear</span><span class="p">()</span>
+    
+    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">linear_products</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">seguid</span><span class="p">()</span>
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Björn Johansson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pydna.editor &mdash; Pydna 0.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pydna 0.6.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pydna.editor</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;This module provides a class for opening a sequence using an editor</span>
+<span class="sd">that accepts a file as a command line argument.</span>
+
+<span class="sd">ApE - A plasmid Editor [#]_ is and excellent editor for this purpose.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+
+<span class="sd">.. [#] http://biologylabs.utah.edu/jorgensen/wayned/ape/</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">Bio</span>           <span class="kn">import</span> <span class="n">SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="kn">import</span> <span class="nn">dsdna</span>
+
+<div class="viewcode-block" id="Editor"><a class="viewcode-back" href="../../pydna.html#pydna.editor.Editor">[docs]</a><span class="k">class</span> <span class="nc">Editor</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The Editor class needs to be instantiated before use.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    shell_command_for_editor : str</span>
+<span class="sd">        String containing the path to the editor</span>
+<span class="sd">    tmpdir : str, optional</span>
+<span class="sd">        String containing path to the temprary directory where sequence </span>
+<span class="sd">        files are stored before opening.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import pydna</span>
+<span class="sd">    &gt;&gt;&gt; ape = pydna.Editor(&quot;tclsh8.6 /home/bjorn/.ApE/apeextractor/ApE.vfs/lib/app-AppMain/AppMain.tcl&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ape.open(&quot;aaa&quot;) # This command opens the sequence in the ApE editor</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shell_command_for_editor</span><span class="p">,</span> <span class="n">tmpdir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">path</span>    <span class="o">=</span> <span class="p">(</span><span class="n">shell_command_for_editor</span><span class="p">,</span>
+                   <span class="n">shell_command_for_editor</span><span class="o">.</span><span class="n">split</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">(),)</span>
+
+        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path_to_editor</span> <span class="o">=</span> <span class="n">shell_command_for_editor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span>
+            <span class="k">print</span> <span class="n">shell_command_for_editor</span>
+            <span class="k">print</span> <span class="s">&quot;is not a valid path to ApE&quot;</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid path to ApE&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tmpdir</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">(),</span><span class="s">&quot;ApE&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span> <span class="n">tmpdir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<div class="viewcode-block" id="Editor.open"><a class="viewcode-back" href="../../pydna.html#pydna.editor.Editor.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Open a sequence for editing in an external (DNA) editor.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args : sequence or iterable of sequences</span>
+<span class="sd">        </span>
+
+<span class="sd">       &#39;&#39;&#39;</span>
+
+        <span class="n">args</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;__iter__&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">SeqRecord</span><span class="p">):</span>
+                <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,)</span>
+        <span class="n">seqs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+            <span class="n">seq</span><span class="o">=</span><span class="n">dsdna</span><span class="o">.</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">seq</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+                <span class="n">qf</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">qualifiers</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">qf</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">qf</span><span class="p">[</span><span class="s">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qf</span><span class="p">[</span><span class="s">&quot;note&quot;</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">qf</span><span class="p">[</span><span class="s">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;feat{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s">&quot;ApEinfo_fwdcolor&quot;</span> <span class="ow">in</span> <span class="n">qf</span><span class="p">:</span>
+                    <span class="n">qf</span><span class="p">[</span><span class="s">&quot;ApEinfo_fwdcolor&quot;</span><span class="p">]</span><span class="o">=</span><span class="s">&quot;cyan&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s">&quot;ApEinfo_revcolor&quot;</span> <span class="ow">in</span> <span class="n">qf</span><span class="p">:</span>
+                    <span class="n">qf</span><span class="p">[</span><span class="s">&quot;ApEinfo_revcolor&quot;</span><span class="p">]</span><span class="o">=</span><span class="s">&quot;red&quot;</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&quot;location.start&quot;</span><span class="p">))</span>
+            <span class="n">seqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">seq</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="s">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                    <span class="n">newname</span><span class="o">=</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">newname</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                        <span class="n">n</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="k">break</span>
+        <span class="n">pathstofiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">seqs</span><span class="p">):</span>
+            <span class="n">whole_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;.gb&quot;</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">whole_path</span><span class="p">)</span>
+            <span class="n">pathstofiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&quot;{}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">whole_path</span><span class="p">))</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s">&quot;{} {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_editor</span><span class="p">,</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathstofiles</span><span class="p">)),</span>
+                             <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                             <span class="n">stdout</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">(),</span>
+                             <span class="n">stderr</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">())</span><span class="o">.</span><span class="n">pid</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="c">#shutil.rmtree(path)</span>
+        <span class="c">#for name in names:</span>
+        <span class="c">#    print os.path.join(path, name)+&quot;.gb&quot;</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+    <span class="n">sr1</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;../tests/pUC19.gb&quot;</span><span class="p">,</span><span class="s">&quot;gb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="n">sr2</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;../tests/pCAPs.gb&quot;</span><span class="p">,</span><span class="s">&quot;gb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="n">aperunner</span> <span class="o">=</span> <span class="n">Ape</span><span class="p">(</span><span class="s">&quot;tclsh /home/bjorn/.ApE/apeextractor/ApE.vfs/lib/app-AppMain/AppMain.tcl&quot;</span><span class="p">)</span>
+    <span class="n">aperunner</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">sr1</span><span class="p">,</span><span class="n">sr2</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pydna 0.6.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Björn Johansson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
