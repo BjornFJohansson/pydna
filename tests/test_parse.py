@@ -77,7 +77,7 @@ class test_parse(unittest.TestCase):
         self.assertTrue( result.linear   == True )
         self.assertTrue( result.circular == False )
 
-        seqs = parse('./RefDataBjorn.fas', filter=False)
+        seqs = parse('./RefDataBjorn.fas')
 
         self.assertEqual( len(seqs) , 771 )
         self.assertEqual( list(set([len (a) for a in seqs])) ,[901])
