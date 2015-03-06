@@ -19,7 +19,7 @@ script:
    - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    - cd ../..
    - nosetests -v -w tests --with-coverage --with-doctest
-   #- nosetests -v -w pydna --with-coverage --with-doctest 
+   - nosetests -v -w pydna --with-coverage --with-doctest
 
 
 deploy:

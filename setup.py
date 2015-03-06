@@ -27,7 +27,7 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
 
 from setuptools import setup #, find_packages
 
-import textwrap, sys
+import textwrap, sys, nose
 
 setup(  name='pydna',
         version         =__version__,
@@ -47,10 +47,11 @@ setup(  name='pydna',
                      recombination between DNA molecules.''',
         long_description=open('README.rst').read(),
         install_requires =[ "networkx>=1.8.1",
-        "biopython>=1.63",
+        "biopython>=1.65",
         "prettytable>=0.7.2",
         "appdirs>=1.3.0",
         "jsonschema>=2.4.0"],
+        #test_suite = 'nose.collector',
         test_suite="run_tests.load_my_tests",
         #include_dirs = [numpy.get_include()],
         zip_safe = False,
