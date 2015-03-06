@@ -4,14 +4,18 @@ python:
 install:
   - pip install -e .
 before_script:
-  - echo $TRAVIS_TAG
-  - echo $pypi_username
   - pip install -r requirements.txt
   - pip install coveralls
   
 script:
    - nosetests -w tests -v --with-coverage
    - nosetests -w pydna --with-coverage --with-doctest -v
+   - mkdir test_install_directory
+   - python setup.py sdist
+   - cp ./dist/pydna* ./test_install_directory/
+   - cd test_install_directory
+   - python setup.py install
+
 
 deploy:
   provider: pypi

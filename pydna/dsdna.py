@@ -48,7 +48,7 @@ from _sequencetrace         import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils import cseguid
-from pydna.pretty import pretty_str, pretty_string
+from pydna.pretty import pretty_str, pretty_string, pretty_unicode
 
 
 
@@ -1602,7 +1602,7 @@ class Dseqrecord(SeqRecord):
 
     def gc(self):
     	'''Returns GC content '''
-        return pretty_str(round(GC(str(self.seq)), 1))
+        return pretty_string(round(GC(str(self.seq)), 1))
 
     def cseguid(self):
         '''Returns the cSEGUID for the sequence. The cSEGUID is the SEGUID
@@ -1821,11 +1821,11 @@ class Dseqrecord(SeqRecord):
         s = SeqRecord.format(self, f).strip()
         if f in ("genbank","gb"):
             if self.circular:
-                return pretty_str(s[:55]+"circular"+s[63:])
+                return pretty_string(s[:55]+"circular"+s[63:])
             else:
-                return pretty_str(s[:55]+"linear"+s[61:])
+                return pretty_string(s[:55]+"linear"+s[61:])
         else:
-            return pretty_str(s)
+            return pretty_string(s)
 
     def write(self, filename=None, f="gb"):
         '''Writes the Dseqrecord to a file using the format f, which must
@@ -2643,14 +2643,17 @@ def parse(data, ds = True):
     if not hasattr(data, '__iter__'):
         data = (data,)
 
-    drs = [os.getcwd().decode()] + os.environ["pydna_dna_dirs"].split(os.pathsep)
+    drs = [os.getcwd().decode()]
+    
+    if os.environ["pydna_dna_dirs"]:
+        drs+= os.environ["pydna_dna_dirs"].split(os.pathsep)
 
     for item in data:
         for dr in drs:
-            #print "####", type(dr), type(item), type(os.path.join(dr, item))
+            #print "####", type(item), type(dr), type(item.encode("utf-8"))#, item.encode("utf-8")
             #print "###", os.path.join(dr, item)
             try:
-                with open(os.path.join(dr, item.decode("utf-8")), 'r') as f:
+                with open(os.path.join(dr, item), 'r') as f:
                     raw+= f.read()
                     break
             except IOError:

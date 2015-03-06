@@ -1,0 +1,18 @@
+LOCUS       New_DNA                    4 bp ds-DNA     linear       30-MAR-2013
+DEFINITION  öööh!
+ACCESSION
+VERSION
+SOURCE      .
+  ORGANISM  .
+COMMENT
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     misc_feature    2..3
+                     /label=NewFeature
+                     /ApEinfo_fwdcolor=cyan
+                     /ApEinfo_revcolor=green
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+ORIGIN
+        1 acgt
+// 
