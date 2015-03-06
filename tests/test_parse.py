@@ -10,7 +10,7 @@ from pydna import parse, read
 
 class test_parse(unittest.TestCase):
 
-    def test_parse(self):
+    def test_parse1(self):
         ''' test parsing fasta sequences from a text'''
 
         text   =  '''
@@ -99,7 +99,7 @@ class test_parse(unittest.TestCase):
 
 
 
-    def test_parse(self):
+    def test_parse2(self):
         from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA
 
         seqs = parse('./RefDataBjorn.fas')
