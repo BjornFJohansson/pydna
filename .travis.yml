@@ -4,6 +4,7 @@ python:
 install:
   - pip install -e .
 before_script:
+  - pip install -U pip
   - pip install -r requirements.txt
   - pip install coveralls
   
@@ -17,6 +18,8 @@ script:
    - tar -zxvf pydna*
    - cd pydna*
    - python setup.py install
+   - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
+   - cd ..
 
 
 deploy:
