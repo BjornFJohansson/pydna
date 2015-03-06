@@ -2,15 +2,15 @@ language: python
 python:
   - "2.7"
 install:
+  - pip install --upgrade pip
   - pip install -e .
 before_script:
-  - pip install -U pip
   - pip install -r requirements.txt
   - pip install coveralls
   
 script:
-   #- nosetests -w tests -v --with-coverage
-   #- nosetests -w pydna --with-coverage --with-doctest -v
+   - nosetests -w tests -v --with-coverage
+   - nosetests -w pydna --with-coverage --with-doctest -v
    - mkdir test_install_directory
    - python setup.py sdist
    - cp ./dist/pydna* ./test_install_directory/
