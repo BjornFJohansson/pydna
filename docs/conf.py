@@ -55,11 +55,11 @@ copyright = u'2015, Björn Johansson'
 #version = '0.1'
 
 # The full version uisng versioneer
-import versioneer
-#import imp
-#fp, pathname, description = imp.find_module('versioneer')
-#versioneer = imp.load_module('versioneer', fp, pathname, description)
-#del imp
+#import versioneer
+import imp
+fp, pathname, description = imp.find_module('versioneer')
+versioneer = imp.load_module('versioneer', fp, pathname, description)
+del imp
 versioneer.VCS = 'git'
 versioneer.versionfile_source = '../pydna/_version.py'
 versioneer.versionfile_build = '../pydna/_version.py'
