@@ -61,10 +61,10 @@ copyright = u'2015, Björn Johansson'
 # The full version using versioneer
 #import versioneer
 
-print os.getcwd()
+print "hej", os.getcwd()
 
 import imp
-fp, pathname, description = imp.find_module('versioneer')
+fp, pathname, description = imp.find_module('versioneer', ['..'])
 
 print fp, pathname, description
 
