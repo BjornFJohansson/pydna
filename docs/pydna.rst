@@ -59,10 +59,42 @@ pydna.findsubstrings_suffix_arrays_python module
     :undoc-members:
     :show-inheritance:
 
+pydna.ipynb_importer module
+---------------------------
+
+.. automodule:: pydna.ipynb_importer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.orderedset module
+-----------------------
+
+.. automodule:: pydna.orderedset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.pretty module
+-------------------
+
+.. automodule:: pydna.pretty
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pydna.primer_design module
 --------------------------
 
 .. automodule:: pydna.primer_design
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.thermodynamic_data module
+-------------------------------
+
+.. automodule:: pydna.thermodynamic_data
     :members:
     :undoc-members:
     :show-inheritance:

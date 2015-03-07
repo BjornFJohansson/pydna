@@ -21,11 +21,15 @@ import sys, os
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+needs_sphinx = '1.2.3'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.viewcode', 'sphinx.ext.autosummary','numpydoc']
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.doctest',
+              'sphinx.ext.viewcode',
+              'sphinx.ext.autosummary',
+              'numpydoc']
 
 
 numpydoc_show_class_members = False
@@ -55,11 +59,17 @@ copyright = u'2015, Björn Johansson'
 #version = '0.1'
 
 # The full version using versioneer
-import versioneer
-#import imp
-#fp, pathname, description = imp.find_module('versioneer')
-#versioneer = imp.load_module('versioneer', fp, pathname, description)
-#del imp
+#import versioneer
+
+print os.getcwd()
+
+import imp
+fp, pathname, description = imp.find_module('versioneer')
+
+print fp, pathname, description
+
+versioneer = imp.load_module('versioneer', fp, pathname, description)
+del imp
 versioneer.VCS = 'git'
 versioneer.versionfile_source = '../pydna/_version.py'
 versioneer.versionfile_build = '../pydna/_version.py'
@@ -67,7 +77,7 @@ versioneer.tag_prefix = ''  # tags are like v1.2.0
 versioneer.parentdir_prefix = '..'
 release = versioneer.get_version()
 # The short X.Y version.
-version = '.'.join(release.split('.')[:2]) 
+version = '.'.join(release.split('.')[:2])
 
 
 # The full version, including alpha/beta/rc tags.
