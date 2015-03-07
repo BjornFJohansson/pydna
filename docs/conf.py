@@ -55,7 +55,7 @@ copyright = u'2015, Björn Johansson'
 #version = '0.1'
 
 # The full version uisng versioneer
-#import imp
+import imp
 fp, pathname, description = imp.find_module('versioneer')
 versioneer = imp.load_module('versioneer', fp, pathname, description)
 del imp
