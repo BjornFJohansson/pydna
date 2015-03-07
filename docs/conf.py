@@ -54,12 +54,27 @@ copyright = u'2015, Björn Johansson'
 
 #version = '0.1'
 
+# The full version uisng versioneer
+import versioneer
+#import imp
+#fp, pathname, description = imp.find_module('versioneer')
+#versioneer = imp.load_module('versioneer', fp, pathname, description)
+#del imp
+versioneer.VCS = 'git'
+versioneer.versionfile_source = '../pydna/_version.py'
+versioneer.versionfile_build = '../pydna/_version.py'
+versioneer.tag_prefix = ''  # tags are like v1.2.0
+versioneer.parentdir_prefix = '..'
+release = versioneer.get_version()
+# The short X.Y version.
+version = '.'.join(release.split('.')[:2]) 
+
 
 # The full version, including alpha/beta/rc tags.
-f = [l for l in open("../pydna/__init__.py").readlines() if l.startswith("__version__")].pop()
-exec(f)
+#f = [l for l in open("../pydna/__init__.py").readlines() if l.startswith("__version__")].pop()
+#exec(f)
 #print __version__
-release = __version__
+#release = __version__
 
 #release = '0.1'
 
