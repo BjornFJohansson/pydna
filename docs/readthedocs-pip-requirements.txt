@@ -1,1 +1,2 @@
+versioneer>=0.13
 numpydoc==0.5
