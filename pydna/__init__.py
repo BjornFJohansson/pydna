@@ -71,7 +71,7 @@ else:
 
 # create data directory
 try:
-    os.mkdir(datadir)
+    os.makedirs(datadir)
 except OSError:
     if not os.path.isdir( datadir ):
         raise
