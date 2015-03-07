@@ -137,7 +137,7 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
-next      ?          ?
+0.8.1     2015-03-07 Bugfix for windows. The data directory was not created.
 
 0.8.0	  2015-02-06 Mapping reads added.
 
