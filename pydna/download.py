@@ -149,10 +149,10 @@ class Genbank():
         '''
         cached  = False
         refresh = False
-        cache = shelve.open(os.path.join(os.environ["datadir"],"genbank.shelf"), protocol=2, writeback=False)
-        key = item+str(start)+str(stop)+str(strand)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
+            cache = shelve.open(os.path.join(os.environ["datadir"],"genbank.shelf"), protocol=2, writeback=False)
+            key = item+str(start)+str(stop)+str(strand)
             try:
                 cached = cache[key]
             except KeyError:

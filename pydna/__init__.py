@@ -26,7 +26,8 @@ __maintainer__   = "Björn Johansson"
 __email__        = "bjorn_johansson@bio.uminho.pt"
 __status__       = "Development" # "Production" #"Prototype"
 from ._version import get_versions
-__version__ = get_versions()['version']
+__version__      = get_versions()['version'][:5]
+__long_version__ = get_versions()['version']
 del get_versions
 
 
@@ -51,49 +52,55 @@ which can have three different values:
 
                 If new results are not identical with cached, a warning is raised
                 and details written to a log located in the data_dir
-                The log entry should give the name of the calling script if possible and as
-                much details as possible.
+                The log entry should give the name of the calling script
+                if possible and as much details as possible.
                 http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
 
 import os
-import appdirs
 import logging
 import logging.handlers
 
-os.environ["pydna_cache"]  = "cached"
-
-# set data directory depending on environment
-if os.getenv("DRONE") or os.getenv("CI"):
-    datadir = os.path.join(os.getcwd(),"DATA")
-else:
-    datadir = appdirs.user_data_dir("pydna")
-
-# create data directory
-try:
-    os.makedirs(datadir)
-except OSError:
-    if not os.path.isdir( datadir ):
-        raise
 user_name  = "username not set"
 user_email = "user email not set"
 
-# create logger
-logger = logging.getLogger("pydna")
+try:
+    cache = os.environ["pydna_cache"]
+except KeyError:
+    cache = "cached"
+    os.environ["pydna_cache"]  = cache
 
-hdlr = logging.handlers.RotatingFileHandler(os.path.join(datadir, 'pydna.log'), mode='a', maxBytes=0, backupCount=0, encoding='utf-8', delay=0)
+if cache not in ["cached", "nocache", "refresh", "compare"]:
+    raise Exception("cache is not cached, nocache, refresh or compare")
 
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+if cache == "nocache":
+    os.environ["datadir"] = "NotCreated"
+else:
+    import appdirs
 
-hdlr.setFormatter(formatter)
+    # set data directory depending on environment
 
-logger.addHandler(hdlr)
+    if os.getenv("DRONE") or os.getenv("CI"):
+        datadir = os.path.join(os.getcwd(),"..","..","DATA")
+    else:
+        datadir = appdirs.user_data_dir("pydna")
 
-logger.setLevel(logging.WARNING)
+    # create data directory
+    try:
+        os.makedirs(datadir)
+    except OSError:
+        if not os.path.isdir( datadir ):
+            raise
 
-logger.info('Assigning environmental variable datadir = {}'.format(datadir))
-
-os.environ["datadir"] = datadir
+    # create logger
+    logger = logging.getLogger("pydna")
+    hdlr = logging.handlers.RotatingFileHandler(os.path.join(datadir, 'pydna.log'), mode='a', maxBytes=0, backupCount=0, encoding='utf-8', delay=0)
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    hdlr.setFormatter(formatter)
+    logger.addHandler(hdlr)
+    logger.setLevel(logging.WARNING)
+    logger.info('Assigning environmental variable datadir = {}'.format(datadir))
+    os.environ["datadir"] = datadir
 
 if not os.getenv("pydna_dna_dir"):
     os.environ["pydna_dna_dir"] = u''
@@ -176,9 +183,3 @@ try:
     del findsubstrings_suffix_arrays_python
 except NameError:
     pass
-
-
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions

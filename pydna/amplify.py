@@ -487,15 +487,14 @@ class Anneal(object):
                   template,
                   limit=13):
 
-        key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
-        cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
-
         refresh = False
         cached  = None
 
         primers = [p for p in primers if p.seq]
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
+            key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
+            cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
             try:
                 cached = cache[key]
             except KeyError:
@@ -508,7 +507,6 @@ class Anneal(object):
 
             self.key = key
             self.template = copy.deepcopy(template)
-            #self.template.features = copy.deepcopy(template.features)
 
             self.limit = limit
             self._products = None
@@ -596,7 +594,7 @@ class Anneal(object):
         elif cached and os.environ["pydna_cache"] not in ("nocache","refresh"):
             for key, value in cached.__dict__.items():
                 setattr(self, key, value )
-        cache.close()
+            cache.close()
 
     def _compare(self, cached):
         if str(self) != str(cached):
