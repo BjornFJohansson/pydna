@@ -123,7 +123,7 @@ Pydna might also be useful to automate the simulation of
 `sub cloning <http://en.wikipedia.org/wiki/Subcloning>`_ experiments using
 python. This could be helpful to generate examples for teaching purposes. Read
 the `documentation <https://pydna.readthedocs.org/en/latest/>`_ or the
-`cookbook <https://www.dropbox.com/sh/0137w0cg772fpnd/AAArCyrRMblQKCKjQV32q4Pba/cookbook>`_ with example files
+`cookbook <https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0>`_ with example files
 for further information.
 
 An `on-line <http://pydna-shell.appspot.com/>`_ shell running Python with
@@ -137,6 +137,8 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
+0.8.2     ?          ?
+
 0.8.1     2015-03-07 Bugfix for windows. The data directory was not created.
 
 0.8.0	  2015-02-06 Mapping reads added.
