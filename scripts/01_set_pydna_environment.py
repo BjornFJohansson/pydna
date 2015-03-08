@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+'''
+
 import os
 import sys
 
@@ -15,6 +18,8 @@ os.environ["PYTHONPATH"] = os.environ["pydna_dna_dirs"]
 import pydna
 
 print "pydna evironment set"
+
+'''
 
 # I've implemented a workaround that modifies sys.path in my interpreter's startup script. 
 # This was an extension of my solution to another issue regarding shell environment 

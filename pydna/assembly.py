@@ -265,12 +265,14 @@ class Assembly(object):
 
         refresh = False
         cached  = None
+        
+        key = "|".join(sorted([str(r.seguid()) for r in dsrecs]))+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
             module_logger.info('open shelf file {}'.format(os.path.join(os.environ["datadir"],"assembly.shelf")))
             cache = shelve.open(os.path.join(os.environ["datadir"], "assembly.shelf"), protocol=2, writeback=False)
-            key = "|".join(sorted([str(r.seguid()) for r in dsrecs]))+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
+  
             module_logger.info('created key = {}'.format(key))
             module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
 

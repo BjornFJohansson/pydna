@@ -491,9 +491,11 @@ class Anneal(object):
         cached  = None
 
         primers = [p for p in primers if p.seq]
+        
+        key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
-            key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
+            
             cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
             try:
                 cached = cache[key]

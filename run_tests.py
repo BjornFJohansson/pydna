@@ -7,11 +7,12 @@ import os
 import sys
 import os.path
 import pkgutil
-import pydna
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
 os.environ["pydna_cache"]  = "nocache"
+
+import pydna
 
 def load_tests(loader, tests, pattern):
     return load_my_tests()

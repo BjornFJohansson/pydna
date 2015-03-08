@@ -58,11 +58,11 @@ which can have three different values:
 '''
 
 import os
-import logging
-import logging.handlers
 
-user_name  = "username not set"
-user_email = "user email not set"
+global user_name
+user_name= "username_not_set"
+global user_email
+user_email = "user_email_not_set"
 
 try:
     cache = os.environ["pydna_cache"]
@@ -70,12 +70,13 @@ except KeyError:
     cache = "cached"
     os.environ["pydna_cache"]  = cache
 
-if cache not in ["cached", "nocache", "refresh", "compare"]:
-    raise Exception("cache is not cached, nocache, refresh or compare")
+if cache not in ("cached", "nocache", "refresh", "compare"):
+    raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
 
 if cache == "nocache":
     os.environ["datadir"] = "NotCreated"
 else:
+
     import appdirs
 
     # set data directory depending on environment
@@ -93,6 +94,9 @@ else:
             raise
 
     # create logger
+
+    import logging
+    import logging.handlers
     logger = logging.getLogger("pydna")
     hdlr = logging.handlers.RotatingFileHandler(os.path.join(datadir, 'pydna.log'), mode='a', maxBytes=0, backupCount=0, encoding='utf-8', delay=0)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')

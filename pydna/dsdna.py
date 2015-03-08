@@ -324,7 +324,6 @@ class Dseq(Seq):
                   circular      = None,
                   alphabet      = IUPACAmbiguousDNA()):
 
-
         watson = "".join(watson.split())
 
         if ovhg is None:
@@ -2413,9 +2412,10 @@ class Dseqrecord(SeqRecord):
         csh = os.environ["pydna_cache"]
 
         key = str(self.seguid())+"|"+rs+"|"+str(limit)
-        cache = shelve.open(os.path.join(os.environ["datadir"],"synced.shelf"), protocol=2, writeback=False)
+        
 
         if csh in ("compare", "cached"):
+            cache = shelve.open(os.path.join(os.environ["datadir"],"synced.shelf"), protocol=2, writeback=False)
             try:
                 cached = cache[str(key)]
             except KeyError:
@@ -2483,7 +2483,7 @@ class Dseqrecord(SeqRecord):
             cache[key] = result
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
             result = cached
-        cache.close()
+            cache.close()
 
         return result
 
@@ -2644,7 +2644,7 @@ def parse(data, ds = True):
         data = (data,)
 
     drs = [os.getcwd().decode()]
-    
+
     if os.environ["pydna_dna_dirs"]:
         drs+= os.environ["pydna_dna_dirs"].split(os.pathsep)
 
