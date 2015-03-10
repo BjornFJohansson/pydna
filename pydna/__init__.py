@@ -27,7 +27,7 @@ __email__        = "bjorn_johansson@bio.uminho.pt"
 __status__       = "Development" # "Production" #"Prototype"
 from ._version import get_versions
 __version__      = get_versions()['version'][:5]
-__long_version__ = get_versions()['version']
+__version_long__ = get_versions()['version']
 del get_versions
 
 

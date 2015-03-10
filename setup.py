@@ -11,7 +11,7 @@ versioneer.parentdir_prefix = '' # dirname like 'myproject-1.2.0'
 # Read version numbers, author etc..
 __version__ = "Undefined"
 for line in open('pydna/__init__.py'):
-    if line.startswith('__') and not line.startswith('__version__'):
+    if line.startswith('__') and not line.startswith('__version'):
         exec(line.strip())
 
 # Change line ending to windows for all text files
@@ -39,7 +39,7 @@ import textwrap, sys, nose
 setup(  name='pydna',
         author          =__author__,
         author_email    =__email__,
-        version=versioneer.get_version(),
+        version=versioneer.get_version()[:5],
         cmdclass=versioneer.get_cmdclass(),        
         #cmdclass = {'build_ext': optional_build_ext},
         #packages = find_packages(),
@@ -54,11 +54,11 @@ setup(  name='pydna',
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
         long_description=open('README.rst').read(),
-        install_requires =[ "networkx>=1.8.1",
-        "biopython>=1.65",
-        "prettytable>=0.7.2",
-        "appdirs>=1.3.0",
-        "jsonschema>=2.4.0"],
+        install_requires =[
+        "biopython",
+        "networkx",
+        "appdirs",
+        "prettytable",],
         #test_suite = 'nose.collector',
         test_suite="run_tests.load_my_tests",
         #include_dirs = [numpy.get_include()],

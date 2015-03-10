@@ -235,9 +235,12 @@ System Requirements
 ===================
 
 - `Python 2.7 <http://www.python.org>`_.
-- `Biopython >= 1.60 <http://pypi.python.org/pypi/biopython>`_.
-- `networkx >= 1.7 <http://pypi.python.org/pypi/networkx>`_.
+- `Biopython >= 1.65 <http://pypi.python.org/pypi/biopython>`_.
+- `networkx >= 1.8.1 <http://pypi.python.org/pypi/networkx>`_.
 - `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdir>`_.
+- `prettytable>=0.7.2 <https://pypi.python.org/pypi/PrettyTable>`_.
+
+
 
 Python 2.x
 ----------
