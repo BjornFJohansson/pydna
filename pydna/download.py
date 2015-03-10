@@ -235,7 +235,7 @@ class Genbank():
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
             result = cached
 
-        cache.close()
+            cache.close()
         return result
 
 class web():
