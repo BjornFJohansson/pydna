@@ -404,7 +404,7 @@ def cseguid(seq):
     Only defined for circular sequences.
     '''
     from Bio.Seq import reverse_complement as rc
-    return pretty_string(seguid( min( SmallestRotation(str(seq)), SmallestRotation(str(rc(seq))))))
+    return pretty_string( seguid( min( SmallestRotation(str(seq)), SmallestRotation(str(rc(seq))))))
 
 if __name__ == "__main__":
     import doctest

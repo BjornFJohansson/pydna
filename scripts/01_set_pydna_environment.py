@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
 
 import os
 import sys
@@ -44,7 +43,7 @@ if env.has_key('PYTHONPATH'):
     for path in pythonpath:
         sys.path.insert(2, path)
 
-'''
+
 #os.environ["PYTHONPATH"] = os.pathsep.join(x[0] for x in os.walk(dna_dir) if not x[0].endswith("archive"))
 #pYPKa_A_KlLAC4
 #sys.path.append(os.path.expanduser('~/code/eol_hsrl_python'))
