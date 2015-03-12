@@ -31,16 +31,14 @@ deploy:
   user: bjorn
   password:
     secure: "PLNlCt++35qR1sLrlzT0ys/WUxUNPh8isnxpEvAbfDWvgLBZc2vMWMr4HHNqv6UK4jvu9cwfAHJIcH+1tUxdMfs9Q8InqtyrFJgTU+VREhO/nyJgLah1CdmJ9ZixynOTUu8tuZNjX17ycPDM2fRxv0svY/mT2Z0U6nqX4eFFjic="
-  server: https://testpypi.python.org/pypi
+    server: https://pypi.python.org/pypi
+#   server: https://testpypi.python.org/pypi
   on:
     tags: true
     all_branches: true
     repo: BjornFJohansson/pydna
 
 after_deploy:
-  #- ./after_deploy_1.sh
-  #- ./after_deploy_2.sh
-  #- sudo rm -r *
   - pip uninstall -r requirements.txt -y 
   - pip uninstall -y pydna
   - pip install pydna 
@@ -50,7 +48,7 @@ notifications:
   email:
     recipients:
       - pydna@googlegroups.com
-    on_success: change # default: change
-    on_failure: change # default: always
+    on_success: change
+    on_failure: change
   
 #condition: "$TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
