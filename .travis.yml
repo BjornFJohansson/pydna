@@ -44,6 +44,7 @@ after_deploy:
   - pip uninstall -r -y requirements.txt 
   - pip uninstall -y pydna
   - pip install pydna 
+  - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
 
 notifications:
   email:
