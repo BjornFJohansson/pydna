@@ -40,7 +40,8 @@ deploy:
 after_deploy:
   #- ./after_deploy_1.sh
   #- ./after_deploy_2.sh
-  - rm -r *
+  #- sudo rm -r *
+  - pip uninstall pydna -y
   - pip install pydna 
 
 notifications:
