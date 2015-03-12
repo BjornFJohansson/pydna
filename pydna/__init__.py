@@ -27,7 +27,7 @@ __email__        = "bjorn_johansson@bio.uminho.pt"
 __status__       = "Development" # "Production" #"Prototype"
 from ._version import get_versions
 __version__      = get_versions()['version'][:5]
-__version_long__ = get_versions()['version']
+__long_version__ = get_versions()['version']
 del get_versions
 
 
@@ -36,12 +36,14 @@ Pydna caches results from the assembly2 dsdna and amplify
 modules. pydna sets an environmental variable "pydna_cache"
 which can have three different values:
 
-"cached"        if possible, cached results are returned
-                if chashed results are not available
+"cached"        A chache directory if created.        
+                if possible, cached results are returned.
+                if chashed results are not available,
                 new results are created and cached.
                 This is the default.
 
-"nocache"       results are not cached or read from cache
+"nocache"       Results are not written or read from cache.
+                No cache directory is created.
 
 "refresh"       new results are made and old are overwritten if they
                 exist.

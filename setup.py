@@ -8,10 +8,9 @@ versioneer.versionfile_build = 'pydna/_version.py'
 versioneer.tag_prefix = '' # tags are like 1.2.0
 versioneer.parentdir_prefix = '' # dirname like 'myproject-1.2.0'
 
-# Read version numbers, author etc..
-__version__ = "Undefined"
+# Read author etc..
 for line in open('pydna/__init__.py'):
-    if line.startswith('__') and not line.startswith('__version'):
+    if line.startswith('__') and not line.startswith('__version') and not line.startswith('__long'):
         exec(line.strip())
 
 # Change line ending to windows for all text files
@@ -22,15 +21,14 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
             continue
         filename = os.path.join(root, name)
         with open(filename, "rb") as f:
-            data = f.read()                        #.decode("utf-8")
+            data = f.read()
         temp = data.replace('\r\n', '\n')
-        temp = temp.replace('\r', '\n')
-        temp = temp.replace('\n', '\r\n')
+        temp = temp.replace('\r',   '\n')
+        temp = temp.replace('\n',   '\r\n')
         if not data == temp:
             with open(filename, "wb") as f:
                 f.write(temp)
                 print("changed", filename)
-
 
 from setuptools import setup #, find_packages
 
