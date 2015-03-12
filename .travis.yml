@@ -42,7 +42,7 @@ after_deploy:
   #- ./after_deploy_2.sh
   #- sudo rm -r *
   - pip uninstall -r requirements.txt 
-  - pip uninstall pydna
+  - pip uninstall -y pydna
   - pip install pydna 
   - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
 
