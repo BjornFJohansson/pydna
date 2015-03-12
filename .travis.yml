@@ -21,6 +21,9 @@ script:
    - nosetests -v -w tests --with-coverage --with-doctest
    - nosetests -v -w pydna --with-coverage --with-doctest
 
+after_success:
+  - coveralls
+before_deploy: "echo 'ready?'"
 
 deploy:
   provider: pypi
@@ -34,8 +37,11 @@ deploy:
     all_branches: true
     repo: BjornFJohansson/pydna
 
-after_success:
-  - coveralls
+after_deploy:
+  #- ./after_deploy_1.sh
+  #- ./after_deploy_2.sh
+  - rm -r *
+  - pip install pydna 
 
 notifications:
   email:
