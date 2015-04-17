@@ -195,6 +195,11 @@ tests/pUC_LAC4.gb
 tests/pUC_LAC4_correct_rotation.gb
 tests/primers.fas
 tests/pth1.txt
+tests/pth2.txt
+tests/pthx.txt
+tests/pydna_read_test.txt
+tests/pydna_read_test2.txt
+tests/pydna_read_test3.txt
 tests/read1.gb
 tests/read2.gb
 tests/read3.fasta
