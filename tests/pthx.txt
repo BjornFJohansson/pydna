@@ -1,0 +1,18 @@
+LOCUS       New_DNA                    6 bp ds-DNA     linear       14-MAR-2015
+DEFINITION  oooo
+ACCESSION   
+VERSION     
+SOURCE      oooo
+  ORGANISM  oooo
+COMMENT     oooo
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     misc_feature    3..4
+                     /label=µ
+                     /ApEinfo_fwdcolor=cyan
+                     /ApEinfo_revcolor=green
+                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0
+ORIGIN
+        1 aaaaaa     
+//

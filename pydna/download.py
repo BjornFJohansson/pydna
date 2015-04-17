@@ -83,6 +83,8 @@ class Genbank():
 
         self.email=users_email #Always tell NCBI who you are
 
+        print "#####", proxy
+
         if proxy:
             parsed = urlparse(proxy)
             scheme = parsed.scheme
@@ -95,25 +97,14 @@ class Genbank():
             #print { scheme : parsed.geturl() }
             self.proxy = urllib2.ProxyHandler({ scheme : parsed.geturl() })
         else:
-            proxy_handler = urllib2.ProxyHandler({})
-            opener = urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
+            pass
+            #proxy_handler = urllib2.ProxyHandler({})
+            #opener = urllib2.build_opener(proxy_handler)
+            #urllib2.install_opener(opener)
             #os.environ['http_proxy']=''
             #self.proxy = urllib2.ProxyHandler()
         #self.opener = urllib2.urlopen #build_opener(self.proxy)
         #urllib2.install_opener(self.opener)
-
-    def test(self):
-        '''Test downloading the pUC19 plasmid sequence from genbank
-        returns True if successful. Can be used to test proxy
-        and other network settings.
-        '''
-
-        try:
-            result = self.nucleotide("L09137") # pUC19
-        except urllib2.URLError:
-            return False
-        return seguid(result.seq) == "71B4PwSgBZ3htFjJXwHPxtUIPYE"
 
     def __repr__(self):
         return "Genbank({})".format(self.email)

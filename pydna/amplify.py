@@ -28,7 +28,7 @@ from Bio.SeqFeature                 import FeatureLocation
 from pydna.dsdna                    import rc
 from pydna.dsdna                    import parse
 from pydna.dsdna                    import Dseqrecord
-from pydna.pretty                   import pretty_str
+from pydna.pretty                   import pretty_str, pretty_unicode
 import shelve
 
 def _annealing_positions(primer, template, limit=15):
@@ -342,7 +342,7 @@ class Amplicon(Dseqrecord):
                                             *divmod(extension_time_taq,60),
                                             size = len(self.seq)))
 
-        return pretty_str(f)
+        return pretty_unicode(f)
 
     def taq_program(self):
         return self.program()
@@ -491,11 +491,11 @@ class Anneal(object):
         cached  = None
 
         primers = [p for p in primers if p.seq]
-        
+
         key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
-            
+
             cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
             try:
                 cached = cache[key]

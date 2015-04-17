@@ -1,0 +1,12 @@
+package:
+  name: pydna
+  version: "0.8.3"
+
+build:
+  number: 3
+
+requirements:
+  run:
+    - python
+about:
+  summary: This is a simple meta-package

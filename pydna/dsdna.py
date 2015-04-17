@@ -47,7 +47,7 @@ from Bio.Data.CodonTable    import TranslationError
 from _sequencetrace         import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
-from pydna.utils import cseguid
+from pydna.utils  import cseguid
 from pydna.pretty import pretty_str, pretty_string, pretty_unicode
 
 
@@ -1815,9 +1815,8 @@ class Dseqrecord(SeqRecord):
 
         '''
 
-        #r = self
-        #r.id = r.id[:7]
         s = SeqRecord.format(self, f).strip()
+
         if f in ("genbank","gb"):
             if self.circular:
                 return pretty_string(s[:55]+"circular"+s[63:])
@@ -2412,7 +2411,7 @@ class Dseqrecord(SeqRecord):
         csh = os.environ["pydna_cache"]
 
         key = str(self.seguid())+"|"+rs+"|"+str(limit)
-        
+
 
         if csh in ("compare", "cached"):
             cache = shelve.open(os.path.join(os.environ["datadir"],"synced.shelf"), protocol=2, writeback=False)
@@ -2643,17 +2642,16 @@ def parse(data, ds = True):
     if not hasattr(data, '__iter__'):
         data = (data,)
 
-    drs = [os.getcwd().decode()]
+    drs = [os.getcwd()]
 
     if os.environ["pydna_dna_dirs"]:
         drs+= os.environ["pydna_dna_dirs"].split(os.pathsep)
 
     for item in data:
         for dr in drs:
-            #print "####", type(item), type(dr), type(item.encode("utf-8"))#, item.encode("utf-8")
-            #print "###", os.path.join(dr, item)
+            fn = os.path.join(dr, item )
             try:
-                with open(os.path.join(dr, item), 'r') as f:
+                with open(fn, 'rU') as f:
                     raw+= f.read()
                     break
             except IOError:
@@ -2661,10 +2659,12 @@ def parse(data, ds = True):
         else:
             raw+=textwrap.dedent(item).strip()
 
+
+
     pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
-    raw = raw.replace( '\r\n', '\n')
-    raw = raw.replace( '\r',   '\n')
-    rawseqs = re.findall(pattern, textwrap.dedent(raw+ "\n\n"),re.MULTILINE)
+    #raw = raw.replace( '\r\n', '\n')
+    #raw = raw.replace( '\r',   '\n')
+    rawseqs = re.findall(pattern, textwrap.dedent(raw + "\n\n"), flags=re.MULTILINE)
     sequences=[]
 
     while rawseqs:
@@ -2673,14 +2673,12 @@ def parse(data, ds = True):
         handle = StringIO.StringIO(rawseq)
         try:
             parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
-            #original_format = "embl"
             if "circular" in rawseq.splitlines()[0]:
                 circular = True
         except ValueError:
             handle.seek(0)
             try:
                 parsed = SeqIO.read(handle, "genbank", alphabet=IUPACAmbiguousDNA())
-                #original_format = "genbank"
                 handle.seek(0)
                 parser = RecordParser()
                 residue_type = parser.parse(handle).residue_type
@@ -2690,16 +2688,15 @@ def parse(data, ds = True):
                 handle.seek(0)
                 try:
                     parsed = SeqIO.read(handle, "fasta", alphabet=IUPACAmbiguousDNA())
-                    original_format = "fasta"
                     if "circular" in rawseq.splitlines()[0]:
                         circular = True
                 except ValueError:
                     continue
 
         if ds:
-            sequences.append(Dseqrecord(parsed, circular = circular))
+            sequences.append( Dseqrecord(parsed, circular = circular) )
         else:
-            sequences.append(parsed)
+            sequences.append( parsed )
         handle.close()
     #sequences[0].features[8].qualifiers['label'][0] = u'björn'
     return sequences
@@ -2714,5 +2711,17 @@ def parse(data, ds = True):
     #retmode=text
 
 if __name__=="__main__":
-    import doctest
-    doctest.testmod()
+    #import doctest
+    #doctest.testmod()
+
+    import pydna
+
+    file_ = "/home/bjorn/python_packages/ypkpathway/tests/pth1.txt"
+
+    with open(file_, "rU") as f: text = f.read()
+
+    a, b = pydna.parse( text )
+
+    a.features
+
+    a.format("gb")

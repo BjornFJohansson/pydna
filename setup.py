@@ -32,7 +32,7 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
 
 from setuptools import setup #, find_packages
 
-import textwrap, sys, nose
+import textwrap, sys #, nose
 
 setup(  name='pydna',
         author          =__author__,

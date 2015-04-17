@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import os
 import sys
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
-dna_dir  = u"/home/bjorn/Dropbox/Public/pydna-DNA-assembly/constructs"
+dna_dir  = "/home/bjorn/Dropbox/Public/pydna-DNA-assembly/constructs"
 dna_dirs = [x[0] for x in os.walk(dna_dir)]
 
 sys.path = dna_dirs + sys.path
@@ -15,16 +14,16 @@ os.environ["pydna_dna_dirs"] = os.pathsep.join(dna_dirs)
 os.environ["PYTHONPATH"] = os.environ["pydna_dna_dirs"]
 
 import pydna
-
-print "pydna evironment set"
+print
+print "*** pydna evironment set ***"
 
 '''
 
-# I've implemented a workaround that modifies sys.path in my interpreter's startup script. 
-# This was an extension of my solution to another issue regarding shell environment 
-# variable inheritance [1]. It will take the user's PYTHONPATH as specified in either 
-# /etc/profile or ~/.profile and and insert it into the sys.path. If you don't need 
-# system environment variables transferred to Spyder's os.environ, just delete/comment 
+# I've implemented a workaround that modifies sys.path in my interpreter's startup script.
+# This was an extension of my solution to another issue regarding shell environment
+# variable inheritance [1]. It will take the user's PYTHONPATH as specified in either
+# /etc/profile or ~/.profile and and insert it into the sys.path. If you don't need
+# system environment variables transferred to Spyder's os.environ, just delete/comment
 # out that portion of the script. My script is as follows:
 
 '''
