@@ -137,6 +137,10 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
+0.8.4     2015-04-17 Bugfix for parsing text files with unicode characters.
+
+0.8.3     ?          ?   
+
 0.8.2     ?          ?
 
 0.8.1     2015-03-07 Bugfix for windows. The data directory was not created.

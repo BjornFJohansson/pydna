@@ -108,10 +108,11 @@ def test_read_from_string():
     assert str(a.seq)=="ACGT"
 
 def test_read_from_unicode():
-    import codecs
-    with codecs.open("pth1.txt", "rU", "utf-8") as f: text = f.read()
+    with open("pth1.txt", "rU") as f: text = f.read()
     x,y = parse( text )
-    x.format()
+    assert x.format()[3270:3281] == '2micron 2\xc2\xb5' 
+
+    
 
 
 def test_read_from_file():
