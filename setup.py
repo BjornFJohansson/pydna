@@ -32,20 +32,15 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
 
 from setuptools import setup #, find_packages
 
-import textwrap, sys #, nose
+import textwrap, sys
 
 setup(  name='pydna',
         author          =__author__,
         author_email    =__email__,
         version=versioneer.get_version()[:5],
-        cmdclass=versioneer.get_cmdclass(),        
-        #cmdclass = {'build_ext': optional_build_ext},
-        #packages = find_packages(),
+        cmdclass=versioneer.get_cmdclass(),
         packages=['pydna',
                   'pydna.py_rstr_max',],
-
-        #ext_modules=[Extension('pydna.find_sub_strings', ['pydna/findsubstrings_numpy_arrays_cython.c'])],
-        #scripts=[],
         url='http://pypi.python.org/pypi/pydna/',
         license='LICENSE.txt',
         description='''Contains classes and code for representing double
@@ -57,9 +52,7 @@ setup(  name='pydna',
         "networkx",
         "appdirs",
         "prettytable",],
-        #test_suite = 'nose.collector',
         test_suite="run_tests.load_my_tests",
-        #include_dirs = [numpy.get_include()],
         zip_safe = False,
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',
