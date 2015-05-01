@@ -28,9 +28,14 @@ pydna
     :target: https://pypi.python.org/pypi/pydna/
     :alt: Wheel Status
 
+.. image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg?style=flat(Dependency Status)!
+    :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
+    :alt: versioneye
+
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
-cloning and PCR very simple is provided (see example below).
+cloning and PCR very simple is provided (see example below). 
+`Publication <http://www.biomedcentral.com/1471-2105/16/142/abstract>`_ describing pydna.
 
 ::
 
@@ -318,7 +323,7 @@ networkx (32,64) <http://www.lfd.uci.edu/~gohlke/pythonlibs/#networkx>
 Source Code Repository
 ----------------------
 
-Pydna is hosted by google code: 
+Pydna is hosted by [Github](https://github.com/BjornFJohansson/pydna)
 
 
 Distribution Structure

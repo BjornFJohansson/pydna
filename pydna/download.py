@@ -83,7 +83,7 @@ class Genbank():
 
         self.email=users_email #Always tell NCBI who you are
 
-        print "#####", proxy
+        #print "#####", proxy
 
         if proxy:
             parsed = urlparse(proxy)
@@ -243,9 +243,10 @@ class web():
                 warnings.warn("could not contact proxy server")
             self.proxy = urllib2.ProxyHandler({ scheme : parsed.geturl() })
         else:
-            proxy_handler = urllib2.ProxyHandler({})
-            opener = urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
+            pass
+            #proxy_handler = urllib2.ProxyHandler({})
+            #opener = urllib2.build_opener(proxy_handler)
+            #urllib2.install_opener(opener)
             #os.environ['http_proxy']=''
             #self.proxy = urllib2.ProxyHandler()
         #self.opener = urllib2.urlopen #build_opener(self.proxy)
