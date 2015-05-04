@@ -14,7 +14,7 @@
 import io, os, sys, types, warnings
 
 try:
-    from IPython.nbformat import current
+    from IPython import nbformat
     from IPython.core.interactiveshell import InteractiveShell
 except ImportError:
     warnings.warn("IPython not installed!")
@@ -56,7 +56,7 @@ else:
 
             # load the notebook object
             with io.open(path, 'r', encoding='utf-8') as f:
-                nb = current.read(f, 'json')
+                nb = nbformat.read(f, 'json')
 
 
             # create the module and add it to sys.modules

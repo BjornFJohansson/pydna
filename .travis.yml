@@ -44,11 +44,5 @@ after_deploy:
   - pip install pydna 
   - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
 
-notifications:
-  email:
-    recipients:
-      - pydna@googlegroups.com
-    on_success: change
-    on_failure: change
   
 #condition: "$TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
