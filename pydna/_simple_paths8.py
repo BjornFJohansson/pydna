@@ -45,7 +45,7 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
         edge_data = lambda u,v,n,E,I: (u,v,dict([E[n][I[n]]]))
     else:
         edge_data = lambda u,v,n,E,I: (u,v)
-        
+
     for path in _all_simple_paths_graph(G,source,target,cutoff=cutoff):
         edges = zip(path[:-1],path[1:])
         E = []  # list: items of each edge
@@ -68,7 +68,7 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
             if i == 0 and I[0] == 0:
                 break
 
-def all_circular_paths_edges(G, cutoff=None):      
+def all_circular_paths_edges(G):
     for path in sorted(nx.simple_cycles(G), key=len):
         edges = zip(path, path[1:]+[path[0]])
         N = []
@@ -79,7 +79,7 @@ def all_circular_paths_edges(G, cutoff=None):
         idx = [i for i in reversed(range(len(I)))]
         while True:
             path_edges = []
-            for i,(u,v) in enumerate(edges):            
+            for i,(u,v) in enumerate(edges):
                 path_edges += [(u,v,G[u][v][I[i]])]
             yield path_edges
             for i in idx:
@@ -88,7 +88,7 @@ def all_circular_paths_edges(G, cutoff=None):
                     break
             if i == 0 and I[0] == 0:
                 break
-                
+
 if __name__=='__main__':
     G = nx.MultiDiGraph()
     G.add_edge('a','b',weight=0.1)

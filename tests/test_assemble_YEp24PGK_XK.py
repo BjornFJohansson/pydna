@@ -41,8 +41,8 @@ class test_empty(unittest.TestCase):
         YEp24PGK_XK = YEp24PGK_XK.synced("gaattctgaaccagtcctaaaacgagtaaataggaccggcaattc") #YEp24PGK)
         
         self.assertTrue( pydna.eq(YEp24PGK_XK, YEp24PGK_XK_correct))
-        self.assertEqual( YEp24PGK_XK_correct.seguid() ,"HRVpCEKWcFsKhw/W+25ednUfldI" )
-        self.assertEqual( YEp24PGK_XK.seguid() ,"HRVpCEKWcFsKhw/W+25ednUfldI" )
+        self.assertEqual( YEp24PGK_XK_correct.seguid() ,"HRVpCEKWcFsKhw_W-25ednUfldI" )
+        self.assertEqual( YEp24PGK_XK.seguid() ,"HRVpCEKWcFsKhw_W-25ednUfldI" )
 
 if __name__ == '__main__':
     unittest.main()

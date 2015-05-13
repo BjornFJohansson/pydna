@@ -12,12 +12,19 @@ This module contain functions for primer design.
 '''
 import math
 from operator import itemgetter
+from Bio.Alphabet import Alphabet
+from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from pydna.amplify import Anneal, tmbresluc, Dseqrecord
 from pretty import pretty_str
 
 class Primer(SeqRecord):
+
+    def __init__(self, seq, *args, **kwargs):
+        if seq.alphabet == Alphabet():
+            seq.alphabet = IUPACAmbiguousDNA()
+        super(Primer, self).__init__(seq, *args, **kwargs)
 
     def __repr__(self):
         return self.__class__.__name__ \
@@ -117,9 +124,9 @@ def cloning_primers(template,
     Dseqrecord(-64)
     >>> pf,pr = pydna.cloning_primers(t)
     >>> pf
-    Primer(seq=Seq('atgactgctaacccttc', Alphabet()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
+    Primer(seq=Seq('atgactgctaacccttc', IUPACAmbiguousDNA()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('catcgtaagtttcgaac', Alphabet()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
+    Primer(seq=Seq('catcgtaagtttcgaac', IUPACAmbiguousDNA()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
     >>> pcr_prod = pydna.pcr(pf, pr, t)
     >>> pcr_prod
     Amplicon(64)
@@ -133,9 +140,9 @@ def cloning_primers(template,
     3tactgacgattgggaag...caagctttgaatgctac5
     >>> pf,pr = pydna.cloning_primers(t, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    Primer(seq=Seq('GGATCCatgactgctaacccttc', Alphabet()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
+    Primer(seq=Seq('GGATCCatgactgctaacccttc', IUPACAmbiguousDNA()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('GAATTCcatcgtaagtttcgaac', Alphabet()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
+    Primer(seq=Seq('GAATTCcatcgtaagtttcgaac', IUPACAmbiguousDNA()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
     >>> pcr_prod = pydna.pcr(pf, pr, t)
     >>> print pcr_prod.figure()
           5atgactgctaacccttc...gttcgaaacttacgatg3
@@ -149,12 +156,12 @@ def cloning_primers(template,
     >>>
     >>> from Bio.Seq import Seq
     >>> from Bio.SeqRecord import SeqRecord
-    >>> pf = Primer(Seq("atgactgctaacccttccttggtgttg"))
+    >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
     >>> pf,pr = pydna.cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
     Primer(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('GAATTCcatcgtaagtttcgaacgaaatgtcgtc', Alphabet()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
+    Primer(seq=Seq('GAATTCcatcgtaagtttcgaacgaaatgtcgtc', IUPACAmbiguousDNA()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
     >>> ampl = pydna.pcr(pf,pr,t)
     >>> print ampl.figure()
           5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
@@ -169,22 +176,22 @@ def cloning_primers(template,
     '''
 
     if fp and not rp:
-        fp = Primer(Seq(fp_tail)) + fp
+        fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
         p  = Anneal([fp], template).fwd_primers.pop()
         fp = Primer(p.footprint)
         fp_tail = Primer(p.tail)
-        rp = Primer(Seq(str(template[-(maxlength*3-len(rp_tail)):].reverse_complement().seq)))
+        rp = Primer(Seq(str(template[-(maxlength*3-len(rp_tail)):].reverse_complement().seq), IUPACAmbiguousDNA()))
         target_tm = formula(str(fp.seq).upper(), primerc=primerc, saltc=saltc)
     elif not fp and rp:
-        rp = Primer(Seq(rp_tail)) + rp
+        rp = Primer(Seq(rp_tail, IUPACAmbiguousDNA())) + rp
         p =  Anneal([rp], template).rev_primers.pop()
         rp = Primer(p.footprint)
         rp_tail = Primer(p.tail)
-        fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq)))
+        fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq), IUPACAmbiguousDNA()))
         target_tm = formula(str(rp.seq).upper(), primerc=primerc, saltc=saltc)
     elif not fp and not rp:
-        fp = Primer(Seq(str(template[:maxlength-len(fp_tail)].seq)))
-        rp = Primer(Seq(str(template[-maxlength+len(rp_tail):].reverse_complement().seq)))
+        fp = Primer(Seq(str(template[:maxlength-len(fp_tail)].seq), IUPACAmbiguousDNA()))
+        rp = Primer(Seq(str(template[-maxlength+len(rp_tail):].reverse_complement().seq), IUPACAmbiguousDNA()))
     else:
         raise Exception("Specify one or none of the primers, not both.")
 
@@ -219,6 +226,11 @@ def cloning_primers(template,
 
     #assert minlength<=len(fp)<=maxlength
     #assert minlength<=len(rp)<=maxlength
+
+    if fp.seq.alphabet == Alphabet():
+        fp.seq.alphabet = IUPACAmbiguousDNA()
+    if rp.seq.alphabet == Alphabet():
+        rp.seq.alphabet = IUPACAmbiguousDNA()
 
     return fp, rp
 
@@ -407,9 +419,9 @@ def assembly_primers(templates,
     >>> assemblyobj.linear_products
     [Contig(-195), Contig(-149), Contig(-147), Contig(-36), Contig(-36)]
     >>> assemblyobj.linear_products[0].seguid()
-    '1eNv3d/1PqDPP8qJZIVoA45Www8'
+    '1eNv3d_1PqDPP8qJZIVoA45Www8'
     >>> (a+b+c).seguid()
-    '1eNv3d/1PqDPP8qJZIVoA45Www8'
+    '1eNv3d_1PqDPP8qJZIVoA45Www8'
     >>> pydna.eq(a+b+c, assemblyobj.linear_products[0])
     True
     >>>
@@ -479,8 +491,8 @@ def assembly_primers(templates,
                                     saltc      = saltc,
                                     formula    = formula)
 
-        fp = Primer(Seq(fp_tail)) + fp
-        rp = Primer(Seq(rp_tail)) + rp
+        fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
+        rp = Primer(Seq(rp_tail, IUPACAmbiguousDNA())) + rp
 
         primer_pairs.append((fp, rp))
 
@@ -495,7 +507,7 @@ def assembly_primers(templates,
 
 if __name__=="__main__":
     import doctest
-    #doctest.testmod()
+    doctest.testmod()
 
     import pydna
     t=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")

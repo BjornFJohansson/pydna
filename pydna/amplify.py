@@ -462,7 +462,7 @@ class Anneal(object):
     Dseqrecord
     circular: False
     size: 51
-    ID: 51bp U96+TO06Y6pFs74SQx8M1IVTBiY
+    ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
     Name: 51bp_PCR_prod
     Description: Product_p1_p2
     Number of features: 4

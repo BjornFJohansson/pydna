@@ -15,7 +15,7 @@ class test_dsdna(unittest.TestCase):
         ''' test Dseqrecord linear & circular property'''
         a=Dseqrecord("attt")
         a.stamp()
-        self.assertTrue( a.verify_stamp()  == True)
+        self.assertTrue( a.verify_stamp() )
         a=Dseqrecord("attt", linear = True)
         self.assertTrue(a.linear     == True)
         self.assertTrue(a.circular   == False)
@@ -52,7 +52,7 @@ class test_dsdna(unittest.TestCase):
 
         a=Dseqrecord("attt")
         a.stamp()
-        self.assertTrue( a.verify_stamp()  == True)
+        self.assertTrue( a.verify_stamp() )
 
     def test_revcomp(self):
 
@@ -606,7 +606,7 @@ class test_dsdna(unittest.TestCase):
 
         ''')
 
-        self.assertTrue( a.seguid()=="di3hL8t2G4iQQsxlm/CtvnUMBz8" )
+        self.assertTrue( a.seguid()=="di3hL8t2G4iQQsxlm_CtvnUMBz8" )
 
         self.assertTrue( ([x.qualifiers["label"][0] for x in a.features] ==
         ['Acc65I-1', 'Acc65I-2', 'Acc65I-3', 'KpnI-1', 'KpnI-2',
@@ -752,18 +752,18 @@ class test_dsdna(unittest.TestCase):
             for i in range(len(sek)):
                 zek = sek[i:]+sek[:i]
                 cut_and_religate_Dseq(zek, enz, lin)
-                
-                
+
+
     def test_features_change_ori(self):
 
         s = read('''
                     LOCUS       New_DNA                   13 bp ds-DNA     circular     12-NOV-2013
                     DEFINITION  .
-                    ACCESSION   
-                    VERSION     
+                    ACCESSION
+                    VERSION
                     SOURCE      .
                     ORGANISM  .
-                    COMMENT     
+                    COMMENT
                     COMMENT     ApEinfo:methylated:1
                     FEATURES             Location/Qualifiers
                          misc_feature    join(9..10,12..13,1..1,3..6)
@@ -773,7 +773,7 @@ class test_dsdna(unittest.TestCase):
                                          /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
                                          width 5 offset 0
                     ORIGIN
-                            1 gattttaatc acc    
+                            1 gattttaatc acc
                     //''')
 
         #from pydna_helper import ape
@@ -781,7 +781,7 @@ class test_dsdna(unittest.TestCase):
         for i in range(1, len(s)):
             b=s.shifted(i)
             self.assertTrue(  str(b.features[0].extract(b).seq).lower()=="tcccgtttt")
-    
+
         s = read('''
                 LOCUS       New_DNA                   21 bp ds-DNA     circular     03-APR-2013
                 DEFINITION  a
@@ -811,13 +811,13 @@ class test_dsdna(unittest.TestCase):
 
         self.assertTrue( str(s.features[0].extract(s).seq)  == "CGGGAAAG" )
         self.assertTrue( str(s.features[1].extract(s).seq)  == "GTACCTTTGGATC" )
-    
+
         for i in range(1, len(s)):
-        
+
             b = s.shifted(i)
             self.assertTrue( [str(f.extract(b).seq) for f in b.features if f.qualifiers["label"][0]=='ins'][0] == "GTACCTTTGGATC" )
             self.assertTrue( [str(f.extract(b).seq) for f in b.features if f.qualifiers["label"][0]=='bb'][0] == "CGGGAAAG" )
-        
+
         from Bio.Restriction import Acc65I,KpnI, BamHI
 
         bb1, ins1 = sorted(s.cut(Acc65I, BamHI), key=len, reverse=True)
@@ -845,9 +845,9 @@ class test_dsdna(unittest.TestCase):
         pUC19        = read("./pUC19.gb")
         pUC19_LAC4   = read("./pUC_LAC4.gb")
         pUC19_LAC4_c = read("pUC_LAC4_correct_rotation.gb")
-        
+
         correct = str(pUC19_LAC4_c.seq).upper()
-        
+
         for i in range(1, len(pUC19_LAC4), 500):
             cand = pUC19_LAC4.shifted(i)
             self.assertEqual(str(cand.synced("tcgcgcgtttcggtgatgacggtga").seq).upper(),
@@ -855,23 +855,23 @@ class test_dsdna(unittest.TestCase):
                              str(pUC19_LAC4.synced(pUC19).seq).upper())
             print i,
         print
-        
+
 
 
     def test_synced3(self):
         pGUP1 = read("pGUP1_correct.gb")
         pGREG505 = read("pGREG505.gb")
         pGUP1_not_synced =  read("pGUP1_not_synced.gb")
-        self.assertEqual(pGUP1_not_synced.synced(pGREG505).seguid(), '42wIByERn2kSe/Exn405RYwhffU')
+        self.assertEqual(pGUP1_not_synced.synced(pGREG505).seguid(), '42wIByERn2kSe_Exn405RYwhffU')
 
 class test_sync(unittest.TestCase):
 
     def test_synced2(self):
         pUC19            = read("./pUC19.gb")
         pUC19_small_gene = read("./pUC19_small_gene.gb")
-        
+
         correct = str(pUC19_small_gene.seq).upper()
-        
+
         for i in range(1, len(pUC19_small_gene), 500):
             cand = pUC19_small_gene.shifted(i)
             self.assertEqual(str(cand.synced("tcgcgcgtttcggtgatgacggtga").seq).upper(),

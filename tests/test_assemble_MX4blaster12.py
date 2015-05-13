@@ -17,6 +17,9 @@ class test_empty(unittest.TestCase):
         primer     = primer[::-1]
         primer     = primer[37:]
 
+        for i,p in enumerate(primer):
+            assert int(p.id.split("_")[0]) == i
+
         ''' These are PCRs to get the genes and the terminator-promoters '''
         AgTEFp          = pcr(primer[524],primer[523],read("pAG25.gb"))
         hph             = pcr(primer[502],primer[501],read("pAG32.gb"))
@@ -58,13 +61,13 @@ class test_empty(unittest.TestCase):
         #Homologous recombination of the two tp-gene-tp building blocks
 
         a=Assembly( ( A_AgTEFp_b,
-                     B_hph_c,
-                     C_KlLEU2tt_d,
-                     pCAPs_pSU0_E_Z) , limit=28)
+                      B_hph_c,
+                      C_KlLEU2tt_d,
+                      pCAPs_pSU0_E_Z) , limit=28)
 
         YPK0_AgTEFp_hph_KlLEU2tt = a.circular_products[0]
 
-        AgTEFp_hph_KlLEU2tt_2 =  pcr(primer[166],primer[167], YPK0_AgTEFp_hph_KlLEU2tt)
+        AgTEFp_hph_KlLEU2tt_2 = pcr(primer[166],primer[167], YPK0_AgTEFp_hph_KlLEU2tt)
 
         A_KlLEU2tt_b   = pcr([primer[167],primer[567]], pCAPs_ZraI_KlLEU2tt)
         B_gal1_ISceI_c = pcr([primer[467],primer[468]], pCAPs_PCR_prod_gal1_ISceI_2)
@@ -86,7 +89,7 @@ class test_empty(unittest.TestCase):
 
         pCAPs_MX4blaster1=pCAPs_MX4blaster1.synced("tcgcgcgtttcggtgatgacggtgaaaacc")
 
-        self.assertTrue(  pCAPs_MX4blaster1.seguid()=="X9WqaNk2lw6FbZlJr995MaDfn+M" )
+        self.assertTrue(  pCAPs_MX4blaster1.seguid()=="X9WqaNk2lw6FbZlJr995MaDfn-M" )
 
         from Bio.Restriction import AjiI, AgeI
 
@@ -103,9 +106,9 @@ class test_empty(unittest.TestCase):
 
         GAL_GIN = pcr(primer[592],primer[593], GAL10prom + GIN11M86)
 
-        self.assertTrue( GAL_GIN.seguid() == "7Lkfw8dsz9/kkBU3XXnz4KAON3A" )
+        self.assertTrue( GAL_GIN.seguid() == "7Lkfw8dsz9_kkBU3XXnz4KAON3A" )
 
-        self.assertTrue( pCAPs.seguid() =="+XHU8OxITyHGTl9XtMrJ4NvEv3o" )
+        self.assertTrue( pCAPs.seguid() =="-XHU8OxITyHGTl9XtMrJ4NvEv3o" )
 
         pCAPs_GAL_GIN = ( pCAPs.cut(AjiI).pop() + GAL_GIN ).looped()
 
@@ -115,17 +118,18 @@ class test_empty(unittest.TestCase):
 
         self.assertTrue( GAL_GIN2.seguid() =="zdIU4vjdfOxLkTTnKzIxhphnewg" )
 
-        self.assertTrue( pCAPs_MX4blaster1.seguid() =="X9WqaNk2lw6FbZlJr995MaDfn+M" ) # 9772bp__a
+        self.assertTrue( pCAPs_MX4blaster1.seguid() =="X9WqaNk2lw6FbZlJr995MaDfn-M" ) # 9772bp__a
 
         pCAPs_MX4blaster1_AgeI = pCAPs_MX4blaster1.cut(AgeI).pop()
 
         pCAPs_MX4blaster1_AgeI.seq = pCAPs_MX4blaster1_AgeI.seq.fill_in()
 
-        a=Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=29)
+        a=Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=30)
 
         pCAPs_MX4blaster2 = a.circular_products[0]
 
         pCAPs_MX4blaster2 = pCAPs_MX4blaster2.synced("tcgcgcgtttcggtgatgacggtgaaaacc")
+        
         self.assertTrue( len(pCAPs_MX4blaster2) == 10566 )
         pCAPs_MX4blaster2_old = read("./pMX4blaster2_old.gb")
         self.assertTrue( len(pCAPs_MX4blaster2_old) == 10566 )
@@ -135,12 +139,3 @@ class test_empty(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-
-
-
-
-
-

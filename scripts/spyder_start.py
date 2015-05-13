@@ -9,5 +9,6 @@ dna_dirs = [x[0] for x in os.walk(dna_dir)]
 os.environ["pydna_dna_dirs"] = os.pathsep.join(dna_dirs)
 os.environ["PYTHONPATH"] = os.environ["pydna_dna_dirs"]
 '''
+
 from spyderlib import start_app
 start_app.main()

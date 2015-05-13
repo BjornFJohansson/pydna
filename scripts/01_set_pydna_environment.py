@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+'''
 import os
 import sys
 
@@ -14,9 +15,6 @@ os.environ["pydna_dna_dirs"] = os.pathsep.join(dna_dirs)
 os.environ["PYTHONPATH"] = os.environ["pydna_dna_dirs"]
 
 import pydna
-print
-print "*** pydna evironment set ***"
-
 '''
 
 # I've implemented a workaround that modifies sys.path in my interpreter's startup script.
@@ -27,7 +25,6 @@ print "*** pydna evironment set ***"
 # out that portion of the script. My script is as follows:
 
 '''
-
 import os
 import sys
 import subprocess
@@ -41,7 +38,7 @@ if env.has_key('PYTHONPATH'):
     pythonpath.reverse()
     for path in pythonpath:
         sys.path.insert(2, path)
-
+'''
 
 #os.environ["PYTHONPATH"] = os.pathsep.join(x[0] for x in os.walk(dna_dir) if not x[0].endswith("archive"))
 #pYPKa_A_KlLAC4

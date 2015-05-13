@@ -84,7 +84,7 @@ class test_utils(unittest.TestCase):
 
     def test_copy_features(self):
 
-        from Bio.SeqUtils.CheckSum import seguid
+        from pydna.utils import seguid
         from pydna import read,copy_features
         a=read("./pCAPs.gb")
         b=read("./pCAPs_fasta.txt")
@@ -105,11 +105,11 @@ class test_utils(unittest.TestCase):
             copy_features(a, newb)
             self.assertTrue( sorted([str(f.extract(a).seq).lower() for f in a.features if len(f)>10],key=len) == sorted([str(f.extract(newb).seq).lower() for f in newb.features],key=len))
 
-        seguid_bla = "riT98j2v4NxVS8sbw/Q8epCwQwo"
+        seguid_bla = "riT98j2v4NxVS8sbw_Q8epCwQwo"
         seguid_cre = "xLZ2xs2O8CUMmWh2OrhmNFp5ZLg"
 
         copy_features(a, b)
-        assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre,seguid_cre,seguid_bla,seguid_bla]
+        assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre, seguid_cre, seguid_bla, seguid_bla]
 
         b=read("./pCAPs_fasta.txt").looped()
 

@@ -3,7 +3,7 @@
 '''This module provides miscellaneous functions.
 
 '''
-from Bio.SeqUtils.CheckSum  import seguid
+from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
 from itertools import tee, izip
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
@@ -398,8 +398,15 @@ def SmallestRotation(s):
             return w*rep
     raise Exception("Reached end of factorization with no shortest rotation")
 
+def seguid(seq):
+    '''Returns the url safe SEGUID checksum for the sequence. This is the SEGUID
+    checksum with the '+' and '/' characters of standard Base64 encoding are respectively
+    replaced by '-' and '_'.
+    '''
+    return pretty_string( base64_seguid( str(seq) ).replace("+","-").replace("/","_") )
+
 def cseguid(seq):
-    '''Returns the cSEGUID for the sequence. The cSEGUID is the SEGUID checksum
+    '''Returns the cSEGUID for the sequence. The cSEGUID is the url safe SEGUID checksum
     calculated for the lexicographically minimal string rotation of a DNA sequence.
     Only defined for circular sequences.
     '''

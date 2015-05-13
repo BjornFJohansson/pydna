@@ -26,7 +26,7 @@ class test_pcr(unittest.TestCase):
 
         p = pcr(s,t)
 
-        self.assertTrue( p.seguid() == 'wYEpbWxO8tfgA/AL67wqGzYmc5k')
+        self.assertTrue( p.seguid() == 'wYEpbWxO8tfgA_AL67wqGzYmc5k')
 
 
 

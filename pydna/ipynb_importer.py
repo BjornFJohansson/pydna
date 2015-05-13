@@ -14,6 +14,7 @@
 import io, os, sys, types, warnings
 
 try:
+    from IPython import get_ipython
     from IPython import nbformat
     from IPython.core.interactiveshell import InteractiveShell
 except ImportError:
@@ -56,8 +57,13 @@ else:
 
             # load the notebook object
             with io.open(path, 'r', encoding='utf-8') as f:
-                nb = nbformat.read(f, 'json')
+                nb = nbformat.read(f, 4)
 
+            #print type(nb)
+            #print dir(nb)
+
+
+            # nbformat_minor cells nbformat metadata
 
             # create the module and add it to sys.modules
             # if name in sys.modules:
@@ -73,17 +79,18 @@ else:
             self.shell.user_ns = mod.__dict__
 
             try:
-              for cell in nb.worksheets[0].cells:
-                if cell.cell_type == 'code' and cell.language == 'python':
+              for cell in nb.cells:
+                #if cell.cell_type == 'code' and cell.language == 'python':
+                if cell.cell_type == 'code':
+                    #print cell.source
+                    #raw_input("!!!")
                     # transform the input to executable Python
-                    code = self.shell.input_transformer_manager.transform_cell(cell.input)
+                    code = self.shell.input_transformer_manager.transform_cell(cell.source)
                     # run the code in themodule
                     exec(code, mod.__dict__)
             finally:
                 self.shell.user_ns = save_user_ns
             return mod
-
-
 
     class NotebookFinder(object):
         """Module finder that locates IPython Notebooks"""
@@ -94,17 +101,16 @@ else:
             nb_path = find_notebook(fullname, path)
             if not nb_path:
                 return
-
             key = path
             if path:
                 # lists aren't hashable
                 key = os.path.sep.join(path)
-
             if key not in self.loaders:
                 self.loaders[key] = NotebookLoader(path)
             return self.loaders[key]
 
-
-
-
     sys.meta_path.append(NotebookFinder())
+
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()

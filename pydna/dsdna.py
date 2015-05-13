@@ -39,7 +39,6 @@ from Bio.SeqRecord          import SeqRecord
 from Bio.SeqFeature         import SeqFeature
 from Bio.SeqFeature         import FeatureLocation
 from Bio.SeqFeature         import CompoundLocation
-from Bio.SeqUtils.CheckSum  import seguid
 from Bio.SeqUtils           import GC
 from Bio.GenBank            import RecordParser
 from Bio.Data.CodonTable    import TranslationError
@@ -47,8 +46,9 @@ from Bio.Data.CodonTable    import TranslationError
 from _sequencetrace         import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
-from pydna.utils  import cseguid
-from pydna.pretty import pretty_str, pretty_string, pretty_unicode
+from pydna.utils  import seguid  as seg
+from pydna.utils  import cseguid as cseg
+from pydna.pretty import pretty_str, pretty_string #, pretty_unicode
 
 
 
@@ -322,7 +322,7 @@ class Dseq(Seq):
                   ovhg          = None,
                   linear        = None,
                   circular      = None,
-                  alphabet      = IUPACAmbiguousDNA()):
+                  alphabet      = IUPACAmbiguousDNA() ):
 
         watson = "".join(watson.split())
 
@@ -1150,8 +1150,7 @@ class Dseq(Seq):
         >>> from Bio.Restriction import BamHI,EcoRI
         >>> type(seq.cut(BamHI))
         <type 'list'>
-        >>> for frag in seq.cut(BamHI):
-        ...     print frag.fig()
+        >>> for frag in seq.cut(BamHI): print(frag.fig())
         Dseq(-5)
         g
         cctag
@@ -1398,11 +1397,11 @@ class Dseqrecord(SeqRecord):
 
         self.name = self.name[:16]
 
-        if self.id in ("","."):
-            self.id = self.name[:7]
+        #if self.id in ("","."):
+        #    self.id = self.name[:7]
 
-        if self.description ==".":
-            self.description = ""
+        #if self.description ==".":
+        #    self.description = ""
 
         if not 'date' in self.annotations:
             self.annotations.update({"date": datetime.date.today().strftime("%d-%b-%Y").upper()})
@@ -1419,23 +1418,55 @@ class Dseqrecord(SeqRecord):
         '''The circular property'''
         return self.seq.circular
 
+
+
+    @property
+    def locus(self):
+        ''' alias for name property '''
+        return self.name
+
+    @locus.setter
+    def locus(self, value):
+        ''' alias for name property '''
+        self.name = value
+        return
+
+
+
+    @property
+    def accession(self):
+        ''' alias for id property '''
+        return self.id
+
+    @accession.setter
+    def accession(self, value):
+        ''' alias for id property '''
+        self.id = value
+        return
+
+
+
     def seguid(self):
-        '''Returns the SEGUID [#]_ for the sequence.
+        '''Returns the url safe SEGUID [#]_ for the sequence.
+           This checksum is the same as seguid but with base64.urlsafe
+           encoding [#]_ instead of the normal base 64. This means that
+           the characters + and / are replaced with - and _ so that
+           the checksum can be a pert of and URL or a filename.
 
-       Examples
-       --------
-       >>> import pydna
-       >>> a=pydna.Dseqrecord("aaa")
-       >>> a.seguid()
-       'YG7G6b2Kj/KtFOX63j8mRHHoIlE'
+           Examples
+           --------
+           >>> import pydna
+           >>> a=pydna.Dseqrecord("aaaaaaa")
+           >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
+           '-bKGnebMkia5kNg_gF7IORXMnIU'
 
-       References
-       ----------
+           References
+           ----------
 
        .. [#] http://wiki.christophchamp.com/index.php/SEGUID
 
        '''
-        return pretty_string(seguid(self.seq))
+        return seg(self.seq)
 
     def isorf(self, table=1):
         '''Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
@@ -1575,7 +1606,7 @@ class Dseqrecord(SeqRecord):
         >>> from pydna import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.add_feature(2,4)
-        >>> print a.list_features()
+        >>> print(a.list_features())
         +----------+-----------+-------+-----+--------+--------------+------+------+
         | Feature# | Direction | Start | End | Length | id           | type | orf? |
         +----------+-----------+-------+-----+--------+--------------+------+------+
@@ -1604,39 +1635,53 @@ class Dseqrecord(SeqRecord):
         return pretty_string(round(GC(str(self.seq)), 1))
 
     def cseguid(self):
-        '''Returns the cSEGUID for the sequence. The cSEGUID is the SEGUID
-        checksum calculated for the lexicographically minimal string rotation
-        of the sequence or its reverse complement.
+        '''Returns the url safe cSEGUID for the sequence.
 
         Only defined for circular sequences.
 
-        The cSEGUID checksum uniqely identifies a circular sequence regardless
-        of where the origin is set.
+        The cSEGUID checksum uniqely identifies a circular
+        sequence regardless of where the origin is set.
+        The two Dseqrecord objects below are circular
+        permutations.
 
         Examples
         --------
 
         >>> import pydna
-        >>> a=pydna.Dseqrecord("aaat", circular=True)
+        >>> a=pydna.Dseqrecord("agtatcgtacatg", circular=True)
+        >>> a.cseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
+        'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
+
+        >>> a=pydna.Dseqrecord("gagtatcgtacat", circular=True)
         >>> a.cseguid()
-        'oopV+6158nHJqedi8lsshIfcqYA'
-        >>> a=pydna.Dseqrecord("ataa", circular=True)
-        >>> a.cseguid()
-        'oopV+6158nHJqedi8lsshIfcqYA'
+        'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
 
        '''
         if self.linear:
             raise Exception("cseguid is only defined for circular sequences.")
-        return cseguid(self.seq)
+        return cseg(self.seq)
 
-    def stamp(self):
-        '''Adds a seguid stamp to the description property. This will
-        show in the genbank format. The following string:
+    def stamp(self, chksum = (("SEGUID", seg),("cSEGUID", cseg))):
+        '''Adds a checksum to the description property. This will
+        show in the genbank format. Default is seguid for linear sequences
+        and cseguid for circular.
 
-        ``SEGUID <seguid>``
+        The following string:
 
-        will be appended to the description property of the Dseqrecord
-        object (string).
+        ``<type><seguid>``
+
+        For example:
+
+        ``SEGUID_<seguid>``
+
+        for linear sequences or:
+
+        ``cSEGUID_<seguid>``
+
+        for circular sequences will be appended to the description property
+        of the Dseqrecord object (string).
+
+        https://xkcd.com/1179/
 
         The stamp can be verified with :func:`verify_stamp`
 
@@ -1646,41 +1691,53 @@ class Dseqrecord(SeqRecord):
         >>> import pydna
         >>> a=pydna.Dseqrecord("aaa")
         >>> a.stamp()
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
         >>> a.description
-        '<unknown description> SEGUID YG7G6b2Kj/KtFOX63j8mRHHoIlE'
+        '<unknown description> SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
         >>> a.verify_stamp()
-        True
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
 
         See also
         --------
         pydna.dsdna.Dseqrecord.verify_stamp
         '''
-        pattern = "(SEGUID|seguid)\s*\S{27}"
-        try:
-            stamp = re.search(pattern, self.description).group()
-        except AttributeError:
-            stamp = "SEGUID {}".format(seguid(self.seq))
 
-        if not self.description:
-            self.description = stamp
-        elif not re.search(pattern, self.description):
-            self.description += " "+stamp
+        name, alg = {True:chksum[0], False:chksum[1]}[self.linear]
 
-    def verify_stamp(self):
+        now = datetime.datetime.utcnow().isoformat("T")
+
+        pattern = "({name})_\s*\S{{27}}_".format(name=name)
+
+        stamp = re.search(pattern, self.description)
+
+        if not stamp:
+            stamp = "{}_{}_{}".format(name,
+                                      alg(str(self.seq)),
+                                      now)
+            if not self.description:
+                self.description = stamp
+            elif not re.search(pattern, self.description):
+                self.description += " "+stamp
+        else:
+            raise Exception("sequence already stamped {}")
+
+        return pretty_str(stamp)
+
+    def verify_stamp(self, chksum = (("SEGUID", seg),("cSEGUID", cseg))):
         '''Verifies the SEGUID stamp in the description property is
        valid. True if stamp match the sequid calculated from the sequence.
        Exception raised if no stamp can be found.
 
         >>> import pydna
-        >>> a=pydna.Dseqrecord("aaa")
-        >>> a.annotations['date'] = '02-FEB-2013'
-        >>> a.seguid()
-        'YG7G6b2Kj/KtFOX63j8mRHHoIlE'
-        >>> print a.format("gb")
-        LOCUS       .                          3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  .
-        ACCESSION   <unknown id>
-        VERSION     <unknown id>
+        >>> b=pydna.read(">a\\naaa")
+        >>> b.annotations['date'] = '02-FEB-2013'
+        >>> b.seguid()
+        'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+        >>> print(b.format("gb"))
+        LOCUS       a                          3 bp    DNA     linear   UNK 02-FEB-2013
+        DEFINITION  a
+        ACCESSION   a
+        VERSION     a
         KEYWORDS    .
         SOURCE      .
           ORGANISM  .
@@ -1689,14 +1746,15 @@ class Dseqrecord(SeqRecord):
         ORIGIN
                 1 aaa
         //
-        >>> a.stamp()
-        >>> a
+        >>> b.stamp()
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE_...'
+        >>> b
         Dseqrecord(-3)
-        >>> print a.format("gb")
-        LOCUS       .                          3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  <unknown description> SEGUID YG7G6b2Kj/KtFOX63j8mRHHoIlE
-        ACCESSION   <unknown id>
-        VERSION     <unknown id>
+        >>> print(b.format("gb"))
+        LOCUS       a                          3 bp    DNA     linear   UNK 02-FEB-2013
+        DEFINITION  a SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE_...
+        ACCESSION   a
+        VERSION     a
         KEYWORDS    .
         SOURCE      .
           ORGANISM  .
@@ -1705,8 +1763,8 @@ class Dseqrecord(SeqRecord):
         ORIGIN
                 1 aaa
         //
-        >>> a.verify_stamp()
-        True
+        >>> b.verify_stamp()
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
         >>>
 
        See also
@@ -1714,13 +1772,13 @@ class Dseqrecord(SeqRecord):
        pydna.dsdna.Dseqrecord.stamp
 
        '''
-        pattern = "(SEGUID|seguid)\s*\S{27}"
-        try:
-            stamp = re.search(pattern, self.description).group()
-        except AttributeError:
-            raise Exception("No stamp present in the description property.")
-        return seguid(self.seq) == stamp[-27:]
+        name, alg = {True:chksum[0], False:chksum[1]}[self.linear]
+        pattern = "{name}_{chksum}".format(name=name, chksum=alg(self.seq))
 
+        if not pattern in self.description:
+            raise Exception("No stamp present in the description property.")
+        else:
+            return pretty_str(pattern)
 
 
 
@@ -1788,11 +1846,11 @@ class Dseqrecord(SeqRecord):
         Examples
         --------
         >>> import pydna
-        >>> a=pydna.Dseqrecord("aaa")
-        >>> a.annotations['date'] = '02-FEB-2013'
-        >>> a
+        >>> x=pydna.Dseqrecord("aaa")
+        >>> x.annotations['date'] = '02-FEB-2013'
+        >>> x
         Dseqrecord(-3)
-        >>> print a.format()
+        >>> print(x.format("gb"))
         LOCUS       .                          3 bp    DNA     linear   UNK 02-FEB-2013
         DEFINITION  .
         ACCESSION   <unknown id>
@@ -2403,7 +2461,7 @@ class Dseqrecord(SeqRecord):
         try:
             rs = ref.seguid()
         except AttributeError:
-            rs = seguid(ref)
+            rs = seg(ref)
 
         refresh = False
         cached  = None
@@ -2711,17 +2769,5 @@ def parse(data, ds = True):
     #retmode=text
 
 if __name__=="__main__":
-    #import doctest
-    #doctest.testmod()
-
-    import pydna
-
-    file_ = "/home/bjorn/python_packages/ypkpathway/tests/pth1.txt"
-
-    with open(file_, "rU") as f: text = f.read()
-
-    a, b = pydna.parse( text )
-
-    a.features
-
-    a.format("gb")
+    import doctest
+    doctest.testmod(optionflags=doctest.ELLIPSIS)

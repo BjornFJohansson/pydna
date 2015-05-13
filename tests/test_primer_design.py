@@ -27,7 +27,7 @@ class test_primer_design(unittest.TestCase):
 
         asm=Assembly(frags)
 
-        self.assertEqual(asm.linear_products[0].seguid(), "1eNv3d/1PqDPP8qJZIVoA45Www8")
+        self.assertEqual(asm.linear_products[0].seguid(), "1eNv3d_1PqDPP8qJZIVoA45Www8")
 
         frags=[]
 

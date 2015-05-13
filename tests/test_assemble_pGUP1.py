@@ -43,8 +43,8 @@ class test_empty(unittest.TestCase):
         self.assertEqual(len(pGUP1_correct), 9981)
         self.assertEqual(len(pGUP1), 9981)
         self.assertTrue( pydna.eq(pGUP1, pGUP1_correct) )        
-        self.assertEqual(pGUP1_correct.seguid(), "42wIByERn2kSe/Exn405RYwhffU")        
-        self.assertEqual(pGUP1.seguid(), "42wIByERn2kSe/Exn405RYwhffU")       
+        self.assertEqual(pGUP1_correct.seguid(), "42wIByERn2kSe_Exn405RYwhffU")        
+        self.assertEqual(pGUP1.seguid(), "42wIByERn2kSe_Exn405RYwhffU")       
 
 if __name__ == '__main__':
     unittest.main()

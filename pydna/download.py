@@ -221,6 +221,7 @@ class Genbank():
                 module_logger.warning('download error')
 
         if refresh or os.environ["pydna_cache"] == "refresh":
+            cache = shelve.open(os.path.join(os.environ["datadir"],"genbank.shelf"), protocol=2, writeback=False)
             cache[key] = result
 
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
@@ -277,6 +278,7 @@ class web():
                 module_logger.warning('download error')
 
         if refresh or os.environ["pydna_cache"] == "refresh":
+            cache = shelve.open(os.path.join(os.environ["datadir"],"genbank.shelf"), protocol=2, writeback=False)
             cache[key] = result
 
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
