@@ -6,10 +6,10 @@ install:
   - pip install -e .
  
 before_script:
-  - pip install -r requirements.txt
-  - pip install coveralls
+  #- pip install -r requirements.txt
+  #- pip install coveralls
   - pip install ipython
-  - python -c "import Ipython; print IPython.__version__"
+  - python -c "import IPython; print IPython.__version__"
   
 
   
