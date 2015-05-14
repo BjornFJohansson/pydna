@@ -39,10 +39,6 @@ else:
             if os.path.isfile(nb_path):
                 return nb_path
 
-
-
-
-
     class NotebookLoader(object):
         """Module Loader for IPython Notebooks"""
         def __init__(self, path=None):

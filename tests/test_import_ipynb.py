@@ -10,7 +10,11 @@ def test_ipynb_import():
 
     import sys
     
-    sys.path.append(".")
+    #sys.path.append(".")
+    import os
+
+    print "#"*500
+    print sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
     import mynotebook
 
