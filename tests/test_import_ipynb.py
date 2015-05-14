@@ -8,6 +8,10 @@ from pydna import ipynb_importer
 
 def test_ipynb_import():
 
+    import sys
+    
+    sys.path.append(".")
+
     import mynotebook
 
     assert mynotebook.foo() == "bar"

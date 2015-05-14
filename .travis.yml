@@ -18,8 +18,10 @@ script:
    #- python setup.py install
    #- python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    #- cd ../..
-   - nosetests -v -w tests --with-coverage --with-doctest
-   - nosetests -v -w pydna --with-coverage --with-doctest
+   #- nosetests -v -w tests --with-coverage --with-doctest
+   #- nosetests -v -w pydna --with-coverage --with-doctest
+    - nosetests -v -w tests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+    - nosetests -v -w pydna --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
 
 after_success:
   - coveralls

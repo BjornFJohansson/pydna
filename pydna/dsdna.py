@@ -1397,11 +1397,11 @@ class Dseqrecord(SeqRecord):
 
         self.name = self.name[:16]
 
-        #if self.id in ("","."):
-        #    self.id = self.name[:7]
+        if self.id == "<unknown id>":
+            self.id = "-"
 
-        #if self.description ==".":
-        #    self.description = ""
+        if self.description =="<unknown description>":
+            self.description = "@"
 
         if not 'date' in self.annotations:
             self.annotations.update({"date": datetime.date.today().strftime("%d-%b-%Y").upper()})
@@ -1444,7 +1444,16 @@ class Dseqrecord(SeqRecord):
         self.id = value
         return
 
+    @property
+    def definition(self):
+        ''' alias for description property '''
+        return self.description
 
+    @definition.setter
+    def definition(self, value):
+        ''' alias for id property '''
+        self.description = value
+        return
 
     def seguid(self):
         '''Returns the url safe SEGUID [#]_ for the sequence.
@@ -1693,7 +1702,7 @@ class Dseqrecord(SeqRecord):
         >>> a.stamp()
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
         >>> a.description
-        '<unknown description> SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
         >>> a.verify_stamp()
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
 
@@ -1714,7 +1723,7 @@ class Dseqrecord(SeqRecord):
             stamp = "{}_{}_{}".format(name,
                                       alg(str(self.seq)),
                                       now)
-            if not self.description:
+            if not self.description or self.description=="@":
                 self.description = stamp
             elif not re.search(pattern, self.description):
                 self.description += " "+stamp
@@ -1851,10 +1860,10 @@ class Dseqrecord(SeqRecord):
         >>> x
         Dseqrecord(-3)
         >>> print(x.format("gb"))
-        LOCUS       .                          3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  .
-        ACCESSION   <unknown id>
-        VERSION     <unknown id>
+        LOCUS       -                          3 bp    DNA     linear   UNK 02-FEB-2013
+        DEFINITION  @
+        ACCESSION   -
+        VERSION     -
         KEYWORDS    .
         SOURCE      .
           ORGANISM  .
