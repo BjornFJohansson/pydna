@@ -7,9 +7,10 @@ install:
  
 before_script:
   - pip install -r requirements.txt
-  - pip install ipython
   - pip install coveralls
-  - ls tests 
+  - pip install ipython
+  - python -c "import Ipython; print IPython.__version__"
+  
 
   
   
@@ -23,9 +24,9 @@ script:
    #- python setup.py install
    #- python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    #- cd ../..
-  - cd tests
-  - nosetests test_import_ipynb.py
-  - cd ..
+  #- cd tests
+  #- nosetests test_import_ipynb.py
+  #- cd ..
 
   #- cd tests
   #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS

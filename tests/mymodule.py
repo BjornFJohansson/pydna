@@ -1,4 +1,4 @@
-print "hello from mynotebook!"
+print "hello from mymodule!"
 
 def foo2():
     return "bar2"
