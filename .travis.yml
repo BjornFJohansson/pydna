@@ -10,7 +10,7 @@ before_script:
   #- pip install coveralls
   - pip install jsonschema
   - pip install ipython
-  - python -c "from IPython import get_ipython;from IPython import nbformat;from IPython.core.interactiveshell import InteractiveShellimport"
+  - python -c "from IPython import get_ipython;from IPython import nbformat;from IPython.core.interactiveshell import InteractiveShell"
 
   
 
