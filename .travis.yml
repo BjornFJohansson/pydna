@@ -9,7 +9,8 @@ before_script:
   #- pip install -r requirements.txt
   #- pip install coveralls
   - pip install ipython
-  - python -c "import IPython; print IPython.__version__"
+  - python -c "from IPython import get_ipython;from IPython import nbformat;from IPython.core.interactiveshell import InteractiveShellimport IPython; print IPython.__version__"
+
   
 
   
