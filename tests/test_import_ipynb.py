@@ -3,26 +3,19 @@
 
 import nose
 
-from pydna import ipynb_importer
-
-
 def test_ipynb_import():
 
-    import sys
-    
-    #sys.path.append(".")
-    import os
+    import mymodule
 
-    print "#"*500
-    print  sys.path   
-        
-    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+    assert mymodule.foo2() == "bar2"
 
-    print sys.path
+    from pydna import ipynb_importer
 
     import mynotebook
 
     assert mynotebook.foo() == "bar"
+
+    
 
 if __name__ == '__main__':
     nose.runmodule()

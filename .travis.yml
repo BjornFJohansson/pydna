@@ -4,10 +4,14 @@ python:
 install:
   - pip install --upgrade pip
   - pip install -e .
+  - 
 before_script:
   - pip install -r requirements.txt
   - pip install ipython
   - pip install coveralls
+  - ls tests 
+
+  
   
 script:
    #- mkdir test_install_directory
@@ -21,11 +25,13 @@ script:
    #- cd ../..
    #- nosetests -v -w tests --with-coverage --with-doctest
    #- nosetests -v -w pydna --with-coverage --with-doctest
-    - cd tests
-    - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-    - cd ../pydna
-    - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-    - cd ..
+
+
+  - cd tests
+  - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  - cd ../pydna
+  - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  - cd ..
 
 after_success:
   - coveralls
