@@ -10,9 +10,6 @@ sys.dont_write_bytecode = True
 os.environ["pydna_cache"]  = "nocache"
 
 def main():
-    
-
-
     print "      _             _                     _               _            _               _ _       _ "
     print "     | |           | |                   | |             | |          | |             (_) |     | |"
     print "  ___| |_ __ _ _ __| |_   _ __  _   _  __| |_ __   __ _  | |_ ___  ___| |_   ___ _   _ _| |_ ___| |"
