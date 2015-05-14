@@ -21,9 +21,9 @@ script:
    #- nosetests -v -w tests --with-coverage --with-doctest
    #- nosetests -v -w pydna --with-coverage --with-doctest
     - cd tests
-    - nosetests -v -w --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+    - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
     - cd ../pydna
-    - nosetests -v -w --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+    - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
     - cd ..
 
 after_success:
