@@ -4,7 +4,7 @@ python:
 install:
   - pip install --upgrade pip
   - pip install -e .
-  - 
+ 
 before_script:
   - pip install -r requirements.txt
   - pip install ipython
@@ -23,15 +23,15 @@ script:
    #- python setup.py install
    #- python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    #- cd ../..
-   #- nosetests -v -w tests --with-coverage --with-doctest
-   #- nosetests -v -w pydna --with-coverage --with-doctest
-
-
   - cd tests
-  - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-  - cd ../pydna
-  - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  - nosetests tests/test_import_ipynb.py
   - cd ..
+
+  #- cd tests
+  #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  #- cd ../pydna
+  #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  #- cd ..
 
 after_success:
   - coveralls
