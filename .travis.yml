@@ -24,7 +24,7 @@ script:
    #- python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    #- cd ../..
   - cd tests
-  - nosetests tests/test_import_ipynb.py
+  - nosetests test_import_ipynb.py
   - cd ..
 
   #- cd tests
