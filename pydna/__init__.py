@@ -36,9 +36,9 @@ Pydna caches results from the assembly2 dsdna and amplify
 modules. pydna sets an environmental variable "pydna_cache"
 which can have three different values:
 
-"cached"        A chache directory if created.        
+"cached"        A cache directory if created.
                 if possible, cached results are returned.
-                if chashed results are not available,
+                if cached results are not available,
                 new results are created and cached.
                 This is the default.
 
@@ -76,7 +76,7 @@ if cache not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
 
 if cache == "nocache":
-    os.environ["datadir"] = "NotCreated"
+    os.environ["pydna_data_dir"] = "NotCreated"
 else:
 
     import appdirs
@@ -84,15 +84,15 @@ else:
     # set data directory depending on environment
 
     if os.getenv("DRONE") or os.getenv("CI"):
-        datadir = os.path.join(os.getcwd(),"..","..","DATA")
+        pydna_data_dir = os.path.join(os.getcwd(),"..","..","DATA")
     else:
-        datadir = appdirs.user_data_dir("pydna")
+        pydna_data_dir = appdirs.user_data_dir("pydna")
 
     # create data directory
     try:
-        os.makedirs(datadir)
+        os.makedirs(pydna_data_dir)
     except OSError:
-        if not os.path.isdir( datadir ):
+        if not os.path.isdir( pydna_data_dir ):
             raise
 
     # create logger
@@ -100,20 +100,13 @@ else:
     import logging
     import logging.handlers
     logger = logging.getLogger("pydna")
-    hdlr = logging.handlers.RotatingFileHandler(os.path.join(datadir, 'pydna.log'), mode='a', maxBytes=0, backupCount=0, encoding='utf-8', delay=0)
+    hdlr = logging.handlers.RotatingFileHandler(os.path.join(pydna_data_dir, 'pydna.log'), mode='a', maxBytes=0, backupCount=0, encoding='utf-8', delay=0)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
     logger.setLevel(logging.WARNING)
-    logger.info('Assigning environmental variable datadir = {}'.format(datadir))
-    os.environ["datadir"] = datadir
-
-if not os.getenv("pydna_dna_dir"):
-    os.environ["pydna_dna_dir"] = u''
-
-if not os.getenv("pydna_dna_dirs"):
-    os.environ["pydna_dna_dirs"] = u''
-
+    logger.info('Assigning environmental variable pydna_data_dir = {}'.format(pydna_data_dir))
+    os.environ["pydna_data_dir"] = pydna_data_dir
 
 from pydna.amplify                                  import Anneal
 from pydna.amplify                                  import pcr

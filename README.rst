@@ -142,6 +142,26 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
+0.9.0     2015-05-26 seguid and cseguid are now url safe so they can be part of urls and
+					 file names.
+					 Dseqrecord.locus is an alias of Dseqrecord.name
+					 Dseqrecord.accession is an alias of Dseqrecord.id
+ 					 Dseqrecord.definition is an alias of Dseqrecord.description					 
+				     changed how circular assembly products are identified to use cseguid.
+					 removed proxy handling when proxy not set in download module.
+ 					 added CHANGELOG.md, currently empty.
+					 environment variable datadir is now pydna_data_dir.
+					 removed environmental variable pydna_dna_dir.
+					 if Dseqrecord is initiated with a name property that is longer than 
+					 16 characters, an exception is raised. 
+					 Default Dseqrecord name property is "na".
+					 Default Dseqrecord id property is "-".
+					 Dseqrecord __eq__ and __ne__ methods defined.
+					 Dseqrecord.write now overwrites an old sequence with the same 
+				     filename if the primary sequence is the same.
+					 Dseqrecord.read now only looks in current working directory.
+					 fixed ipynb_import test code.
+
 0.8.4     2015-04-17 Bugfix for parsing text files with unicode characters.
 
 0.8.3     ?          ?   

@@ -13,9 +13,7 @@ def test_ipynb_import():
 
     import mynotebook
 
-    assert mynotebook.foo() == "bar"
-
-    
+    assert mynotebook.foo() == "bar"    
 
 if __name__ == '__main__':
     nose.runmodule()

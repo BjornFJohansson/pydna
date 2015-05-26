@@ -440,7 +440,7 @@ class Anneal(object):
     >>> p2 = pydna.read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
     >>> ann = pydna.Anneal((p1, p2), template)
     >>> print ann.report()
-    Template <unknown name> 51 nt linear:
+    Template na 51 nt linear:
     Primer p1 anneals forward at position 23
     <BLANKLINE>
     Primer p2 anneals reverse at position 29
@@ -496,7 +496,7 @@ class Anneal(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify.shelf"), protocol=2, writeback=False)
             try:
                 cached = cache[key]
             except KeyError:
@@ -603,7 +603,7 @@ class Anneal(object):
             module_logger.warning('amplify error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["datadir"], "amplify.shelf"), protocol=2, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify.shelf"), protocol=2, writeback=False)
         cache[self.key] = self
         cache.close()
 

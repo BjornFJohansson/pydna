@@ -270,8 +270,8 @@ class Assembly(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            module_logger.info('open shelf file {}'.format(os.path.join(os.environ["datadir"],"assembly.shelf")))
-            cache = shelve.open(os.path.join(os.environ["datadir"], "assembly.shelf"), protocol=2, writeback=False)
+            module_logger.info('open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly.shelf")))
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly.shelf"), protocol=2, writeback=False)
 
             module_logger.info('created key = {}'.format(key))
             module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
@@ -313,7 +313,7 @@ class Assembly(object):
             module_logger.warning('Assembly error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["datadir"], "assembly.shelf"), protocol=2, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly.shelf"), protocol=2, writeback=False)
         cache[self.key] = self
         cache.close()
 
@@ -484,7 +484,8 @@ class Assembly(object):
 
         self.cG = self.G.copy()
         self.cG.remove_nodes_from(('5','3'))
-        circular_products=defaultdict(list)
+        #circular_products=defaultdict(list)
+        circular_products={}
 
         for pth in all_circular_paths_edges(self.cG):
 
@@ -519,17 +520,23 @@ class Assembly(object):
 
                 pred_frag = f
 
-            add=True
-            for cp in circular_products[len(result)]:
-                if (str(result.seq).lower() in str(cp.seq).lower()*2
-                    or
-                    str(result.seq).lower() == str(cp.seq.reverse_complement()).lower()*2):
-                    pass
-                    add=False
-            if add:
-                circular_products[len(result)].append( Contig( Dseqrecord(result, circular=True), source_fragments))
+            #add=True
+            #for cp in circular_products[len(result)]:
+            #    if (str(result.seq).lower() in str(cp.seq).lower()*2
+            #        or
+            #        str(result.seq).lower() == str(cp.seq.reverse_complement()).lower()*2):
+            #        pass
+            #        add=False
+            #        print "##--"
+            #if add:
+            #    circular_products[len(result)].append( Contig( Dseqrecord(result, circular=True), source_fragments))
 
-        self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
+            r = Dseqrecord(result, circular=True)
+            circular_products[r.cseguid()] = Contig(r, source_fragments )
+
+
+        #self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
+        self.circular_products = sorted(circular_products.values(), key=len, reverse=True)
 
 
     def __repr__(self):

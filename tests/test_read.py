@@ -110,10 +110,7 @@ def test_read_from_string():
 def test_read_from_unicode():
     with open("pth1.txt", "rU") as f: text = f.read()
     x,y = parse( text )
-    assert x.format()[3270:3281] == '2micron 2\xc2\xb5' 
-
-    
-
+    assert x.format()[3270:3281] == '2micron 2\xc2\xb5'
 
 def test_read_from_file():
     a = read("./read1.gb")

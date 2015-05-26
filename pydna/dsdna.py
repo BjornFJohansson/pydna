@@ -1395,7 +1395,12 @@ class Dseqrecord(SeqRecord):
                               "Seq, SeqRecord, Dseq or Dseqrecord object,"
                               " got {}").format(type(record)))
 
-        self.name = self.name[:16]
+        if len(self.name)>16:
+            raise Exception()
+        #self.name = self.name[:16]
+
+        if self.name == "<unknown name>":
+            self.name = "na"
 
         if self.id == "<unknown id>":
             self.id = "-"
@@ -1428,6 +1433,8 @@ class Dseqrecord(SeqRecord):
     @locus.setter
     def locus(self, value):
         ''' alias for name property '''
+        if len(value)>16:
+            raise Exception()
         self.name = value
         return
 
@@ -1860,7 +1867,7 @@ class Dseqrecord(SeqRecord):
         >>> x
         Dseqrecord(-3)
         >>> print(x.format("gb"))
-        LOCUS       -                          3 bp    DNA     linear   UNK 02-FEB-2013
+        LOCUS       na                         3 bp    DNA     linear   UNK 02-FEB-2013
         DEFINITION  @
         ACCESSION   -
         VERSION     -
@@ -1918,33 +1925,33 @@ class Dseqrecord(SeqRecord):
 
        '''
         if not filename:
-            filename = self.description + "." + f
-            # invent a name if note given
+            filename = "{name}.{type}".format(name=self.description, type=f)
+            # invent a name if none given
         if isinstance(filename, basestring):
             if os.path.isfile(filename):
+                len_new    = len(self)
                 seguid_new = self.seguid()
                 old_file   = read(filename)
+                len_old    = len(old_file)
                 seguid_old = old_file.seguid()
-                # if seguids and topology are the same, nothing is written
-                if seguid_new == seguid_old and self.circular == old_file.circular:
-                    os.utime(filename, None)
-                    # update last change time
-                else:
+                if seguid_new != seguid_old or self.circular != old_file.circular:
+                    # If new sequence is different, the old file is saved with "OLD" suffix
                     name, ext = os.path.splitext(filename)
                     old_filename = "{}_OLD{}".format(name, ext)
                     os.rename(filename, old_filename)
-                    print('Sequence change\n'
-                          '{} {} bp seguid {}\n'
-                          '{} {} bp seguid {}\n').format(old_filename, len(old_file), seguid_old, filename, len(self), seguid_new )
-                    with open(filename, "w") as fp:
-                        fp.write(self.format(f))
-
-            else:
-                with open(filename, "w") as fp:
-                    fp.write(self.format(f))
+                    print('Sequence changed!\n'
+                          '{old_filename:<{w}} {len_old:>{wn}} bp seguid {seguid_old}\n'
+                          '{filename:<{w}} {len_new::>{wn}} bp seguid {seguid_new}\n').format(old_filename=old_filename,
+                                                                                      len_old=len_old,
+                                                                                      seguid_old=seguid_old,
+                                                                                      filename=filename,
+                                                                                      len_new=len_new,
+                                                                                      seguid_new=seguid_new,
+                                                                                      w=max(len(filename),len(old_filename)),
+                                                                                      wn=len(str(max(len_new, len_old))))
+            with open(filename, "w") as fp: fp.write(self.format(f))
         else:
-            with filename as fp:
-                fp.write(self.format(f))
+            raise Exception("filename has to be a string, got", type(filename))
 
     def __str__(self):
         return ( "Dseqrecord\n"
@@ -2124,6 +2131,17 @@ class Dseqrecord(SeqRecord):
                 answer.features = self.features
             answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
         return answer
+
+    def __eq__( self, other ):
+        try:
+            if self.seq == other.seq and str(self.__dict__) == str(other.__dict__):
+                return True
+        except AttributeError:
+            pass
+        return False
+
+    def __ne__( self, other ):
+        return not self.__eq__(other)
 
     def linearize(self, *enzymes):
         '''This method is similar to :func:`cut` but throws an exception if there
@@ -2481,7 +2499,7 @@ class Dseqrecord(SeqRecord):
 
 
         if csh in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["datadir"],"synced.shelf"), protocol=2, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"synced.shelf"), protocol=2, writeback=False)
             try:
                 cached = cache[str(key)]
             except KeyError:
@@ -2588,7 +2606,7 @@ def read(data, ds = True):
     try:
         results = results.pop()
     except IndexError:
-        raise ValueError("No sequences found in data ({})".format(data[:30]))
+        raise ValueError("No sequences found in data:\n({})".format(data[:79]))
     return results
 
 
@@ -2709,24 +2727,12 @@ def parse(data, ds = True):
     if not hasattr(data, '__iter__'):
         data = (data,)
 
-    drs = [os.getcwd()]
-
-    if os.environ["pydna_dna_dirs"]:
-        drs+= os.environ["pydna_dna_dirs"].split(os.pathsep)
-
     for item in data:
-        for dr in drs:
-            fn = os.path.join(dr, item )
-            try:
-                with open(fn, 'rU') as f:
-                    raw+= f.read()
-                    break
-            except IOError:
-                pass
-        else:
+        #fn = os.path.join(dr, item )
+        try:
+            with open(item, 'rU') as f: raw+= f.read()
+        except IOError:
             raw+=textwrap.dedent(item).strip()
-
-
 
     pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
     #raw = raw.replace( '\r\n', '\n')
@@ -2780,3 +2786,6 @@ def parse(data, ds = True):
 if __name__=="__main__":
     import doctest
     doctest.testmod(optionflags=doctest.ELLIPSIS)
+
+    #b= read(">a\naaa")
+
