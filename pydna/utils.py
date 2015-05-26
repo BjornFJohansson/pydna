@@ -403,7 +403,7 @@ def seguid(seq):
     checksum with the '+' and '/' characters of standard Base64 encoding are respectively
     replaced by '-' and '_'.
     '''
-    return pretty_string( base64_seguid( str(seq) ).replace("+","-").replace("/","_") )
+    return pretty_string( base64_seguid( str(seq).upper() ).replace("+","-").replace("/","_") )
 
 def cseguid(seq):
     '''Returns the cSEGUID for the sequence. The cSEGUID is the url safe SEGUID checksum
@@ -411,7 +411,7 @@ def cseguid(seq):
     Only defined for circular sequences.
     '''
     from Bio.Seq import reverse_complement as rc
-    return pretty_string( seguid( min( SmallestRotation(str(seq)), SmallestRotation(str(rc(seq))))))
+    return pretty_string( seguid( min( SmallestRotation(str(seq).upper()), SmallestRotation(str(rc(seq)).upper()))))
 
 if __name__ == "__main__":
     import doctest
