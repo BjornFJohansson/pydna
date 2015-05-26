@@ -100,7 +100,7 @@ class test_parse(unittest.TestCase):
 
 
     def test_parse2(self):
-        from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA
+        from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
         seqs = parse('./RefDataBjorn.fas')
 
@@ -109,7 +109,7 @@ class test_parse(unittest.TestCase):
 
         for i,s in enumerate(seqs):
             a = s.description
-            b = a.split("|")
+            b = a.split()
             c =  "|".join([b[0],b[1],b[3]])
             s.id = b[2].replace(" ","_")+"_"+str(i)
             s.description = ""

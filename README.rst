@@ -153,9 +153,10 @@ version   date       comment
 					 environment variable datadir is now pydna_data_dir.
 					 removed environmental variable pydna_dna_dir.
 					 if Dseqrecord is initiated with a name property that is longer than 
-					 16 characters, an exception is raised. 
+					 16 characters, it is truncated to 16 chars and a warning is issued. 
 					 Default Dseqrecord name property is "na".
 					 Default Dseqrecord id property is "-".
+					 Default Dseqrecord description property is "@".
 					 Dseqrecord __eq__ and __ne__ methods defined.
 					 Dseqrecord.write now overwrites an old sequence with the same 
 				     filename if the primary sequence is the same.

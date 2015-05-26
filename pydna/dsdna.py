@@ -26,6 +26,7 @@ import math
 import glob
 import colorsys
 import shelve
+from warnings import warn
 
 from prettytable import PrettyTable
 
@@ -1396,8 +1397,9 @@ class Dseqrecord(SeqRecord):
                               " got {}").format(type(record)))
 
         if len(self.name)>16:
-            raise Exception()
-        #self.name = self.name[:16]
+            short_name = self.name[:16]
+            warn("name property {} truncated to 16 chars {}".format(self.name, short_name))
+            self.name = short_name
 
         if self.name == "<unknown name>":
             self.name = "na"
