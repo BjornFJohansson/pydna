@@ -134,6 +134,9 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
+0.9.1     2015-05-26 fixed critical error in the calculation of seguid and cseguid 
+                     checksums
+
 0.9.0     2015-05-26 seguid and cseguid are now url safe so they can be part of urls and
                      file names.
                      Dseqrecord.locus is an alias of Dseqrecord.name
