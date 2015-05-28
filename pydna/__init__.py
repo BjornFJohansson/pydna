@@ -60,6 +60,7 @@ which can have three different values:
 '''
 
 import os
+import sys
 
 global user_name
 user_name= "username_not_set"
@@ -86,7 +87,7 @@ else:
     if os.getenv("DRONE") or os.getenv("CI"):
         pydna_data_dir = os.path.join(os.getcwd(),"..","..","DATA")
     else:
-        pydna_data_dir = appdirs.user_data_dir("pydna")
+        pydna_data_dir = appdirs.user_data_dir("pydna").encode(sys.getfilesystemencoding())
 
     # create data directory
     try:

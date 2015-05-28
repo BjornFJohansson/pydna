@@ -13,8 +13,12 @@ pydna
     :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/v/pydna.png
-    :target: https://pypi.python.org/pypi//pydna/
+    :target: https://pypi.python.org/pypi/pydna/
     :alt: Downloads
+
+.. image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
+    :target: https://github.com/BjornFJohansson/pydna
+    :alt: Github
     
 .. image:: https://img.shields.io/pypi/dm/pydna.png
     :target: https://pypi.python.org/pypi/pydna/
