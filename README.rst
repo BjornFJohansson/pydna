@@ -138,6 +138,10 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
+0.9.2     2015-05-28 pydna_data_dir is encoded to a string in __init__.py instead of 
+                     unicode. The Popen module does not accept environment variables that 
+                     are not strings.
+
 0.9.1     2015-05-26 fixed critical error in the calculation of seguid and cseguid 
                      checksums
 
