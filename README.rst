@@ -5,6 +5,9 @@ pydna
 .. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
     :target: https://travis-ci.org/BjornFJohansson/pydna
 
+.. image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true
+    :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
+
 .. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master  
     :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master 
   
