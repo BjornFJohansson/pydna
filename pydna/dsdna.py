@@ -2501,7 +2501,7 @@ class Dseqrecord(SeqRecord):
 
 
         if csh in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"synced.shelf"), protocol=2, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"synced"), protocol=2, writeback=False)
             try:
                 cached = cache[str(key)]
             except KeyError:

@@ -496,7 +496,7 @@ class Anneal(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify.shelf"), protocol=2, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=2, writeback=False)
             try:
                 cached = cache[key]
             except KeyError:
@@ -603,7 +603,7 @@ class Anneal(object):
             module_logger.warning('amplify error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify.shelf"), protocol=2, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=2, writeback=False)
         cache[self.key] = self
         cache.close()
 

@@ -270,8 +270,8 @@ class Assembly(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            module_logger.info('open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly.shelf")))
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly.shelf"), protocol=2, writeback=False)
+            module_logger.info('open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=2, writeback=False)
 
             module_logger.info('created key = {}'.format(key))
             module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
@@ -313,7 +313,7 @@ class Assembly(object):
             module_logger.warning('Assembly error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly.shelf"), protocol=2, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=2, writeback=False)
         cache[self.key] = self
         cache.close()
 
