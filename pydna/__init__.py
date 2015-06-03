@@ -67,6 +67,8 @@ import subprocess
 
 cache = os.getenv("pydna_cache") or "cached"
 
+os.environ["pydna_cache"] = cache
+
 if cache not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
 
