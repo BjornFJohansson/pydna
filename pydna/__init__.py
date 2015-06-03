@@ -6,8 +6,8 @@
 # as part of this package.
 
 '''
-    Python-dna
-    ~~~~~~~~~~
+    pydna
+    ~~~~~
 
     The pydna package.
 
@@ -61,17 +61,11 @@ which can have three different values:
 
 import os
 import sys
+import shutil
+import errno
+import subprocess
 
-global user_name
-user_name= "username_not_set"
-global user_email
-user_email = "user_email_not_set"
-
-try:
-    cache = os.environ["pydna_cache"]
-except KeyError:
-    cache = "cached"
-    os.environ["pydna_cache"]  = cache
+cache = os.getenv("pydna_cache") or "cached"
 
 if cache not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
@@ -183,3 +177,29 @@ try:
     del findsubstrings_suffix_arrays_python
 except NameError:
     pass
+
+
+def delete_cache():
+    try:
+        shutil.rmtree( os.environ["pydna_data_dir"] )
+    except OSError, e:
+        if e.errno == errno.ENOENT:
+            return "no cache to delete."
+    return "cache deleted."
+
+def open_cache():
+
+    d = os.environ["pydna_data_dir"]
+
+    if sys.platform=='win32':
+        subprocess.Popen(['start', d], shell= True)
+
+    elif sys.platform=='darwin':
+        subprocess.Popen(['open', d])
+
+    else:
+        try:
+            subprocess.Popen(['xdg-open', d])
+        except OSError:
+            return "no cache to open."
+
