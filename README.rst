@@ -141,6 +141,10 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== =====================================================================
 version   date       comment
 =======   ========== =====================================================================
+0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions. 
+                     This release tries to solve this by not specifying file extensions
+                     for the cache files. Two functions are added, pydna. 
+
 0.9.2     2015-05-28 pydna_data_dir is encoded to a string in __init__.py instead of 
                      unicode. The Popen module does not accept environment variables that 
                      are not strings.
