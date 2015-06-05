@@ -278,7 +278,7 @@ class Assembly(object):
 
             try:
                 cached = cache[key]
-            except KeyError:
+            except:
                 if os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
                 else:
