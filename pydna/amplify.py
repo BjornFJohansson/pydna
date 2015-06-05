@@ -14,6 +14,7 @@ import textwrap
 import copy
 import operator
 import os
+import cPickle
 
 from math                           import log10
 from Bio.Seq                        import Seq
@@ -496,10 +497,10 @@ class Anneal(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=2, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
             try:
                 cached = cache[key]
-            except KeyError:
+            except:
                 if os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
                 else:
