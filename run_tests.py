@@ -4,10 +4,23 @@
 import os
 import sys
 import nose
+import appdirs
+import shutil
+import errno
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
-os.environ["pydna_cache"]  = "nocache"
+
+if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
+    os.environ["pydna_data_dir"] = os.path.join(os.getcwd(),"..","..","DATA")
+else:
+    os.environ["pydna_data_dir"] = appdirs.user_data_dir("pydna_test").encode(sys.getfilesystemencoding())
+    try:
+        shutil.rmtree( os.environ["pydna_data_dir"] )
+    except OSError, e:
+        if e.errno == errno.ENOENT:
+            print "no cache to delete."
+    print "cache deleted."
 
 def main():
     print "      _             _                     _               _            _               _ _       _ "

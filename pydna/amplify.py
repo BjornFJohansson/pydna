@@ -604,7 +604,7 @@ class Anneal(object):
             module_logger.warning('amplify error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=2, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
         cache[self.key] = self
         cache.close()
 
