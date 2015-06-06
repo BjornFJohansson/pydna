@@ -180,17 +180,15 @@ def delete_cache():
 
 def open_cache():
 
-    d = os.environ["pydna_data_dir"]
-
     if sys.platform=='win32':
-        subprocess.Popen(['start', d], shell= True)
+        subprocess.Popen(['start', os.environ["pydna_data_dir"]], shell= True)
 
     elif sys.platform=='darwin':
-        subprocess.Popen(['open', d])
+        subprocess.Popen(['open', os.environ["pydna_data_dir"]])
 
     else:
         try:
-            subprocess.Popen(['xdg-open', d])
+            subprocess.Popen(['xdg-open', os.environ["pydna_data_dir"]])
         except OSError:
             return "no cache to open."
 

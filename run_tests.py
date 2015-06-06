@@ -41,6 +41,8 @@ def main():
     os.chdir(os.path.join(dname,"pydna"))
     nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
     os.chdir(cwd)
+    
+    print "cache files", os.listdir( os.environ["pydna_data_dir"] ) 
 
     print "                  _               _            _               _ _          __ _       _     _              _ _ "
     print "                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |"
