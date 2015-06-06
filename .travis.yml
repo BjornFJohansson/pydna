@@ -22,11 +22,12 @@ script:
    #- python setup.py install
    #- python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
    #- cd ../..
-  - cd tests
-  - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-  - cd ../pydna
-  - nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-  - cd ..
+  - python run_tests.py
+  #- cd tests
+  #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  #- cd ../pydna
+  #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
+  #- cd ..
 
 after_success:
   - coveralls
