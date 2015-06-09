@@ -69,7 +69,7 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
                 break
 
 def all_circular_paths_edges(G):
-    for path in sorted(nx.simple_cycles(G), key=len):
+    for path in sorted(nx.simple_cycles(G), key=len, reverse =True):
         edges = zip(path, path[1:]+[path[0]])
         N = []
         for u,v in edges:

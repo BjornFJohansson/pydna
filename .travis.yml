@@ -13,21 +13,7 @@ before_script:
   - pip install ipython
   
 script:
-   #- mkdir test_install_directory
-   #- python setup.py sdist
-   #- cp ./dist/pydna* ./test_install_directory/
-   #- cd test_install_directory
-   #- tar -zxvf pydna*
-   #- cd pydna*
-   #- python setup.py install
-   #- python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
-   #- cd ../..
   - python run_tests.py
-  #- cd tests
-  #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-  #- cd ../pydna
-  #- nosetests --all-modules --verbosity=3 --nocapture --with-doctest --doctest-options=+ELLIPSIS
-  #- cd ..
 
 after_success:
   - coveralls

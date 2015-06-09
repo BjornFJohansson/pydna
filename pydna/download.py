@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 '''Provides a class for downloading sequences from genbank.
 '''
+import cPickle
+import shelve
+
 import re
 import os
 import urllib2
 import warnings
 import sys
-import cPickle
 
 from urlparse               import urlparse
 from urlparse               import urlunparse
@@ -15,7 +17,7 @@ from Bio                    import Entrez
 from Bio.SeqUtils.CheckSum  import seguid
 
 from pydna.dsdna import read
-import shelve
+
 
 from pydna.pretty import pretty_str
 from pydna.dsdna import Dseqrecord

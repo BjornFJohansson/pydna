@@ -9,8 +9,10 @@ sequences separating the overlapping regions form edges.
 
 '''
 
-import logging
+import cPickle
+import shelve
 
+import logging
 module_logger = logging.getLogger("pydna."+__name__)
 
 import itertools
@@ -18,7 +20,6 @@ import networkx as nx
 import operator
 import random
 import os
-import cPickle
 
 from copy import copy
 from textwrap import dedent
@@ -38,7 +39,7 @@ from findsubstrings_suffix_arrays_python import terminal_overlap
 from orderedset import OrderedSet
 from pydna.pretty                   import pretty_str
 
-import shelve
+
 
 class Fragment(Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.

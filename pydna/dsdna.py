@@ -12,6 +12,8 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
+import cPickle
+import shelve
 
 import copy
 import datetime
@@ -25,8 +27,7 @@ import textwrap
 import math
 import glob
 import colorsys
-import shelve
-import cPickle
+
 from warnings import warn
 
 from prettytable import PrettyTable
@@ -51,7 +52,7 @@ from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils  import seguid  as seg
 from pydna.utils  import cseguid as cseg
 from pydna.pretty import pretty_str, pretty_string #, pretty_unicode
-
+import IPython
 
 
 
@@ -1931,6 +1932,8 @@ class Dseqrecord(SeqRecord):
             filename = "{name}.{type}".format(name=self.description, type=f)
             # invent a name if none given
         if isinstance(filename, basestring):
+            name, ext = os.path.splitext(filename)
+            result = "###[{name}]({filename})".format(name=name, filename=filename)
             if os.path.isfile(filename):
                 len_new    = len(self)
                 seguid_new = self.seguid()
@@ -1939,12 +1942,11 @@ class Dseqrecord(SeqRecord):
                 seguid_old = old_file.seguid()
                 if seguid_new != seguid_old or self.circular != old_file.circular:
                     # If new sequence is different, the old file is saved with "OLD" suffix
-                    name, ext = os.path.splitext(filename)
                     old_filename = "{}_OLD{}".format(name, ext)
                     os.rename(filename, old_filename)
-                    print('Sequence changed!\n'
-                          '{old_filename:<{w}} {len_old:>{wn}} bp seguid {seguid_old}\n'
-                          '{filename:<{w}} {len_new::>{wn}} bp seguid {seguid_new}\n').format(old_filename=old_filename,
+                    result = ('#Sequence changed!\n'
+                              '[{old_filename}]({old_filename}) {len_old} bp seguid {seguid_old}\n\n'
+                              '[{filename}]({filename}) {len_new} bp seguid {seguid_new}\n').format(old_filename=old_filename,
                                                                                       len_old=len_old,
                                                                                       seguid_old=seguid_old,
                                                                                       filename=filename,
@@ -1953,8 +1955,11 @@ class Dseqrecord(SeqRecord):
                                                                                       w=max(len(filename),len(old_filename)),
                                                                                       wn=len(str(max(len_new, len_old))))
             with open(filename, "w") as fp: fp.write(self.format(f))
+
         else:
             raise Exception("filename has to be a string, got", type(filename))
+        return IPython.display.Markdown(result)
+
 
     def __str__(self):
         return ( "Dseqrecord\n"

@@ -70,7 +70,7 @@ os.environ["pydna_cache"] = os.getenv("pydna_cache") or "cached"
 
 if os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not either cached, nocache, refresh or compare")
-    
+
 os.environ["pydna_data_dir"] = os.getenv("pydna_data_dir") or appdirs.user_data_dir("pydna").encode(sys.getfilesystemencoding())
 
 # create data directory
@@ -92,7 +92,7 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.WARNING)
 logger.info('Assigning environmental variable pydna_data_dir = {}'.format( os.environ["pydna_data_dir"] ))
-    
+
 
 from pydna.amplify                                  import Anneal
 from pydna.amplify                                  import pcr
@@ -117,6 +117,7 @@ from pydna.utils                                    import shift_origin
 from pydna.utils                                    import pairwise
 from pydna.utils                                    import cseguid
 from pydna.primer_design                            import Primer
+from pydna.pretty                                   import pretty_str
 
 try:
     del primer_design
@@ -170,22 +171,23 @@ except NameError:
     pass
 
 
-def delete_cache():
-    try:
-        shutil.rmtree( os.environ["pydna_data_dir"] )
-    except OSError, e:
-        if e.errno == errno.ENOENT:
-            return "no cache to delete."
-    return "cache deleted."
+def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
+    msg = ""
+    for file_ in delete:
+        msg += file_
+        try:
+            os.remove( os.path.join( os.environ["pydna_data_dir"], file_) )
+            msg += " deleted.\n"
+        except OSError, e:
+            if e.errno == errno.ENOENT:
+                msg += " no file to delete.\n"
+    return pretty_str(msg)
 
 def open_cache():
-
     if sys.platform=='win32':
         subprocess.Popen(['start', os.environ["pydna_data_dir"]], shell= True)
-
     elif sys.platform=='darwin':
         subprocess.Popen(['open', os.environ["pydna_data_dir"]])
-
     else:
         try:
             subprocess.Popen(['xdg-open', os.environ["pydna_data_dir"]])

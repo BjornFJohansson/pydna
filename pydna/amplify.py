@@ -7,6 +7,9 @@ circular templates are handled correctly.
 
 '''
 
+import cPickle
+import shelve
+
 import itertools
 import math
 import re
@@ -14,7 +17,7 @@ import textwrap
 import copy
 import operator
 import os
-import cPickle
+
 
 from math                           import log10
 from Bio.Seq                        import Seq
@@ -27,10 +30,9 @@ from Bio.SeqFeature                 import SeqFeature
 from Bio.SeqFeature                 import CompoundLocation
 from Bio.SeqFeature                 import FeatureLocation
 from pydna.dsdna                    import rc
-from pydna.dsdna                    import parse
 from pydna.dsdna                    import Dseqrecord
 from pydna.pretty                   import pretty_str, pretty_unicode
-import shelve
+
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -496,7 +498,6 @@ class Anneal(object):
         key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
-
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
             try:
                 cached = cache[key]
