@@ -12,6 +12,7 @@ os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
 
 if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
+    print "Continouos integration"
     os.environ["pydna_data_dir"] = os.path.join(os.getcwd(),"..","..","DATA")
 else:
     os.environ["pydna_data_dir"] = appdirs.user_data_dir("pydna_test").encode(sys.getfilesystemencoding())
@@ -41,8 +42,8 @@ def main():
     os.chdir(os.path.join(dname,"pydna"))
     nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
     os.chdir(cwd)
-    
-    print "cache files", os.listdir( os.environ["pydna_data_dir"] ) 
+
+    print "cache files", os.listdir( os.environ["pydna_data_dir"] )
 
     print "                  _               _            _               _ _          __ _       _     _              _ _ "
     print "                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |"
