@@ -1241,6 +1241,22 @@ class Dseq(Seq):
             frags = newfrags[-1:] + newfrags[:-1]
         return frags
 
+    def seguid(self):
+        rc_ovhg = len(self.watson) - len(self.crick) + self._ovhg
+        if self.ovhg<rc_ovhg:
+            w = self.watson
+            c = self.crick
+            o  =self.ovhg
+        elif self.ovhg>rc_ovhg:
+            w = self.crick
+            c = self.watson
+            o = rc_ovhg
+        elif self.ovhg==rc_ovhg:
+            w, c = sorted((self.watson, self.crick))
+            o = self.ovhg
+        return seg( str(o) + w + "|" + c)
+
+
     @property
     def ovhg(self):
         '''The ovhg property'''
@@ -2099,6 +2115,10 @@ class Dseqrecord(SeqRecord):
 
     def __repr__(self):
         return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
+
+    #def _repr_pretty_(self, p, cycle):
+    #    p.
+    #    return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
 
     def __add__(self, other):
         if hasattr(other, "seq") and hasattr(other.seq, "watson"):
