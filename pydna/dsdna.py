@@ -1256,7 +1256,6 @@ class Dseq(Seq):
             o = self.ovhg
         return seg( str(o) + w + "|" + c)
 
-
     @property
     def ovhg(self):
         '''The ovhg property'''
@@ -1696,6 +1695,34 @@ class Dseqrecord(SeqRecord):
         if self.linear:
             raise Exception("cseguid is only defined for circular sequences.")
         return cseg(self.seq)
+
+    def lseguid(self):
+        '''Returns the url safe lSEGUID for the sequence.
+
+        Only defined for linear double stranded sequences.
+
+        The lSEGUID checksum uniqely identifies a linear
+        sequence independent of the direction.
+        The two Dseqrecord objects below are each others
+        reverse complements, so they do in fact refer to
+        the same molecule.
+
+        Examples
+        --------
+
+        >>> import pydna
+        >>> a=pydna.Dseqrecord("agtatcgtacatg")
+        >>> a.lseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
+        'QFuP3noYs92MGFJ2YGymCrxXFU4'
+
+        >>> b=pydna.Dseqrecord("catgtacgatact")
+        >>> a.lseguid()
+        'QFuP3noYs92MGFJ2YGymCrxXFU4'
+
+       '''
+        if self.circular:
+            raise Exception("lseguid is only defined for linear sequences.")
+        return self.seq.seguid()
 
     def stamp(self, chksum = (("SEGUID", seg),("cSEGUID", cseg))):
         '''Adds a checksum to the description property. This will
