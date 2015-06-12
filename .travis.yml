@@ -1,41 +1,22 @@
-language: python
+language: objective-c
 python:
   - "2.7"
 install:
+  - which python
+  - brew install python --universal --framework
+  - brew install wget
+  - which python
+  - export VERSIONER_PYTHON_PREFER_32_BIT=yes
+  - defaults write com.apple.versioner.python Prefer-32-Bit -bool yes
+  - which python
+  - python --version
   - pip install --upgrade pip
   - pip install -e .
  
 before_script:
   - pip install -r test_requirements.txt
   - pip install -r requirements.txt
-  - pip install coveralls
   - pip install jsonschema
   
 script:
   - python run_tests.py
-
-after_success:
-  - coveralls
-before_deploy: "echo 'ready?'"
-
-deploy:
-  provider: pypi
-  distributions: "sdist --formats=gztar,zip bdist_wheel"
-  user: bjorn
-  password:
-    secure: "PLNlCt++35qR1sLrlzT0ys/WUxUNPh8isnxpEvAbfDWvgLBZc2vMWMr4HHNqv6UK4jvu9cwfAHJIcH+1tUxdMfs9Q8InqtyrFJgTU+VREhO/nyJgLah1CdmJ9ZixynOTUu8tuZNjX17ycPDM2fRxv0svY/mT2Z0U6nqX4eFFjic="
-#   server: https://testpypi.python.org/pypi
-  on:
-    tags: true
-    all_branches: true
-    repo: BjornFJohansson/pydna
-
-after_deploy:
-  - pip uninstall -r requirements.txt -y 
-  - pip uninstall -y pydna
-  - sudo rm -r *
-  - pip install pydna 
-  - python -c "import pydna;print '#'*80;print pydna.__version__;print '#'*80"
-
-  
-#condition: "$TRAVIS_TAG == ^[0-9][.][0-9][.][0-9]"
