@@ -20,3 +20,4 @@ before_script:
   
 script:
   - python run_tests.py
+
