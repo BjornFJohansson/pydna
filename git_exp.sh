@@ -43,6 +43,7 @@ else
 fi
 
 
+pip install wheel
 
-python setup.py sdist upload -r pypitest
+python setup.py sdist sdist --formats=gztar,zip bdist_wheel upload -r pypitest
 
