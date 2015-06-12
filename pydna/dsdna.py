@@ -2143,9 +2143,11 @@ class Dseqrecord(SeqRecord):
     def __repr__(self):
         return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
 
-    #def _repr_pretty_(self, p, cycle):
-    #    p.
-    #    return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
+    def _repr_pretty_(self, p, cycle):
+        if cycle:
+            p.text('Dseqrecord(...)')
+        else:
+            p.text("Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self)))
 
     def __add__(self, other):
         if hasattr(other, "seq") and hasattr(other.seq, "watson"):

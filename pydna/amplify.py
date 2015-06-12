@@ -105,13 +105,13 @@ def _annealing_positions(primer, template, limit=15):
     return []
 
 class Primer(SeqRecord):
-    '''This class holds information about a primer on a template '''
+    '''This class holds information about a primer with on a template '''
 
     def __init__(self,
                  seq_obj,
-                 position,
-                 footprint,
-                 tail):
+                 position=None,
+                 footprint=None,
+                 tail=None):
 
         self.position  = position
         self.footprint = footprint
@@ -120,14 +120,14 @@ class Primer(SeqRecord):
         seq_obj.seq.alphabet = ambiguous_dna
 
         SeqRecord.__init__(self,
-                           seq=seq_obj.seq,
-                           id=seq_obj.id,
-                           name=seq_obj.name,
-                           description=seq_obj.description,
-                           dbxrefs=seq_obj.dbxrefs,
-                           features=seq_obj.features,
-                           annotations=seq_obj.annotations,
-                           letter_annotations=seq_obj.letter_annotations)
+                           seq                = seq_obj.seq,
+                           id                 = seq_obj.id,
+                           name               = seq_obj.name,
+                           description        = seq_obj.description,
+                           dbxrefs            = seq_obj.dbxrefs,
+                           features           = seq_obj.features,
+                           annotations        = seq_obj.annotations,
+                           letter_annotations = seq_obj.letter_annotations)
 
 
 class Amplicon(Dseqrecord):
