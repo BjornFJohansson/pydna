@@ -2,8 +2,7 @@ language: objective-c
 python:
   - "2.7"
 install:
-  #- which python
-  #- brew install python --universal --framework
+  - brew install python --universal --framework
   #- brew install wget
   #- which python
   #- export VERSIONER_PYTHON_PREFER_32_BIT=yes
