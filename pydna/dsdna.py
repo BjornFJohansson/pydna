@@ -2554,7 +2554,6 @@ class Dseqrecord(SeqRecord):
 
         key = str(self.seguid())+"|"+rs+"|"+str(limit)
 
-
         if csh in ("compare", "cached"):
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"synced"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
             try:

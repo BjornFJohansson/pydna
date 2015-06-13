@@ -506,6 +506,7 @@ class Anneal(object):
                     raise Exception("no result for this key!")
                 else:
                     refresh = True
+            cache.close()
 
         if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
 
