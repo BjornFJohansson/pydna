@@ -13,6 +13,8 @@ script:
   - conda config --add channels synthicity
   - conda build .
 
+conda config --set binstar_upload yes
+
 
 
 
