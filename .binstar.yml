@@ -1,4 +1,6 @@
 package: pydna
 build_targets: conda
 script:
+  - conda update -n root conda-build
+  - conda config --add channels omnia, synthicity
   - conda build .
