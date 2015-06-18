@@ -3,7 +3,7 @@ package:
     version: {{ environ.get('GIT_DESCRIBE_TAG', '')[1:]+environ.get('GIT_DESCRIBE_NUMBER', '') }}
 
 source:
-    path:
+    path: ..
 
 requirements:
     build:
