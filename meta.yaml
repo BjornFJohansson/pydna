@@ -1,12 +1,28 @@
 package:
-  name: pydna
-  version: "0.8.3"
+    name: pydna
+    version: {{ environ.get('GIT_DESCRIBE_TAG', '')[1:]+environ.get('GIT_DESCRIBE_NUMBER', '') }}
 
-build:
-  number: 3
+source:
+    path:
 
 requirements:
-  run:
-    - python
+    build:
+        - python
+        - ipython
+        - biopython
+        - networkx
+        - appdirs
+        - prettytable
+    run:
+        - python
+        - ipython
+        - biopython
+        - networkx
+        - appdirs
+        - prettytable
+
 about:
-  summary: This is a simple meta-package
+  home: https://github.com/BjornFJohansson/pydna
+  license: BSD
+  summary: Classes and code for representing double stranded DNA and functions for simulating homologous recombination and Gibson assembly.
+

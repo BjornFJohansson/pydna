@@ -17,9 +17,9 @@ from setuptools import setup
 
 import textwrap, sys
 
-setup(  name='pydna',
-        author          =__author__,
-        author_email    =__email__,
+setup(  name            = 'pydna',
+        author          = __author__,
+        author_email    = __email__,
         version=versioneer.get_version()[:5],
         cmdclass=versioneer.get_cmdclass(),
         packages=['pydna',
@@ -47,6 +47,5 @@ setup(  name='pydna',
                        'License :: OSI Approved :: BSD License',
                        'Programming Language :: Python :: 2.7',
                        'Topic :: Education',
-                       'Topic :: Scientific/Engineering :: Bio-Informatics',]
-        )
+                       'Topic :: Scientific/Engineering :: Bio-Informatics',])
 
