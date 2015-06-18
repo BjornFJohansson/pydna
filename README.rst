@@ -8,6 +8,15 @@ pydna
 .. image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true
     :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
 
+.. image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
+    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
+
+.. image:: https://binstar.org/bjornfjohansson/pydna/badges/build.svg   
+    :target: https://binstar.org/bjornfjohansson/pydna/builds
+
+.. image:: https://binstar.org/bjornfjohansson/pydna/badges/version.svg   
+    :target: https://binstar.org/bjornfjohansson/pydna
+
 .. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master  
     :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master 
   
@@ -21,7 +30,7 @@ pydna
 
 .. image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
     :target: https://github.com/BjornFJohansson/pydna
-    :alt: Github
+    :alt: Github stars
     
 .. image:: https://img.shields.io/pypi/dm/pydna.png
     :target: https://pypi.python.org/pypi/pydna/
