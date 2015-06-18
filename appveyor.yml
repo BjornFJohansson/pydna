@@ -27,7 +27,6 @@ install:
   - powershell .\\continuous-integration\\appveyor\\install.ps1
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
-install:
   - ECHO "Filesystem root:"
   - ps: "ls \"C:/\""
 
