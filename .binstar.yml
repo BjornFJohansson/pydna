@@ -1,0 +1,4 @@
+package: pydna
+build_targets: conda
+script:
+  - conda build .
