@@ -12,8 +12,7 @@ script:
   - conda config --add channels omnia
   - conda config --add channels synthicity
   - conda build .
-
-#conda config --set binstar_upload yes
+  - binstar upload /opt/miniconda/conda-bld/linux-64/pydna-.9.719-py27_0.tar.bz2
 
 
 
