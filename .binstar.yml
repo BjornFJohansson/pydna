@@ -7,19 +7,26 @@ platform:
   #- win-64
 
 build_targets: conda
+
+
+
 script:
   - conda config --add channels binstar
   - conda install binstar-build
   - binstar config --set url http://api.alpha.binstar.org
-  - conda update -n root conda-build
-  - conda config --add channels omnia
-  - conda config --add channels synthicity
-  - conda build .
+  - binstar whoami
+  #- conda update -n root conda-build
+  #- conda config --add channels omnia
+  #- conda config --add channels synthicity
+  #- conda build .
 
 
 
 
-
+after_success:
+  - echo Yay!
+after_failure:
+  - echo Oops?
 
 
 
