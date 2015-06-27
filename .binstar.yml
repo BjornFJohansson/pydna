@@ -1,18 +1,21 @@
 package: pydna
 platform:
   - linux-64
+  #- linux-32
+  #- osx-64
+  #- win-32
+  #- win-64
 
 build_targets: conda
 script:
   - conda config --add channels binstar
   - conda install binstar-build
   - binstar config --set url http://api.alpha.binstar.org
-
   - conda update -n root conda-build
   - conda config --add channels omnia
   - conda config --add channels synthicity
   - conda build .
-  - binstar upload /opt/miniconda/conda-bld/linux-64/pydna-.9.719-py27_0.tar.bz2
+
 
 
 
