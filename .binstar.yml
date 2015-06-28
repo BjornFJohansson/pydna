@@ -24,10 +24,8 @@ script:
 
 build_targets: conda 
 
-after_script:
-  - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all 
-
 after_success:
+  - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all 
   - binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/linux-64/*.tar.bz2 --build-id 2.0
   - binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/linux-32/*.tar.bz2 --build-id 2.0
   - binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/osx-64/*.tar.bz2 --build-id 2.0
