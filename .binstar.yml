@@ -15,8 +15,10 @@ env:
   #- BINSTAR=GREAT JENKINS=OK
 
 before_script:
-  - conda install pip
-  - pip install binstar binstar-build
+  - conda update conda
+  - conda install binstar binstar-build
+  #- conda install pip
+  #- pip install binstar binstar-build
 
 
 script:
@@ -28,10 +30,10 @@ script:
   - conda --version
 
   #- echo $TOKEN
-  #- conda update -n root conda-build
-  #- conda config --add channels omnia
-  #- conda config --add channels synthicity
-  #- conda build .
+  - conda update -n root conda-build
+  - conda config --add channels omnia
+  - conda config --add channels synthicity
+  - conda build .
 
 after_script:  
   - echo After script!
