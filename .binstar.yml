@@ -10,6 +10,13 @@ test:
   - bash -c 'echo Hello Posix World'
   #- conda install nose
 
+env:
+  - FOO=BAR
+  - BINSTAR=GREAT JENKINS=OK
+
+before_script:
+  - pip install binstar binstar-build
+
 
 script:
   #- conda config --add channels binstar
@@ -25,8 +32,8 @@ script:
   #- conda config --add channels synthicity
   #- conda build .
 
-
-
+after_script:  
+  - echo After script!
 
 after_success:
   - echo Yay!
