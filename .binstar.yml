@@ -20,7 +20,6 @@ before_script:
   - conda config --add channels synthicity
   - binstar --version
   - conda --version
-  - binstar whoami
   #- conda config --add channels binstar
   #- conda install binstar-build
   #- binstar config --set url http://api.alpha.binstar.org
