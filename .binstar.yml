@@ -22,11 +22,11 @@ before_script:
 script:
   - conda build .
 
-build_targets: conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all
+build_targets: conda 
 
 after_script:  
   - echo After script!
-  - conda 
+  - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all 
 
 after_success:
   - echo Yay!
