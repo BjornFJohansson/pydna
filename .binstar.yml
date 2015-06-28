@@ -12,9 +12,10 @@ test:
 
 env:
   - FOO=BAR
-  - BINSTAR=GREAT JENKINS=OK
+  #- BINSTAR=GREAT JENKINS=OK
 
 before_script:
+  - conda install pip
   - pip install binstar binstar-build
 
 
