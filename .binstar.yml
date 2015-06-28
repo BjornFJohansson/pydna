@@ -18,23 +18,15 @@ before_script:
   - conda update -n root conda-build
   - conda config --add channels omnia
   - conda config --add channels synthicity
-  - binstar --version
-  - conda --version
-  #- conda config --add channels binstar
-  #- conda install binstar-build
-  #- binstar config --set url http://api.alpha.binstar.org
-  #- binstar whoami
-  #- echo $TOKEN
-  #- conda install pip
-  #- pip install binstar binstar-build
 
 script:
   - conda build .
 
-build_targets: conda
+build_targets: conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all
 
 after_script:  
   - echo After script!
+  - conda 
 
 after_success:
   - echo Yay!
