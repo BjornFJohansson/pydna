@@ -15,24 +15,22 @@ env:
   #- BINSTAR=GREAT JENKINS=OK
 
 before_script:
-  - conda update conda
+  - conda update -n root conda
   - conda install binstar binstar-build
-  #- conda install pip
-  #- pip install binstar binstar-build
-
-
-script:
+  - conda update -n root conda-build
+  - conda config --add channels omnia
+  - conda config --add channels synthicity
+  - binstar --version
+  - conda --version
   #- conda config --add channels binstar
   #- conda install binstar-build
   #- binstar config --set url http://api.alpha.binstar.org
   #- binstar whoami
-  - binstar --version
-  - conda --version
-
   #- echo $TOKEN
-  - conda update -n root conda-build
-  - conda config --add channels omnia
-  - conda config --add channels synthicity
+  #- conda install pip
+  #- pip install binstar binstar-build
+
+script:
   - conda build .
 
 after_script:  
