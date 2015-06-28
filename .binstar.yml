@@ -1,21 +1,25 @@
 package: pydna
 platform:
   - linux-64
-  #- linux-32
-  #- osx-64
-  #- win-32
-  #- win-64
+engine:
+  - python=2.7
 
 build_targets: conda
 
+test:
+  - bash -c 'echo Hello Posix World'
+  #- conda install nose
 
 
 script:
-  - conda config --add channels binstar
-  - conda install binstar-build
-  - binstar config --set url http://api.alpha.binstar.org
-  - binstar whoami
-  - echo $TOKEN
+  #- conda config --add channels binstar
+  #- conda install binstar-build
+  #- binstar config --set url http://api.alpha.binstar.org
+  #- binstar whoami
+  - binstar --version
+  - conda --version
+
+  #- echo $TOKEN
   #- conda update -n root conda-build
   #- conda config --add channels omnia
   #- conda config --add channels synthicity
