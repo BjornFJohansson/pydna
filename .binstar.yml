@@ -8,10 +8,6 @@ test:
   - bash -c 'echo Hello Posix World'
   #- conda install nose
 
-env:
-  - FOO=BAR
-  #- BINSTAR=GREAT JENKINS=OK
-
 before_script:
   - conda update -n root conda
   - conda install binstar binstar-build
@@ -22,17 +18,12 @@ before_script:
 script:
   - conda build .
 
-build_targets: /opt/miniconda/conda-bld/*/*.tar.bz2
+build_targets:
+    files: /opt/miniconda/conda-bld/*/*.tar.bz2
+    channels: main
 
 after_success:
-  - ls /opt/miniconda/conda-bld/
   - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all --output-dir /opt/miniconda/conda-bld/
-  - ls /opt/miniconda/conda-bld/
-  #- binstar -t $TOKEN upload --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/linux-64/*.tar.bz2
-  #- binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/linux-32/*.tar.bz2 --build-id 2.0
-  #- binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/osx-64/*.tar.bz2 --build-id 2.0
-  #- binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/win-64/*.tar.bz2 --build-id 2.0
-  #- binstar -q -t $TOKEN upload --force --user BjornFJohansson --package pydna  --channel dev /opt/miniconda/conda-bld/win-32/*.tar.bz2 --build-id 2.0
 after_failure:
   - echo Oops?
 
