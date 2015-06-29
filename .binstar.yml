@@ -14,6 +14,7 @@ before_script:
   - conda update -n root conda-build
   - conda config --add channels omnia
   - conda config --add channels synthicity
+  - conda config --add channels OpenHydrology
 
 script:
   - conda build .
