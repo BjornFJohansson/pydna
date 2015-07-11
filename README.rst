@@ -49,12 +49,12 @@ also allows for automatic computer simulation and verification.
 
 Pydna provides simulation of:
 
- - restriction digestion
- - ligation
- - PCR
- - primer design
- - Gibson assembly 
- - homologous recombination
+- restriction digestion
+- ligation
+- PCR
+- primer design
+- Gibson assembly 
+- homologous recombination
 
 A cloning strategy expressed in pydna is complete, unambiguous and stable. Pydna has been designed to be understandable 
 for biologists with limited programming skills.
@@ -304,16 +304,21 @@ version   date       comment
 0.1.3     2013-04-09 pydna created from Python-dna.
 =======   ========== =====================================================================
 
-System Requirements
-===================
+Installation requirements
+=========================
 
 - `Python 2.7 <http://www.python.org>`_.
-- `Biopython >= 1.65 <http://pypi.python.org/pypi/biopython>`_.
+- `ipython>=3.1.0 <https://pypi.python.org/pypi/ipython>`_
+- `biopython >= 1.65 <http://pypi.python.org/pypi/biopython>`_.
 - `networkx >= 1.8.1 <http://pypi.python.org/pypi/networkx>`_.
 - `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdir>`_.
 - `prettytable>=0.7.2 <https://pypi.python.org/pypi/PrettyTable>`_.
 
+Requirements for running tests
+==============================
 
+- `nose>=1.3.4 <https://pypi.python.org/pypi/nose>`_
+- `coverage>=3.7.1 <https://pypi.python.org/pypi/coverage>`_
 
 Python 2.x
 ----------
