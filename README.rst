@@ -67,7 +67,7 @@ Look at some assembly strategies made in the IPython notebook format `here <http
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below). 
-Look at the BMC Bioinformatics `Publication <http://www.biomedcentral.com/1471-2105/16/142/abstract>`_ describing pydna.
+Look at the BMC Bioinformatics `paper <http://www.biomedcentral.com/1471-2105/16/142/abstract>`_ describing pydna.
 
 ::
 
