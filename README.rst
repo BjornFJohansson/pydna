@@ -40,6 +40,30 @@ pydna
     :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
     :alt: versioneye
 
+
+Planning genetic constructs with many parts, such as recombinant metabolic pathways is usually done manually 
+using a DNA sequence editor which quickly becomes unfeasible as scale and complexity of the constructions increase.
+
+The Pydna python package provide a human-readable formal description of cloning and assembly strategies which 
+also allows for automatic computer simulation and verification.
+
+Pydna provides simulation of:
+
+ - restriction digestion
+ - ligation
+ - PCR
+ - primer design
+ - Gibson assembly 
+ - homologous recombination
+
+A cloning strategy expressed in pydna is complete, unambiguous and stable. Pydna has been designed to be understandable 
+for biologists with limited programming skills.
+
+Pydna simplifies planning and sharing of cloning strategies and is especially useful for complex or combinatorial 
+DNA molecule construction. 
+
+Look at some assembly strategies made in the IPython notebook format `here <http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb>`_ !
+
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below). 
@@ -305,10 +329,23 @@ is sufficient interest, there might be a Python 3 version in the future.
 Installation
 ============
 
+Using Anaconda
+--------------
+
+The best way of using Python is to use a distribution such as `Anaconda <https://store.continuum.io/cshop/anaconda/>`_.
+
+There is a `conda <https://anaconda.org/bjornfjohansson/pydna>`_ package available for pydna, which is easily installed 
+at the command line using the conda package manager.
+::
+
+ conda install -c https://conda.anaconda.org/bjornfjohansson pydna
+
+This works on Windows, MacOSX and Linux, and installs all dependencies automatically in one go.
+
 PIP
 ---
 
-The best way of installing pydna is with pip. Pip is the
+The second best way of installing pydna is with pip. Pip is the
 officially `recommended <http://python-packaging-user-guide.readthedocs.org/en/latest/>`_ tool
 for installaion of Python packages from PyPi.
 Pip installs dependencies automatically.
@@ -346,8 +383,11 @@ There are no binary distributions available.
 Windows
 -------
 
+Sometimes the dependecies can be difficult to install on windows, especially
+Biopython as a C compiler is necessary.
+
 If dependencies have to be installed separately, this can be done using the
-binary installers for Windows for those who are not comfortable at the
+binary installers for Windows for those who are not comfortable with the
 command line:
 
 ================ ========================================================
@@ -369,7 +409,7 @@ Pydna is hosted by [Github](https://github.com/BjornFJohansson/pydna)
 Distribution Structure
 ======================
 
-README.txt          -- This file.
+README.rst          -- This file.
 
 LICENSE.txt         -- What you can do with the code.
 
@@ -377,15 +417,10 @@ setup.py            -- Installation file.
 
 run_tests.py        -- run tests by "python run_tests.py"<enter>
 
-pydna/              -- The code.
+pydna/              -- The main code.
 
 docs/               -- Documentation and cookbook.
 
 scripts/            -- Miscellaneous and perhaps useful scripts and examples.
 
 tests/              -- Testing code.
-
-Todo
-====
-
-* Add identification of each fragment in the Contig.small_figure method.
