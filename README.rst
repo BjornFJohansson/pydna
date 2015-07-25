@@ -56,13 +56,16 @@ Pydna provides simulation of:
 - Gibson assembly 
 - homologous recombination
 
-A cloning strategy expressed in pydna is complete, unambiguous and stable. Pydna has been designed to be understandable 
+A cloning strategy expressed in pydna is complete, unambiguous 
+and stable. Pydna has been designed to be understandable 
 for biologists with limited programming skills.
 
-Pydna simplifies planning and sharing of cloning strategies and is especially useful for complex or combinatorial 
-DNA molecule construction. 
+Pydna formalize planning and sharing of cloning strategies and is 
+especially useful for complex or combinatorial 
+DNA molecule constructions. 
 
-Look at some assembly strategies made in the IPython notebook format `here <http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb>`_ !
+Look at some assembly strategies made in the IPython notebook 
+format `here <http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb>`_ !
 
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
@@ -71,6 +74,9 @@ Look at the open access BMC Bioinformatics publication describing pydna:
 
 .. image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png   
     :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
+
+
+See an example of pydna usage at the command line below:
 
 
 ::
