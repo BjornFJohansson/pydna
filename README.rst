@@ -69,7 +69,7 @@ Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below). 
 Look at the open access BMC Bioinformatics publication describing pydna:
 
-.. image:: https://github.com/BjornFJohansson/pydna/blob/master/BMC.png   
+.. image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png   
     :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
 
 
@@ -211,11 +211,8 @@ version   date       comment
                      fixed ipynb_import test code.
                     
 0.8.4     2015-04-17 Bugfix for parsing text files with unicode characters.
-
 0.8.3     ?          ?   
-
 0.8.2     ?          ?
-
 0.8.1     2015-03-07 Bugfix for windows. The data directory was not created.
 
 0.8.0	  2015-02-06 Mapping reads added.
