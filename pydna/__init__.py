@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright 2013,2014 by Björn Johansson.  All rights reserved.
+# Copyright 2013,2014, 2015 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -18,13 +18,13 @@
 
 '''
 
-__author__       = "Björn Johansson"
-__copyright__    = "Copyright 2013 - 2015 Björn Johansson"
-__credits__      = ["Björn Johansson", "Mark Budde"]
-__license__      = "BSD"
-__maintainer__   = "Björn Johansson"
-__email__        = "bjorn_johansson@bio.uminho.pt"
-__status__       = "Development" # "Production" #"Prototype"
+__author__       = u"Björn Johansson"
+__copyright__    = u"Copyright 2013 - 2015 Björn Johansson"
+__credits__      = [u"Björn Johansson", u"Mark Budde"]
+__license__      = u"BSD"
+__maintainer__   = u"Björn Johansson"
+__email__        = u"bjorn_johansson@bio.uminho.pt"
+__status__       = u"Development" # "Production" #"Prototype"
 from ._version import get_versions
 __version__      = get_versions()['version'][:5]
 __long_version__ = get_versions()['version']

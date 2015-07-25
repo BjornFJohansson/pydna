@@ -67,7 +67,11 @@ Look at some assembly strategies made in the IPython notebook format `here <http
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below). 
-Look at the BMC Bioinformatics `paper <http://www.biomedcentral.com/1471-2105/16/142/abstract>`_ describing pydna.
+Look at the open access BMC Bioinformatics publication describing pydna:
+
+.. image:: https://github.com/BjornFJohansson/pydna/blob/master/BMC.png   
+    :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
+
 
 ::
 
@@ -171,9 +175,9 @@ for pydna if you have problems, questions or comments.
 
 Feedback in the form of questions, comments or criticism is very welcome!
 
-=======   ========== =====================================================================
+=======   ========== ===========================================================================
 version   date       comment
-=======   ========== =====================================================================
+=======   ========== ===========================================================================
 0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions. 
                      This release tries to solve this by not specifying file extensions
                      for the cache files. Two functions are added, pydna. 
@@ -302,7 +306,7 @@ version   date       comment
                      SeqRecords.
 
 0.1.3     2013-04-09 pydna created from Python-dna.
-=======   ========== =====================================================================
+=======   ========== ===========================================================================
 
 Installation requirements
 =========================
