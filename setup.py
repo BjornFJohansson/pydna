@@ -14,14 +14,13 @@ for line in open('pydna/__init__.py'):
         exec(line.strip())
 
 from setuptools import setup
-
 import textwrap, sys
 
 setup(  name            = 'pydna',
-        author          = __author__,
-        author_email    = __email__,
         version=versioneer.get_version()[:5],
         cmdclass=versioneer.get_cmdclass(),
+        author          = __author__,
+        author_email    = __email__,
         packages=['pydna',
                   'pydna.py_rstr_max',],
         url='http://pypi.python.org/pypi/pydna/',

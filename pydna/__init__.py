@@ -194,3 +194,7 @@ def open_cache():
         except OSError:
             return "no cache to open."
 
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
