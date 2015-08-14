@@ -1,33 +1,33 @@
 pydna
 =====
 
+
 [![icon](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
 
-![https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true](https://ci.appveyor.com/project/BjornFJohansson/pydna)
+[![icon](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)
 
-![https://drone.io/github.com/BjornFJohansson/pydna/status.png](https://drone.io/github.com/BjornFJohansson/pydna/latest)
+[![icon](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
 
-![https://binstar.org/bjornfjohansson/pydna/badges/build.svg](https://binstar.org/bjornfjohansson/pydna/builds)
+[![icon](https://binstar.org/bjornfjohansson/pydna/badges/build.svg)](https://binstar.org/bjornfjohansson/pydna/builds)
 
-![https://binstar.org/bjornfjohansson/pydna/badges/version.svg](https://binstar.org/bjornfjohansson/pydna)
+[![icon](https://binstar.org/bjornfjohansson/pydna/badges/version.svg)](https://binstar.org/bjornfjohansson/pydna)
 
-![https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master](https://coveralls.io/r/BjornFJohansson/pydna?branch=master)
-  
-![https://readthedocs.org/projects/pydna/badge/?version=latest](https://readthedocs.org/projects/pydna/?badge=latest)
+[![icon](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master](https://coveralls.io/r/BjornFJohansson/pydna?branch=master)
 
-![https://img.shields.io/pypi/v/pydna.png](https://pypi.python.org/pypi/pydna)
+[![icon](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
 
-![https://img.shields.io/github/stars/BjornFJohansson/pydna.svg](https://github.com/BjornFJohansson/pydna/stargazers)
-    
-![https://img.shields.io/pypi/dm/pydna.png](https://pypi.python.org/pypi/pydna)
+[![icon](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna)
 
-![https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg?style=flat(Dependency Status)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
+[![icon](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)
 
+[![icon](https://img.shields.io/pypi/dm/pydna.png)](https://pypi.python.org/pypi/pydna)
 
-Planning genetic constructs with many parts, such as recombinant metabolic pathways is usually done manually 
+[![icon](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
+
+Planning genetic constructs with many parts, such as recombinant metabolic pathways is usually done manually
 using a DNA sequence editor which quickly becomes unfeasible as scale and complexity of the constructions increase.
 
-The Pydna python package provide a human-readable formal description of cloning and assembly strategies which 
+The Pydna python package provide a human-readable formal description of cloning and assembly strategies which
 also allows for automatic computer simulation and verification.
 
 Pydna provides simulation of:
@@ -36,23 +36,23 @@ Pydna provides simulation of:
 - ligation
 - PCR
 - primer design
-- Gibson assembly 
+- Gibson assembly
 - homologous recombination
 
-A cloning strategy expressed in pydna is complete, unambiguous 
-and stable. Pydna has been designed to be understandable 
+A cloning strategy expressed in pydna is complete, unambiguous
+and stable. Pydna has been designed to be understandable
 for biologists with limited programming skills.
 
-Pydna formalize planning and sharing of cloning strategies and is 
-especially useful for complex or combinatorial 
-DNA molecule constructions. 
+Pydna formalize planning and sharing of cloning strategies and is
+especially useful for complex or combinatorial
+DNA molecule constructions.
 
-Look at some assembly strategies made in the IPython notebook 
+Look at some assembly strategies made in the IPython notebook
 format `here <http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb>`_ !
 
 Pydna provide functions for molecular biology using python.
 Double stranded DNA sequence classes that make cut and paste
-cloning and PCR very simple is provided (see example below). 
+cloning and PCR very simple is provided (see example below).
 Look at the open access BMC Bioinformatics publication describing pydna:
 
 [https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png  ](http://www.biomedcentral.com/1471-2105/16/142/abstract
@@ -166,40 +166,40 @@ Feedback in the form of questions, comments or criticism is very welcome!
 =======   ========== ===========================================================================
 version   date       comment
 =======   ========== ===========================================================================
-0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions. 
+0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions.
                      This release tries to solve this by not specifying file extensions
-                     for the cache files. Two functions are added, pydna. 
+                     for the cache files. Two functions are added, pydna.
 
-0.9.2     2015-05-28 pydna_data_dir is encoded to a string in __init__.py instead of 
-                     unicode. The Popen module does not accept environment variables that 
+0.9.2     2015-05-28 pydna_data_dir is encoded to a string in __init__.py instead of
+                     unicode. The Popen module does not accept environment variables that
                      are not strings.
 
-0.9.1     2015-05-26 fixed critical error in the calculation of seguid and cseguid 
+0.9.1     2015-05-26 fixed critical error in the calculation of seguid and cseguid
                      checksums
 
 0.9.0     2015-05-26 seguid and cseguid are now url safe so they can be part of urls and
                      file names.
                      Dseqrecord.locus is an alias of Dseqrecord.name
                      Dseqrecord.accession is an alias of Dseqrecord.id
-                     Dseqrecord.definition is an alias of Dseqrecord.description					 
+                     Dseqrecord.definition is an alias of Dseqrecord.description
                      changed how circular assembly products are identified to use cseguid.
                      removed proxy handling when proxy not set in download module.
                      added CHANGELOG.md, currently empty.
                      environment variable datadir is now pydna_data_dir.
                      removed environmental variable pydna_dna_dir.
-                     if Dseqrecord is initiated with a name property that is longer than 
-                     16 characters, it is truncated to 16 chars and a warning is issued. 
+                     if Dseqrecord is initiated with a name property that is longer than
+                     16 characters, it is truncated to 16 chars and a warning is issued.
                      Default Dseqrecord name property is "na".
                      Default Dseqrecord id property is "-".
                      Default Dseqrecord description property is "@".
                      Dseqrecord __eq__ and __ne__ methods defined.
-                     Dseqrecord.write now overwrites an old sequence with the same 
+                     Dseqrecord.write now overwrites an old sequence with the same
                      filename if the primary sequence is the same.
                      Dseqrecord.read now only looks in current working directory.
                      fixed ipynb_import test code.
-                    
+
 0.8.4     2015-04-17 Bugfix for parsing text files with unicode characters.
-0.8.3     ?          ?   
+0.8.3     ?          ?
 0.8.2     ?          ?
 0.8.1     2015-03-07 Bugfix for windows. The data directory was not created.
 
@@ -207,37 +207,37 @@ version   date       comment
 
 0.7.2	  2014-11-21 First public release with the changes from 0.7.0 and 0.7.1.
 					 Added a Pretty_str class to beautify output of strings in
-					 the IPython shell. 
+					 the IPython shell.
 
-0.7.1     not public Short linkers can be incorporated in PCR primers in the 
+0.7.1     not public Short linkers can be incorporated in PCR primers in the
                      assembly_primers function.
 
-0.7.0     not public Caching to speed up Amplify, Assembly, download and the 
+0.7.0     not public Caching to speed up Amplify, Assembly, download and the
                      Desqrecord synced method. The data is stored in four shelf
                      files in the users application directory.
-                     
+
                      amplify.shelf
                      assembly.shelf
                      genbank.shelf
-                     synced.shelf                     
-                     
+                     synced.shelf
+
                      The location is os specific.
-                     See the documentation of appdirs 
+                     See the documentation of appdirs
                      https://pypi.python.org/pypi/appdirs/1.4.0
 
 0.6.6                new function nopcr.
 
-0.6.5     2014-07-31 bugfix: cutting an amplicon object now preserves features 
+0.6.5     2014-07-31 bugfix: cutting an amplicon object now preserves features
                      Changed requirement for NetworkX to 1.8.1
 
-0.6.4     2014-07-09 The pcr function and Anneal class can now deal with primers 
+0.6.4     2014-07-09 The pcr function and Anneal class can now deal with primers
                      with ambiguous codons like R = A or G. In the resulting PCR
                      product, the ambiguous nucleotides are preserved in the tails
-                     i.e. the primer part not annealing. The annealing part will 
-                     have the sequence corresponding to the template.  
+                     i.e. the primer part not annealing. The annealing part will
+                     have the sequence corresponding to the template.
 
 0.6.3     2014-07-06 Dseqrecord.add_feature can now take a string or some other
-                     sequence as input. The assembly primers function can now produce 
+                     sequence as input. The assembly primers function can now produce
                      primers for a circular assembly.
 
 0.6.2     2014-06-13 Dseqrecord gained three new methods:
@@ -328,7 +328,7 @@ Using Anaconda
 
 The best way of using Python is to use a distribution such as `Anaconda <https://store.continuum.io/cshop/anaconda/>`_.
 
-There is a `conda <https://anaconda.org/bjornfjohansson/pydna>`_ package available for pydna, which is easily installed 
+There is a `conda <https://anaconda.org/bjornfjohansson/pydna>`_ package available for pydna, which is easily installed
 at the command line using the conda package manager.
 ::
 
