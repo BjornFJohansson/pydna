@@ -1,44 +1,27 @@
-=====
 pydna
 =====
 
-.. image:: https://travis-ci.org/BjornFJohansson/pydna.svg 
-    :target: https://travis-ci.org/BjornFJohansson/pydna
+[![icon](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
 
-.. image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true
-    :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
+![https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true](https://ci.appveyor.com/project/BjornFJohansson/pydna)
 
-.. image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
-    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
+![https://drone.io/github.com/BjornFJohansson/pydna/status.png](https://drone.io/github.com/BjornFJohansson/pydna/latest)
 
-.. image:: https://binstar.org/bjornfjohansson/pydna/badges/build.svg   
-    :target: https://binstar.org/bjornfjohansson/pydna/builds
+![https://binstar.org/bjornfjohansson/pydna/badges/build.svg](https://binstar.org/bjornfjohansson/pydna/builds)
 
-.. image:: https://binstar.org/bjornfjohansson/pydna/badges/version.svg   
-    :target: https://binstar.org/bjornfjohansson/pydna
+![https://binstar.org/bjornfjohansson/pydna/badges/version.svg](https://binstar.org/bjornfjohansson/pydna)
 
-.. image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master  
-    :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master 
+![https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master](https://coveralls.io/r/BjornFJohansson/pydna?branch=master)
   
-.. image:: https://readthedocs.org/projects/pydna/badge/?version=latest
-    :target: https://readthedocs.org/projects/pydna/?badge=latest
-    :alt: Documentation Status
+![https://readthedocs.org/projects/pydna/badge/?version=latest](https://readthedocs.org/projects/pydna/?badge=latest)
 
-.. image:: https://img.shields.io/pypi/v/pydna.png
-    :target: https://pypi.python.org/pypi/pydna/
-    :alt: Downloads
+![https://img.shields.io/pypi/v/pydna.png](https://pypi.python.org/pypi/pydna)
 
-.. image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
-    :target: https://github.com/BjornFJohansson/pydna/stargazers
-    :alt: Github stars
+![https://img.shields.io/github/stars/BjornFJohansson/pydna.svg](https://github.com/BjornFJohansson/pydna/stargazers)
     
-.. image:: https://img.shields.io/pypi/dm/pydna.png
-    :target: https://pypi.python.org/pypi/pydna/
-    :alt: Latest Version
+![https://img.shields.io/pypi/dm/pydna.png](https://pypi.python.org/pypi/pydna)
 
-.. image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg?style=flat(Dependency Status)!
-    :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
-    :alt: versioneye
+![https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg?style=flat(Dependency Status)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
 
 Planning genetic constructs with many parts, such as recombinant metabolic pathways is usually done manually 
@@ -72,8 +55,7 @@ Double stranded DNA sequence classes that make cut and paste
 cloning and PCR very simple is provided (see example below). 
 Look at the open access BMC Bioinformatics publication describing pydna:
 
-.. image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png   
-    :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
+[https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png  ](http://www.biomedcentral.com/1471-2105/16/142/abstract
 
 
 See an example of pydna usage at the command line below:

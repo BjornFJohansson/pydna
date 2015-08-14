@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import versioneer
-versioneer.VCS = 'git'
-versioneer.versionfile_source = 'pydna/_version.py'
-versioneer.versionfile_build = 'pydna/_version.py'
-versioneer.tag_prefix = '' # tags are like 1.2.0
-versioneer.parentdir_prefix = '' # dirname like 'myproject-1.2.0'
+#versioneer.VCS = 'git'
+#versioneer.versionfile_source = 'pydna/_version.py'
+#versioneer.versionfile_build = 'pydna/_version.py'
+#versioneer.tag_prefix = '' # tags are like 1.2.0
+#versioneer.parentdir_prefix = '' # dirname like 'myproject-1.2.0'
 
 # Read author etc..
 for line in open('pydna/__init__.py'):
