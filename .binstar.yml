@@ -1,21 +1,19 @@
 package: pydna
-platform:
-  - linux-64
-engine:
-  - python=2.7
-
-test:
-  - bash -c 'echo Hello Posix World'
-  #- conda install nose
 
 before_script:
+  - git describe --tags
   - conda update -n root conda
   - conda install binstar binstar-build
   - conda update -n root conda-build
   - conda config --add channels ulmo
   - conda config --add channels synthicity
 
+test:
+  - bash -c 'echo Hello Posix World'
+  #- conda install nose
+
 script:
+  - python setup.py version
   - conda build .
 
 build_targets:
