@@ -2,27 +2,27 @@ pydna
 =====
 
 
-[![icon](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
+[![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
 
-[![icon](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)
+[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)
 
-[![icon](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
+[![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
 
-[![icon](https://binstar.org/bjornfjohansson/pydna/badges/build.svg)](https://binstar.org/bjornfjohansson/pydna/builds)
+[![icon4](https://binstar.org/bjornfjohansson/pydna/badges/build.svg)](https://binstar.org/bjornfjohansson/pydna/builds)
 
-[![icon](https://binstar.org/bjornfjohansson/pydna/badges/version.svg)](https://binstar.org/bjornfjohansson/pydna)
+[![icon5](https://binstar.org/bjornfjohansson/pydna/badges/version.svg)](https://binstar.org/bjornfjohansson/pydna)
 
-[![icon](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master](https://coveralls.io/r/BjornFJohansson/pydna?branch=master)
+[![icon6](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master)](https://coveralls.io/r/BjornFJohansson/pydna?branch=master)
 
-[![icon](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
+[![icon7](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
 
-[![icon](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna)
+[![icon8](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna)
 
-[![icon](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)
+[![icon9](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)
 
-[![icon](https://img.shields.io/pypi/dm/pydna.png)](https://pypi.python.org/pypi/pydna)
+[![icon10](https://img.shields.io/pypi/dm/pydna.png)](https://pypi.python.org/pypi/pydna)
 
-[![icon](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
+[![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
 Planning genetic constructs with many parts, such as recombinant metabolic pathways is usually done manually
 using a DNA sequence editor which quickly becomes unfeasible as scale and complexity of the constructions increase.
@@ -169,14 +169,11 @@ version   date       comment
 0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions.
                      This release tries to solve this by not specifying file extensions
                      for the cache files. Two functions are added, pydna.
-
 0.9.2     2015-05-28 pydna_data_dir is encoded to a string in __init__.py instead of
                      unicode. The Popen module does not accept environment variables that
                      are not strings.
-
 0.9.1     2015-05-26 fixed critical error in the calculation of seguid and cseguid
                      checksums
-
 0.9.0     2015-05-26 seguid and cseguid are now url safe so they can be part of urls and
                      file names.
                      Dseqrecord.locus is an alias of Dseqrecord.name

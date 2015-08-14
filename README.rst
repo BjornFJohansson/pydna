@@ -1,27 +1,27 @@
 pydna
 =====
 
-|icon|
+|icon1|
 
-|icon|
+|icon2|
 
-|icon|
+|icon3|
 
-|icon|
+|icon4|
 
-|icon|
+|icon5|
 
-`[icon](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master <https://coveralls.io/r/BjornFJohansson/pydna?branch=master>`__
+|icon6|
 
-|icon|
+|icon7|
 
-|icon|
+|icon8|
 
-|icon|
+|icon9|
 
-|icon|
+|icon10|
 
-|icon|
+|icon11|
 
 Planning genetic constructs with many parts, such as recombinant
 metabolic pathways is usually done manually using a DNA sequence editor
@@ -423,23 +423,25 @@ scripts/ -- Miscellaneous and perhaps useful scripts and examples.
 
 tests/ -- Testing code.
 
-.. |icon| image:: https://travis-ci.org/BjornFJohansson/pydna.svg
+.. |icon1| image:: https://travis-ci.org/BjornFJohansson/pydna.svg
    :target: https://travis-ci.org/BjornFJohansson/pydna
-.. |icon| image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true
+.. |icon2| image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true
    :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
-.. |icon| image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
+.. |icon3| image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
-.. |icon| image:: https://binstar.org/bjornfjohansson/pydna/badges/build.svg
+.. |icon4| image:: https://binstar.org/bjornfjohansson/pydna/badges/build.svg
    :target: https://binstar.org/bjornfjohansson/pydna/builds
-.. |icon| image:: https://binstar.org/bjornfjohansson/pydna/badges/version.svg
+.. |icon5| image:: https://binstar.org/bjornfjohansson/pydna/badges/version.svg
    :target: https://binstar.org/bjornfjohansson/pydna
-.. |icon| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
+.. |icon6| image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master
+   :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master
+.. |icon7| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
    :target: https://readthedocs.org/projects/pydna/?badge=latest
-.. |icon| image:: https://img.shields.io/pypi/v/pydna.png
+.. |icon8| image:: https://img.shields.io/pypi/v/pydna.png
    :target: https://pypi.python.org/pypi/pydna
-.. |icon| image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
+.. |icon9| image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
    :target: https://github.com/BjornFJohansson/pydna/stargazers
-.. |icon| image:: https://img.shields.io/pypi/dm/pydna.png
+.. |icon10| image:: https://img.shields.io/pypi/dm/pydna.png
    :target: https://pypi.python.org/pypi/pydna
-.. |icon| image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg
+.. |icon11| image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg
    :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
