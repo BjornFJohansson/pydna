@@ -1,19 +1,22 @@
 package: pydna
 
 before_script:
-  - git describe --tags --always
+  #- git describe --tags --always
+  #- git describe --tags
   - conda update -n root conda
-  - conda install binstar binstar-build
-  - conda update -n root conda-build
+  - conda install anaconda-client anaconda-build
+  - conda update -n root anaconda-build
+  #- conda update -n root conda-build
   - conda config --add channels ulmo
   - conda config --add channels synthicity
-
+  - cat $CONDARC
+  - cat ~/.condarc
 test:
   - bash -c 'echo Hello Posix World'
   #- conda install nose
 
 script:
-  - python setup.py version
+  #- python setup.py version
   - conda build .
 
 build_targets:
@@ -24,8 +27,3 @@ after_success:
   - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all --output-dir /opt/miniconda/conda-bld/
 after_failure:
   - echo Oops?
-
-
-
-
-
