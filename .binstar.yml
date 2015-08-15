@@ -5,8 +5,8 @@ before_script:
   #- git describe --tags
   - conda update -n root conda
   - conda install anaconda-client anaconda-build
-  - conda update -n root anaconda-build
-  #- conda update -n root conda-build
+  #- conda update -n root anaconda-build
+  - conda update -n root conda-build
   - conda config --add channels ulmo
   - conda config --add channels synthicity
   - cat $CONDARC
