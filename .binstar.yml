@@ -1,7 +1,7 @@
 package: pydna
 
 before_script:
-  - git describe --tags
+  - git describe --tags --always
   - conda update -n root conda
   - conda install binstar binstar-build
   - conda update -n root conda-build
