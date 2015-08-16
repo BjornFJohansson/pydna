@@ -169,7 +169,7 @@ This package was developed on and for Python 2.7. Other versions have not been t
 ## Python 3
 This code has not been tried with Python 3. If there is sufficient interest, there might be a Python 3 version in the future.
 
-# Installation using conda on Anaconda
+## Installation using conda on Anaconda
 The best way of using Python in general is to use a free distribution such as [Anaconda](https://store.continuum.io/cshop/anaconda)
 
 There is a [conda](https://anaconda.org/bjornfjohansson/pydna) package available for pydna, which is easily installed
@@ -197,18 +197,18 @@ If you do not have pip, you can get it by following
 these [instructions](http://www.pip-installer.org/en/latest/installing.html)
 
 
-## Source
+## Installation from Source
 If you install from source, you need to install the dependencies separately (listed above). Download one of the source installers from the pypi site and extract the file. Open the pydna source code directory (containing the setup.py file) in
 terminal and type:
 
     python setup.py install
 
-Binary distribution
--------------------
+## Installation from binary distributions
 
 There is a 64 bit windows executable and a windows wheel [here](https://ci.appveyor.com/project/BjornFJohansson/pydna/build/artifacts).
+Note that these will not install required dependencies (see below).
 
-## Windows
+### Windows dependencies
 Sometimes the dependecies can be difficult to install on windows, especially Biopython as a C compiler is necessary. If dependencies have to be installed separately, this can be done using the binary installers for Windows:
 
 | Dependency       | link                                                 |
