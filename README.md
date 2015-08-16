@@ -182,7 +182,7 @@ This works on Windows, MacOSX and Linux, and installs all dependencies automatic
 ## Installation using pip
 The second best way of installing pydna is with pip. Pip is the
 officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool
-for installaion of Python packages from PyPi.
+for installation of Python packages from PyPi.
 Pip installs dependencies automatically.
 
 ### Linux:
