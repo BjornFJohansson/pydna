@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''The pretty_str class is same as unicode but has a _repr_pretty_ method for
+'''The pretty_str class is same as str but has a _repr_pretty_ method for
    for nicer string output in the IPython shell'''
 
 class pretty_str(str):

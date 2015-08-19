@@ -38,6 +38,8 @@ from Bio.Seq                import Seq
 from Bio.Seq                import translate
 from Bio.Seq                import _maketrans
 from Bio.Data.IUPACData     import ambiguous_dna_complement as amb_compl
+amb_compl.update({"U":"A"})
+_complement_table = _maketrans(amb_compl)
 from Bio.SeqRecord          import SeqRecord
 from Bio.SeqFeature         import SeqFeature
 from Bio.SeqFeature         import FeatureLocation
@@ -52,12 +54,14 @@ from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils  import seguid  as seg
 from pydna.utils  import cseguid as cseg
 from pydna.pretty import pretty_str, pretty_string #, pretty_unicode
-import IPython
 
+try:
+    import IPython
+except ImportError:
+    def display(item): return item
+else:
+    from IPython.display import Markdown as display
 
-
-amb_compl.update({"U":"A"})
-_complement_table = _maketrans(amb_compl)
 
 def rc(sequence):
     '''returns the reverse complement of sequence (string)
@@ -2001,7 +2005,7 @@ class Dseqrecord(SeqRecord):
 
         else:
             raise Exception("filename has to be a string, got", type(filename))
-        return IPython.display.Markdown(result)
+        return display(result)
 
 
     def __str__(self):

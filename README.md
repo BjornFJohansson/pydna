@@ -22,11 +22,14 @@
 
 [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
-Planning genetic constructs with many parts, such as recombinant metabolic pathways is usually done manually
-using a DNA sequence editor which quickly becomes unfeasible as scale and complexity of the constructions increase.
+Planning genetic constructs with many parts, such as recombinant 
+metabolic pathways is usually done manually
+using a DNA sequence editor, a task which quickly becomes 
+unfeasible as scale and complexity of the constructions increase.
 
-The Pydna python package provide a human-readable formal description of cloning and assembly strategies which
-also allows for automatic computer simulation and verification.
+The Pydna python package provide a human-readable formal description of 
+cloning and assembly strategies which also allows for automatic computer 
+simulation and verification.
 
 Pydna provides simulation of:
 
@@ -48,12 +51,12 @@ DNA molecule constructions.
 Look at some assembly strategies made in the IPython notebook
 format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb).
 
-Pydna provide functions for molecular biology using python.
-Double stranded DNA sequence classes that make cut and paste
-cloning and PCR very simple is provided (see example below).
-Look at the open access BMC Bioinformatics publication describing pydna:
+There  at the open access BMC Bioinformatics publication describing pydna:
 
 [![abstr](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+
+Double stranded DNA sequence classes that make cut and paste
+cloning and PCR very simple is provided.
 
 See an example of pydna usage at the command line below:
 
@@ -94,9 +97,10 @@ See an example of pydna usage at the command line below:
     >>>
 
 Notably, homologous recombination and Gibson assembly between linear
-DNA fragments can be easily simulated.
+DNA fragments can be easily simulated without any additional information 
+other than the primary sequence of the fragments.
 
-Most functionality is implemented as methods for the double stranded
+Most pydna functionality is implemented as methods for the double stranded
 DNA sequence record classes Dseq and Dseqrecord, which are subclasses
 of the [Biopython](http://biopython.org/wiki/Main_Page)
 [Seq](http://biopython.org/wiki/Seq) and
@@ -145,7 +149,8 @@ the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](h
 for further information.
 
 An [on-line](http://pydna-shell.appspot.com) shell running Python with
-pydna is available for experimentation.
+pydna is available for simple experimentation. It is slower than rinning pydna on 
+your own computer.
 
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
 for pydna if you have problems, questions or comments.
@@ -220,3 +225,10 @@ Sometimes the dependecies can be difficult to install on windows, especially Bio
 
 ## Source Code Repository
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna)
+
+
+## TODO
+
+- [ ] IPython 4 (Jupyter) support
+- [ ] Add agarose gel electrophoresis simulation
+

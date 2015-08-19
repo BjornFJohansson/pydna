@@ -9,11 +9,16 @@ def test_ipynb_import():
 
     assert mymodule.foo2() == "bar2"
 
-    from pydna import ipynb_importer
+    try:
+        import IPython
+    except ImportError:
+        print "IPython not installed"
+    else:
+        from pydna import ipynb_importer
 
-    import mynotebook
+        import mynotebook
 
-    assert mynotebook.foo() == "bar"    
+        assert mynotebook.foo() == "bar"
 
 if __name__ == '__main__':
     nose.runmodule()
