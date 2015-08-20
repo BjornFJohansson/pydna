@@ -22,4 +22,3 @@ def test_ipynb_import():
 
 if __name__ == '__main__':
     nose.runmodule()
-

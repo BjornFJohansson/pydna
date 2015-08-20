@@ -22,10 +22,9 @@ from IPython import get_ipython
 from IPython.core.interactiveshell import InteractiveShell
 
 try:
-    from nbformat import read
-
+    import nbformat
 except ImportError:
-    from IPython.nbformat import read
+    from IPython import nbformat
 
 
 def find_notebook(fullname, path=None):
@@ -63,7 +62,7 @@ class NotebookLoader(object):
 
         # load the notebook object
         with io.open(path, 'r', encoding='utf-8') as f:
-            nb = read(f, 4)
+            nb = nbformat.read(f, 4)
 
         #print type(nb)
         #print dir(nb)
