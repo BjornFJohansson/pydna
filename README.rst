@@ -169,7 +169,6 @@ This package was developed on and for Python 2.7. Other versions have
 not been tested.
 
 -  `Python 2.7 <http://www.python.org>`__
--  `ipython>=4.0.0 <https://pypi.python.org/pypi/ipython>`__
 -  `biopython >= 1.65 <http://pypi.python.org/pypi/biopython>`__
 -  `networkx >= 1.8.1 <http://pypi.python.org/pypi/networkx>`__
 -  `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdir>`__
@@ -180,6 +179,15 @@ Requirements for running tests
 
 -  `nose>=1.3.4 <https://pypi.python.org/pypi/nose>`__
 -  `coverage>=3.7.1 <https://pypi.python.org/pypi/coverage>`__
+
+Optional Requirements
+---------------------
+
+-  `ipython<=3.2.1 <https://pypi.python.org/pypi/ipython>`__
+
+Pydna has been designed to be used from the IPython notebook. If you
+have IPython installed, there are functions in pydna for importing
+ipython notebooks as modules among other things.
 
 Python 3
 --------
