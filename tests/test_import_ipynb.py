@@ -14,10 +14,9 @@ def test_ipynb_import():
     except ImportError:
         print "IPython not installed"
     else:
+
         from pydna import ipynb_importer
-
         import mynotebook
-
         assert mynotebook.foo() == "bar"
 
 if __name__ == '__main__':

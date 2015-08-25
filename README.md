@@ -1,4 +1,4 @@
-# pydna
+#[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna 
 
 [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
 
