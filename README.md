@@ -1,4 +1,4 @@
-#[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna 
+#[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
 
 [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
 
@@ -22,13 +22,13 @@
 
 [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
-Planning genetic constructs with many parts, such as recombinant 
+Planning genetic constructs with many parts, such as recombinant
 metabolic pathways is usually done manually
-using a DNA sequence editor, a task which quickly becomes 
+using a DNA sequence editor, a task which quickly becomes
 unfeasible as scale and complexity of the constructions increase.
 
-The Pydna python package provide a human-readable formal description of 
-cloning and assembly strategies which also allows for automatic computer 
+The Pydna python package provide a human-readable formal description of
+cloning and assembly strategies which also allows for automatic computer
 simulation and verification.
 
 Pydna provides simulation of:
@@ -97,7 +97,7 @@ See an example of pydna usage at the command line below:
     >>>
 
 Notably, homologous recombination and Gibson assembly between linear
-DNA fragments can be easily simulated without any additional information 
+DNA fragments can be easily simulated without any additional information
 other than the primary sequence of the fragments.
 
 Most pydna functionality is implemented as methods for the double stranded
@@ -149,7 +149,7 @@ the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](h
 for further information.
 
 An [on-line](http://pydna-shell.appspot.com) shell running Python with
-pydna is available for simple experimentation. It is slower than rinning pydna on 
+pydna is available for simple experimentation. It is slower than rinning pydna on
 your own computer.
 
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
@@ -160,7 +160,6 @@ Feedback in the form of questions, comments or criticism is very welcome!
 This package was developed on and for Python 2.7. Other versions have not been tested.
 
 - [Python 2.7](http://www.python.org)
-- [ipython>=4.0.0](https://pypi.python.org/pypi/ipython)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdir)
@@ -170,6 +169,14 @@ This package was developed on and for Python 2.7. Other versions have not been t
 
 - [nose>=1.3.4](https://pypi.python.org/pypi/nose)
 - [coverage>=3.7.1](https://pypi.python.org/pypi/coverage)
+
+## Optional Requirements
+
+- [ipython<=3.2.1](https://pypi.python.org/pypi/ipython)
+
+Pydna has been designed to be used from the IPython notebook. If you
+have IPython installed, there are functions in pydna for importing ipython notebooks as
+modules among other things.
 
 ## Python 3
 This code has not been tried with Python 3. If there is sufficient interest, there might be a Python 3 version in the future.
