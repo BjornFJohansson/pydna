@@ -10,6 +10,9 @@
 This module contain functions for primer design.
 
 '''
+
+
+
 import math
 from operator import itemgetter
 from Bio.Alphabet import Alphabet
@@ -17,11 +20,12 @@ from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from pydna.amplify import Anneal, tmbresluc, Dseqrecord
+from pydna.dsdna import parse
 from pretty import pretty_str
 
 class Primer(SeqRecord):
 
-    def __init__(self, seq, *args, **kwargs):
+    def __init__(self, seq = Seq(""), *args, **kwargs):
         if seq.alphabet == Alphabet():
             seq.alphabet = IUPACAmbiguousDNA()
         super(Primer, self).__init__(seq, *args, **kwargs)
@@ -54,7 +58,8 @@ def cloning_primers(template,
                     target_tm=55.0,
                     primerc = 1000.0,
                     saltc=50.0,
-                    formula = tmbresluc ):
+                    formula = tmbresluc,
+                    path = u""):
 
     '''This function can design primers for PCR amplification of a given sequence.
     This function accepts a Dseqrecord object containing the template sequence and
@@ -124,14 +129,14 @@ def cloning_primers(template,
     Dseqrecord(-64)
     >>> pf,pr = pydna.cloning_primers(t)
     >>> pf
-    Primer(seq=Seq('atgactgctaacccttc', IUPACAmbiguousDNA()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
+    Primer(seq=Seq('atgactgctaacccttc', IUPACAmbiguousDNA()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('catcgtaagtttcgaac', IUPACAmbiguousDNA()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
+    Primer(seq=Seq('catcgtaagtttcgaac', IUPACAmbiguousDNA()), id='rv64', name='rv64', description='rv64 -', dbxrefs=[])
     >>> pcr_prod = pydna.pcr(pf, pr, t)
     >>> pcr_prod
     Amplicon(64)
     >>>
-    >>> print pcr_prod.figure()
+    >>> print(pcr_prod.figure())
     5atgactgctaacccttc...gttcgaaacttacgatg3
                          ||||||||||||||||| tm 42.4 (dbd) 52.9
                         3caagctttgaatgctac5
@@ -140,18 +145,18 @@ def cloning_primers(template,
     3tactgacgattgggaag...caagctttgaatgctac5
     >>> pf,pr = pydna.cloning_primers(t, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    Primer(seq=Seq('GGATCCatgactgctaacccttc', IUPACAmbiguousDNA()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
+    Primer(seq=Seq('GGATCCatgactgctaacccttc', IUPACAmbiguousDNA()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('GAATTCcatcgtaagtttcgaac', IUPACAmbiguousDNA()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
+    Primer(seq=Seq('GAATTCcatcgtaagtttcgaac', IUPACAmbiguousDNA()), id='rv64', name='rv64', description='rv64 -', dbxrefs=[])
     >>> pcr_prod = pydna.pcr(pf, pr, t)
-    >>> print pcr_prod.figure()
+    >>> print(pcr_prod.figure())
           5atgactgctaacccttc...gttcgaaacttacgatg3
                                ||||||||||||||||| tm 42.4 (dbd) 52.9
                               3caagctttgaatgctacCTTAAG5
     5GGATCCatgactgctaacccttc3
            ||||||||||||||||| tm 44.5 (dbd) 54.0
           3tactgacgattgggaag...caagctttgaatgctac5
-    >>> print pcr_prod.seq
+    >>> print(pcr_prod.seq)
     GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGAATTC
     >>>
     >>> from Bio.Seq import Seq
@@ -159,11 +164,11 @@ def cloning_primers(template,
     >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
     >>> pf,pr = pydna.cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    Primer(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='pfw64', name='pfw64', description='pfw64', dbxrefs=[])
+    Primer(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('GAATTCcatcgtaagtttcgaacgaaatgtcgtc', IUPACAmbiguousDNA()), id='prv64', name='prv64', description='prv64', dbxrefs=[])
+    Primer(seq=Seq('GAATTCcatcgtaagtttcgaacgaaatgtcgtc', IUPACAmbiguousDNA()), id='rv64', name='rv64', description='rv64 -', dbxrefs=[])
     >>> ampl = pydna.pcr(pf,pr,t)
-    >>> print ampl.figure()
+    >>> print(ampl.figure())
           5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
                                          |||||||||||||||||||||||||||| tm 57.5 (dbd) 72.2
                                         3ctgctgtaaagcaagctttgaatgctacCTTAAG5
@@ -193,7 +198,7 @@ def cloning_primers(template,
         fp = Primer(Seq(str(template[:maxlength-len(fp_tail)].seq), IUPACAmbiguousDNA()))
         rp = Primer(Seq(str(template[-maxlength+len(rp_tail):].reverse_complement().seq), IUPACAmbiguousDNA()))
     else:
-        raise Exception("Specify one or none of the primers, not both.")
+        raise Exception("Specify maximum one of the two primers, not both.")
 
     lowtm, hightm = sorted( [( formula(str(fp.seq), primerc, saltc), fp, "f" ),
                              ( formula(str(rp.seq), primerc, saltc), rp, "r" ) ] )
@@ -210,28 +215,52 @@ def cloning_primers(template,
 
     fp, rp = sorted((lowtm, hightm), key=itemgetter(2))
 
-
-
     fp = fp_tail + fp[1]
     rp = rp_tail + rp[1]
 
-    fp.description = "pfw{}".format(len(template))
-    rp.description = "prv{}".format(len(template))
+    #fp.description = "fw{}".format(len(template))
+    #rp.description = "rv{}".format(len(template))
 
-    fp.name = fp.description[:15]
-    rp.name = rp.description[:15]
+    #fp.name = "fw{}".format(len(template))[:15]
+    #rp.name = "rv{}".format(len(template))[:15]
 
-    fp.id = fp.name
-    rp.id = rp.name
+    fp.description = "fw{}".format(len(template))+' '+template.accession
+    rp.description = "rv{}".format(len(template))+' '+template.accession
 
-    #assert minlength<=len(fp)<=maxlength
-    #assert minlength<=len(rp)<=maxlength
+    fp.id = "fw{}".format(len(template))
+    rp.id = "rv{}".format(len(template))
+
+    fp.name = fp.id
+    rp.name = rp.id
 
     if fp.seq.alphabet == Alphabet():
         fp.seq.alphabet = IUPACAmbiguousDNA()
     if rp.seq.alphabet == Alphabet():
         rp.seq.alphabet = IUPACAmbiguousDNA()
 
+#    If the path argument is supplied primers will be written to a file with that
+#    path. If the file does not exist, it will be created and both primers will be
+#    written to it. If the file exists, the file will be parsed for sequences in
+#    fasta or genbank into .
+
+    if path:
+        try:
+            with open(path, 'rU') as f: raw = f.read()
+        except IOError:
+            raw = u""
+            with open(path, 'w') as f:
+                f.write(fp.format("fasta"))
+                f.write(rp.format("fasta"))
+        else:
+            primer_dict = {x.description:x for x in parse(raw, ds=False)}
+            try:
+                fp = primer_dict[fp.description]
+            except KeyError:
+                with open(path, 'a') as f: f.write(u"\n"+fp.format("fasta").strip())
+            try:
+                rp = primer_dict[rp.description]
+            except KeyError:
+                with open(path, 'a') as f: f.write(u"\n"+rp.format("fasta").strip())
     return fp, rp
 
 def integration_primers( up,
@@ -244,7 +273,8 @@ def integration_primers( up,
                          target_tm  = 55.0,
                          primerc    = 1000.0,
                          saltc      = 50.0,
-                         formula    = tmbresluc ):
+                         formula    = tmbresluc,
+                         path       = u""):
 
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
@@ -259,7 +289,8 @@ def integration_primers( up,
                             target_tm=target_tm,
                             primerc = primerc,
                             saltc=saltc,
-                            formula = formula)
+                            formula = formula,
+                            path = path)
 
 
 def assembly_primers(templates,
@@ -272,7 +303,8 @@ def assembly_primers(templates,
                      target_tm  = 55.0,
                      primerc    = 1000.0,
                      saltc      = 50.0,
-                     formula    = tmbresluc ):
+                     formula    = tmbresluc,
+                     path       = u""):
 
 
     '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
@@ -400,39 +432,41 @@ def assembly_primers(templates,
     >>> a=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
     >>> b=pydna.Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
     >>> c=pydna.Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
-    >>> primer_pairs = pydna.assembly_primers([a,b,c])
+    >>> primer_pairs = pydna.assembly_primers([a,b,c], circular = True)
     >>> p=[]
     >>> for t, (f,r) in zip([a,b,c], primer_pairs): p.append(pydna.pcr(f,r,t))
     >>> p
-    [Amplicon(82), Amplicon(101), Amplicon(84)]
+    [Amplicon(100), Amplicon(101), Amplicon(102)]
     >>> assemblyobj = pydna.Assembly(p)
     >>> assemblyobj
     Assembly:
-    Sequences........................: [82] [101] [84]
-    Sequences with shared homologies.: [82] [101] [84]
+    Sequences........................: [100] [101] [102]
+    Sequences with shared homologies.: [100] [101] [102]
     Homology limit (bp)..............: 25
-    Number of overlaps...............: 2
-    Nodes in graph(incl. 5' & 3')....: 4
+    Number of overlaps...............: 3
+    Nodes in graph(incl. 5' & 3')....: 5
     Only terminal overlaps...........: No
-    Circular products................: 
-    Linear products..................: [195] [149] [147] [36] [36]
+    Circular products................: [195]
+    Linear products..................: [231] [231] [231] [167] [166] [165] [36] [36] [36]
     >>> assemblyobj.linear_products
-    [Contig(-195), Contig(-149), Contig(-147), Contig(-36), Contig(-36)]
-    >>> assemblyobj.linear_products[0].seguid()
-    '1eNv3d_1PqDPP8qJZIVoA45Www8'
-    >>> (a+b+c).seguid()
-    '1eNv3d_1PqDPP8qJZIVoA45Www8'
-    >>> pydna.eq(a+b+c, assemblyobj.linear_products[0])
-    True
-    >>>
-    >>> print assemblyobj.linear_products[0].small_fig()
-    82bp_PCR_prod|36
-                  \\/
-                  /\\
-                  36|101bp_PCR_prod|36
-                                    \\/
-                                    /\\
-                                    36|84bp_PCR_prod
+    [Contig(-231), Contig(-231), Contig(-231), Contig(-167), Contig(-166), Contig(-165), Contig(-36), Contig(-36), Contig(-36)]
+    >>> assemblyobj.circular_products[0].cseguid()
+    'V3Mi8zilejgyoH833UbjJOtDMbc'
+    >>> (a+b+c).looped().cseguid()
+    'V3Mi8zilejgyoH833UbjJOtDMbc'
+    >>> print(assemblyobj.circular_products[0].small_fig())
+     -|100bp_PCR_prod|36
+    |                 \\/
+    |                 /\\
+    |                 36|101bp_PCR_prod|36
+    |                                   \\/
+    |                                   /\\
+    |                                   36|102bp_PCR_prod|36
+    |                                                     \\/
+    |                                                     /\\
+    |                                                     36-
+    |                                                        |
+     --------------------------------------------------------
     >>>
 
 
@@ -486,13 +520,16 @@ def assembly_primers(templates,
         fp, rp = cloning_primers(   template,
                                     minlength  = minlength,
                                     maxlength  = maxlength,
+                                    fp_tail = fp_tail,
+                                    rp_tail = rp_tail,
                                     target_tm  = target_tm,
                                     primerc    = primerc,
                                     saltc      = saltc,
-                                    formula    = formula)
+                                    formula    = formula,
+                                    path       = path)
 
-        fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
-        rp = Primer(Seq(rp_tail, IUPACAmbiguousDNA())) + rp
+        #fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
+        #rp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + rp
 
         primer_pairs.append((fp, rp))
 
@@ -508,9 +545,3 @@ def assembly_primers(templates,
 if __name__=="__main__":
     import doctest
     doctest.testmod()
-
-    import pydna
-    t=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
-    pf,pr = cloning_primers(t)
-
-    print [pf, pr]
