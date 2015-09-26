@@ -1,27 +1,5 @@
 #[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
 
-[![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)
-
-[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)
-
-[![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
-
-[![icon4](https://binstar.org/bjornfjohansson/pydna/badges/build.svg)](https://binstar.org/bjornfjohansson/pydna/builds)
-
-[![icon5](https://binstar.org/bjornfjohansson/pydna/badges/version.svg)](https://binstar.org/bjornfjohansson/pydna)
-
-[![icon6](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master)](https://coveralls.io/r/BjornFJohansson/pydna?branch=master)
-
-[![icon7](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
-
-[![icon8](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna)
-
-[![icon9](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)
-
-[![icon10](https://img.shields.io/pypi/dm/pydna.png)](https://pypi.python.org/pypi/pydna)
-
-[![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
-
 Planning genetic constructs with many parts, such as recombinant
 metabolic pathways is usually done manually
 using a DNA sequence editor, a task which quickly becomes
@@ -155,6 +133,15 @@ your own computer.
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
 for pydna if you have problems, questions or comments.
 Feedback in the form of questions, comments or criticism is very welcome!
+## Automatic testing and builds
+The test suit is run automatically on OSX-64 using travis [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna) and on Windows using appveyor[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
+Source distributions (gztar,zip) and a python wheel are built on drone [![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
+and uploaded to pypi [![icon8](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna) from which it has this monthly download count [![icon10](https://img.shields.io/pypi/dm/pydna.png)](https://pypi.python.org/pypi/pydna). There is also a binstar package, wich is currently built offline. [![icon5](https://binstar.org/bjornfjohansson/pydna/badges/version.svg)](https://binstar.org/bjornfjohansson/pydna). Documentation is built and displayed at readthedocs,  [![icon7](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
+code coverage is [![icon6](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master)](https://coveralls.io/r/BjornFJohansson/pydna?branch=master) and
+there are a few stars on github [![icon9](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers). Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
+
+
+
 ## Installation requirements
 
 This package was developed on and for Python 2.7. Other versions have not been tested.

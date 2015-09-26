@@ -1,28 +1,6 @@
 |icon| pydna
 ============
 
-|icon1|
-
-|icon2|
-
-|icon3|
-
-|icon4|
-
-|icon5|
-
-|icon6|
-
-|icon7|
-
-|icon8|
-
-|icon9|
-
-|icon10|
-
-|icon11|
-
 Planning genetic constructs with many parts, such as recombinant
 metabolic pathways is usually done manually using a DNA sequence editor,
 a task which quickly becomes unfeasible as scale and complexity of the
@@ -163,7 +141,18 @@ rinning pydna on your own computer.
 Please post a message in the `google
 group <https://groups.google.com/d/forum/pydna>`__ for pydna if you have
 problems, questions or comments. Feedback in the form of questions,
-comments or criticism is very welcome! ## Installation requirements
+comments or criticism is very welcome! ## Automatic testing and builds
+The test suit is run automatically on OSX-64 using travis |icon1| and on
+Windows using appveyor\ |icon2|. Source distributions (gztar,zip) and a
+python wheel are built on drone |icon3| and uploaded to pypi |icon8|
+from which it has this monthly download count |icon10|. There is also a
+binstar package, wich is currently built offline. |icon5|. Documentation
+is built and displayed at readthedocs, |icon7| code coverage is |icon6|
+and there are a few stars on github |icon9|. Dependencies are monitored
+by versioneye |icon11|
+
+Installation requirements
+-------------------------
 
 This package was developed on and for Python 2.7. Other versions have
 not been tested.
@@ -291,27 +280,25 @@ TODO
 
 .. |icon| image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png
    :target: https://pypi.python.org/pypi/pydna/
+.. |abstr| image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png
+   :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
 .. |icon1| image:: https://travis-ci.org/BjornFJohansson/pydna.svg
    :target: https://travis-ci.org/BjornFJohansson/pydna
 .. |icon2| image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true
    :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
 .. |icon3| image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
-.. |icon4| image:: https://binstar.org/bjornfjohansson/pydna/badges/build.svg
-   :target: https://binstar.org/bjornfjohansson/pydna/builds
-.. |icon5| image:: https://binstar.org/bjornfjohansson/pydna/badges/version.svg
-   :target: https://binstar.org/bjornfjohansson/pydna
-.. |icon6| image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master
-   :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master
-.. |icon7| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
-   :target: https://readthedocs.org/projects/pydna/?badge=latest
 .. |icon8| image:: https://img.shields.io/pypi/v/pydna.png
    :target: https://pypi.python.org/pypi/pydna
-.. |icon9| image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
-   :target: https://github.com/BjornFJohansson/pydna/stargazers
 .. |icon10| image:: https://img.shields.io/pypi/dm/pydna.png
    :target: https://pypi.python.org/pypi/pydna
+.. |icon5| image:: https://binstar.org/bjornfjohansson/pydna/badges/version.svg
+   :target: https://binstar.org/bjornfjohansson/pydna
+.. |icon7| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
+   :target: https://readthedocs.org/projects/pydna/?badge=latest
+.. |icon6| image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master
+   :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master
+.. |icon9| image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
+   :target: https://github.com/BjornFJohansson/pydna/stargazers
 .. |icon11| image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg
    :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
-.. |abstr| image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png
-   :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
