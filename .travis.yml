@@ -19,4 +19,4 @@ before_script:
   - pip install jsonschema
   
 script:
-  - python run_tests.py
+  - python run_test.py
