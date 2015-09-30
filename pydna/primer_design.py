@@ -112,6 +112,21 @@ def cloning_primers(template,
         These functions are imported from the :mod:`pydna.amplify` module, but can be
         substituted for some other custom made function.
 
+    path : unicode, optional
+        This variable can be set to a path to a text file, which will be created
+        if it does not exist.
+        This file (if it exists) will be parsed for sequences in fasta or
+        genbank format and a Biopython SeqRecord object will be created for
+        each sequence.
+
+        If a SeqRecord object is found with the same description as any of the
+        primers designed, the SeqRecord object parsed from the file will be
+        returned by this function instead of the newly designed primer.
+
+        If no sequence with the same description can be found, the primer(s)
+        will be appended to the file in fasta format.
+
+
     Returns
     -------
     fp, rp : tuple
