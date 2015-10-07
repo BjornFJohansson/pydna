@@ -1980,7 +1980,7 @@ class Dseqrecord(SeqRecord):
             # invent a name if none given
         if isinstance(filename, basestring):
             name, ext = os.path.splitext(filename)
-            result = "###[{name}]({filename})".format(name=name, filename=filename)
+            result = "### [{name}]({filename})".format(name=name, filename=filename)
             if os.path.isfile(filename):
                 len_new    = len(self)
                 seguid_new = self.seguid()

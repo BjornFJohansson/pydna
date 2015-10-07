@@ -47,7 +47,7 @@ test_script:
   # Build the compiled extension and run the project tests
   - "%CMD_IN_ENV% pip install nose"
   - "%CMD_IN_ENV% pip install pyreadline"
-  - "%CMD_IN_ENV% python run_test.py"
+  - "%CMD_IN_ENV% python run_test_.py"
 
 
 after_test:
