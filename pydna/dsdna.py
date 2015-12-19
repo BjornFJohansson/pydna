@@ -396,6 +396,16 @@ class Dseq(Seq):
 
         Seq.__init__(self, self.todata, alphabet)
 
+    def mw(self):
+        nts = ( self.watson + self.crick ).lower()
+        # (A x 313.2) + (T x 304.2) + (C x 289.2) + (G x 329.2) + 79.0
+        return sum( [313.2 for n in nts if n=="a"] +
+                    [304.2 for n in nts if n=="t"] +
+                    [289.2 for n in nts if n=="c"] +
+                    [329.2 for n in nts if n=="g"] ) + 79
+
+
+
     def find(self, sub, start=0, end=sys.maxint):
         """Find method, like that of a python string.
 
@@ -1250,7 +1260,7 @@ class Dseq(Seq):
         if self.ovhg<rc_ovhg:
             w = self.watson
             c = self.crick
-            o  =self.ovhg
+            o = self.ovhg
         elif self.ovhg>rc_ovhg:
             w = self.crick
             c = self.watson
@@ -1359,7 +1369,7 @@ class Dseqrecord(SeqRecord):
     def __init__(self, record,
                        circular               = None,
                        linear                 = None,
-                       n                      = 10E-12, # pmols
+                       n                      = 10E-12, # mol (10 pmol)
                        *args,
                        **kwargs):
         self.n = n
@@ -1506,6 +1516,9 @@ class Dseqrecord(SeqRecord):
 
        '''
         return seg(self.seq)
+
+    def m(self):
+        return self.seq.mw() * self.n # Da(g/mol) * mol = g
 
     def isorf(self, table=1):
         '''Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
