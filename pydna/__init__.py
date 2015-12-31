@@ -118,6 +118,11 @@ from pydna.utils                                    import pairwise
 from pydna.utils                                    import cseguid
 from pydna.primer_design                            import Primer
 from pydna.pretty                                   import pretty_str
+from pydna.gel                                      import Gel
+from pydna.gel                                      import gen_ladder
+from pydna.gel                                      import ladders
+from pydna.gel                                      import ladder_from_info
+from pydna.gel                                      import lindivQ
 
 try:
     del primer_design
