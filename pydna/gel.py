@@ -26,7 +26,7 @@ from matplotlib.ticker import FixedLocator
 from mpldatacursor import datacursor, HighlightingDataCursor  # version 0.5.0
 from pint import UnitRegistry, DimensionalityError
 
-from dsdna import Dseq, Dseqrecord
+from pydna import Dseq, Dseqrecord
 
 
 
@@ -52,7 +52,7 @@ Vars = {'E': {'synonyms': ('field','electric field'), 'units': 'V/cm',
 
 
 # Weight standards
-ladders = {
+weight_standards = {
     '1kb_GeneRuler': {
         'sizes': Q_([10000, 8000, 6000, 5000, 4000, 3500, 3000, 2500, 2000,
                      1500, 1000, 750, 500, 250], 'bp'),
@@ -344,32 +344,63 @@ def diffusion_coefficient(Nbp, N_lim1, N_lim2, N_lim3, args):
     return D
 
 def rand_str(sample, length):
+    """
+    Return a random string of given length built from the chars in sample.
+    """
     rnd_str = ''
     for i in xrange(length):
         r = randint(0, len(sample)-1)
         rnd_str += sample[r]
     return rnd_str
 
-def randDNAseqs(sizes):
+def random_Dseqs(sizes):
+    """
+    Return a list of pydna Dseqs of given sizes.
+    """
     sample = []
     for size in sizes:
         seq = Dseq(rand_str('actg', size))
         sample.append(seq)
     return sample
 
-def gen_ladder(sizes, quantities):
-    frags = randDNAseqs(to_units(sizes, 'bp').magnitude)
+def gen_sample(sizes, quantities):
+    """Return list of pydna Dseqrecords of given size and quantity.
+
+    Parameters
+    ----------
+
+    sizes : list of integers
+        List of DNA sizes in base pairs (bp).
+
+    quantities : list of integers
+        List of DNA weights in nanograms (ng).
+
+    Examples
+    --------
+    >>> sizes = [3000, 500, 1500]  # bp
+    >>> qts = [70.0, 11.7, 35.0]  # ng
+    >>> sample = gen_sample(sizes, qts)
+    >>> sample
+    [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
+    >>> sample[0].m()
+    70.0
+    >>> [round(sample[i].m(), 3) == round(qts[i], 3) for i in xrange(len(sample))]
+    [True, True, True]
+
+    """
+    frags = random_Dseqs(to_units(sizes, 'bp').magnitude)
     quantities = to_units(quantities, Vars['quantities']['units']).magnitude
     return [Dseqrecord(seq, n=quantities[i]/seq.mw()) for i, seq in
             enumerate(frags)]
 
-def ladder_from_info(key, qty=Q_(500,'ng')):
-    assert key in ladders, "Key not recognized. Choose from: %s" %ladders.keys()
+def weight_standard_sample(key, qty=Q_(500,'ng')):
+    assert key in weight_standards, ("Key not recognized. Choose from: %s"
+                                     %weight_standards.keys())
     qty = to_units(qty, Vars['quantities']['units'], var_name='qty')
-    sizes = ladders[key]['sizes']
-    fracs = ladders[key]['percent']
+    sizes = weight_standards[key]['sizes']
+    fracs = weight_standards[key]['percent']
     quantities = qty * fracs
-    return gen_ladder(sizes, quantities)
+    return gen_sample(sizes, quantities)
 
 def logspace_int(minimum, maximum, divs):
     space = np.logspace(np.log10(minimum), np.log10(maximum), divs)
@@ -532,7 +563,7 @@ def assign_quantitiesB(samples, maxdef=Q_(150,'ng')):
     return quantities
 
 
-def lindivQ(sample, quantity, criteria=len):
+def lin_div_Qty(sample, quantity, criteria=len):
     """
     Linearly divides a quantity by the elements of sample considering a
     criteria. Criteria must by a function that returns a number upon being
@@ -1229,9 +1260,9 @@ if __name__=="__main__":
     lanenames=['L1', 'S1', 'S2']
 
     # Samples
-    ladder = ladder_from_info('1kb_GeneRuler')
-    sample1 = gen_ladder([561, 1302, 135, 5021], [7.82, 18.15, 1.88, 70.00])
-    sample2 = gen_ladder([3000, 500, 1500], [70.00, 11.67, 35.00])
+    ladder = weight_standard_sample('1kb_GeneRuler')
+    sample1 = gen_sample([561, 1302, 135, 5021], [7.82, 18.15, 1.88, 70.00])
+    sample2 = gen_sample([3000, 500, 1500], [70.00, 11.67, 35.00])
     samples = [ladder, sample1, sample2]
 
     # Quantities
@@ -1314,13 +1345,13 @@ if __name__=="__main__":
                                  method=interpol, replNANs=replNANs, plot=plot)
 
     if check_ladders:
-        ### Verify and print ladders info ### ---------------------------------
+        ### Verify and print weight_standards info ### ------------------------
         print '\n'+80*'#'
         print '( DNA Ladder Info )'.center(80, '#')
         print 80*'#'
-        for k in ladders:
-            sizes = ladders[k]['sizes']
-            fracs = ladders[k]['percent']
+        for k in weight_standards:
+            sizes = weight_standards[k]['sizes']
+            fracs = weight_standards[k]['percent']
             total = Q_(0.5, 'ug')
             masses = total * fracs
             assert len(sizes) == len(fracs), 'ladder: %s, len(sizes) != len(percent)' %k
