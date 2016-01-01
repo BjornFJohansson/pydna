@@ -124,6 +124,8 @@ from pydna.gel                                      import weight_standards
 from pydna.gel                                      import weight_standard_sample
 from pydna.gel                                      import lin_div_Qty
 from pydna.gel                                      import random_Dseqs
+from pydna.gel                                      import ureg
+from pydna.gel                                      import Q_
 
 try:
     del primer_design
