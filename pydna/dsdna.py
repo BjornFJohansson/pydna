@@ -1369,7 +1369,7 @@ class Dseqrecord(SeqRecord):
     def __init__(self, record,
                        circular               = None,
                        linear                 = None,
-                       n                      = 10E-12, # mol (10 pmol)
+                       n                      = 5E-14, # mol (0.05 pmol)
                        *args,
                        **kwargs):
         self.n = n
