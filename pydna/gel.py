@@ -371,27 +371,59 @@ def random_Dseqs(sizes):
 def gen_sample(sizes, quantities):
     """Return list of pydna Dseqrecords of given size and quantity.
 
+    If a single quantity is given it is divided by the DNA fragments
+    in proportion to their length.
+
     Parameters
     ----------
 
-    sizes : list of integers
+    sizes : iterable of pint.unit.Quantity objects or ints
         List of DNA sizes in base pairs (bp).
 
-    quantities : list of integers
+    quantities : iterable of pint.unit.Quantity objects, floats or ints
         List of DNA weights in nanograms (ng).
+        If a single quantity is given (pint.unit.Quantity object, float
+        or int) it is divided linearly by the DNA fragments length.
 
     Examples
     --------
+
+    Direct quantity assignment without declared units.
+    
     >>> sizes = [3000, 500, 1500]  # bp
     >>> qts = [70.0, 11.7, 35.0]  # ng
     >>> sample = gen_sample(sizes, qts)
     >>> sample
     [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
-    >>> sample[0].m()
-    70.0
-    >>> [round(sample[i].m(), 3) == round(qts[i], 3) for i in xrange(len(sample))]
-    [True, True, True]
+    >>> sample[0].m()  # g
+    7.0000000000000005e-08
+    >>> Q_([dna.m() for dna in sample], 'g').to('ng')
+    <Quantity([ 70.   11.7  35. ], 'nanogram')>
+    >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
+    <Quantity([ 0.03776113  0.03785905  0.03775848], 'picomole')>
 
+    Direct quantity assignment with declared units.
+
+    >>> sizes = Q_([3000, 500, 1500], 'bp')
+    >>> qts = Q_([70.0, 11.7, 35.0],  'ng')
+    >>> sample = gen_sample(sizes, qts)
+    >>> sample
+    [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
+    >>> Q_([dna.m() for dna in sample], 'g').to('ng')
+    <Quantity([ 70.   11.7  35. ], 'nanogram')>
+    >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
+    <Quantity([ 0.03776097  0.03785881  0.03775967], 'picomole')>
+
+    Assignment of total quantity (with declared units).
+
+    >>> sample = gen_sample(Q_([3000, 500, 1500], 'bp'), Q_(200, 'ng'))
+    >>> sample
+    [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
+    >>> Q_([dna.m() for dna in sample], 'g').to('ng')
+    <Quantity([ 120.   20.   60.], 'nanogram')>
+    >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
+    <Quantity([ 0.06473159  0.0647201   0.06472974], 'picomole')>
+    
     """
     frags = random_Dseqs(to_units(sizes, 'bp').magnitude)
     quantities = to_units(quantities, 'ng')
