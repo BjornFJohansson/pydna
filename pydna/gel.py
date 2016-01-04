@@ -394,8 +394,10 @@ def gen_sample(sizes, quantities):
 
     """
     frags = random_Dseqs(to_units(sizes, 'bp').magnitude)
-    quantities = to_units(quantities, Vars['quantities']['units'])
+    quantities = to_units(quantities, 'ng')
     quantities = quantities.to('g').magnitude
+    if not hasattr(quantities, '__iter__'):
+        quantities = lin_div_Qty(frags, quantities, criteria=len)
     return [Dseqrecord(seq, n=quantities[i]/seq.mw()) for i, seq in
             enumerate(frags)]
 
