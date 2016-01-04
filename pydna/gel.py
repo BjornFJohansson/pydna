@@ -425,7 +425,7 @@ def gen_sample(sizes, quantities):
     <Quantity([ 0.06473159  0.0647201   0.06472974], 'picomole')>
     
     """
-    frags = random_Dseqs(to_units(sizes, 'bp').magnitude)
+    frags = random_Dseqs([int(s.magnitude) for s in to_units(sizes, 'bp')])
     quantities = to_units(quantities, 'ng')
     quantities = quantities.to('g').magnitude
     if not hasattr(quantities, '__iter__'):
