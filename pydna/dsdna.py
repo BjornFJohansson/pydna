@@ -402,7 +402,8 @@ class Dseq(Seq):
         return sum( [313.2 for n in nts if n=="a"] +
                     [304.2 for n in nts if n=="t"] +
                     [289.2 for n in nts if n=="c"] +
-                    [329.2 for n in nts if n=="g"] ) + 79
+                    [329.2 for n in nts if n=="g"] +
+                    [308.9 for n in nts if n=="n"]) + 79
 
 
 
