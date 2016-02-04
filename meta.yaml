@@ -16,6 +16,10 @@ requirements:
         - networkx
         - appdirs
         - prettytable
+        - numpy
+        - matplotlib
+        - mpldatacursor
+        - pint
     run:
         - python
         - ipython
@@ -23,7 +27,10 @@ requirements:
         - networkx
         - appdirs
         - prettytable
-
+        - numpy
+        - matplotlib
+        - mpldatacursor
+        - pint
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD
