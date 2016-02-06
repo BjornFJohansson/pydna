@@ -17,6 +17,7 @@ requirements:
         - appdirs
         - prettytable
         - numpy
+        - scipy
         - matplotlib
         - mpldatacursor
         - pint
@@ -28,6 +29,7 @@ requirements:
         - appdirs
         - prettytable
         - numpy
+        - scipy
         - matplotlib
         - mpldatacursor
         - pint
