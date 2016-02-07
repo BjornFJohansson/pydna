@@ -4,7 +4,7 @@ echo "Building anaconda packages"
 
 conda build .
 
-conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir /home/ubuntu/src/github.com/BjornFJohansson/miniconda/conda-bld/
+#conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir /home/ubuntu/src/github.com/BjornFJohansson/miniconda/conda-bld/
 
 conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir ~/anaconda/conda-bld/
 
