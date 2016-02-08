@@ -17,7 +17,7 @@ This code is at an early stage of development and documentation.
 from __future__ import division
 from numbers import Number
 from StringIO import StringIO
-from random import randint
+#from random import randint
 
 import numpy as np
 import matplotlib.ticker as mtick

@@ -118,7 +118,30 @@ from pydna.utils                                    import pairwise
 from pydna.utils                                    import cseguid
 from pydna.primer_design                            import Primer
 from pydna.pretty                                   import pretty_str
-from pydna.gel                                      import Gel
+
+
+msg=""
+try:
+    import scipy
+except ImportError:
+    msg += "scipy not installed\n"
+try:
+    import numpy
+except ImportError:
+    msg += "numpy not installed.\n"
+try:
+    import matplotlib
+except ImportError:
+    msg += "matplotlib not installed.\n"
+
+if msg:
+    print msg + "gel simulation will not be available."
+else:
+    from pydna.gel import Gel
+
+#numpy>=1.10.1
+#matplotlib>=1.5.0
+#scipy>=0.16.0
 #from pydna.gel                                      import gen_sample
 #from pydna.gel                                      import weight_standards
 #from pydna.gel                                      import weight_standard_sample
