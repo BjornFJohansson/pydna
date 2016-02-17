@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2015 by Bruno Björn Johansson.  All rights reserved.
+# Copyright 2015 by Bruno Silva <bruno.phoenix@gmail.com>, Björn Johansson.
+# All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -14,6 +15,7 @@ Note
 This code is at an early stage of development and documentation.
 
 """
+from __future__ import division
 
 try:
     import numpy as np
@@ -41,7 +43,7 @@ except ImportError:
     pass
 
 from pint import UnitRegistry #, DimensionalityError
-from __future__ import division
+
 from numbers import Number
 from StringIO import StringIO
 #from random import randint

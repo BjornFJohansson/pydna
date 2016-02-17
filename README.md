@@ -122,7 +122,7 @@ Feedback in the form of questions, comments or criticism is very welcome!
 ## Automatic testing and builds
 
 
- An anaconda package which is automatically built. [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/build.svg)](https://anaconda.org/bjornfjohansson/pydna/builds) 
+ An anaconda package is automatically built on Anaconda cloud [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/build.svg)](https://anaconda.org/bjornfjohansson/pydna/builds).
 
 The test suit is run automatically after each commit on OSX-64 using travis [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna) and on Windows using appveyor[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
 
