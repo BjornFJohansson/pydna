@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 by Björn Johansson.  All rights reserved.
+# Copyright 2015 by Bruno Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -14,20 +14,38 @@ Note
 This code is at an early stage of development and documentation.
 
 """
+
+try:
+    import numpy as np
+except ImportError:
+    pass
+
+try:
+    import matplotlib.ticker as mtick
+    from matplotlib import pyplot as plt, cm
+    from matplotlib.ticker import FixedLocator
+    import matplotlib.ticker as mtick
+except ImportError:
+    pass
+
+try:
+    from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
+except ImportError:
+    pass
+
+try:
+    from scipy.interpolate import griddata
+    from scipy.optimize import leastsq, fsolve
+    from scipy import stats
+except ImportError:
+    pass
+
+from pint import UnitRegistry #, DimensionalityError
 from __future__ import division
 from numbers import Number
 from StringIO import StringIO
 #from random import randint
 
-import numpy as np
-import matplotlib.ticker as mtick
-from scipy.interpolate import griddata
-from scipy.optimize import leastsq, fsolve
-from scipy import stats
-from matplotlib import pyplot as plt, cm
-from matplotlib.ticker import FixedLocator
-from mpldatacursor import datacursor, HighlightingDataCursor  # version 0.5.0
-from pint import UnitRegistry, DimensionalityError
 
 from pydna import Dseq, Dseqrecord
 

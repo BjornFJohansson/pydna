@@ -133,6 +133,10 @@ try:
     import matplotlib
 except ImportError:
     msg += "matplotlib not installed.\n"
+try:
+    import mpldatacursor
+except ImportError:
+    msg += "mpldatacursor not installed.\n"
 
 if msg:
     print msg + "gel simulation will not be available."
@@ -142,6 +146,8 @@ else:
 #numpy>=1.10.1
 #matplotlib>=1.5.0
 #scipy>=0.16.0
+#mpldatacursor>=0.6.1
+
 #from pydna.gel                                      import gen_sample
 #from pydna.gel                                      import weight_standards
 #from pydna.gel                                      import weight_standard_sample
