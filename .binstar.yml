@@ -19,11 +19,14 @@ script:
   #- python setup.py version
   - conda build .
 
-build_targets:
-    files: /opt/miniconda/conda-bld/*/*.tar.bz2
-    channels: 'main'
+build_targets: conda
+    #files: /opt/miniconda/conda-bld/*/*.tar.bz2
+    #channels: 'main'
 
 after_success:
   - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p all --output-dir /opt/miniconda/conda-bld/
 after_failure:
   - echo Oops?
+
+#https://anaconda.org/BjornFJohansson/pydna/0.9.9/download/osx-64/pydna-0.9.9-py27_1.tar.bz2
+#https://api.anaconda.org/release/BjornFJohansson/pydna/
