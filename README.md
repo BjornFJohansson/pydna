@@ -4,9 +4,8 @@ Planning genetic constructs with many parts, such as recombinant
 metabolic pathways is usually done manually using a DNA sequence editor, a task which quickly becomes
 unfeasible as scale and complexity of the constructions increase.
 
-The Pydna python package provide a human-readable formal description of
-cloning and assembly strategies which also allows for automatic computer
-simulation and verification.
+The Pydna python package provide a human-readable formal description of cloning and assembly strategies which also allows for automatic computer
+simulation and verification. 
 
 Pydna provides simulation of:
 
@@ -16,7 +15,7 @@ Pydna provides simulation of:
 - Primer design
 - Gibson assembly
 - Homologous recombination
-- Gel electrophoresis of DNA
+- Gel electrophoresis of DNA (**NEW Feature**) 
 
 Pydna was designed to provide a form of executable documentation
 describing a subcloning or DNA assembly experiment. The pydna code unambiguously describe a sub cloning experiment, and can be executed to yield the sequence of the of the resulting DNA molecule. A cloning strategy expressed in pydna is complete, unambiguous and stable. Pydna has been designed to be understandable for biologists with some basic understanding of Python.
@@ -73,13 +72,12 @@ These classes make cut and paste cloning and PCR very simple:
 
 Notably, homologous recombination and Gibson assembly between linear DNA fragments can be easily simulated without any additional information other than the primary sequence of the fragments.
 
-Gel electrophoresis of DNA fragments can be simulated:
+Gel electrophoresis of DNA fragments can be simulated using the gel.py module by [Bruno Silva](https://github.com/bruno2git):
 
 ![alt text](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/gel.png "simulated agarose gel")
 
 
-
-Pydna was designed to semantically imitate how sub cloning experiments are typically documented in Scientific literature. Pydna code describing a sub cloning is reasonably compact and meant to be readable.
+Pydna was designed to semantically imitate how sub cloning experiments are typically documented in scientific literature. Pydna code describing a sub cloning is reasonably compact and meant to be readable.
 
 The nine lines of Python below, simulates the construction of a recombinant plasmid. DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
 
