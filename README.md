@@ -77,6 +77,8 @@ Gel electrophoresis of DNA fragments can be simulated using the gel.py module by
 ![alt text](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/gel.png "simulated agarose gel")
 
 
+Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb)
+
 Pydna was designed to semantically imitate how sub cloning experiments are typically documented in scientific literature. Pydna code describing a sub cloning is reasonably compact and meant to be readable.
 
 The nine lines of Python below, simulates the construction of a recombinant plasmid. DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
