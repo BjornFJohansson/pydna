@@ -12,6 +12,7 @@ requirements:
     build:
         - python
         - ipython
+        - jupyter
         - biopython
         - networkx
         - appdirs
@@ -24,6 +25,7 @@ requirements:
     run:
         - python
         - ipython
+        - jupyter
         - biopython
         - networkx
         - appdirs
