@@ -988,8 +988,8 @@ class Gel:
         self.samples = [[dna if isinstance(dna, Dseqrecord) else
                          Dseqrecord(dna) for dna in sample] for sample in
                         samples]    # len(DNA) in bp
-        self.names = names if names else ['lane'+str(i) for i in      #
-                                          xrange(1, len(samples)+1)]  #
+        self.names = names if names else [str(i) for i in
+                                          xrange(1, len(samples)+1)]
         self.percent = to_units(percentgel, '(g/(100 mL))*100', 'percentgel')
         self.field = to_units(electrfield, 'V/cm', 'electrfield')
         self.temperature = to_units(temperature, 'K', 'temperature')
