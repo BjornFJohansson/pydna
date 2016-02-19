@@ -98,6 +98,9 @@ module by `Bruno Silva <https://github.com/bruno2git>`__:
 
    alt text
 
+Look at an example notebook with a gel simulation
+`here <http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb>`__
+
 Pydna was designed to semantically imitate how sub cloning experiments
 are typically documented in scientific literature. Pydna code describing
 a sub cloning is reasonably compact and meant to be readable.

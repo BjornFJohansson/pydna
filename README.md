@@ -155,6 +155,7 @@ Pydna has been designed to be used from the Jupyter notebook. If you have IPytho
 If scipy, numpy, matplotlib and mpldatacursor are installed, the gel simulation functionality is available.
 
 - [ipython>=4](https://pypi.python.org/pypi/ipython)
+- [jupyter>=1.0.0](https://pypi.python.org/pypi/jupyter)
 - [scipy>=0.16.0](https://pypi.python.org/pypi/scipy)
 - [numpy>=1.10.1](https://pypi.python.org/pypi/numpy)
 - [matplotlib>=1.5.0](https://pypi.python.org/pypi/matplotlib)
