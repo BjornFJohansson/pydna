@@ -56,12 +56,9 @@ from pydna.utils  import cseguid as cseg
 from pydna.pretty import pretty_str, pretty_string #, pretty_unicode
 
 try:
-    import IPython
+    from IPython.display import Markdown as display
 except ImportError:
     def display(item): return item
-else:
-    from IPython.display import Markdown as display
-
 
 def rc(sequence):
     '''returns the reverse complement of sequence (string)

@@ -161,7 +161,6 @@ try:
 except NameError:
     pass
 
-
 try:
     del assembly
 except NameError:
