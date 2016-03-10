@@ -17,7 +17,9 @@ test:
 
 script:
   #- python setup.py version
-  - conda build .
+  #- conda build .
+  #- conda build -c andreas-h 
+   - conda build -c BjornFJohansson .
 
 build_targets:
     files: /opt/miniconda/conda-bld/*/*.tar.bz2
