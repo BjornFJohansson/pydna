@@ -1,7 +1,9 @@
-
 =======   ========== ===========================================================================
 version   date       comment
 =======   ========== ===========================================================================
+1.0.1     2016-03-10 Bugfix: for errors in IPython import if IPython is too old (<4.0)
+                     Bugfix: Large genbank records were not downloaded completely.
+1.0.0     -          Gel simulation added
 0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions.
                      This release tries to solve this by not specifying file extensions
                      for the cache files. Two functions are added, pydna.
