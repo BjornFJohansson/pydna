@@ -213,7 +213,7 @@ class Genbank():
 
             result = read(Entrez.efetch(db        ="nucleotide",
                                         id        = item,
-                                        rettype   = "gb",
+                                        rettype   = "gbwithparts",
                                         seq_start = start,
                                         seq_stop  = stop,
                                         strand    = strand,
