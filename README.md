@@ -230,3 +230,6 @@ Sometimes dependencies can be difficult to install on windows, as a C compiler i
 ## Source Code
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 
+## Changelog
+See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/CHANGELOG.md) for recent changes. 
+
