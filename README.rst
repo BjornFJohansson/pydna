@@ -194,6 +194,7 @@ If scipy, numpy, matplotlib and mpldatacursor are installed, the gel
 simulation functionality is available.
 
 -  `ipython>=4 <https://pypi.python.org/pypi/ipython>`__
+-  `jupyter>=1.0.0 <https://pypi.python.org/pypi/jupyter>`__
 -  `scipy>=0.16.0 <https://pypi.python.org/pypi/scipy>`__
 -  `numpy>=1.10.1 <https://pypi.python.org/pypi/numpy>`__
 -  `matplotlib>=1.5.0 <https://pypi.python.org/pypi/matplotlib>`__
@@ -310,6 +311,13 @@ Source Code
 
 Pydna is developed on
 `Github <https://github.com/BjornFJohansson/pydna>`__.
+
+Changelog
+---------
+
+See the `change
+log <https://raw.githubusercontent.com/BjornFJohansson/pydna/master/CHANGELOG.md>`__
+for recent changes.
 
 .. |icon| image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png
    :target: https://pypi.python.org/pypi/pydna/
