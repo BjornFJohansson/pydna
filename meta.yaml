@@ -1,6 +1,6 @@
 package:
     name: pydna
-    version: {{ environ.get('GIT_DESCRIBE_TAG', '')[1:]+environ.get('GIT_DESCRIBE_NUMBER', '') }}
+    version: 1.0.1           #{{ environ.get('GIT_DESCRIBE_TAG', '') }}
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
