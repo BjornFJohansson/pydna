@@ -4,9 +4,9 @@ package:
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
-
+  
 source:
-  git_url: ../
+  git_url: .
 
 requirements:
     build:
