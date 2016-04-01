@@ -1255,6 +1255,8 @@ class Dseq(Seq):
 
     def seguid(self):
         rc_ovhg = len(self.watson) - len(self.crick) + self._ovhg
+        if self.ovhg==rc_ovhg==0:
+            return seg(min(self.watson, self.crick))
         if self.ovhg<rc_ovhg:
             w = self.watson
             c = self.crick
