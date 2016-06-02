@@ -250,11 +250,11 @@ for name in datasets:
 del name
 
 # Constants
-kB = ureg.boltzmann_constant.to('m**2 * kg / s**2 / K')  # Boltzmann constant
+kB = (1 * ureg.boltzmann_constant).to('m**2 * kg / s**2 / K')  # Boltzmann constant
 lp = 50 * ureg('nm')  # persistence length of dsDNA (nm)
 l = 2 * lp            # Kuhn length (nm)
 b = 0.34 * ureg('nm/bp')  # curvilinear length dsDNA (nm/bp)
-e = ureg.e.to('A*s')  # elementary charge (1.602176565E-19 A.s)
+e = (1 * ureg.e).to('A*s')  # elementary charge (1.602176565E-19 A.s)
 qeff = e/Q_(7, 'bp')  # effective charge per dsDNA base pair (A.s/bp)
 constants = {'kB': kB, 'lp': lp, 'l': l, 'b': b, 'qeff': qeff}
 

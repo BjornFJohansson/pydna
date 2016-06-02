@@ -71,7 +71,7 @@ os.environ["pydna_cache"] = os.getenv("pydna_cache") or "cached"
 if os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not either cached, nocache, refresh or compare")
 
-os.environ["pydna_data_dir"] = os.getenv("pydna_data_dir") or appdirs.user_data_dir("pydna").encode(sys.getfilesystemencoding())
+os.environ["pydna_data_dir"] = os.getenv("pydna_data_dir") or appdirs.user_data_dir("pydna") #.encode(sys.getfilesystemencoding())
 
 # create data directory
 
@@ -90,7 +90,7 @@ hdlr = logging.handlers.RotatingFileHandler(os.path.join( os.environ["pydna_data
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
-logger.setLevel(logging.WARNING)
+#logger.setLevel(logging.WARNING)
 logger.info('Assigning environmental variable pydna_data_dir = {}'.format( os.environ["pydna_data_dir"] ))
 
 
