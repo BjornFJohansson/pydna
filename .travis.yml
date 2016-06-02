@@ -18,6 +18,9 @@ install:
  
 before_script:
   - pip install numpy
+  - pip install scipy
+  - pip install matplotlib
+  - pip install mpldatacursor
   - pip install -r test_requirements.txt
   - pip install -r requirements.txt
   - pip install ipython
