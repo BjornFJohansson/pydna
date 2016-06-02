@@ -1729,12 +1729,12 @@ class Dseqrecord(SeqRecord):
 
         >>> import pydna
         >>> a=pydna.Dseqrecord("agtatcgtacatg")
-        >>> a.lseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
-        'QFuP3noYs92MGFJ2YGymCrxXFU4'
+        >>> a.lseguid()
+        'DPshMN4KeAjMovEjGEV4Kzj18lU'
 
         >>> b=pydna.Dseqrecord("catgtacgatact")
         >>> a.lseguid()
-        'QFuP3noYs92MGFJ2YGymCrxXFU4'
+        'DPshMN4KeAjMovEjGEV4Kzj18lU'
 
        '''
         if self.circular:
