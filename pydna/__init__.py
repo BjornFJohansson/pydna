@@ -120,26 +120,27 @@ from pydna.primer_design                            import Primer
 from pydna.pretty                                   import pretty_str
 
 
-msg=""
+missing_modules_for_gel = []
 try:
     import scipy
 except ImportError:
-    msg += "scipy not installed\n"
+    missing_modules_for_gel.append("scipy")
 try:
     import numpy
 except ImportError:
-    msg += "numpy not installed.\n"
+    missing_modules_for_gel.append("numpy")
 try:
     import matplotlib
 except ImportError:
-    msg += "matplotlib not installed.\n"
+    missing_modules_for_gel.append("matplotlib")
 try:
     import mpldatacursor
 except ImportError:
-    msg += "mpldatacursor not installed.\n"
+    missing_modules_for_gel.append("mpldatacursor")
 
-if msg:
-    print msg + "gel simulation will not be available."
+if missing_modules_for_gel:
+    logger.warning("gel simulation will not be available. Missing modules: {}"
+        .format(", ".join(missing_modules_for_gel)))
 else:
     from pydna.gel import Gel
 
