@@ -71,7 +71,7 @@ os.environ["pydna_cache"] = os.getenv("pydna_cache") or "cached"
 if os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not either cached, nocache, refresh or compare")
 
-os.environ["pydna_data_dir"] = os.getenv("pydna_data_dir") or appdirs.user_data_dir("pydna") #.encode(sys.getfilesystemencoding())
+os.environ["pydna_data_dir"] = os.getenv("pydna_data_dir") or appdirs.user_data_dir("pydna")
 
 # create data directory
 
@@ -86,11 +86,12 @@ except OSError:
 import logging
 import logging.handlers
 logger = logging.getLogger("pydna")
-hdlr = logging.handlers.RotatingFileHandler(os.path.join( os.environ["pydna_data_dir"] , 'pydna.log'), mode='a', maxBytes=0, backupCount=0, encoding='utf-8', delay=0)
+logger.setLevel(logging.DEBUG)
+hdlr = logging.handlers.RotatingFileHandler(os.path.join( os.environ["pydna_data_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
-#logger.setLevel(logging.WARNING)
+
 logger.info('Assigning environmental variable pydna_data_dir = {}'.format( os.environ["pydna_data_dir"] ))
 
 
@@ -143,6 +144,9 @@ if missing_modules_for_gel:
         .format(", ".join(missing_modules_for_gel)))
 else:
     from pydna.gel import Gel
+
+
+
 
 #numpy>=1.10.1
 #matplotlib>=1.5.0
@@ -220,7 +224,7 @@ def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
                 msg += " no file to delete.\n"
     return pretty_str(msg)
 
-def open_cache():
+def open_cache_folder():
     if sys.platform=='win32':
         subprocess.Popen(['start', os.environ["pydna_data_dir"]], shell= True)
     elif sys.platform=='darwin':
