@@ -14,13 +14,14 @@ install:
   #- which python
   #- python --version
   - pip install --upgrade pip
-  - pip install -e .
- 
-before_script:
   - pip install numpy
   - pip install scipy
   - pip install matplotlib
   - pip install mpldatacursor
+  - pip install -e .
+ 
+before_script:
+
   - pip install -r test_requirements.txt
   - pip install -r requirements.txt
   - pip install ipython

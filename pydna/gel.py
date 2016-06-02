@@ -227,8 +227,8 @@ for name in data_as_file:
                               names=('E', 'T', 'muS', 'muL', 'gamma'))
     datasets[name]['E'] = temp_dset['E'] * ureg('V/cm')
     datasets[name]['T'] = temp_dset['T'] * ureg('(g/(100 mL))*100')
-    datasets[name]['muS'] = temp_dset['muS'] * ureg('1E-8 m**2/(V*s)')
-    datasets[name]['muL'] = temp_dset['muL'] * ureg('1E-8 m**2/(V*s)')
+    datasets[name]['muS'] = temp_dset['muS'] * ureg('1.0E-8 m**2/(V*s)')
+    datasets[name]['muL'] = temp_dset['muL'] * ureg('1.0E-8 m**2/(V*s)')
     datasets[name]['gamma'] = temp_dset['gamma'] * ureg('kbp')
 del hor_str, ver_str, data_as_file, data_source, temp_dset
 
