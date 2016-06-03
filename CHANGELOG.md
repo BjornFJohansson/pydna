@@ -1,6 +1,10 @@
 =======   ========== ===========================================================================
 version   date       comment
 =======   ========== ===========================================================================
+?         ?          open_cache -> open_cache_folder
+                     logging level is not "info"
+
+
 1.0.1     2016-03-10 Bugfix: for errors in IPython import if IPython is too old (<4.0)
                      Bugfix: Large genbank records were not downloaded completely.
 1.0.0     -          Gel simulation added

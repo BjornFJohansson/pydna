@@ -59,40 +59,39 @@ which can have three different values:
                 http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
 
-import os
-import sys
-import shutil
-import errno
-import subprocess
-import appdirs
+import os            as _os
+import sys           as _sys
+import errno         as _errno
+import subprocess    as _subprocess
+import appdirs       as _appdirs
 
-os.environ["pydna_cache"] = os.getenv("pydna_cache") or "cached"
+_os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
 
-if os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
+if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not either cached, nocache, refresh or compare")
 
-os.environ["pydna_data_dir"] = os.getenv("pydna_data_dir") or appdirs.user_data_dir("pydna")
+_os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _appdirs.user_data_dir("pydna")
 
 # create data directory
 
 try:
-    os.makedirs( os.environ["pydna_data_dir"] )
+    _os.makedirs( _os.environ["pydna_data_dir"] )
 except OSError:
-    if not os.path.isdir( os.environ["pydna_data_dir"] ):
+    if not _os.path.isdir( _os.environ["pydna_data_dir"] ):
         raise
 
 
 # create logger
-import logging
-import logging.handlers
-logger = logging.getLogger("pydna")
-logger.setLevel(logging.DEBUG)
-hdlr = logging.handlers.RotatingFileHandler(os.path.join( os.environ["pydna_data_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-logger.addHandler(hdlr)
+import logging as _logging
+import logging.handlers as _handlers
+logger = _logging.getLogger("pydna")
+logger.setLevel(_logging.DEBUG)
+_hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_data_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
+formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+_hdlr.setFormatter(formatter)
+logger.addHandler(_hdlr)
 
-logger.info('Assigning environmental variable pydna_data_dir = {}'.format( os.environ["pydna_data_dir"] ))
+logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
 
 
 from pydna.amplify                                  import Anneal
@@ -124,18 +123,22 @@ from pydna.pretty                                   import pretty_str
 missing_modules_for_gel = []
 try:
     import scipy
+    del scipy
 except ImportError:
     missing_modules_for_gel.append("scipy")
 try:
     import numpy
+    del numpy
 except ImportError:
     missing_modules_for_gel.append("numpy")
 try:
     import matplotlib
+    del matplotlib
 except ImportError:
     missing_modules_for_gel.append("matplotlib")
 try:
     import mpldatacursor
+    del mpldatacursor
 except ImportError:
     missing_modules_for_gel.append("mpldatacursor")
 
@@ -217,21 +220,21 @@ def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
     for file_ in delete:
         msg += file_
         try:
-            os.remove( os.path.join( os.environ["pydna_data_dir"], file_) )
+            _os.remove( _os.path.join( _os.environ["pydna_data_dir"], file_) )
             msg += " deleted.\n"
         except OSError, e:
-            if e.errno == errno.ENOENT:
+            if e._errno == _errno.ENOENT:
                 msg += " no file to delete.\n"
     return pretty_str(msg)
 
 def open_cache_folder():
-    if sys.platform=='win32':
-        subprocess.Popen(['start', os.environ["pydna_data_dir"]], shell= True)
-    elif sys.platform=='darwin':
-        subprocess.Popen(['open', os.environ["pydna_data_dir"]])
+    if _sys.platform=='win32':
+        _subprocess.Popen(['start', _os.environ["pydna_data_dir"]], shell= True)
+    elif _sys.platform=='darwin':
+        _subprocess.Popen(['open', _os.environ["pydna_data_dir"]])
     else:
         try:
-            subprocess.Popen(['xdg-open', os.environ["pydna_data_dir"]])
+            _subprocess.Popen(['xdg-open', _os.environ["pydna_data_dir"]])
         except OSError:
             return "no cache to open."
 
