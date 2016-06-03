@@ -31,7 +31,7 @@ from Bio.SeqFeature                 import CompoundLocation
 from Bio.SeqFeature                 import FeatureLocation
 from pydna.dsdna                    import rc
 from pydna.dsdna                    import Dseqrecord
-from pydna.pretty                   import pretty_str, pretty_unicode
+from pydna._pretty                  import pretty_str, pretty_unicode
 
 
 def _annealing_positions(primer, template, limit=15):

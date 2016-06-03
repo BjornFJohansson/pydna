@@ -64,6 +64,24 @@ import sys           as _sys
 import errno         as _errno
 import subprocess    as _subprocess
 import appdirs       as _appdirs
+from ConfigParser import SafeConfigParser as _SafeConfigParser
+
+_parser = _SafeConfigParser()
+_ini_file = _os.path.join(_appdirs.user_config_dir("pydna"), "pydna.ini")
+_parser.read(_ini_file)
+
+_os.environ["pydna_email"] = _parser.get("main", "email")
+
+# lets create that config file for next time...
+#cfgfile = open("c:\\next.ini",'w')
+
+# add the settings to the structure of the file, and lets write it out...
+#Config.add_section('main')
+#Config.set('main','email','someone@example.com')
+#Config.write(cfgfile)
+#cfgfile.close()
+
+
 
 _os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
 
@@ -84,14 +102,15 @@ except OSError:
 # create logger
 import logging as _logging
 import logging.handlers as _handlers
-logger = _logging.getLogger("pydna")
-logger.setLevel(_logging.DEBUG)
+_logger = _logging.getLogger("pydna")
+_logger.setLevel(_logging.DEBUG)
+#_appdirs.user_log_dir("pydna")
 _hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_data_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
-formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-_hdlr.setFormatter(formatter)
-logger.addHandler(_hdlr)
+_formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+_hdlr.setFormatter(_formatter)
+_logger.addHandler(_hdlr)
 
-logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
+_logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
 
 
 from pydna.amplify                                  import Anneal
@@ -99,12 +118,16 @@ from pydna.amplify                                  import pcr
 from pydna.amplify                                  import nopcr
 from pydna.assembly                                 import Assembly
 from pydna.download                                 import Genbank
-from pydna.download                                 import web
+from pydna.download                                 import genbank
+from pydna.download                                 import Web
+from pydna.download                                 import parse_url
+from pydna.download                                 import read_url
 from pydna.dsdna                                    import Dseq
 from pydna.dsdna                                    import Dseqrecord
 from pydna.dsdna                                    import parse
 from pydna.dsdna                                    import parse2
 from pydna.dsdna                                    import read
+
 from pydna.editor                                   import Editor
 from pydna.findsubstrings_suffix_arrays_python      import common_sub_strings
 from pydna.primer_design                            import cloning_primers
@@ -117,34 +140,34 @@ from pydna.utils                                    import shift_origin
 from pydna.utils                                    import pairwise
 from pydna.utils                                    import cseguid
 from pydna.primer_design                            import Primer
-from pydna.pretty                                   import pretty_str
+from pydna._pretty                                  import pretty_str as _pretty_str
 
 
-missing_modules_for_gel = []
+_missing_modules_for_gel = []
 try:
     import scipy
     del scipy
 except ImportError:
-    missing_modules_for_gel.append("scipy")
+    _missing_modules_for_gel.append("scipy")
 try:
     import numpy
     del numpy
 except ImportError:
-    missing_modules_for_gel.append("numpy")
+    _missing_modules_for_gel.append("numpy")
 try:
     import matplotlib
     del matplotlib
 except ImportError:
-    missing_modules_for_gel.append("matplotlib")
+    _missing_modules_for_gel.append("matplotlib")
 try:
     import mpldatacursor
     del mpldatacursor
 except ImportError:
-    missing_modules_for_gel.append("mpldatacursor")
+    _missing_modules_for_gel.append("mpldatacursor")
 
-if missing_modules_for_gel:
-    logger.warning("gel simulation will not be available. Missing modules: {}"
-        .format(", ".join(missing_modules_for_gel)))
+if _missing_modules_for_gel:
+    _logger.warning("gel simulation will not be available. Missing modules: {}"
+        .format(", ".join(_missing_modules_for_gel)))
 else:
     from pydna.gel import Gel
 
@@ -225,7 +248,7 @@ def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
         except OSError, e:
             if e._errno == _errno.ENOENT:
                 msg += " no file to delete.\n"
-    return pretty_str(msg)
+    return _pretty_str(msg)
 
 def open_cache_folder():
     if _sys.platform=='win32':

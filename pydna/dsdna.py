@@ -30,6 +30,8 @@ import colorsys
 
 from warnings import warn
 
+
+
 from prettytable import PrettyTable
 
 from Bio                    import SeqIO
@@ -53,7 +55,7 @@ from _sequencetrace         import SequenceTraceFactory
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils  import seguid  as seg
 from pydna.utils  import cseguid as cseg
-from pydna.pretty import pretty_str, pretty_string #, pretty_unicode
+from pydna._pretty import pretty_str, pretty_string #, pretty_unicode
 
 try:
     from IPython.display import Markdown as display
@@ -2859,6 +2861,4 @@ def parse(data, ds = True):
 if __name__=="__main__":
     import doctest
     doctest.testmod(optionflags=doctest.ELLIPSIS)
-
-    #b= read(">a\naaa")
 
