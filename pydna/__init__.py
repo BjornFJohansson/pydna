@@ -84,10 +84,10 @@ else:
         _parser.write(f)
 
 
-_os.environ["pydna_email"]    = _parser.get("main", "email")
-_os.environ["pydna_data_dir"] = _parser.get("main", "data_dir")
-_os.environ["pydna_log_dir"]  = _parser.get("main", "log_dir")
-_os.environ["pydna_cache"]    = _parser.get("main", "cache")
+_os.environ["pydna_email"]    = _os.getenv("pydna_email")    or _parser.get("main", "email")
+_os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _parser.get("main", "data_dir")
+_os.environ["pydna_log_dir"]  = _os.getenv("pydna_log_dir")  or _parser.get("main", "log_dir")
+_os.environ["pydna_cache"]    = _os.getenv("pydna_cache")    or _parser.get("main", "cache")
 
 #_os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
 

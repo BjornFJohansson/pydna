@@ -14,8 +14,10 @@ sys.dont_write_bytecode = True
 if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
     print("Continouos integration")
     os.environ["pydna_data_dir"] = os.path.join(os.getcwd(),"..","..","DATA")
+    os.environ["pydna_log_dir"]  = os.environ["pydna_data_dir"]
+
 else:
-    os.environ["pydna_data_dir"] = appdirs.user_data_dir("pydna_test").encode(sys.getfilesystemencoding())
+    os.environ["pydna_data_dir"] = appdirs.user_data_dir("pydna_test")
     try:
         shutil.rmtree( os.environ["pydna_data_dir"] )
     except OSError, e:
