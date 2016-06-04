@@ -211,6 +211,9 @@ class Genbank():
             #        print stop
             #        print strand
 
+            if self.email == "someone@example.com":
+                raise ValueError("you have to set your email address in order to download from Genbank")
+
             result = read(Entrez.efetch(db        ="nucleotide",
                                         id        = item,
                                         rettype   = "gbwithparts",

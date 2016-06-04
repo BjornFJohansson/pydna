@@ -66,46 +66,56 @@ import subprocess    as _subprocess
 import appdirs       as _appdirs
 from ConfigParser import SafeConfigParser as _SafeConfigParser
 
+_os.environ["pydna_config_dir"] = _appdirs.user_config_dir("pydna")
+
+_ini_path = _os.path.join( _os.environ["pydna_config_dir"], "pydna.ini" )
+
 _parser = _SafeConfigParser()
-_ini_file = _os.path.join(_appdirs.user_config_dir("pydna"), "pydna.ini")
-_parser.read(_ini_file)
 
-_os.environ["pydna_email"] = _parser.get("main", "email")
-
-# lets create that config file for next time...
-#cfgfile = open("c:\\next.ini",'w')
-
-# add the settings to the structure of the file, and lets write it out...
-#Config.add_section('main')
-#Config.set('main','email','someone@example.com')
-#Config.write(cfgfile)
-#cfgfile.close()
+if _os.path.exists(_ini_path):
+    _parser.read(_ini_path)
+else:
+    with open(_ini_path, 'w') as f:
+        _parser.add_section('main')
+        _parser.set('main','email', "someone@example.com")
+        _parser.set('main','data_dir', _appdirs.user_data_dir("pydna"))
+        _parser.set('main','log_dir',  _appdirs.user_log_dir("pydna"))
+        _parser.set('main','cache','cached')
+        _parser.write(f)
 
 
+_os.environ["pydna_email"]    = _parser.get("main", "email")
+_os.environ["pydna_data_dir"] = _parser.get("main", "data_dir")
+_os.environ["pydna_log_dir"]  = _parser.get("main", "log_dir")
+_os.environ["pydna_cache"]    = _parser.get("main", "cache")
 
-_os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
+#_os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
 
 if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
-    raise Exception("cache (os.environ['pydna_cache']) is not either cached, nocache, refresh or compare")
+    raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
 
-_os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _appdirs.user_data_dir("pydna")
+#_os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _appdirs.user_data_dir("pydna")
 
 # create data directory
-
 try:
     _os.makedirs( _os.environ["pydna_data_dir"] )
 except OSError:
     if not _os.path.isdir( _os.environ["pydna_data_dir"] ):
         raise
 
+# create log directory
+try:
+    _os.makedirs( _os.environ["pydna_log_dir"] )
+except OSError:
+    if not _os.path.isdir( _os.environ["pydna_log_dir"] ):
+        raise
 
 # create logger
 import logging as _logging
 import logging.handlers as _handlers
 _logger = _logging.getLogger("pydna")
 _logger.setLevel(_logging.DEBUG)
-#_appdirs.user_log_dir("pydna")
-_hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_data_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
+_hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_log_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
 _formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
@@ -237,7 +247,6 @@ try:
 except NameError:
     pass
 
-
 def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
     msg = ""
     for file_ in delete:
@@ -251,16 +260,26 @@ def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
     return _pretty_str(msg)
 
 def open_cache_folder():
+    _open_folder( _os.environ["pydna_data_dir"] )
+
+def open_config_folder():
+    _open_folder( _os.environ["pydna_config_dir"] )
+
+def open_log_folder():
+    _open_folder( _os.environ["pydna_log_dir"] )
+
+
+
+def _open_folder(pth):
     if _sys.platform=='win32':
-        _subprocess.Popen(['start', _os.environ["pydna_data_dir"]], shell= True)
+        _subprocess.Popen(['start', pth], shell= True)
     elif _sys.platform=='darwin':
-        _subprocess.Popen(['open', _os.environ["pydna_data_dir"]])
+        _subprocess.Popen(['open', pth])
     else:
         try:
-            _subprocess.Popen(['xdg-open', _os.environ["pydna_data_dir"]])
+            _subprocess.Popen(['xdg-open', pth])
         except OSError:
             return "no cache to open."
-
 
 from ._version import get_versions
 __version__ = get_versions()['version']
