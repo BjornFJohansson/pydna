@@ -66,7 +66,7 @@ import subprocess    as _subprocess
 import appdirs       as _appdirs
 from ConfigParser import SafeConfigParser as _SafeConfigParser
 
-_os.environ["pydna_config_dir"] = _appdirs.user_config_dir("pydna")
+_os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir") or _appdirs.user_config_dir("pydna")
 
 _ini_path = _os.path.join( _os.environ["pydna_config_dir"], "pydna.ini" )
 
