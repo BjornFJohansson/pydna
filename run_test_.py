@@ -12,7 +12,7 @@ os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
 
 if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
-    print("Continouos integration")
+    print("\n\ncontinuous integration\n\n")
     os.environ["pydna_data_dir"] = os.path.join(os.getcwd(),"..","..","DATA")
     os.environ["pydna_log_dir"]  = os.environ["pydna_data_dir"]
     os.environ["pydna_config_dir"] = os.environ["pydna_data_dir"]

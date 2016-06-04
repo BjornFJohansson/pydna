@@ -68,6 +68,13 @@ from ConfigParser import SafeConfigParser as _SafeConfigParser
 
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir") or _appdirs.user_config_dir("pydna")
 
+# create config directory
+try:
+    _os.makedirs( _os.environ["pydna_config_dir"] )
+except OSError:
+    if not _os.path.isdir( _os.environ["pydna_config_dir"] ):
+        raise
+
 _ini_path = _os.path.join( _os.environ["pydna_config_dir"], "pydna.ini" )
 
 _parser = _SafeConfigParser()
