@@ -15,7 +15,7 @@ before_script:
   #- conda config --add channels ulmo
   #- conda config --add channels synthicity
   #- conda config --add channels BjornFJohansson
-  #- cat $CONDARC
+  - cat $CONDARC
   #- cat ~/.condarc
 test:
   - bash -c 'echo Hello Posix World'
