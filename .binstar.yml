@@ -20,7 +20,7 @@ before_script:
 test:
   - bash -c 'echo Hello Posix World'
   - cd pydna
-  - python run_test.py
+  - python run_test_.py
   #- conda install nose
 
 script:
