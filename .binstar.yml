@@ -19,6 +19,8 @@ before_script:
   #- cat ~/.condarc
 test:
   - bash -c 'echo Hello Posix World'
+  - cd pydna
+  - python run_test.py
   #- conda install nose
 
 script:
