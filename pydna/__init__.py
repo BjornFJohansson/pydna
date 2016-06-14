@@ -88,6 +88,8 @@ else:
         _parser.set('main','data_dir', _appdirs.user_data_dir("pydna"))
         _parser.set('main','log_dir',  _appdirs.user_log_dir("pydna"))
         _parser.set('main','cache','cached')
+        _parser.set('main','ape','')
+        _parser.set('main','primers','')
         _parser.write(f)
 
 
@@ -95,6 +97,9 @@ _os.environ["pydna_email"]    = _os.getenv("pydna_email")    or _parser.get("mai
 _os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _parser.get("main", "data_dir")
 _os.environ["pydna_log_dir"]  = _os.getenv("pydna_log_dir")  or _parser.get("main", "log_dir")
 _os.environ["pydna_cache"]    = _os.getenv("pydna_cache")    or _parser.get("main", "cache")
+
+_os.environ["pydna_ape"]      = _os.getenv("pydna_ape")      or _parser.get("main", "ape")
+_os.environ["pydna_primers"]  = _os.getenv("pydna_primers")  or _parser.get("main", "primers")
 
 #_os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
 
@@ -121,7 +126,7 @@ except OSError:
 import logging as _logging
 import logging.handlers as _handlers
 _logger = _logging.getLogger("pydna")
-_logger.setLevel(_logging.DEBUG)
+#_logger.setLevel(_logging.DEBUG)
 _hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_log_dir"] , 'pydna.log'), mode='a', maxBytes=10*1024*1024, backupCount=10, encoding='utf-8')
 _formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 _hdlr.setFormatter(_formatter)

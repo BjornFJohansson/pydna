@@ -272,11 +272,11 @@ class Assembly(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            module_logger.info('open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
+            module_logger.info( 'open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
 
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
 
-            module_logger.info('created key = {}'.format(key))
+            module_logger.info( 'created key = {}'.format(key))
             module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
 
             try:

@@ -123,6 +123,12 @@ class Editor:
         #for name in names:
         #    print os.path.join(path, name)+".gb"
 
+apeloader = Editor( os.environ["pydna_ape"] )
+
+def ape(*args,**kwargs):
+    return apeloader.open(*args,**kwargs)
+
+
 if __name__=="__main__":
     from Bio import SeqIO
     sr1 = SeqIO.parse("../tests/pUC19.gb","gb").next()
