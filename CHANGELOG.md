@@ -3,6 +3,9 @@ version   date       comment
 =======   ========== ===========================================================================
 ?         ?          open_cache -> open_cache_folder
                      logging level is not "info"
+                     added the possiblility to specify a text file containing primers 
+                     added the possiblility to specify a path to the ApE plasmid editor 
+                     (http://biologylabs.utah.edu/jorgensen/wayned/ape/)
 
 
 1.0.1     2016-03-10 Bugfix: for errors in IPython import if IPython is too old (<4.0)
