@@ -410,7 +410,6 @@ def gen_sample(sizes, quantities):
 
     Direct quantity assignment without declared units.
 
-
     >>> sizes = [3000, 500, 1500]  # bp
     >>> qts = [70.0, 11.7, 35.0]  # ng
     >>> sample = gen_sample(sizes, qts)
@@ -936,7 +935,6 @@ class Gel:
 
     Parameters
     ----------
-
 
     samples : list of lists of pydna.Dseqrecord objects
         List of samples with the DNA fragments to separate.
