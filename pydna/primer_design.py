@@ -21,7 +21,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from pydna.amplify import Anneal, tmbresluc, Dseqrecord
 from pydna.dsdna import parse
-from pretty import pretty_str
+from _pretty import pretty_str
 
 class Primer(SeqRecord):
 

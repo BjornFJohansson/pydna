@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 by Björn Johansson.  All rights reserved.
+# Copyright 2015 by Bruno Silva <bruno.phoenix@gmail.com>, Björn Johansson.
+# All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -15,19 +16,38 @@ This code is at an early stage of development and documentation.
 
 """
 from __future__ import division
+
+try:
+    import numpy as np
+except ImportError:
+    pass
+
+try:
+    import matplotlib.ticker as mtick
+    from matplotlib import pyplot as plt, cm
+    from matplotlib.ticker import FixedLocator
+    import matplotlib.ticker as mtick
+except ImportError:
+    pass
+
+try:
+    from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
+except ImportError:
+    pass
+
+try:
+    from scipy.interpolate import griddata
+    from scipy.optimize import leastsq, fsolve
+    from scipy import stats
+except ImportError:
+    pass
+
+from pint import UnitRegistry #, DimensionalityError
+
 from numbers import Number
 from StringIO import StringIO
-from random import randint
+#from random import randint
 
-import numpy as np
-import matplotlib.ticker as mtick
-from scipy.interpolate import griddata
-from scipy.optimize import leastsq, fsolve
-from scipy import stats
-from matplotlib import pyplot as plt, cm
-from matplotlib.ticker import FixedLocator
-from mpldatacursor import datacursor, HighlightingDataCursor  # version 0.5.0
-from pint import UnitRegistry, DimensionalityError
 
 from pydna import Dseq, Dseqrecord
 
@@ -207,8 +227,8 @@ for name in data_as_file:
                               names=('E', 'T', 'muS', 'muL', 'gamma'))
     datasets[name]['E'] = temp_dset['E'] * ureg('V/cm')
     datasets[name]['T'] = temp_dset['T'] * ureg('(g/(100 mL))*100')
-    datasets[name]['muS'] = temp_dset['muS'] * ureg('1E-8 m**2/(V*s)')
-    datasets[name]['muL'] = temp_dset['muL'] * ureg('1E-8 m**2/(V*s)')
+    datasets[name]['muS'] = temp_dset['muS'] * ureg('1.0E-8 m**2/(V*s)')
+    datasets[name]['muL'] = temp_dset['muL'] * ureg('1.0E-8 m**2/(V*s)')
     datasets[name]['gamma'] = temp_dset['gamma'] * ureg('kbp')
 del hor_str, ver_str, data_as_file, data_source, temp_dset
 
@@ -230,11 +250,11 @@ for name in datasets:
 del name
 
 # Constants
-kB = ureg.boltzmann_constant.to('m**2 * kg / s**2 / K')  # Boltzmann constant
+kB = (1 * ureg.boltzmann_constant).to('m**2 * kg / s**2 / K')  # Boltzmann constant
 lp = 50 * ureg('nm')  # persistence length of dsDNA (nm)
 l = 2 * lp            # Kuhn length (nm)
 b = 0.34 * ureg('nm/bp')  # curvilinear length dsDNA (nm/bp)
-e = ureg.e.to('A*s')  # elementary charge (1.602176565E-19 A.s)
+e = (1 * ureg.e).to('A*s')  # elementary charge (1.602176565E-19 A.s)
 qeff = e/Q_(7, 'bp')  # effective charge per dsDNA base pair (A.s/bp)
 constants = {'kB': kB, 'lp': lp, 'l': l, 'b': b, 'qeff': qeff}
 
@@ -346,15 +366,15 @@ def diffusion_coefficient(Nbp, N_lim1, N_lim2, N_lim3, args):
     return D
 
 
-def rand_str(sample, length):
-    """
-    Return a random string of given length built from the chars in sample.
-    """
-    rnd_str = ''
-    for i in xrange(length):
-        r = randint(0, len(sample)-1)
-        rnd_str += sample[r]
-    return rnd_str
+#def rand_str(sample, length):
+#    """
+#    Return a random string of given length built from the chars in sample.
+#    """
+#    rnd_str = ''
+#    for i in xrange(length):
+#        r = randint(0, len(sample)-1)
+#        rnd_str += sample[r]
+#    return rnd_str
 
 
 def random_Dseqs(sizes):
@@ -363,7 +383,7 @@ def random_Dseqs(sizes):
     """
     sample = []
     for size in sizes:
-        seq = Dseq(rand_str('actg', size))
+        seq = Dseq("n"*size) #Dseq(rand_str('actg', size))
         sample.append(seq)
     return sample
 
@@ -389,7 +409,8 @@ def gen_sample(sizes, quantities):
     --------
 
     Direct quantity assignment without declared units.
-    
+
+
     >>> sizes = [3000, 500, 1500]  # bp
     >>> qts = [70.0, 11.7, 35.0]  # ng
     >>> sample = gen_sample(sizes, qts)
@@ -400,7 +421,7 @@ def gen_sample(sizes, quantities):
     >>> Q_([dna.m() for dna in sample], 'g').to('ng')
     <Quantity([ 70.   11.7  35. ], 'nanogram')>
     >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
-    <Quantity([ 0.03776113  0.03785905  0.03775848], 'picomole')>
+    <Quantity([ 0.03776682  0.03786665  0.03776521], 'picomole')>
 
     Direct quantity assignment with declared units.
 
@@ -412,7 +433,7 @@ def gen_sample(sizes, quantities):
     >>> Q_([dna.m() for dna in sample], 'g').to('ng')
     <Quantity([ 70.   11.7  35. ], 'nanogram')>
     >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
-    <Quantity([ 0.03776097  0.03785881  0.03775967], 'picomole')>
+    <Quantity([ 0.03776682  0.03786665  0.03776521], 'picomole')>
 
     Assignment of total quantity (with declared units).
 
@@ -422,8 +443,8 @@ def gen_sample(sizes, quantities):
     >>> Q_([dna.m() for dna in sample], 'g').to('ng')
     <Quantity([ 120.   20.   60.], 'nanogram')>
     >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
-    <Quantity([ 0.06473159  0.0647201   0.06472974], 'picomole')>
-    
+    <Quantity([ 0.06474311  0.06472932  0.06474035], 'picomole')>
+
     """
     frags = random_Dseqs([int(s.magnitude) for s in to_units(sizes, 'bp')])
     quantities = to_units(quantities, 'ng')
@@ -915,7 +936,8 @@ class Gel:
 
     Parameters
     ----------
-    
+
+
     samples : list of lists of pydna.Dseqrecord objects
         List of samples with the DNA fragments to separate.
         Each sample corresponds to a different well.
@@ -963,7 +985,7 @@ class Gel:
     wellsep : pint.unit.Quantity object, float or int, optional
         Separation between wells.
         Defaults to Q_(2, 'mm').
-        Merelly for aestetic purposes. 
+        Merelly for aestetic purposes.
 
     Notes
     -----
@@ -988,8 +1010,8 @@ class Gel:
         self.samples = [[dna if isinstance(dna, Dseqrecord) else
                          Dseqrecord(dna) for dna in sample] for sample in
                         samples]    # len(DNA) in bp
-        self.names = names if names else [str(i) for i in
-                                          xrange(1, len(samples)+1)]
+        self.names = names if names else [str(i) for i in      #
+                                          xrange(1, len(samples)+1)]  #
         self.percent = to_units(percentgel, '(g/(100 mL))*100', 'percentgel')
         self.field = to_units(electrfield, 'V/cm', 'electrfield')
         self.temperature = to_units(temperature, 'K', 'temperature')
@@ -1398,8 +1420,16 @@ class Gel:
                                     names, gel_len, wellx, welly, wellsep, res,
                                     cursor_ovr, back_col, band_col, well_col,
                                     noise, Itol, title, FWTM, False)
-            return gelpic
+            return #gelpic
         return None
+
+class fake_seq(object):
+
+    def __init__(self, length=0):
+        self.length=length
+
+    def __len__(self):
+        return self.length
 
 
 if __name__ == "__main__":

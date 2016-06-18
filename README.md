@@ -1,42 +1,38 @@
 #[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
 
 Planning genetic constructs with many parts, such as recombinant
-metabolic pathways is usually done manually
-using a DNA sequence editor, a task which quickly becomes
+metabolic pathways is usually done manually using a DNA sequence editor, a task which quickly becomes
 unfeasible as scale and complexity of the constructions increase.
 
-The Pydna python package provide a human-readable formal description of
-cloning and assembly strategies which also allows for automatic computer
-simulation and verification.
+The Pydna python package provide a human-readable formal description of cloning and assembly strategies which also allows for automatic computer
+simulation and verification. 
 
 Pydna provides simulation of:
 
-- restriction digestion
-- ligation
+- Restriction digestion
+- Ligation
 - PCR
-- primer design
+- Primer design
 - Gibson assembly
-- homologous recombination
+- Homologous recombination
+- Gel electrophoresis of DNA (**NEW Feature**) 
 
-A cloning strategy expressed in pydna is complete, unambiguous
-and stable. Pydna has been designed to be understandable
-for biologists with limited programming skills.
+Pydna was designed to provide a form of executable documentation
+describing a subcloning or DNA assembly experiment. The pydna code unambiguously describe a sub cloning experiment, and can be executed to yield the sequence of the of the resulting DNA molecule. A cloning strategy expressed in pydna is complete, unambiguous and stable. Pydna has been designed to be understandable for biologists with some basic understanding of Python.
 
-Pydna formalize planning and sharing of cloning strategies and is
-especially useful for complex or combinatorial
+Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
 
-Look at some assembly strategies made in the IPython notebook
+Look at some assembly strategies made in the Jupyter notebook
 format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb).
 
 There  at the open access BMC Bioinformatics publication describing pydna:
 
 [![abstr](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
 
-Double stranded DNA sequence classes that make cut and paste
-cloning and PCR very simple is provided.
+Most pydna functionality is implemented as methods for the double stranded DNA sequence record classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
 
-See an example of pydna usage at the command line below:
+These classes make cut and paste cloning and PCR very simple:
 
     >>> import pydna
     >>> seq = pydna.Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
@@ -74,28 +70,18 @@ See an example of pydna usage at the command line below:
     TypeError: sticky ends not compatible!
     >>>
 
-Notably, homologous recombination and Gibson assembly between linear
-DNA fragments can be easily simulated without any additional information
-other than the primary sequence of the fragments.
+Notably, homologous recombination and Gibson assembly between linear DNA fragments can be easily simulated without any additional information other than the primary sequence of the fragments.
 
-Most pydna functionality is implemented as methods for the double stranded
-DNA sequence record classes Dseq and Dseqrecord, which are subclasses
-of the [Biopython](http://biopython.org/wiki/Main_Page)
-[Seq](http://biopython.org/wiki/Seq) and
-[SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
+Gel electrophoresis of DNA fragments can be simulated using the gel.py module by [Bruno Silva](https://github.com/bruno2git):
 
-Pydna was designed to provide a form of executable documentation
-describing a subcloning or DNA assembly experiment. The pydna code
-unambiguously describe a sub cloning experiment, and can be executed
-to yield the sequence of the of the resulting DNA molecule.
+![alt text](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/gel.png "simulated agarose gel")
 
-Pydna was designed to semantically imitate how sub cloning experiments are
-typically documented in Scientific literature. Pydna code describing a
-sub cloning is reasonably compact and meant to be easily readable.
 
-The nine lines of Python below, simulates the construction of a recombinant
-plasmid. DNA sequences are downloaded from Genbank by accession numbers that
-are guaranteed to be stable.
+Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb)
+
+Pydna was designed to semantically imitate how sub cloning experiments are typically documented in scientific literature. Pydna code describing a sub cloning is reasonably compact and meant to be readable.
+
+The nine lines of Python below, simulates the construction of a recombinant plasmid. DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
 
     import pydna
 
@@ -121,108 +107,129 @@ are guaranteed to be stable.
     rec_vec =  ( lin_vector + pcr_prod ).looped()
 
 
-Pydna might also be useful to automate the simulation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) experiments using
-python. This could be helpful to generate examples for teaching purposes. Read
-the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
+Pydna is also be useful to automate the simulation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) experiments using
+python. This is helpful to generate examples for teaching purposes. 
+
+Read the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
 for further information.
 
-An [on-line](http://pydna-shell.appspot.com) shell running Python with
-pydna is available for simple experimentation. It is slower than rinning pydna on
-your own computer.
+An [on-line](http://pydna-shell.appspot.com) shell running Python with pydna is available for simple experimentation. It is slower than running pydna on your own computer locally.
 
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
 for pydna if you have problems, questions or comments.
 Feedback in the form of questions, comments or criticism is very welcome!
+
 ## Automatic testing and builds
-The test suit is run automatically on OSX-64 using travis [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna) and on Windows using appveyor[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
+
+
+ An anaconda package is automatically built on Anaconda cloud [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/build.svg)](https://anaconda.org/bjornfjohansson/pydna/builds).
+
+The test suit is run automatically after each commit on OSX-64 using travis [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna) and on Windows using appveyor[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
+
 Source distributions (gztar,zip) and a python wheel are built on drone [![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
-and uploaded to pypi [![icon8](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna) from which it has this monthly download count [![icon10](https://img.shields.io/pypi/dm/pydna.png)](https://pypi.python.org/pypi/pydna). There is also a binstar package, wich is currently built offline. [![icon5](https://binstar.org/bjornfjohansson/pydna/badges/version.svg)](https://binstar.org/bjornfjohansson/pydna). Documentation is built and displayed at readthedocs,  [![icon7](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
-code coverage is [![icon6](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master)](https://coveralls.io/r/BjornFJohansson/pydna?branch=master) and
-there are a few stars on github [![icon9](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers). Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
+and uploaded to pypi [![icon8](https://img.shields.io/pypi/v/pydna.png)](https://pypi.python.org/pypi/pydna)
+
+Documentation is built and displayed at readthedocs,  [![icon7](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
+
+Code coverage is [![icon6](https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master)](https://coveralls.io/r/BjornFJohansson/pydna?branch=master).
+
+Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
 
 
-## Installation requirements
+## Minimal installation requirements
 
-This package was developed on and for Python 2.7. Other versions have not been tested.
+Pydna was developed on and for Python 2.7. Other versions have not been tested. The list below is the minimal requirements for installing pydna. 
 
 - [Python 2.7](http://www.python.org)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdir)
 - [prettytable>=0.7.2](https://pypi.python.org/pypi/PrettyTable)
+- [pint >=0.6](https://pypi.python.org/pypi/pint)
+
+
+## Optional Requirements
+Pydna has been designed to be used from the Jupyter notebook. If you have IPython and Jupyter installed, there are functions in pydna for importing ipython notebooks as modules among other things.
+
+If scipy, numpy, matplotlib and mpldatacursor are installed, the gel simulation functionality is available.
+
+- [ipython>=4](https://pypi.python.org/pypi/ipython)
+- [jupyter>=1.0.0](https://pypi.python.org/pypi/jupyter)
+- [scipy>=0.16.0](https://pypi.python.org/pypi/scipy)
+- [numpy>=1.10.1](https://pypi.python.org/pypi/numpy)
+- [matplotlib>=1.5.0](https://pypi.python.org/pypi/matplotlib)
+- [mpldatacursor>=0.6.1](https://pypi.python.org/pypi/mpldatacursor)
+
 
 ## Requirements for running tests
 
 - [nose>=1.3.4](https://pypi.python.org/pypi/nose)
 - [coverage>=3.7.1](https://pypi.python.org/pypi/coverage)
 
-## Optional Requirements
-
-- [ipython<=3.2.1](https://pypi.python.org/pypi/ipython)
-
-Pydna has been designed to be used from the IPython notebook. If you
-have IPython installed, there are functions in pydna for importing ipython notebooks as
-modules among other things.
-
 ## Python 3
-This code has not been tried with Python 3. If there is sufficient interest, there might be a Python 3 version in the future.
+This code has not been tested with Python 3.
 
 ## Installation using conda on Anaconda
-The best way of using Python in general is to use a free distribution such as [Anaconda](https://store.continuum.io/cshop/anaconda)
+The absolutely best way of installing and using pydna is to use a the free [Anaconda](https://store.continuum.io/cshop/anaconda) python distribution. 
 
 There is a [conda](https://anaconda.org/bjornfjohansson/pydna) package available for pydna, which is easily installed
-at the command line using the conda package manager.
+from the command line using the conda package manager.
 
-    conda install -c https://conda.anaconda.org/bjornfjohansson pydna
+	conda install -c https://conda.anaconda.org/bjornfjohansson pydna
 
-This works on Windows, MacOSX and Linux, and installs all dependencies automatically in one go.
+This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies automatically in one go.
 
 ## Installation using pip
 The second best way of installing pydna is with pip. Pip is the
 officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool
 for installation of Python packages from PyPi.
-Pip installs dependencies automatically.
+Pip installs the minimal installation requirements automatically, but not the optional requirements (see above).
 
 ### Linux:
 
-    bjorn@bjorn-UL30A:~/Dropbox/pydna$ sudo pip install pydna
+    bjorn@bjorn-UL30A:~/pydna$ sudo pip install pydna
 
 ### Windows:
 
     C:\> pip install pydna
 
 If you do not have pip, you can get it by following
-these [instructions](http://www.pip-installer.org/en/latest/installing.html)
-
+these [instructions](http://www.pip-installer.org/en/latest/installing.html).
 
 ## Installation from Source
-If you install from source, you need to install the dependencies separately (listed above). Download one of the source installers from the pypi site and extract the file. Open the pydna source code directory (containing the setup.py file) in
+If you install from source, you need to install all dependencies separately (listed above). Download one of the source installers from the pypi site and extract the file. Open the pydna source code directory (containing the setup.py file) in
 terminal and type:
 
     python setup.py install
 
 ## Installation from binary distributions
 
-There is a 64 bit windows executable and a windows wheel [here](https://ci.appveyor.com/project/BjornFJohansson/pydna/build/artifacts).
-Note that these will not install required dependencies (see below).
+There is a 64 bit windows executable and a windows wheel [here](https://ci.appveyor.com/project/BjornFJohansson/pydna/build/artifacts). Note that these will not install dependencies (see below).
 
 ### Windows dependencies
-Sometimes the dependecies can be difficult to install on windows, especially Biopython as a C compiler is necessary. If dependencies have to be installed separately, this can be done using the binary installers for Windows:
+Sometimes dependencies can be difficult to install on windows, as a C compiler is necessary. If dependencies have to be installed separately, this can be done using the binary installers for Windows:
 
-| Dependency       | link                                                 |
-|------------------|------------------------------------------------------|
-| Python (32,64)   | http://www.python.org/download                       |
-| Biopython (32)   | http://biopython.org/wiki/Download                   |
-| Biopython (64)   | http://www.lfd.uci.edu/~gohlke/pythonlibs/#biopython |
-| networkx (32,64) | http://www.lfd.uci.edu/~gohlke/pythonlibs/#networkx  |
+| Dependency         | link                                                                     |
+|--------------------|--------------------------------------------------------------------------|
+| Python (32,64)     | http://www.python.org/download                                           |
+| Biopython (32)     | http://biopython.org/wiki/Download                                       |
+| Biopython (64)     | http://www.lfd.uci.edu/~gohlke/pythonlibs/#biopython                     |
+| numpy (32,64)      | http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy                         |
+| networkx (32,64)   | http://www.lfd.uci.edu/~gohlke/pythonlibs/#networkx                      |
+| pint               | http://www.lfd.uci.edu/~gohlke/pythonlibs/Pint-0.6-py2.py3-none-any.whl  |
+| scipy (32,64)      | http://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy                         |
+| matplotlib (32,64) | http://www.lfd.uci.edu/~gohlke/pythonlibs/#matplotlib                    |
+| ipython>=4.0       | http://www.lfd.uci.edu/~gohlke/pythonlibs/#ipython                       |
+| jupyter            | http://www.lfd.uci.edu/~gohlke/pythonlibs/#jupyter                       |
 
-## Source Code Repository
-Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna)
 
 
-## TODO
 
-- [ ] IPython 4 (Jupyter) support
-- [ ] Add agarose gel electrophoresis simulation
+
+## Source Code
+Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
+
+## Changelog
+See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/CHANGELOG.md) for recent changes. 
 

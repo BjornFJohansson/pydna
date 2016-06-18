@@ -36,8 +36,8 @@ from pydna._simple_paths8 import all_simple_paths_edges, all_circular_paths_edge
 from findsubstrings_suffix_arrays_python import common_sub_strings
 from findsubstrings_suffix_arrays_python import terminal_overlap
 
-from orderedset import OrderedSet
-from pydna.pretty                   import pretty_str
+from _orderedset  import OrderedSet
+from pydna._pretty import pretty_str
 
 
 
@@ -272,11 +272,11 @@ class Assembly(object):
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
-            module_logger.info('open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
+            module_logger.info( 'open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
 
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
 
-            module_logger.info('created key = {}'.format(key))
+            module_logger.info( 'created key = {}'.format(key))
             module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
 
             try:

@@ -30,6 +30,8 @@ import colorsys
 
 from warnings import warn
 
+
+
 from prettytable import PrettyTable
 
 from Bio                    import SeqIO
@@ -53,15 +55,12 @@ from _sequencetrace         import SequenceTraceFactory
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils  import seguid  as seg
 from pydna.utils  import cseguid as cseg
-from pydna.pretty import pretty_str, pretty_string #, pretty_unicode
+from pydna._pretty import pretty_str, pretty_string #, pretty_unicode
 
 try:
-    import IPython
+    from IPython.display import Markdown as display
 except ImportError:
     def display(item): return item
-else:
-    from IPython.display import Markdown as display
-
 
 def rc(sequence):
     '''returns the reverse complement of sequence (string)
@@ -402,7 +401,8 @@ class Dseq(Seq):
         return sum( [313.2 for n in nts if n=="a"] +
                     [304.2 for n in nts if n=="t"] +
                     [289.2 for n in nts if n=="c"] +
-                    [329.2 for n in nts if n=="g"] ) + 79
+                    [329.2 for n in nts if n=="g"] +
+                    [308.9 for n in nts if n=="n"]) + 79
 
 
 
@@ -1257,6 +1257,8 @@ class Dseq(Seq):
 
     def seguid(self):
         rc_ovhg = len(self.watson) - len(self.crick) + self._ovhg
+        if self.ovhg==rc_ovhg==0:
+            return seg(min(self.watson, self.crick))
         if self.ovhg<rc_ovhg:
             w = self.watson
             c = self.crick
@@ -1729,12 +1731,12 @@ class Dseqrecord(SeqRecord):
 
         >>> import pydna
         >>> a=pydna.Dseqrecord("agtatcgtacatg")
-        >>> a.lseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
-        'QFuP3noYs92MGFJ2YGymCrxXFU4'
+        >>> a.lseguid()
+        'DPshMN4KeAjMovEjGEV4Kzj18lU'
 
         >>> b=pydna.Dseqrecord("catgtacgatact")
         >>> a.lseguid()
-        'QFuP3noYs92MGFJ2YGymCrxXFU4'
+        'DPshMN4KeAjMovEjGEV4Kzj18lU'
 
        '''
         if self.circular:
@@ -2859,6 +2861,4 @@ def parse(data, ds = True):
 if __name__=="__main__":
     import doctest
     doctest.testmod(optionflags=doctest.ELLIPSIS)
-
-    #b= read(">a\naaa")
 

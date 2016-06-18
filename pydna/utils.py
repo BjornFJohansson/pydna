@@ -7,7 +7,7 @@ from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
 from itertools import tee, izip
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
-from pydna.pretty import pretty_string
+from pydna._pretty import pretty_string
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."

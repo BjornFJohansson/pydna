@@ -1,8 +1,12 @@
 language: objective-c
-python:
-  - "2.7"
+os:
+  - osx
+before_install:
+  - brew update
+  - brew install python
+
 install:
-  - brew install python --universal --framework
+  #- brew install python --universal --framework
   #- brew install wget
   #- which python
   #- export VERSIONER_PYTHON_PREFER_32_BIT=yes
@@ -10,12 +14,17 @@ install:
   #- which python
   #- python --version
   - pip install --upgrade pip
+  - pip install numpy
+  - pip install scipy
+  - pip install matplotlib
+  - pip install mpldatacursor
   - pip install -e .
  
 before_script:
+
   - pip install -r test_requirements.txt
   - pip install -r requirements.txt
-  #- pip install ipython
+  - pip install ipython
   - pip install jsonschema
   
 script:

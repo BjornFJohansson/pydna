@@ -2,17 +2,17 @@
 
 echo "Building anaconda packages"
 
-conda build .
+#conda build .
 
-conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir /home/ubuntu/src/github.com/BjornFJohansson/miniconda/conda-bld/
+#conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir /home/ubuntu/src/github.com/BjornFJohansson/miniconda/conda-bld/
 
-conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir ~/anaconda/conda-bld/
+#conda convert ~/anaconda/conda-bld/linux-64/pydna*.tar.bz2 -p all --output-dir ~/anaconda/conda-bld/
 
-anaconda upload ~/anaconda/conda-bld/linux-64/pydna* ~/anaconda/conda-bld/
-anaconda upload ~/anaconda/conda-bld/linux-32/pydna* ~/anaconda/conda-bld/
-anaconda upload ~/anaconda/conda-bld/win-32/pydna* ~/anaconda/conda-bld/
-anaconda upload ~/anaconda/conda-bld/win-64/pydna* ~/anaconda/conda-bld/
-anaconda upload ~/anaconda/conda-bld/osx-64/pydna* ~/anaconda/conda-bld/
+anaconda upload ~/anaconda/conda-bld/linux-64/pydna-1.0.1* ~/anaconda/conda-bld/
+anaconda upload ~/anaconda/conda-bld/linux-32/pydna-1.0.1* ~/anaconda/conda-bld/
+anaconda upload ~/anaconda/conda-bld/win-32/pydna-1.0.1* ~/anaconda/conda-bld/
+anaconda upload ~/anaconda/conda-bld/win-64/pydna-1.0.1* ~/anaconda/conda-bld/
+anaconda upload ~/anaconda/conda-bld/osx-64/pydna-1.0.1* ~/anaconda/conda-bld/
 
 $SHELL
 

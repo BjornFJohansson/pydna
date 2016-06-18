@@ -1,29 +1,40 @@
 package:
     name: pydna
-    version: {{ environ.get('GIT_DESCRIBE_TAG', '') }}
+    version: {{ environ.get('GIT_DESCRIBE_TAG', 'default') }}
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
-
+  
 source:
-    path:
+  git_url: .
 
 requirements:
     build:
         - python
         - ipython
+        - jupyter
         - biopython
         - networkx
         - appdirs
         - prettytable
+        - numpy
+        - scipy
+        - matplotlib
+        - mpldatacursor
+        - pint
     run:
         - python
         - ipython
+        - jupyter
         - biopython
         - networkx
         - appdirs
         - prettytable
-
+        - numpy
+        - scipy
+        - matplotlib
+        - mpldatacursor
+        - pint
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD

@@ -16,10 +16,8 @@ from urlparse               import urlunparse
 from Bio                    import Entrez
 from Bio.SeqUtils.CheckSum  import seguid
 
-from pydna.dsdna import read
-
-
-from pydna.pretty import pretty_str
+from pydna.dsdna import read, parse
+from pydna._pretty import pretty_str
 from pydna.dsdna import Dseqrecord
 
 def _get_proxy_from_global_settings():
@@ -52,7 +50,9 @@ class GenbankRecord(Dseqrecord):
     def url(self):
         return pretty_str("http://www.ncbi.nlm.nih.gov/nucleotide/"+self.acc)
 
-
+def genbank(accession, proxy=None):
+    gb = Genbank(os.environ["pydna_email"], proxy=proxy)
+    return gb.nucleotide(accession)
 
 class Genbank():
     '''Class to facilitate download from genbank.
@@ -211,9 +211,12 @@ class Genbank():
             #        print stop
             #        print strand
 
+            if self.email == "someone@example.com":
+                raise ValueError("you have to set your email address in order to download from Genbank")
+
             result = read(Entrez.efetch(db        ="nucleotide",
                                         id        = item,
-                                        rettype   = "gb",
+                                        rettype   = "gbwithparts",
                                         seq_start = start,
                                         seq_stop  = stop,
                                         strand    = strand,
@@ -233,7 +236,7 @@ class Genbank():
 
         return result
 
-class web():
+class Web():
 
     def __init__(self, proxy = None):
         if proxy:
@@ -290,6 +293,16 @@ class web():
         cache.close()
 
         return result
+
+def read_url(url, proxy = None):
+    wb = Web(proxy=proxy)
+    result = wb.download(url)
+    return read(result)
+
+def parse_url(url, proxy = None):
+    wb = Web(proxy=proxy)
+    result = wb.download(url)
+    return parse(result)
 
 if __name__=="__main__":
     import doctest
