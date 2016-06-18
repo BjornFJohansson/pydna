@@ -778,27 +778,30 @@ def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
 
 def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
                    gel_len, wellx, welly, wellsep, res, cursor_ovr,
-                   back_col, band_col, well_col, noise, Itol, title,
+                   back_col, band_col, well_col, noise, Itol, detectlim, title,
                    FWTM, show=True):
     nlanes = len(lanes)
     gel_width = sum(wellx) + (nlanes+1)*wellsep  # cm
     res = res.to('px/cm')
     pxl_x = int(round(gel_width * res))
     pxl_y = int(round(gel_len * res))
-    centers = [(l+1)*wellsep + sum(wellx[:l]) + 0.5*wellx[l]
-               for l in xrange(nlanes)]
+    lane_centers = [(l+1)*wellsep + sum(wellx[:l]) + 0.5*wellx[l]
+                    for l in xrange(nlanes)]
     rgb_arr = np.zeros(shape=(pxl_y, pxl_x, 3), dtype=np.float32)
     bandlengths = wellx
+    bands_pxlXYmid = []
     # Paint the bands
     for i in xrange(nlanes):
-        distXmid = centers[i]
-        pxlXmid = distXmid * res
+        distXmid = lane_centers[i]
+        pxlXmid = int(round(distXmid * res))
         bandlength = bandlengths[i]
         from_x = int(round((distXmid - bandlength/2.0) * res))
         to_x = int(round((distXmid + bandlength/2.0) * res))
+        bands_pxlXYmid.append([])
         for j in xrange(len(lanes[i])):
             distYmid = distances[i][j]
             pxlYmid = int(round(distYmid * res))
+            bands_pxlXYmid[i].append((pxlXmid, pxlYmid))
             bandwidth = bandwidths[i][j]  # w=FWHM or w=FWTM ???
             if FWTM:
                 FWHM = Gauss_FWHM(bandwidth)
@@ -847,7 +850,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     wellx = wellx.magnitude
     welly = welly.magnitude
     wellsep = wellsep.magnitude
-    centers = [c.magnitude for c in centers]
+    lane_centers = [c.magnitude for c in lane_centers]
     bandlengths = bandlengths.magnitude
     bandwidths = [[bw.magnitude for bw in bwlane] for bwlane in bandwidths]
     fig = plt.figure()
@@ -862,7 +865,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     ax1.spines['right'].set_color(str(back_col))
     ax1.spines['bottom'].set_color(str(back_col))
     ax1.xaxis.set_label_position('top')
-    plt.xticks(centers, names)
+    plt.xticks(lane_centers, names)
     majorLocator = FixedLocator(range(int(gel_len+1)))
     minorLocator = FixedLocator([j/10.0 for k in
                                  range(0, int(gel_len+1)*10, 10)
@@ -870,11 +873,12 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     ax1.yaxis.set_major_locator(majorLocator)
     ax1.yaxis.set_minor_locator(minorLocator)
     ax1.tick_params(axis='x', which='both', top='off')
+    # Gel image
     bands_plt = ax1.imshow(bands_arr, extent=[0, gel_width, gel_len, 0],
                            interpolation='none')
     # Draw wells
     for i in xrange(nlanes):
-        ctr = centers[i]
+        ctr = lane_centers[i]
         wx = wellx[i]
         wy = welly[i]
         ax1.fill_between(x=[ctr-wx/2, ctr+wx/2], y1=[0, 0],
@@ -883,15 +887,19 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     bands = []
     for i in xrange(nlanes):
         bandlength = bandlengths[i]
-        center = centers[i]
+        center = lane_centers[i]
         x = center - bandlength/2.0
         for j in xrange(len(lanes[i])):
             dna_frag = lanes[i][j]
             bandwidth = bandwidths[i][j]
             dist = distances[i][j].magnitude
             y = dist - bandwidth/2.0
-            band = plt.Rectangle((x, y), bandlength, bandwidth, fc='r',
-                                 alpha=0, label='{} bp'.format(len(dna_frag)))
+            pxlX, pxlY = bands_pxlXYmid[i][j]
+            band_midI = bands_arr[pxlY, pxlX][0]
+            alpha = 0 if abs(band_midI - back_col) >= detectlim else 0.4
+            band = plt.Rectangle((x, y), bandlength, bandwidth,
+                                 fc='none', ec='w', ls=':', alpha=alpha,
+                                 label='{} bp'.format(len(dna_frag)))
             plt.gca().add_patch(band)
             bands.append(band)
     plt.ylim(gel_len, -max(welly))
@@ -1089,6 +1097,7 @@ class Gel:
             band_col=1,
             well_col=0.05,
             noise=0.015,
+            detectlim=0.04,
             interpol='linear',     # 'cubic','nearest'
             dset_name='vertical',  # 'horizontal'
             replNANs=True          # replace NANs by 'nearest' interpolation
@@ -1166,6 +1175,13 @@ class Gel:
             noise centered in the background color. This effect is purely
             aesthetic.
             Defaults to 0.015.
+
+        detectlim : float, optional
+            Minimal light intensity difference between the center of the band
+            and the background color (back_col) below which the band is
+            considered to be indistinguishable and a white doted outline is
+            drawn around it.
+            Defaults to 0.04.
 
         interpol : {'linear', 'cubic', 'nearest'}, optional
             Interpolation method. This is passed to
@@ -1417,7 +1433,7 @@ class Gel:
             gelpic = gelplot_imshow(distances, bandwidths, intensities, lanes,
                                     names, gel_len, wellx, welly, wellsep, res,
                                     cursor_ovr, back_col, band_col, well_col,
-                                    noise, Itol, title, FWTM, False)
+                                    noise, Itol, detectlim, title, FWTM, False)
             return #gelpic
         return None
 
@@ -1473,6 +1489,7 @@ if __name__ == "__main__":
     band_col = 1
     well_col = 0.05
     noise = 0.5*0.023400015217741609  # 0.015
+    detectlim = 0.04
 
     # Lane identifiers
     lanenames = ['L1', 'S1', 'S2']
@@ -1519,11 +1536,12 @@ if __name__ == "__main__":
 
         # ### Run Gel ###
         pic = G.run(till_len, till_time, exposure, plot, res,
-                    cursor_ovr, back_col, band_col, well_col, noise,
+                    cursor_ovr, back_col, band_col, well_col, noise, detectlim,
                     interpol, dset_name, replNANs)
         if plot:
-            pic.savefig('gelplot.jpg', dpi=300)
-            pic.show()
+            # pic.savefig('gelplot.jpg', dpi=300)
+            # pic.show()
+            pass
 
     if test_mu0:
         # ### Test <ferguson_to_mu0> ### --------------------------------------
