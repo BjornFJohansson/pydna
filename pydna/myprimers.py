@@ -4,8 +4,8 @@
 
 '''
 import os as _os
-global primer
-global primer_dict
+#global primer
+#global primer_dict
 
 from .dsdna import parse as _parse
 

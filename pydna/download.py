@@ -50,8 +50,10 @@ class GenbankRecord(Dseqrecord):
     def url(self):
         return pretty_str("http://www.ncbi.nlm.nih.gov/nucleotide/"+self.acc)
 
+email = os.getenv("pydna_email")
+
 def genbank(accession, proxy=None):
-    gb = Genbank(os.environ["pydna_email"], proxy=proxy)
+    gb = Genbank(email, proxy=proxy)
     return gb.nucleotide(accession)
 
 class Genbank():

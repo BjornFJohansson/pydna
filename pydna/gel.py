@@ -388,6 +388,25 @@ def random_Dseqs(sizes):
     return sample
 
 
+
+class Fakeseq(object):
+
+    def __init__(self, l, n=10E-12):
+        self._length = l
+        self.n = n
+
+    def __len__(self):
+        return self._length
+
+
+
+if __name__=="__main__":
+
+    a=fake(2)
+
+    print len(a)
+
+
 def gen_sample(sizes, quantities):
     """Return list of pydna Dseqrecords of given size and quantity.
 
@@ -1005,9 +1024,12 @@ class Gel:
                  wellxy=Q_([7, 2], 'mm'),
                  wellsep=Q_(2, 'mm')
                  ):
-        self.samples = [[dna if isinstance(dna, Dseqrecord) else
-                         Dseqrecord(dna) for dna in sample] for sample in
-                        samples]    # len(DNA) in bp
+        #self.samples = [[dna if isinstance(dna, Dseqrecord) else
+        #                 Dseqrecord(dna) for dna in sample] for sample in
+        #                samples]    # len(DNA) in bp
+
+        self.samples = samples
+
         self.names = names if names else [str(i) for i in      #
                                           xrange(1, len(samples)+1)]  #
         self.percent = to_units(percentgel, '(g/(100 mL))*100', 'percentgel')
@@ -1420,14 +1442,6 @@ class Gel:
                                     noise, Itol, title, FWTM, False)
             return #gelpic
         return None
-
-class fake_seq(object):
-
-    def __init__(self, length=0):
-        self.length=length
-
-    def __len__(self):
-        return self.length
 
 
 if __name__ == "__main__":

@@ -123,7 +123,8 @@ class Editor:
         #for name in names:
         #    print os.path.join(path, name)+".gb"
 
-apeloader = Editor( os.environ["pydna_ape"] )
+
+apeloader = Editor( os.getenv("pydna_ape") )
 
 def ape(*args,**kwargs):
     return apeloader.open(*args,**kwargs)

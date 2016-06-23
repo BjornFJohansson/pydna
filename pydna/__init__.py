@@ -150,7 +150,7 @@ from pydna.dsdna                                    import parse
 from pydna.dsdna                                    import parse2
 from pydna.dsdna                                    import read
 
-from pydna.editor                                   import Editor
+#from pydna.editor                                   import Editor
 from pydna.findsubstrings_suffix_arrays_python      import common_sub_strings
 from pydna.primer_design                            import cloning_primers
 from pydna.primer_design                            import assembly_primers
