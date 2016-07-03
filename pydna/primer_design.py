@@ -516,7 +516,7 @@ def assembly_primers(templates,
     linkers = linkers[1:]+[linkers[0]]
 
     for t,n,l in zip(newtemplates, newtemplates[1:], linkers):
-        length = tail_length - len(l)/2
+        length = tail_length - len(l)//2
         newtails.extend( (str(n[:length].rc().seq)+str(l.rc().seq),
                           str(t.seq[-length:])+str(l.seq) ))
 
