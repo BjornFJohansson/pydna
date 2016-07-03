@@ -45,7 +45,7 @@ except ImportError:
 from pint import UnitRegistry #, DimensionalityError
 
 from numbers import Number
-from io import StringIO
+from io import StringIO, BytesIO
 #from random import randint
 
 
@@ -211,9 +211,9 @@ ver_str = '''
 
 # Strings of data as text files
 data_as_file = {'horizontal':
-                StringIO(hor_str.replace('\n|', '\n').replace('|\n', '\n')),
+                BytesIO(hor_str.replace('\n|', '\n').replace('|\n', '\n').encode()),
                 'vertical':
-                StringIO(ver_str.replace('\n|', '\n').replace('|\n', '\n'))
+                BytesIO(ver_str.replace('\n|', '\n').replace('|\n', '\n').encode())
                 }
 
 # Load data into numpy arrays
