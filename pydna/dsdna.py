@@ -2198,7 +2198,11 @@ class Dseqrecord(SeqRecord):
         answer = copy.copy(self)
         answer.seq = answer.seq.__getitem__(sl)
         answer.seq.alphabet = self.seq.alphabet
-        if self.linear or sl.start<sl.stop:
+
+        sl_start = sl.start if sl.start is not None else 0
+        sl_stop = sl.stop if sl.stop is not None else len(answer.seq)
+        
+        if self.linear or sl_start<sl_stop:
             answer.features = SeqRecord.__getitem__(self, sl).features
         else:
             try:
