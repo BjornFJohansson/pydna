@@ -1630,9 +1630,9 @@ class Dseqrecord(SeqRecord):
         return self.features[n].extract(self)
 
     def spread_ape_colors(self):
-    	''' This method assigns random colors compatible with the ApE editor
-    	to features.
-    	'''
+        ''' This method assigns random colors compatible with the ApE editor
+        to features.
+        '''
 
         def get_N_HexCol(N):
             HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
@@ -1685,7 +1685,7 @@ class Dseqrecord(SeqRecord):
         return pretty_str(x)
 
     def gc(self):
-    	'''Returns GC content '''
+        '''Returns GC content '''
         return pretty_string(round(GC(str(self.seq)), 1))
 
     def cseguid(self):
