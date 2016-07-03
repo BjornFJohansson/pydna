@@ -20,7 +20,7 @@ import itertools
 import operator
 from Bio           import SeqIO
 from Bio.SeqRecord import SeqRecord
-import dsdna
+from . import dsdna
 
 class Editor:
     '''
@@ -50,10 +50,10 @@ class Editor:
         if True in [os.path.isfile(p) for p in path]:
             self.path_to_editor = shell_command_for_editor
         else:
-            print
-            print shell_command_for_editor
-            print "is not a valid path to ApE"
-            raise(ValueError("invalid path to ApE"))
+            print()
+            print(shell_command_for_editor)
+            print("is not a valid path to ApE")
+            raise ValueError
 
         self.tmpdir = tmpdir or os.path.join(tempfile.gettempdir(),"ApE")
         try:
@@ -131,7 +131,7 @@ def ape(*args,**kwargs):
 
 if __name__=="__main__":
     from Bio import SeqIO
-    sr1 = SeqIO.parse("../tests/pUC19.gb","gb").next()
-    sr2 = SeqIO.parse("../tests/pCAPs.gb","gb").next()
+    sr1 = next(SeqIO.parse("../tests/pUC19.gb","gb"))
+    sr2 = next(SeqIO.parse("../tests/pCAPs.gb","gb"))
     aperunner = Ape("tclsh /home/bjorn/.ApE/apeextractor/ApE.vfs/lib/app-AppMain/AppMain.tcl")
     aperunner.open(sr1,sr2)

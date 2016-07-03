@@ -15,7 +15,7 @@ Note
 This code is at an early stage of development and documentation.
 
 """
-from __future__ import division
+
 
 try:
     import numpy as np
@@ -45,7 +45,7 @@ except ImportError:
 from pint import UnitRegistry #, DimensionalityError
 
 from numbers import Number
-from StringIO import StringIO
+from io import StringIO
 #from random import randint
 
 
@@ -456,7 +456,7 @@ def gen_sample(sizes, quantities):
 
 def weight_standard_sample(key, qty=Q_(500, 'ng')):
     assert key in weight_standards, ("Key not recognized. Choose from: %s"
-                                     % weight_standards.keys())
+                                     % list(weight_standards.keys()))
     qty = to_units(qty, Vars['quantities']['units'], var_name='qty')
     sizes = weight_standards[key]['sizes']
     fracs = weight_standards[key]['percent']
@@ -556,21 +556,21 @@ def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
     if isinstance(quantities, Q_):
         if isinstance(quantities.magnitude, Number):
             quantities = Q_([quantities.magnitude for i in
-                             xrange(len(samples))], quantities.units)
+                             range(len(samples))], quantities.units)
         else:
             for i, qty in enumerate(quantities.magnitude):
                 if qty is None:
                     quantities.magnitude[i] = []
     else:
         if isinstance(quantities, Number):
-            quantities = [quantities for i in xrange(len(samples))]
+            quantities = [quantities for i in range(len(samples))]
         elif hasattr(quantities, '__iter__'):
             for i, qty in enumerate(quantities):
                 if qty is None:
                     quantities[i] = []
     quantities = to_units(quantities, units, 'quantities')
     # Quantity assignment - straightforward cases
-    for i in xrange(len(samples)):
+    for i in range(len(samples)):
         if i < len(quantities) and isinstance(quantities[i].magnitude, Number):
             # Divide sample quantity by its DNA fragments (linearly)
             sizes = [len(dna) for dna in samples[i]]
@@ -590,7 +590,7 @@ def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
     if maxQ.magnitude == 0:
         maxQ = to_units(maxdef, units, 'maxdef')
     maxQ = maxQ.magnitude
-    for i in xrange(len(samples)):
+    for i in range(len(samples)):
         if outQs[i] == []:
             # Linearly extrapolates each DNA fragment's quantity taking as
             # reference the maximum quantity registered (or the default)
@@ -655,7 +655,7 @@ def size_to_mobility(dna_len, field, percentage,
                         (field, percentage), method)
     if replNANs and np.isnan(mobility):
         # Replace NANs by 'nearest' interpolation
-        print "WARNING: NAN replaced by 'nearest' interpolation."  # #### ! ###
+        print("WARNING: NAN replaced by 'nearest' interpolation.")  # #### ! ###
         mobility = griddata((dataset['E'], dataset['T']), mu_func(dna_len),
                             (field, percentage), method='nearest')
     return mobility.item()
@@ -727,7 +727,7 @@ def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
     # Linear regression for each DNA size
     lregr_stats = []
     exclude = []
-    for l in xrange(len(DNAvals)):
+    for l in range(len(DNAvals)):
         not_nan = np.logical_not(np.isnan(ln_mu_LxT[l]))
         if sum(not_nan) > 1:
             # (enough points for linear regression)
@@ -754,7 +754,7 @@ def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
         Tvals0 = np.concatenate([[0], Tvals])
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        for l in xrange(len(DNAvals)):
+        for l in range(len(DNAvals)):
             ax.scatter(Tvals, ln_mu_LxT[l], label=DNAvals[l],
                        color=colors[l])
             m = lregr_stats[l][0]
@@ -786,19 +786,19 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     pxl_x = int(round(gel_width * res))
     pxl_y = int(round(gel_len * res))
     lane_centers = [(l+1)*wellsep + sum(wellx[:l]) + 0.5*wellx[l]
-                    for l in xrange(nlanes)]
+                    for l in range(nlanes)]
     rgb_arr = np.zeros(shape=(pxl_y, pxl_x, 3), dtype=np.float32)
     bandlengths = wellx
     bands_pxlXYmid = []
     # Paint the bands
-    for i in xrange(nlanes):
+    for i in range(nlanes):
         distXmid = lane_centers[i]
         pxlXmid = int(round(distXmid * res))
         bandlength = bandlengths[i]
         from_x = int(round((distXmid - bandlength/2.0) * res))
         to_x = int(round((distXmid + bandlength/2.0) * res))
         bands_pxlXYmid.append([])
-        for j in xrange(len(lanes[i])):
+        for j in range(len(lanes[i])):
             distYmid = distances[i][j]
             pxlYmid = int(round(distYmid * res))
             bands_pxlXYmid[i].append((pxlXmid, pxlYmid))
@@ -866,7 +866,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     ax1.spines['bottom'].set_color(str(back_col))
     ax1.xaxis.set_label_position('top')
     plt.xticks(lane_centers, names)
-    majorLocator = FixedLocator(range(int(gel_len+1)))
+    majorLocator = FixedLocator(list(range(int(gel_len+1))))
     minorLocator = FixedLocator([j/10.0 for k in
                                  range(0, int(gel_len+1)*10, 10)
                                  for j in range(1+k, 10+k, 1)])
@@ -877,7 +877,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     bands_plt = ax1.imshow(bands_arr, extent=[0, gel_width, gel_len, 0],
                            interpolation='none')
     # Draw wells
-    for i in xrange(nlanes):
+    for i in range(nlanes):
         ctr = lane_centers[i]
         wx = wellx[i]
         wy = welly[i]
@@ -885,11 +885,11 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
                          y2=[-wy, -wy], color=str(well_col))
     # Invisible rectangles overlapping the bands for datacursor to detect
     bands = []
-    for i in xrange(nlanes):
+    for i in range(nlanes):
         bandlength = bandlengths[i]
         center = lane_centers[i]
         x = center - bandlength/2.0
-        for j in xrange(len(lanes[i])):
+        for j in range(len(lanes[i])):
             dna_frag = lanes[i][j]
             bandwidth = bandwidths[i][j]
             dist = distances[i][j].magnitude
@@ -1017,7 +1017,7 @@ class Gel:
                          Dseqrecord(dna) for dna in sample] for sample in
                         samples]    # len(DNA) in bp
         self.names = names if names else [str(i) for i in      #
-                                          xrange(1, len(samples)+1)]  #
+                                          range(1, len(samples)+1)]  #
         self.percent = to_units(percentgel, '(g/(100 mL))*100', 'percentgel')
         self.field = to_units(electrfield, 'V/cm', 'electrfield')
         self.temperature = to_units(temperature, 'K', 'temperature')
@@ -1376,7 +1376,7 @@ class Gel:
 
         # Total bandwidths
         bandwidths = [[bandwidths0[i][j] + bandwidthsI[i][j] for j in
-                       xrange(len(lanes[i]))] for i in xrange(nlanes)]
+                       range(len(lanes[i]))] for i in range(nlanes)]
         self.bandwidths = bandwidths
         if bandwidth == 0:
             bandwidths = self.bandwidths0
@@ -1389,7 +1389,7 @@ class Gel:
         minI = Q_(np.inf, 'ng/cm')
         for i, lane in enumerate(lanes):
             lane_I = []
-            for j in xrange(len(lane)):
+            for j in range(len(lane)):
                 frag_Qty = quantities[i][j]
                 frag_Wth = bandwidths[i][j]  # w=FWHM or w=FWTM ???
                 if FWTM:
@@ -1545,25 +1545,25 @@ if __name__ == "__main__":
 
     if test_mu0:
         # ### Test <ferguson_to_mu0> ### --------------------------------------
-        print '\n'+80*'#'
-        print '( Free Solution Mobility from Ferguson Plot )'.center(80, '#')
-        print 80*'#'+'\n'
+        print('\n'+80*'#')
+        print('( Free Solution Mobility from Ferguson Plot )'.center(80, '#'))
+        print(80*'#'+'\n')
         plot = True
         for Ei in E_space:
             mu0 = ferguson_to_mu0(Ei, T_space, DNAspace, dataset,
                                   mu_funcs[dset_name], interpol, replNANs,
                                   plot)
             if mu0 is None:
-                print mu0
+                print(mu0)
             else:
-                print 'mu0= %.3e cm^2/(V.seg)' % mu0
+                print('mu0= %.3e cm^2/(V.seg)' % mu0)
 
     if test_vWBRfit:
         # ### Test <vWBRfit> ### ----------------------------------------------
-        print '\n'+80*'#'
-        print ("( Non-linear Least Squares Fitting"
-               " with vWBR's Eq. )".center(80, '#'))
-        print 80*'#'+'\n'
+        print('\n'+80*'#')
+        print(("( Non-linear Least Squares Fitting"
+               " with vWBR's Eq. )".center(80, '#')))
+        print(80*'#'+'\n')
         plot = True
         output = vWBRfit(electrfield, percentgel, DNAvals,
                          datasets[dset_name], mu_funcs[dset_name],
@@ -1572,10 +1572,10 @@ if __name__ == "__main__":
 
     if test_vWBRfit_comprehensive:
         # ### Test <vWBRfit comprehensively> ### ------------------------------
-        print '\n'+80*'#'
-        print ("( Non-linear Least Squares Fitting with vWBR's Eq."
-               "- comprehensive )".center(80, '#'))
-        print 80*'#'+'\n'
+        print('\n'+80*'#')
+        print(("( Non-linear Least Squares Fitting with vWBR's Eq."
+               "- comprehensive )".center(80, '#')))
+        print(80*'#'+'\n')
         for Ei in E_space:
             for Ti in T_space:
                 output = vWBRfit(Ei, Ti, DNAvals,
@@ -1585,9 +1585,9 @@ if __name__ == "__main__":
 
     if check_ladders:
         # ### Verify and print weight_standards info ### ----------------------
-        print '\n'+80*'#'
-        print '( DNA Ladder Info )'.center(80, '#')
-        print 80*'#'
+        print('\n'+80*'#')
+        print('( DNA Ladder Info )'.center(80, '#'))
+        print(80*'#')
         store_n = []
         store_m = []
         for k in weight_standards:
@@ -1603,21 +1603,21 @@ if __name__ == "__main__":
                                               ' != len(percent)' % k)
             assert round(sum(fracs), 5) == 1, ('ladder: %s, sum(percent)'
                                                ' != 1' % k)
-            print '\n', k, '\n', '-'*80
-            print 'size \t\t mass/%s \t fraction \t n/pmol' % total
-            print '-'*80
-            for i in xrange(len(sizes)):
-                print '%s   \t  %.3f  \t  %.3f \t %.4f' % (sizes[i],
+            print('\n', k, '\n', '-'*80)
+            print('size \t\t mass/%s \t fraction \t n/pmol' % total)
+            print('-'*80)
+            for i in range(len(sizes)):
+                print('%s   \t  %.3f  \t  %.3f \t %.4f' % (sizes[i],
                                                            masses[i].magnitude,
                                                            fracs[i].magnitude,
-                                                           ns[i].magnitude)
-            print '-'*80
-        print "min(m) = %.4f ng" % np.min(store_m)
-        print "avg(m) = %.4f ng" % np.mean(store_m)
-        print "max(m) = %.4f ng" % np.max(store_m)
-        print "min(n) = %.4f pmol" % np.min(store_n)
-        print "avg(n) = %.4f pmol" % np.mean(store_n)
-        print "max(n) = %.4f pmol" % np.max(store_n)
+                                                           ns[i].magnitude))
+            print('-'*80)
+        print("min(m) = %.4f ng" % np.min(store_m))
+        print("avg(m) = %.4f ng" % np.mean(store_m))
+        print("max(m) = %.4f ng" % np.max(store_m))
+        print("min(n) = %.4f pmol" % np.min(store_n))
+        print("avg(n) = %.4f pmol" % np.mean(store_n))
+        print("max(n) = %.4f pmol" % np.max(store_n))
 
 
 # References (very incomplete)

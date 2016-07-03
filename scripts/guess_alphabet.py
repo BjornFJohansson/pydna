@@ -30,7 +30,7 @@ def guess_alphabet(sequence):
         sequence=str(sequence)
 
     else:
-        if not isinstance(sequence, basestring):
+        if not isinstance(sequence, str):
             warnings.warn(("Input is {}, expected string, "
                            "unicode string, Seq or SeqRecord "
                            "objects!").format(type(sequence)))

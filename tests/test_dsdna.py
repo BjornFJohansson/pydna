@@ -392,22 +392,22 @@ class test_dsdna(unittest.TestCase):
         self.assertTrue( eq(pUC19_BamHI_a_rc, read("./pUC19-BamHI-a-rc.gb")))
 
         ''' adding (ligating) dsDNA objects '''
-        with self.assertRaisesRegexp(TypeError, "circular"):
+        with self.assertRaisesRegex(TypeError, "circular"):
             pUC19+a
-        with self.assertRaisesRegexp(TypeError, "circular"):
+        with self.assertRaisesRegex(TypeError, "circular"):
             a+pUC19
-        with self.assertRaisesRegexp(TypeError, "compatible"):
+        with self.assertRaisesRegex(TypeError, "compatible"):
             a+b
-        with self.assertRaisesRegexp(TypeError, "compatible"):
+        with self.assertRaisesRegex(TypeError, "compatible"):
             b+a
-        with self.assertRaisesRegexp(TypeError, "compatible"):
+        with self.assertRaisesRegex(TypeError, "compatible"):
             d+d
 
         ''' directional cloning '''
 
         pUC19_EcoRI_PstI = pUC19.cut(EcoRI, PstI).pop(0)
 
-        with self.assertRaisesRegexp(TypeError, "compatible"):
+        with self.assertRaisesRegex(TypeError, "compatible"):
             pUC19_EcoRI_PstI + d
 
         pUC19_EcoRI_PstI_d = pUC19_EcoRI_PstI + d.rc()
@@ -853,8 +853,8 @@ class test_dsdna(unittest.TestCase):
             self.assertEqual(str(cand.synced("tcgcgcgtttcggtgatgacggtga").seq).upper(),
                              correct,
                              str(pUC19_LAC4.synced(pUC19).seq).upper())
-            print i,
-        print
+            print(i, end=' ')
+        print()
 
 
 
@@ -877,8 +877,8 @@ class test_sync(unittest.TestCase):
             self.assertEqual(str(cand.synced("tcgcgcgtttcggtgatgacggtga").seq).upper(),
                              correct,
                              str(cand.synced(pUC19).seq).upper())
-            print i,
-        print
+            print(i, end=' ')
+        print()
 
 if __name__ == '__main__':
     unittest.main()

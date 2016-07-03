@@ -4,7 +4,7 @@
 
 '''
 from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
-from itertools import tee, izip
+from itertools import tee
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
 from pydna._pretty import pretty_string
@@ -13,7 +13,7 @@ def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
     next(b, None)
-    return izip(a, b)
+    return zip(a, b)
 
 def eq(*args,**kwargs):
     '''Compares two or more DNA sequences for equality i.e. they
@@ -197,7 +197,7 @@ def shift_origin(seq, shift):
     length=len(seq)
 
     if not 0<=shift<length:
-        raise(ValueError("shift ({}) has to be 0<=shift<length({})",format((shift,length,))))
+        raise ValueError
 
     if hasattr(seq, "linear"):
         new = seq.tolinear()

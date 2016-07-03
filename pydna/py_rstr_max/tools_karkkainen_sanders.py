@@ -4,15 +4,15 @@ from array import array
 
 def radixpass(a, b, r, s, n, k) :
   c = array("i", [0]*(k+1))
-  for i in xrange(n) :
+  for i in range(n) :
     c[r[a[i]+s]]+=1
 
   somme = 0
-  for i in xrange(k+1):
+  for i in range(k+1):
     freq, c[i] = c[i], somme
     somme += freq
 
-  for i in xrange(n) :
+  for i in range(n) :
     b[c[r[a[i]+s]]] = a[i]
     c[r[a[i]+s]] += 1
 
@@ -45,7 +45,7 @@ def kark_sort(s, SA, n, K):
   SA12 = array('i', [0]*(n02+3))
   SA0  = array('i', [0]*n0)
 
-  s12 = [i for i in xrange(n+(n0-n1)) if i%3] 
+  s12 = [i for i in range(n+(n0-n1)) if i%3] 
   s12.extend([0]*3)
   s12 = array('i', s12)
 
@@ -55,7 +55,7 @@ def kark_sort(s, SA, n, K):
 
   name = 0
   c0, c1, c2 = -1, -1, -1
-  for i in xrange(n02) :
+  for i in range(n02) :
     if s[SA12[i]] != c0 or s[SA12[i]+1] != c1 or s[SA12[i]+2] != c2 :
       name += 1
       c0 = s[SA12[i]]
@@ -68,13 +68,13 @@ def kark_sort(s, SA, n, K):
 
   if name < n02 :
     kark_sort(s12, SA12, n02, name+1)
-    for i in xrange(n02) :
+    for i in range(n02) :
       s12[SA12[i]] = i+1
   else :
-    for i in xrange(n02) :
+    for i in range(n02) :
       SA12[s12[i]-1] = i
 
-  s0 = array('i',[SA12[i]*3 for i in xrange(n02) if SA12[i]<n0])
+  s0 = array('i',[SA12[i]*3 for i in range(n02) if SA12[i]<n0])
   radixpass(s0, SA0, s, 0, n0, K)
   
   p = j = k = 0
@@ -116,10 +116,10 @@ def LCP(s, suffix_array):
   init = [0]*n
   rank = array('i', init)
   LCP = array('i', init)
-  for i in xrange(n):
+  for i in range(n):
     rank[suffix_array[i]] = i
   l = 0
-  for j in xrange(n):
+  for j in range(n):
     l = max(0, l-1)
     i = rank[j]
     j2 = suffix_array[i-1]

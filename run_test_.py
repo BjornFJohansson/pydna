@@ -22,7 +22,7 @@ else:
     os.environ["pydna_log_dir"]  = os.environ["pydna_data_dir"]
     try:
         shutil.rmtree( os.environ["pydna_data_dir"] )
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             print("no cache to delete.")
     print("cache deleted.")
@@ -47,7 +47,7 @@ def main():
     nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
     os.chdir(cwd)
 
-    print("cache files", os.listdir( os.environ["pydna_data_dir"] ))
+    print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
 
     print("                  _               _            _               _ _          __ _       _     _              _ _ ")
     print("                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |")

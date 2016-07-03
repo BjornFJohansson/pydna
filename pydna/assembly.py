@@ -9,7 +9,7 @@ sequences separating the overlapping regions form edges.
 
 '''
 
-import cPickle
+import pickle
 import shelve
 
 import logging
@@ -33,10 +33,10 @@ from Bio.SeqFeature import SeqFeature
 from pydna.dsdna import Dseq
 from pydna.dsdna import Dseqrecord
 from pydna._simple_paths8 import all_simple_paths_edges, all_circular_paths_edges
-from findsubstrings_suffix_arrays_python import common_sub_strings
-from findsubstrings_suffix_arrays_python import terminal_overlap
+from .findsubstrings_suffix_arrays_python import common_sub_strings
+from .findsubstrings_suffix_arrays_python import terminal_overlap
 
-from _orderedset  import OrderedSet
+from ._orderedset  import OrderedSet
 from pydna._pretty import pretty_str
 
 
@@ -274,7 +274,7 @@ class Assembly(object):
 
             module_logger.info( 'open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
 
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
 
             module_logger.info( 'created key = {}'.format(key))
             module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
@@ -309,7 +309,7 @@ class Assembly(object):
             self._save()
 
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
-            for key, value in cached.__dict__.items():
+            for key, value in list(cached.__dict__.items()):
                 setattr(self, key, value )
             cache.close()
 
@@ -318,7 +318,7 @@ class Assembly(object):
             module_logger.warning('Assembly error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
         cache[self.key] = self
         cache.close()
 
@@ -405,8 +405,8 @@ class Assembly(object):
 
         for i, dsrec in enumerate(self.analyzed_dsrecs):
 
-            overlaps = sorted( {f.qualifiers['chksum'][0]:f for f in dsrec.features
-                                if f.type=='overlap'}.values(),
+            overlaps = sorted( list({f.qualifiers['chksum'][0]:f for f in dsrec.features
+                                if f.type=='overlap'}.values()),
                                key = operator.attrgetter('location.start'))
 
             if overlaps:
@@ -444,7 +444,7 @@ class Assembly(object):
 
         for path in all_simple_paths_edges(self.G, '5', '3', data=True, cutoff=self.max_nodes):
 
-            pred_frag = copy(path[0][2].values().pop()['frag'])
+            pred_frag = copy(list(path[0][2].values()).pop()['frag'])
             source_fragments = [pred_frag, ]
 
             if pred_frag.start2<pred_frag.end1:
@@ -454,7 +454,7 @@ class Assembly(object):
 
             for first_node, second_node, edgedict in path[1:]:
 
-                edgedict = edgedict.values().pop()
+                edgedict = list(edgedict.values()).pop()
 
                 f  = copy(edgedict['frag'])
 
@@ -541,7 +541,7 @@ class Assembly(object):
 
 
         #self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
-        self.circular_products = sorted(circular_products.values(), key=len, reverse=True)
+        self.circular_products = sorted(list(circular_products.values()), key=len, reverse=True)
 
 
     def __repr__(self):

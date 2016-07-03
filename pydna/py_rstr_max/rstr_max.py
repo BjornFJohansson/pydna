@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from tools_karkkainen_sanders import direct_kark_sort
+from .tools_karkkainen_sanders import direct_kark_sort
 from array import array
 
 class Rstr_max :
@@ -26,7 +26,7 @@ class Rstr_max :
     k = idx = 0
     for mot in self.array_str :
       last = k + len(mot)
-      for p in xrange(len(mot)) :
+      for p in range(len(mot)) :
         self.idxString[k] = idx
         self.idxPos[k] = p
         self.endAt[k] = last
@@ -46,12 +46,12 @@ class Rstr_max :
     suffix_array = self.res
     endAt = self.endAt
 
-    for i in xrange(len(self.array_str),n):
+    for i in range(len(self.array_str),n):
       v = self.res[i]
       rank[v] = i
 
     l = 0
-    for j in xrange(n):
+    for j in range(n):
       if(l > 0) :
         l -= 1
       i = rank[j]
@@ -85,7 +85,7 @@ class Rstr_max :
     pos1 = self.res[0]
     #offset1 = self.idxPos[self.res[0]]
     #idStr1 = self.idxString[self.res[0]]
-    for idx in xrange(len_lcp):
+    for idx in range(len_lcp):
       current_len = self.lcp[idx]
       pos2 = self.res[idx+1]
       #offset2 = self.idxPos[pos2]
@@ -149,11 +149,11 @@ class Rstr_max :
 
 if (__name__ == '__main__') :
   str1 = 'toto'
-  str1_unicode = unicode(str1,'utf-8','replace')
+  str1_unicode = str(str1,'utf-8','replace')
   rstr = Rstr_max()
   rstr.add_str(str1_unicode)
   rstr.add_str(str1_unicode)
   r = rstr.go()
-  for ((id_str, end), nb), (l, start_plage) in r.iteritems():
+  for ((id_str, end), nb), (l, start_plage) in r.items():
     ss = rstr.array_str[id_str][end-l:end]
-    print '[%s] %d'%(ss.encode('utf-8'), nb)
+    print('[%s] %d'%(ss.encode('utf-8'), nb))

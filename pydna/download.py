@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 '''Provides a class for downloading sequences from genbank.
 '''
-import cPickle
+import pickle
 import shelve
 
 import re
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import warnings
 import sys
 
-from urlparse               import urlparse
-from urlparse               import urlunparse
+from urllib.parse               import urlparse
+from urllib.parse               import urlunparse
 from Bio                    import Entrez
 from Bio.SeqUtils.CheckSum  import seguid
 
@@ -82,7 +82,7 @@ class Genbank():
     def __init__(self, users_email, proxy = None, tool="pydna"):
 
         if not re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,re.IGNORECASE):
-            raise(ValueError("Not a valid email address!"))
+            raise ValueError
 
         self.email=users_email #Always tell NCBI who you are
 
@@ -94,11 +94,11 @@ class Genbank():
             hostname = parsed.hostname
             test = urlunparse((scheme, hostname,'','','','',))
             try:
-                response=urllib2.urlopen(test, timeout=1)
-            except urllib2.URLError as err:
+                response=urllib.request.urlopen(test, timeout=1)
+            except urllib.error.URLError as err:
                 warnings.warn("could not contact proxy server")
             #print { scheme : parsed.geturl() }
-            self.proxy = urllib2.ProxyHandler({ scheme : parsed.geturl() })
+            self.proxy = urllib.request.ProxyHandler({ scheme : parsed.geturl() })
         else:
             pass
             #proxy_handler = urllib2.ProxyHandler({})
@@ -145,7 +145,7 @@ class Genbank():
         refresh = False
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             key = item+str(start)+str(stop)+str(strand)
             try:
                 cached = cache[key]
@@ -164,7 +164,7 @@ class Genbank():
                     url = urlparse("")
 
                 if url.scheme:
-                    return read( urllib2.urlopen(item).read() )
+                    return read( urllib.request.urlopen(item).read() )
 
             matches =((1, re.search("(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
                       (2, re.search("(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))",item)),
@@ -227,7 +227,7 @@ class Genbank():
                 module_logger.warning('download error')
 
         if refresh or os.environ["pydna_cache"] == "refresh":
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "genbank"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             cache[key] = result
 
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
@@ -245,10 +245,10 @@ class Web():
             hostname = parsed.hostname
             test = urlunparse((scheme, hostname,'','','','',))
             try:
-                response=urllib2.urlopen(test, timeout=1)
-            except urllib2.URLError as err:
+                response=urllib.request.urlopen(test, timeout=1)
+            except urllib.error.URLError as err:
                 warnings.warn("could not contact proxy server")
-            self.proxy = urllib2.ProxyHandler({ scheme : parsed.geturl() })
+            self.proxy = urllib.request.ProxyHandler({ scheme : parsed.geturl() })
         else:
             pass
             #proxy_handler = urllib2.ProxyHandler({})
@@ -263,7 +263,7 @@ class Web():
     def download(self, url):
         cached  = False
         refresh = False
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "web"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "web"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
         key = str(url)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
@@ -276,7 +276,7 @@ class Web():
                     refresh = True
 
         if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-            response = urllib2.urlopen(url)
+            response = urllib.request.urlopen(url)
             result = response.read()
 
         if os.environ["pydna_cache"] == "compare":
@@ -284,7 +284,7 @@ class Web():
                 module_logger.warning('download error')
 
         if refresh or os.environ["pydna_cache"] == "refresh":
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             cache[key] = result
 
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):

@@ -23,7 +23,7 @@ def test_pth1():
     assert a.features[13].qualifiers['label'][0] == '2micron 2\xc2\xb5'
 
 
-    print a.format("gb")[3270:3281]
+    print(a.format("gb")[3270:3281])
     a.format("gb")[3314:3325] == '2micron 2\xc2\xb5'
     #assert a.format("gb")[3270:3281] == '2micron 2\xc2\xb5'
 
@@ -59,7 +59,7 @@ def test_read_from_string():
                acgt'''
     assert str(a.seq)=="ACGT"
 
-    input_ =u'''
+    input_ ='''
             LOCUS       New_DNA                    4 bp ds-DNA     linear       30-MAR-2013
             DEFINITION  .
             ACCESSION
@@ -82,15 +82,15 @@ def test_read_from_string():
     a = read(input_)
     assert str(a.seq)=="ACGT"
 
-    input_ =u'''>hej
+    input_ ='''>hej
                 acgt'''
     assert str(a.seq)=="ACGT"
 
-    input_ =u'''>hej öööh!
+    input_ ='''>hej öööh!
                 acgt'''
     assert str(a.seq)=="ACGT"
 
-    input_ =u'''
+    input_ ='''
                 LOCUS       New_DNA                    4 bp ds-DNA     linear       30-MAR-2013
                 DEFINITION  öööh!
                 ACCESSION

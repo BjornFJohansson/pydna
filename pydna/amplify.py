@@ -7,7 +7,7 @@ circular templates are handled correctly.
 
 '''
 
-import cPickle
+import pickle
 import shelve
 
 import itertools
@@ -99,7 +99,7 @@ def _annealing_positions(primer, template, limit=15):
         results = []
         for match_start in positions:
             tm = template[match_start+limit:match_start+limit+length]
-            footprint = rc(template[match_start:match_start+limit]+"".join([b for a,b in itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), zip(tail, tm))]))
+            footprint = rc(template[match_start:match_start+limit]+"".join([b for a,b in itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
             results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
         return results
     return []
@@ -332,7 +332,7 @@ class Amplicon(Dseqrecord):
         # Fermentas recombinant taq
         taq_extension_rate = 30  # seconds/kB PCR product length
         extension_time_taq = taq_extension_rate * len(self) / 1000 # seconds
-        f  = textwrap.dedent(u'''
+        f  = textwrap.dedent('''
                                  Taq (rate {rate} nt/s) 35 cycles             |{size}bp
                                  95.0°C    |95.0°C                 |      |SantaLucia 1998
                                  |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
@@ -415,7 +415,7 @@ class Amplicon(Dseqrecord):
 
 
 class Anneal(object):
-    u'''
+    '''
 
     Parameters
     ----------
@@ -498,7 +498,7 @@ class Anneal(object):
         key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             try:
                 cached = cache[key]
             except:
@@ -597,7 +597,7 @@ class Anneal(object):
             self._save()
 
         elif cached and os.environ["pydna_cache"] not in ("nocache","refresh"):
-            for key, value in cached.__dict__.items():
+            for key, value in list(cached.__dict__.items()):
                 setattr(self, key, value )
             cache.close()
 
@@ -606,7 +606,7 @@ class Anneal(object):
             module_logger.warning('amplify error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
         cache[self.key] = self
         cache.close()
 
@@ -780,7 +780,7 @@ def pcr(*args,  **kwargs):
             pass
         elif hasattr(s, "watson"):
             s=s.watson
-        elif isinstance(s, basestring):
+        elif isinstance(s, str):
             s = SeqRecord(Seq(s))
         else:
             raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
@@ -875,7 +875,7 @@ def nopcr(*args,  **kwargs):
             pass
         elif hasattr(s, "watson"):
             s=s.watson
-        elif isinstance(s, basestring):
+        elif isinstance(s, str):
             s = SeqRecord(Seq(s))
         else:
             raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
@@ -1136,7 +1136,7 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
 
     '''
 
-    import thermodynamic_data
+    from . import thermodynamic_data
 
     saltc = float(saltc)/1000
     pri  = primerc/10E7

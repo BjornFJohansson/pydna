@@ -18,13 +18,13 @@
 
 '''
 
-__author__       = u"Björn Johansson"
-__copyright__    = u"Copyright 2013 - 2015 Björn Johansson"
-__credits__      = [u"Björn Johansson", u"Mark Budde"]
-__license__      = u"BSD"
-__maintainer__   = u"Björn Johansson"
-__email__        = u"bjorn_johansson@bio.uminho.pt"
-__status__       = u"Development" # "Production" #"Prototype"
+__author__       = "Björn Johansson"
+__copyright__    = "Copyright 2013 - 2015 Björn Johansson"
+__credits__      = ["Björn Johansson", "Mark Budde"]
+__license__      = "BSD"
+__maintainer__   = "Björn Johansson"
+__email__        = "bjorn_johansson@bio.uminho.pt"
+__status__       = "Development" # "Production" #"Prototype"
 from ._version import get_versions
 __version__      = get_versions()['version'][:5]
 __long_version__ = get_versions()['version']
@@ -64,7 +64,7 @@ import sys           as _sys
 import errno         as _errno
 import subprocess    as _subprocess
 import appdirs       as _appdirs
-from ConfigParser import SafeConfigParser as _SafeConfigParser
+from configparser import SafeConfigParser as _SafeConfigParser
 
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir") or _appdirs.user_config_dir("pydna")
 
@@ -266,7 +266,7 @@ def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
         try:
             _os.remove( _os.path.join( _os.environ["pydna_data_dir"], file_) )
             msg += " deleted.\n"
-        except OSError, e:
+        except OSError as e:
             if e._errno == _errno.ENOENT:
                 msg += " no file to delete.\n"
     return _pretty_str(msg)

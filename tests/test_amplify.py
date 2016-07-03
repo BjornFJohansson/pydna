@@ -265,10 +265,10 @@ class test_pcr(unittest.TestCase):
         )
 
         for key, tst in enumerate(raw):
-            print key
-            print tst[1][0].name
-            print "pcr test", key
-            print
+            print(key)
+            print(tst[1][0].name)
+            print("pcr test", key)
+            print()
             self.assertEqual(tst[0], seguid(pcr(tst[1:]).seq))
 
 if __name__ == '__main__':

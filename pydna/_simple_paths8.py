@@ -47,15 +47,15 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
         edge_data = lambda u,v,n,E,I: (u,v)
 
     for path in _all_simple_paths_graph(G,source,target,cutoff=cutoff):
-        edges = zip(path[:-1],path[1:])
+        edges = list(zip(path[:-1],path[1:]))
         E = []  # list: items of each edge
         N = []  # list: number of items of each edge
         for u,v in edges:
-            edge_items = G[u][v].items()
+            edge_items = list(G[u][v].items())
             E += [edge_items]
             N += [len(edge_items)]
         I = [0 for n in N]
-        idx = [i for i in reversed(range(len(I)))]
+        idx = [i for i in reversed(list(range(len(I))))]
         while True:
             path_edges = []
             for n,(u,v) in enumerate(edges):
@@ -70,13 +70,13 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
 
 def all_circular_paths_edges(G):
     for path in sorted(nx.simple_cycles(G), key=len, reverse =True):
-        edges = zip(path, path[1:]+[path[0]])
+        edges = list(zip(path, path[1:]+[path[0]]))
         N = []
         for u,v in edges:
             n = len(G[u][v])
             N += [n]
         I = [0 for n in N]
-        idx = [i for i in reversed(range(len(I)))]
+        idx = [i for i in reversed(list(range(len(I))))]
         while True:
             path_edges = []
             for i,(u,v) in enumerate(edges):
@@ -103,27 +103,27 @@ if __name__=='__main__':
     target = 'd'
 
     # MULTIDIGRAPH
-    print 'MULTIDIGRAPH (data=False)'
+    print('MULTIDIGRAPH (data=False)')
     for path in all_simple_paths_edges(G, source, target):
-        print path
+        print(path)
 
-    print
-    print 'MULTIDIGRAPH (data=True)'
+    print()
+    print('MULTIDIGRAPH (data=True)')
     for path in all_simple_paths_edges(G, source, target, data=True):
         #print path
-        total_weight = sum([(I.values()[0]['weight']) for u,v,I in path])
-        print total_weight, '\t', path
+        total_weight = sum([(list(I.values())[0]['weight']) for u,v,I in path])
+        print(total_weight, '\t', path)
 
-    print
+    print()
     # DIGRAPH
     H = nx.DiGraph(G)
-    print 'DIGRAPH (data=False)'
+    print('DIGRAPH (data=False)')
     for path in all_simple_paths_edges(H, source, target):
-        print path
+        print(path)
 
-    print
-    print 'DIGRAPH (data=True)'
+    print()
+    print('DIGRAPH (data=True)')
     for path in all_simple_paths_edges(H, source, target, data=True):
         total_weight = sum([w['weight'] for u,v,w in path])
-        print total_weight, '\t', path
+        print(total_weight, '\t', path)
 

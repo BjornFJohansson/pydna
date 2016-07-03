@@ -76,19 +76,19 @@ def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False):
             if e.errno == errno.ENOENT:
                 continue
             if verbose:
-                print("unable to run %s" % dispcmd)
+                print(("unable to run %s" % dispcmd))
                 print(e)
             return None
     else:
         if verbose:
-            print("unable to find command, tried %s" % (commands,))
+            print(("unable to find command, tried %s" % (commands,)))
         return None
     stdout = p.communicate()[0].strip()
     if sys.version_info[0] >= 3:
         stdout = stdout.decode()
     if p.returncode != 0:
         if verbose:
-            print("unable to run %s (error)" % dispcmd)
+            print(("unable to run %s (error)" % dispcmd))
         return None
     return stdout
 
@@ -99,8 +99,8 @@ def versions_from_parentdir(parentdir_prefix, root, verbose):
     dirname = os.path.basename(root)
     if not dirname.startswith(parentdir_prefix):
         if verbose:
-            print("guessing rootdir is '%s', but '%s' doesn't start with "
-                  "prefix '%s'" % (root, dirname, parentdir_prefix))
+            print(("guessing rootdir is '%s', but '%s' doesn't start with "
+                  "prefix '%s'" % (root, dirname, parentdir_prefix)))
         raise NotThisMethod("rootdir doesn't start with parentdir_prefix")
     return {"version": dirname[len(parentdir_prefix):],
             "full-revisionid": None,
@@ -155,15 +155,15 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
         # "stabilization", as well as "HEAD" and "master".
         tags = set([r for r in refs if re.search(r'\d', r)])
         if verbose:
-            print("discarding '%s', no digits" % ",".join(refs-tags))
+            print(("discarding '%s', no digits" % ",".join(refs-tags)))
     if verbose:
-        print("likely tags: %s" % ",".join(sorted(tags)))
+        print(("likely tags: %s" % ",".join(sorted(tags))))
     for ref in sorted(tags):
         # sorting will prefer e.g. "2.0" over "2.0rc1"
         if ref.startswith(tag_prefix):
             r = ref[len(tag_prefix):]
             if verbose:
-                print("picking %s" % r)
+                print(("picking %s" % r))
             return {"version": r,
                     "full-revisionid": keywords["full"].strip(),
                     "dirty": False, "error": None
@@ -185,7 +185,7 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
 
     if not os.path.exists(os.path.join(root, ".git")):
         if verbose:
-            print("no .git in %s" % root)
+            print(("no .git in %s" % root))
         raise NotThisMethod("no .git directory")
 
     GITS = ["git"]
@@ -236,7 +236,7 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
         if not full_tag.startswith(tag_prefix):
             if verbose:
                 fmt = "tag '%s' doesn't start with prefix '%s'"
-                print(fmt % (full_tag, tag_prefix))
+                print((fmt % (full_tag, tag_prefix)))
             pieces["error"] = ("tag '%s' doesn't start with prefix '%s'"
                                % (full_tag, tag_prefix))
             return pieces
