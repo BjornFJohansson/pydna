@@ -337,7 +337,7 @@ class Amplicon(Dseqrecord):
                                  95.0°C    |95.0°C                 |      |SantaLucia 1998
                                  |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
                                  | 03min00s|30s  \         ________|______|
-                                 |         |      \ {ta}°C/{0:2}min{1:2}s| 5min |
+                                 |         |      \ {ta:.1f}°C/{0:2}min{1:2}s| 5min |
                                  |         |       \_____/         |      |
                                  |         |         30s           |      |4-12°C'''.format(rate      = taq_extension_rate,
                                            ta      = math.ceil(ta),
@@ -401,7 +401,7 @@ class Amplicon(Dseqrecord):
                                     Three-step|          30 cycles   |      |Breslauer1986,SantaLucia1998
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
                                     __________|_____          72.0°C |72.0°C|Primer1C {forward_primer_concentration:3}µM
-                                    00min30s  |10s  \ {ta}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
+                                    00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
                                               |      \______/{0:2}min{1:2}s|10min |
                                               |        10s           |      |4-8°C
                                  '''.format(rate = PfuSso7d_extension_rate,
