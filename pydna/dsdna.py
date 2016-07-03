@@ -1166,7 +1166,7 @@ class Dseq(Seq):
         cctaggnnncttaag
         >>> from Bio.Restriction import BamHI,EcoRI
         >>> type(seq.cut(BamHI))
-        <type 'list'>
+        <class 'list'>
         >>> for frag in seq.cut(BamHI): print(frag.fig())
         Dseq(-5)
         g
