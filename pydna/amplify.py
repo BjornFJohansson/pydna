@@ -342,7 +342,7 @@ class Amplicon(Dseqrecord):
                                  |         |         30s           |      |4-12°C'''.format(rate      = taq_extension_rate,
                                            ta      = math.ceil(ta),
                                            saltc   = self.saltc,
-                                            *divmod(extension_time_taq,60),
+                                            *map(int,divmod(extension_time_taq,60)),
                                             size = len(self.seq)))
 
         return pretty_unicode(f)
@@ -387,7 +387,7 @@ class Amplicon(Dseqrecord):
                                             forward_primer_concentration = self.forward_primer_concentration,
                                             reverse_primer_concentration = self.rc,
                                             saltc = self.saltc,
-                                            *divmod(extension_time_PfuSso7d,60),
+                                            *map(int,divmod(extension_time_PfuSso7d,60)),
                                             size = len(self.seq)))
         else:
 
@@ -409,7 +409,7 @@ class Amplicon(Dseqrecord):
                                             forward_primer_concentration   = self.forward_primer_concentration/1000,
                                             reverse_primer_concentration   = self.reverse_primer_concentration/1000,
                                             saltc= self.saltc,
-                                            *divmod(extension_time_PfuSso7d,60)))
+                                            *map(int, divmod(extension_time_PfuSso7d,60))))
         return pretty_str(f)
 
 
@@ -442,7 +442,7 @@ class Anneal(object):
     >>> p1 = pydna.read(">p1\\ntacactcaccgtctatcattatc", ds = False)
     >>> p2 = pydna.read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
     >>> ann = pydna.Anneal((p1, p2), template)
-    >>> print ann.report()
+    >>> print(ann.report())
     Template na 51 nt linear:
     Primer p1 anneals forward at position 23
     <BLANKLINE>
@@ -453,7 +453,7 @@ class Anneal(object):
     >>> amplicon = amplicon_list.pop()
     >>> amplicon
     Amplicon(51)
-    >>> print amplicon.figure()
+    >>> print(amplicon.figure())
     5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
                                |||||||||||||||||||||| tm 50.6 (dbd) 60.5
                               3gctgacatagtagactatcgtg5
@@ -461,7 +461,7 @@ class Anneal(object):
      ||||||||||||||||||||||| tm 49.4 (dbd) 58.8
     3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5
     >>> amplicon.annotations['date'] = '02-FEB-2013'   # Set the date for this example to pass the doctest
-    >>> print amplicon
+    >>> print(amplicon)
     Dseqrecord
     circular: False
     size: 51
@@ -473,7 +473,7 @@ class Anneal(object):
     Dseq(-51)
     taca..gcac
     atgt..cgtg
-    >>> print amplicon.program()
+    >>> print(amplicon.program())
     <BLANKLINE>
     Taq (rate 30 nt/s) 35 cycles             |51bp
     95.0°C    |95.0°C                 |      |SantaLucia 1998
