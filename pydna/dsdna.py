@@ -2295,7 +2295,7 @@ class Dseqrecord(SeqRecord):
             #template = copy.copy(self)
             template = self
         else:
-            last_pos = [p.pop(0)-max(0,enzyme.ovhg)-1 for (p,e) in
+            last_pos = [p.pop(0)-max(0,e.ovhg)-1 for (p,e) in
                          sorted([(enzyme.search(Seq(self.seq.dsdata),
                                                 linear = self.linear)[::-1],
                                    enzyme) for enzyme in enzymes]) if p]
