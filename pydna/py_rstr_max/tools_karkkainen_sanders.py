@@ -37,11 +37,11 @@ def direct_kark_sort(s) :
   return SA[:n]
 
 def kark_sort(s, SA, n, K):
-  n0  = (n+2) / 3
-  n1  = (n+1) / 3
-  n2  = n / 3
+  n0  = (n+2) // 3
+  n1  = (n+1) // 3
+  n2  = n // 3
   n02 = n0 + n2
-      
+  
   SA12 = array('i', [0]*(n02+3))
   SA0  = array('i', [0]*n0)
 
@@ -62,9 +62,9 @@ def kark_sort(s, SA, n, K):
       c1 = s[SA12[i]+1]
       c2 = s[SA12[i]+2]
     if SA12[i] % 3 == 1 :
-      s12[SA12[i]/3] = name
+      s12[SA12[i]//3] = name
     else :
-      s12[SA12[i]/3 + n0] = name
+      s12[SA12[i]//3 + n0] = name
 
   if name < n02 :
     kark_sort(s12, SA12, n02, name+1)
@@ -84,9 +84,9 @@ def kark_sort(s, SA, n, K):
     j = SA0[p] if p < n0 else 0
 
     if SA12[t] < n0 :
-      test = (s12[SA12[t]+n0] <= s12[j/3]) if(s[i]==s[j]) else (s[i] < s[j])
+      test = (s12[SA12[t]+n0] <= s12[j//3]) if(s[i]==s[j]) else (s[i] < s[j])
     elif(s[i]==s[j]) :
-      test = s12[SA12[t]-n0+1] <= s12[j/3 + n0] if(s[i+1]==s[j+1]) else s[i+1] < s[j+1]
+      test = s12[SA12[t]-n0+1] <= s12[j//3 + n0] if(s[i+1]==s[j+1]) else s[i+1] < s[j+1]
     else :
       test = s[i] < s[j]
 
