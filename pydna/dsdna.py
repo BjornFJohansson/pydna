@@ -2799,7 +2799,9 @@ def parse(data, ds = True):
 
     '''
     raw= ""
-    if not hasattr(data, '__iter__'):
+
+    # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.
+    if not hasattr(data, '__iter__') or isinstance(data, (str, bytes)):
         data = (data,)
 
     for item in data:
