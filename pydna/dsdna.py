@@ -1447,7 +1447,7 @@ class Dseqrecord(SeqRecord):
             self.annotations.update({"date": datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
-
+    
     @property
     def linear(self):
         '''The linear property'''
@@ -2218,6 +2218,10 @@ class Dseqrecord(SeqRecord):
 
     def __ne__( self, other ):
         return not self.__eq__(other)
+
+    def __hash__(self):
+        """__hash__ must be based on __eq__"""
+        return hash( (self.seq,) + tuple(sorted(self.__dict__.items())))
 
     def linearize(self, *enzymes):
         '''This method is similar to :func:`cut` but throws an exception if there
