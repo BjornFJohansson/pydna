@@ -106,7 +106,7 @@ def eq(*args,**kwargs):
     import itertools
     args=list(args)
     for i, arg in enumerate(args):
-        if not hasattr(arg, "__iter__") or isinstance(arg, SeqRecord):
+        if not hasattr(arg, "__iter__") or isinstance(arg, SeqRecord) or isinstance(arg, (bytes,str)):
             args[i] = (arg,)
     args = list(itertools.chain.from_iterable(args))
 
