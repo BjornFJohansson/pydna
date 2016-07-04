@@ -2530,7 +2530,7 @@ class Dseqrecord(SeqRecord):
         return new
 
     def synced(self, ref, limit = 25):
-        '''This function returns a new circular sequence (Dseqrecord object), which has ben rotated
+        '''This function returns a new circular sequence (Dseqrecord object), which has been rotated
         in such a way that there is maximum overlap between the sequence and
         ref, which may be a string, Biopython Seq, SeqRecord object or
         another Dseqrecord object.
@@ -2612,7 +2612,7 @@ class Dseqrecord(SeqRecord):
             except AttributeError:
                 circular_ref = False
 
-            lim = min(limit, limit*(len(s)/limit)+1)
+            lim = min(limit, limit*(len(s)//limit)+1)
 
             c = common_sub_strings(s+s,       r, limit = lim)
             d = common_sub_strings(s_rc+s_rc, r, limit = lim)
