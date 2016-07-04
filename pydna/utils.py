@@ -197,7 +197,7 @@ def shift_origin(seq, shift):
     length=len(seq)
 
     if not 0<=shift<length:
-        raise ValueError
+        raise ValueError("shift ({}) has to be 0<=shift<length({})",format((shift,length,)))
 
     if hasattr(seq, "linear"):
         new = seq.tolinear()
