@@ -648,7 +648,7 @@ class ABISequenceTrace(SequenceTrace):
         # read the ABI magic number
         abinum = self.tf.read(4)
         #print abinum
-        if abinum != 'ABIF':
+        if abinum != b'ABIF':
             raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
 
         # check the major version number
@@ -657,7 +657,7 @@ class ABISequenceTrace(SequenceTrace):
         except struct.error:
             raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
         #print version
-        if (version / 100) != 1:
+        if (version // 100) != 1:
             raise ABIVersionError(version / 100, version % 100)
 
         # skip the next 10 bytes
