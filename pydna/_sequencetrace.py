@@ -689,7 +689,7 @@ class ABISequenceTrace(SequenceTrace):
         for cnt in range(self.num_index_entries):
             try:
                 self.abiindex.append(dict(did=0, idv=0, dformat=0, fsize=0, dcnt=0, dlen=0, offset=0))
-                self.abiindex[cnt]['did'] = self.tf.read(4)
+                self.abiindex[cnt]['did'] = self.tf.read(4).decode('utf-8')
                 self.abiindex[cnt]['idv'] = unpack('>I', self.tf.read(4))[0]
                 self.abiindex[cnt]['dformat'] = unpack('>H', self.tf.read(2))[0]
                 self.abiindex[cnt]['fsize'] = unpack('>H', self.tf.read(2))[0]
@@ -878,7 +878,7 @@ class ABISequenceTrace(SequenceTrace):
         else:
             # get the data from the file
             self.tf.seek(indexrow['offset'], 0)
-            strval = self.tf.read(indexrow['dcnt'])
+            strval = self.tf.read(indexrow['dcnt']).decode('utf-8')
 
         if indexrow['dlen'] != len(strval):
             raise ABIDataError(indexrow['dlen'], len(strval))
