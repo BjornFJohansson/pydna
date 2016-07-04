@@ -7,6 +7,12 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
+#from pint import UnitRegistry #, DimensionalityError
+# Hacky fix for a python3 problem I don't understand
+# https://github.com/pallets/flask/issues/1680
+#UnitRegistry.__wrapped__ = None
+#ureg = UnitRegistry()
+
 """Provides the class `Gel` for the simulation of agarose slab-gel
 electrophoresis of DNA at constant electric field.
 
@@ -51,6 +57,10 @@ from io import StringIO, BytesIO
 
 from pydna import Dseq, Dseqrecord
 
+
+# Hacky fix for a python3 problem I don't understand
+# https://github.com/pallets/flask/issues/1680
+UnitRegistry.__wrapped__ = None
 
 # Unit registry
 ureg = UnitRegistry()
@@ -235,7 +245,7 @@ del hor_str, ver_str, data_as_file, data_source, temp_dset
 
 # vWBR equation
 def vWBR(muS, muL, gamma):
-    '''vWBR equation'''
+    """vWBR equation"""
     alpha = 1/muL - 1/muS
     beta = 1/muS
     return lambda L: 1/(beta + alpha * (1 - np.exp(-L/gamma)))
@@ -490,10 +500,10 @@ Gauss_FWHM = lambda FWTM: FWTM * np.sqrt(2*np.log(2))/np.sqrt(2*np.log(10))
 
 
 def _to_units(quantity, units, var_name=None):
-    '''Asserts that the quantity has the proper dimensions
+    """Asserts that the quantity has the proper dimensions
     (inferred from the default units) if the quantity is an instance of
     pint.unit.Quantity or assigns the default units if it's not.
-    '''
+    """
     if isinstance(quantity, Q_):
         try:
             quantity = quantity.to(units)
@@ -509,10 +519,10 @@ def _to_units(quantity, units, var_name=None):
 
 
 def to_units(quantity, units, var_name=None):
-    '''Asserts that the quantity has the proper dimensions
+    """Asserts that the quantity has the proper dimensions
     (inferred from the default units) if the quantity is an instance of
     pint.unit.Quantity or assigns the default units if it's not.
-    '''
+    """
     if (not isinstance(quantity, Q_) and hasattr(quantity, '__iter__') and
             len(quantity) > 0 and
             sum([isinstance(q, Q_) for q in flatten(quantity)]) > 0):
@@ -539,14 +549,14 @@ def dim_or_units(quantity, reference):
 
 
 def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
-    '''
+    """
     Assigns quantities (masses in nanograms) to the DNA fragments without
     corresponding quantity assuming a linear relationship between the DNA
     length (in basepairs) and its mass. As if the fragments originated in
     a restriction procedure.
     For each sample takes the maximum quantity (either from the other samples
     or from the default) and assigns it to the fragment with greater length.
-    '''
+    """
     outQs = []
     units = Vars['quantities']['units']
     maxQ = Q_(0, units)
@@ -601,14 +611,14 @@ def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
 
 
 def assign_quantitiesB(samples, maxdef=Q_(150, 'ng')):
-    '''
+    """
     Assigns quantities (masses in nanograms) to the DNA fragments without
     corresponding quantity assuming a linear relationship between the DNA
     length (in basepairs) and its mass. As if the fragments originated in
     a restriction procedure.
     For each sample takes the maximum quantity (either from the other samples
     or from the default) and assigns it to the fragment with greater length.
-    '''
+    """
     quantities = []
     units = Vars['quantities']['units']
     maxQ = Q_(0, units)
@@ -706,14 +716,14 @@ def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
 
 def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
                     adjmethod='linear', replNANs=True, plot=True):
-    '''
+    """
     This function extrapolates the free solution mobility (mu0)
     for a specified electric field intensity (field), via Ferguson plot
     (ln(mobility) vs. %agarose).
 
     Mobiliy calculation method:
     [E,T,muS,muL,gamma] -> [E,T,mu(L)] -(L*)-> [E,T,mu] -(E*,T*,interp.)-> mu*
-    '''
+    """
     # Mobility dependence on size (mu(L)) for each agarose percentage (Ti)
     ln_mu_LxT = []
     for Lj in DNAvals:
@@ -1446,7 +1456,7 @@ class fake_seq(object):
         return self.length
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     test_gel = True
     test_mu0 = True
     test_vWBRfit = True
