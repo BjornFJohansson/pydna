@@ -49,11 +49,11 @@ class SequenceTraceFactory:
         tf.close()
         #print magicval
 
-        if magicval[0:4] == 'ABIF':
+        if magicval[0:4] == b'ABIF':
             return ST_ABI
-        elif magicval == '\256ZTR\r\n\032\n':
+        elif magicval == b'\256ZTR\r\n\032\n':
             return ST_ZTR
-        elif magicval[0:4] == '.scf':
+        elif magicval[0:4] == b'.scf':
             return ST_SCF
         else:
             return ST_UNKNOWN
