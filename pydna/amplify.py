@@ -7,7 +7,7 @@ circular templates are handled correctly.
 
 '''
 
-import cPickle
+import pickle
 import shelve
 
 import itertools
@@ -97,7 +97,7 @@ def _annealing_positions(primer, template, limit=15):
         results = []
         for match_start in positions:
             tm = template[match_start+limit:match_start+limit+length]
-            footprint = rc(template[match_start:match_start+limit]+"".join([b for a,b in itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), zip(tail, tm))]))
+            footprint = rc(template[match_start:match_start+limit]+"".join([b for a,b in itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
             results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
         return results
     return []
@@ -355,7 +355,7 @@ class Amplicon(Dseqrecord):
         # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
         taq_extension_rate = 30  # seconds/kB PCR product length
         extension_time_taq = taq_extension_rate * len(self) / 1000 # seconds
-        f  = textwrap.dedent(u'''
+        f  = textwrap.dedent('''
                                  Taq (rate {rate} nt/s) 35 cycles             |{size}bp
                                  95.0°C    |95.0°C                 |      |Tm formula: Pydna tmbresluc
                                  |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
@@ -370,6 +370,7 @@ class Amplicon(Dseqrecord):
                                                                                             *divmod(extension_time_taq,60),
                                                                                             size= len(self.seq),
                                                                                             GC_prod= int(round(GC_prod)) ))
+
         return pretty_unicode(f)
 
     def taq_program(self):
@@ -419,7 +420,7 @@ class Amplicon(Dseqrecord):
                                             forward_primer_concentration = self.forward_primer_concentration/1000,
                                             reverse_primer_concentration = self.reverse_primer_concentration/1000,
                                             saltc = self.saltc,
-                                            *divmod(extension_time_PfuSso7d,60),
+                                            *map(int,divmod(extension_time_PfuSso7d,60)),
                                             size = len(self.seq)))
         else:
 
@@ -433,7 +434,7 @@ class Amplicon(Dseqrecord):
                                     Three-step|          30 cycles   |      |Breslauer1986,SantaLucia1998
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
                                     __________|_____          72.0°C |72.0°C|Primer1C {forward_primer_concentration:3}µM
-                                    00min30s  |10s  \ {ta}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
+                                    00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
                                               |      \______/{0:2}min{1:2}s|10min |
                                               |        10s           |      |4-8°C
                                  '''.format(rate = PfuSso7d_extension_rate,
@@ -441,14 +442,14 @@ class Amplicon(Dseqrecord):
                                             forward_primer_concentration   = self.forward_primer_concentration/1000,
                                             reverse_primer_concentration   = self.reverse_primer_concentration/1000,
                                             saltc= self.saltc,
-                                            *divmod(extension_time_PfuSso7d,60)))
+                                            *map(int, divmod(extension_time_PfuSso7d,60))))
         return pretty_str(f)
 
     def pfu_sso7d_program(self):
         return self.dbd_program()
 
 class Anneal(object):
-    u'''
+    '''
 
     Parameters
     ----------
@@ -546,7 +547,7 @@ class Anneal(object):
         key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             try:
                 cached = cache[key]
             except:
@@ -645,7 +646,7 @@ class Anneal(object):
             self._save()
 
         elif cached and os.environ["pydna_cache"] not in ("nocache","refresh"):
-            for key, value in cached.__dict__.items():
+            for key, value in list(cached.__dict__.items()):
                 setattr(self, key, value )
             cache.close()
 
@@ -654,7 +655,7 @@ class Anneal(object):
             module_logger.warning('amplify error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
         cache[self.key] = self
         cache.close()
 
@@ -819,7 +820,7 @@ def pcr(*args,  **kwargs):
             pass
         elif hasattr(s, "watson"):
             s=s.watson
-        elif isinstance(s, basestring):
+        elif isinstance(s, str):
             s = SeqRecord(Seq(s))
         else:
             raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
@@ -914,7 +915,7 @@ def nopcr(*args,  **kwargs):
             pass
         elif hasattr(s, "watson"):
             s=s.watson
-        elif isinstance(s, basestring):
+        elif isinstance(s, str):
             s = SeqRecord(Seq(s))
         else:
             raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
@@ -1178,7 +1179,7 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
 
     '''
 
-    import thermodynamic_data
+    from . import thermodynamic_data
 
     saltc = float(saltc)/1000
     pri  = primerc/10E7

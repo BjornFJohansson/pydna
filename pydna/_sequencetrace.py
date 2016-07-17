@@ -49,11 +49,11 @@ class SequenceTraceFactory:
         tf.close()
         #print magicval
 
-        if magicval[0:4] == 'ABIF':
+        if magicval[0:4] == b'ABIF':
             return ST_ABI
-        elif magicval == '\256ZTR\r\n\032\n':
+        elif magicval == b'\256ZTR\r\n\032\n':
             return ST_ZTR
-        elif magicval[0:4] == '.scf':
+        elif magicval[0:4] == b'.scf':
             return ST_SCF
         else:
             return ST_UNKNOWN
@@ -95,7 +95,7 @@ def reverseCompSequence(sequence):
     ambiguity codes.
     """
     tmp = list()
-    for cnt in reversed(range(len(sequence))):
+    for cnt in reversed(list(range(len(sequence)))):
         tmp.append(rclookup[sequence[cnt]])
 
     return ''.join(tmp)
@@ -401,7 +401,7 @@ class ZTRSequenceTrace(SequenceTrace):
         udata = list()
         prev = unpack('B', cdata[256])[0]
         udata.append(cdata[256])
-        for cnt in xrange(257, len(cdata)):
+        for cnt in range(257, len(cdata)):
             diff = unpack('b', cdata[cnt])[0]
             actual = table[prev] - diff
 
@@ -460,14 +460,14 @@ class ZTRSequenceTrace(SequenceTrace):
 
         # first, unpack the 1-byte values
         udata = list()
-        for cnt in xrange(1, len(cdata)):
+        for cnt in range(1, len(cdata)):
             val = unpack('B', cdata[cnt])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
         for clev in range(levels):
             prev = 0
-            for cnt in xrange(0, len(udata)):
+            for cnt in range(0, len(udata)):
                 actual = udata[cnt] + prev
                 if actual > 255:
                     # simulate 1-byte integer overflow
@@ -488,14 +488,14 @@ class ZTRSequenceTrace(SequenceTrace):
 
         # first, unpack the 2-byte values
         udata = list()
-        for cnt in xrange(1, len(cdata), 2):
+        for cnt in range(1, len(cdata), 2):
             val = unpack('>H', cdata[cnt:cnt+2])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
         for clev in range(levels):
             prev = 0
-            for cnt in xrange(0, len(udata)):
+            for cnt in range(0, len(udata)):
                 actual = udata[cnt] + prev
                 if actual > 65535:
                     # simulate 2-byte integer overflow
@@ -516,14 +516,14 @@ class ZTRSequenceTrace(SequenceTrace):
 
         # first, unpack the 4-byte values (skipping the 2 padding bytes)
         udata = list()
-        for cnt in xrange(3, len(cdata), 4):
+        for cnt in range(3, len(cdata), 4):
             val = unpack('>I', cdata[cnt:cnt+4])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
         for clev in range(levels):
             prev = 0
-            for cnt in xrange(0, len(udata)):
+            for cnt in range(0, len(udata)):
                 actual = udata[cnt] + prev
                 if actual > 4294967295:
                     # simulate 1-byte integer overflow
@@ -648,7 +648,7 @@ class ABISequenceTrace(SequenceTrace):
         # read the ABI magic number
         abinum = self.tf.read(4)
         #print abinum
-        if abinum != 'ABIF':
+        if abinum != b'ABIF':
             raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
 
         # check the major version number
@@ -657,7 +657,7 @@ class ABISequenceTrace(SequenceTrace):
         except struct.error:
             raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
         #print version
-        if (version / 100) != 1:
+        if (version // 100) != 1:
             raise ABIVersionError(version / 100, version % 100)
 
         # skip the next 10 bytes
@@ -689,7 +689,7 @@ class ABISequenceTrace(SequenceTrace):
         for cnt in range(self.num_index_entries):
             try:
                 self.abiindex.append(dict(did=0, idv=0, dformat=0, fsize=0, dcnt=0, dlen=0, offset=0))
-                self.abiindex[cnt]['did'] = self.tf.read(4)
+                self.abiindex[cnt]['did'] = self.tf.read(4).decode('utf-8')
                 self.abiindex[cnt]['idv'] = unpack('>I', self.tf.read(4))[0]
                 self.abiindex[cnt]['dformat'] = unpack('>H', self.tf.read(2))[0]
                 self.abiindex[cnt]['fsize'] = unpack('>H', self.tf.read(2))[0]
@@ -706,13 +706,13 @@ class ABISequenceTrace(SequenceTrace):
     def printABIIndex(self, data_id):
         for entry in self.abiindex:
             if entry['did'] == data_id:
-                print 'entry ID:', entry['did']
-                print 'idv:', entry['idv']
-                print 'data format:', entry['dformat']
-                print 'format size:', entry['fsize']
-                print 'data count:', entry['dcnt']
-                print 'total data length:', entry['dlen']
-                print 'data offset:', entry['offset']
+                print('entry ID:', entry['did'])
+                print('idv:', entry['idv'])
+                print('data format:', entry['dformat'])
+                print('format size:', entry['fsize'])
+                print('data count:', entry['dcnt'])
+                print('total data length:', entry['dlen'])
+                print('data offset:', entry['offset'])
 
     def getIndexEntry(self, data_id, number):
         for row in self.abiindex:
@@ -878,7 +878,7 @@ class ABISequenceTrace(SequenceTrace):
         else:
             # get the data from the file
             self.tf.seek(indexrow['offset'], 0)
-            strval = self.tf.read(indexrow['dcnt'])
+            strval = self.tf.read(indexrow['dcnt']).decode('utf-8')
 
         if indexrow['dlen'] != len(strval):
             raise ABIDataError(indexrow['dlen'], len(strval))

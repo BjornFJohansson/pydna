@@ -21,7 +21,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from pydna.amplify import Anneal, tmbresluc, Dseqrecord
 from pydna.dsdna import parse
-from _pretty import pretty_str
+from ._pretty import pretty_str
 
 class Primer(SeqRecord):
 
@@ -64,7 +64,7 @@ def cloning_primers(template,
                     rprimerc=1000.0,
                     saltc=50.0,
                     formula = tmbresluc,
-                    path = u""):
+                    path = ""):
 
     '''This function can design primers for PCR amplification of a given sequence.
     This function accepts a Dseqrecord object containing the template sequence and
@@ -273,7 +273,7 @@ def cloning_primers(template,
         try:
             with open(path, 'rU') as f: raw = f.read()
         except IOError:
-            raw = u""
+            raw = ""
             with open(path, 'w') as f:
                 f.write(fp.format("fasta"))
                 f.write(rp.format("fasta"))
@@ -282,11 +282,11 @@ def cloning_primers(template,
             try:
                 fp = primer_dict[fp.description]
             except KeyError:
-                with open(path, 'a') as f: f.write(u"\n"+fp.format("fasta").strip())
+                with open(path, 'a') as f: f.write("\n"+fp.format("fasta").strip())
             try:
                 rp = primer_dict[rp.description]
             except KeyError:
-                with open(path, 'a') as f: f.write(u"\n"+rp.format("fasta").strip())
+                with open(path, 'a') as f: f.write("\n"+rp.format("fasta").strip())
     return fp, rp
 
 def integration_primers( up,
@@ -301,7 +301,7 @@ def integration_primers( up,
                          rprimerc=1000.0,
                          saltc=50.0,
                          formula    = tmbresluc,
-                         path       = u""):
+                         path       = ""):
 
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
@@ -333,7 +333,7 @@ def assembly_primers(templates,
                      rprimerc   = 1000.0,
                      saltc      = 50.0,
                      formula    = tmbresluc,
-                     path       = u""):
+                     path       = ""):
 
 
     '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
@@ -530,7 +530,7 @@ def assembly_primers(templates,
     linkers = linkers[1:]+[linkers[0]]
 
     for t,n,l in zip(newtemplates, newtemplates[1:], linkers):
-        length = tail_length - len(l)/2
+        length = tail_length - len(l)//2
         newtails.extend( (str(n[:length].rc().seq)+str(l.rc().seq),
                           str(t.seq[-length:])+str(l.seq) ))
 
@@ -540,7 +540,7 @@ def assembly_primers(templates,
         pass
         newtails = [newtails[-1]] + newtails[:-1]
 
-    tails =  zip(newtails[::2], newtails[1::2])
+    tails =  list(zip(newtails[::2], newtails[1::2]))
 
     primer_pairs = []
 

@@ -63,7 +63,7 @@ class test_utils(unittest.TestCase):
         with self.assertRaises(TypeError):
             1+"1"
 
-        with self.assertRaisesRegexp(TypeError, "unsupported"):
+        with self.assertRaisesRegex(TypeError, "unsupported"):
             1+"1"
 
     def test_shift_origin(self):
@@ -78,7 +78,7 @@ class test_utils(unittest.TestCase):
         self.assertTrue( eq(pCAPs, pCAPs_b_linear, circular=True) )
         pCAPs_c = pCAPs[200:]+pCAPs[:200]
         self.assertTrue( eq(pCAPs, pCAPs_c, circular=True) )
-        with self.assertRaisesRegexp(ValueError, "shift"):
+        with self.assertRaisesRegex(ValueError, "shift"):
             pCAPs_b = shift_origin(pCAPs, 20000)
 
 

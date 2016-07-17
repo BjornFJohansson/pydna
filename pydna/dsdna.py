@@ -12,7 +12,7 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
-import cPickle
+import pickle
 import shelve
 
 import copy
@@ -21,7 +21,7 @@ import itertools
 import operator
 import os
 import re
-import StringIO
+import io
 import sys
 import textwrap
 import math
@@ -50,7 +50,7 @@ from Bio.SeqUtils           import GC
 from Bio.GenBank            import RecordParser
 from Bio.Data.CodonTable    import TranslationError
 
-from _sequencetrace         import SequenceTraceFactory
+from ._sequencetrace         import SequenceTraceFactory
 
 from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
 from pydna.utils  import seguid  as seg
@@ -350,7 +350,7 @@ class Dseq(Seq):
                 ovhgs = [ol[1]-ol[0] for ol in olaps if ol[2]==L]
                 if len(ovhgs)>1:
                     for o in ovhgs:
-                        print o
+                        print(o)
                     raise Exception("More than one way of annealing the strands "
                                     "ovhg should be provided")
 
@@ -367,8 +367,8 @@ class Dseq(Seq):
         sns = ((self._ovhg*" ")  + str(self.watson))
         asn = ((-self._ovhg*" ") + str(rc(self.crick)))
 
-        self.todata = "".join([a.strip() or b.strip() for a,b in itertools.izip_longest(sns,asn, fillvalue=" ")])
-        self.dsdata = "".join([a for a, b in itertools.izip_longest(sns,asn, fillvalue=" ") if a.lower()==b.lower()])
+        self.todata = "".join([a.strip() or b.strip() for a,b in itertools.zip_longest(sns,asn, fillvalue=" ")])
+        self.dsdata = "".join([a for a, b in itertools.zip_longest(sns,asn, fillvalue=" ") if a.lower()==b.lower()])
 
         if circular == None and linear in (True, False,):
             self._linear   = linear
@@ -406,7 +406,7 @@ class Dseq(Seq):
 
 
 
-    def find(self, sub, start=0, end=sys.maxint):
+    def find(self, sub, start=0, end=sys.maxsize):
         """Find method, like that of a python string.
 
         This behaves like the python string method of the same name.
@@ -1109,7 +1109,7 @@ class Dseq(Seq):
                     watson_fragments[-1] = watson_fragments[-1][:-1]
                     crick_fragments[0]   = crick_fragments[0][:-1]
 
-                    s = zip(watson_fragments, crick_fragments)
+                    s = list(zip(watson_fragments, crick_fragments))
 
                     if frag.linear:
                         newfrags.append(Dseq(*s.pop(0),
@@ -1166,7 +1166,7 @@ class Dseq(Seq):
         cctaggnnncttaag
         >>> from Bio.Restriction import BamHI,EcoRI
         >>> type(seq.cut(BamHI))
-        <type 'list'>
+        <class 'list'>
         >>> for frag in seq.cut(BamHI): print(frag.fig())
         Dseq(-5)
         g
@@ -1371,7 +1371,7 @@ class Dseqrecord(SeqRecord):
     def __init__(self, record,
                        circular               = None,
                        linear                 = None,
-                       n                      = 10E-12, # mol (10 pmol)
+                       n                      = 5E-14, # mol (0.05 pmol)
                        *args,
                        **kwargs):
         self.n = n
@@ -1385,7 +1385,7 @@ class Dseqrecord(SeqRecord):
         except AttributeError:
             pass
 
-        if isinstance(record, basestring):  # record is a string
+        if isinstance(record, str):  # record is a string
             SeqRecord.__init__(self,
                                Dseq(record,
                                     rc(record),
@@ -1395,7 +1395,7 @@ class Dseqrecord(SeqRecord):
                                *args,
                                **kwargs)
         elif hasattr(record, "features"): # record is SeqRecord or Dseqrecord?
-            for key, value in record.__dict__.items():
+            for key, value in list(record.__dict__.items()):
                 setattr(self, key, value )
             if hasattr(record.seq, "watson"): # record.seq is a Dseq, so record is Dseqrecord
                 new_seq = copy.copy(record.seq)
@@ -1447,7 +1447,7 @@ class Dseqrecord(SeqRecord):
             self.annotations.update({"date": datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
-
+    
     @property
     def linear(self):
         '''The linear property'''
@@ -1630,16 +1630,16 @@ class Dseqrecord(SeqRecord):
         return self.features[n].extract(self)
 
     def spread_ape_colors(self):
-    	''' This method assigns random colors compatible with the ApE editor
-    	to features.
-    	'''
+        ''' This method assigns random colors compatible with the ApE editor
+        to features.
+        '''
 
         def get_N_HexCol(N):
-            HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in xrange(N)]
+            HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
             hex_out = []
             for rgb in HSV_tuples:
-                rgb = map(lambda x: int(x*255),colorsys.hsv_to_rgb(*rgb))
-                hex_out.append("".join(map(lambda x: chr(x).encode('hex'),rgb)))
+                rgb = [int(x*255) for x in colorsys.hsv_to_rgb(*rgb)]
+                hex_out.append("".join([chr(x).encode('hex') for x in rgb]))
             return hex_out
 
         for i, color in enumerate(get_N_HexCol(len(self.features))):
@@ -1685,7 +1685,7 @@ class Dseqrecord(SeqRecord):
         return pretty_str(x)
 
     def gc(self):
-    	'''Returns GC content '''
+        '''Returns GC content '''
         return pretty_string(round(GC(str(self.seq)), 1))
 
     def cseguid(self):
@@ -1886,7 +1886,7 @@ class Dseqrecord(SeqRecord):
         pydna.dsdna.Dseq.looped
         '''
         new = copy.copy(self)
-        for key, value in self.__dict__.items():
+        for key, value in list(self.__dict__.items()):
             setattr(new, key, value )
         new._seq = self.seq.looped()
         for fn, fo in zip(new.features, self.features):
@@ -1913,7 +1913,7 @@ class Dseqrecord(SeqRecord):
         '''
 
         new = copy.copy(self)
-        for key, value in self.__dict__.items():
+        for key, value in list(self.__dict__.items()):
             setattr(new, key, value )
         new._seq = self.seq.tolinear()
         for fn, fo in zip(new.features, self.features):
@@ -1993,7 +1993,7 @@ class Dseqrecord(SeqRecord):
         if not filename:
             filename = "{name}.{type}".format(name=self.description, type=f)
             # invent a name if none given
-        if isinstance(filename, basestring):
+        if isinstance(filename, str):
             name, ext = os.path.splitext(filename)
             result = "### [{name}]({filename})".format(name=name, filename=filename)
             if os.path.isfile(filename):
@@ -2107,7 +2107,7 @@ class Dseqrecord(SeqRecord):
         for name in glob.glob(pth):
             traces.append( stf.loadTraceFile( name ))
         if not traces:
-            raise(Exception("no trace files found!"))
+            raise Exception
         if hasattr( self.map_target, "step" ):
             area = self.map_target
         elif hasattr( self.map_target, "extract" ):
@@ -2198,7 +2198,11 @@ class Dseqrecord(SeqRecord):
         answer = copy.copy(self)
         answer.seq = answer.seq.__getitem__(sl)
         answer.seq.alphabet = self.seq.alphabet
-        if self.linear or sl.start<sl.stop:
+
+        sl_start = sl.start if sl.start is not None else 0
+        sl_stop = sl.stop if sl.stop is not None else len(answer.seq)
+        
+        if self.linear or sl_start<sl_stop:
             answer.features = SeqRecord.__getitem__(self, sl).features
         else:
             try:
@@ -2218,6 +2222,10 @@ class Dseqrecord(SeqRecord):
 
     def __ne__( self, other ):
         return not self.__eq__(other)
+
+    def __hash__(self):
+        """__hash__ must be based on __eq__"""
+        return hash( (str(self.seq), str(tuple(sorted(self.__dict__.items())))))
 
     def linearize(self, *enzymes):
         '''This method is similar to :func:`cut` but throws an exception if there
@@ -2295,7 +2303,7 @@ class Dseqrecord(SeqRecord):
             #template = copy.copy(self)
             template = self
         else:
-            last_pos = [p.pop(0)-max(0,enzyme.ovhg)-1 for (p,e) in
+            last_pos = [p.pop(0)-max(0,e.ovhg)-1 for (p,e) in
                          sorted([(enzyme.search(Seq(self.seq.dsdata),
                                                 linear = self.linear)[::-1],
                                    enzyme) for enzyme in enzymes]) if p]
@@ -2522,7 +2530,7 @@ class Dseqrecord(SeqRecord):
         return new
 
     def synced(self, ref, limit = 25):
-        '''This function returns a new circular sequence (Dseqrecord object), which has ben rotated
+        '''This function returns a new circular sequence (Dseqrecord object), which has been rotated
         in such a way that there is maximum overlap between the sequence and
         ref, which may be a string, Biopython Seq, SeqRecord object or
         another Dseqrecord object.
@@ -2574,7 +2582,7 @@ class Dseqrecord(SeqRecord):
         key = str(self.seguid())+"|"+rs+"|"+str(limit)
 
         if csh in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"synced"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
+            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"synced"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             try:
                 cached = cache[str(key)]
             except:
@@ -2604,7 +2612,7 @@ class Dseqrecord(SeqRecord):
             except AttributeError:
                 circular_ref = False
 
-            lim = min(limit, limit*(len(s)/limit)+1)
+            lim = min(limit, limit*(len(s)//limit)+1)
 
             c = common_sub_strings(s+s,       r, limit = lim)
             d = common_sub_strings(s_rc+s_rc, r, limit = lim)
@@ -2721,7 +2729,7 @@ def parse2(data, ds = True):
     while rawseqs:
         circular = False
         rawseq = rawseqs.pop(0)
-        handle = StringIO.StringIO(rawseq)
+        handle = io.StringIO(rawseq)
         try:
             parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
             #original_format = "embl"
@@ -2799,7 +2807,9 @@ def parse(data, ds = True):
 
     '''
     raw= ""
-    if not hasattr(data, '__iter__'):
+
+    # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.
+    if not hasattr(data, '__iter__') or isinstance(data, (str, bytes)):
         data = (data,)
 
     for item in data:
@@ -2818,7 +2828,7 @@ def parse(data, ds = True):
     while rawseqs:
         circular = False
         rawseq = rawseqs.pop(0)
-        handle = StringIO.StringIO(rawseq)
+        handle = io.StringIO(rawseq)
         try:
             parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
             if "circular" in rawseq.splitlines()[0]:
