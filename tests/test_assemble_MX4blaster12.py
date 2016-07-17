@@ -134,8 +134,8 @@ class test_empty(unittest.TestCase):
         pCAPs_MX4blaster2_old = read("./pMX4blaster2_old.gb")
         self.assertTrue( len(pCAPs_MX4blaster2_old) == 10566 )
         self.assertEqual( pCAPs_MX4blaster2_old.seguid(), "7B4KKAeM2x8npjkp5U942rtMbB8" )
-        self.assertTrue( eq(pCAPs_MX4blaster2, pCAPs_MX4blaster2_old))
         self.assertEqual( pCAPs_MX4blaster2.seguid(), "7B4KKAeM2x8npjkp5U942rtMbB8" )
 
+        self.assertTrue( eq(pCAPs_MX4blaster2, pCAPs_MX4blaster2_old))
 if __name__ == '__main__':
     unittest.main()

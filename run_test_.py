@@ -7,25 +7,24 @@ import nose
 import appdirs
 import shutil
 import errno
+import tempfile
+import shutil
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
 
 if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
     print("\n\ncontinuous integration\n\n")
-    os.environ["pydna_data_dir"] = os.path.join(os.getcwd(),"..","..","DATA")
-    os.environ["pydna_log_dir"]  = os.environ["pydna_data_dir"]
-    os.environ["pydna_config_dir"] = os.environ["pydna_data_dir"]
+    os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"..","..","DATA")
+    os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
+    os.environ["pydna_config_dir"]  = os.environ["pydna_data_dir"]
 
 else:
-    os.environ["pydna_data_dir"] = appdirs.user_data_dir("pydna_test")
-    os.environ["pydna_log_dir"]  = os.environ["pydna_data_dir"]
-    try:
-        shutil.rmtree( os.environ["pydna_data_dir"] )
-    except OSError as e:
-        if e.errno == errno.ENOENT:
-            print("no cache to delete.")
-    print("cache deleted.")
+    test_data_dir = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
+    test_log_dir = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
+
+    os.environ["pydna_data_dir"] = test_data_dir
+    os.environ["pydna_log_dir"]  = test_log_dir
 
 def main():
     print("      _             _                     _               _            _               _ _       _ ")
