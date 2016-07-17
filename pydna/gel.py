@@ -42,7 +42,11 @@ try:
 except ImportError:
     pass
 
-from pint import UnitRegistry #, DimensionalityError
+try:
+    from pint import UnitRegistry
+except ImportError:
+    pass
+
 
 from numbers import Number
 from StringIO import StringIO

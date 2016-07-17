@@ -25,10 +25,11 @@ from _pretty import pretty_str
 
 class Primer(SeqRecord):
 
-    def __init__(self, seq = Seq(""), *args, **kwargs):
+    def __init__(self, seq = Seq(""), concentration = 1000.0,  *args, **kwargs):
         if seq.alphabet == Alphabet():
             seq.alphabet = IUPACAmbiguousDNA()
         super(Primer, self).__init__(seq, *args, **kwargs)
+        self.concentration = concentration
 
     def __repr__(self):
         return self.__class__.__name__ \
@@ -44,6 +45,9 @@ class Primer(SeqRecord):
         new = super(Primer, self).__radd__(other)
         return Primer(new.seq)
 
+    def tm(self, saltc=50.0, formula=tmbresluc):
+        return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
+
 def print_primer_pair(*args,**kwargs):
     f,r = cloning_primers(*args,**kwargs)
     return pretty_str("\n"+f.format("fasta")+"\n"+r.format("fasta") + "\n")
@@ -56,7 +60,8 @@ def cloning_primers(template,
                     fp_tail='',
                     rp_tail='',
                     target_tm=55.0,
-                    primerc = 1000.0,
+                    fprimerc=1000.0,
+                    rprimerc=1000.0,
                     saltc=50.0,
                     formula = tmbresluc,
                     path = u""):
@@ -76,10 +81,10 @@ def cloning_primers(template,
     ----------
 
     template : Dseqrecord
-        a Dseqrecord object.
+        a Dseqrecord object. The only required argument.
 
     minlength : int, optional
-        Minimum length of the annealing part of the primer
+        Minimum length of the annealing part of the primer.
 
     maxlength : int, optional
         Maximum length (including tail) for designed primers.
@@ -88,13 +93,16 @@ def cloning_primers(template,
         optional Biopython SeqRecord objects containing one primer each.
 
     fp_tail, rp_tail : string, optional
-        optional tails to be added to the forwars or reverse primers
+        optional tails to be added to the forwars or reverse primers.
 
     target_tm : float, optional
-        target tm for the primers
+        target tm for the primers, set to 55°C by default.
 
-    primerc : float, optional
-        Concentration of each primer in nM, set to 1000.0 nM by default
+    fprimerc : float, optional
+        Concentration of forward primer in nM, set to 1000.0 nM by default.
+
+    rprimerc : float, optional
+        Concentration of reverse primer in nM, set to 1000.0 nM by default.
 
     saltc  : float, optional
         Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
@@ -153,10 +161,10 @@ def cloning_primers(template,
     >>>
     >>> print(pcr_prod.figure())
     5atgactgctaacccttc...gttcgaaacttacgatg3
-                         ||||||||||||||||| tm 42.4 (dbd) 52.9
+                         ||||||||||||||||| tm 49.0 (dbd) 52.9
                         3caagctttgaatgctac5
     5atgactgctaacccttc3
-     ||||||||||||||||| tm 44.5 (dbd) 54.0
+     ||||||||||||||||| tm 51.6 (dbd) 54.0
     3tactgacgattgggaag...caagctttgaatgctac5
     >>> pf,pr = pydna.cloning_primers(t, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
@@ -166,10 +174,10 @@ def cloning_primers(template,
     >>> pcr_prod = pydna.pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
           5atgactgctaacccttc...gttcgaaacttacgatg3
-                               ||||||||||||||||| tm 42.4 (dbd) 52.9
+                               ||||||||||||||||| tm 49.0 (dbd) 52.9
                               3caagctttgaatgctacCTTAAG5
     5GGATCCatgactgctaacccttc3
-           ||||||||||||||||| tm 44.5 (dbd) 54.0
+           ||||||||||||||||| tm 51.6 (dbd) 54.0
           3tactgacgattgggaag...caagctttgaatgctac5
     >>> print(pcr_prod.seq)
     GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGAATTC
@@ -185,10 +193,10 @@ def cloning_primers(template,
     >>> ampl = pydna.pcr(pf,pr,t)
     >>> print(ampl.figure())
           5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
-                                         |||||||||||||||||||||||||||| tm 57.5 (dbd) 72.2
+                                         |||||||||||||||||||||||||||| tm 61.7 (dbd) 72.2
                                         3ctgctgtaaagcaagctttgaatgctacCTTAAG5
     5GGATCCatgactgctaacccttccttggtgttg3
-           ||||||||||||||||||||||||||| tm 59.0 (dbd) 72.3
+           ||||||||||||||||||||||||||| tm 63.7 (dbd) 72.3
           3tactgacgattgggaaggaaccacaac...ctgctgtaaagcaagctttgaatgctac5
     >>>
 
@@ -201,31 +209,34 @@ def cloning_primers(template,
         fp = Primer(p.footprint)
         fp_tail = Primer(p.tail)
         rp = Primer(Seq(str(template[-(maxlength*3-len(rp_tail)):].reverse_complement().seq), IUPACAmbiguousDNA()))
-        target_tm = formula(str(fp.seq).upper(), primerc=primerc, saltc=saltc)
+        target_tm = formula(str(fp.seq).upper(), primerc=fprimerc, saltc=saltc)
     elif not fp and rp:
         rp = Primer(Seq(rp_tail, IUPACAmbiguousDNA())) + rp
         p =  Anneal([rp], template).rev_primers.pop()
         rp = Primer(p.footprint)
         rp_tail = Primer(p.tail)
         fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq), IUPACAmbiguousDNA()))
-        target_tm = formula(str(rp.seq).upper(), primerc=primerc, saltc=saltc)
+        target_tm = formula(str(rp.seq).upper(), primerc=rprimerc, saltc=saltc)
     elif not fp and not rp:
         fp = Primer(Seq(str(template[:maxlength-len(fp_tail)].seq), IUPACAmbiguousDNA()))
         rp = Primer(Seq(str(template[-maxlength+len(rp_tail):].reverse_complement().seq), IUPACAmbiguousDNA()))
     else:
         raise Exception("Specify maximum one of the two primers, not both.")
 
-    lowtm, hightm = sorted( [( formula(str(fp.seq), primerc, saltc), fp, "f" ),
-                             ( formula(str(rp.seq), primerc, saltc), rp, "r" ) ] )
+    fp.concentration = fprimerc
+    rp.concentration = rprimerc
+
+    lowtm, hightm = sorted( [( formula(str(fp.seq), fprimerc, saltc), fp, "f" ),
+                             ( formula(str(rp.seq), rprimerc, saltc), rp, "r" ) ] )
 
     while lowtm[0] > target_tm and len(lowtm[1])>minlength:
         shorter = lowtm[1][:-1]
-        tm      = formula(str(shorter.seq).upper(), primerc=primerc, saltc=saltc)
+        tm      = formula(str(shorter.seq).upper(), primerc=fprimerc, saltc=saltc)
         lowtm   = (tm, shorter, lowtm[2])
 
     while hightm[0] > lowtm[0] + 2.0 and len(hightm[1])>minlength:
         shorter = hightm[1][:-1]
-        tm = formula(str(shorter.seq).upper(), primerc = primerc, saltc = saltc)
+        tm = formula(str(shorter.seq).upper(), primerc = rprimerc, saltc = saltc)
         hightm = (tm, shorter, hightm[2])
 
     fp, rp = sorted((lowtm, hightm), key=itemgetter(2))
@@ -285,9 +296,10 @@ def integration_primers( up,
                          dnlink     = Dseqrecord(''),
                          minlength  = 16,
                          min_olap   = 50,
-                         target_tm  = 55.0,
-                         primerc    = 1000.0,
-                         saltc      = 50.0,
+                         target_tm=55.0,
+                         fprimerc=1000.0,
+                         rprimerc=1000.0,
+                         saltc=50.0,
                          formula    = tmbresluc,
                          path       = u""):
 
@@ -302,7 +314,8 @@ def integration_primers( up,
                             fp_tail=fp_tail,
                             rp_tail=rp_tail,
                             target_tm=target_tm,
-                            primerc = primerc,
+                            fprimerc=fprimerc,
+                            rprimerc=rprimerc,
                             saltc=saltc,
                             formula = formula,
                             path = path)
@@ -316,7 +329,8 @@ def assembly_primers(templates,
                      maxlength  = 50,
                      min_olap   = 35,
                      target_tm  = 55.0,
-                     primerc    = 1000.0,
+                     fprimerc   = 1000.0,
+                     rprimerc   = 1000.0,
                      saltc      = 50.0,
                      formula    = tmbresluc,
                      path       = u""):
@@ -538,7 +552,8 @@ def assembly_primers(templates,
                                     fp_tail = fp_tail,
                                     rp_tail = rp_tail,
                                     target_tm  = target_tm,
-                                    primerc    = primerc,
+                                    fprimerc   = fprimerc,
+                                    rprimerc   = rprimerc,
                                     saltc      = saltc,
                                     formula    = formula,
                                     path       = path)
@@ -550,7 +565,11 @@ def assembly_primers(templates,
 
     if vector:
         fake_cas = templates[0]+templates[-1]
-        pa, pb = integration_primers( vector,fake_cas,vector, min_olap=min_olap)
+        pa, pb = integration_primers( vector,
+                                      fake_cas,
+                                      vector,
+                                      min_olap=min_olap)
+
         primer_pairs[0]  = (pa, primer_pairs[0][1])
         primer_pairs[-1] = (primer_pairs[-1][0], pb)
 
