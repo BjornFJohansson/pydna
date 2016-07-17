@@ -413,14 +413,6 @@ class Fakeseq(object):
         return self._length
 
 
-
-if __name__=="__main__":
-
-    a=fake(2)
-
-    print len(a)
-
-
 def gen_sample(sizes, quantities):
     """Return list of pydna Dseqrecords of given size and quantity.
 

@@ -335,9 +335,6 @@ class Amplicon(Dseqrecord):
                     dnac1=self.fprimerc,
                     Na=self.saltc)
 
-        tmf_dbd = tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
-        tmr_dbd = tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
-
         # Ta calculation according to
         # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
         # ing temperature for DNA amplification in vitro
@@ -354,10 +351,10 @@ class Amplicon(Dseqrecord):
         # Taq polymerase extension rate is set to 30 nt/s
         # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
         taq_extension_rate = 30  # seconds/kB PCR product length
-        extension_time_taq = taq_extension_rate * len(self) / 1000 # seconds
+        extension_time_taq = int(round(taq_extension_rate * len(self) / 1000)) # seconds
         f  = textwrap.dedent('''
                                  Taq (rate {rate} nt/s) 35 cycles             |{size}bp
-                                 95.0°C    |95.0°C                 |      |Tm formula: Pydna tmbresluc
+                                 95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
                                  |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
                                  | 03min00s|30s  \         ________|______|Primer1C {forward_primer_concentration:3}µM
                                  |         |      \ {ta}°C/{0:2}min{1:2}s| 5min |Primer2C {reverse_primer_concentration:3}µM
@@ -365,12 +362,11 @@ class Amplicon(Dseqrecord):
                                  |         |         30s           |      |4-12°C'''.format(rate=taq_extension_rate,
                                                                                             forward_primer_concentration=self.fprimerc/1000,
                                                                                             reverse_primer_concentration=self.rprimerc/1000,
-                                                                                            ta=round(ta),
+                                                                                            ta=round(ta,1),
                                                                                             saltc=self.saltc,
                                                                                             *divmod(extension_time_taq,60),
                                                                                             size= len(self.seq),
                                                                                             GC_prod= int(round(GC_prod)) ))
-
         return pretty_unicode(f)
 
     def taq_program(self):
@@ -382,13 +378,13 @@ class Amplicon(Dseqrecord):
 
        ::
 
-        Pfu-Sso7d (rate 15s/kb)
+        Pfu-Sso7d (rate 15s/kb)             |{size}bp
         Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
         98.0°C    |98.0°C                |      |SaltC 50mM
         __________|_____          72.0°C |72.0°C|Primer1C   1µM
         00min30s  |10s  \ 61.0°C ________|______|Primer2C   1µM
                   |      \______/ 0min 0s|10min |
-                  |        10s           |      |4-8°C
+                  |        10s           |      |4-12°C
 
        '''
         PfuSso7d_extension_rate = 15                #seconds/kB PCR product
@@ -415,7 +411,7 @@ class Amplicon(Dseqrecord):
                                     _____ __|_____         |      |SaltC {saltc:2}mM
                                     00min30s|10s  \  72.0°C|72.0°C|Primer1C {forward_primer_concentration:3}µM
                                             |      \_______|______|Primer2C {reverse_primer_concentration:3}µM
-                                            |      {0:2}min{1:2}s|10min |4-8°C
+                                            |      {0:2}min{1:2}s|10min |4-12°C
                                  '''.format(rate = PfuSso7d_extension_rate,
                                             forward_primer_concentration = self.forward_primer_concentration/1000,
                                             reverse_primer_concentration = self.reverse_primer_concentration/1000,
@@ -430,13 +426,13 @@ class Amplicon(Dseqrecord):
                 ta = min(tmf_dbd,tmr_dbd)
 
             f=textwrap.dedent(  '''
-                                    Pfu-Sso7d (rate {rate}s/kb)
-                                    Three-step|          30 cycles   |      |Breslauer1986,SantaLucia1998
+                                    Pfu-Sso7d (rate {rate}s/kb)             |{size}bp
+                                    Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
                                     __________|_____          72.0°C |72.0°C|Primer1C {forward_primer_concentration:3}µM
                                     00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
                                               |      \______/{0:2}min{1:2}s|10min |
-                                              |        10s           |      |4-8°C
+                                              |        10s           |      |4-12°C
                                  '''.format(rate = PfuSso7d_extension_rate,
                                             ta   = round(ta),
                                             forward_primer_concentration   = self.forward_primer_concentration/1000,
@@ -519,10 +515,10 @@ class Anneal(object):
     >>> print(amplicon.program())
     <BLANKLINE>
     Taq (rate 30 nt/s) 35 cycles             |51bp
-    95.0°C    |95.0°C                 |      |Tm formula: Pydna tmbresluc
+    95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
     |_________|_____          72.0°C  |72.0°C|SaltC 50mM
     | 03min00s|30s  \         ________|______|Primer1C 1.0µM
-    |         |      \ 46.0°C/ 0min 1s| 5min |Primer2C 1.0µM
+    |         |      \ 45.4°C/ 0min 2s| 5min |Primer2C 1.0µM
     |         |       \_____/         |      |GC 39%
     |         |         30s           |      |4-12°C
 
@@ -1202,6 +1198,8 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
         return tm
 
 if __name__=="__main__":
+    import os
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
 
