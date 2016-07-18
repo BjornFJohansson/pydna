@@ -1686,7 +1686,7 @@ class Dseqrecord(SeqRecord):
 
     def gc(self):
         '''Returns GC content '''
-        return pretty_string(round(GC(str(self.seq)), 1))
+        return round(GC(str(self.seq)), 1)
 
     def cseguid(self):
         '''Returns the url safe cSEGUID for the sequence.

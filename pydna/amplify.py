@@ -180,6 +180,8 @@ class Amplicon(Dseqrecord):
         self.fprimerc = fprimerc
         self.rprimerc = rprimerc
         self.saltc = saltc
+        
+        #self.GC=GC(str(self.seq))
 
     def __getitem__(self, sl):
         answer = copy.copy(self)
@@ -342,7 +344,7 @@ class Amplicon(Dseqrecord):
         # The formula described uses the length and GC content of the product and
         # salt concentration (monovalent cations).
 
-        GC_prod=GC(str(self.seq))
+        #GC_prod=GC(str(self.seq))
 
         tmp = 81.5 + 0.41*GC(str(self.seq)) + 16.6*math.log10(self.saltc/1000.0) - 675/len(self)
         tml = min(tmf,tmr)
@@ -366,7 +368,7 @@ class Amplicon(Dseqrecord):
                                                                                             saltc=self.saltc,
                                                                                             *divmod(extension_time_taq,60),
                                                                                             size= len(self.seq),
-                                                                                            GC_prod= int(round(GC_prod)) ))
+                                                                                            GC_prod= int(self.gc()) ))
         return pretty_unicode(f)
 
     def taq_program(self):
@@ -409,15 +411,17 @@ class Amplicon(Dseqrecord):
                                     Two-step|    30 cycles |      |{size}bp
                                     98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
                                     _____ __|_____         |      |SaltC {saltc:2}mM
-                                    00min30s|10s  \  72.0°C|72.0°C|Primer1C {forward_primer_concentration:3}µM
-                                            |      \_______|______|Primer2C {reverse_primer_concentration:3}µM
+                                    00min30s|10s  \        |      |Primer1C {forward_primer_concentration:3}µM
+                                            |      \ 72.0°C|72.0°C|Primer2C {reverse_primer_concentration:3}µM
+                                            |       \______|______|GC {GC_prod}%
                                             |      {0:2}min{1:2}s|10min |4-12°C
                                  '''.format(rate = PfuSso7d_extension_rate,
-                                            forward_primer_concentration = self.forward_primer_concentration/1000,
-                                            reverse_primer_concentration = self.reverse_primer_concentration/1000,
+                                            forward_primer_concentration = self.fprimerc/1000,
+                                            reverse_primer_concentration = self.rprimerc/1000,
                                             saltc = self.saltc,
                                             *map(int,divmod(extension_time_PfuSso7d,60)),
-                                            size = len(self.seq)))
+                                            GC_prod= int(self.gc()),
+                                            size = len(self.seq) ))
         else:
 
             if (length_of_f>20 and length_of_r>20):
@@ -431,14 +435,16 @@ class Amplicon(Dseqrecord):
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
                                     __________|_____          72.0°C |72.0°C|Primer1C {forward_primer_concentration:3}µM
                                     00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
-                                              |      \______/{0:2}min{1:2}s|10min |
+                                              |      \______/{0:2}min{1:2}s|10min |GC {GC_prod}%
                                               |        10s           |      |4-12°C
                                  '''.format(rate = PfuSso7d_extension_rate,
+                                            size= len(self.seq),
                                             ta   = round(ta),
-                                            forward_primer_concentration   = self.forward_primer_concentration/1000,
-                                            reverse_primer_concentration   = self.reverse_primer_concentration/1000,
+                                            forward_primer_concentration   = self.fprimerc/1000,
+                                            reverse_primer_concentration   = self.rprimerc/1000,
                                             saltc= self.saltc,
-                                            *map(int, divmod(extension_time_PfuSso7d,60))))
+                                            GC_prod= int(self.gc()),
+                                            *map(int, divmod(extension_time_PfuSso7d,60)) ))
         return pretty_str(f)
 
     def pfu_sso7d_program(self):
@@ -692,8 +698,8 @@ class Anneal(object):
                                                 forward_primer=fp,
                                                 reverse_primer=rp,
                                                 saltc=self.saltc,
-                                                forward_primer_concentration=self.primerc,
-                                                reverse_primer_concentration=self.primerc))
+                                                fprimerc=self.primerc,
+                                                rprimerc=self.primerc))
                 assert " " not in str(prd.seq.watson)
                 assert " " not in str(prd.seq.crick)
 
