@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''The pretty_str class is same as str but has a _repr_pretty_ method for
    for nicer string output in the IPython shell'''

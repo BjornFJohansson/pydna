@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP

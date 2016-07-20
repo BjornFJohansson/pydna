@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''This module provides a class for opening a sequence using an editor
 that accepts a file as a command line argument.

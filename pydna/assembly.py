@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''This module provides functions for assembly of sequences by homologous recombination and other
 related techniques. Given a list of sequences (Dseqrecords), all sequences will be analyzed for

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright 2013, 2014 by Björn Johansson.  All rights reserved.
@@ -21,7 +21,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from pydna.amplify import Anneal, tmbresluc, Dseqrecord
 from pydna.dsdna import parse
-from ._pretty import pretty_str
+from pydna._pretty import pretty_str
 
 class Primer(SeqRecord):
 
@@ -52,19 +52,19 @@ def print_primer_pair(*args,**kwargs):
     f,r = cloning_primers(*args,**kwargs)
     return pretty_str("\n"+f.format("fasta")+"\n"+r.format("fasta") + "\n")
 
-def cloning_primers(template,
-                    minlength=16,
-                    maxlength=29,
-                    fp=None,
-                    rp=None,
-                    fp_tail='',
-                    rp_tail='',
-                    target_tm=55.0,
-                    fprimerc=1000.0,
-                    rprimerc=1000.0,
-                    saltc=50.0,
-                    formula = tmbresluc,
-                    path = ""):
+def cloning_primers( template,
+                     minlength=16,
+                     maxlength=29,
+                     fp=None,
+                     rp=None,
+                     fp_tail='',
+                     rp_tail='',
+                     target_tm=55.0,
+                     fprimerc=1000.0,
+                     rprimerc=1000.0,
+                     saltc=50.0,
+                     formula = tmbresluc,
+                     path = ""):
 
     '''This function can design primers for PCR amplification of a given sequence.
     This function accepts a Dseqrecord object containing the template sequence and
@@ -228,6 +228,14 @@ def cloning_primers(template,
 
     lowtm, hightm = sorted( [( formula(str(fp.seq), fprimerc, saltc), fp, "f" ),
                              ( formula(str(rp.seq), rprimerc, saltc), rp, "r" ) ] )
+   
+    print()
+    print(len(template))                         
+    print(">>>>---->>>", lowtm)
+    print()
+    print(">>>>====>>>", hightm)
+    print(len(template))
+    print()
 
     while lowtm[0] > target_tm and len(lowtm[1])>minlength:
         shorter = lowtm[1][:-1]
@@ -296,10 +304,10 @@ def integration_primers( up,
                          dnlink     = Dseqrecord(''),
                          minlength  = 16,
                          min_olap   = 50,
-                         target_tm=55.0,
-                         fprimerc=1000.0,
-                         rprimerc=1000.0,
-                         saltc=50.0,
+                         target_tm  = 55.0,
+                         fprimerc   = 1000.0,
+                         rprimerc   = 1000.0,
+                         saltc      = 50.0,
                          formula    = tmbresluc,
                          path       = ""):
 
@@ -307,6 +315,9 @@ def integration_primers( up,
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
 
     maxlength  = minlength + max(len(fp_tail), len(rp_tail))
+    
+    print(fp_tail)
+    print(rp_tail)
 
     return cloning_primers( cas,
                             minlength=minlength,
@@ -508,7 +519,7 @@ def assembly_primers(templates,
         circular = False
 
     if not hasattr(templates, '__iter__'):
-        raise Exception("argument has to be an iterable")
+        raise Exception("first argument has to be an iterable")
 
     tail_length =  int(math.ceil(float(min_olap)/2))
 
@@ -549,8 +560,8 @@ def assembly_primers(templates,
         fp, rp = cloning_primers(   template,
                                     minlength  = minlength,
                                     maxlength  = maxlength,
-                                    fp_tail = fp_tail,
-                                    rp_tail = rp_tail,
+                                    fp_tail    = fp_tail,
+                                    rp_tail    = rp_tail,
                                     target_tm  = target_tm,
                                     fprimerc   = fprimerc,
                                     rprimerc   = rprimerc,
@@ -565,10 +576,10 @@ def assembly_primers(templates,
 
     if vector:
         fake_cas = templates[0]+templates[-1]
-        pa, pb = integration_primers( vector,
-                                      fake_cas,
-                                      vector,
-                                      min_olap=min_olap)
+        pa, pb   = integration_primers( vector,
+                                        fake_cas,
+                                        vector,
+                                        min_olap=min_olap)
 
         primer_pairs[0]  = (pa, primer_pairs[0][1])
         primer_pairs[-1] = (primer_pairs[-1][0], pb)
@@ -577,5 +588,19 @@ def assembly_primers(templates,
 
 
 if __name__=="__main__":
-    import doctest
-    doctest.testmod()
+    #import doctest
+    #doctest.testmod()
+    import pydna
+    gfp = pydna.read("gfp.gb")
+    pUC19 = pydna.read("puc19.gb")
+    from Bio.Restriction import EcoRI
+    pUC19_EcoRI=pUC19.linearize(EcoRI)
+    
+    p1, p2 = assembly_primers([gfp,], vector=pUC19_EcoRI, circular=True).pop()
+    
+    print(p1, p2)
+    
+    gfp_prod = pydna.pcr(p1,p2,gfp)
+    
+    print(gfp_prod.dbd_program())
+    print(gfp_prod.figure())

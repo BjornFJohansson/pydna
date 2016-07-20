@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #    Copyright (C) 2012 by
 #    Sergio Nery Simoes <sergionery@gmail.com>
