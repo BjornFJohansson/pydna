@@ -10,7 +10,7 @@ source:
 
 requirements:
     build:
-        - python
+        - python ==3.5
         - ipython
         - jupyter
         - biopython
@@ -23,7 +23,7 @@ requirements:
         - mpldatacursor
         - pint
     run:
-        - python
+        - python ==3.5
         - ipython
         - jupyter
         - biopython

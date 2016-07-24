@@ -4,7 +4,7 @@ user: BjornFJohansson
 platform:
   - linux-64
 engine:
-  - python=2.7
+  - python=3.5
 
 before_script:
   #- git describe --tags --always

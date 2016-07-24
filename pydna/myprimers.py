@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''This module provides ...
+'''This module provides three ways to access a primer list specified 
+   in the pydna.ini file.
 
 '''
 import os as _os
-#global primer
-#global primer_dict
 
 from .dsdna import parse as _parse
 
