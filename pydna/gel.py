@@ -1282,7 +1282,7 @@ class Gel:
             welly = np.repeat(welly, nlanes)
         welly = welly.to('cm')
         wellsep = wellsep.to('cm')
-        till_len = abs(till_len) if till_len is not None else 1
+        till_len = abs(till_len) if till_len is not None else np.inf
         if till_time is not None:
             till_time = to_units(till_time, 'hr', 'till_time').to('s')
         res = to_units(res, 'px/cm', 'res')
@@ -1466,7 +1466,7 @@ class Gel:
         return None
 
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
     test_gel = True
     test_mu0 = True
     test_vWBRfit = True
