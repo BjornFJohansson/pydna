@@ -814,7 +814,6 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
                     for l in range(nlanes)]
     rgb_arr = np.zeros(shape=(pxl_y, pxl_x, 3), dtype=np.float32)
     bandlengths = wellx
-    bands_pxlXYmid = []
     # Paint the bands
     for i in range(nlanes):
         distXmid = lane_centers[i]
@@ -822,11 +821,9 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
         bandlength = bandlengths[i]
         from_x = int(round((distXmid - bandlength/2.0) * res))
         to_x = int(round((distXmid + bandlength/2.0) * res))
-        bands_pxlXYmid.append([])
         for j in range(len(lanes[i])):
             distYmid = distances[i][j]
             pxlYmid = int(round(distYmid * res))
-            bands_pxlXYmid[i].append((pxlXmid, pxlYmid))
             bandwidth = bandwidths[i][j]  # w=FWHM or w=FWTM ???
             if FWTM:
                 FWHM = Gauss_FWHM(bandwidth)
@@ -914,14 +911,20 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
         bandlength = bandlengths[i]
         center = lane_centers[i]
         x = center - bandlength/2.0
+        from_x = int(round(x * res.magnitude))
+        to_x = int(round((center + bandlength/2.0) * res.magnitude))
         for j in range(len(lanes[i])):
             dna_frag = lanes[i][j]
             bandwidth = bandwidths[i][j]
             dist = distances[i][j].magnitude
             y = dist - bandwidth/2.0
-            pxlX, pxlY = bands_pxlXYmid[i][j]
-            band_midI = bands_arr[pxlY, pxlX][0]
-            alpha = 0 if abs(band_midI - back_col) >= detectlim else 0.4
+            pxlY = int(round(y * res.magnitude))
+            if pxlY < bands_arr.shape[0]:
+                # top of the band is inside the gel
+                band_avgI = np.mean(bands_arr[pxlY, from_x:to_x])
+                alpha = 0 if abs(band_avgI - back_col) >= detectlim else 0.4
+            else:
+                alpha = 0
             band = plt.Rectangle((x, y), bandlength, bandwidth,
                                  fc='none', ec='w', ls=':', alpha=alpha,
                                  label='{} bp'.format(len(dna_frag)))
@@ -1125,7 +1128,7 @@ class Gel:
             band_col=1,
             well_col=0.05,
             noise=0.015,
-            detectlim=0.04,
+            detectlim=0.02,
             interpol='linear',     # 'cubic','nearest'
             dset_name='vertical',  # 'horizontal'
             replNANs=True          # replace NANs by 'nearest' interpolation
