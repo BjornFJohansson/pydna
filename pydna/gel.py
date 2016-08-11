@@ -1676,37 +1676,30 @@ if __name__ == "__main__":
 
 # Questions for Professor Björn
 # ============================================================================#
-# - Ask for guidance for the simple SAMPLE objects and basic operations.      #
-# - Ask for guidance for the default values.                                  #
-# - Ask for guidance for the user friendliness from the standpoint of a       #
-#   researcher.                                                               #
 # - Would an "excise band" method be useful?                                  #
 # ============================================================================#
 
 # To-do list
 # ============================================================================#
-# - Band convolution (https://en.wikipedia.org/wiki/Convolution);             #
-# - Qualitative and quantitative validation;                                  #
+# - Search for better way of predicting band convolution;                     #
+#   https://en.wikipedia.org/wiki/Convolution                                 #
+# - Qualitative and quantitative validation against experimental data;        #
 # - Comparison with other softwares;                                          #
 # - Gather more data (obtained at well controlled conditions);                #
 #       + Professor Beheshti's Phd thesis                                     #
 #       + Extend the dataset with new experimental data                       #
 # - Study extrapolation options beyond the data range:                        #
 #       + parameters dependence on gel concentration equations (at low field) #
-# - Train and validate a regression predictive model;                         #
+# - Revert to a simpler predictive method when beyond the data interpolation  #
+#   range and emmit a warning;                                                #
+# - Train and validate a regression predictive model (?);                     #
 # - Interpolation of user's experimental data with vWBR equation;             #
 # ----------------------------------------------------------------------------#
 # - Documentation (Numpy style);                                              #
 # - Code readability and conformity to standards and style guides;            #
 # - User friendliness;                                                        #
 # - Testing module;                                                           #
-# - Sharing on GitHub;                                                        #
-# - Integration with pydna;                                                   #
-# - Application exemples and guide in IPython Notebook;                       #
-# - <mu_func> as module variable??                                            #
-# - self.runtime = np.nan??                                                   #
 # - Data and mu_funcs as module variables or class variables??                #
-# - Keep most values in numpy arrays?? (may be helpful to implement units)    #
 # - Experimental conditions on the plot's title;                              #
 # - Keep and return the plots objects;                                        #
 # - Passing the matplotlib's **keyargs;                                       #
@@ -1718,37 +1711,21 @@ if __name__ == "__main__":
 # - Recognize unequivocal initials: 'v':'vertical', 'h':'horizontal', etc.;   #
 # - There should be a single (Pint) UnitRegistry for the entire project.      #
 # - Show DNA size in matplotlib coordinate viewer:                            #
-#       "http://stackoverflow.com/questions/14754931/matplotlib-values-under- #
-#        cursor"                                                              #
-# - Click band to print DNA fragment data in console;                         #
+#   http://stackoverflow.com/questions/14754931/matplotlib-values-under-cursor#
+# - Click band to print DNA fragment data in console (?);                     #
 # - Defaults, Assertions, warnings, errors, etc.                              #
-# - Assert dimension concordance:                                             #
-#       if wellx is iterable: len(wellx) == len(lanes)                        #
-# - Combine gels;                                                             #
 # - Mosaic of gels: same samples, different conditions;                       #
 # - Method <save_with_resolution>;                                            #
 # - Attention to pixel [0], in pixel->cm / cm->pixel conversions;             #
 # - Study more carefully the distance <-> pixel conversion;                   #
-# - At this point, the "exposure time" is being optimized so that no band's   #
-#   intensity saturates (reaches white color) before it's peak. All curves    #
-#   are perfect Gaussians. This benefites the highest curves in detriment of  #
-#   the wider ones. It may be better for visualization to allow saturation    #
-#   basing the "exposure time" on a parameter, maximizing the average hight   #
-#   band or assuring that no peak falls bellow a certain level.               #
-# - There is pehaps a wiser way to perform peak convolution.                  #
-# - The stoping condition for the evaluation of the intensity function is too #
-#   strick. "color <= background" goes till the order of 1E-16. A toletance   #
-#   is needed.                                                                #
-# - Peak convolution in the perpendicular direction.                          #
-# - premade Ladder addition.                                                  #
 # - Dimension concordance, data type and missing values verification on input.#
 # - Full spell check.                                                         #
 # - Most assert statements must be replaced with proper errors.               #
+# - Look into replacing the use of `isinstance` by `hasattr`.                 #
 # ============================================================================#
 
 # Random notes
 # ============================================================================#
-# - Avoid integer division: from __future__ import division                   #
 # - Careful: Operations with unitary numpy arrays return numeric data types:  #
 #       + type(np.array(2)*np.array(2)) --> <'numpy.int32'>                   #
 #       + type(np.array(2)*np.array(2)/np.array(5)) --> <'numpy.int32'>       #
@@ -1762,8 +1739,6 @@ if __name__ == "__main__":
 #   method we arrive at an effective pore size of 135.4 nm.                   #
 # - I'm getting a smaller free solution mobility than the muS parameter.      #
 #   I think it should be the other way around!...                             #
-# - Is it better to never have unused lanes (as it is now) or to build a gel  #
-#   with a chosen dimension and number of wells (used or not)?                #
 # - The one thing that causes troubles with quantities is to assign a         #
 #   quantity to a list of quantities. Ex: Q_([Q_(1, 'nm')], 'nm')             #
 #   With that in mind, there might be simpler ways to implement the           #
