@@ -7,12 +7,6 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-#from pint import UnitRegistry #, DimensionalityError
-# Hacky fix for a python3 problem I don't understand
-# https://github.com/pallets/flask/issues/1680
-#UnitRegistry.__wrapped__ = None
-#ureg = UnitRegistry()
-
 """Provides the class `Gel` for the simulation of agarose slab-gel
 electrophoresis of DNA at constant electric field.
 
@@ -37,7 +31,7 @@ except ImportError:
     pass
 
 try:
-    from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
+    from mpldatacursor import datacursor   # version 0.5.0
 except ImportError:
     pass
 
