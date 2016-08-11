@@ -807,7 +807,6 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     # Paint the bands
     for i in xrange(nlanes):
         distXmid = lane_centers[i]
-        pxlXmid = int(round(distXmid * res))
         bandlength = bandlengths[i]
         from_x = int(round((distXmid - bandlength/2.0) * res))
         to_x = int(round((distXmid + bandlength/2.0) * res))
