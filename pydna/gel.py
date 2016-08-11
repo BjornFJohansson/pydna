@@ -1715,6 +1715,8 @@ if __name__ == "__main__":
 # - Full spell check.                                                         #
 # - Most assert statements must be replaced with proper errors.               #
 # - Look into replacing the use of `isinstance` by `hasattr`.                 #
+# - Remove the pan capacity of the gel plots.                                 #
+#   There is no interest in exploring the plot beyond the gel borders.        #
 # ============================================================================#
 
 # Random notes
