@@ -3,7 +3,6 @@
 
 from .py_rstr_max import rstr_max
 import itertools
-from operator import xor
 from operator import itemgetter
 '''
     findsubstrings
