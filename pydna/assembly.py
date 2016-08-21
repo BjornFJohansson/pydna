@@ -36,7 +36,7 @@ from pydna._simple_paths8 import all_simple_paths_edges, all_circular_paths_edge
 from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .findsubstrings_suffix_arrays_python import terminal_overlap
 
-from ._orderedset  import OrderedSet
+from ordered_set   import OrderedSet
 from pydna._pretty import pretty_str
 
 
