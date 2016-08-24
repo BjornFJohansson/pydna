@@ -22,6 +22,7 @@ requirements:
         - matplotlib
         - mpldatacursor
         - pint
+        - ordered_set
     run:
         - python ==3.5
         - ipython
@@ -35,6 +36,7 @@ requirements:
         - matplotlib
         - mpldatacursor
         - pint
+        - ordered_set
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD
