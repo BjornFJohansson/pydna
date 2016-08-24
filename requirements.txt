@@ -3,4 +3,4 @@ networkx>=1.8.1
 appdirs>=1.3.0
 prettytable>=0.7.2
 pint>=0.7.2
-
+ordered_set>=2.0.1
