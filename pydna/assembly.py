@@ -37,7 +37,7 @@ from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .findsubstrings_suffix_arrays_python import terminal_overlap
 
 from ordered_set   import OrderedSet
-from pydna._pretty import pretty_str
+from ._pretty import pretty_str
 
 
 
@@ -541,7 +541,20 @@ class Assembly(object):
 
 
         #self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
-        self.circular_products = sorted(list(circular_products.values()), key=len, reverse=True)
+        
+        import functools
+        def comp(item1, item2):
+            item1_len = len(item1.source_fragments)
+            item2_len = len(item2.source_fragments)
+            if item1_len < item2_len:
+                return -1
+            if item1_len > item2_len:
+                return 1
+            return 0
+        
+        self.circular_products = sorted(circular_products.values(), key=functools.cmp_to_key(comp))
+        self.circular_products.sort(key=len, reverse=True)
+        
 
 
     def __repr__(self):

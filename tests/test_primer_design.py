@@ -218,12 +218,3 @@ def test_primer_Design_saving_to_text_file():
 
 if __name__ == '__main__':
     nose.runmodule(argv=[sys.argv[0], '--nocapture'])
-
-
-
-
-
-
-
-
-

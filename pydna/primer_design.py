@@ -218,25 +218,17 @@ def cloning_primers( template,
         fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq), IUPACAmbiguousDNA()))
         target_tm = formula(str(rp.seq).upper(), primerc=rprimerc, saltc=saltc)
     elif not fp and not rp:
-        fp = Primer(Seq(str(template[:maxlength-len(fp_tail)].seq), IUPACAmbiguousDNA()))
-        rp = Primer(Seq(str(template[-maxlength+len(rp_tail):].reverse_complement().seq), IUPACAmbiguousDNA()))
+        fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq), IUPACAmbiguousDNA()))
+        rp = Primer(Seq(str(template[-maxlength*3+len(rp_tail):].reverse_complement().seq), IUPACAmbiguousDNA()))
     else:
         raise Exception("Specify maximum one of the two primers, not both.")
 
     fp.concentration = fprimerc
     rp.concentration = rprimerc
-
+    
     lowtm, hightm = sorted( [( formula(str(fp.seq), fprimerc, saltc), fp, "f" ),
-                             ( formula(str(rp.seq), rprimerc, saltc), rp, "r" ) ] )
-   
-    print()
-    print(len(template))                         
-    print(">>>>---->>>", lowtm)
-    print()
-    print(">>>>====>>>", hightm)
-    print(len(template))
-    print()
-
+                             ( formula(str(rp.seq), rprimerc, saltc), rp, "r" ) ] , key=itemgetter(0))
+                          
     while lowtm[0] > target_tm and len(lowtm[1])>minlength:
         shorter = lowtm[1][:-1]
         tm      = formula(str(shorter.seq).upper(), primerc=fprimerc, saltc=saltc)
@@ -303,6 +295,7 @@ def integration_primers( up,
                          uplink     = Dseqrecord(''),
                          dnlink     = Dseqrecord(''),
                          minlength  = 16,
+                         maxlength  = 80,
                          min_olap   = 50,
                          target_tm  = 55.0,
                          fprimerc   = 1000.0,
@@ -314,10 +307,7 @@ def integration_primers( up,
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
 
-    maxlength  = minlength + max(len(fp_tail), len(rp_tail))
-    
-    print(fp_tail)
-    print(rp_tail)
+    #maxlength  = minlength + max(len(fp_tail), len(rp_tail))
 
     return cloning_primers( cas,
                             minlength=minlength,
@@ -588,19 +578,22 @@ def assembly_primers(templates,
 
 
 if __name__=="__main__":
-    #import doctest
-    #doctest.testmod()
-    import pydna
-    gfp = pydna.read("gfp.gb")
-    pUC19 = pydna.read("puc19.gb")
-    from Bio.Restriction import EcoRI
-    pUC19_EcoRI=pUC19.linearize(EcoRI)
-    
-    p1, p2 = assembly_primers([gfp,], vector=pUC19_EcoRI, circular=True).pop()
-    
-    print(p1, p2)
-    
-    gfp_prod = pydna.pcr(p1,p2,gfp)
-    
-    print(gfp_prod.dbd_program())
-    print(gfp_prod.figure())
+    import doctest
+    doctest.testmod()
+
+#    import pydna
+#    gfp = pydna.read("gfp.gb")
+#    pUC19 = pydna.read("puc19.gb")
+#    from Bio.Restriction import EcoRI
+#    pUC19_EcoRI=pUC19.linearize(EcoRI)
+#    
+#    
+#    p1, p2 = integration_primers( pUC19_EcoRI, gfp+gfp, pUC19_EcoRI, min_olap =35 , maxlength=100)
+#    #p1, p2 = assembly_primers([gfp,], vector=pUC19_EcoRI, circular=True).pop()
+#    
+#    print(p1, p2)
+#    
+#    gfp_prod = pydna.pcr(p1,p2,gfp)
+#    
+#    print(gfp_prod.dbd_program())
+#    print(gfp_prod.figure())
