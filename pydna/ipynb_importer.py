@@ -12,21 +12,22 @@
 # so we can actually make IPython notebooks importable without much difficulty,
 # and only using public APIs.
 
-import io, os, sys, types, warnings
+import io, os, sys, types
 
 try:
     import IPython
 except ImportError:
-    raise ImportError("IPython not installed!")
+    pass
 
-from IPython import get_ipython
-from IPython.core.interactiveshell import InteractiveShell
+#from IPython import get_ipython
+#from IPython.core.interactiveshell import InteractiveShell
 
 try:
     import nbformat
 except ImportError:
     from IPython import nbformat
-
+except ImportError:
+    pass
 
 def find_notebook(fullname, path=None):
     """find a notebook, given its fully qualified name and an optional path
@@ -52,7 +53,7 @@ def find_notebook(fullname, path=None):
 class NotebookLoader(object):
     """Module Loader for IPython Notebooks"""
     def __init__(self, path=None):
-        self.shell = InteractiveShell.instance()
+        self.shell = IPython.core.interactiveshell.InteractiveShell.instance()
         self.path = path
 
     def load_module(self, fullname):

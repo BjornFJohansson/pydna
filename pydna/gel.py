@@ -32,7 +32,6 @@ try:
     import matplotlib.ticker as mtick
     from matplotlib import pyplot as plt, cm
     from matplotlib.ticker import FixedLocator
-    import matplotlib.ticker as mtick
 except ImportError:
     pass
 

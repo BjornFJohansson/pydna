@@ -41,9 +41,9 @@ def main():
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(os.path.join(dname, "tests"))
-    nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
+    nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture"])
     os.chdir(os.path.join(dname,"pydna"))
-    nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
+    nose.run(argv=[__file__, "--exclude=", "", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
     os.chdir(cwd)
 
     print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
