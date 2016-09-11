@@ -88,7 +88,7 @@ else:
         _parser.set('main','data_dir', _appdirs.user_data_dir("pydna"))
         _parser.set('main','log_dir',  _appdirs.user_log_dir("pydna"))
         _parser.set('main','cache','cached')
-        _parser.set('main','ape','')
+        _parser.set('main','ape','put/path/to/ape/here')
         _parser.set('main','primers','')
         _parser.write(f)
 
