@@ -19,15 +19,13 @@ try:
 except ImportError:
     pass
 
-#from IPython import get_ipython
-#from IPython.core.interactiveshell import InteractiveShell
-
 try:
     import nbformat
 except ImportError:
-    from IPython import nbformat
-except ImportError:
-    pass
+    try:
+        from IPython import nbformat
+    except ImportError:
+        pass
 
 def find_notebook(fullname, path=None):
     """find a notebook, given its fully qualified name and an optional path
