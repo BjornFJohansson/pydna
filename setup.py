@@ -46,4 +46,3 @@ setup(  name            = 'pydna',
                        'Programming Language :: Python :: 2.7',
                        'Topic :: Education',
                        'Topic :: Scientific/Engineering :: Bio-Informatics',])
-

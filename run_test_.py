@@ -4,11 +4,7 @@
 import os
 import sys
 import nose
-import appdirs
-import shutil
-import errno
 import tempfile
-import shutil
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
 sys.dont_write_bytecode = True
