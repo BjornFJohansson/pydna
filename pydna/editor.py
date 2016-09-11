@@ -47,13 +47,13 @@ class Editor:
         path    = (shell_command_for_editor,
                    shell_command_for_editor.split().pop(),)
 
-        if True in [os.path.isfile(p) for p in path]:
-            self.path_to_editor = shell_command_for_editor
-        else:
-            print()
-            print(shell_command_for_editor)
-            print("is not a valid path to ApE")
-            raise ValueError
+#        if True in [os.path.isfile(p) for p in path]:
+#            self.path_to_editor = shell_command_for_editor
+#        else:
+#            print()
+#            print(shell_command_for_editor)
+#            print("is not a valid path to ApE")
+#            raise ValueError
 
         self.tmpdir = tmpdir or os.path.join(tempfile.gettempdir(),"ApE")
         try:
@@ -122,7 +122,6 @@ class Editor:
         #shutil.rmtree(path)
         #for name in names:
         #    print os.path.join(path, name)+".gb"
-
 
 apeloader = Editor( os.getenv("pydna_ape") )
 
