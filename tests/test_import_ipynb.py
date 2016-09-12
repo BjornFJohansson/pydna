@@ -13,6 +13,7 @@ def test_ipynb_import():
         import IPython
     except ImportError:
         print("IPython not installed")
+        print("Jupyter notebook import not tested")
         assert True
     else:
         from pydna import ipynb_importer
