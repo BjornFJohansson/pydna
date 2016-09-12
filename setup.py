@@ -14,7 +14,6 @@ for line in open('pydna/__init__.py'):
         exec(line.strip())
 
 from setuptools import setup
-import textwrap, sys
 
 setup(  name            = 'pydna',
         version=versioneer.get_version()[:5],
@@ -34,7 +33,6 @@ setup(  name            = 'pydna',
         "networkx",
         "appdirs",
         "prettytable"],
-        test_suite="run_tests.load_my_tests",
         zip_safe = False,
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',
