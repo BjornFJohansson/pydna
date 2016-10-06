@@ -9,36 +9,27 @@ source:
   git_url: .
 
 requirements:
-    build:
-        - python ==3.5
-        - ipython
-        - jupyter
-        - biopython
-        - networkx
-        - appdirs
-        - prettytable
-        - numpy
-        - scipy
-        - matplotlib
-        - mpldatacursor
-        - pint
-        - ordered-set
-    run:
-        - python ==3.5
-        - ipython
-        - jupyter
-        - biopython
-        - networkx
-        - appdirs
-        - prettytable
-        - numpy
-        - scipy
-        - matplotlib
-        - mpldatacursor
-        - pint
-        - ordered-set
+  build:
+    skip: True   #[py!=35]
+  run:
+    - python
+    - ipython
+    - jupyter
+    - biopython
+    - networkx
+    - appdirs
+    - prettytable
+    - numpy
+    - scipy
+    - matplotlib
+    - mpldatacursor
+    - pint
+    - ordered-set
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD
   summary: Classes and code for representing double stranded DNA and functions for simulating homologous recombination and Gibson assembly.
 
+extra:
+  maintainers:
+   - "Björn Johansson <bjorn_johansson@>"
