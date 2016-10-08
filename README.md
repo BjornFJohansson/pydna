@@ -132,13 +132,12 @@ Code coverage is [![icon6](https://coveralls.io/repos/BjornFJohansson/pydna/badg
 
 Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
-
-
 ## Minimal installation requirements
 
-Pydna was developed on and for Python 2.7. Other versions have not been tested. The list below is the minimal requirements for installing pydna. 
+Pydna is currently developed on and for Python 3. Pydna versions before 1.0.0 were compatible with python 2.7 only. 
+The list below is the minimal requirements for installing pydna. 
 
-- [Python 2.7](http://www.python.org)
+- [Python 3.5](http://www.python.org)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdir)
@@ -158,17 +157,14 @@ If scipy, numpy, matplotlib and mpldatacursor are installed, the gel simulation 
 - [matplotlib>=1.5.0](https://pypi.python.org/pypi/matplotlib)
 - [mpldatacursor>=0.6.1](https://pypi.python.org/pypi/mpldatacursor)
 
-
 ## Requirements for running tests
 
 - [nose>=1.3.4](https://pypi.python.org/pypi/nose)
 - [coverage>=3.7.1](https://pypi.python.org/pypi/coverage)
 
-## Python 3
-This code has not been tested with Python 3.
-
 ## Installation using conda on Anaconda
-The absolutely best way of installing and using pydna is to use a the free [Anaconda](https://store.continuum.io/cshop/anaconda) python distribution. 
+The absolutely best way of installing and using pydna is to use a the 
+free [Anaconda](https://store.continuum.io/cshop/anaconda) python distribution. 
 
 There is a [conda](https://anaconda.org/bjornfjohansson/pydna) package available for pydna, which is easily installed
 from the command line using the conda package manager.
@@ -176,6 +172,9 @@ from the command line using the conda package manager.
 	conda install -c https://conda.anaconda.org/bjornfjohansson pydna
 
 This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies automatically in one go.
+
+The conda channels [BjornFJohansson](https://anaconda.org/bjornfjohansson) and [conda-forge](https://anaconda.org/conda-forge)
+should contain all packages needed to satisfy the dependencies.
 
 ## Installation using pip
 The second best way of installing pydna is with pip. Pip is the
@@ -219,10 +218,6 @@ Sometimes dependencies can be difficult to install on windows, as a C compiler i
 | matplotlib (32,64) | http://www.lfd.uci.edu/~gohlke/pythonlibs/#matplotlib                    |
 | ipython>=4.0       | http://www.lfd.uci.edu/~gohlke/pythonlibs/#ipython                       |
 | jupyter            | http://www.lfd.uci.edu/~gohlke/pythonlibs/#jupyter                       |
-
-
-
-
 
 ## Source Code
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).

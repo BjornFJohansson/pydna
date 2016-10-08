@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 print('''
 
@@ -69,8 +69,8 @@ if response.lower().startswith("y"):
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, universal_newlines=True)
         output = process.communicate()[0]
         print(colored(output, "blue"))
-    else:
-        print("upload skipped.")
+else:
+    print("upload skipped.")
     
 process = subprocess.Popen("conda build purge".split(), stdout=subprocess.PIPE, universal_newlines=True) 
 output = process.communicate()[0]
