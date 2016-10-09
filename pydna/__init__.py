@@ -187,6 +187,12 @@ try:
 except ImportError:
     _missing_modules_for_gel.append("mpldatacursor")
 
+try:
+    import pint
+    del pint
+except ImportError:
+    _missing_modules_for_gel.append("pint")
+
 if _missing_modules_for_gel:
     _logger.warning("gel simulation will not be available. Missing modules: {}"
         .format(", ".join(_missing_modules_for_gel)))

@@ -1,28 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import nose
-import tempfile
-
-os.environ["PYTHONDONTWRITEBYTECODE"] = "True"
-sys.dont_write_bytecode = True
-
-if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
-    print("\n\ncontinuous integration\n\n")
-    os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"..","..","DATA")
-    os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
-    os.environ["pydna_config_dir"]  = os.environ["pydna_data_dir"]
-
-else:
-    test_data_dir = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
-    test_log_dir = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
-
-    os.environ["pydna_data_dir"] = test_data_dir
-    os.environ["pydna_log_dir"]  = test_log_dir
+import os, sys, nose, tempfile
 
 def main():
+
+    if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
+        print("\n\ncontinuous integration\n\n")
+        os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"..","..","DATA")
+        os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
+        os.environ["pydna_config_dir"]  = os.environ["pydna_data_dir"]
+    else:
+        os.environ["pydna_data_dir"] = test_data_dir = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
+        os.environ["pydna_log_dir"]  = test_log_dir = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
+
     print("      _             _                     _               _            _               _ _       _ ")
     print("     | |           | |                   | |             | |          | |             (_) |     | |")
     print("  ___| |_ __ _ _ __| |_   _ __  _   _  __| |_ __   __ _  | |_ ___  ___| |_   ___ _   _ _| |_ ___| |")
@@ -31,16 +22,8 @@ def main():
     print(" |___/\__\__,_|_|   \__| | .__/ \__, |\__,_|_| |_|\__,_|  \__\___||___/\__| |___/\__,_|_|\__\___(_)")
     print("                         | |     __/ |                                                             ")
     print("                         |_|    |___/                                                              ")
-    print("")
 
-    cwd = os.getcwd()
-    abspath = os.path.abspath(__file__)
-    dname = os.path.dirname(abspath)
-    os.chdir(os.path.join(dname, "tests"))
-    nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture"])
-    os.chdir(os.path.join(dname,"pydna"))
-    nose.run(argv=[__file__, "--all-modules", "--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
-    os.chdir(cwd)
+    nose.run(argv=["--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
 
     print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
 

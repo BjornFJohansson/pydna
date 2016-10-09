@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import sys
+import nose
 
 from pydna import read, parse, pcr, Assembly, eq
 
@@ -9,7 +10,7 @@ from pydna import read, parse, pcr, Assembly, eq
 def test_MXblaster1():
     ''' test MXblaster1'''
 
-    primer = parse("primers.fas", ds=False)
+    primer = parse("tests/primers.fas", ds=False)
     primer     = primer[::-1]
     primer     = primer[37:]
 
@@ -17,18 +18,18 @@ def test_MXblaster1():
         assert int(p.id.split("_")[0]) == i
 
     ''' These are PCRs to get the genes and the terminator-promoters '''
-    AgTEFp          = pcr(primer[524],primer[523],read("pAG25.gb"))
-    hph             = pcr(primer[502],primer[501],read("pAG32.gb"))
-    KlLEU2tt        = pcr(primer[520],primer[519],read("KlLEU2tt.gb"))
+    AgTEFp          = pcr(primer[524],primer[523],read("tests/pAG25.gb"))
+    hph             = pcr(primer[502],primer[501],read("tests/pAG32.gb"))
+    KlLEU2tt        = pcr(primer[520],primer[519],read("tests/KlLEU2tt.gb"))
 
     ''' The Gal1 promoter-ISceI fragment is made in two steps '''
-    gal1_ISceI_1    = pcr(primer[234],primer[316],read("pGSHU 7180bp.gb"))
+    gal1_ISceI_1    = pcr(primer[234],primer[316],read("tests/pGSHU 7180bp.gb"))
     gal1_ISceI_2    = pcr(primer[562],primer[234],gal1_ISceI_1)
-    AgTEFt          = pcr(primer[522],primer[521],read("pAG25.gb"))
+    AgTEFt          = pcr(primer[522],primer[521],read("tests/pAG25.gb"))
 
     ''' load pCAPs and pCAPs-pSU0 sequences as Dseqrecord objects '''
-    pCAPs      = read("pCAPs-AjiI.gb")
-    pCAPs_pSU0 = read("pCAPs-pSU0.gb")
+    pCAPs      = read("tests/pCAPs-AjiI.gb")
+    pCAPs_pSU0 = read("tests/pCAPs-pSU0.gb")
 
     # cut the pCAPs vectors for cloning
     from Bio.Restriction import EcoRV, ZraI
@@ -89,7 +90,7 @@ def test_MXblaster1():
 
     from Bio.Restriction import AjiI, AgeI
 
-    AX023560 = read("AX023560.gb")
+    AX023560 = read("tests/AX023560.gb")
 
     GAL10prom_slice= slice(AX023560.features[1].location.start,
                            AX023560.features[1].location.end)
@@ -98,7 +99,7 @@ def test_MXblaster1():
 
     assert GAL10prom.seq == AX023560.features[1].extract(AX023560).seq
 
-    GIN11M86 = read("GIN11M86.gb")
+    GIN11M86 = read("tests/GIN11M86.gb")
 
     GAL_GIN = pcr(primer[592],primer[593], GAL10prom + GIN11M86)
 
@@ -127,7 +128,7 @@ def test_MXblaster1():
     pCAPs_MX4blaster2 = pCAPs_MX4blaster2.synced("tcgcgcgtttcggtgatgacggtgaaaacc")
     
     assert len(pCAPs_MX4blaster2) == 10566 
-    pCAPs_MX4blaster2_old = read("./pMX4blaster2_old.gb")
+    pCAPs_MX4blaster2_old = read("tests/pMX4blaster2_old.gb")
     
     assert len(pCAPs_MX4blaster2_old) == 10566 
     assert pCAPs_MX4blaster2_old.seguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
@@ -136,6 +137,4 @@ def test_MXblaster1():
 
     
 if __name__ == '__main__':
-    import sys
-    import nose
     nose.runmodule(argv=[sys.argv[0], '--nocapture'])

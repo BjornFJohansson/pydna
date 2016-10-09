@@ -12,18 +12,12 @@ requirements:
     build:
         - python
         - setuptools
-        - ipython
-        - jupyter
         - biopython
         - networkx
         - appdirs
         - prettytable
-        - numpy
-        - scipy
-        - matplotlib
-        - mpldatacursor
-        - pint
         - ordered-set
+
     run:
         - python
         - ipython
@@ -38,6 +32,18 @@ requirements:
         - mpldatacursor
         - pint
         - ordered-set
+
+test:
+  requires:
+    - nose
+  imports:
+    - pydna
+  source_files:
+    - docs/*.*
+    - pydna/*.py
+    - pydna/py_rstr_max/*.py
+    - tests/*.*
+
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD

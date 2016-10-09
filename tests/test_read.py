@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose
+import nose, sys
 from pydna import parse, read
 
 from Bio.SeqIO import read as BPread
@@ -9,17 +9,17 @@ from Bio.SeqIO import parse as BPparse
 
 def test_pth1():
 
-    q = BPread("read1.gb", "gb")
-    w = BPread("read2.gb", "gb")
-    e = BPread("read3.fasta", "fasta")
-    r = BPread("read4.fasta", "fasta")
+    q = BPread("tests/read1.gb", "gb")
+    w = BPread("tests/read2.gb", "gb")
+    e = BPread("tests/read3.fasta", "fasta")
+    r = BPread("tests/read4.fasta", "fasta")
 
     q.format("gb")
     w.format("gb")
 
-    a, b = BPparse("pth1.txt", "gb")
+    a, b = BPparse("tests/pth1.txt", "gb")
 
-    x, y = parse("pth1.txt")
+    x, y = parse("tests/pth1.txt")
     assert a.features[13].qualifiers['label'][0] == '2micron 2µ'
 
 
@@ -114,17 +114,17 @@ def test_read_from_string():
     assert str(a.seq)=="ACGT"
 
 def test_read_from_unicode():
-    with open("pth1.txt", "rU") as f: text = f.read()
+    with open("tests/pth1.txt", "rU") as f: text = f.read()
     assert type(text) == str
     x,y = parse( text )
     assert x.format()[3314:3324] == '2micron 2µ'
 
 def test_read_from_file():
-    a = read("./read1.gb")
-    b = read("./read2.gb")
-    c = read("./read3.fasta")
-    d = read("./read4.fasta")
-    x,y = parse( "pth1.txt" )
+    a = read("tests/read1.gb")
+    b = read("tests/read2.gb")
+    c = read("tests/read3.fasta")
+    d = read("tests/read4.fasta")
+    x,y = parse( "tests/pth1.txt" )
 
     a.format("gb")
     b.format("gb")
@@ -137,5 +137,5 @@ def test_read_from_file():
     assert str(a.seq).lower()==str(b.seq).lower()==str(c.seq).lower()==str(d.seq).lower()
 
 if __name__ == '__main__':
-    nose.runmodule()
+    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
 

@@ -18,5 +18,5 @@ def test_download():
     os.environ["pydna_cache"] = v
 
 if __name__ == '__main__':
-    nose.runmodule()
+    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
 

@@ -2,13 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import versioneer
-#versioneer.VCS = 'git'
-#versioneer.versionfile_source = 'pydna/_version.py'
-#versioneer.versionfile_build = 'pydna/_version.py'
-#versioneer.tag_prefix = '' # tags are like 1.2.0
-#versioneer.parentdir_prefix = '' # dirname like 'myproject-1.2.0'
 
-# Read author etc..
+# Read author etc. from __init__.py
 for line in open('pydna/__init__.py'):
     if line.startswith('__') and not line.startswith('__version') and not line.startswith('__long'):
         exec(line.strip())
@@ -28,11 +23,7 @@ setup(  name            = 'pydna',
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
         long_description=open('README.rst').read(),
-        install_requires =[
-        "biopython",
-        "networkx",
-        "appdirs",
-        "prettytable"],
+        install_requires =[ "biopython", "networkx", "appdirs", "prettytable", "ordered-set"],
         zip_safe = False,
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',
@@ -41,6 +32,7 @@ setup(  name            = 'pydna',
                        'Intended Audience :: Developers',
                        'Intended Audience :: Science/Research',
                        'License :: OSI Approved :: BSD License',
-                       'Programming Language :: Python :: 2.7',
+                       'Operating System :: OS Independent',
+                       'Programming Language :: Python :: 3.5',
                        'Topic :: Education',
                        'Topic :: Scientific/Engineering :: Bio-Informatics',])

@@ -4,288 +4,270 @@
 test parse
 '''
 
-import unittest
+import nose, sys
+
 from pydna import parse
 from pydna import pcr
 from Bio.SeqUtils.CheckSum import seguid
 
-class test_pcr(unittest.TestCase):
+def test_circ_pcr():
+    ''' test circ pcr'''
+    s = parse('''
+    >MCT4_flaghis_rv
+    gccgcaagcttgtcgtcatcgtctttgtagtcCATggccaggagggttggttccgcc
+    >MCT4_flaghis_fw
+    ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggcc''', ds=False)
 
-    def test_circ_pcr(self):
-        ''' test circ pcr'''
-        s = parse('''
-        >MCT4_flaghis_rv
-        gccgcaagcttgtcgtcatcgtctttgtagtcCATggccaggagggttggttccgcc
-        >MCT4_flaghis_fw
-        ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggcc''', ds=False)
+    t = parse('''
+    >hej circular
+    TCAGGTGAGGCGGAACCAACCCTCCTGGCCATGggaggggccgtggtggacgagggccccacaggcg
+    ''')
 
-        t = parse('''
-        >hej circular
-        TCAGGTGAGGCGGAACCAACCCTCCTGGCCATGggaggggccgtggtggacgagggccccacaggcg
-        ''')
+    p = pcr(s,t)
 
-        p = pcr(s,t)
-
-        self.assertTrue( p.seguid() == 'wYEpbWxO8tfgA_AL67wqGzYmc5k')
+    assert p.seguid() == 'wYEpbWxO8tfgA_AL67wqGzYmc5k'
 
 
 
-    def test_pcr(self):
-        ''' test pcr'''
+def test_pcr():
+    ''' test pcr'''
 
-        raw=[]
+    raw=[]
 
-        raw.append(
+    raw.append(
 
-        ('7JOV1MJBZJp2Smja/7KFGhS2SWY',
+    ('7JOV1MJBZJp2Smja/7KFGhS2SWY',
 
-        parse('''
-        >524_pFA6aF (29-mer)
-        cacatacgatttaggtgacactatagaac
+    parse('''
+    >524_pFA6aF (29-mer)
+    cacatacgatttaggtgacactatagaac
 
-        >523_AgTEF1tpR (21-mer)
-        ggttgtttatgttcggatgtg
-        '''),
+    >523_AgTEF1tpR (21-mer)
+    ggttgtttatgttcggatgtg
+    '''),
 
-        parse("./pAG25.gb"),)
-        )
+    parse("tests/pAG25.gb"),)
+    )
 
-        raw.append(
+    raw.append(
 
-        ('7pPxy/bQvs4+7CaOgiywQVzUFDc',
+    ('7pPxy/bQvs4+7CaOgiywQVzUFDc',
 
-        parse('''
-        >lowgc_f
-        TTTCACTAGTTACTTGTAGTCGacgtgccatctgtgcagacaaacgcatcaggatat
+    parse('''
+    >lowgc_f
+    TTTCACTAGTTACTTGTAGTCGacgtgccatctgtgcagacaaacgcatcaggatat
 
-        >lowgc_r
-        AAGTTGGAAATCTAGCTTTTCTTgacgtcagcggccgcattgcaca
-        '''),
-        parse("./pCAPs.gb"),)
-        )
+    >lowgc_r
+    AAGTTGGAAATCTAGCTTTTCTTgacgtcagcggccgcattgcaca
+    '''),
+    parse("tests/pCAPs.gb"),)
+    )
 
-        raw.append(
+    raw.append(
 
-        ('7JOV1MJBZJp2Smja/7KFGhS2SWY',
+    ('7JOV1MJBZJp2Smja/7KFGhS2SWY',
 
-        parse('''
-        >524_pFA6aF (29-mer)
-        cacatacgatttaggtgacactatagaac
+    parse('''
+    >524_pFA6aF (29-mer)
+    cacatacgatttaggtgacactatagaac
 
-        >523_AgTEF1tpR (21-mer)
-        ggttgtttatgttcggatgtg
-        '''),
+    >523_AgTEF1tpR (21-mer)
+    ggttgtttatgttcggatgtg
+    '''),
 
-        parse("../tests/pAG25.gb"),
+    parse("tests/pAG25.gb"),
 
-        ))
+    ))
 
-        raw.append(
+    raw.append(
 
-        ('yshvYTXr9iXCnh3YytWQRDBNQzI',
+    ('yshvYTXr9iXCnh3YytWQRDBNQzI',
 
-        parse('''
-        >ForwardPrimer1
-        gctactacacacgtactgactg
+    parse('''
+    >ForwardPrimer1
+    gctactacacacgtactgactg
 
-        >ReversePrimer
-        tgtggttactgactctatcttg
+    >ReversePrimer
+    tgtggttactgactctatcttg
 
-        LOCUS       sequence_50_bp            46 bp    DNA     circular UNK 08-FEB-2013
-        DEFINITION  sequence_50_bp circular
-        ACCESSION   sequence_50_bp
-        VERSION     sequence_50_bp
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 ccaagataga gtcagtaacc acagctacta cacacgtact gactgt
-        //
+    LOCUS       sequence_50_bp            46 bp    DNA     circular UNK 08-FEB-2013
+    DEFINITION  sequence_50_bp circular
+    ACCESSION   sequence_50_bp
+    VERSION     sequence_50_bp
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 ccaagataga gtcagtaacc acagctacta cacacgtact gactgt
+    //
 
-        '''),))
+    '''),))
 
-        raw.append(
+    raw.append(
 
-        ('yshvYTXr9iXCnh3YytWQRDBNQzI',
+    ('yshvYTXr9iXCnh3YytWQRDBNQzI',
 
-        parse('''
-        >ForwardPrimer2
-        gctactacacacgtactgactg
+    parse('''
+    >ForwardPrimer2
+    gctactacacacgtactgactg
 
-        >ReversePrimer
-        tgtggttactgactctatcttg
+    >ReversePrimer
+    tgtggttactgactctatcttg
 
-        LOCUS       template                  46 bp    DNA     circular UNK 15-OCT-2012
-        DEFINITION  template circular
-        ACCESSION   template
-        VERSION     template
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 ccaagataga gtcagtaacc acagctacta cacacgtact gactgt
-        //
-        '''),))
-        raw.append(
+    LOCUS       template                  46 bp    DNA     circular UNK 15-OCT-2012
+    DEFINITION  template circular
+    ACCESSION   template
+    VERSION     template
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 ccaagataga gtcagtaacc acagctacta cacacgtact gactgt
+    //
+    '''),))
+    raw.append(
 
-        ('yshvYTXr9iXCnh3YytWQRDBNQzI',
+    ('yshvYTXr9iXCnh3YytWQRDBNQzI',
 
-        parse('''
-        >ForwardPrimer3
-        gctactacacacgtactgactg
+    parse('''
+    >ForwardPrimer3
+    gctactacacacgtactgactg
 
-        >ReversePrimer
-        tgtggttactgactctatcttg
+    >ReversePrimer
+    tgtggttactgactctatcttg
 
-        LOCUS       template                  46 bp    DNA     circular UNK 08-FEB-2013
-        DEFINITION  template circular
-        ACCESSION   template
-        VERSION     template
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 tccaagatag agtcagtaac cacagctact acacacgtac tgactg
-        //
-        '''),))
+    LOCUS       template                  46 bp    DNA     circular UNK 08-FEB-2013
+    DEFINITION  template circular
+    ACCESSION   template
+    VERSION     template
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 tccaagatag agtcagtaac cacagctact acacacgtac tgactg
+    //
+    '''),))
 
-        raw.append(
-        ('yshvYTXr9iXCnh3YytWQRDBNQzI',
+    raw.append(
+    ('yshvYTXr9iXCnh3YytWQRDBNQzI',
 
-        parse('''
-        >ForwardPrimer4
-        gctactacacacgtactgactg
+    parse('''
+    >ForwardPrimer4
+    gctactacacacgtactgactg
 
-        >ReversePrimer
-        tgtggttactgactctatcttg
+    >ReversePrimer
+    tgtggttactgactctatcttg
 
-        LOCUS       template                  46 bp    DNA     circular UNK 15-OCT-2012
-        DEFINITION  template circular
-        ACCESSION   template
-        VERSION     template
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 gtccaagata gagtcagtaa ccacagctac tacacacgta ctgact
-        //
-        '''),))
+    LOCUS       template                  46 bp    DNA     circular UNK 15-OCT-2012
+    DEFINITION  template circular
+    ACCESSION   template
+    VERSION     template
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 gtccaagata gagtcagtaa ccacagctac tacacacgta ctgact
+    //
+    '''),))
 
-        raw.append(
-        ('60meNXeGKO7ahZwcIl5yXHFC3Yg',
-        parse('''
-        >fw1
-        cacatacgatttaggtgacactatagaac
-        >rv
-        ggttgtttatgttcggatgtg
+    raw.append(
+    ('60meNXeGKO7ahZwcIl5yXHFC3Yg',
+    parse('''
+    >fw1
+    cacatacgatttaggtgacactatagaac
+    >rv
+    ggttgtttatgttcggatgtg
 
-        LOCUS       tm                        50 bp    DNA     circular UNK 15-OCT-2012
-        DEFINITION  tm circular
-        ACCESSION   tm
-        VERSION     tm
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 cacatccgaa cataaacaac ccacatacga tttaggtgac actatagaac
-        //
-        '''),)
-        )
+    LOCUS       tm                        50 bp    DNA     circular UNK 15-OCT-2012
+    DEFINITION  tm circular
+    ACCESSION   tm
+    VERSION     tm
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 cacatccgaa cataaacaac ccacatacga tttaggtgac actatagaac
+    //
+    '''),)
+    )
 
-        raw.append(
+    raw.append(
 
-        ('60meNXeGKO7ahZwcIl5yXHFC3Yg',
-        parse('''
-        >fw2
-        cacatacgatttaggtgacactatagaac
-        >rv
-        ggttgtttatgttcggatgtg
+    ('60meNXeGKO7ahZwcIl5yXHFC3Yg',
+    parse('''
+    >fw2
+    cacatacgatttaggtgacactatagaac
+    >rv
+    ggttgtttatgttcggatgtg
 
-        LOCUS       tm                        50 bp    DNA     circular UNK 15-OCT-2012
-        DEFINITION  tm circular
-        ACCESSION   tm
-        VERSION     tm
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 acatccgaac ataaacaacc cacatacgat ttaggtgaca ctatagaacc
-        //
+    LOCUS       tm                        50 bp    DNA     circular UNK 15-OCT-2012
+    DEFINITION  tm circular
+    ACCESSION   tm
+    VERSION     tm
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 acatccgaac ataaacaacc cacatacgat ttaggtgaca ctatagaacc
+    //
 
-        '''),)
-        )
+    '''),)
+    )
 
-        raw.append(
+    raw.append(
 
-        ('60meNXeGKO7ahZwcIl5yXHFC3Yg',
-        parse('''
-        >fw3
-        cacatacgatttaggtgacactatagaac
-        >rv
-        ggttgtttatgttcggatgtg
-        LOCUS       tm                        50 bp    DNA     circular UNK 15-OCT-2012
-        DEFINITION  tm circular
-        ACCESSION   tm
-        VERSION     tm
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 ccacatccga acataaacaa cccacatacg atttaggtga cactatagaa
-        //
+    ('60meNXeGKO7ahZwcIl5yXHFC3Yg',
+    parse('''
+    >fw3
+    cacatacgatttaggtgacactatagaac
+    >rv
+    ggttgtttatgttcggatgtg
+    LOCUS       tm                        50 bp    DNA     circular UNK 15-OCT-2012
+    DEFINITION  tm circular
+    ACCESSION   tm
+    VERSION     tm
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 ccacatccga acataaacaa cccacatacg atttaggtga cactatagaa
+    //
 
-        '''),)
-        )
+    '''),)
+    )
 
 
-        raw.append(
-        ('y6ohCJ4O+8Is012DItz4F4saxNo',
-        parse('''
-        >f_Eric_Ma
-        ARATGAGTCTTCTRACCGAGGTCG
-        >r_Eric_Ma
-        TGAAAAGACATCYTCAAGYYTCTG
-        >templ
-        AGCAAAAGCAGGTAGATATTGAAAAATGAGTCTTCTAACCGAGGTCGAAACGTACGTTCTCTCTATCGTCCCGTCAGGCCCCCTCAAAGCCGAGATCGCGCAGAGACTTGAAGATGTCTCTGCAGGGAAGAACACTGATCTCGAGGCTCTCATGGAATGGCTAAAGACAAGACCAATCCTGTCACCTCTGACTAAGGGGATTTTAGGGTTTGTGTTCACGCTCACCGTGCCCAGTGAGCGAGGACTGCAGCGTAGACGCTTTGTCCAGAATGCCTTAAATGGGAATGGAGACCCAAACAACATGGACAGGGCAGTCAAACTATACAGGAAGCTGAAAAGAGAGATAACATTCCATGGGGCTAAAGAGGTTGCACTCAGCTATTCAACCGGTGCACTTGCCAGTTGCATGGGTCTCATATACAACAGGATGGGAACGGTAACCACAGAAGTAGCTTTTGGCCTGGTGTGTGCCACTTGTGAGCAGATTGCTGACTCACAGCATCGATCTCACAGACAGATGGTGACTACCACCAACCCACTAATCAGGCATGAAAACAGAATGGTGCTGGCCAGCACTACAGCTAAGGCTATGGAGCAGATGGCTGGATCGAGTGAACAGGCAGCGGAAGCCATGGAGGTTGCTAGTCAGGCTAGGCAGATGGTGCAGGCAATGAGGACAATTGGGACTCACCCTAGCTCCAGTGCCGGTCTGAAAGATGATCTTCTTGAAAATTTGCAGGCCTACCAGAAGCGGATGGGAGTGCAAATGCAGCGATTCAAGTGATCCTCTCGTTATTGCCGCAAGTATCATTGGGATCTTGCACTTGATATTGTGGATTCTTGATCGTCCTTTCTTCAAATGTATTTATCGTCGCCTTAAATACGGTTTGAAAAGAGGGCCTTCTACGGAAGGAGTGCCTGAGTCTATGAGGGAAGAGTATCGGCAGGAACAGCAGAGTGCTGTGGATGTTGACGATGGTCATTTTGTCAACATAGAGCTGGAGTAAAAAACTACCTTGTTTCTACT
-        '''),)
-        )
+    raw.append(
+    ('y6ohCJ4O+8Is012DItz4F4saxNo',
+    parse('''
+    >f_Eric_Ma
+    ARATGAGTCTTCTRACCGAGGTCG
+    >r_Eric_Ma
+    TGAAAAGACATCYTCAAGYYTCTG
+    >templ
+    AGCAAAAGCAGGTAGATATTGAAAAATGAGTCTTCTAACCGAGGTCGAAACGTACGTTCTCTCTATCGTCCCGTCAGGCCCCCTCAAAGCCGAGATCGCGCAGAGACTTGAAGATGTCTCTGCAGGGAAGAACACTGATCTCGAGGCTCTCATGGAATGGCTAAAGACAAGACCAATCCTGTCACCTCTGACTAAGGGGATTTTAGGGTTTGTGTTCACGCTCACCGTGCCCAGTGAGCGAGGACTGCAGCGTAGACGCTTTGTCCAGAATGCCTTAAATGGGAATGGAGACCCAAACAACATGGACAGGGCAGTCAAACTATACAGGAAGCTGAAAAGAGAGATAACATTCCATGGGGCTAAAGAGGTTGCACTCAGCTATTCAACCGGTGCACTTGCCAGTTGCATGGGTCTCATATACAACAGGATGGGAACGGTAACCACAGAAGTAGCTTTTGGCCTGGTGTGTGCCACTTGTGAGCAGATTGCTGACTCACAGCATCGATCTCACAGACAGATGGTGACTACCACCAACCCACTAATCAGGCATGAAAACAGAATGGTGCTGGCCAGCACTACAGCTAAGGCTATGGAGCAGATGGCTGGATCGAGTGAACAGGCAGCGGAAGCCATGGAGGTTGCTAGTCAGGCTAGGCAGATGGTGCAGGCAATGAGGACAATTGGGACTCACCCTAGCTCCAGTGCCGGTCTGAAAGATGATCTTCTTGAAAATTTGCAGGCCTACCAGAAGCGGATGGGAGTGCAAATGCAGCGATTCAAGTGATCCTCTCGTTATTGCCGCAAGTATCATTGGGATCTTGCACTTGATATTGTGGATTCTTGATCGTCCTTTCTTCAAATGTATTTATCGTCGCCTTAAATACGGTTTGAAAAGAGGGCCTTCTACGGAAGGAGTGCCTGAGTCTATGAGGGAAGAGTATCGGCAGGAACAGCAGAGTGCTGTGGATGTTGACGATGGTCATTTTGTCAACATAGAGCTGGAGTAAAAAACTACCTTGTTTCTACT
+    '''),)
+    )
 
-        for key, tst in enumerate(raw):
-            print(key, end=" ")
-            print(tst[1][0].name, end=" ")
-            print("pcr test", key)
-            self.assertEqual(tst[0], seguid(pcr(tst[1:]).seq))
+    for key, tst in enumerate(raw):
+        print(key, end=" ")
+        print(tst[1][0].name, end=" ")
+        print("pcr test", key)
+        assert tst[0] == seguid(pcr(tst[1:]).seq)
 
 if __name__ == '__main__':
-    unittest.main()
-
-
-
-
-
-
-'''
-ARATGAGTCTTCTRACCGAGGTCG
-||||||||||||||||||||||||
-AAATGAGTCTTCTAACCGAGGTCGAAACGTACGTTCTCTCTATCGTCCCGTCAGGCCCCCTCAAAGCCGAGATCGCGCAGAGACTTGAAGATGTCT
-                                                                             |||||||||||||||||||
-                                                                             CAGARRCTTGARGATGTCTTTTCA
-
-
-'''
-
-
+    nose.runmodule(argv=[sys.argv[0], '--nocapture'])

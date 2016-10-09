@@ -26,9 +26,11 @@ DNA molecule constructions.
 Look at some assembly strategies made in the Jupyter notebook
 format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb).
 
-There  at the open access BMC Bioinformatics publication describing pydna:
+There is also an open access paper in BMC Bioinformatics describing pydna:
 
 [![abstr](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+
+Please make a reference to the above paper if you publish work where pydna was used.
 
 Most pydna functionality is implemented as methods for the double stranded DNA sequence record classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
 
@@ -70,16 +72,14 @@ These classes make cut and paste cloning and PCR very simple:
     TypeError: sticky ends not compatible!
     >>>
 
-Notably, homologous recombination and Gibson assembly between linear DNA fragments can be easily simulated without any additional information other than the primary sequence of the fragments.
+Notably, homologous recombination and Gibson assembly between linear DNA fragments can be easily simulated without any additional information besides the primary sequence of the fragments.
 
 Gel electrophoresis of DNA fragments can be simulated using the gel.py module by [Bruno Silva](https://github.com/bruno2git):
 
 ![alt text](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/gel.png "simulated agarose gel")
 
 
-Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb)
-
-Pydna was designed to semantically imitate how sub cloning experiments are typically documented in scientific literature. Pydna code describing a sub cloning is reasonably compact and meant to be readable.
+Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb).
 
 The nine lines of Python below, simulates the construction of a recombinant plasmid. DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
 
@@ -113,7 +113,7 @@ python. This is helpful to generate examples for teaching purposes.
 Read the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
 for further information.
 
-An [on-line](http://pydna-shell.appspot.com) shell running Python with pydna is available for simple experimentation. It is slower than running pydna on your own computer locally.
+
 
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
 for pydna if you have problems, questions or comments.
