@@ -12,7 +12,7 @@ before_install:
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
 - conda install conda-build
-
+- ls
 install:
   - conda develop .
   
