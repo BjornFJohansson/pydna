@@ -17,4 +17,4 @@ install:
   - conda develop .
   
 script:
-  - python run_test_.py
+  - python run_test.py
