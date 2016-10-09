@@ -1,9 +1,7 @@
-environment:
-  matrix:
-    - PYTHON: "C:\\Miniconda35-x64"
-      PYTHON_VERSION: "3.5.x" 
-      PYTHON_ARCH: "64"
-
+init:
+  - path C:\Miniconda-x64;C:\Miniconda-x64\Scripts;%PATH%
+  - conda update -q -y conda
 install:
-- set PATH=%PYDIR%;%PYDIR%\\Scripts;%PATH%
-- conda info 
+  - conda install -q -y conda-build
+build_script:
+  - conda build .
