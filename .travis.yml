@@ -9,8 +9,8 @@ before_install:
 - bash ~/miniconda.sh -b -p $HOME/miniconda
 - export PATH="$HOME/miniconda/bin:$PATH"
 - conda update --yes -q conda
-- conda config --add channels conda-forge BjornFJohansson
-
+- conda config --add channels conda-forge 
+- conda config --add channels BjornFJohansson
 install:
   - conda develop .
   
