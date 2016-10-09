@@ -7,12 +7,12 @@ def main():
 
     if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
         print("\n\ncontinuous integration\n\n")
-        os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"..","..","DATA")
+        os.environ["pydna_data_dir"]    = "DATA" #os.path.join(os.getcwd(),"..","..","DATA")
         os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
         os.environ["pydna_config_dir"]  = os.environ["pydna_data_dir"]
     else:
-        os.environ["pydna_data_dir"] = test_data_dir = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
-        os.environ["pydna_log_dir"]  = test_log_dir = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
+        os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
+        os.environ["pydna_log_dir"]  = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
 
     print("      _             _                     _               _            _               _ _       _ ")
     print("     | |           | |                   | |             | |          | |             (_) |     | |")
