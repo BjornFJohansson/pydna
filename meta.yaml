@@ -39,7 +39,7 @@ test:
   imports:
     - pydna
   source_files:
-    - docs/*.*
+    - docs/cookbook/*.*
     - pydna/*.py
     - pydna/py_rstr_max/*.py
     - tests/*.*
