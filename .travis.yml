@@ -1,31 +1,18 @@
 language: objective-c
-os:
-  - osx
+cache:
+ - wget
+ - pip
+ - conda
+
 before_install:
-  - brew update
-  - brew install python3
+- wget http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O ~/miniconda.sh
+- bash ~/miniconda.sh -b -p $HOME/miniconda
+- export PATH="$HOME/miniconda/bin:$PATH"
+- conda update --yes -q conda
+- conda config --add channels conda-forge BjornFJohansson
 
 install:
-  #- brew install python --universal --framework
-  #- brew install wget
-  #- which python
-  #- export VERSIONER_PYTHON_PREFER_32_BIT=yes
-  #- defaults write com.apple.versioner.python Prefer-32-Bit -bool yes
-  #- which python
-  #- python --version
-  - pip install --upgrade pip
-  - pip install numpy
-  - pip install scipy
-  - pip install matplotlib
-  - pip install mpldatacursor
-  - pip install -e .
- 
-before_script:
-
-  - pip install -r test_requirements.txt
-  - pip install -r requirements.txt
-  - pip install ipython
-  - pip install jsonschema
+  - conda develop .
   
 script:
   - python run_test_.py
