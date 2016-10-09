@@ -11,8 +11,9 @@ before_install:
 - conda update --yes -q conda
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
-install:
-  - conda develop .
+- conda install conda-build
+#install:
+#  - conda develop .
   
 script:
   - python run_test_.py
