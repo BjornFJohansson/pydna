@@ -4,19 +4,19 @@ init:
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
 install:
-- conda install conda-build
-- conda install nose
-- conda install ipython
-- conda install jupyter
-- conda install biopython
-- conda install networkx
-- conda install appdirs
-- conda install prettytable
-- conda install numpy
-- conda install scipy
-- conda install matplotlib
-- conda install mpldatacursor
-- conda install pint
-- conda install ordered-set
+- conda install conda-build --yes
+- conda install nose --yes
+- conda install ipython --yes
+- conda install jupyter --yes
+- conda install biopython --yes
+- conda install networkx --yes
+- conda install appdirs --yes
+- conda install prettytable --yes
+- conda install numpy --yes
+- conda install scipy --yes
+- conda install matplotlib --yes
+- conda install mpldatacursor --yes
+- conda install pint --yes
+- conda install ordered-set --yes
 build_script:
   - conda build .
