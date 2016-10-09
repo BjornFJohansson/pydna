@@ -1,7 +1,22 @@
 init:
-  - path C:\Miniconda-x64;C:\Miniconda-x64\Scripts;%PATH%
-  - conda update -q -y conda
+- path C:\Miniconda-x64;C:\Miniconda-x64\Scripts;%PATH%
+- conda update --yes -q conda
+- conda config --add channels conda-forge 
+- conda config --add channels BjornFJohansson
 install:
-  - conda install -q -y conda-build
+- conda install conda-build
+- conda install nose
+- conda install ipython
+- conda install jupyter
+- conda install biopython
+- conda install networkx
+- conda install appdirs
+- conda install prettytable
+- conda install numpy
+- conda install scipy
+- conda install matplotlib
+- conda install mpldatacursor
+- conda install pint
+- conda install ordered-set
 build_script:
   - conda build .
