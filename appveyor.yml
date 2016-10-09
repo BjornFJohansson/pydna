@@ -5,5 +5,4 @@ environment:
       PYTHON_ARCH: "64"
 
 install:
-  - ECHO "Filesystem root:"
- 
+- conda info 
