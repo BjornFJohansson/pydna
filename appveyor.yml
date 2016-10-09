@@ -5,4 +5,5 @@ environment:
       PYTHON_ARCH: "64"
 
 install:
+- set PATH=%PYDIR%;%PYDIR%\\Scripts;%PATH%
 - conda info 
