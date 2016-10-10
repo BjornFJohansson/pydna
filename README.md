@@ -234,5 +234,5 @@ If dependencies have to be installed separately, this can be done using the bina
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 
 ## Changelog
-See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/CHANGELOG.md) for recent changes. 
+See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/CHANGELOG.md) for recent changes. 
 
