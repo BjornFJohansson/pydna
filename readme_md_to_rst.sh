@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-pandoc --from=markdown --to=rst --output=README.rst README.md
+/home/bjorn/anaconda3/envs/bjorn3/bin/pandoc --from=markdown --to=rst --output=README.rst README.md
 
 $SHELL

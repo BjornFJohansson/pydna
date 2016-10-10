@@ -35,10 +35,13 @@ constructions.
 Look at some assembly strategies made in the Jupyter notebook format
 `here <http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb>`__.
 
-There at the open access BMC Bioinformatics publication describing
+There is also an open access paper in BMC Bioinformatics describing
 pydna:
 
 |abstr|
+
+Please make a reference to the above paper if you publish work where
+pydna was used.
 
 Most pydna functionality is implemented as methods for the double
 stranded DNA sequence record classes Dseq and Dseqrecord, which are
@@ -88,7 +91,7 @@ These classes make cut and paste cloning and PCR very simple:
 
 Notably, homologous recombination and Gibson assembly between linear DNA
 fragments can be easily simulated without any additional information
-other than the primary sequence of the fragments.
+besides the primary sequence of the fragments.
 
 Gel electrophoresis of DNA fragments can be simulated using the gel.py
 module by `Bruno Silva <https://github.com/bruno2git>`__:
@@ -99,11 +102,7 @@ module by `Bruno Silva <https://github.com/bruno2git>`__:
    alt text
 
 Look at an example notebook with a gel simulation
-`here <http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb>`__
-
-Pydna was designed to semantically imitate how sub cloning experiments
-are typically documented in scientific literature. Pydna code describing
-a sub cloning is reasonably compact and meant to be readable.
+`here <http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb>`__.
 
 The nine lines of Python below, simulates the construction of a
 recombinant plasmid. DNA sequences are downloaded from Genbank by
@@ -143,10 +142,6 @@ the
 `cookbook <https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0>`__
 with example files for further information.
 
-An `on-line <http://pydna-shell.appspot.com>`__ shell running Python
-with pydna is available for simple experimentation. It is slower than
-running pydna on your own computer locally.
-
 Please post a message in the `google
 group <https://groups.google.com/d/forum/pydna>`__ for pydna if you have
 problems, questions or comments. Feedback in the form of questions,
@@ -154,9 +149,6 @@ comments or criticism is very welcome!
 
 Automatic testing and builds
 ----------------------------
-
-An anaconda package is automatically built on Anaconda cloud
-|Anaconda-Server Badge|.
 
 The test suit is run automatically after each commit on OSX-64 using
 travis |icon1| and on Windows using appveyor\ |icon2|.
@@ -173,10 +165,11 @@ Dependencies are monitored by versioneye |icon11|
 Minimal installation requirements
 ---------------------------------
 
-Pydna was developed on and for Python 2.7. Other versions have not been
-tested. The list below is the minimal requirements for installing pydna.
+Pydna is currently developed on and for Python 3.5. Pydna versions
+before 1.0.0 were compatible with python 2.7 only. The list below is the
+minimal requirements for installing pydna.
 
--  `Python 2.7 <http://www.python.org>`__
+-  `Python3 <http://www.python.org>`__
 -  `biopython >= 1.65 <http://pypi.python.org/pypi/biopython>`__
 -  `networkx >= 1.8.1 <http://pypi.python.org/pypi/networkx>`__
 -  `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdir>`__
@@ -191,7 +184,9 @@ have IPython and Jupyter installed, there are functions in pydna for
 importing ipython notebooks as modules among other things.
 
 If scipy, numpy, matplotlib and mpldatacursor are installed, the gel
-simulation functionality is available.
+simulation functionality is available, otherwise not.
+
+The pydna conda package installs all optional requirements (see below).
 
 -  `ipython>=4 <https://pypi.python.org/pypi/ipython>`__
 -  `jupyter>=1.0.0 <https://pypi.python.org/pypi/jupyter>`__
@@ -206,11 +201,6 @@ Requirements for running tests
 -  `nose>=1.3.4 <https://pypi.python.org/pypi/nose>`__
 -  `coverage>=3.7.1 <https://pypi.python.org/pypi/coverage>`__
 
-Python 3
---------
-
-This code has not been tested with Python 3.
-
 Installation using conda on Anaconda
 ------------------------------------
 
@@ -222,9 +212,23 @@ There is a `conda <https://anaconda.org/bjornfjohansson/pydna>`__
 package available for pydna, which is easily installed from the command
 line using the conda package manager.
 
+Once Anaconda is installed, the conda package manager can be used to
+install pydna. Pydna and its dependencies are available from the
+`conda-forge <https://anaconda.org/conda-forge>`__ and
+`BjornFJohansson <https://anaconda.org/bjornfjohansson>`__
+`Anaconda.org <https://anaconda.org>`__ channels. The first step is to
+add the channels:
+
 ::
 
-    conda install -c https://conda.anaconda.org/bjornfjohansson pydna
+    conda config --append channels conda-forge
+    conda config --append channels BjornFJohansson
+
+Then pydna can be installed by simply:
+
+::
+
+    conda install pydna
 
 This works on Windows, MacOSX and Linux, and installs all necessary and
 optional dependencies automatically in one go.
@@ -237,7 +241,7 @@ officially
 `recommended <http://python-packaging-user-guide.readthedocs.org/en/latest>`__
 tool for installation of Python packages from PyPi. Pip installs the
 minimal installation requirements automatically, but not the optional
-requirements (see above).
+requirements (see above). These have to be installed manually.
 
 Linux:
 ~~~~~~
@@ -261,19 +265,12 @@ Installation from Source
 
 If you install from source, you need to install all dependencies
 separately (listed above). Download one of the source installers from
-the pypi site and extract the file. Open the pydna source code directory
-(containing the setup.py file) in terminal and type:
+the pypi site or from Github and extract the file. Open the pydna source
+code directory (containing the setup.py file) in terminal and type:
 
 ::
 
     python setup.py install
-
-Installation from binary distributions
---------------------------------------
-
-There is a 64 bit windows executable and a windows wheel
-`here <https://ci.appveyor.com/project/BjornFJohansson/pydna/build/artifacts>`__.
-Note that these will not install dependencies (see below).
 
 Windows dependencies
 ~~~~~~~~~~~~~~~~~~~~
@@ -282,29 +279,32 @@ Sometimes dependencies can be difficult to install on windows, as a C
 compiler is necessary. If dependencies have to be installed separately,
 this can be done using the binary installers for Windows:
 
-+----------------------+---------------------------------------------------------------------------+
-| Dependency           | link                                                                      |
-+======================+===========================================================================+
-| Python (32,64)       | http://www.python.org/download                                            |
-+----------------------+---------------------------------------------------------------------------+
-| Biopython (32)       | http://biopython.org/wiki/Download                                        |
-+----------------------+---------------------------------------------------------------------------+
-| Biopython (64)       | http://www.lfd.uci.edu/~gohlke/pythonlibs/#biopython                      |
-+----------------------+---------------------------------------------------------------------------+
-| numpy (32,64)        | http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy                          |
-+----------------------+---------------------------------------------------------------------------+
-| networkx (32,64)     | http://www.lfd.uci.edu/~gohlke/pythonlibs/#networkx                       |
-+----------------------+---------------------------------------------------------------------------+
-| pint                 | http://www.lfd.uci.edu/~gohlke/pythonlibs/Pint-0.6-py2.py3-none-any.whl   |
-+----------------------+---------------------------------------------------------------------------+
-| scipy (32,64)        | http://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy                          |
-+----------------------+---------------------------------------------------------------------------+
-| matplotlib (32,64)   | http://www.lfd.uci.edu/~gohlke/pythonlibs/#matplotlib                     |
-+----------------------+---------------------------------------------------------------------------+
-| ipython>=4.0         | http://www.lfd.uci.edu/~gohlke/pythonlibs/#ipython                        |
-+----------------------+---------------------------------------------------------------------------+
-| jupyter              | http://www.lfd.uci.edu/~gohlke/pythonlibs/#jupyter                        |
-+----------------------+---------------------------------------------------------------------------+
++-----------------+----------------------------------------------------------+
+| Dependency      | link                                                     |
++=================+==========================================================+
+| Python (32,64)  | http://www.python.org/download                           |
++-----------------+----------------------------------------------------------+
+| Biopython (32)  | http://biopython.org/wiki/Download                       |
++-----------------+----------------------------------------------------------+
+| Biopython (64)  | http://www.lfd.uci.edu/~gohlke/pythonlibs/#biopython     |
++-----------------+----------------------------------------------------------+
+| numpy (32,64)   | http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy         |
++-----------------+----------------------------------------------------------+
+| networkx        | http://www.lfd.uci.edu/~gohlke/pythonlibs/#networkx      |
+| (32,64)         |                                                          |
++-----------------+----------------------------------------------------------+
+| pint            | http://www.lfd.uci.edu/~gohlke/pythonlibs/Pint-0.6-py2.p |
+|                 | y3-none-any.whl                                          |
++-----------------+----------------------------------------------------------+
+| scipy (32,64)   | http://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy         |
++-----------------+----------------------------------------------------------+
+| matplotlib      | http://www.lfd.uci.edu/~gohlke/pythonlibs/#matplotlib    |
+| (32,64)         |                                                          |
++-----------------+----------------------------------------------------------+
+| ipython>=4.0    | http://www.lfd.uci.edu/~gohlke/pythonlibs/#ipython       |
++-----------------+----------------------------------------------------------+
+| jupyter         | http://www.lfd.uci.edu/~gohlke/pythonlibs/#jupyter       |
++-----------------+----------------------------------------------------------+
 
 Source Code
 -----------
@@ -323,8 +323,6 @@ for recent changes.
    :target: https://pypi.python.org/pypi/pydna/
 .. |abstr| image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png
    :target: http://www.biomedcentral.com/1471-2105/16/142/abstract
-.. |Anaconda-Server Badge| image:: https://anaconda.org/bjornfjohansson/pydna/badges/build.svg
-   :target: https://anaconda.org/bjornfjohansson/pydna/builds
 .. |icon1| image:: https://travis-ci.org/BjornFJohansson/pydna.svg
    :target: https://travis-ci.org/BjornFJohansson/pydna
 .. |icon2| image:: https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true

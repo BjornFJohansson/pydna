@@ -134,10 +134,10 @@ Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/u
 
 ## Minimal installation requirements
 
-Pydna is currently developed on and for Python 3. Pydna versions before 1.0.0 were compatible with python 2.7 only. 
-The list below is the minimal requirements for installing pydna. 
+Pydna is currently developed on and for Python 3.5. Pydna versions before 1.0.0 were compatible with python 2.7 only. 
+The list below is the minimal requirements for installing pydna.
 
-- [Python 3.5](http://www.python.org)
+- [Python3](http://www.python.org)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdir)
@@ -146,9 +146,12 @@ The list below is the minimal requirements for installing pydna.
 
 
 ## Optional Requirements
-Pydna has been designed to be used from the Jupyter notebook. If you have IPython and Jupyter installed, there are functions in pydna for importing ipython notebooks as modules among other things.
+Pydna has been designed to be used from the Jupyter notebook. 
+If you have IPython and Jupyter installed, there are functions in pydna for importing ipython notebooks as modules among other things.
 
-If scipy, numpy, matplotlib and mpldatacursor are installed, the gel simulation functionality is available.
+If scipy, numpy, matplotlib and mpldatacursor are installed, the gel simulation functionality is available, otherwise not.
+
+The pydna conda package installs all optional requirements (see below).
 
 - [ipython>=4](https://pypi.python.org/pypi/ipython)
 - [jupyter>=1.0.0](https://pypi.python.org/pypi/jupyter)
@@ -163,24 +166,34 @@ If scipy, numpy, matplotlib and mpldatacursor are installed, the gel simulation 
 - [coverage>=3.7.1](https://pypi.python.org/pypi/coverage)
 
 ## Installation using conda on Anaconda
+
 The absolutely best way of installing and using pydna is to use a the 
-free [Anaconda](https://store.continuum.io/cshop/anaconda) python distribution. 
+free [Anaconda](https://store.continuum.io/cshop/anaconda) python distribution.
 
 There is a [conda](https://anaconda.org/bjornfjohansson/pydna) package available for pydna, which is easily installed
 from the command line using the conda package manager.
 
-	conda install -c https://conda.anaconda.org/bjornfjohansson pydna
+Once Anaconda is installed, the conda package manager can be used to install pydna.
+Pydna and its dependencies are available from the [conda-forge](https://anaconda.org/conda-forge) and 
+[BjornFJohansson](https://anaconda.org/bjornfjohansson) [Anaconda.org](https://anaconda.org) channels. 
+The first step is to add the channels:
+
+    conda config --append channels conda-forge
+    conda config --append channels BjornFJohansson
+
+Then pydna can be installed by simply:
+
+    conda install pydna
 
 This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies automatically in one go.
 
-The conda channels [BjornFJohansson](https://anaconda.org/bjornfjohansson) and [conda-forge](https://anaconda.org/conda-forge)
-should contain all packages needed to satisfy the dependencies.
-
 ## Installation using pip
+
 The second best way of installing pydna is with pip. Pip is the
 officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool
 for installation of Python packages from PyPi.
 Pip installs the minimal installation requirements automatically, but not the optional requirements (see above).
+These have to be installed manually. 
 
 ### Linux:
 
@@ -190,21 +203,19 @@ Pip installs the minimal installation requirements automatically, but not the op
 
     C:\> pip install pydna
 
-If you do not have pip, you can get it by following
-these [instructions](http://www.pip-installer.org/en/latest/installing.html).
+If you do not have pip, you can get it by following these [instructions](http://www.pip-installer.org/en/latest/installing.html).
 
 ## Installation from Source
-If you install from source, you need to install all dependencies separately (listed above). Download one of the source installers from the pypi site and extract the file. Open the pydna source code directory (containing the setup.py file) in
+If you install from source, you need to install all dependencies separately (listed above). 
+Download one of the source installers from the pypi site or from Github and extract the file. 
+Open the pydna source code directory (containing the setup.py file) in
 terminal and type:
 
     python setup.py install
 
-## Installation from binary distributions
-
-There is a 64 bit windows executable and a windows wheel [here](https://ci.appveyor.com/project/BjornFJohansson/pydna/build/artifacts). Note that these will not install dependencies (see below).
-
 ### Windows dependencies
-Sometimes dependencies can be difficult to install on windows, as a C compiler is necessary. If dependencies have to be installed separately, this can be done using the binary installers for Windows:
+Sometimes dependencies can be difficult to install on windows, as a C compiler is necessary. 
+If dependencies have to be installed separately, this can be done using the binary installers for Windows:
 
 | Dependency         | link                                                                     |
 |--------------------|--------------------------------------------------------------------------|

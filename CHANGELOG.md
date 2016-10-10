@@ -1,12 +1,15 @@
-=======   ========== ===========================================================================
+=======   ========== ==========================================================================================
 version   date       comment
-=======   ========== ===========================================================================
-?         ?          open_cache -> open_cache_folder
+=======   ========== ==========================================================================================
+1.0.2     2016-10-08 Python 3 only!
+                     open_cache -> open_cache_folder
                      logging level is not "info"
-                     added the possiblility to specify a text file containing primers 
-                     added the possiblility to specify a path to the ApE plasmid editor 
-                     (http://biologylabs.utah.edu/jorgensen/wayned/ape/)
-
+                     added the possiblility to specify a text file containing primers and  
+                     a path to the ApE plasmid editor (http://biologylabs.utah.edu/jorgensen/wayned/ape/)
+                     These settings can be made in the pydna.ini file that is located in the 
+                     "user_config_dir" specified on each platform by the appdirs module.
+                     on linux it is in ~/.config/pydna
+                     Bugfix: invisible gel bands in the gel module.
 
 1.0.1     2016-03-10 Bugfix: for errors in IPython import if IPython is too old (<4.0)
                      Bugfix: Large genbank records were not downloaded completely.
@@ -133,4 +136,4 @@ version   date       comment
                      SeqRecords.
 
 0.1.3     2013-04-09 pydna created from Python-dna.
-=======   ========== =========================================================================== 
+=======   ========== ==========================================================================================
