@@ -538,7 +538,6 @@ def assembly_primers(templates,
     if not circular:
         newtails = [""] + newtails + [""]
     else:
-        pass
         newtails = [newtails[-1]] + newtails[:-1]
 
     tails =  list(zip(newtails[::2], newtails[1::2]))
