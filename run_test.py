@@ -7,7 +7,7 @@ def main():
 
     if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
         print("\n\nTests run on continuous integration server\n\n")
-        print("cwd", os.path.join(os.getcwd())
+        print("cwd", os.path.join(os.getcwd()))
         print()
         os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"DATA")
         os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
