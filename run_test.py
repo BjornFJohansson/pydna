@@ -9,9 +9,21 @@ def main():
         print("\n\nTests run on continuous integration server\n\n")
         print("cwd", os.path.join(os.getcwd()))
         print()
+        
         os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"DATA")
-        os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
-        os.environ["pydna_config_dir"]  = os.environ["pydna_data_dir"]
+        os.environ["pydna_log_dir"]     = os.path.join(os.getcwd(),"DATA")
+        os.environ["pydna_config_dir"]  = os.path.join(os.getcwd(),"DATA")
+
+        # create data directory if not present
+        try:
+            os.makedirs( _os.environ["pydna_data_dir"] )
+        except OSError:
+            if os.path.isdir( _os.environ["pydna_data_dir"] ):
+                pass
+            else:
+                raise
+
+
         print('os.environ["pydna_data_dir"] = ',  os.environ["pydna_data_dir"])
         print('os.environ["pydna_log_dir"] = ',   os.environ["pydna_log_dir"])
         print('os.environ["pydna_config_dir"] = ',os.environ["pydna_config_dir"])
