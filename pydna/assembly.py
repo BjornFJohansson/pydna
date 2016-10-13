@@ -24,9 +24,9 @@ import os
 from copy import copy
 from textwrap import dedent
 from collections import defaultdict
-from collections import namedtuple
+#from collections import namedtuple
 
-from Bio.SeqFeature import ExactPosition
+#from Bio.SeqFeature import ExactPosition
 from Bio.SeqFeature import FeatureLocation
 from Bio.SeqFeature import SeqFeature
 
@@ -268,7 +268,8 @@ class Assembly(object):
         refresh = False
         cached  = None
 
-        key = "|".join(sorted([str(r.seguid()) for r in dsrecs]))+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
+        #key = "|".join(sorted([str(r.seguid()) for r in dsrecs]))+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
+        key = "|".join( [str(r.seguid()) for r in dsrecs] )+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
