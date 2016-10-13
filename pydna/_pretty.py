@@ -15,36 +15,7 @@ class pretty_unicode(str):
 class pretty_string(str):
     def _repr_pretty_(self, p, cycle):
         p.text(self)
-
+        
 if __name__=="__main__":
-    import pydna
-
-    print(pydna.read("/home/bjorn/Desktop/python_packages/pydna/pydna/pydna_read_test.txt").format())
-    print(pydna.read("/home/bjorn/Desktop/python_packages/pydna/pydna/pydna_read_test2.txt").format()[3270:3281])
-    import sys;sys.exit(42)
-    import io
-    from Bio import SeqIO
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-
-    import textwrap, re
-
-    raw = open("pydna_read_test.txt", 'rU').read()
-
-    pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
-
-    rawseq = re.findall(pattern, textwrap.dedent(raw + "\n\n"), flags=re.MULTILINE).pop(0)
-
-    handle = io.StringIO(raw)
-
-    sr = SeqIO.read(handle, "genbank", alphabet=IUPACAmbiguousDNA())
-
-    s = sr.format("gb").strip()
-
-    print(pretty_string(s[:55]+"circular"+s[63:])[3200:3300])
-
-    from pydna import Dseqrecord
-
-    v = Dseqrecord(sr)
-
-    print(v.format("gb"))
-
+    import doctest
+    doctest.testmod()
