@@ -150,13 +150,13 @@ comments or criticism is very welcome!
 Automatic testing and builds
 ----------------------------
 
-The test suit is run automatically after each commit on OSX-64 using
-travis |icon1| and on Windows using appveyor\ |icon2|.
+The test suit is run automatically after each commit on:
 
-Source distributions (gztar,zip) and a python wheel are built on drone
-|icon3| and uploaded to pypi |icon8|
+-  OSX-64 using travis |icon1|
+-  Windows using appveyor |icon2|.
+-  Ubuntu using drone |icon3|
 
-Documentation is built and displayed at readthedocs, |icon7|
+Documentation is built and displayed at readthedocs |icon7|
 
 Code coverage is |icon6|.
 
@@ -316,7 +316,7 @@ Changelog
 ---------
 
 See the `change
-log <https://raw.githubusercontent.com/BjornFJohansson/pydna/master/CHANGELOG.md>`__
+log <https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/CHANGELOG.md>`__
 for recent changes.
 
 .. |icon| image:: https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png
@@ -329,8 +329,6 @@ for recent changes.
    :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
 .. |icon3| image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
-.. |icon8| image:: https://img.shields.io/pypi/v/pydna.png
-   :target: https://pypi.python.org/pypi/pydna
 .. |icon7| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
    :target: https://readthedocs.org/projects/pydna/?badge=latest
 .. |icon6| image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master
