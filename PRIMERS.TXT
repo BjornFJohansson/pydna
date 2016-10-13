@@ -1,0 +1,5 @@
+
+>fw64 t-sequence
+atgactgctaacccttc
+>rv64 t-sequence
+catcgtaagtttcgaac

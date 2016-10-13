@@ -25,8 +25,12 @@ before_install:
 - conda install mpldatacursor
 - conda install pint
 - conda install ordered-set
+- conda install python-coveralls
 install:
   - conda develop .
   
 script:
   - python run_test.py
+
+after_success:
+  - coveralls

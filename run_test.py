@@ -42,7 +42,13 @@ def main():
     print("                         | |     __/ |                                                             ")
     print("                         |_|    |___/                                                              ")
 
-    nose.run(argv=["--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
+    nose.run(argv=["--verbosity=3", 
+                   "--nocapture", 
+                   "--with-doctest", 
+                   "--doctest-options=+ELLIPSIS", 
+                   "--with-xcover", 
+                   "--cover-package=pydna",
+                   "--cover-erase"])
 
     #print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
 
