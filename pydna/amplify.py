@@ -126,7 +126,7 @@ class Primer(SeqRecord):
                            features           = seq_obj.features,
                            annotations        = seq_obj.annotations,
                            letter_annotations = seq_obj.letter_annotations)
-
+    
 class Amplicon(Dseqrecord):
     '''The Amplicon class holds information about a PCR reaction involving two
     primers and one template. This class is used by the Anneal class and is not
@@ -330,6 +330,7 @@ class Amplicon(Dseqrecord):
         # biopython
         # simple salt concentration correction is used and the template concentration
         # is ignored. dnac1 = primer concentration
+        
         tmf = Tm_NN(str(self.forward_primer.footprint),
                     dnac1=self.fprimerc,
                     Na=self.saltc)
@@ -430,7 +431,7 @@ class Amplicon(Dseqrecord):
                 ta = min(tmf_dbd,tmr_dbd)
 
             f=textwrap.dedent(  '''
-                                    Pfu-Sso7d (rate {rate}s/kb)             |{size}bp
+                                    Pfu-Sso7d (rate {rate}s/kb)                 |{size}bp
                                     Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
                                     __________|_____          72.0°C |72.0°C|Primer1C {forward_primer_concentration:3}µM
