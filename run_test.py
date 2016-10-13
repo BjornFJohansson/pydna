@@ -16,9 +16,9 @@ def main():
 
         # create data directory if not present
         try:
-            os.makedirs( _os.environ["pydna_data_dir"] )
+            os.makedirs( os.environ["pydna_data_dir"] )
         except OSError:
-            if os.path.isdir( _os.environ["pydna_data_dir"] ):
+            if os.path.isdir( os.environ["pydna_data_dir"] ):
                 pass
             else:
                 raise
