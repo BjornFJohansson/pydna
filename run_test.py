@@ -6,7 +6,7 @@ import os, sys, nose, tempfile
 def main():
 
     if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
-        print("\n\ncontinuous integration\n\n")
+        print("\n\nTests run on continuous integration server\n\n")
         os.environ["pydna_data_dir"]    = "DATA" #os.path.join(os.getcwd(),"..","..","DATA")
         os.environ["pydna_log_dir"]     = os.environ["pydna_data_dir"]
         os.environ["pydna_config_dir"]  = os.environ["pydna_data_dir"]
@@ -25,7 +25,7 @@ def main():
 
     nose.run(argv=["--verbosity=3", "--nocapture", "--with-doctest", "--doctest-options=+ELLIPSIS"])
 
-    print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
+    #print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
 
     print("                  _               _            _               _ _          __ _       _     _              _ _ ")
     print("                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |")
