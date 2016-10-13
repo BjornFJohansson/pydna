@@ -46,7 +46,7 @@ def main():
                    "--nocapture", 
                    "--with-doctest", 
                    "--doctest-options=+ELLIPSIS", 
-                   "--with-xcover", 
+                   "--with-coverage", 
                    "--cover-package=pydna",
                    "--cover-erase"])
 
