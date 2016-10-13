@@ -66,22 +66,24 @@ import subprocess    as _subprocess
 import appdirs       as _appdirs
 from configparser import SafeConfigParser as _SafeConfigParser
 
-_os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir") or _appdirs.user_config_dir("pydna")
-
 # create config directory
+_os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir") or _appdirs.user_config_dir("pydna")
 try:
     _os.makedirs( _os.environ["pydna_config_dir"] )
 except OSError:
     if not _os.path.isdir( _os.environ["pydna_config_dir"] ):
         raise
 
+# set path for the pydna.ini file
 _ini_path = _os.path.join( _os.environ["pydna_config_dir"], "pydna.ini" )
 
+# initiate a config parser instance
 _parser = _SafeConfigParser()
 
+# if a pydna.ini exists, it is read
 if _os.path.exists(_ini_path):
     _parser.read(_ini_path)
-else:
+else: # otherwise it is created with default settings
     with open(_ini_path, 'w') as f:
         _parser.add_section('main')
         _parser.set('main','email', "someone@example.com")
@@ -92,34 +94,26 @@ else:
         _parser.set('main','primers','')
         _parser.write(f)
 
-
+# Six pydna related environmental variables are set from pydna.ini if they are not set already
 _os.environ["pydna_email"]    = _os.getenv("pydna_email")    or _parser.get("main", "email")
 _os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _parser.get("main", "data_dir")
 _os.environ["pydna_log_dir"]  = _os.getenv("pydna_log_dir")  or _parser.get("main", "log_dir")
 _os.environ["pydna_cache"]    = _os.getenv("pydna_cache")    or _parser.get("main", "cache")
-
 _os.environ["pydna_ape"]      = _os.getenv("pydna_ape")      or _parser.get("main", "ape")
 _os.environ["pydna_primers"]  = _os.getenv("pydna_primers")  or _parser.get("main", "primers")
 
-#_os.environ["pydna_cache"] = _os.getenv("pydna_cache") or "cached"
-
+# Check sanity of pydna_cache variable
 if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
 
-#_os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir") or _appdirs.user_data_dir("pydna")
-
-# create data directory
-try:
-    _os.makedirs( _os.environ["pydna_data_dir"] )
-except OSError:
-    if not _os.path.isdir( _os.environ["pydna_data_dir"] ):
-        raise
-
-# create log directory
+# create log directory if not present
 try:
     _os.makedirs( _os.environ["pydna_log_dir"] )
+    logmsg = "Created log directory {}".format(_os.environ["pydna_log_dir"])
 except OSError:
-    if not _os.path.isdir( _os.environ["pydna_log_dir"] ):
+    if _os.path.isdir( _os.environ["pydna_log_dir"] ):
+        logmsg = "Log directory {} found.".format(_os.environ["pydna_log_dir"])
+    else:
         raise
 
 # create logger
@@ -131,10 +125,30 @@ _hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_log_dir"
 _formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
+_logger.info(logmsg)
 
 _logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
 
+# create data directory if not present
+try:
+    _os.makedirs( _os.environ["pydna_data_dir"] )
+    _logger.info("Created data directory {}".format(_os.environ["pydna_data_dir"]))
+except OSError:
+    if _os.path.isdir( _os.environ["pydna_data_dir"] ):
+        _logger.info("data directory {} found".format(_os.environ["pydna_data_dir"]))
+    else:
+        raise
 
+# create cache directory if not present
+try:
+    _os.makedirs( _os.environ["pydna_cache"] )
+    _logger.info("Created cache directory {}".format(_os.environ["pydna_cache"]))
+except OSError:
+    if _os.path.isdir( _os.environ["pydna_cache"] ):
+        _logger.info("data directory {} found".format(_os.environ["pydna_cache"]))
+    else:
+        raise
+        
 from pydna.amplify                                  import Anneal
 from pydna.amplify                                  import pcr
 from pydna.amplify                                  import nopcr
@@ -165,7 +179,9 @@ from pydna.primer_design                            import Primer
 from pydna._pretty                                  import pretty_str as _pretty_str
 
 
+# find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
+
 try:
     import scipy
     del scipy
@@ -285,8 +301,6 @@ def open_config_folder():
 
 def open_log_folder():
     _open_folder( _os.environ["pydna_log_dir"] )
-
-
 
 def _open_folder(pth):
     if _sys.platform=='win32':
