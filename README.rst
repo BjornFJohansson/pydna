@@ -236,12 +236,13 @@ optional dependencies automatically in one go.
 Installation using pip
 ----------------------
 
-The second best way of installing pydna is with pip. Pip is the
-officially
+The second best way of installing pydna is with pip, the officially
 `recommended <http://python-packaging-user-guide.readthedocs.org/en/latest>`__
-tool for installation of Python packages from PyPi. Pip installs the
-minimal installation requirements automatically, but not the optional
-requirements (see above). These have to be installed manually.
+tool.
+
+Pip installs the minimal installation requirements automatically, but
+not the optional requirements (see above). These have to be installed
+manually.
 
 Linux:
 ~~~~~~
@@ -256,9 +257,6 @@ Windows:
 ::
 
     C:\> pip install pydna
-
-If you do not have pip, you can get it by following these
-`instructions <http://www.pip-installer.org/en/latest/installing.html>`__.
 
 Installation from Source
 ------------------------

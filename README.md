@@ -113,8 +113,6 @@ python. This is helpful to generate examples for teaching purposes.
 Read the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
 for further information.
 
-
-
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
 for pydna if you have problems, questions or comments.
 Feedback in the form of questions, comments or criticism is very welcome!
@@ -190,9 +188,9 @@ This works on Windows, MacOSX and Linux, and installs all necessary and optional
 
 ## Installation using pip
 
-The second best way of installing pydna is with pip. Pip is the
-officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool
-for installation of Python packages from PyPi.
+The second best way of installing pydna is with pip, the
+officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool.
+
 Pip installs the minimal installation requirements automatically, but not the optional requirements (see above).
 These have to be installed manually. 
 
@@ -203,8 +201,6 @@ These have to be installed manually.
 ### Windows:
 
     C:\> pip install pydna
-
-If you do not have pip, you can get it by following these [instructions](http://www.pip-installer.org/en/latest/installing.html).
 
 ## Installation from Source
 If you install from source, you need to install all dependencies separately (listed above). 

@@ -76,13 +76,22 @@ copyright = '2015, Björn Johansson'
 # The short X.Y version.
 
 # Read version from __init__.py
-for line in open('../pydna/__init__.py'):
-    if line.startswith('__version'):
-        exec(line.strip())
+#for line in open('../pydna/__init__.py'):
+#    if line.startswith('__version'):
+#        exec(line.strip())
+
+
+
 
 #release = get_versions()["version"]
-release = __version__
+#release = __version__
+#version = '.'.join(release.split('.')[:2])
+
+
+exec(open("../pydna/_version.py").read())
+release = get_versions()["version"]
 version = '.'.join(release.split('.')[:2])
+
 
 # The full version, including alpha/beta/rc tags.
 #f = [l for l in open("../pydna/__init__.py").readlines() if l.startswith("__version__")].pop()

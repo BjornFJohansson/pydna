@@ -75,18 +75,10 @@ pydna.ipynb_importer module
     :undoc-members:
     :show-inheritance:
 
-pydna.orderedset module
------------------------
+pydna.myprimers module
+----------------------
 
-.. automodule:: pydna.orderedset
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pydna.pretty module
--------------------
-
-.. automodule:: pydna.pretty
+.. automodule:: pydna.myprimers
     :members:
     :undoc-members:
     :show-inheritance:

@@ -32,5 +32,3 @@ install:
 script:
   - python run_test.py
 
-after_success:
-  - coveralls
