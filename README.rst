@@ -156,9 +156,10 @@ The test suit is run automatically after each commit on:
 -  Windows using appveyor |icon2|.
 -  Ubuntu using drone |icon3|
 
-Documentation is built and displayed at readthedocs |icon7|
+Documentation is built and displayed at readthedocs |Documentation
+Status|
 
-Code coverage is |icon6|.
+Code coverage is |Coverage Status|
 
 Dependencies are monitored by versioneye |icon11|
 
@@ -327,9 +328,9 @@ for recent changes.
    :target: https://ci.appveyor.com/project/BjornFJohansson/pydna
 .. |icon3| image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
-.. |icon7| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
-   :target: https://readthedocs.org/projects/pydna/?badge=latest
-.. |icon6| image:: https://coveralls.io/repos/BjornFJohansson/pydna/badge.svg?branch=master
-   :target: https://coveralls.io/r/BjornFJohansson/pydna?branch=master
+.. |Documentation Status| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
+   :target: http://pydna.readthedocs.io/en/latest/?badge=latest
+.. |Coverage Status| image:: https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg?branch=py3
+   :target: https://coveralls.io/github/BjornFJohansson/pydna?branch=py3
 .. |icon11| image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg
    :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
