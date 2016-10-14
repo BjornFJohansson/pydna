@@ -1,4 +1,5 @@
 language: objective-c
+sudo: false
 cache:
  - wget
  - pip
@@ -27,8 +28,11 @@ before_install:
 - conda install -y -q ordered-set
 - conda install -y -q python-coveralls
 install:
+  - pip install coveralls
   - conda develop .
   
 script:
-  - python run_test.py
+  - coverage run run_test.py
 
+after_success:
+  coveralls
