@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import os, sys, nose, tempfile
+import os, nose, tempfile
 
 def main():
 
@@ -42,13 +41,18 @@ def main():
     print("                         | |     __/ |                                                             ")
     print("                         |_|    |___/                                                              ")
 
+    try:
+        import coveralls
+    except ImportError:
+        args = []
+    else:
+        del coveralls
+        args = ["--with-coverage", "--cover-package=pydna", "--cover-erase"]    
+
     nose.run(argv=["--verbosity=3", 
                    "--nocapture", 
                    "--with-doctest", 
-                   "--doctest-options=+ELLIPSIS", 
-                   "--with-coverage", 
-                   "--cover-package=pydna",
-                   "--cover-erase"])
+                   "--doctest-options=+ELLIPSIS"]+args)
 
     #print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
 
