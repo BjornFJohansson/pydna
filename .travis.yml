@@ -26,13 +26,13 @@ before_install:
 - conda install -y -q mpldatacursor
 - conda install -y -q pint
 - conda install -y -q ordered-set
-- conda install -y -q python-coveralls
+#- conda install -y -q python-coveralls
 install:
-  - pip install coveralls
+  #- pip install coveralls
   - conda develop .
   
-script:
-  - coverage run run_test.py
+#script:
+#  - coverage run run_test.py
 
-after_success:
-  coveralls
+#after_success:
+#  coveralls
