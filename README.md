@@ -127,7 +127,7 @@ The test suit is run automatically after each commit on:
 
 Documentation is built and displayed at readthedocs [![icon7](https://readthedocs.org/projects/pydna/badge/?version=latest)](https://readthedocs.org/projects/pydna/?badge=latest)
 
-Code coverage is [![Coverage Status](https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg)](https://coveralls.io/github/BjornFJohansson/pydna).
+Code coverage is [![Coverage Status](https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg?branch=py3)](https://coveralls.io/github/BjornFJohansson/pydna?branch=py3)
 
 Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
 
