@@ -8,24 +8,24 @@ before_install:
 - wget http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O ~/miniconda.sh
 - bash ~/miniconda.sh -b -p $HOME/miniconda
 - export PATH="$HOME/miniconda/bin:$PATH"
-- conda update --yes -q conda
+- conda update -y -q conda
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
-- conda install conda-build
-- conda install nose
-- conda install ipython
-- conda install jupyter
-- conda install biopython
-- conda install networkx
-- conda install appdirs
-- conda install prettytable
-- conda install numpy
-- conda install scipy
-- conda install matplotlib
-- conda install mpldatacursor
-- conda install pint
-- conda install ordered-set
-- conda install python-coveralls
+- conda install -y -q conda-build
+- conda install -y -q nose
+- conda install -y -q ipython
+- conda install -y -q jupyter
+- conda install -y -q biopython
+- conda install -y -q networkx
+- conda install -y -q appdirs
+- conda install -y -q prettytable
+- conda install -y -q numpy
+- conda install -y -q scipy
+- conda install -y -q matplotlib
+- conda install -y -q mpldatacursor
+- conda install -y -q pint
+- conda install -y -q ordered-set
+- conda install -y -q python-coveralls
 install:
   - conda develop .
   
