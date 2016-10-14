@@ -18,6 +18,6 @@ install:
 - conda install -y -q mpldatacursor 
 - conda install -y -q pint 
 - conda install -y -q ordered-set
-- conda install python-coveralls
+#- conda install python-coveralls
 build_script:
   - conda build .
