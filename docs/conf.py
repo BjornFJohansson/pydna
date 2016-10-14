@@ -29,7 +29,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.viewcode',
               'sphinx.ext.autosummary',
-              'napoleon']
+              'numpydoc']
 
 
 numpydoc_show_class_members = False
