@@ -110,7 +110,7 @@ The nine lines of Python below, simulates the construction of a recombinant plas
 Pydna is also be useful to automate the simulation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) experiments using
 python. This is helpful to generate examples for teaching purposes. 
 
-Read the [documentation](https://pydna.readthedocs.org/en/latest) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
+Read the [documentation](http://pydna.readthedocs.io/index.html) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
 for further information.
 
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
@@ -125,8 +125,8 @@ The test suit is run automatically after each commit on:
 * Windows using appveyor [![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
 * Ubuntu using drone [![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
 
-Documentation is built and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/en/latest/?badge=latest)
- 
+Documentation is built and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
+  
 Code coverage is [![Coverage Status](https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg?branch=py3)](https://coveralls.io/github/BjornFJohansson/pydna?branch=py3)
 
 Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
