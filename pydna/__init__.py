@@ -129,7 +129,7 @@ _logger.info(logmsg)
 
 _logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
 
-# create data directory if not present
+# create cache directory if not present
 try:
     _os.makedirs( _os.environ["pydna_data_dir"] )
     _logger.info("Created data directory {}".format(_os.environ["pydna_data_dir"]))
@@ -139,15 +139,15 @@ except OSError:
     else:
         raise
 
-# create cache directory if not present
-try:
-    _os.makedirs( _os.environ["pydna_cache"] )
-    _logger.info("Created cache directory {}".format(_os.environ["pydna_cache"]))
-except OSError:
-    if _os.path.isdir( _os.environ["pydna_cache"] ):
-        _logger.info("data directory {} found".format(_os.environ["pydna_cache"]))
-    else:
-        raise
+#try:
+#    _os.makedirs( _os.environ["pydna_cache"] )
+#    print(234)
+#    _logger.info("Created cache directory {}".format(_os.environ["pydna_cache"]))
+#except OSError:
+#    if _os.path.isdir( _os.environ["pydna_cache"] ):
+#        _logger.info("data directory {} found".format(_os.environ["pydna_cache"]))
+#    else:
+#        raise
         
 from pydna.amplify                                  import Anneal
 from pydna.amplify                                  import pcr
@@ -155,7 +155,7 @@ from pydna.amplify                                  import nopcr
 from pydna.assembly                                 import Assembly
 from pydna.download                                 import Genbank
 from pydna.download                                 import genbank
-from pydna.download                                 import Web
+from pydna.download                                 import download_text
 from pydna.download                                 import parse_url
 from pydna.download                                 import read_url
 from pydna.dsdna                                    import Dseq
@@ -163,6 +163,10 @@ from pydna.dsdna                                    import Dseqrecord
 from pydna.dsdna                                    import parse
 from pydna.dsdna                                    import parse2
 from pydna.dsdna                                    import read
+from pydna.dsdna                                    import parse_primers
+from pydna.dsdna                                    import read_primer
+
+
 
 #from pydna.editor                                   import Editor
 from pydna.findsubstrings_suffix_arrays_python      import common_sub_strings
@@ -178,6 +182,7 @@ from pydna.utils                                    import cseguid
 from pydna.primer_design                            import Primer
 from pydna._pretty                                  import pretty_str as _pretty_str
 
+from pydna.genbankfixer                             import gbtext_clean
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
@@ -202,7 +207,6 @@ try:
     del mpldatacursor
 except ImportError:
     _missing_modules_for_gel.append("mpldatacursor")
-
 try:
     import pint
     del pint
@@ -210,7 +214,7 @@ except ImportError:
     _missing_modules_for_gel.append("pint")
 
 if _missing_modules_for_gel:
-    _logger.warning("gel simulation will not be available. Missing modules: {}"
+    _logger.warning("gel simulation will NOT be available. Missing modules: {}"
         .format(", ".join(_missing_modules_for_gel)))
 else:
     from pydna.gel import Gel
@@ -278,6 +282,11 @@ except NameError:
 
 try:
     del findsubstrings_suffix_arrays_python
+except NameError:
+    pass
+
+try:
+    del genbankfixer
 except NameError:
     pass
 
