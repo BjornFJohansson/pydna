@@ -17,7 +17,6 @@ requirements:
         - appdirs
         - prettytable
         - ordered-set
-
     run:
         - python
         - ipython
@@ -32,6 +31,7 @@ requirements:
         - mpldatacursor
         - pint
         - ordered-set
+        - pyparsing
 
 test:
   requires:
