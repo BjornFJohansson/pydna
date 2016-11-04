@@ -7,18 +7,21 @@ import shelve
 
 import re
 import os
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import warnings
 import sys
+import textwrap
 
-from urllib.parse               import urlparse
-from urllib.parse               import urlunparse
-from Bio                    import Entrez
-from Bio.SeqUtils.CheckSum  import seguid
+from urllib.parse      import urlparse
+from urllib.parse      import urlunparse
+from Bio               import Entrez
+#from Bio.SeqUtils.CheckSum  import seguid
 
-from pydna.dsdna import read, parse
-from pydna._pretty import pretty_str
-from pydna.dsdna import Dseqrecord
+from pydna.dsdna    import read, parse
+from pydna._pretty  import pretty_str
+from pydna.dsdna    import Dseqrecord
 
 def _get_proxy_from_global_settings():
     """Get proxy settings from linux/gnome"""
@@ -238,63 +241,59 @@ class Genbank():
 
         return result
 
-class Web():
+def download_text(url, proxy = None):
+    if proxy:
+        parsed = urlparse(proxy)
+        scheme = parsed.scheme
+        hostname = parsed.hostname
+        test = urlunparse((scheme, hostname,'','','','',))
+        try:
+            response=urllib.request.urlopen(test, timeout=1)
+        except urllib.error.URLError as err:
+            warnings.warn("could not contact proxy server")
+        proxy = urllib.request.ProxyHandler({ scheme : parsed.geturl() })
+        opener = urllib.request.build_opener(proxy)
+        urllib.request.install_opener(opener)
+        
+    cached  = False
+    refresh = False
+    cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "web"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+    key = str(url)
 
-    def __init__(self, proxy = None):
-        if proxy:
-            parsed = urlparse(proxy)
-            scheme = parsed.scheme
-            hostname = parsed.hostname
-            test = urlunparse((scheme, hostname,'','','','',))
-            try:
-                response=urllib.request.urlopen(test, timeout=1)
-            except urllib.error.URLError as err:
-                warnings.warn("could not contact proxy server")
-            self.proxy = urllib.request.ProxyHandler({ scheme : parsed.geturl() })
-        else:
-            pass
-            #proxy_handler = urllib2.ProxyHandler({})
-            #opener = urllib2.build_opener(proxy_handler)
-            #urllib2.install_opener(opener)
-            #os.environ['http_proxy']=''
-            #self.proxy = urllib2.ProxyHandler()
-        #self.opener = urllib2.urlopen #build_opener(self.proxy)
-        #urllib2.install_opener(self.opener)
+    if os.environ["pydna_cache"] in ("compare", "cached"):
+        try:
+            cached = cache[key]
+        except KeyError:
+            if os.environ["pydna_cache"] == "compare":
+                raise Exception("no result for this key!")
+            else:
+                refresh = True
 
+    if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
+        response = urllib.request.urlopen(url)
+        encoding = response.headers.get_content_charset('utf-8')
+        html_content = response.read()
+        result = html_content.decode(encoding)
+        #http://stackoverflow.com/questions/27674076/remove-newline-in-python-with-urllib
+        #https://blog.whatwg.org/the-road-to-html-5-character-encoding
+    if os.environ["pydna_cache"] == "compare":
+        if result!=cached:
+            module_logger.warning('download error')
 
-    def download(self, url):
-        cached  = False
-        refresh = False
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "web"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
-        key = str(url)
+    if refresh or os.environ["pydna_cache"] == "refresh":
+        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+        cache[key] = result
 
-        if os.environ["pydna_cache"] in ("compare", "cached"):
-            try:
-                cached = cache[key]
-            except KeyError:
-                if os.environ["pydna_cache"] == "compare":
-                    raise Exception("no result for this key!")
-                else:
-                    refresh = True
+    elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
+        result = cached
 
-        if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-            response = urllib.request.urlopen(url)
-            result = response.read()
+    cache.close()
+    
+    result = textwrap.dedent(result).strip()
+    result = result.replace( '\r\n', '\n')
+    result = result.replace( '\r',   '\n')
 
-        if os.environ["pydna_cache"] == "compare":
-            if result!=cached:
-                module_logger.warning('download error')
-
-        if refresh or os.environ["pydna_cache"] == "refresh":
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
-            cache[key] = result
-
-        elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
-            result = cached
-
-        cache.close()
-
-        return result
+    return result
 
 def read_url(url, proxy = None):
     wb = Web(proxy=proxy)
