@@ -2868,6 +2868,12 @@ def parse(data, ds = True):
     #rettype=gb&
     #retmode=text
 
+def parse_primers(data):
+    return parse(data, ds=False)
+
+def read_primer(data):
+    return read(data, ds=False)
+
 if __name__=="__main__":
     import doctest
     doctest.testmod(optionflags=doctest.ELLIPSIS)
