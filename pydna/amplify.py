@@ -1154,7 +1154,7 @@ def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
 
 def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
     '''Returns the tm for a primer using a formula adapted to polymerases
-    with a DNA binding domain.
+    with a DNA binding domain, such as the Phusion polymerase.
 
     Parameters
     ----------
@@ -1203,9 +1203,17 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
         return tm,dH,dS
     else:
         return tm
+        
+        
+def Q5():
+    '''
+    for Q5 Ta they take the lower of the two Tms and add 1C 
+    (up to 72C). For Phusion they take the lower of the two 
+    and add 3C (up to 72C). 
+    '''
+    pass
 
 if __name__=="__main__":
-    import os
     os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
