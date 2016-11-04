@@ -1,59 +1,54 @@
-LOCUS       .                       9981 bp    DNA     circular UNK 16-JAN-2013
-DEFINITION  circular assembly product 9981
-ACCESSION   <unknown id>
-VERSION     <unknown id>
+LOCUS       na                      9981 bp    DNA     circular UNK 03-NOV-2016
+DEFINITION  @
+ACCESSION   -
+VERSION     -
+DBLINK      BioProject:PRJNA128
+            Assembly:GCF_000146045.2
 KEYWORDS    .
 SOURCE      .
   ORGANISM  .
             .
 FEATURES             Location/Qualifiers
-     misc_feature    40..483
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="cyan"
-                     /label="GAL1p"
-                     /ApEinfo_revcolor="green"
-     gene            558..2240
-                     /locus_tag="YGL084C"
+     misc_feature    15..488
+                     /SECDrawAs="Region"
+                     /gene="pGAL1"
+                     /product="GAL1 promoter"
+     overlap         530..557
+                     /ApEinfo_fwdcolor="#E3F4CA"
+                     /ApEinfo_revcolor="#B5C9EC"
+                     /chksum="UHCi4AgW6O675rer0d80-nDcunQ"
+                     /note="olp_UHCi4AgW6O675rer0d80-nDcunQ"
+     source          558..2240
+                     /chromosome="VII"
+                     /db_xref="taxon:559292"
+                     /mol_type="genomic DNA"
+                     /organism="Saccharomyces cerevisiae S288c"
+                     /strain="S288c"
+     gene            <558..>2240
+                     /db_xref="GeneID:852796"
                      /gene="GUP1"
-     mRNA            558..2240
                      /locus_tag="YGL084C"
+     mRNA            <558..>2240
+                     /db_xref="GeneID:852796"
                      /gene="GUP1"
-                     /product="Gup1p"
+                     /locus_tag="YGL084C"
+                     /product="O-acyltransferase"
+                     /transcript_id="NM_001180949.1"
      CDS             558..2240
-                     /product="Gup1p"
-                     /GO_component="GO:0005783 - endoplasmic reticulum [Evidence
-                     IDA] [PMID 15813700]"
-                     /GO_component="GO:0016021 - integral to membrane [Evidence
-                     IEA]"
-                     /GO_component="GO:0016021 - integral to membrane [Evidence
-                     ISM] [PMID 12192589]"
-                     /GO_component="GO:0016020 - membrane [Evidence IEA,IEA]"
-                     /GO_component="GO:0016020 - membrane [Evidence IDA,ISS]
-                     [PMID 10931309]"
-                     /GO_component="GO:0005886 - plasma membrane [Evidence IDA]
-                     [PMID 15813700]"
-                     /GO_function="GO:0008374 - O-acyltransferase activity
-                     [Evidence IMP] [PMID 16597698]"
-                     /GO_function="GO:0008374 - O-acyltransferase activity
-                     [Evidence IMP] [PMID 18036137]"
-                     /GO_function="GO:0015293 - symporter activity [Evidence
-                     IEA]"
-                     /codon_start="1"
+                     /codon_start=1
+                     /db_xref="SGD:S000003052"
+                     /db_xref="GeneID:852796"
+                     /gene="GUP1"
                      /locus_tag="YGL084C"
                      /note="Plasma membrane protein involved in remodeling GPI
                      anchors; member of the MBOAT family of putative
-                     membrane-bound O-acyltransferases; proposed to be involved
-                     in glycerol transport"
-                     /db_xref="SGD:S000003052"
-                     /GO_process="GO:0006506 - GPI anchor biosynthetic process
-                     [Evidence IMP] [PMID 16597698]"
-                     /GO_process="GO:0019563 - glycerol catabolic process
-                     [Evidence IGI,IMP] [PMID 10747858]"
-                     /GO_process="GO:0015793 - glycerol transport [Evidence
-                     IGI,IMP] [PMID 10931309]"
-                     /GO_process="GO:0006810 - transport [Evidence IEA]"
-                     /ApEinfo_revcolor="#daeaab"
+                     membrane-bound O-acyltransferases; role in misfolded
+                     protein quality control; proposed to be involved in
+                     glycerol transport; homolog of the mammalian Hedgehog
+                     pathway modulator HHATL; GUP1 has a paralog, GUP2, that
+                     arose from the whole genome duplication"
+                     /product="O-acyltransferase"
+                     /protein_id="NP_011431.1"
                      /translation="MSLISILSPLITSEGLDSRIKPSPKKDASTTTKPSLWKTTEFKFY
                      YIAFLVVVPLMFYAGLQASSPENPNYARYERLLSQGWLFGRKVDNSDSQYRFFRDNFAL
                      LSVLMLVHTSIKRIVLYSTNITKLRFDLIFGLIFLVAAHGVNSIRILAHMLILYAIAHV
@@ -64,84 +59,48 @@ FEATURES             Location/Qualifiers
                      NYSSLAFWRAWHRSYNKWVVRYIYIPLGGSKNRVLTSLAVFSFVAIWHDIELKLLLWGW
                      LIVLFLLPEIFATQIFSHYTDAVWYRHVCAVGAVFNIWVMMIANLFGFCLGSDGTKKLL
                      SDMFCTVSGFKFVILASVSLFIAVQIMFEIREEEKRHGIYLKC"
-                     /gene="GUP1"
-                     /protein_id="DAA08021.1"
-                     /ApEinfo_fwdcolor="#daeaab"
-     primer_bind     9960..9979
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="cyan"
-                     /label="T3"
-                     /ApEinfo_revcolor="green"
-     primer_bind     complement(4113..4130)
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="cyan"
-                     /label="M13-fwd"
-                     /ApEinfo_revcolor="green"
-     primer_bind     9922..9942
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="cyan"
-                     /label="M13-rev"
-                     /ApEinfo_revcolor="green"
-     primer_bind     complement(4084..4104)
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="cyan"
-                     /label="T7"
-                     /ApEinfo_revcolor="green"
-     rep_origin      8872..9554
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="gray50"
-                     /label="ColE1 origin"
-                     /ApEinfo_revcolor="gray50"
-     rep_origin      4291..4597
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="gray50"
-                     /label="F1 ori"
-                     /ApEinfo_revcolor="gray50"
-     rep_origin      4274..4729
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="gray50"
-                     /label="M13 origin"
-                     /ApEinfo_revcolor="gray50"
-     CDS             4201..4269
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="#6495ed"
-                     /label="LacZ alpha"
-                     /ApEinfo_revcolor="#6495ed"
-     misc_binding    9894..9916
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="#6495ed"
-                     /label="LacO"
-                     /ApEinfo_revcolor="#6495ed"
-     misc_recomb     2513..2546
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="steel blue"
-                     /label="LoxP"
-                     /ApEinfo_revcolor="orange"
-     misc_recomb     4015..4048
-                     /ApEinfo_fwdcolor="steel blue"
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_label="LoxP"
-                     /label="LoxP(1)"
-                     /ApEinfo_revcolor="orange"
-     CDS             8115..8777
-                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0"
-                     /ApEinfo_fwdcolor="yellow"
-                     /label="AmpR"
-                     /ApEinfo_revcolor="yellow"
-     primer_bind     complement(2219..2271)
-                     /note="<unknown name>"
+     primer_bind     558..580
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+                     /note="GUP1rec1sens"
+     primer_bind     complement(2219..2240)
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+                     /note="GUP1rec2AS"
+     misc            complement(2219..2271)
+                     /label="GUP1rec2AS"
+     overlap         2242..2271
+                     /ApEinfo_fwdcolor="#F1EDB7"
+                     /ApEinfo_revcolor="#F3D4E1"
+                     /chksum="l2X8MyklWvEE_6YKqB69xtt9ndk"
+                     /note="olp_l2X8MyklWvEE_6YKqB69xtt9ndk"
+     misc_feature    2567..2796
+                     /SECDrawAs="Region"
+                     /gene="tAgTEF"
+                     /product="Ashbya gossypii TEF terminator"
+     CDS             complement(2807..3616)
+                     /SECDrawAs="Gene"
+                     /gene="kanMX"
+                     /product="kanMX"
+     misc_feature    3613..3995
+                     /SECDrawAs="Region"
+                     /gene="pAgTEF"
+                     /product="Ashbya gossypii TEF promoter"
+     CDS             5434..6540
+                     /SECDrawAs="Gene"
+                     /gene="LEU2"
+     misc_feature    7272..7646
+                     /SECDrawAs="Region"
+                     /gene="ARSH4"
+     misc_feature    7658..7775
+                     /SECDrawAs="Region"
+                     /gene="CEN6"
+     CDS             7917..8777
+                     /SECDrawAs="Gene"
+                     /gene="AmpR"
+     misc_feature    9458..9553
+                     /SECDrawAs="Region"
+                     /gene="ori"
 ORIGIN
         1 aaaagctgga gctcgtttaa acggcgcgcc tagtacggat tagaagccgc cgagcgggtg
        61 acagccctcc gaaggaagac tctcctccgt gcgtcctcgt cttcaccggt cgcgttcctg
