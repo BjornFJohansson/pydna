@@ -23,7 +23,7 @@ setup(  name            = 'pydna',
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
         long_description=open('README.rst').read(),
-        install_requires =[ "biopython", "networkx", "appdirs", "prettytable", "ordered-set"],
+        install_requires = [ "biopython", "networkx", "appdirs", "prettytable", "ordered-set"],
         zip_safe = False,
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',
