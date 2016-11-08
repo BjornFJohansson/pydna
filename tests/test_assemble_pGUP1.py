@@ -3,24 +3,16 @@
 '''
 test pGUP1
 '''
-
 import nose, sys
-import os
 import pydna   
 
 def test_empty():
     ''' test pGUP1'''
-
-    cwd = os.getcwd()
-
-    os.chdir("docs/cookbook/")
-    
-    GUP1rec1sens = pydna.read("GUP1rec1sens.txt")
-    GUP1rec2AS = pydna.read("GUP1rec2AS.txt")
-    GUP1_locus = pydna.read("GUP1_locus.gb")
-    pGREG505 = pydna.read("pGREG505.gb")
-    
-    os.chdir(cwd)
+   
+    GUP1rec1sens = pydna.read("tests/GUP1rec1sens.txt")
+    GUP1rec2AS = pydna.read("tests/GUP1rec2AS.txt")
+    GUP1_locus = pydna.read("tests/GUP1_locus.gb")
+    pGREG505 = pydna.read("tests/pGREG505.gb")
 
     insert = pydna.pcr(GUP1rec1sens, GUP1rec2AS, GUP1_locus)
 
@@ -44,13 +36,3 @@ def test_empty():
 
 if __name__ == '__main__':
     nose.runmodule(argv=[sys.argv[0], '--nocapture'])
-
-
-
-
-
-
-
-
-
-
