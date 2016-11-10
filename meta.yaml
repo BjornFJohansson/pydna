@@ -39,9 +39,8 @@ test:
   imports:
     - pydna
   source_files:
-    - pydna/*.py
-    - pydna/py_rstr_max/*.py
-    - tests/*.*
+    - pydna
+    - tests
 
 about:
   home: https://github.com/BjornFJohansson/pydna
