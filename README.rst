@@ -137,7 +137,7 @@ Pydna is also be useful to automate the simulation of `sub
 cloning <http://en.wikipedia.org/wiki/Subcloning>`__ experiments using
 python. This is helpful to generate examples for teaching purposes.
 
-Read the `documentation <https://pydna.readthedocs.org/en/latest>`__ or
+Read the `documentation <http://pydna.readthedocs.io/index.html>`__ or
 the
 `cookbook <https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0>`__
 with example files for further information.
@@ -163,31 +163,43 @@ Code coverage is |Coverage Status|
 
 Dependencies are monitored by versioneye |icon11|
 
+Github stars: |GitHub stars|
+
+Github issues: |GitHub issues|
+
 Minimal installation requirements
 ---------------------------------
 
 Pydna is currently developed on and for Python 3.5. Pydna versions
 before 1.0.0 were compatible with python 2.7 only. The list below is the
-minimal requirements for installing pydna.
+minimal requirements for installing pydna. Biopython has c-extensions,
+but the other modules are pure python.
 
--  `Python3 <http://www.python.org>`__
+-  `Python 3 <http://www.python.org>`__
 -  `biopython >= 1.65 <http://pypi.python.org/pypi/biopython>`__
 -  `networkx >= 1.8.1 <http://pypi.python.org/pypi/networkx>`__
--  `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdir>`__
+-  `appdirs >=1.3.0 <https://pypi.python.org/pypi/appdirs>`__
 -  `prettytable>=0.7.2 <https://pypi.python.org/pypi/PrettyTable>`__
--  `pint >=0.6 <https://pypi.python.org/pypi/pint>`__
+-  `ordered\_set>=2.0.1 <https://pypi.python.org/pypi/ordered-set>`__
 
 Optional Requirements
 ---------------------
 
-Pydna has been designed to be used from the Jupyter notebook. If you
-have IPython and Jupyter installed, there are functions in pydna for
-importing ipython notebooks as modules among other things.
+Pydna has been designed to be used from the Jupyter notebook. If
+`IPython <https://ipython.org/>`__ and `Jupyter <http://jupyter.org/>`__
+are installed, importing ipython notebooks as modules among are
+supported among other things.
 
-If scipy, numpy, matplotlib and mpldatacursor are installed, the gel
-simulation functionality is available, otherwise not.
+If the modules listed below are installed, gel simulation functionality
+is available.
 
-The pydna conda package installs all optional requirements (see below).
+-  `pint >=0.7.2 <https://pypi.python.org/pypi/pint>`__
+-  `scipy <https://www.scipy.org>`__
+-  `numpy <http://www.numpy.org>`__
+-  `matplotlib <http://matplotlib.org>`__
+-  `mpldatacursor <https://pypi.python.org/pypi/mpldatacursor>`__
+
+The pydna conda package installs all optional requirements, currently:
 
 -  `ipython>=4 <https://pypi.python.org/pypi/ipython>`__
 -  `jupyter>=1.0.0 <https://pypi.python.org/pypi/jupyter>`__
@@ -195,6 +207,7 @@ The pydna conda package installs all optional requirements (see below).
 -  `numpy>=1.10.1 <https://pypi.python.org/pypi/numpy>`__
 -  `matplotlib>=1.5.0 <https://pypi.python.org/pypi/matplotlib>`__
 -  `mpldatacursor>=0.6.1 <https://pypi.python.org/pypi/mpldatacursor>`__
+-  `pint >=0.7.2 <https://pypi.python.org/pypi/pint>`__
 
 Requirements for running tests
 ------------------------------
@@ -205,13 +218,9 @@ Requirements for running tests
 Installation using conda on Anaconda
 ------------------------------------
 
-The absolutely best way of installing and using pydna is to use a the
-free `Anaconda <https://store.continuum.io/cshop/anaconda>`__ python
+The absolutely best way of installing and using pydna is to use the free
+`Anaconda <https://store.continuum.io/cshop/anaconda>`__ python
 distribution.
-
-There is a `conda <https://anaconda.org/bjornfjohansson/pydna>`__
-package available for pydna, which is easily installed from the command
-line using the conda package manager.
 
 Once Anaconda is installed, the conda package manager can be used to
 install pydna. Pydna and its dependencies are available from the
@@ -276,7 +285,7 @@ Windows dependencies
 
 Sometimes dependencies can be difficult to install on windows, as a C
 compiler is necessary. If dependencies have to be installed separately,
-this can be done using the binary installers for Windows:
+this can be done using these binary installers for Windows:
 
 +-----------------+----------------------------------------------------------+
 | Dependency      | link                                                     |
@@ -329,8 +338,12 @@ for recent changes.
 .. |icon3| image:: https://drone.io/github.com/BjornFJohansson/pydna/status.png
    :target: https://drone.io/github.com/BjornFJohansson/pydna/latest
 .. |Documentation Status| image:: https://readthedocs.org/projects/pydna/badge/?version=latest
-   :target: http://pydna.readthedocs.io/en/latest/?badge=latest
+   :target: http://pydna.readthedocs.io/?badge=latest
 .. |Coverage Status| image:: https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg?branch=py3
    :target: https://coveralls.io/github/BjornFJohansson/pydna?branch=py3
 .. |icon11| image:: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg
    :target: https://www.versioneye.com/user/projects/553174c010e714f9e50010bb
+.. |GitHub stars| image:: https://img.shields.io/github/stars/BjornFJohansson/pydna.svg
+   :target: https://github.com/BjornFJohansson/pydna/stargazers
+.. |GitHub issues| image:: https://img.shields.io/github/issues/BjornFJohansson/pydna.svg
+   :target: https://github.com/BjornFJohansson/pydna/issues
