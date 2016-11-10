@@ -1,0 +1,40 @@
+LOCUS       E05006                    25 bp    DNA     linear   PAT 04-NOV-2005
+DEFINITION  PCR primer to generate NcoI and SphI site adjacent to T7 promoter
+            on pGEMEX2.
+ACCESSION   E05006
+VERSION     E05006.1
+KEYWORDS    JP 1993105699-A/1.
+SOURCE      synthetic construct
+  ORGANISM  synthetic construct
+            other sequences; artificial sequences.
+REFERENCE   1  (bases 1 to 25)
+  AUTHORS   Mori,T., Takada,T., Koike,K. and Sugano,H.
+  TITLE     PRODUCTION OF B TYPE HEPATITIS VIRUS X PROTEIN AND DIAGNOSTIC AGENT
+            USING THE SAME
+  JOURNAL   Patent: JP 1993105699-A 1 27-APR-1993;
+            JAPAN FOUND CANCER RES, MEIJI MILK PROD CO LTD
+COMMENT     OS   Artificial gene
+            OC   Artificial sequence; Genes.
+            PN   JP 1993105699-A/1
+            PD   27-APR-1993
+            PF   07-AUG-1991 JP 1991198008
+            PI   MORI TAKESHI, TAKADA TOMOKO, KOIKE KATSURO, SUGANO HARUO PC
+            C07K15/04,A61K39/29,C12N15/51,C12P21/02,G01N33/53,G01N33/569, PC
+            G01N33/576,
+            PC   (C12P21/02,C12R1:19);
+            CC   strandedness: Double;
+            CC   topology: Linear;
+            FH   Key             Location/Qualifiers
+            FH
+            FT   misc_feature    1..25
+            FT                   /note='PCR primer to generate NcoI and SphI
+            FT                   site adjacent
+            FT                   to T7 promoter on pGEMEX2'.
+FEATURES             Location/Qualifiers
+     source          1..25
+                     /organism="synthetic construct"
+                     /mol_type="unassigned DNA"
+                     /db_xref="taxon:32630"
+ORIGIN      
+        1 atatgggtac cgatcgtacg gacca
+//

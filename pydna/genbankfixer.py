@@ -2,8 +2,19 @@
 # -*- coding: utf-8 -*-
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
-'''This module provides a way to clean up broken Genbank files enough to pass 
-the BioPython Genbank parser
+'''This module provides a way to clean up broken Genbank files enough to pass the BioPython Genbank parser
+This parser is based on pyparsing.
+Almost all of this code was lifted from BioJSON (https://github.com/levskaya/BioJSON) by Anselm Levskaya.
+The code put up was not accompanied by any software licence.
+
+There are some modifications to deal with fringe cases.
+
+The parser first produces JSON as an intermediate format which is then formatted back into a string in Genbank format.
+
+The parser is not complete, so some fields do not survive the roundtrip (see below). This should not be a difficult fix, though.
+The returned result has two properties,  .jseq which is the intermediate JSON produced by the parser and .gbtext 
+which is the formatted genbank string.
+
 '''
 
 import os as _os
@@ -363,7 +374,7 @@ def toGB(jseqs):
                                                                                                                     divcode=divcode,
                                                                                                                     date=date)
                                         
-    #fuck this noise for now
+    # All these fields are left empty
     gbprops="DEFINITION  .\n"+\
               "ACCESSION   \n"+\
               "VERSION     \n"+\
@@ -407,11 +418,7 @@ def gbtext_clean(gbtext):
     return result
         
         
-if __name__ == "__main__":
-    
-    for file in ( f for f in _os.listdir("testfiles") if not f.startswith(".") ):
-        with open("testfiles/"+file, "r") as f:
-            infile = f.read()
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()
 
-        print(repr(Dseqrecord( gbclean_text(infile).gbtext )))
-        print(gbclean_text(infile).jseq)
