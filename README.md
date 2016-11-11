@@ -1,5 +1,7 @@
 #[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
 
+[![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)[![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)
+
 Planning genetic constructs with many parts, such as recombinant
 metabolic pathways is usually done manually using a DNA sequence editor, a task which quickly becomes
 unfeasible as scale and complexity of the constructions increase.
@@ -130,12 +132,6 @@ Documentation is built and displayed at readthedocs [![Documentation Status](htt
 Code coverage is [![Coverage Status](https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg?branch=py3)](https://coveralls.io/github/BjornFJohansson/pydna?branch=py3)
 
 Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
-
-Github stars: [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)
-
-Github issues: [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)
-
-
 
 ## Minimal installation requirements
 
