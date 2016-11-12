@@ -7,7 +7,7 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 echo "Branch        : $branch"
 echo "Current commit: $com"
 
-if [[ $DRONE=true ]]
+if [[ $TRAVIS=true ]]
 then
     echo "Running on DRONE"
     echo "Create a .pypirc file"
@@ -30,13 +30,13 @@ then
     username = $pypiusername
     password = $pypipassword" > $HOME/.pypirc
     # installing Miniconda
-    wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh
+    wget -q http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O Miniconda_latest.sh
     bash Miniconda_latest.sh -b -p $HOME/miniconda
     export PATH="$HOME/miniconda/bin:$PATH"
     conda config --add channels BjornFJohansson
     conda update -yq conda
 else
-    echo "Not running on DRONE"
+    echo "Not running on TRAVIS"
 fi
 
 if [[ "$com" = "$tag" ]]

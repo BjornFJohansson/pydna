@@ -6,7 +6,7 @@ cache:
  - brew
  - conda
 script:
- - echo script 
+ - ./travis.sh
 
 notifications:
   email: false
