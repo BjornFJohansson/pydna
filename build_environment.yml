@@ -1,0 +1,25 @@
+name: condabuildenv
+channels:
+- conda-forge
+- BjornFJohansson
+dependencies:
+- python=3.5
+- nose
+- coverage
+- appdirs
+- biopython
+- networkx
+- ordered-set
+- pyparsing
+- pint
+- prettytable
+- python-coveralls
+- mpldatacursor
+- matplotlib
+- ipython
+- jupyter
+- numpy
+- scipy
+- conda-build
+
+ 
