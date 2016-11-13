@@ -66,7 +66,7 @@ then
     #git commit -m "processed README.md -->"
     conda upgrade pip -yq
     pip install twine
-    python setup.py build bdist_wheel
+    python setup.py build sdist bdist_wheel
     re_final="^[0-9]\.[0-9]\.[0-9]$"
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
     if [[ $tagname =~  $re_final ]]||[ "$branch" = "py3" ]
@@ -83,8 +83,8 @@ then
         echo "deploy to testpypi and anaconda.org with label 'test'"
         echo "this is only done from the py3dev branch"
         anaconda -t $TOKEN upload $pth --label test
-        #python setup.py register -r testpypi
-        #twine upload -r testpypi dist/*
+        python setup.py register -r testpypi
+        twine upload -r testpypi dist/*
     else
         echo "Release tag was not recognized"
         echo "or branch was not py3 or py3dev"
