@@ -83,8 +83,8 @@ then
         echo "deploy to testpypi and anaconda.org with label 'test'"
         echo "this is only done from the py3dev branch"
         anaconda -t $TOKEN upload $pth --label test
-        python setup.py register -r testpypi
-        twine upload -r testpypi dist/*
+        #python setup.py register -r testpypi
+        #twine upload -r testpypi dist/*
     else
         echo "Release tag was not recognized"
         echo "or branch was not py3 or py3dev"
