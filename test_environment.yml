@@ -1,5 +1,6 @@
 name: testenv
 channels:
+- conda-forge
 - BjornFJohansson
 dependencies:
 - python=3.5
