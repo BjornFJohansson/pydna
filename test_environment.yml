@@ -4,12 +4,12 @@ channels:
 - BjornFJohansson
 dependencies:
 - python=3.5
-- nose
-- coverage
-- appdirs
-- biopython
-- networkx
+#- nose
+#- coverage
+#- appdirs
+#- biopython
+#- networkx
 - ordered-set
-- pyparsing
-- pint
-- prettytable
+#- pyparsing
+#- pint
+#- prettytable
