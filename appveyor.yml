@@ -1,8 +1,5 @@
 init:
 - path C:\Miniconda3-x64;C:\Miniconda3-x64\Scripts;%PATH%
-- conda update -y -q conda
-- conda config --add channels conda-forge 
-- conda config --add channels BjornFJohansson
 install:
-- conda install python-coveralls
+- sh appveyor.sh
 
