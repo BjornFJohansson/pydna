@@ -3,7 +3,5 @@ init:
 build: off
 test: off
 install:
-#- conda env create -f test_environment.yml
-#- activate testenv
 - sh appveyor.sh
 
