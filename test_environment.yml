@@ -4,7 +4,7 @@ channels:
 - BjornFJohansson
 dependencies:
 - python=3.5
-- nose
+- pytest
 - coverage
 - appdirs
 - biopython
