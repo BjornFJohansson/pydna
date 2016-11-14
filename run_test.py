@@ -3,7 +3,7 @@
 
 def main():
     
-    print(1234, __name__)
+    warnings.warn( "1234" + __name__ )
 
     if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
         print("\n\nTests run on continuous integration server\n\n")
@@ -69,7 +69,7 @@ def main():
 
 if __name__ == '__main__':
     import os, tempfile
-    import nose
+    import nose, warnings
     print("script executed!!!!")
-    print(12345678, __name__)
+    warnings.warn( "abcd" + __name__ )
     main()
