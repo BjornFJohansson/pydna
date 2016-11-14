@@ -57,7 +57,7 @@ def main():
     pytest.cmdline.main(args)
     os.chdir(cwd)
     args = ["pydna", "--doctest-modules", "-v"]
-    #pytest.cmdline.main(args)
+    pytest.cmdline.main(args)
 
     print("                  _               _            _               _ _          __ _       _     _              _ _ ")
     print("                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |")
