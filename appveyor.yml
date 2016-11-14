@@ -1,5 +1,6 @@
 init:
 - path C:\Miniconda3-x64;C:\Miniconda3-x64\Scripts;%PATH%
+build: off
 install:
 - conda env create -f test_environment.yml
 - activate testenv
