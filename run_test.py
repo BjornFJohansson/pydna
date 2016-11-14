@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, tempfile
-from nose import run
+import nose
 
 def main():
 
@@ -50,7 +50,7 @@ def main():
         del coveralls
         args = ["--with-coverage", "--cover-package=pydna", "--cover-erase"]    
 
-    run(argv=["--verbosity=3", 
+    nose.run(argv=["--verbosity=3", 
                    "--nocapture", 
                    "--with-doctest", 
                    "--doctest-options=+ELLIPSIS"]+args)
@@ -68,4 +68,5 @@ def main():
     print("")
 
 if __name__ == '__main__':
+    print("script executed!!!!")
     main()
