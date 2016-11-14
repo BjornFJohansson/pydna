@@ -3,5 +3,7 @@ init:
 install:
 - conda list
 - conda info -a
+- conda env create -f test_environment.yml
+- source activate testenv
 #- sh appveyor.sh
 
