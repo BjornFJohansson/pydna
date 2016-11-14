@@ -3,8 +3,8 @@
 '''
 _pretty tests
 '''
-import nose, sys
-
+import sys
+import pytest
 import pydna
 
 def test_pretty():
@@ -15,7 +15,7 @@ def test_pretty():
     from Bio import SeqIO
     from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
-    raw = open("tests/pydna_read_test.txt", 'r').read()
+    raw = open("pydna_read_test.txt", 'r').read()
 
     handle = io.StringIO(raw)
 
@@ -29,11 +29,12 @@ def test_pretty():
     
     assert x==y
 
-    assert pydna.read("tests/pydna_read_test.txt").format("gb")[559:578] == x
+    assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == x
 
     print(x)
     print(y)
 
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    print(__file__)
+    pytest.cmdline.main([__file__, "-v"])

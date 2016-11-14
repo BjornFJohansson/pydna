@@ -35,7 +35,7 @@ requirements:
 
 test:
   requires:
-    - nose
+    - pytest
   imports:
     - pydna
   source_files:

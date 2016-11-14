@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
+import tempfile
+import pytest
 
 def main():
-    
-    warnings.warn( "1234" + __name__ )
 
-    if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
+    if os.getenv("DRONE") or os.getenv("TRAVIS") or os.getenv("APPVEYOR"):
         print("\n\nTests run on continuous integration server\n\n")
         print("cwd", os.path.join(os.getcwd()))
         print()
@@ -22,7 +23,6 @@ def main():
                 pass
             else:
                 raise
-
 
         print('os.environ["pydna_data_dir"] = ',  os.environ["pydna_data_dir"])
         print('os.environ["pydna_log_dir"] = ',   os.environ["pydna_log_dir"])
@@ -48,14 +48,16 @@ def main():
         args = []
     else:
         del coveralls
-        args = ["--with-coverage", "--cover-package=pydna", "--cover-erase"]    
+        args = ["--with-coverage", "--cover-package=pydna", "--cover-erase", "--cover-inclusive"]    
 
-    nose.run(argv=["--verbosity=3", 
-                   "--nocapture", 
-                   "--with-doctest", 
-                   "--doctest-options=+ELLIPSIS"]+args)
-
-    #print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
+    import py
+    args = [".", "-v"]
+    cwd = os.getcwd()
+    os.chdir("tests")
+    pytest.cmdline.main(args)
+    os.chdir(cwd)
+    args = ["pydna", "--doctest-modules", "-v"]
+    #pytest.cmdline.main(args)
 
     print("                  _               _            _               _ _          __ _       _     _              _ _ ")
     print("                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |")
@@ -65,11 +67,6 @@ def main():
     print(" | .__/ \__, |\__,_|_| |_|\__,_|  \__\___||___/\__| |___/\__,_|_|\__\___| |_| |_|_| |_|_|___/_| |_|\___|\__,_(_)")
     print(" | |     __/ | ")
     print(" |_|    |___/  ")
-    print("")
 
 if __name__ == '__main__':
-    import os, tempfile
-    import nose, warnings
-    print("script executed!!!!")
-    warnings.warn( "abcd" + __name__ )
     main()

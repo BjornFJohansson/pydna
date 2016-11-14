@@ -13,5 +13,7 @@ dependencies:
 - pyparsing
 - pint
 - prettytable
+- ipython
+- jupyter
 - python-coveralls
 
