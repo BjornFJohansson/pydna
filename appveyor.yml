@@ -1,5 +1,7 @@
 init:
 - path C:\Miniconda3-x64;C:\Miniconda3-x64\Scripts;%PATH%
 install:
-- sh appveyor.sh
+- conda list
+- conda info -a
+#- sh appveyor.sh
 
