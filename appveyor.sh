@@ -93,5 +93,5 @@ else
     echo "create test environment"
     conda env create -f test_environment.yml
     source activate testenv
-    #python run_test.py
+    python run_test.py
 fi

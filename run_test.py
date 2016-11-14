@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, nose, tempfile
+import os, tempfile
+from nose import run
 
 def main():
 
@@ -49,7 +50,7 @@ def main():
         del coveralls
         args = ["--with-coverage", "--cover-package=pydna", "--cover-erase"]    
 
-    nose.run(argv=["--verbosity=3", 
+    run(argv=["--verbosity=3", 
                    "--nocapture", 
                    "--with-doctest", 
                    "--doctest-options=+ELLIPSIS"]+args)
