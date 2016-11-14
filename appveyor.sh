@@ -49,8 +49,8 @@ then
         conda create -q -y -n pipbuild   python=2.7
     elif [ "$branch" = "py3" ]||[ "$branch" = "py3dev" ]
     then
-        conda create -q -y -n pydnabuild python=3.5
-        conda create -q -y -n pipbuild   python=3.5
+        conda create -y -n pydnabuild python=3.5
+        conda create -y -n pipbuild   python=3.5
     fi
     source activate pydnabuild
     pth="$(conda build . --output)"
