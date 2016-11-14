@@ -93,6 +93,6 @@ else
     echo "No build or install, only run test suite"
     echo "create test environment"
     conda env create -f test_environment.yml
-    source activate testenv
+    activate testenv
     python run_test.py
 fi
