@@ -1,9 +1,7 @@
 init:
 - path C:\Miniconda3-x64;C:\Miniconda3-x64\Scripts;%PATH%
 install:
-- conda list
-- conda info -a
 - conda env create -f test_environment.yml
-- source activate testenv
+- activate testenv
 #- sh appveyor.sh
 
