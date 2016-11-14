@@ -2,6 +2,7 @@ init:
 - path C:\Miniconda3-x64;C:\Miniconda3-x64\Scripts;%PATH%
 build: off
 test: off
+deploy: off
 install:
 - sh appveyor.sh
 
