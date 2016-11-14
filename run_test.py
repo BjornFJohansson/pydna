@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, tempfile
-import nose
 
 def main():
 
@@ -68,5 +66,7 @@ def main():
     print("")
 
 if __name__ == '__main__':
+    import os, tempfile
+    import nose
     print("script executed!!!!")
     main()
