@@ -33,7 +33,6 @@ then
     conda update -y -q conda
     conda config --add channels conda-forge
     conda config --add channels BjornFJohansson
-    conda update -yq conda
 else
     echo "Not running on APPVEYOR"
 fi
