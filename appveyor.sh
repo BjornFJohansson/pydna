@@ -92,7 +92,7 @@ else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"
     echo "create test environment"
-    conda env create -f test_environment.yml -q
+    conda env create -f test_environment.yml
     source activate testenv
     python run_test.py
 fi
