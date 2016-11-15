@@ -51,7 +51,7 @@ def main():
         args = []
     else:
         del coveralls
-        args = ["--cov=pydna", "--cov-report=html"]    
+        args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
 
     import py
     args = [".", "-v", "-s"] + args 
