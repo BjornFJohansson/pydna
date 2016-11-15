@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import shutil
 import tempfile
 import pytest
 
@@ -53,12 +54,12 @@ def main():
         del coveralls
         args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
 
-    import py
     args = [".", "-v", "-s"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
     pytest.cmdline.main(args)
     os.chdir(cwd)
+    shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
     args = ["pydna", "--doctest-modules", "-v", "-s"]
     pytest.cmdline.main(args)
 
