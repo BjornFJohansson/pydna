@@ -3,35 +3,35 @@
 
 import pytest
 import sys
-from pydna import parse, read
+import pydna
 
 from Bio.SeqIO import read as BPread
 from Bio.SeqIO import parse as BPparse
 
 def pydna_read_test():
-    print(sys.getdefaultencoding())
+    print("sys.getdefaultencoding()",sys.getdefaultencoding())
     import locale
-    print(locale.getpreferredencoding())
+    print("locale.getpreferredencoding()", locale.getpreferredencoding())
     assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == '/label="2micron 2µ"'
 
-def test_pth1():
+def test_parse_and_read_with_biopython_and_pydna():
 
     q = BPread("read1.gb", "gb")
     w = BPread("read2.gb", "gb")
     e = BPread("read3.fasta", "fasta")
     r = BPread("read4.fasta", "fasta")
 
-    q.format("gb")
-    w.format("gb")
-
-    a, b = BPparse("pth1.txt", "gb")
-
-    x, y = parse("pth1.txt")
-    assert a.features[13].qualifiers['label'][0] == '2micron 2µ'
-
-
+    #a, b = BPparse("pth1.txt", "gb")
+    with open("pth1.txt", "r", encoding="utf-8") as f:
+        a, b = BPparse(f, "gb")
+        
+    print("|"+a.features[13].qualifiers['label'][0]+"|")
     print("|"+a.format("gb")[3314:3324]+"|")
+    
+    assert a.features[13].qualifiers['label'][0] == '2micron 2µ'
     assert a.format("gb")[3314:3324] == '2micron 2µ'
+
+    x, y = pydna.parse("pth1.txt")
 
     assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
     assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(y.format("gb").splitlines()[4:])
@@ -58,7 +58,7 @@ def test_read_from_string():
                     1 acgt
             //
             '''
-    a = read(input_)
+    a = pydna.read(input_)
     
     assert str(a.seq)=="ACGT"
 
@@ -87,7 +87,7 @@ def test_read_from_string():
                     1 acgt
             //
             '''
-    a = read(input_)
+    a = pydna.read(input_)
     assert str(a.seq)=="ACGT"
 
     input_ ='''>hej
@@ -118,22 +118,22 @@ def test_read_from_string():
                         1 acgt
                 //
             '''
-    a = read(input_)
+    a = pydna.read(input_)
     assert str(a.seq)=="ACGT"
 
 def test_read_from_unicode():
-    with open("pth1.txt", "r", encoding="UTF8") as f: 
+    with open("pth1.txt", "r", encoding="utf-8") as f: 
         text = f.read()
     assert type(text) == str
-    x,y = parse( text )
+    x,y = pydna.parse( text )
     assert x.format()[3314:3324] == '2micron 2µ'
 
 def test_read_from_file():
-    a = read("read1.gb")
-    b = read("read2.gb")
-    c = read("read3.fasta")
-    d = read("read4.fasta")
-    x,y = parse( "pth1.txt" )
+    a = pydna.read("read1.gb")
+    b = pydna.read("read2.gb")
+    c = pydna.read("read3.fasta")
+    d = pydna.read("read4.fasta")
+    x,y = pydna.parse( "pth1.txt" )
 
     a.format("gb")
     b.format("gb")
