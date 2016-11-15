@@ -17,7 +17,8 @@ def test_pretty():
     from Bio import SeqIO
     from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
-    raw = open("pydna_read_test.txt", 'r', encoding="UTF8").read()
+    with open("pydna_read_test.txt", 'r', encoding="UTF8") as f:
+        raw = f.read()
 
     handle = io.StringIO(raw)
 
@@ -25,11 +26,18 @@ def test_pretty():
 
     s = sr.format("gb").strip()
 
+    pretty_label = pydna._pretty.pretty_string( s[:55]+"circular"+s[63:] )[559:578]
+
+    fe=sr.features[0]
+    label_from_sr = fe.qualifiers["label"][0]                                   
+    
+    assert raw[295:312] == '/label=2micron 2µ'
+
+    assert label_from_sr == "2micron 2µ"
+
     assert s[559:578] == '/label="2micron 2µ"'
 
-    y = pydna._pretty.pretty_string( s[:55]+"circular"+s[63:] )[559:578]
-    
-    assert '/label="2micron 2µ"'==y
+    assert pretty_label == '/label="2micron 2µ"'
 
     assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == '/label="2micron 2µ"'
 

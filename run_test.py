@@ -6,14 +6,15 @@ import pytest
 
 def main():
 
-    if os.getenv("DRONE") or os.getenv("TRAVIS") or os.getenv("APPVEYOR"):
-        print("\n\nTests run on continuous integration server\n\n")
-        print("cwd", os.path.join(os.getcwd()))
-        print()
+    if os.getenv("CI"):
+        ci = os.getenv("DRONE") or os.getenv("TRAVIS") or os.getenv("APPVEYOR")
+        print("Tests run on continuous integration server {}".format(ci))
+        cwd = os.getcwd()
+        print("current working directroy:", cwd)
         
-        os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"DATA")
-        os.environ["pydna_log_dir"]     = os.path.join(os.getcwd(),"DATA")
-        os.environ["pydna_config_dir"]  = os.path.join(os.getcwd(),"DATA")
+        os.environ["pydna_data_dir"]    = os.path.join(cwd,"DATA")
+        os.environ["pydna_log_dir"]     = os.path.join(cwd,"DATA")
+        os.environ["pydna_config_dir"]  = os.path.join(cwd,"DATA")
 
         # create data directory if not present
         try:
@@ -27,7 +28,7 @@ def main():
         print('os.environ["pydna_data_dir"] = ',  os.environ["pydna_data_dir"])
         print('os.environ["pydna_log_dir"] = ',   os.environ["pydna_log_dir"])
         print('os.environ["pydna_config_dir"] = ',os.environ["pydna_config_dir"])
-        print()
+        print('')
 
     else:
         os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
@@ -51,12 +52,12 @@ def main():
         args = ["--with-coverage", "--cover-package=pydna", "--cover-erase", "--cover-inclusive"]    
 
     import py
-    args = [".", "-v"]
+    args = [".", "-v", "-s"]
     cwd = os.getcwd()
     os.chdir("tests")
     pytest.cmdline.main(args)
     os.chdir(cwd)
-    args = ["pydna", "--doctest-modules", "-v"]
+    args = ["pydna", "--doctest-modules", "-v", "-s"]
     pytest.cmdline.main(args)
 
     print("                  _               _            _               _ _          __ _       _     _              _ _ ")
