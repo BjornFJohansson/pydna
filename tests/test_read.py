@@ -21,11 +21,11 @@ def test_pth1():
     a, b = BPparse("pth1.txt", "gb")
 
     x, y = parse("pth1.txt")
-    assert a.features[13].qualifiers['label'][0] == '2micron 2µ'
+    assert a.features[13].qualifiers['label'][0] == u'2micron 2µ'
 
 
     print(a.format("gb")[3270:3281])
-    a.format("gb")[3314:3325] == '2micron 2µ'
+    a.format("gb")[3314:3325] == u'2micron 2µ'
     #assert a.format("gb")[3270:3281] == '2micron 2µ'
 
     assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
@@ -118,7 +118,7 @@ def test_read_from_unicode():
     with open("pth1.txt", "rU") as f: text = f.read()
     assert type(text) == str
     x,y = parse( text )
-    assert x.format()[3314:3324] == '2micron 2µ'
+    assert x.format()[3314:3324] == u'2micron 2µ'
 
 def test_read_from_file():
     a = read("read1.gb")
@@ -133,10 +133,10 @@ def test_read_from_file():
     d.format("gb")
     x.format("gb")
     y.format("gb")
-    assert x.format()[3314:3324] == '2micron 2µ'
-    assert x.features[13].qualifiers['label'][0] == '2micron 2µ'
+    assert x.format()[3314:3324] == u'2micron 2µ'
+    assert x.features[13].qualifiers['label'][0] == u'2micron 2µ'
     assert str(a.seq).lower()==str(b.seq).lower()==str(c.seq).lower()==str(d.seq).lower()
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
 

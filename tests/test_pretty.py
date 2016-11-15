@@ -9,7 +9,7 @@ import pydna
 
 def test_pretty():
 
-    x= '/label="2micron 2µ"'
+    x= u'/label="2micron 2µ"'
 
     import io
     from Bio import SeqIO
@@ -31,10 +31,5 @@ def test_pretty():
 
     assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == x
 
-    print(x)
-    print(y)
-
-
 if __name__ == '__main__':
-    print(__file__)
-    pytest.cmdline.main([__file__, "-v"])
+    pytest.cmdline.main([__file__, "-v", "-s"])
