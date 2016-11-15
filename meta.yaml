@@ -17,6 +17,7 @@ requirements:
         - appdirs
         - prettytable
         - ordered-set
+        - pyparsing
     run:
         - python
         - ipython
