@@ -7,7 +7,6 @@ cache:
  - conda
 script:
  - ./travis.sh
-after_success: coveralls
 notifications:
   email: false
 

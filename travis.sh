@@ -97,4 +97,5 @@ else
     conda env create -f test_environment.yml -q
     source activate testenv
     python run_test.py
+    coveralls
 fi
