@@ -2815,7 +2815,8 @@ def parse(data, ds = True):
     for item in data:
         #fn = os.path.join(dr, item )
         try:
-            with open(item, 'rU') as f: raw+= f.read()
+            with open(item, 'r', encoding="utf-8") as f: 
+                raw+= f.read()
         except IOError:
             raw+=textwrap.dedent(item).strip()
 

@@ -9,15 +9,11 @@ import pydna
 
 def test_pretty():
 
-    print(sys.getdefaultencoding())
-    import locale
-    print(locale.getpreferredencoding())
-
     import io
     from Bio import SeqIO
     from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
-    with open("pydna_read_test.txt", 'r', encoding="UTF8") as f:
+    with open("pydna_read_test.txt", 'r', encoding="utf-8") as f:
         raw = f.read()
 
     handle = io.StringIO(raw)
@@ -38,8 +34,6 @@ def test_pretty():
     assert s[559:578] == '/label="2micron 2µ"'
 
     assert pretty_label == '/label="2micron 2µ"'
-
-    #assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == '/label="2micron 2µ"'
 
 if __name__ == '__main__':
     pytest.cmdline.main([__file__, "-v", "-s"])
