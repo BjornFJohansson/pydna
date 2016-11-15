@@ -269,7 +269,7 @@ class Assembly(object):
         cached  = None
 
         #key = "|".join(sorted([str(r.seguid()) for r in dsrecs]))+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
-        key = "|".join( [str(r.seguid()) for r in dsrecs] )+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
+        key = "|".join( [str(r.__hash__()) for r in dsrecs] )+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
 
         if os.environ["pydna_cache"] in ("compare", "cached"):
 
