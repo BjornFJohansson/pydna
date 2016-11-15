@@ -9,7 +9,6 @@ import sys
 
 from pydna import parse, read
 
-
 def test_parse1():
     ''' test parsing fasta sequences from a text'''
 

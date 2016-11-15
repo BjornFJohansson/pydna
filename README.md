@@ -119,7 +119,7 @@ Please post a message in the [google group](https://groups.google.com/d/forum/py
 for pydna if you have problems, questions or comments.
 Feedback in the form of questions, comments or criticism is very welcome!
 
-## Automatic testing and builds
+## Automatic testing
 
 The test suit is run automatically after each commit on:
 
@@ -132,6 +132,16 @@ Documentation is built and displayed at readthedocs [![Documentation Status](htt
 Code coverage is [![Coverage Status](https://coveralls.io/repos/github/BjornFJohansson/pydna/badge.svg?branch=py3)](https://coveralls.io/github/BjornFJohansson/pydna?branch=py3)
 
 Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)
+
+## Automatic builds
+
+Conda packages are built on Drone, Travis and Appveyor for Linux, MacOS and Windows, respectively.
+Source setuptools packages and wheels are built on Linux for all systems and Binary setuptools packages are built for Windows.
+
+Builds are controlled by Git tags. Tags like 1.0.2a4 are considered test builds and are uploaded to 
+testpypi and to Anaconda.org with a test label. These are only meant to test the finished packages are not meant to be used.
+
+Tags like 1.0.3 are considered final builds and are uploaded to Anaconda.org under the "main" label and to pypi.
 
 ## Minimal installation requirements
 
@@ -147,7 +157,8 @@ The list below is the minimal requirements for installing pydna. Biopython has c
 
 ## Optional Requirements
 Pydna has been designed to be used from the Jupyter notebook. If [IPython](https://ipython.org/) 
-and [Jupyter](http://jupyter.org/) are installed, importing ipython notebooks as modules among are supported among other things.
+and [Jupyter](http://jupyter.org/) are installed, importing ipython notebooks as modules among are 
+supported among other things.
 
 If the modules listed below are installed, gel simulation functionality is available.
 
@@ -156,7 +167,6 @@ If the modules listed below are installed, gel simulation functionality is avail
 - [numpy](http://www.numpy.org)
 - [matplotlib](http://matplotlib.org)
 - [mpldatacursor](https://pypi.python.org/pypi/mpldatacursor)
-
 
 The pydna conda package installs all optional requirements, currently:
 
@@ -170,7 +180,7 @@ The pydna conda package installs all optional requirements, currently:
 
 ## Requirements for running tests
 
-- [nose>=1.3.4](https://pypi.python.org/pypi/nose)
+- [pytest>=3.0.3](https://pypi.python.org/pypi/pytest)
 - [coverage>=3.7.1](https://pypi.python.org/pypi/coverage)
 
 ## Installation using conda on Anaconda
@@ -178,7 +188,7 @@ The pydna conda package installs all optional requirements, currently:
 The absolutely best way of installing and using pydna is to use the 
 free [Anaconda](https://store.continuum.io/cshop/anaconda) python distribution.
 
-Once Anaconda is installed, the conda package manager can be used to install pydna.
+Once Anaconda (or Miniconda) is installed, the conda package manager can be used to install pydna.
 Pydna and its dependencies are available from the [conda-forge](https://anaconda.org/conda-forge) and 
 [BjornFJohansson](https://anaconda.org/bjornfjohansson) [Anaconda.org](https://anaconda.org) channels. 
 The first step is to add the channels:
@@ -190,7 +200,8 @@ Then pydna can be installed by simply:
 
     conda install pydna
 
-This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies automatically in one go.
+This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies automatically 
+in one go.
 
 ## Installation using pip
 
@@ -241,3 +252,4 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 ## Changelog
 See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/CHANGELOG.md) for recent changes. 
 
+	

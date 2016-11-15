@@ -39,7 +39,7 @@ def test_pretty():
 
     assert pretty_label == '/label="2micron 2µ"'
 
-    assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == '/label="2micron 2µ"'
+    #assert pydna.read("pydna_read_test.txt").format("gb")[559:578] == '/label="2micron 2µ"'
 
 if __name__ == '__main__':
     pytest.cmdline.main([__file__, "-v", "-s"])
