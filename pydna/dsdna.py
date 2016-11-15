@@ -2225,7 +2225,7 @@ class Dseqrecord(SeqRecord):
 
     def __hash__(self):
         """__hash__ must be based on __eq__"""
-        return hash( (str(self.seq), str(tuple(sorted(self.__dict__.items())))))
+        return hash( (str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
 
     def linearize(self, *enzymes):
         '''This method is similar to :func:`cut` but throws an exception if there
