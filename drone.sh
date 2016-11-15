@@ -74,7 +74,7 @@ then
         echo "deploy to pypi and anaconda.org"
         echo "this is only done from the py3 branch"
         anaconda -t $TOKEN upload $pth
-        python setup.py register
+        #python setup.py register
         twine upload dist/* --skip-existing        
     elif  [[ $tagname =~ $re_alpha ]]||[ "$branch" = "py3dev" ]
     then
@@ -82,7 +82,7 @@ then
         echo "deploy to testpypi and anaconda.org with label 'test'"
         echo "this is only done from the py3dev branch"
         anaconda -t $TOKEN upload $pth --label test --force
-        python setup.py register -r testpypi
+        #python setup.py register -r testpypi
         twine upload -r testpypi dist/*
     else
         echo "Release tag was not recognized"
