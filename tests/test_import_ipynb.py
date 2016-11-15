@@ -22,4 +22,4 @@ def test_ipynb_import():
         assert mynotebook.foo() == "bar"
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

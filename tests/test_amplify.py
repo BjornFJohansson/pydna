@@ -271,4 +271,4 @@ def test_pcr():
         assert tst[0] == seguid(pcr(tst[1:]).seq)
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

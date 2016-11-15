@@ -137,4 +137,4 @@ def test_MXblaster1():
 
     
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

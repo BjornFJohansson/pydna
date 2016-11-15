@@ -36,4 +36,4 @@ def test_empty():
     assert pGUP1.seguid() == "42wIByERn2kSe_Exn405RYwhffU"    
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

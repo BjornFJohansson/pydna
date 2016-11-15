@@ -38,7 +38,7 @@ def test_empty():
     assert pydna.eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
 
 
 

@@ -37,7 +37,7 @@ def test_pydna_download():
     os.environ["pydna_cache"] = cachevar
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
     
 
     
