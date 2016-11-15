@@ -5,7 +5,7 @@ include LICENSE.txt
 include README.rst
 include MANIFEST.in
 include setup.py
-include run_tests_.py
+include run_test.py
 include gpl.txt
 
 recursive-include pydna *

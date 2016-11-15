@@ -4,12 +4,10 @@
 test parse
 '''
 
-import nose, sys
-
-from nose.tools import assert_equal, assert_true
+import pytest
+import sys
 
 from pydna import parse, read
-
 
 def test_parse1():
     ''' test parsing fasta sequences from a text'''
@@ -43,9 +41,8 @@ def test_parse1():
                'CTCCCCTATCACCAGG',
                'GTACCGATAGCCACGAATCT']
 
-    assert_equal( [str(s.seq) for s in result], correct )
-
-    assert_equal( [s.linear for s in result], [True,True,True] )
+    assert [str(s.seq) for s in result] == correct
+    assert [s.linear for s in result] == [True,True,True]
 
 
     input =   '''
@@ -69,44 +66,41 @@ def test_parse1():
             '''
     result = parse(input).pop()
 
-    assert_equal( str(result.seq) , str(read(input).seq) )
-
+    assert str(result.seq) == str(read(input).seq)
     correct = '''ATGACTGAATTCAAGGCCGGTTCTGCTAAGAAAGGTGCTACACTTTTCAAGACTAGATGTCTACAATGCCACACCGTGGAAAAGGGTGGCCCACATAAGGTTGGTCCAAACTTGCATGGTATCTTTGGCAGACACTCTGGTCAAGCTGAAGGGTATTCGTACACAGATGCCAATATCAAGAAAAACGTGTTGTGGGACGAAAATAACATGTCAGAGTACTTGACTAACCCAAAGAAATATATTCCTGGTACCAAGATGGCCTTTGGTGGGTTGAAGAAGGAAAAAGACAGAAACGACTTAATTACCTACTTGAAAAAAGCCTGTGAGTAA'''
 
-    assert_equal( str(result.seq) , correct )
+    assert str(result.seq) == correct
+    assert result.linear   == True 
+    assert result.circular == False 
 
-    assert_true( result.linear   == True )
-    assert_true( result.circular == False )
+    seqs = parse('RefDataBjorn.fas')
 
-    seqs = parse('tests/RefDataBjorn.fas')
+    assert len(seqs) == 771    
+    assert list(set([len (a) for a in seqs])) == [901]
+    pAG25 = read("pAG25.gb")
 
-    assert_equal( len(seqs) , 771 )
-    assert_equal( list(set([len (a) for a in seqs])) ,[901])
+    assert pAG25.circular == True 
+    assert pAG25.linear   == False
 
-    pAG25 = read("tests/pAG25.gb")
+    pCAPs = read("pCAPs.gb")
 
-    assert_true( pAG25.circular == True )
-    assert_true( pAG25.linear   == False)
+    assert pCAPs.circular == True 
+    assert pCAPs.linear   == False
 
-    pCAPs = read("tests/pCAPs.gb")
+    pUC19 = read("pUC19.gb")
 
-    assert_true( pCAPs.circular == True )
-    assert_true( pCAPs.linear   == False)
-
-    pUC19 = read("tests/pUC19.gb")
-
-    assert_true( pUC19.circular == True )
-    assert_true( pUC19.linear   == False)
+    assert pUC19.circular == True 
+    assert pUC19.linear   == False
 
 
 
 def test_parse2():
     from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
-    seqs = parse('tests/RefDataBjorn.fas')
+    seqs = parse('RefDataBjorn.fas')
 
-    assert_true( len(seqs) == 771 )
-    assert_true( list(set([len (a) for a in seqs])) == [901] )
+    assert len(seqs) == 771
+    assert list(set([len (a) for a in seqs])) == [901]
 
     for i,s in enumerate(seqs):
         a = s.description
@@ -120,7 +114,7 @@ def test_parse2():
 
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
 
 
 

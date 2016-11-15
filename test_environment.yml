@@ -1,0 +1,20 @@
+name: testenv
+channels:
+- conda-forge
+- BjornFJohansson
+dependencies:
+- python=3.5
+- pytest
+- coverage
+- appdirs
+- biopython
+- networkx
+- ordered-set
+- pyparsing
+- pint
+- prettytable
+- ipython
+- jupyter
+- python-coveralls
+- pytest-cov
+

@@ -3,19 +3,18 @@
 '''
 _pretty tests
 '''
-import nose, sys
-
+import sys
+import pytest
 import pydna
 
 def test_pretty():
-
-    x= '/label="2micron 2µ"'
 
     import io
     from Bio import SeqIO
     from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
-    raw = open("tests/pydna_read_test.txt", 'r').read()
+    with open("pydna_read_test.txt", 'r', encoding="utf-8") as f:
+        raw = f.read()
 
     handle = io.StringIO(raw)
 
@@ -23,17 +22,18 @@ def test_pretty():
 
     s = sr.format("gb").strip()
 
-    assert s[559:578] == x
+    pretty_label = pydna._pretty.pretty_string( s[:55]+"circular"+s[63:] )[559:578]
 
-    y = pydna._pretty.pretty_string( s[:55]+"circular"+s[63:] )[559:578]
+    fe=sr.features[0]
+    label_from_sr = fe.qualifiers["label"][0]                                   
     
-    assert x==y
+    assert raw[295:312] == '/label=2micron 2µ'
 
-    assert pydna.read("tests/pydna_read_test.txt").format("gb")[559:578] == x
+    assert label_from_sr == "2micron 2µ"
 
-    print(x)
-    print(y)
+    assert s[559:578] == '/label="2micron 2µ"'
 
+    assert pretty_label == '/label="2micron 2µ"'
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

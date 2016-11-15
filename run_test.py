@@ -1,17 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, nose, tempfile
+import os
+import shutil
+import tempfile
+import pytest
 
 def main():
 
-    if os.getenv("DRONE") or os.getenv("CI") or os.getenv("APPVEYOR"):
-        print("\n\nTests run on continuous integration server\n\n")
-        print("cwd", os.path.join(os.getcwd()))
-        print()
+    if os.getenv("CI"):
+        ci = os.getenv("DRONE") or os.getenv("TRAVIS") or os.getenv("APPVEYOR")
+        print("Tests run on continuous integration server {}".format(ci))
+        cwd = os.getcwd()
+        print("current working directroy:", cwd)
         
-        os.environ["pydna_data_dir"]    = os.path.join(os.getcwd(),"DATA")
-        os.environ["pydna_log_dir"]     = os.path.join(os.getcwd(),"DATA")
-        os.environ["pydna_config_dir"]  = os.path.join(os.getcwd(),"DATA")
+        os.environ["pydna_data_dir"]    = os.path.join(cwd,"DATA")
+        os.environ["pydna_log_dir"]     = os.path.join(cwd,"DATA")
+        os.environ["pydna_config_dir"]  = os.path.join(cwd,"DATA")
 
         # create data directory if not present
         try:
@@ -22,13 +26,13 @@ def main():
             else:
                 raise
 
-
         print('os.environ["pydna_data_dir"] = ',  os.environ["pydna_data_dir"])
         print('os.environ["pydna_log_dir"] = ',   os.environ["pydna_log_dir"])
         print('os.environ["pydna_config_dir"] = ',os.environ["pydna_config_dir"])
-        print()
+        print('')
 
     else:
+        print("Tests run locally")
         os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
         os.environ["pydna_log_dir"]  = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
 
@@ -44,17 +48,20 @@ def main():
     try:
         import coveralls
     except ImportError:
+        print("python-coveralls NOT installed!")
         args = []
     else:
         del coveralls
-        args = ["--with-coverage", "--cover-package=pydna", "--cover-erase"]    
+        args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
 
-    nose.run(argv=["--verbosity=3", 
-                   "--nocapture", 
-                   "--with-doctest", 
-                   "--doctest-options=+ELLIPSIS"]+args)
-
-    #print(("cache files", os.listdir( os.environ["pydna_data_dir"] )))
+    args = [".", "-v", "-s"] + args 
+    cwd = os.getcwd()
+    os.chdir("tests")
+    pytest.cmdline.main(args)
+    os.chdir(cwd)
+    shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
+    args = ["pydna", "--doctest-modules", "-v", "-s"]
+    pytest.cmdline.main(args)
 
     print("                  _               _            _               _ _          __ _       _     _              _ _ ")
     print("                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |")
@@ -64,7 +71,6 @@ def main():
     print(" | .__/ \__, |\__,_|_| |_|\__,_|  \__\___||___/\__| |___/\__,_|_|\__\___| |_| |_|_| |_|_|___/_| |_|\___|\__,_(_)")
     print(" | |     __/ | ")
     print(" |_|    |___/  ")
-    print("")
 
 if __name__ == '__main__':
     main()

@@ -3,7 +3,8 @@
 '''
 utils tests
 '''
-import nose, sys
+import pytest
+import sys
 
 from pydna import eq, shift_origin, read, Dseqrecord
 from Bio.Seq import Seq
@@ -58,7 +59,7 @@ def test_eq():
 
 def test_shift_origin():
 
-    pCAPs   = read("tests/pCAPs.gb")
+    pCAPs   = read("pCAPs.gb")
     assert pCAPs.circular
     pCAPs_b = shift_origin(pCAPs, 200)
     assert len(pCAPs) == len(pCAPs_b)
@@ -76,8 +77,8 @@ def test_copy_features():
 
     from pydna.utils import seguid
     from pydna import read,copy_features
-    a=read("tests/pCAPs.gb")
-    b=read("tests/pCAPs_fasta.txt")
+    a=read("pCAPs.gb")
+    b=read("pCAPs_fasta.txt")
 
     for sh in [1,2,3,3127,3128,3129]:
         newb = (b[sh:]+b[:sh]).looped()
@@ -105,38 +106,38 @@ def test_copy_features():
     copy_features(a, b)
     assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre, seguid_cre, seguid_bla, seguid_bla]
 
-    b=read("tests/pCAPs_fasta.txt").looped()
+    b=read("pCAPs_fasta.txt").looped()
 
     b=b.synced("attaacgagtgccgtaaacgacgatggttttacc")
 
     copy_features(a, b)
     assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre,seguid_cre,seguid_bla,seguid_bla]
 
-    b=read("tests/pCAPs_fasta.txt").looped()
+    b=read("pCAPs_fasta.txt").looped()
     b=b.synced("ttaacgagtgccgtaaacgacgatggttttacc")
 
     copy_features(a, b)
     assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre,seguid_cre,seguid_bla,seguid_bla]
 
-    b=read("tests/pCAPs_fasta.txt").looped()
+    b=read("pCAPs_fasta.txt").looped()
     b=b.synced("taacgagtgccgtaaacgacgatggttttacc")
 
     copy_features(a, b)
     assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_bla,seguid_bla]
 
-    b=read("tests/pCAPs_fasta.txt").looped()
+    b=read("pCAPs_fasta.txt").looped()
     b=b.synced("gttaccaatgcttaatcagtgaggcacctatctcagc")
 
     copy_features(a, b)
     assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre,seguid_cre,seguid_bla,seguid_bla]
 
-    b=read("tests/pCAPs_fasta.txt").looped()
+    b=read("pCAPs_fasta.txt").looped()
     b=b.synced("ttaccaatgcttaatcagtgaggcacctatctcagc")
 
     copy_features(a, b)
     assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre,seguid_cre,seguid_bla,seguid_bla]
 
-    b=read("tests/pCAPs_fasta.txt").looped()
+    b=read("pCAPs_fasta.txt").looped()
     b=b.synced("taccaatgcttaatcagtgaggcacctatctcagc")
 
     copy_features(a, b)
@@ -152,4 +153,4 @@ def test_cseguid():
 
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

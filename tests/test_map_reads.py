@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose, sys
+import pytest
+import sys
 
 from pydna import Dseqrecord, Dseq, read
 
@@ -13,7 +14,7 @@ def test_map():
     traces = []
 
     import glob
-    for name in glob.glob('tests/*.ab1'):
+    for name in glob.glob('*.ab1'):
         traces.append( abiread( name, "abi") )
 
     for t in traces:
@@ -74,19 +75,19 @@ def test_map():
 
 
 def test_map2():
-    pCR_MCT1_HA46 = read("tests/pCR_MCT1_HA46.gb")
+    pCR_MCT1_HA46 = read("pCR_MCT1_HA46.gb")
 
     slc = pCR_MCT1_HA46.find_aa("VFFKE YPYDVPDYA IEG".replace(" ", ""))
 
     pCR_MCT1_HA46.map_target = slc
 
-    map_ = pCR_MCT1_HA46.map_trace_files("tests/*.ab1")
+    map_ = pCR_MCT1_HA46.map_trace_files("*.ab1")
 
     assert set(map_)==set(['28-1rev_D04_026.ab1', '32-3rev_H04_018.ab1', '36-5rev_D05_041.ab1'])
 
-    assert set([x.fname for x in pCR_MCT1_HA46.matching_reads]) == set(['tests/28-1rev_D04_026.ab1', 'tests/32-3rev_H04_018.ab1', 'tests/36-5rev_D05_041.ab1'])
+    assert set([x.fname for x in pCR_MCT1_HA46.matching_reads]) == set(['28-1rev_D04_026.ab1', '32-3rev_H04_018.ab1', '36-5rev_D05_041.ab1'])
                                                                     
-    assert set([x.fname for x in pCR_MCT1_HA46.not_matching_reads])==set(['tests/02-G1_B01_013.ab1'])
+    assert set([x.fname for x in pCR_MCT1_HA46.not_matching_reads])==set(['02-G1_B01_013.ab1'])
 
     assert pCR_MCT1_HA46.find_aa("YPYDVPDYA".replace(" ", "")) == slice(1088, 1115, None)
 
@@ -94,5 +95,5 @@ def test_map2():
 
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
 

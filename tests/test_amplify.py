@@ -4,7 +4,8 @@
 test parse
 '''
 
-import nose, sys
+import pytest
+import sys
 
 from pydna import parse
 from pydna import pcr
@@ -46,7 +47,7 @@ def test_pcr():
     ggttgtttatgttcggatgtg
     '''),
 
-    parse("tests/pAG25.gb"),)
+    parse("pAG25.gb"),)
     )
 
     raw.append(
@@ -60,7 +61,7 @@ def test_pcr():
     >lowgc_r
     AAGTTGGAAATCTAGCTTTTCTTgacgtcagcggccgcattgcaca
     '''),
-    parse("tests/pCAPs.gb"),)
+    parse("pCAPs.gb"),)
     )
 
     raw.append(
@@ -75,7 +76,7 @@ def test_pcr():
     ggttgtttatgttcggatgtg
     '''),
 
-    parse("tests/pAG25.gb"),
+    parse("pAG25.gb"),
 
     ))
 
@@ -270,4 +271,4 @@ def test_pcr():
         assert tst[0] == seguid(pcr(tst[1:]).seq)
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

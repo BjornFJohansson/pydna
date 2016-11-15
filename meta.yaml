@@ -35,18 +35,18 @@ requirements:
 
 test:
   requires:
-    - nose
+    - pytest
   imports:
     - pydna
   source_files:
-    - pydna
     - tests
+    - pydna
 
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD
-  summary: Classes and code for representing double stranded DNA and functions for simulating homologous recombination and Gibson assembly.
+  summary: Classes for representing double stranded DNA and functions for simulating cloning, homologous recombination and Gibson assembly.
 
 extra:
   maintainers:
-   - "Björn Johansson <bjorn_johansson@>"
+   - "Björn Johansson <bjorn_johansson@bio.uminho.pt>"

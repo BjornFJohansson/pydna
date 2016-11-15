@@ -4,7 +4,9 @@
 test parse
 '''
 
-import nose, sys, os
+import pytest
+import sys
+import os
 
 from pydna import pcr, Assembly, Dseqrecord, assembly_primers, cloning_primers, parse
 
@@ -217,4 +219,4 @@ def test_primer_Design_saving_to_text_file():
     assert r.description == "rv64 t-sequence"
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

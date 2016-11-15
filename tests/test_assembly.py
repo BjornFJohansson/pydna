@@ -3,7 +3,8 @@
 '''
 test empty
 '''
-import nose, sys
+import pytest
+import sys
 
 from pydna import Assembly
 from pydna import parse
@@ -135,7 +136,7 @@ def test_assembly():
     print("done!", time.time()-start)
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
 
 
 

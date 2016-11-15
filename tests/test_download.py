@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys
-import nose
+import os
+import sys
+import pytest
 import pydna
 
 def test_efetch_download_text():
@@ -11,7 +12,7 @@ def test_efetch_download_text():
     cachevar = os.environ["pydna_cache"]
     gbdata = pydna.download_text(url)
     os.environ["pydna_cache"] = cachevar
-    with open("tests/E05006.gb") as f:
+    with open("E05006.gb") as f:
         localdata = f.read().strip()
     assert localdata==gbdata
 
@@ -36,7 +37,7 @@ def test_pydna_download():
     os.environ["pydna_cache"] = cachevar
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
     
 
     

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose, sys
+import pytest
+import sys
 
 def test_ipynb_import():
 
@@ -21,4 +22,4 @@ def test_ipynb_import():
         assert mynotebook.foo() == "bar"
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])

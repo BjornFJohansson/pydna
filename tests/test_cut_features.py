@@ -3,14 +3,15 @@
 '''
 test cut
 '''
-import nose, sys
+import pytest
+import sys
 
 from pydna import pcr, cloning_primers, read, Dseqrecord
 
 from Bio.Restriction import EcoRI
 
 def test_cut_feat():
-    puc19 = read('tests/PUC19_MarkBudde.gb')
+    puc19 = read('PUC19_MarkBudde.gb')
     pf, pr = cloning_primers(puc19)
     pcrProd = pcr(pf, pr, puc19)
     assert len(pcrProd.features) == 23
@@ -26,4 +27,4 @@ def test_cut_feat():
     assert len(pcrProdDseqrecord.cut(EcoRI)[1].features) == 17
 
 if __name__ == '__main__':
-    nose.runmodule(argv=[sys.argv[0], '--nocapture'])
+    pytest.cmdline.main([__file__, "-v", "-s"])
