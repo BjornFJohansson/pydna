@@ -31,6 +31,7 @@ def main():
         print('')
 
     else:
+        print("Tests run locally")
         os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
         os.environ["pydna_log_dir"]  = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
 
@@ -46,13 +47,14 @@ def main():
     try:
         import coveralls
     except ImportError:
+        print("python-coveralls NOT installed!")
         args = []
     else:
         del coveralls
-        args = ["--with-coverage", "--cover-package=pydna", "--cover-erase", "--cover-inclusive"]    
+        args = ["--cov=pydna", "--cov-report=html"]    
 
     import py
-    args = [".", "-v", "-s"]
+    args = [".", "-v", "-s"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
     pytest.cmdline.main(args)

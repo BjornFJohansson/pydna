@@ -16,4 +16,5 @@ dependencies:
 - ipython
 - jupyter
 - python-coveralls
+- pytest-cov
 
