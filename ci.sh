@@ -11,12 +11,12 @@ then
     tagged_commit=true
     re_final="^[0-9]\.[0-9]\.[0-9]$"
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
-    if [[ $tagname =~  $re_final ]]&&[ "$branch" = "py3" ]
+    if [[ $tagname =~  $re_final ]]&&[[ "$branch" = "py3" ]]
     then
         printf "Release tag and branch indicate Final release\ndeploy to pypi and anaconda.org\nThis is only done from the py3 branch"
         pypiserver="pypi"
         condalabel="main"
-    elif  [[ $tagname =~ $re_alpha ]]&&[ "$branch" = "py3dev" ]
+    elif  [[ $tagname =~ $re_alpha ]]&&[[ "$branch" = "py3dev" ]]
     then
         printf "Release tag and branch indicate Alpha release\ndeploy to testpypi and anaconda.org with label 'test' this is only done from the py3dev branch"
         pypiserver="testpypi"
@@ -88,6 +88,7 @@ if [[ $tagged_commit = true ]]
 then
     echo "Tagged commit : $tagname"
     echo "build conda package and setuptools package(s)"
+    exit 1
     conda install -yq conda-build anaconda-client
     if [ "$branch" = "py2" ]
     then
