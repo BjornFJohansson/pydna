@@ -139,6 +139,7 @@ then
         exit 1
     fi
     twine upload -r $pypiserver dist/* --skip-existing
+
 else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"
