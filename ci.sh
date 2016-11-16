@@ -87,7 +87,7 @@ then
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
-#fi
+fi
 #if [[ $(uname) = *"NT"* ]]
 #then
 #    source=""
