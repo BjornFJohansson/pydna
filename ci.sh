@@ -103,6 +103,7 @@ then
     echo $pth
     #conda info -a
     conda build .
+    echo "anaconda -t $TOKEN upload $pth --label $condalabel --force"
     anaconda -t $TOKEN upload $pth --label $condalabel --force
     exit 0
     source activate pydnapipbuild
