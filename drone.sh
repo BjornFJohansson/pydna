@@ -33,8 +33,9 @@ then
     wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh
     bash Miniconda_latest.sh -b -p $HOME/miniconda
     export PATH="$HOME/miniconda/bin:$PATH"
-    conda config --add channels BjornFJohansson
     conda update -yq conda
+    conda config --add channels BjornFJohansson
+    conda config --add channels conda-forge
 else
     echo "Not running on DRONE"
 fi

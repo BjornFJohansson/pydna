@@ -2,12 +2,12 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)[![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)
 
-Planning genetic constructs with many parts, such as recombinant
-metabolic pathways is usually done manually using a DNA sequence editor, a task which quickly becomes
-unfeasible as scale and complexity of the constructions increase.
+Planning genetic constructs with many parts and assebmbly steps, such as recombinant
+metabolic pathways is often difficult to properly document when done manually using a 
+DNA sequence editor.
 
-The Pydna python package provide a human-readable formal description of cloning and assembly strategies which also allows for automatic computer
-simulation and verification. 
+The Pydna python package provide a human-readable formal description of cloning and assembly 
+strategies which also allows for simulation and verification of cloning strategies. 
 
 Pydna provides simulation of:
 
@@ -19,8 +19,10 @@ Pydna provides simulation of:
 - Homologous recombination
 - Gel electrophoresis of DNA (**NEW Feature**) 
 
-Pydna was designed to provide a form of executable documentation
-describing a subcloning or DNA assembly experiment. The pydna code unambiguously describe a sub cloning experiment, and can be executed to yield the sequence of the of the resulting DNA molecule. A cloning strategy expressed in pydna is complete, unambiguous and stable. Pydna has been designed to be understandable for biologists with some basic understanding of Python.
+Pydna is executable documentation for molecular biology. Any sub-cloning experiment can be described in pydna, and its executed yield 
+the sequence of the of the resulting DNA molecule and intermediate steps. 
+A cloning strategy expressed in pydna is complete, unambiguous and stable. 
+Pydna has been designed to be understandable for biologists with some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
@@ -34,7 +36,8 @@ There is also an open access paper in BMC Bioinformatics describing pydna:
 
 Please make a reference to the above paper if you publish work where pydna was used.
 
-Most pydna functionality is implemented as methods for the double stranded DNA sequence record classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
+Most pydna functionality is implemented as methods for the double stranded DNA sequence record 
+classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
 
 These classes make cut and paste cloning and PCR very simple:
 
