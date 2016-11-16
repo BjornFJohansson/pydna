@@ -1,3 +1,4 @@
+#!/usr/bin/env bash 
 echo -e "Establish git variables:\n========================"
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
@@ -9,6 +10,7 @@ echo "Branch             : $branch"
 echo "Current commit hash: $com"
 echo "Dirty tag          : $dirty"
 echo "Commit msg         : $msg"
+echo "========================"
 if [[ "$com" = "$tag" ]]
 then
     echo "Tagged commit      : $tagname"
@@ -85,13 +87,13 @@ then
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
-fi
-if [[ $(uname) = *"NT"* ]]
-then
-    source=""
-else
-    source=source
-fi
+#fi
+#if [[ $(uname) = *"NT"* ]]
+#then
+#    source=""
+#else
+#    source=source
+#fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
@@ -106,7 +108,7 @@ then
         conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
     fi
     #conda info --envs
-    $source activate pydnacondabuild
+    source activate pydnacondabuild
     pth="$(conda build . --output)"
     echo $pth
     #conda info -a
@@ -117,7 +119,7 @@ then
     else
         anaconda upload $pth --label $condalabel --force
     fi
-    $source activate pydnapipbuild
+    source activate pydnapipbuild
     conda upgrade -yq pip
     conda install -yq urllib3 twine
     #conda install -y -q -c conda-forge pandoc=1.18
@@ -152,7 +154,7 @@ else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"
     echo "create test environment"
-    conda env create -f test_environment.yml -q
-    $source activate testenv
+    conda env create -f test_environment.yml
+    source activate testenv
     python run_test.py
 fi
