@@ -112,12 +112,15 @@ then
         conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
     fi
     #conda info --envs
+    rm -rf dist
+    rm -rf build
+    rm -rf tests/htmlcov
     source activate pydnacondabuild
     pth="$(conda build . --output)"
     echo $pth
     #conda info -a
     conda build .
-    if [[ $CI = true ]]
+    if [[ $CI = true ]]||[[ $CI = True ]]
     then
         anaconda -t $TOKEN upload $pth --label $condalabel --force
     else
