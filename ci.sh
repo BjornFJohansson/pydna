@@ -12,7 +12,7 @@ then
     echo "Tagged commit      : $tagname"
     tagged_commit=true
     re_final="^[0-9]\.[0-9]\.[0-9]$"
-    re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
+    re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-9]+$"
     if [[ $tagname =~  $re_final ]]&&[[ $branch = "py3" ]]&&[[ $dirty = $tagname ]]
     then
         echo -e "Release tag and branch indicate Final release\ndeploy to pypi and anaconda.org with label 'main'. \nThis is only done from the py3 branch"
