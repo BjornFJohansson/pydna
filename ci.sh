@@ -88,21 +88,21 @@ then
     conda install -yq conda-build
     if [ "$branch" = "py2" ]
     then
-        conda create -q -y -n pipbuild   python=2.7 anaconda-client
-        conda create -q -y -n condabuild python=2.7 anaconda-client
+        conda create -q -y -n pydnapipbuild   python=2.7 anaconda-client
+        conda create -q -y -n pydnacondabuild python=2.7 anaconda-client
     elif [ "$branch" = "py3" ]||[ "$branch" = "py3dev" ]
     then
-        conda create -q -y -n pipbuild   python=3.5 anaconda-client
-        conda create -q -y -n condabuild python=3.5 anaconda-client
+        conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client
+        conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
     fi
     #conda info --envs
-    source activate condabuild
+    source activate pydnacondabuild
     pth="$(conda build . --output)"
     echo $pth
     #conda info -a
     conda build .
     anaconda -t $TOKEN upload $pth --label $condalabel --force
-    source activate pipbuild
+    source activate pydnapipbuild
     conda upgrade -yq pip
     #pip install setuptools wheel twine
     pip install twine
