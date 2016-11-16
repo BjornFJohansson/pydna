@@ -6,6 +6,7 @@ cache:
  - brew
  - conda
 script:
+ - uname
  - sh ci.sh
 notifications:
   email: false
