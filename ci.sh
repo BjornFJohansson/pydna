@@ -3,20 +3,22 @@ tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
 branch="$(git rev-parse --abbrev-ref HEAD)"
+dirty=$(git describe --tags --dirty --always)
 echo "Branch             : $branch"
 echo "Current commit hash: $com"
+echo "Dirty tag          : $dirty"
 if [[ "$com" = "$tag" ]]
 then
     echo "Tagged commit : $tagname"
     tagged_commit=true
     re_final="^[0-9]\.[0-9]\.[0-9]$"
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
-    if [[ $tagname =~  $re_final ]]&&[[ "$branch" = "py3" ]]
+    if [[ $tagname =~  $re_final ]]&&[[ $branch = "py3" ]]&&[[ $dirty = "" ]]
     then
         echo -e "Release tag and branch indicate Final release\ndeploy to pypi and anaconda.org with label 'main'. \nThis is only done from the py3 branch"
         pypiserver="pypi"
         condalabel="main"
-    elif  [[ $tagname =~ $re_alpha ]]&&[[ "$branch" = "py3dev" ]]
+    elif  [[ $tagname =~ $re_alpha ]]&&[[ $branch = "py3dev" ]]
     then
         echo -e "Release tag and branch indicate Alpha release\ndeploy to testpypi and anaconda.org with label 'test'. \nThis is only done from the py3dev branch"
         pypiserver="testpypi"
@@ -28,6 +30,7 @@ then
 else
     echo "Commit not tagged"
     tagged_commit=false
+exit 1
 fi
 if [[ $CI = true ]]
 then
