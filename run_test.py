@@ -59,7 +59,10 @@ def main():
     os.chdir("tests")
     pytest.cmdline.main(args)
     os.chdir(cwd)
-    shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
+    try:
+        shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
+    except FileNotFoundError:
+        pass
     args = ["pydna", "--doctest-modules", "-v", "-s"]
     pytest.cmdline.main(args)
 

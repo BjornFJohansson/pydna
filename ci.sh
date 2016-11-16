@@ -13,28 +13,26 @@ then
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
     if [[ $tagname =~  $re_final ]]&&[[ "$branch" = "py3" ]]
     then
-        printf "Release tag and branch indicate Final release\ndeploy to pypi and anaconda.org\nThis is only done from the py3 branch"
+        echo -e "Release tag and branch indicate Final release\ndeploy to pypi and anaconda.org with label 'main'. \nThis is only done from the py3 branch"
         pypiserver="pypi"
         condalabel="main"
     elif  [[ $tagname =~ $re_alpha ]]&&[[ "$branch" = "py3dev" ]]
     then
-        printf "Release tag and branch indicate Alpha release\ndeploy to testpypi and anaconda.org with label 'test' this is only done from the py3dev branch"
+        echo -e "Release tag and branch indicate Alpha release\ndeploy to testpypi and anaconda.org with label 'test'. \nThis is only done from the py3dev branch"
         pypiserver="testpypi"
         condalabel="test"
     else
-        printf "Release tag ($tagname) was not recognized or branch ($branch) was not py3 or py3dev"
+        echo -e "Release tag ($tagname) was not recognized or branch ($branch) was not py3 or py3dev"
         exit 1
     fi
 else
     echo "Commit not tagged"
     tagged_commit=false
 fi
-printf "\n\n\n\n\n"
 if [[ $CI = true ]]
 then
     echo "Running on CI server"
     echo "Creating a .pypirc file for setuptools"
-    exit 1
     echo "[server-login]
     username: $pypiusername
     password: $pypipassword
@@ -86,9 +84,7 @@ else
 fi
 if [[ $tagged_commit = true ]]
 then
-    echo "Tagged commit : $tagname"
     echo "build conda package and setuptools package(s)"
-    exit 1
     conda install -yq conda-build anaconda-client
     if [ "$branch" = "py2" ]
     then
@@ -105,7 +101,7 @@ then
     echo $pth
     #conda info -a
     conda build .
-    anaconda -t $TOKEN upload $pth --label $condalabel --force
+    ###########################################################################anaconda -t $TOKEN upload $pth --label $condalabel --force
     source activate pipbuild
     conda upgrade -yq pip
     #pip install setuptools wheel twine
@@ -125,6 +121,9 @@ then
     elif [[ $APPVEYOR=true ]]
     then
         python setup.py build bdist_wininst
+    elif [[ $(uname) = "Linux" ]]
+    then
+        python setup.py build sdist --formats=gztar,zip bdist_wheel
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
@@ -133,7 +132,8 @@ then
         echo "APPVEYOR = $APPVEYOR"
         exit 1
     fi
-    twine upload -r $pypiserver dist/*
+    exit 1
+    ##################################################################################twine upload -r $pypiserver dist/*
 else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"

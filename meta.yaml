@@ -18,6 +18,7 @@ requirements:
         - prettytable
         - ordered-set
         - pyparsing
+        - pytest-runner
     run:
         - python
         - ipython
