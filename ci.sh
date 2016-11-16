@@ -39,7 +39,7 @@ else
     echo "Commit not tagged"
     tagged_commit=false
 fi
-if [[ $CI = true ]]||[[ $DRONE = true ]]||[[ $TRAVIS = true ]]||[[ $APPVEYOR = true ]]
+if [[ $CI = true ]]||[[ $CI = True ]]
 then
     echo "Running on CI server"
     echo "Creating a .pypirc file for setuptools"
@@ -67,7 +67,7 @@ then
     elif [[ $TRAVIS = true ]]
     then
         miniconda="http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O Miniconda_latest.sh"
-    elif [[ $APPVEYOR = true ]]
+    elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         miniconda=""
         # Miniconda is installed by default on APPVEYOR
@@ -138,7 +138,7 @@ then
     elif [[ $TRAVIS=true ]]
     then
         python setup.py build bdist_dmg
-    elif [[ $APPVEYOR=true ]]
+    elif [[ $APPVEYOR=true ]]||[[ $APPVEYOR=True ]]
     then
         python setup.py build bdist_wininst
     elif [[ $(uname) = "Linux" ]]
