@@ -4,6 +4,5 @@ build: off
 test: off
 deploy: off
 install:
-- uname
-#- bash ci.sh
+- bash ci.sh
 

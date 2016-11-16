@@ -4,9 +4,11 @@ tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
 branch="$(git rev-parse --abbrev-ref HEAD)"
 dirty=$(git describe --tags --dirty --always)
+msg=$(git log -1 --pretty=%B)
 echo "Branch             : $branch"
 echo "Current commit hash: $com"
 echo "Dirty tag          : $dirty"
+echo "Commit msg         : $msg"
 if [[ "$com" = "$tag" ]]
 then
     echo "Tagged commit      : $tagname"
