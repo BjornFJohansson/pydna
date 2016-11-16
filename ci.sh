@@ -85,23 +85,23 @@ fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    conda install -yq conda-build anaconda-client
+    conda install -yq conda-build
     if [ "$branch" = "py2" ]
     then
-        conda create -q -y -n pipbuild   python=2.7
-        conda create -q -y -n pydnabuild python=2.7
+        conda create -q -y -n pipbuild   python=2.7 anaconda-client
+        conda create -q -y -n condabuild python=2.7 anaconda-client
     elif [ "$branch" = "py3" ]||[ "$branch" = "py3dev" ]
     then
-        conda create -q -y -n pipbuild   python=3.5
-        conda create -q -y -n pydnabuild python=3.5
+        conda create -q -y -n pipbuild   python=3.5 anaconda-client
+        conda create -q -y -n condabuild python=3.5 anaconda-client
     fi
     #conda info --envs
-    source activate pydnabuild
+    source activate condabuild
     pth="$(conda build . --output)"
     echo $pth
     #conda info -a
     conda build .
-    ###########################################################################anaconda -t $TOKEN upload $pth --label $condalabel --force
+    anaconda -t $TOKEN upload $pth --label $condalabel --force
     source activate pipbuild
     conda upgrade -yq pip
     #pip install setuptools wheel twine
@@ -132,8 +132,7 @@ then
         echo "APPVEYOR = $APPVEYOR"
         exit 1
     fi
-    exit 1
-    ##################################################################################twine upload -r $pypiserver dist/*
+    twine upload -r $pypiserver dist/*
 else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"

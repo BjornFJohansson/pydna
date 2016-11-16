@@ -1,4 +1,4 @@
-name: condabuildenv
+name: condabuild
 channels:
 - conda-forge
 - BjornFJohansson
