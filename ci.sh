@@ -103,13 +103,14 @@ then
     echo $pth
     #conda info -a
     conda build .
-    echo "anaconda -t $TOKEN upload $pth --label $condalabel --force"
-    anaconda -t $TOKEN upload $pth --label $condalabel --force
-    exit 0
+    if [[ $CI = true ]]
+    then
+        anaconda -t $TOKEN upload $pth --label $condalabel --force
+    else
+        anaconda upload $pth --label $condalabel --force
+    fi
     source activate pydnapipbuild
     conda upgrade -yq pip
-    #pip install setuptools wheel twine
-    #pip install twine
     conda install -yq urllib3 twine
     #conda install -y -q -c conda-forge pandoc=1.18
     #pandoc --from=markdown --to=rst --output=README.rst README.md
@@ -137,7 +138,7 @@ then
         echo "APPVEYOR = $APPVEYOR"
         exit 1
     fi
-    twine upload -r $pypiserver dist/*
+    twine upload -r $pypiserver dist/* --skip-existing
 else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"
