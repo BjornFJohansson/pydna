@@ -104,6 +104,7 @@ then
     #conda info -a
     conda build .
     anaconda -t $TOKEN upload $pth --label $condalabel --force
+    exit 0
     source activate pydnapipbuild
     conda upgrade -yq pip
     #pip install setuptools wheel twine
