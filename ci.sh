@@ -1,4 +1,4 @@
-echo "Establish git variables"
+echo -e "Establish git variables:\n========================"
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
@@ -9,28 +9,27 @@ echo "Current commit hash: $com"
 echo "Dirty tag          : $dirty"
 if [[ "$com" = "$tag" ]]
 then
-    echo "Tagged commit : $tagname"
+    echo "Tagged commit      : $tagname"
     tagged_commit=true
     re_final="^[0-9]\.[0-9]\.[0-9]$"
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
-    if [[ $tagname =~  $re_final ]]&&[[ $branch = "py3" ]]&&[[ $dirty = "" ]]
+    if [[ $tagname =~  $re_final ]]&&[[ $branch = "py3" ]]&&[[ $dirty = $tagname ]]
     then
         echo -e "Release tag and branch indicate Final release\ndeploy to pypi and anaconda.org with label 'main'. \nThis is only done from the py3 branch"
         pypiserver="pypi"
         condalabel="main"
-    elif  [[ $tagname =~ $re_alpha ]]&&[[ $branch = "py3dev" ]]
+    elif  [[ $tagname =~ $re_alpha ]]&&[[ $branch = "py3dev" ]]&&[[ $dirty = $tagname ]]
     then
         echo -e "Release tag and branch indicate Alpha release\ndeploy to testpypi and anaconda.org with label 'test'. \nThis is only done from the py3dev branch"
         pypiserver="testpypi"
         condalabel="test"
     else
-        echo -e "Release tag ($tagname) was not recognized or branch ($branch) was not py3 or py3dev"
+        echo -e "Build cancelled because\nRelease tag ($tagname) was not recognized \nor\nbranch ($branch) was not py3 or py3dev \nor\n$dirty != $tagname"
         exit 1
     fi
 else
     echo "Commit not tagged"
     tagged_commit=false
-exit 1
 fi
 if [[ $CI = true ]]
 then
