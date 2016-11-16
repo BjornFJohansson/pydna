@@ -65,7 +65,7 @@ then
     #git add README.rst
     #git commit -m "processed README.md -->"
     conda upgrade pip -yq
-    pip install twine
+    conda install twine
     python setup.py build sdist --formats=gztar,zip bdist_wheel
     re_final="^[0-9]\.[0-9]\.[0-9]$"
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-999]$"
