@@ -1,4 +1,3 @@
-#!/usr/bin/env bash 
 echo -e "Establish git variables:\n=============================================================="
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
