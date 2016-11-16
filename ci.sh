@@ -108,7 +108,7 @@ then
     conda upgrade -yq pip
     #pip install setuptools wheel twine
     #pip install twine
-    conda install twine
+    conda install urllib3 twine
     #conda install -y -q -c conda-forge pandoc=1.18
     #pandoc --from=markdown --to=rst --output=README.rst README.md
     #git add README.rst
