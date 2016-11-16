@@ -4,5 +4,5 @@ build: off
 test: off
 deploy: off
 install:
-- ./ci.sh
+- sh ci.sh
 
