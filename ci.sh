@@ -1,16 +1,16 @@
 #!/usr/bin/env bash 
-echo -e "Establish git variables:\n========================"
+echo -e "Establish git variables:\n=============================================================="
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
 branch="$(git rev-parse --abbrev-ref HEAD)"
 dirty=$(git describe --tags --dirty --always)
 msg=$(git log -1 --pretty=%B)
-echo "Branch             : $branch"
-echo "Current commit hash: $com"
-echo "Dirty tag          : $dirty"
-echo "Commit msg         : $msg"
-echo "========================"
+echo "Branch              : $branch"
+echo "Current commit hash : $com"
+echo "Dirty tag           : $dirty"
+echo "Commit msg          : $msg"
+echo "=============================================================="
 if [[ "$com" = "$tag" ]]
 then
     echo "Tagged commit      : $tagname"
@@ -154,7 +154,7 @@ else
     echo "Commit not tagged"
     echo "No build or install, only run test suite"
     echo "create test environment"
-    conda env create -f test_environment.yml
+    conda env create -f test_environment.yml -q
     source activate testenv
     python run_test.py
 fi
