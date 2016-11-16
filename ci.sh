@@ -10,6 +10,11 @@ echo "Current commit hash : $com"
 echo "Dirty tag           : $dirty"
 echo "Commit msg          : $msg"
 echo "=============================================================="
+echo "CI       = $CI"
+echo "DRONE    = $DRONE"
+echo "TRAVIS   = $TRAVIS"
+echo "APPVEYOR = $APPVEYOR"
+echo "=============================================================="
 if [[ "$com" = "$tag" ]]
 then
     echo "Tagged commit      : $tagname"
@@ -34,7 +39,7 @@ else
     echo "Commit not tagged"
     tagged_commit=false
 fi
-if [[ $CI = true ]]
+if [[ $CI = true ]]||[[ $DRONE = true ]]||[[ $TRAVIS = true ]]||[[ $APPVEYOR = true ]]
 then
     echo "Running on CI server"
     echo "Creating a .pypirc file for setuptools"
