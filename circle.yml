@@ -3,7 +3,7 @@ machine:
     PATH: /home/ubuntu/miniconda3/bin:$PATH
 dependencies:
     override:
-        - echo
+        - echo "deps"
 test:
     override:
         - sh ci.sh
