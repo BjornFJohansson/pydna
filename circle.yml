@@ -1,10 +1,6 @@
-machine:
-  environment:
-    PATH: /home/ubuntu/miniconda3/bin:$PATH
 dependencies:
     override:
-        - echo "deps"
-        - bash --version
+        - echo "deps override"
 test:
     override:
         - bash ci.sh

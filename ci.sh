@@ -83,12 +83,16 @@ then
     then
         miniconda=""
         # Miniconda is installed by default on APPVEYOR
+    elif [[ $CIRCLECI = true ]]
+    then
+        miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
         echo "DRONE    = $DRONE"
         echo "TRAVIS   = $TRAVIS"
         echo "APPVEYOR = $APPVEYOR"
+        echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
     $miniconda
@@ -159,12 +163,16 @@ then
     elif [[ $(uname) = "Linux" ]]
     then
         python setup.py build sdist --formats=gztar,zip bdist_wheel
+    elif [[ $CIRCLECI=true ]]
+    then
+        python setup.py build sdist --formats=gztar,zip bdist_wheel
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
         echo "DRONE    = $DRONE"
         echo "TRAVIS   = $TRAVIS"
         echo "APPVEYOR = $APPVEYOR"
+        echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
     twine upload -r $pypiserver dist/* --skip-existing
