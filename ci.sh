@@ -103,8 +103,6 @@ then
         bash Miniconda_latest.sh -b -p $HOME/miniconda
         export PATH="$HOME/miniconda/bin:$PATH"
     fi
-    which python
-    python --version
     conda update -yq conda
     conda config --add channels defaults
     conda config --add channels conda-forge
@@ -128,6 +126,8 @@ then
     rm -rf build
     rm -rf tests/htmlcov
     source activate pydnacondabuild
+    which python
+    python --version
     pth="$(conda build . --output)"
     echo $pth
     #conda info -a
@@ -177,6 +177,8 @@ else
     echo "create test environment"
     conda env create -f test_environment.yml -q
     source activate testenv
+    which python
+    python --version
     python run_test.py
 fi
 
