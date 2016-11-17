@@ -1,0 +1,7 @@
+machine:
+  environment:
+    PATH: /home/ubuntu/miniconda3/bin:$PATH
+test:
+  post:
+    - echo 123
+    - which python
