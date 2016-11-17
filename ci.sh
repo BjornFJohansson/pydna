@@ -82,8 +82,8 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         miniconda=""
-        CONDA_ROOT="C:\Miniconda35x64"
-        PATH="$CONDA_ROOT;$CONDA_ROOT/Scripts;$CONDA_ROOT/Library/bin;$PATH"
+        #CONDA_ROOT="C:\Miniconda35-x64"
+        #PATH="$CONDA_ROOT;$CONDA_ROOT/Scripts;$CONDA_ROOT/Library/bin;$PATH"
         # Miniconda is installed by default on APPVEYOR
     elif [[ $CIRCLECI = true ]]
     then
