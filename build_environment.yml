@@ -1,4 +1,4 @@
-name: condabuild
+name: pydnacondabuild
 channels:
 - conda-forge
 - BjornFJohansson
@@ -20,6 +20,6 @@ dependencies:
 - jupyter
 - numpy
 - scipy
-- conda-build
+- anaconda-client
 
  

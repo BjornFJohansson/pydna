@@ -126,9 +126,9 @@ Feedback in the form of questions, comments or criticism is very welcome!
 
 The test suit is run automatically after each commit on:
 
+* Ubuntu using drone [![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
 * OSX-64 using travis [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna) 
 * Windows using appveyor [![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
-* Ubuntu using drone [![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
 
 Documentation is built and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
   
@@ -139,7 +139,8 @@ Dependencies are monitored by versioneye [![icon11](https://www.versioneye.com/u
 ## Automatic builds
 
 Conda packages are built on Drone, Travis and Appveyor for Linux, MacOS and Windows, respectively.
-Source setuptools packages and wheels are built on Linux for all systems and Binary setuptools packages are built for Windows.
+Source setuptools packages and wheels are built on Linux for all systems.
+Binary setuptools packages are built for Windows and MacOS.
 
 Builds are controlled by Git tags. Tags like 1.0.2a4 are considered test builds and are uploaded to 
 testpypi and to Anaconda.org with a test label. These are only meant to test the finished packages are not meant to be used.

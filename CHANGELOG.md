@@ -1,18 +1,17 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
-1.0.3     2016-11-08 New module genbankfixer for salvaging broken genbank files (pydna.gbtext_clean).
+1.1.1     2016-11-17 New module genbankfixer for salvaging broken genbank files (pydna.gbtext_clean).
                      New pydna.readprimer function (shortcut for reading to Biopython.SeqRecord).
-                     All tests transformed into Nose tests.
-                     read_url
-                     parse_url
-                     download_text
-
+                     Tests merged to pytest.
+                     read_url function
+                     parse_url function
+                     download_text function
 
 1.0.2     2016-10-08 Python 3 only!
                      open_cache -> open_cache_folder
                      logging level is not "info"
-                     added the possiblility to specify a text file containing primers and  
+                     added the possiblity to specify a text file containing primers and  
                      a path to the ApE plasmid editor (http://biologylabs.utah.edu/jorgensen/wayned/ape/)
                      These settings can be made in the pydna.ini file that is located in the 
                      "user_config_dir" specified on each platform by the appdirs module.
