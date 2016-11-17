@@ -1,6 +1,5 @@
-machine:
-  environment:
-    PATH: /home/ubuntu/miniconda3/bin:$PATH
+machine: true
+dependencies: true 
 test:
   post:
     - echo 123
