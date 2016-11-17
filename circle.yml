@@ -1,6 +1,9 @@
-machine: true
-dependencies: true 
+machine:
+  environment:
+    PATH: /home/ubuntu/miniconda3/bin:$PATH
+dependencies:
+    override:
+        - echo
 test:
-  post:
-    - echo 123
-    - which python
+    override:
+        - sh ci.sh
