@@ -8,8 +8,3 @@ dependencies:
 test:
     override:
         - bash ci.sh
-deployment:
-  release:
-    tag: .*
-    commands:
-      - echo "deploy"
