@@ -8,3 +8,9 @@ dependencies:
 test:
     override:
         - bash ci.sh
+deployment:
+  release:
+    tag: /.*/
+    owner: circleci
+    commands:
+      - echo "deploy"

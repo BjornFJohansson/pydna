@@ -28,13 +28,13 @@ then
     re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-9]+$"
     if [[ $tagname =~  $re_final ]]
     then
-        echo "Release tag and branch indicate Final release"
+        echo "Release tag indicate Final release"
         echo "deploy to pypi and anaconda.org with label 'main'."
         pypiserver="pypi"
         condalabel="main"
     elif  [[ $tagname =~ $re_alpha ]]
     then
-        echo "Release tag and branch indicate Alpha release"
+        echo "Release tag indicate Alpha release"
         echo "deploy to testpypi and anaconda.org with label 'test'."
         pypiserver="testpypi"
         condalabel="test"
