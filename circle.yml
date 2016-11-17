@@ -10,7 +10,6 @@ test:
         - bash ci.sh
 deployment:
   release:
-    tag: /.*/
-    owner: circleci
+    tag: .*
     commands:
       - echo "deploy"
