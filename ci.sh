@@ -51,3 +51,131 @@ else
     tagged_commit=false
 fi
 echo "=============================================================="
+if [[ $CI = true ]]||[[ $CI = True ]]
+then
+    echo "Running on CI server"
+    echo "Creating a .pypirc file for setuptools"
+    echo "[server-login]
+    username: $pypiusername
+    password: $pypipassword
+
+    [distutils]
+    index-servers=
+        pypi
+        testpypi
+
+    [testpypi]
+    repository = https://testpypi.python.org/pypi
+    username = $pypiusername
+    password = $pypipassword
+
+    [pypi]
+    repository = https://pypi.python.org/pypi
+    username = $pypiusername
+    password = $pypipassword" > $HOME/.pypirc
+    if [[ $DRONE = true ]]
+    then
+        miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
+    elif [[ $TRAVIS = true ]]
+    then
+        miniconda="wget -q http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O Miniconda_latest.sh"
+    elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
+    then
+        miniconda=""
+        # Miniconda is installed by default on APPVEYOR
+    else
+        echo "Running on CI server but none of the expected environment variables are set to true"
+        echo "CI       = $CI"
+        echo "DRONE    = $DRONE"
+        echo "TRAVIS   = $TRAVIS"
+        echo "APPVEYOR = $APPVEYOR"
+        exit 1
+    fi
+    $miniconda
+    if [[ -f Miniconda_latest.sh ]]
+    then
+        bash Miniconda_latest.sh -b -p $HOME/miniconda
+        export PATH="$HOME/miniconda/bin:$PATH"
+    fi
+    conda update -yq conda
+    conda config --add channels defaults
+    conda config --add channels conda-forge
+    conda config --add channels BjornFJohansson
+else
+    echo "Not running on CI server, probably running on local computer"
+fi
+#if [[ $(uname) = *"NT"* ]]
+#then
+#    source=""
+#else
+#    source=source
+#fi
+if [[ $tagged_commit = true ]]
+then
+    echo "build conda package and setuptools package(s)"
+    conda install -yq conda-build
+    if [ "$branch" = "py2" ]
+    then
+        conda create -q -y -n pydnapipbuild   python=2.7 anaconda-client
+        conda create -q -y -n pydnacondabuild python=2.7 anaconda-client
+    elif [ "$branch" = "py3" ]||[ "$branch" = "py3dev" ]
+    then
+        conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client
+        conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
+    fi
+    #conda info --envs
+    rm -rf dist
+    rm -rf build
+    rm -rf tests/htmlcov
+    source activate pydnacondabuild
+    pth="$(conda build . --output)"
+    echo $pth
+    #conda info -a
+    conda build .
+    if [[ $CI = true ]]||[[ $CI = True ]]
+    then
+        anaconda -t $TOKEN upload $pth --label $condalabel --force
+    else
+        anaconda upload $pth --label $condalabel --force
+    fi
+    source activate pydnapipbuild
+    conda upgrade -yq pip
+    conda install -yq urllib3 twine
+    #conda install -y -q -c conda-forge pandoc=1.18
+    #pandoc --from=markdown --to=rst --output=README.rst README.md
+    #git add README.rst
+    #git commit -m "processed README.md --> README.rst"
+    #git tag -d $tagname
+    #git tag $tagname
+    if [[ $DRONE=true ]]
+    then
+        python setup.py build sdist --formats=gztar,zip bdist_wheel
+    elif [[ $TRAVIS=true ]]
+    then
+        python setup.py build bdist_dmg
+    elif [[ $APPVEYOR=true ]]||[[ $APPVEYOR=True ]]
+    then
+        python setup.py build bdist_wininst
+    elif [[ $(uname) = "Linux" ]]
+    then
+        python setup.py build sdist --formats=gztar,zip bdist_wheel
+    else
+        echo "Running on CI server but none of the expected environment variables are set to true"
+        echo "CI       = $CI"
+        echo "DRONE    = $DRONE"
+        echo "TRAVIS   = $TRAVIS"
+        echo "APPVEYOR = $APPVEYOR"
+        exit 1
+    fi
+    twine upload -r $pypiserver dist/* --skip-existing
+
+else
+    echo "create test environment"
+    conda env create -f test_environment.yml -q
+    source activate testenv
+    python run_test.py
+fi
+
+
+
+
