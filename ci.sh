@@ -84,11 +84,8 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "Running on APPVEYOR, use installed Miniconda for Windows"
-        miniconda=""
-        source appveyor_source_file.sh
-        #CONDA_ROOT="C:\Miniconda35-x64"
-        #PATH="$CONDA_ROOT;$CONDA_ROOT/Scripts;$CONDA_ROOT/Library/bin;$PATH"
-        # Miniconda is installed by default on APPVEYOR
+        echo $PATH
+        miniconda="source appveyor_source_file.sh"
     elif [[ $CIRCLECI = true ]]
     then
         miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
@@ -101,7 +98,9 @@ then
         echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
+    echo "ececute: $miniconda"
     $miniconda
+    echo $PATH
     if [[ -f Miniconda_latest.sh ]]
     then
         bash Miniconda_latest.sh -b -p $HOME/miniconda
