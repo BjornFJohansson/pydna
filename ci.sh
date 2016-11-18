@@ -82,6 +82,7 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         miniconda=""
+        PATH="C:\Miniconda35-x64;C:\Miniconda35-x64\Scripts;$PATH"
         #CONDA_ROOT="C:\Miniconda35-x64"
         #PATH="$CONDA_ROOT;$CONDA_ROOT/Scripts;$CONDA_ROOT/Library/bin;$PATH"
         # Miniconda is installed by default on APPVEYOR
@@ -102,6 +103,7 @@ then
     then
         bash Miniconda_latest.sh -b -p $HOME/miniconda
         export PATH="$HOME/miniconda/bin:$PATH"
+        rm Miniconda_latest.sh
     fi
     conda update -yq conda
     conda config --add channels defaults
@@ -181,7 +183,3 @@ else
     python --version
     python run_test.py
 fi
-
-
-
-

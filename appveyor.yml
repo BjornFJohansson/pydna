@@ -1,5 +1,4 @@
-init:
-- path C:\Miniconda35-x64;C:\Miniconda35-x64\Scripts;%PATH%
+init: off
 build: off
 test: off
 deploy: off
