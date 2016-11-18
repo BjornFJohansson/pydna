@@ -1,4 +1,5 @@
-init: off
+init:
+    - echo "init"
 build: off
 test: off
 deploy: off
