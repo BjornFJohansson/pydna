@@ -85,7 +85,7 @@ then
     then
         echo "Running on APPVEYOR, use installed Miniconda for Windows"
         miniconda=""
-        PATH="C:\Miniconda35-x64;C:\Miniconda35-x64\Scripts;$PATH"
+        env PATH="C:\Miniconda35-x64;C:\Miniconda35-x64\Scripts;$PATH"
         #CONDA_ROOT="C:\Miniconda35-x64"
         #PATH="$CONDA_ROOT;$CONDA_ROOT/Scripts;$CONDA_ROOT/Library/bin;$PATH"
         # Miniconda is installed by default on APPVEYOR
