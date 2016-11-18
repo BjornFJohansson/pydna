@@ -75,12 +75,15 @@ then
     password = $pypipassword" > $HOME/.pypirc
     if [[ $DRONE = true ]]
     then
+        echo "Running on DRONE, download Miniconda for Linux"
         miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
     elif [[ $TRAVIS = true ]]
     then
+        echo "Running on TRAVIS, download Miniconda for MacOSX"
         miniconda="wget -q http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O Miniconda_latest.sh"
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
+        echo "Running on APPVEYOR, use installed Miniconda for Windows"
         miniconda=""
         PATH="C:\Miniconda35-x64;C:\Miniconda35-x64\Scripts;$PATH"
         #CONDA_ROOT="C:\Miniconda35-x64"
