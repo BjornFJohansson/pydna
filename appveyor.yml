@@ -1,8 +1,8 @@
 init:
-    - echo "init"
+- echo "init"
 build: off
 test: off
 deploy: off
 install:
-- sh ci.sh
+- bash ci.sh
 
