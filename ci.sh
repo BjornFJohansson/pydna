@@ -122,6 +122,7 @@ then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine
+    conda upgrade -yq pip
     conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
     rm -rf dist
     rm -rf build
@@ -140,26 +141,25 @@ then
         anaconda upload $pth --label $condalabel --force
     fi
     source activate pydnapipbuild
-    conda upgrade -yq pip
     #conda install -y -q -c conda-forge pandoc=1.18
     #pandoc --from=markdown --to=rst --output=README.rst README.md
     #git add README.rst
     #git commit -m "processed README.md --> README.rst"
     #git tag -d $tagname
     #git tag $tagname
-    if [[ $DRONE=true ]]
+    if [[ $DRONE = true ]]
     then
         echo "DRONE: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
-    elif [[ $TRAVIS=true ]]
+    elif [[ $TRAVIS = true ]]
     then
         echo "TRAVIS: python setup.py bdist_dmg"
         python setup.py bdist_dmg
-    elif [[ $APPVEYOR=true ]]||[[ $APPVEYOR=True ]]
+    elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
         python setup.py bdist_wininst
-    elif [[ $CIRCLECI=true ]]
+    elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
