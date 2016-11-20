@@ -186,5 +186,6 @@ else
     which python
     python --version
     python run_test.py
+    source deactivate
     conda remove -n testenv --all
 fi
