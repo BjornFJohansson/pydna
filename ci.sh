@@ -121,7 +121,7 @@ if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
-    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client
+    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine
     conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
     rm -rf dist
     rm -rf build
@@ -141,7 +141,6 @@ then
     fi
     source activate pydnapipbuild
     conda upgrade -yq pip
-    conda install -yq urllib3 twine
     #conda install -y -q -c conda-forge pandoc=1.18
     #pandoc --from=markdown --to=rst --output=README.rst README.md
     #git add README.rst
@@ -177,6 +176,7 @@ then
         echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
+    ls dist
     twine upload -r $pypiserver dist/* --skip-existing
 
 else
