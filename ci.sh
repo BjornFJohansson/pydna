@@ -150,18 +150,23 @@ then
     #git tag $tagname
     if [[ $DRONE=true ]]
     then
+        echo "DRONE: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
     elif [[ $TRAVIS=true ]]
     then
+        echo "TRAVIS: python setup.py bdist_dmg"
         python setup.py bdist_dmg
     elif [[ $APPVEYOR=true ]]||[[ $APPVEYOR=True ]]
     then
+        echo "APPVEYOR: python setup.py bdist_wininst"
         python setup.py bdist_wininst
     elif [[ $CIRCLECI=true ]]
     then
+        echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
     elif [[ $(uname) = "Linux" ]]
     then
+        echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
