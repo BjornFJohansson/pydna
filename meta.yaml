@@ -11,29 +11,32 @@ source:
 requirements:
     build:
         - python
-        - setuptools
-        - biopython
-        - networkx
         - appdirs
+        - biopython
         - prettytable
+        - networkx
         - ordered-set
         - pyparsing
+
+        - pytest
         - pytest-runner
+        - setuptools
     run:
         - python
+        - appdirs
+        - biopython
+        - prettytable
+        - networkx
+        - ordered-set
+        - pyparsing
+
         - ipython
         - jupyter
-        - biopython
-        - networkx
-        - appdirs
-        - prettytable
         - numpy
         - scipy
         - matplotlib
         - mpldatacursor
         - pint
-        - ordered-set
-        - pyparsing
 
 test:
   requires:

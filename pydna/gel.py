@@ -23,42 +23,26 @@ This code is at an early stage of development and documentation.
 """
 
 
-try:
-    import numpy as np
-except ImportError:
-    pass
+import numpy as np
 
-try:
-    import matplotlib.ticker as mtick
-    from matplotlib import pyplot as plt, cm
-    from matplotlib.ticker import FixedLocator
-except ImportError:
-    pass
+from matplotlib import pyplot as plt, cm
+import matplotlib.ticker as mtick
+from matplotlib.ticker import FixedLocator
 
-try:
-    from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
-except ImportError:
-    pass
+from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
 
-try:
-    from scipy.interpolate import griddata
-    from scipy.optimize import leastsq, fsolve
-    from scipy import stats
-except ImportError:
-    pass
+from scipy.interpolate import griddata
+from scipy.optimize import leastsq, fsolve
+from scipy import stats
 
-try:
-    from pint import UnitRegistry
-except ImportError:
-    pass
+from pint import UnitRegistry
 
-
-from numbers import Number
-from io import StringIO, BytesIO
+#from numbers import Number
+from io import BytesIO
 #from random import randint
 
 
-from pydna import Dseq, Dseqrecord
+from .dsdna import Dseq, Dseqrecord
 
 
 # Hacky fix for a python3 problem I don't understand
@@ -561,69 +545,6 @@ def dim_or_units(quantity, reference):
                                                   reference.dimensionality))
     return quantity
 
-
-def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
-    """
-    Assigns quantities (masses in nanograms) to the DNA fragments without
-    corresponding quantity assuming a linear relationship between the DNA
-    length (in basepairs) and its mass. As if the fragments originated in
-    a restriction procedure.
-    For each sample takes the maximum quantity (either from the other samples
-    or from the default) and assigns it to the fragment with greater length.
-    """
-    outQs = []
-    units = Vars['quantities']['units']
-    maxQ = Q_(0, units)
-    # Preprocessing
-    if quantities is None:
-        quantities = []
-    if isinstance(quantities, Q_):
-        if isinstance(quantities.magnitude, Number):
-            quantities = Q_([quantities.magnitude for i in
-                             range(len(samples))], quantities.units)
-        else:
-            for i, qty in enumerate(quantities.magnitude):
-                if qty is None:
-                    quantities.magnitude[i] = []
-    else:
-        if isinstance(quantities, Number):
-            quantities = [quantities for i in range(len(samples))]
-        elif hasattr(quantities, '__iter__'):
-            for i, qty in enumerate(quantities):
-                if qty is None:
-                    quantities[i] = []
-    quantities = to_units(quantities, units, 'quantities')
-    # Quantity assignment - straightforward cases
-    for i in range(len(samples)):
-        if i < len(quantities) and isinstance(quantities[i].magnitude, Number):
-            # Divide sample quantity by its DNA fragments (linearly)
-            sizes = [len(dna) for dna in samples[i]]
-            Ltotal = sum(sizes)
-            Qtotal = quantities[i].magnitude
-            outQs.append(Q_([size*Qtotal/Ltotal for size in sizes], units))
-            if max(outQs[i]) > maxQ:
-                maxQ = max(outQs[i])
-        elif i < len(quantities) and len(quantities[i]) == len(samples[i]):
-            # Directly assigns each quantity to its corresponding DNA fragment
-            outQs.append(quantities[i])
-            if max(quantities[i]) > maxQ:
-                maxQ = max(quantities[i])
-        else:
-            outQs.append([])
-    # Quantity assignment - missing values
-    if maxQ.magnitude == 0:
-        maxQ = to_units(maxdef, units, 'maxdef')
-    maxQ = maxQ.magnitude
-    for i in range(len(samples)):
-        if outQs[i] == []:
-            # Linearly extrapolates each DNA fragment's quantity taking as
-            # reference the maximum quantity registered (or the default)
-            sizes = [len(dna) for dna in samples[i]]
-            maxL = max(sizes)
-            outQs[i] = Q_([size*maxQ/maxL for size in sizes], units)
-    return outQs
-
-
 def assign_quantitiesB(samples, maxdef=Q_(150, 'ng')):
     """
     Assigns quantities (masses in nanograms) to the DNA fragments without
@@ -1057,9 +978,6 @@ class Gel:
         quantities = [[Q_(dna.m(), 'g') for dna in sampl] for sampl in
                       self.samples]
         self.quantities = to_units(quantities, 'ng', 'quantities')
-        # self.quantities = assign_quantitiesB(self.samples, defaulQty)
-        # self.quantities = assign_quantities(self.samples, quantities,
-        #                                     defaulQty)
         self.quantities
         self.runtime = np.nan                                      # ##########
         self.freesol_mob = None

@@ -84,7 +84,6 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "Running on APPVEYOR, use installed Miniconda for Windows"
-        echo $PATH
         miniconda="source appveyor_source_file.sh"
     elif [[ $CIRCLECI = true ]]
     then
@@ -100,7 +99,6 @@ then
     fi
     echo "ececute: $miniconda"
     $miniconda
-    echo $PATH
     if [[ -f Miniconda_latest.sh ]]
     then
         bash Miniconda_latest.sh -b -p $HOME/miniconda
@@ -108,8 +106,7 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
-    conda config --add channels defaults
-    conda config --add channels conda-forge
+    #conda config --add channels conda-forge
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
