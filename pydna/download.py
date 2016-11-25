@@ -23,6 +23,12 @@ from pydna.dsdna    import read, parse
 from pydna._pretty  import pretty_str
 from pydna.dsdna    import Dseqrecord
 
+try:
+    from IPython.display import HTML, display
+except ImportError:
+    def HTML(item): return item
+    diplay = HTML
+
 def _get_proxy_from_global_settings():
     """Get proxy settings from linux/gnome"""
     if sys.platform.startswith('linux'):
@@ -239,6 +245,8 @@ class Genbank():
             result = cached
             cache.close()
 
+        display(HTML("<a href='https://www.ncbi.nlm.nih.gov/nuccore/{0}' target='_blank'>{0}</a>".format(item)))
+        
         return result
 
 def download_text(url, proxy = None):
