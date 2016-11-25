@@ -147,19 +147,19 @@ then
     #git commit -m "processed README.md --> README.rst"
     #git tag -d $tagname
     #git tag $tagname
-    if [[ $DRONE=true ]]
+    if [[ $DRONE = true ]]
     then
         echo "DRONE: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
-    elif [[ $TRAVIS=true ]]
+    elif [[ $TRAVIS = true ]]
     then
         echo "TRAVIS: python setup.py bdist_dmg"
         python setup.py bdist_dmg
-    elif [[ $APPVEYOR=true ]]||[[ $APPVEYOR=True ]]
+    elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
         python setup.py bdist_wininst
-    elif [[ $CIRCLECI=true ]]
+    elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
