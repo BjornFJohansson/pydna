@@ -58,9 +58,10 @@ from pydna.utils  import cseguid as cseg
 from pydna._pretty import pretty_str, pretty_string #, pretty_unicode
 
 try:
-    from IPython.display import Markdown as display
+    from IPython.display import display, Markdown
 except ImportError:
     def display(item): return item
+    Markdown=display
 
 def rc(sequence):
     '''returns the reverse complement of sequence (string)
@@ -1693,7 +1694,7 @@ class Dseqrecord(SeqRecord):
 
         Only defined for circular sequences.
 
-        The cSEGUID checksum uniqely identifies a circular
+        The cSEGUID checksum uniquely identifies a circular
         sequence regardless of where the origin is set.
         The two Dseqrecord objects below are circular
         permutations.
@@ -1720,7 +1721,7 @@ class Dseqrecord(SeqRecord):
 
         Only defined for linear double stranded sequences.
 
-        The lSEGUID checksum uniqely identifies a linear
+        The lSEGUID checksum uniquely identifies a linear
         sequence independent of the direction.
         The two Dseqrecord objects below are each others
         reverse complements, so they do in fact refer to
@@ -2020,7 +2021,8 @@ class Dseqrecord(SeqRecord):
 
         else:
             raise Exception("filename has to be a string, got", type(filename))
-        return display(result)
+        display(Markdown(result))
+        return 
 
 
     def __str__(self):
