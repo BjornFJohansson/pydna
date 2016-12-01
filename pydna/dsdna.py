@@ -58,10 +58,10 @@ from pydna.utils  import cseguid as cseg
 from pydna._pretty import pretty_str, pretty_string #, pretty_unicode
 
 try:
-    from IPython.display import display, Markdown
+    from IPython.display import display, HTML
 except ImportError:
     def display(item): return item
-    Markdown=display
+    HTML = display
 
 def rc(sequence):
     '''returns the reverse complement of sequence (string)
@@ -1990,38 +1990,26 @@ class Dseqrecord(SeqRecord):
         ----------
         .. [#] http://biopython.org/wiki/SeqIO
 
-       '''
+        '''
         if not filename:
             filename = "{name}.{type}".format(name=self.description, type=f)
             # invent a name if none given
-        if isinstance(filename, str):
+        if str(filename)==filename:                 # is filename a string???
             name, ext = os.path.splitext(filename)
-            result = "### [{name}]({filename})".format(name=name, filename=filename)
-            if os.path.isfile(filename):
-                len_new    = len(self)
-                seguid_new = self.seguid()
-                old_file   = read(filename)
-                len_old    = len(old_file)
-                seguid_old = old_file.seguid()
-                if seguid_new != seguid_old or self.circular != old_file.circular:
-                    # If new sequence is different, the old file is saved with "OLD" suffix
+            if not os.path.isfile(filename):
+                with open(filename, "w") as fp: fp.write(self.format(f))
+            else:
+                old_file = read(filename)
+                if self.seguid() != old_file.seguid() or self.circular != old_file.circular:
+                    # If new sequence is different, the old file is rnamed with "OLD" suffix:
                     old_filename = "{}_OLD{}".format(name, ext)
                     os.rename(filename, old_filename)
-                    result = ('#Sequence changed!\n'
-                              '[{old_filename}]({old_filename}) {len_old} bp seguid {seguid_old}\n\n'
-                              '[{filename}]({filename}) {len_new} bp seguid {seguid_new}\n').format(old_filename=old_filename,
-                                                                                      len_old=len_old,
-                                                                                      seguid_old=seguid_old,
-                                                                                      filename=filename,
-                                                                                      len_new=len_new,
-                                                                                      seguid_new=seguid_new,
-                                                                                      w=max(len(filename),len(old_filename)),
-                                                                                      wn=len(str(max(len_new, len_old))))
-            with open(filename, "w") as fp: fp.write(self.format(f))
-
+                    result = ("<h1 style='color:red;'>Sequence of pYPKa_TDH3_FaPDC_TPI1.gb changed from last save.</h1><br>"
+                              "<a href='{old_filename}' target='_blank'>{old_filename}</a><br>").format(old_filename=old_filename)
+                    display(HTML(result))
+            
         else:
             raise Exception("filename has to be a string, got", type(filename))
-        display(Markdown(result))
         return 
 
 
@@ -2029,7 +2017,6 @@ class Dseqrecord(SeqRecord):
         return ( "Dseqrecord\n"
                  "circular: {}\n"
                  "size: {}\n").format(self.circular, len(self))+SeqRecord.__str__(self)
-
     def __contains__(self, other):
         if other.lower() in str(self.seq).lower():
             return True
@@ -2813,7 +2800,7 @@ def parse(data, ds = True):
     # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.
     if not hasattr(data, '__iter__') or isinstance(data, (str, bytes)):
         data = (data,)
-
+    filenames = []
     for item in data:
         #fn = os.path.join(dr, item )
         try:
@@ -2821,6 +2808,8 @@ def parse(data, ds = True):
                 raw+= f.read()
         except IOError:
             raw+=textwrap.dedent(item).strip()
+        else:
+            filenames.append(item)
 
     pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
     #raw = raw.replace( '\r\n', '\n')
@@ -2859,7 +2848,11 @@ def parse(data, ds = True):
         else:
             sequences.append( parsed )
         handle.close()
-    #sequences[0].features[8].qualifiers['label'][0] = u'björn'
+    if filenames:  
+        msg=""
+        for fn in filenames:
+            msg += "<a href='{fn}' target='_blank'>{fn}</a><br>".format(fn=fn)
+        display(HTML(msg))
     return sequences
 
     #http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?

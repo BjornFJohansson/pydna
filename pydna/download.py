@@ -23,11 +23,12 @@ from pydna.dsdna    import read, parse
 from pydna._pretty  import pretty_str
 from pydna.dsdna    import Dseqrecord
 
+
 try:
-    from IPython.display import HTML, display
+    from IPython.display import display, HTML
 except ImportError:
-    def HTML(item): return item
-    diplay = HTML
+    def display(item): return item
+    HTML = display
 
 def _get_proxy_from_global_settings():
     """Get proxy settings from linux/gnome"""
@@ -159,7 +160,7 @@ class Genbank():
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             key = item+str(start)+str(stop)+str(strand)
             try:
-                cached = cache[key]
+                cached, item, start, stop = cache[key]
             except:
                 if os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
@@ -202,7 +203,7 @@ class Genbank():
                     stop  = match.group("stop")
                     item = item[:match.start()]
                     break
-
+         
             #        if not strand:
             #            raise Exception("\nACESSION string is malformed!\n"
             #                              "NM_005546 REGION: 1..100\n"
@@ -239,14 +240,14 @@ class Genbank():
 
         if refresh or os.environ["pydna_cache"] == "refresh":
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
-            cache[key] = result
+            cache[key] = result, item, start, stop
 
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
             result = cached
             cache.close()
-
-        display(HTML("<a href='https://www.ncbi.nlm.nih.gov/nuccore/{0}' target='_blank'>{0}</a>".format(item)))
-        
+            
+        display(HTML("<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}' target='_blank'>{item} {start}-{stop}</a>".format(item=item, start=start, stop=stop)))
+                               
         return result
 
 def download_text(url, proxy = None):

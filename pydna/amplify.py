@@ -31,6 +31,12 @@ from pydna.dsdna                    import rc
 from pydna.dsdna                    import Dseqrecord
 from pydna._pretty                  import pretty_str, pretty_unicode
 
+try:
+    from IPython.display import display, Markdown
+except ImportError:
+    def display(item): return item
+    Markdown = display
+
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -835,7 +841,10 @@ def pcr(*args,  **kwargs):
 
     if anneal_primers:
         if len(anneal_primers.products) == 1:
-            return anneal_primers.products.pop()
+            result = anneal_primers.products.pop()
+            msg = "```\n"+result.__repr__()+"```"
+            display(Markdown(msg))
+            return result
         elif len(anneal_primers.products) == 0:
             raise Exception("No PCR products! {}".format(anneal_primers.report()))
         else:

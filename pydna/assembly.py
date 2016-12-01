@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 '''This module provides functions for assembly of sequences by homologous recombination and other
 related techniques. Given a list of sequences (Dseqrecords), all sequences will be analyzed for
 overlapping regions of DNA (common substrings).
@@ -39,7 +38,11 @@ from .findsubstrings_suffix_arrays_python import terminal_overlap
 from ordered_set   import OrderedSet
 from ._pretty import pretty_str
 
-
+try:
+    from IPython.display import display, Markdown
+except ImportError:
+    def display(item): return item
+    Markdown = display
 
 class Fragment(Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.
@@ -312,6 +315,8 @@ class Assembly(object):
             for key, value in list(cached.__dict__.items()):
                 setattr(self, key, value )
             cache.close()
+            
+        display(Markdown("```\n"+self.__repr__()+"```".replace('\n', '<br />')))
 
     def _compare(self, cached):
         if str(self) != str(cached):
