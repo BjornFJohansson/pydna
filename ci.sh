@@ -53,7 +53,7 @@ then
     tagged_commit=false
 else
     echo "'test' not found in commit msg: '$msg'"
-    echo "skip!"
+    echo "tests skipped."
     exit 1  
 fi
 echo "=============================================================="
