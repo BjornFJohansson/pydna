@@ -45,10 +45,16 @@ then
         echo "$dirty != $tagname"
         exit 1
     fi
-else
-    echo "Commit not tagged or tag dirty"
-    echo "Run test suite, No build or install"
+elif [[ $msg = *"test"* ]]
+then
+    echo "'test' found in commit msg: '$msg'"
+    echo "but commit not tagged or tag dirty"
+    echo "Run test suite only, no build."
     tagged_commit=false
+else
+    echo "'test' not found in commit msg: '$msg'"
+    echo "skip!"
+    exit 1  
 fi
 echo "=============================================================="
 if [[ $CI = true ]]||[[ $CI = True ]]
@@ -169,14 +175,12 @@ then
     fi
     ls dist
     twine upload -r $pypiserver dist/* --skip-existing
-elif [[ $msg = *"test"* ]]
-then
+
+else
     echo "create test environment"
     conda env create -f test_environment.yml -q
     source activate testenv
     which python
     python --version
     python run_test.py
-else
-    echo "test not found in commit message: $msg"
 fi
