@@ -54,7 +54,7 @@ then
 else
     echo "'test' not found in commit msg: '$msg'"
     echo "tests skipped."
-    exit 1  
+    exit 0  
 fi
 echo "=============================================================="
 if [[ $CI = true ]]||[[ $CI = True ]]
