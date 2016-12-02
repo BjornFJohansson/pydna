@@ -83,7 +83,7 @@ class Contig(Dseqrecord):
                  source_fragments=[],
                  *args, **kwargs):
 
-        super(Contig, self).__init__(record, *args, **kwargs)
+        super().__init__(record, *args, **kwargs)
         self.source_fragments = source_fragments
         self.number_of_fragments = len(self.source_fragments)
 

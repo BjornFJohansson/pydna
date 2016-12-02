@@ -54,6 +54,7 @@ then
 else
     echo "'test' not found in commit msg: '$msg'"
     echo "tests skipped."
+    echo "=============================================================="
     exit 0  
 fi
 echo "=============================================================="

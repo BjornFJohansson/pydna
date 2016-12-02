@@ -2869,6 +2869,8 @@ def parse_primers(data):
 
 def read_primer(data):
     return read(data, ds=False)
+    
+    
 
 if __name__=="__main__":
     import doctest

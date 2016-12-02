@@ -176,8 +176,7 @@ class Amplicon(Dseqrecord):
                      *args,
                      **kwargs):
 
-        #Dseqrecord.__init__(self,record,*args,**kwargs)
-        super(Amplicon, self).__init__(record, *args, **kwargs)
+        super().__init__(record, *args, **kwargs)
         self.template = template
         self.forward_primer = forward_primer
         self.reverse_primer = reverse_primer
@@ -186,8 +185,6 @@ class Amplicon(Dseqrecord):
         self.fprimerc = fprimerc
         self.rprimerc = rprimerc
         self.saltc = saltc
-        
-        #self.GC=GC(str(self.seq))
 
     def __getitem__(self, sl):
         answer = copy.copy(self)
