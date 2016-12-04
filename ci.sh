@@ -49,14 +49,15 @@ elif [[ $msg = *"skip"* ]]
 then
     echo "'skip' found in commit msg: '$msg'"
     echo "tests and builds skipped."
+    echo "=============================================================="
     exit 0 
 else
     echo "'skip' not found in commit msg: '$msg'"
     echo "but commit not tagged or tag dirty"
     echo "test suit will be run."
     tagged_commit=false
-    echo "=============================================================="
 
+unset VIRTUAL_ENV
 fi
 echo "=============================================================="
 if [[ $CI = true ]]||[[ $CI = True ]]
