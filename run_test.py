@@ -53,6 +53,13 @@ def main():
     else:
         del coveralls
         args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
+    try:
+        import nbval
+    except ImportError:
+        print("nbval NOT installed!")
+    else:
+        del nbval
+        args.append("--nbval")   
 
     args = [".", "-v", "-s"] + args 
     cwd = os.getcwd()

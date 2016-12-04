@@ -167,13 +167,13 @@ class Amplicon(Dseqrecord):
 
     def __init__(    self,
                      record,
+                     *args,
                      template=None,
                      forward_primer=None,
                      reverse_primer=None,
                      saltc=None,
                      fprimerc=1000.0,
                      rprimerc=1000.0,
-                     *args,
                      **kwargs):
 
         super().__init__(record, *args, **kwargs)
@@ -197,6 +197,12 @@ class Amplicon(Dseqrecord):
 
     def __repr__(self):
         '''returns a short string representation of the object'''
+        return "Amplicon({})".format(self.__len__())
+
+    def _repr_pretty_(self, p, cycle):
+            p.text("Amplicon({})".format(self.__len__()))
+            
+    def _repr_html_(self):
         return "Amplicon({})".format(self.__len__())
 
     def flankup(self, flankuplength=50):
@@ -829,7 +835,7 @@ def pcr(*args,  **kwargs):
         elif isinstance(s, str):
             s = SeqRecord(Seq(s))
         else:
-            raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
+            raise TypeError("the record property needs to be a string, Seq, SeqRecord or Dseqrecord object")
         new.append(s)
 
     anneal_primers = Anneal(  new[:-1],
@@ -838,10 +844,7 @@ def pcr(*args,  **kwargs):
 
     if anneal_primers:
         if len(anneal_primers.products) == 1:
-            result = anneal_primers.products.pop()
-            msg = "```\n"+result.__repr__()+"```"
-            display(Markdown(msg))
-            return result
+            return anneal_primers.products[0]
         elif len(anneal_primers.products) == 0:
             raise Exception("No PCR products! {}".format(anneal_primers.report()))
         else:

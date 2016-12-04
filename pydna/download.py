@@ -17,10 +17,8 @@ import textwrap
 from urllib.parse      import urlparse
 from urllib.parse      import urlunparse
 from Bio               import Entrez
-#from Bio.SeqUtils.CheckSum  import seguid
 
 from pydna.dsdna    import read, parse
-from pydna._pretty  import pretty_str
 from pydna.dsdna    import Dseqrecord
 
 
@@ -53,20 +51,28 @@ def _get_proxy_from_global_settings():
 
 class GenbankRecord(Dseqrecord):
 
-    def __init__(self, acc=None, *args, **kwargs):
-        super(Dseqrecord, self).__init__(self, *args, **kwargs)
-        self.acc = acc
+    def __init__(self, record, *args, item = "", start=None, stop=None, strand=1,**kwargs):
+        super().__init__(record, *args, **kwargs)
+        self.item = item
+        self.start = start
+        self.stop = stop
+        self.strand = strand
 
-    def url(self):
-        return pretty_str("http://www.ncbi.nlm.nih.gov/nucleotide/"+self.acc)
+    def __repr__(self):
+        '''returns a short string representation of the object'''
+        return "Genbank({})({}{})".format(self.id, {True:"-", False:"o"}[self.linear],len(self))
+        
+    def _repr_pretty_(self, p, cycle):
+        '''returns a short string representation of the object'''
+        p.text("Genbank({})({}{})".format(self.id, {True:"-", False:"o"}[self.linear],len(self)))
+            
+    def _repr_html_(self):
+        linktext = self.item
+        if self.start != None and self.stop != None:
+            linktext += " {}-{}".format(self.start, self.stop)
+        return "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{linktext}</a>".format(item=self.item, start=self.start or "", stop=self.stop or "", strand=self.strand, linktext=linktext)
 
-email = os.getenv("pydna_email")
-
-def genbank(accession, proxy=None):
-    gb = Genbank(email, proxy=proxy)
-    return gb.nucleotide(accession)
-
-class Genbank():
+class Genbank(object):
     '''Class to facilitate download from genbank.
 
     Parameters
@@ -98,8 +104,6 @@ class Genbank():
 
         self.email=users_email #Always tell NCBI who you are
 
-        #print "#####", proxy
-
         if proxy:
             parsed = urlparse(proxy)
             scheme = parsed.scheme
@@ -122,7 +126,7 @@ class Genbank():
         #urllib2.install_opener(self.opener)
 
     def __repr__(self):
-        return "Genbank({})".format(self.email)
+        return "GenbankConnection({})".format(self.email)
 
     def nucleotide(self, item, start=None, stop=None, strand="watson" ):
         '''Download a genbank nuclotide record.
@@ -131,8 +135,8 @@ class Genbank():
         for a nucleotide file. Start and stop are intervals to be
         downloaded. This is useful as some genbank records are large.
         If strand is "c", "C", "crick", "Crick", "antisense","Antisense",
-        "2" or 2, the watson(antisense) strand is returned, otherwise
-        the sense strand is returned.
+        "2" or 2, the antisense (Crick) strand is returned, otherwise
+        the sense (Watson) strand is returned.
 
         Alternatively, item can be a string containing an url that returns a
         sequence in genbank or FASTA format.
@@ -226,14 +230,16 @@ class Genbank():
             if self.email == "someone@example.com":
                 raise ValueError("you have to set your email address in order to download from Genbank")
 
-            result = read(Entrez.efetch(db        ="nucleotide",
-                                        id        = item,
-                                        rettype   = "gbwithparts",
-                                        seq_start = start,
-                                        seq_stop  = stop,
-                                        strand    = strand,
-                                        retmode   = "text").read())
-
+            text = Entrez.efetch( db        ="nucleotide",
+                                  id        = item,
+                                  rettype   = "gbwithparts",
+                                  seq_start = start,
+                                  seq_stop  = stop,
+                                  strand    = strand,
+                                  retmode   = "text" ).read()
+            dsr = read(text)
+            result = GenbankRecord(dsr, item = item, start=start, stop=stop, strand=strand)
+    
         if os.environ["pydna_cache"] == "compare":
             if result!=cached:
                 module_logger.warning('download error')
@@ -241,13 +247,10 @@ class Genbank():
         if refresh or os.environ["pydna_cache"] == "refresh":
             cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
             cache[key] = result, item, start, stop
-
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
             result = cached
             cache.close()
-            
-        display(HTML("<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}' target='_blank'>{item} {start}-{stop}</a>".format(item=item, start=start, stop=stop)))
-                               
+
         return result
 
 def download_text(url, proxy = None):
@@ -304,12 +307,26 @@ def download_text(url, proxy = None):
 
     return result
 
+email = os.getenv("pydna_email")
+
+def genbank(accession, proxy=None):
+    gb = Genbank(email, proxy=proxy)
+    return gb.nucleotide(accession)
+
 def read_url(url, proxy = None):
+    from pydna import PydnaDeprecationWarning
+    warnings.warn( "This function is obsolete; use download_text()" 
+                   "in combination with pydna.read instead", 
+                   BiopythonDeprecationWarning )
     wb = Web(proxy=proxy)
     result = wb.download(url)
     return read(result)
 
 def parse_url(url, proxy = None):
+    from pydna import PydnaDeprecationWarning
+    warnings.warn( "This function is obsolete; use download_text()" 
+                   "in combination with pydna.parse instead", 
+                   BiopythonDeprecationWarning )
     wb = Web(proxy=proxy)
     result = wb.download(url)
     return parse(result)

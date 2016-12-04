@@ -292,7 +292,7 @@ def cloning_primers( template,
                 with open(path, 'a') as f: f.write("\n"+rp.format("fasta").strip())
                 
     msg = ("\n"+fp.format("fasta")+"\n"+rp.format("fasta")+"\n").replace('\n', '<br />')
-    display(HTML(msg))
+    #display(HTML(msg))
     return fp, rp
 
 def integration_primers( up,

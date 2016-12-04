@@ -7,8 +7,8 @@ class pretty_str(str):
     ''' Thanks to Min RK, UC Berkeley for this'''
     def _repr_pretty_(self, p, cycle):
         p.text(self)
-    def _repr_html_(self):
-        return "123"
+#    def _repr_html_(self):
+#        return "123"
 
 class pretty_unicode(str):
     def _repr_pretty_(self, p, cycle):

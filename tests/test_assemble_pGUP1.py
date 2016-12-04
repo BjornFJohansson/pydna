@@ -4,10 +4,9 @@
 test pGUP1
 '''
 import pytest
-import sys
 import pydna   
 
-def test_empty():
+def test_assemble_pGUP1():
     ''' test pGUP1'''
    
     GUP1rec1sens = pydna.read("GUP1rec1sens.txt")

@@ -44,21 +44,23 @@ except ImportError:
     def display(item): return item
     Markdown = display
 
-class Fragment(Dseqrecord):
+class _Fragment(Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.
     This class is instantiated by the :class:`Assembly` class and is not
     meant to be instantiated directly.
 
     '''
-
-    def __init__(self, record, start1    = 0,
+    
+    def __init__(self, record, *args,
+                               start1    = 0,
                                end1      = 0,
                                start2    = 0,
                                end2      = 0,
                                alignment = 0,
-                               i         = 0, *args, **kwargs):
+                               i         = 0, 
+                               **kwargs):
 
-        super(Fragment, self).__init__(record, *args, **kwargs)
+        super().__init__(record, *args, **kwargs)
 
         self.start1             = start1
         self.end1               = end1
@@ -70,7 +72,7 @@ class Fragment(Dseqrecord):
         self.i                  = i
 
     def __str__(self):
-        return ("Fragment alignment {}\n").format(self.alignment)+super(Fragment, self).__str__()
+        return ("Fragment alignment {}\n").format(self.alignment)+super().__str__()
 
 class Contig(Dseqrecord):
     '''This class holds information about a DNA assembly. This class is instantiated by
@@ -80,8 +82,9 @@ class Contig(Dseqrecord):
 
     def __init__(self,
                  record,
+                 *args,
                  source_fragments=[],
-                 *args, **kwargs):
+                 **kwargs):
 
         super().__init__(record, *args, **kwargs)
         self.source_fragments = source_fragments
@@ -89,6 +92,14 @@ class Contig(Dseqrecord):
 
     def __repr__(self):
         return "Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self))
+        
+    def _repr_pretty_(self, p, cycle):
+        '''returns a short string representation of the object'''
+        p.text("Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self)))
+            
+    def _repr_html_(self):
+        return "<pre>"+self.small_fig()+"</pre>"
+        #"Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self))
 
     def detailed_figure(self):
         '''Synonym of :func:`detailed_fig`'''
@@ -316,7 +327,7 @@ class Assembly(object):
                 setattr(self, key, value )
             cache.close()
             
-        display(Markdown("```\n"+self.__repr__()+"```".replace('\n', '<br />')))
+        #display(Markdown("```\n"+self.__repr__()+"```".replace('\n', '<br />')))
 
     def _compare(self, cached):
         if str(self) != str(cached):
@@ -436,7 +447,7 @@ class Assembly(object):
                                    olp2.location.start.position,
                                    olp2.location.end.position,)
 
-                    source_fragment = Fragment(dsrec,s1,e1,s2,e2,i)
+                    source_fragment = _Fragment(dsrec, start1=s1,end1=e1,start2=s2,end2=e2,i=i) #_Fragment(dsrec,s1,e1,s2,e2,i)
 
                     self.G.add_edge( n1, n2,
                                      frag=source_fragment,
@@ -499,19 +510,19 @@ class Assembly(object):
 
         for pth in all_circular_paths_edges(self.cG):
 
-            ns = min(enumerate(pth), key = lambda x:x[1][2]['i'])[0]
+            ns = min( enumerate(pth), key = lambda x:x[1][2]['i'] )[0]
 
             path = pth[ns:]+pth[:ns]
 
             pred_frag = copy(path[0][2]['frag'])
 
             source_fragments = [pred_frag, ]
-
+            
             if pred_frag.start2<pred_frag.end1:
                 result=pred_frag[pred_frag.start2+(pred_frag.end1-pred_frag.start2):pred_frag.end2]
             else:
                 result=pred_frag[pred_frag.end1:pred_frag.end2]
-
+                
             result.seq = Dseq(str(result.seq))
 
             for first_node, second_node, edgedict in path[1:]:
@@ -542,7 +553,7 @@ class Assembly(object):
             #    circular_products[len(result)].append( Contig( Dseqrecord(result, circular=True), source_fragments))
 
             r = Dseqrecord(result, circular=True)
-            circular_products[r.cseguid()] = Contig(r, source_fragments )
+            circular_products[r.cseguid()] = Contig(r, source_fragments = source_fragments )
 
 
         #self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
