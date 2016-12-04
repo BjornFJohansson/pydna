@@ -43,7 +43,7 @@ then
         echo "Release tag ($tagname) was not recognized"
         echo "or"
         echo "$dirty != $tagname"
-        exit 1
+        exit 0
     fi
 elif [[ $msg = *"skip"* ]]
 then
