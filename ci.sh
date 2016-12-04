@@ -45,17 +45,18 @@ then
         echo "$dirty != $tagname"
         exit 1
     fi
-elif [[ $msg = *"test"* ]]
+elif [[ $msg = *"skip"* ]]
 then
-    echo "'test' found in commit msg: '$msg'"
-    echo "but commit not tagged or tag dirty"
-    echo "Run test suite only, no build."
-    tagged_commit=false
+    echo "'skip' found in commit msg: '$msg'"
+    echo "tests and builds skipped."
+    exit 0 
 else
-    echo "'test' not found in commit msg: '$msg'"
-    echo "tests skipped."
+    echo "'skip' not found in commit msg: '$msg'"
+    echo "but commit not tagged or tag dirty"
+    echo "test suit will be run."
+    tagged_commit=false
     echo "=============================================================="
-    exit 0  
+
 fi
 echo "=============================================================="
 if [[ $CI = true ]]||[[ $CI = True ]]
