@@ -125,7 +125,7 @@ then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc
+    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
