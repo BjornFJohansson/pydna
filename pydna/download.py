@@ -21,33 +21,11 @@ from Bio               import Entrez
 from pydna.dsdna    import read, parse
 from pydna.dsdna    import Dseqrecord
 
-
 try:
     from IPython.display import display, HTML
 except ImportError:
     def display(item): return item
     HTML = display
-
-def _get_proxy_from_global_settings():
-    """Get proxy settings from linux/gnome"""
-    if sys.platform.startswith('linux'):
-        try:
-            from gi.repository import Gio
-        except ImportError:
-            return ''
-        mode = Gio.Settings.new('org.gnome.system.proxy').get_string('mode')
-        if mode == 'none' or mode == 'auto':
-            return None
-        http_settings = Gio.Settings.new('org.gnome.system.proxy.http')
-        host = http_settings.get_string('host')
-        port = http_settings.get_int('port')
-        if http_settings.get_boolean('use-authentication'):
-            username = http_settings.get_string('authentication_user')
-            password = http_settings.get_string('authentication_password')
-        else:
-            username = password = None
-            return 'http://{}:{}'.format(host, port)
-    return None
 
 class GenbankRecord(Dseqrecord):
 
@@ -97,33 +75,13 @@ class Genbank(object):
     2686                                                                                 #doctest: +SKIP
     '''
 
-    def __init__(self, users_email, proxy = None, tool="pydna"):
+    def __init__(self, users_email, proxy=None, tool="pydna"):
 
         if not re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,re.IGNORECASE):
             raise ValueError
-
-        self.email=users_email #Always tell NCBI who you are
-
-        if proxy:
-            parsed = urlparse(proxy)
-            scheme = parsed.scheme
-            hostname = parsed.hostname
-            test = urlunparse((scheme, hostname,'','','','',))
-            try:
-                response=urllib.request.urlopen(test, timeout=1)
-            except urllib.error.URLError as err:
-                warnings.warn("could not contact proxy server")
-            #print { scheme : parsed.geturl() }
-            self.proxy = urllib.request.ProxyHandler({ scheme : parsed.geturl() })
-        else:
-            pass
-            #proxy_handler = urllib2.ProxyHandler({})
-            #opener = urllib2.build_opener(proxy_handler)
-            #urllib2.install_opener(opener)
-            #os.environ['http_proxy']=''
-            #self.proxy = urllib2.ProxyHandler()
-        #self.opener = urllib2.urlopen #build_opener(self.proxy)
-        #urllib2.install_opener(self.opener)
+        if email == "someone@example.com":
+            raise ValueError("you have to set your email address in order to download from Genbank")
+        self.email=users_email
 
     def __repr__(self):
         return "GenbankConnection({})".format(self.email)
@@ -131,25 +89,31 @@ class Genbank(object):
     def nucleotide(self, item, start=None, stop=None, strand="watson" ):
         '''Download a genbank nuclotide record.
 
-        Item is a string containing one genbank acession number [#]_
-        for a nucleotide file. Start and stop are intervals to be
-        downloaded. This is useful as some genbank records are large.
+        Item is a string containing one genbank acession number.
+        for a nucleotide file. Genbank nucleotide accession numbers have this format:
+
+        | A12345   = 1 letter  + 5 numerals
+        | AB123456 = 2 letters + 6 numerals
+        
+        The accession number is sometimes followed by a pint and version number
+        
+        | BK006936.2
+        
+        Item can also contain optional interval information in the following formats:
+        
+        | BK006936.2 REGION: complement(613900..615202)
+        | NM_005546 REGION: 1..100
+        | NM_005546 REGION: complement(1..100)
+        | 21614549:1-100
+        | 21614549:c100-1
+        
+        Start and stop are the sequence intervals to be downloaded. This 
+        is useful for large genbank records.
         If strand is "c", "C", "crick", "Crick", "antisense","Antisense",
         "2" or 2, the antisense (Crick) strand is returned, otherwise
         the sense (Watson) strand is returned.
 
-        Alternatively, item can be a string containing an url that returns a
-        sequence in genbank or FASTA format.
-
-        The genbank E-utilities can provide such urls [#]_.
-
-        Result is returned as a Dseqrecord object.
-
-        Genbank nucleotide accession numbers have this format:
-
-        | A12345   = 1 letter  + 5 numerals
-        | AB123456 = 2 letters + 6 numerals
-
+        Result is returned as a GenbankRecord object.
 
         References
         ----------
@@ -173,33 +137,11 @@ class Genbank(object):
 
         if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
 
-            if item.lower().startswith(("ftp","http", "https")):
-                try:
-                    url = urlparse(item)
-                except (AttributeError, TypeError):
-                    url = urlparse("")
-
-                if url.scheme:
-                    return read( urllib.request.urlopen(item).read() )
-
             matches =((1, re.search("(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
                       (2, re.search("(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))",item)),
                       (1, re.search(":(?P<start>\d+)-(?P<stop>\d+)",item)),
                       (2, re.search(":c(?P<start>\d+)-(?P<stop>\d+)",item)),
                       (0, None))
-
-            # BK006936.2 REGION: complement(613900..615202)
-            # NM_005546 REGION: 1..100
-            # NM_005546 REGION: complement(1..100)
-            # 21614549:1-100
-            # 21614549:c100-1
-
-            # http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=BK006936.2&strand=2&seq_start=613900&seq_stop=615202&rettype=fasta&retmode=text
-            # http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=21614549&strand=1&seq_start=1&seq_stop=100&rettype=fasta&retmode=text
-            # http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=21614549&strand=2&seq_start=1&seq_stop=100&rettype=fasta&retmode=text
-            # http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=21614549&strand=1&seq_start=1&seq_stop=100&rettype=gb&retmode=text
-            # http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=21614549&strand=2&seq_start=1&seq_stop=100&rettype=gb&retmode=text
-
 
             for strand, match in matches:
                 if match:
@@ -207,13 +149,6 @@ class Genbank(object):
                     stop  = match.group("stop")
                     item = item[:match.start()]
                     break
-         
-            #        if not strand:
-            #            raise Exception("\nACESSION string is malformed!\n"
-            #                              "NM_005546 REGION: 1..100\n"
-            #                              "NM_005546 REGION: complement(1..100)\n"
-            #                              "21614549:1-100\n"
-            #                              "21614549:c100-1\n")
 
             if str(strand).lower() in ("c","crick", "antisense", "2"):
                 strand = 2
@@ -221,14 +156,6 @@ class Genbank(object):
                 strand = 1
 
             Entrez.email = self.email
-
-            #        print item
-            #        print start
-            #        print stop
-            #        print strand
-
-            if self.email == "someone@example.com":
-                raise ValueError("you have to set your email address in order to download from Genbank")
 
             text = Entrez.efetch( db        ="nucleotide",
                                   id        = item,
@@ -317,7 +244,7 @@ def read_url(url, proxy = None):
     from pydna import PydnaDeprecationWarning
     warnings.warn( "This function is obsolete; use download_text()" 
                    "in combination with pydna.read instead", 
-                   BiopythonDeprecationWarning )
+                   PydnaDeprecationWarning )
     wb = Web(proxy=proxy)
     result = wb.download(url)
     return read(result)
@@ -326,7 +253,7 @@ def parse_url(url, proxy = None):
     from pydna import PydnaDeprecationWarning
     warnings.warn( "This function is obsolete; use download_text()" 
                    "in combination with pydna.parse instead", 
-                   BiopythonDeprecationWarning )
+                   PydnaDeprecationWarning )
     wb = Web(proxy=proxy)
     result = wb.download(url)
     return parse(result)
