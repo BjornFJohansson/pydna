@@ -1,20 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013,2014, 2015 by Björn Johansson.  All rights reserved.
-# This code is part of the Python-dna distribution and governed by its
-# license.  Please see the LICENSE.txt file that should have been included
-# as part of this package.
 
 '''
-    pydna
-    ~~~~~
+# pydna
 
-    The pydna package.
+The pydna package.
 
-    :copyright: Copyright 2013 - 2015 by Björn Johansson. All rights reserved.
-    :license:   This code is part of the pydna distribution and governed by its
-                license.  Please see the LICENSE.txt file that should have been included
-                as part of this package.
+:copyright: Copyright 2013 - 2016 by Björn Johansson. All rights reserved.
+:license:   This code is part of the pydna distribution and governed by its
+            license.  Please see the LICENSE.txt file that should have been included
+            as part of this package.
 
 '''
 
@@ -32,7 +27,7 @@ del get_versions
 
 
 '''
-Pydna caches results from the assembly2 dsdna and amplify
+Pydna caches results from the assembly dsdna and amplify
 modules. pydna sets an environmental variable "pydna_cache"
 which can have three different values:
 
@@ -156,8 +151,8 @@ from pydna.assembly                                 import Assembly
 from pydna.download                                 import Genbank
 from pydna.download                                 import genbank
 from pydna.download                                 import download_text
-from pydna.download                                 import parse_url
-from pydna.download                                 import read_url
+#from pydna.download                                 import parse_url
+#from pydna.download                                 import read_url
 from pydna.dsdna                                    import Dseq
 from pydna.dsdna                                    import Dseqrecord
 from pydna.dsdna                                    import parse
@@ -325,3 +320,37 @@ def _open_folder(pth):
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
+
+class PydnaWarning(Warning):
+    """Pydna warning.
+
+    Pydna uses this warning (or subclasses of it), to make it easy to
+    silence all warning messages:
+
+    >>> import warnings
+    >>> from pydna import PydnaWarning
+    >>> warnings.simplefilter('ignore', PydnaWarning)
+
+    Consult the warnings module documentation for more details.
+    """
+    pass
+
+
+class PydnaDeprecationWarning(PydnaWarning):
+    """pydna deprecation warning.
+
+    Pydna uses this warning instead of the built in DeprecationWarning
+    since those are ignored by default since Python 2.7.
+
+    To silence all our deprecation warning messages, use:
+
+    >>> import warnings
+    >>> from pydna import PydnaDeprecationWarning
+    >>> warnings.simplefilter('ignore', PydnaDeprecationWarning)
+
+    Code marked as deprecated will be removed in a future version
+    of Pydna. This can be discussed in the Pydna google group:
+    https://groups.google.com/forum/#!forum/pydna    
+    
+    """
+    pass

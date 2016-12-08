@@ -31,6 +31,12 @@ from pydna.dsdna                    import rc
 from pydna.dsdna                    import Dseqrecord
 from pydna._pretty                  import pretty_str, pretty_unicode
 
+try:
+    from IPython.display import display, Markdown
+except ImportError:
+    def display(item): return item
+    Markdown = display
+
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -161,17 +167,16 @@ class Amplicon(Dseqrecord):
 
     def __init__(    self,
                      record,
+                     *args,
                      template=None,
                      forward_primer=None,
                      reverse_primer=None,
                      saltc=None,
                      fprimerc=1000.0,
                      rprimerc=1000.0,
-                     *args,
                      **kwargs):
 
-        #Dseqrecord.__init__(self,record,*args,**kwargs)
-        super(Amplicon, self).__init__(record, *args, **kwargs)
+        super().__init__(record, *args, **kwargs)
         self.template = template
         self.forward_primer = forward_primer
         self.reverse_primer = reverse_primer
@@ -180,8 +185,6 @@ class Amplicon(Dseqrecord):
         self.fprimerc = fprimerc
         self.rprimerc = rprimerc
         self.saltc = saltc
-        
-        #self.GC=GC(str(self.seq))
 
     def __getitem__(self, sl):
         answer = copy.copy(self)
@@ -194,6 +197,12 @@ class Amplicon(Dseqrecord):
 
     def __repr__(self):
         '''returns a short string representation of the object'''
+        return "Amplicon({})".format(self.__len__())
+
+    def _repr_pretty_(self, p, cycle):
+            p.text("Amplicon({})".format(self.__len__()))
+            
+    def _repr_html_(self):
         return "Amplicon({})".format(self.__len__())
 
     def flankup(self, flankuplength=50):
@@ -826,7 +835,7 @@ def pcr(*args,  **kwargs):
         elif isinstance(s, str):
             s = SeqRecord(Seq(s))
         else:
-            raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
+            raise TypeError("the record property needs to be a string, Seq, SeqRecord or Dseqrecord object")
         new.append(s)
 
     anneal_primers = Anneal(  new[:-1],
@@ -835,7 +844,7 @@ def pcr(*args,  **kwargs):
 
     if anneal_primers:
         if len(anneal_primers.products) == 1:
-            return anneal_primers.products.pop()
+            return anneal_primers.products[0]
         elif len(anneal_primers.products) == 0:
             raise Exception("No PCR products! {}".format(anneal_primers.report()))
         else:

@@ -21,5 +21,6 @@ dependencies:
 - numpy
 - scipy
 - anaconda-client
-
- 
+- pypandoc
+- pandoc
+- nbval

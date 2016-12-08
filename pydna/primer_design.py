@@ -10,9 +10,6 @@
 This module contain functions for primer design.
 
 '''
-
-
-
 import math
 from operator import itemgetter
 from Bio.Alphabet import Alphabet
@@ -22,6 +19,12 @@ from Bio.SeqRecord import SeqRecord
 from pydna.amplify import Anneal, tmbresluc, Dseqrecord
 from pydna.dsdna import parse
 from pydna._pretty import pretty_str
+
+try:
+    from IPython.display import display, HTML
+except ImportError:
+    def display(item): return item
+    HTML = display
 
 class Primer(SeqRecord):
 
@@ -287,6 +290,9 @@ def cloning_primers( template,
                 rp = primer_dict[rp.description]
             except KeyError:
                 with open(path, 'a') as f: f.write("\n"+rp.format("fasta").strip())
+                
+    msg = ("\n"+fp.format("fasta")+"\n"+rp.format("fasta")+"\n").replace('\n', '<br />')
+    #display(HTML(msg))
     return fp, rp
 
 def integration_primers( up,

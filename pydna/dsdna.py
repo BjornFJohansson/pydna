@@ -27,6 +27,7 @@ import textwrap
 import math
 import glob
 import colorsys
+import collections
 
 from warnings import warn
 
@@ -58,9 +59,10 @@ from pydna.utils  import cseguid as cseg
 from pydna._pretty import pretty_str, pretty_string #, pretty_unicode
 
 try:
-    from IPython.display import Markdown as display
+    from IPython.display import display, HTML
 except ImportError:
     def display(item): return item
+    HTML = display
 
 def rc(sequence):
     '''returns the reverse complement of sequence (string)
@@ -1369,10 +1371,10 @@ class Dseqrecord(SeqRecord):
     '''
 
     def __init__(self, record,
+                       *args,
                        circular               = None,
                        linear                 = None,
                        n                      = 5E-14, # mol (0.05 pmol)
-                       *args,
                        **kwargs):
         self.n = n
         if circular == None and linear in (True, False,):
@@ -1693,7 +1695,7 @@ class Dseqrecord(SeqRecord):
 
         Only defined for circular sequences.
 
-        The cSEGUID checksum uniqely identifies a circular
+        The cSEGUID checksum uniquely identifies a circular
         sequence regardless of where the origin is set.
         The two Dseqrecord objects below are circular
         permutations.
@@ -1720,7 +1722,7 @@ class Dseqrecord(SeqRecord):
 
         Only defined for linear double stranded sequences.
 
-        The lSEGUID checksum uniqely identifies a linear
+        The lSEGUID checksum uniquely identifies a linear
         sequence independent of the direction.
         The two Dseqrecord objects below are each others
         reverse complements, so they do in fact refer to
@@ -1862,8 +1864,6 @@ class Dseqrecord(SeqRecord):
         else:
             return pretty_str(pattern)
 
-
-
     def looped(self):
         '''
         Returns a circular version of the Dseqrecord object. The
@@ -1989,45 +1989,33 @@ class Dseqrecord(SeqRecord):
         ----------
         .. [#] http://biopython.org/wiki/SeqIO
 
-       '''
+        '''
         if not filename:
             filename = "{name}.{type}".format(name=self.description, type=f)
             # invent a name if none given
-        if isinstance(filename, str):
+        if str(filename)==filename:                 # is filename a string???
             name, ext = os.path.splitext(filename)
-            result = "### [{name}]({filename})".format(name=name, filename=filename)
-            if os.path.isfile(filename):
-                len_new    = len(self)
-                seguid_new = self.seguid()
-                old_file   = read(filename)
-                len_old    = len(old_file)
-                seguid_old = old_file.seguid()
-                if seguid_new != seguid_old or self.circular != old_file.circular:
-                    # If new sequence is different, the old file is saved with "OLD" suffix
+            if not os.path.isfile(filename):
+                with open(filename, "w") as fp: fp.write(self.format(f))
+            else:
+                old_file = read(filename)
+                if self.seguid() != old_file.seguid() or self.circular != old_file.circular:
+                    # If new sequence is different, the old file is rnamed with "OLD" suffix:
                     old_filename = "{}_OLD{}".format(name, ext)
                     os.rename(filename, old_filename)
-                    result = ('#Sequence changed!\n'
-                              '[{old_filename}]({old_filename}) {len_old} bp seguid {seguid_old}\n\n'
-                              '[{filename}]({filename}) {len_new} bp seguid {seguid_new}\n').format(old_filename=old_filename,
-                                                                                      len_old=len_old,
-                                                                                      seguid_old=seguid_old,
-                                                                                      filename=filename,
-                                                                                      len_new=len_new,
-                                                                                      seguid_new=seguid_new,
-                                                                                      w=max(len(filename),len(old_filename)),
-                                                                                      wn=len(str(max(len_new, len_old))))
-            with open(filename, "w") as fp: fp.write(self.format(f))
-
+                    result = ("<h1 style='color:red;'>Sequence of pYPKa_TDH3_FaPDC_TPI1.gb changed from last save.</h1><br>"
+                              "<a href='{old_filename}' target='_blank'>{old_filename}</a><br>").format(old_filename=old_filename)
+                    #display(HTML(result))
+            
         else:
             raise Exception("filename has to be a string, got", type(filename))
-        return display(result)
+        return 
 
 
     def __str__(self):
         return ( "Dseqrecord\n"
                  "circular: {}\n"
                  "size: {}\n").format(self.circular, len(self))+SeqRecord.__str__(self)
-
     def __contains__(self, other):
         if other.lower() in str(self.seq).lower():
             return True
@@ -2163,9 +2151,6 @@ class Dseqrecord(SeqRecord):
         return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
 
     def _repr_pretty_(self, p, cycle):
-        if cycle:
-            p.text('Dseqrecord(...)')
-        else:
             p.text("Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self)))
 
     def __add__(self, other):
@@ -2651,11 +2636,26 @@ class Dseqrecord(SeqRecord):
         elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
             result = cached
             cache.close()
-
         return result
 
 
+class GenbankFile(Dseqrecord):
 
+    def __init__(self, record, *args, path=None, **kwargs):
+        super().__init__(record, *args, **kwargs)
+        self.path=path
+
+    def __repr__(self):
+        '''returns a short string representation of the object'''
+        return "File({})({}{})".format(self.id, {True:"-", False:"o"}[self.linear],len(self))
+        
+    def _repr_pretty_(self, p, cycle):
+        '''returns a short string representation of the object'''
+        p.text("File({})({}{})".format(self.id, {True:"-", False:"o"}[self.linear],len(self)))
+            
+    def _repr_html_(self):
+        return "<a href='{path}' target='_blank'>{path}</a><br>".format(path=self.path)
+        
 
 def read(data, ds = True):
     '''This function is similar the :func:`parse` function but expects one and only
@@ -2776,16 +2776,12 @@ def parse(data, ds = True):
            mode and parsed for EMBL, FASTA
            and Genbank sequences.
 
-        2. an absolute path to a local directory.
-           All files in the directory will be
-           read and parsed as in 1.
-
-        3. a string containing one or more
+        2. a string containing one or more
            sequences in EMBL, GENBANK,
            or FASTA format. Mixed formats
            are allowed.
 
-        4. data can be a list or other iterable of 1 - 3
+        3. data can be a list or other iterable where the elements are 1 or 2
 
     ds : bool
         If True double stranded :class:`Dseqrecord` objects are returned.
@@ -2806,68 +2802,72 @@ def parse(data, ds = True):
     read
 
     '''
-    raw= ""
-
-    # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.
-    if not hasattr(data, '__iter__') or isinstance(data, (str, bytes)):
-        data = (data,)
-
-    for item in data:
-        #fn = os.path.join(dr, item )
-        try:
-            with open(item, 'r', encoding="utf-8") as f: 
-                raw+= f.read()
-        except IOError:
-            raw+=textwrap.dedent(item).strip()
-
-    pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
-    #raw = raw.replace( '\r\n', '\n')
-    #raw = raw.replace( '\r',   '\n')
-    rawseqs = re.findall(pattern, textwrap.dedent(raw + "\n\n"), flags=re.MULTILINE)
-    sequences=[]
-
-    while rawseqs:
-        circular = False
-        rawseq = rawseqs.pop(0)
-        handle = io.StringIO(rawseq)
-        try:
-            parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
-            if "circular" in rawseq.splitlines()[0]:
-                circular = True
-        except ValueError:
-            handle.seek(0)
+    
+    def embl_gb_fasta(raw, ds, path=None):
+        
+        pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
+        
+        result_list = []
+        
+        rawseqs = re.findall(pattern, textwrap.dedent(raw + "\n\n"), flags=re.MULTILINE)
+        
+        for rawseq in rawseqs:
+            handle = io.StringIO(rawseq)
+            circular=False
             try:
-                parsed = SeqIO.read(handle, "genbank", alphabet=IUPACAmbiguousDNA())
-                handle.seek(0)
-                parser = RecordParser()
-                residue_type = parser.parse(handle).residue_type
-                if "circular" in residue_type:
+                parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
+                if "circular" in rawseq.splitlines()[0]:
                     circular = True
             except ValueError:
                 handle.seek(0)
                 try:
-                    parsed = SeqIO.read(handle, "fasta", alphabet=IUPACAmbiguousDNA())
-                    if "circular" in rawseq.splitlines()[0]:
+                    parsed = SeqIO.read(handle, "genbank", alphabet=IUPACAmbiguousDNA())
+                    handle.seek(0)
+                    parser = RecordParser()
+                    residue_type = parser.parse(handle).residue_type
+                    if "circular" in residue_type:
                         circular = True
                 except ValueError:
-                    continue
+                    handle.seek(0)
+                    try:
+                        parsed = SeqIO.read(handle, "fasta", alphabet=IUPACAmbiguousDNA())
+                        if "circular" in rawseq.splitlines()[0]:
+                            circular = True
+                    except ValueError:
+                        parsed = ""
+            handle.close()
+            
+            if ds and path:
+                result_list.append( GenbankFile(parsed, circular=circular, path=path) )
+            elif ds:
+                result_list.append( Dseqrecord(parsed, circular =circular) )
+            else:
+                result_list.append( parsed )
+                
+        return result_list
 
-        if ds:
-            sequences.append( Dseqrecord(parsed, circular = circular) )
-        else:
-            sequences.append( parsed )
-        handle.close()
-    #sequences[0].features[8].qualifiers['label'][0] = u'björn'
+    # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.
+    if not hasattr(data, '__iter__') or isinstance(data, (str, bytes)):
+        data = (data,)
+        
+    sequences = []
+    
+    for item in data:
+        try:
+            # item is a path to a utf-8 encoded text file?
+            with open(item, 'r', encoding="utf-8") as f:    
+                raw = f.read()  
+        except IOError:
+            # item was not a path, add sequences parsed from item
+            raw=item
+            path=None
+        else:   
+            # item was a readable text file, seqences are parsed from the file
+            path = item
+        finally:
+            sequences.extend(embl_gb_fasta(raw, ds, path) )
+            
     return sequences
-
-    #http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
-    #db=nuccore&
-    #id=21614549&
-    #strand=1&
-    #seq_start=1&
-    #seq_stop=100&
-    #rettype=gb&
-    #retmode=text
 
 def parse_primers(data):
     return parse(data, ds=False)

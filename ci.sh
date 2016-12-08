@@ -43,12 +43,21 @@ then
         echo "Release tag ($tagname) was not recognized"
         echo "or"
         echo "$dirty != $tagname"
-        exit 1
+        exit 0
     fi
+elif [[ $msg = *"skip"* ]]
+then
+    echo "'skip' found in commit msg: '$msg'"
+    echo "tests and builds skipped."
+    echo "=============================================================="
+    exit 0 
 else
-    echo "Commit not tagged or tag dirty"
-    echo "Run test suite, No build or install"
+    echo "'skip' not found in commit msg: '$msg'"
+    echo "but commit not tagged or tag dirty"
+    echo "test suit will be run."
     tagged_commit=false
+
+unset VIRTUAL_ENV
 fi
 echo "=============================================================="
 if [[ $CI = true ]]||[[ $CI = True ]]
@@ -111,19 +120,14 @@ then
 else
     echo "Not running on CI server, probably running on local computer"
 fi
-#if [[ $(uname) = *"NT"* ]]
-#then
-#    source=""
-#else
-#    source=source
-#fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
-    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine
-    conda upgrade -yq pip
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client
+
+    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
+    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
+
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
@@ -141,24 +145,25 @@ then
         anaconda upload $pth --label $condalabel --force
     fi
     source activate pydnapipbuild
-    #conda install -y -q -c conda-forge pandoc=1.18
-    #pandoc --from=markdown --to=rst --output=README.rst README.md
-    #git add README.rst
-    #git commit -m "processed README.md --> README.rst"
-    #git tag -d $tagname
-    #git tag $tagname
+    conda upgrade -yq pip
+
     if [[ $DRONE = true ]]
     then
         echo "DRONE: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+
+        echo "DRONE: zip package is registered"
+        twine register dist/pydna*.zip
     elif [[ $TRAVIS = true ]]
     then
-        echo "TRAVIS: python setup.py bdist_dmg"
-        python setup.py bdist_dmg
+        echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
+        python setup.py sdist --formats=gztar,zip bdist_wheel
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py bdist_wininst
+        python setup.py bdist --formats=wininst
+        appveyor PushArtifact dist/*
+
     elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
