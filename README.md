@@ -233,12 +233,12 @@ The pydna conda package installs the optional requirements listed above as well 
 
 The test suit is run automatically after each commit on:
 
-* Ubuntu 12.04 using drone.io [![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)
-* Ubuntu 14.04 using CircleCI [![CircleCI](https://circleci.com/gh/BjornFJohansson/pydna/tree/py3dev.svg?style=shield)](https://circleci.com/gh/BjornFJohansson/pydna/tree/py3dev)
-* OSX-64 using TravisCI [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna) 
-* Windows using AppveyorCI [![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna).
+- Ubuntu 12.04 using drone.io
+- Ubuntu 14.04 using CircleCI
+- OSX-64 using TravisCI
+- Windows using AppveyorCI
 
-see the badges at the top of this page.
+See the badges at the top of this page.
 
 ## Automatic builds
 
@@ -246,8 +246,8 @@ see the badges at the top of this page.
 Source setuptools packages and wheels are built on Linux for all systems.
 Binary setuptools packages are built for Windows and MacOSX.
 
-* Conda packages [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)
-* Setuptools packages
+- Conda packages [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)
+- Setuptools packages
 
 Builds are controlled by Git tags. Tags like 1.0.2a4 are considered test builds and are uploaded to 
 [testpypi](https://testpypi.python.org/pypi?:action=display&name=pydna) and to Anaconda.org with a "test" label. 
@@ -257,6 +257,4 @@ Tags like 1.0.3 are considered final builds and are built and uploaded to [Anaco
 and to the regular [pypi](https://pypi.python.org/pypi/pydna) server.
 
 ## Changelog
-See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/CHANGELOG.md) for recent changes. 
-
-	
+See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/CHANGELOG.md) for recent changes.
