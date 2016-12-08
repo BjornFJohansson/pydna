@@ -45,21 +45,18 @@ class Genbank(object):
     users_email : string
         Has to be a valid email address. You should always tell
         Genbanks who you are, so that they can contact you.
-    tool : string, optional
-        Default is "pydna". This is to tell Genbank which tool you are
-        using.
 
     Examples
     --------
 
-    >>> import pydna
-    >>> gb=pydna.Genbank("bjornjobb@gmail.com")
-    >>> rec = gb.nucleotide("L09137") # <- pUC19 from genbank
-    >>> print(len(rec))
+    >>> import pydna                                                           #doctest: +SKIP
+    >>> gb=pydna.Genbank("bjornjobb@gmail.com")                                #doctest: +SKIP
+    >>> rec = gb.nucleotide("L09137") # <- pUC19 from genbank                  #doctest: +SKIP
+    >>> print(len(rec))                                                        #doctest: +SKIP
     2686
     '''
 
-    def __init__(self, users_email, tool="pydna"):
+    def __init__(self, users_email):
 
         if not re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,re.IGNORECASE):
             raise ValueError
