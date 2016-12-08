@@ -53,7 +53,7 @@ class Genbank(object):
     --------
 
     >>> import pydna
-    >>> gb=pydna.Genbank("me@mail.se")
+    >>> gb=pydna.Genbank("bjornjobb@gmail.com")
     >>> rec = gb.nucleotide("L09137") # <- pUC19 from genbank
     >>> print(len(rec))
     2686
