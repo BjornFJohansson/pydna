@@ -29,6 +29,7 @@ requirements:
         - networkx
         - ordered-set
         - pyparsing
+        - requests
 
         - ipython
         - jupyter
