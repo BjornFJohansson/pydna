@@ -60,7 +60,7 @@ class Genbank(object):
 
         if not re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,re.IGNORECASE):
             raise ValueError
-        if email == "someone@example.com":
+        if users_email == "someone@example.com":
             raise ValueError("you have to set your email address in order to download from Genbank")
         self.email=users_email
 
