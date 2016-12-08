@@ -26,7 +26,7 @@ def test_biopython_download():
     result = SeqIO.read(handle, "genbank")    
     assert str(result.seq) == "ATATGGGTACCGATCGTACGGACCA"
 
-def test_pydna_download():
+def test_pydna_download_fresh():
     cachevar = os.environ["pydna_cache"]
     os.environ["pydna_cache"] = "nocache"
     gb = pydna.Genbank("bjornjobb@gmail.com")
@@ -34,6 +34,19 @@ def test_pydna_download():
     assert len(result) == 25
     assert str(result.seq) == "ATATGGGTACCGATCGTACGGACCA"
     os.environ["pydna_cache"] = cachevar
+    
+def test_pydna_download_cache():
+    cachevar = os.environ["pydna_cache"]
+    os.environ["pydna_cache"] = "cached"
+    gb = pydna.Genbank("bjornjobb@gmail.com")
+    result = gb.nucleotide("E05006")
+    assert len(result) == 25
+    assert str(result.seq) == "ATATGGGTACCGATCGTACGGACCA"
+    result = gb.nucleotide("E05006")
+    assert len(result) == 25
+    assert str(result.seq) == "ATATGGGTACCGATCGTACGGACCA"    
+    os.environ["pydna_cache"] = cachevar 
+    
 
 if __name__ == '__main__':
     pytest.cmdline.main([__file__, "-v", "-s"])
