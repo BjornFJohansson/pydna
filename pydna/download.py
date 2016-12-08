@@ -4,28 +4,13 @@
 '''
 import pickle
 import shelve
-
 import re
 import os
-import urllib.request
-import urllib.error
-import urllib.parse
-import warnings
-import sys
+import requests
 import textwrap
-
-from urllib.parse      import urlparse
-from urllib.parse      import urlunparse
-from Bio               import Entrez
-
-from pydna.dsdna    import read, parse
-from pydna.dsdna    import Dseqrecord
-
-try:
-    from IPython.display import display, HTML
-except ImportError:
-    def display(item): return item
-    HTML = display
+from Bio import Entrez
+from pydna.dsdna import read
+from pydna.dsdna import Dseqrecord
 
 class GenbankRecord(Dseqrecord):
 
@@ -45,6 +30,8 @@ class GenbankRecord(Dseqrecord):
         p.text("Genbank({})({}{})".format(self.id, {True:"-", False:"o"}[self.linear],len(self)))
             
     def _repr_html_(self):
+        if not self.item:
+            return self.__repr__()
         linktext = self.item
         if self.start != None and self.stop != None:
             linktext += " {}-{}".format(self.start, self.stop)
@@ -58,9 +45,6 @@ class Genbank(object):
     users_email : string
         Has to be a valid email address. You should always tell
         Genbanks who you are, so that they can contact you.
-    proxy : string, optional
-        String containing a proxy url:
-        "proxy = "http://umiho.proxy.com:3128"
     tool : string, optional
         Default is "pydna". This is to tell Genbank which tool you are
         using.
@@ -69,13 +53,13 @@ class Genbank(object):
     --------
 
     >>> import pydna
-    >>> gb=pydna.Genbank("me@mail.se", proxy = "http://proxy.com:3128")                  #doctest: +SKIP
-    >>> rec = gb.nucleotide("L09137") # <- pUC19 from genbank                            #doctest: +SKIP
-    >>> print len(rec)                                                                   #doctest: +SKIP
-    2686                                                                                 #doctest: +SKIP
+    >>> gb=pydna.Genbank("me@mail.se")
+    >>> rec = gb.nucleotide("L09137") # <- pUC19 from genbank
+    >>> print(len(rec))
+    2686
     '''
 
-    def __init__(self, users_email, proxy=None, tool="pydna"):
+    def __init__(self, users_email, tool="pydna"):
 
         if not re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,re.IGNORECASE):
             raise ValueError
@@ -180,20 +164,7 @@ class Genbank(object):
 
         return result
 
-def download_text(url, proxy = None):
-    if proxy:
-        parsed = urlparse(proxy)
-        scheme = parsed.scheme
-        hostname = parsed.hostname
-        test = urlunparse((scheme, hostname,'','','','',))
-        try:
-            response=urllib.request.urlopen(test, timeout=1)
-        except urllib.error.URLError as err:
-            warnings.warn("could not contact proxy server")
-        proxy = urllib.request.ProxyHandler({ scheme : parsed.geturl() })
-        opener = urllib.request.build_opener(proxy)
-        urllib.request.install_opener(opener)
-        
+def download_text(url):
     cached  = False
     refresh = False
     cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "web"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
@@ -209,12 +180,7 @@ def download_text(url, proxy = None):
                 refresh = True
 
     if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-        response = urllib.request.urlopen(url)
-        encoding = response.headers.get_content_charset('utf-8')
-        html_content = response.read()
-        result = html_content.decode(encoding)
-        #http://stackoverflow.com/questions/27674076/remove-newline-in-python-with-urllib
-        #https://blog.whatwg.org/the-road-to-html-5-character-encoding
+        result = requests.get(url).text
     if os.environ["pydna_cache"] == "compare":
         if result!=cached:
             module_logger.warning('download error')
@@ -231,32 +197,13 @@ def download_text(url, proxy = None):
     result = textwrap.dedent(result).strip()
     result = result.replace( '\r\n', '\n')
     result = result.replace( '\r',   '\n')
-
     return result
 
 email = os.getenv("pydna_email")
 
-def genbank(accession, proxy=None):
-    gb = Genbank(email, proxy=proxy)
+def genbank(accession):
+    gb = Genbank(email)
     return gb.nucleotide(accession)
-
-def read_url(url, proxy = None):
-    from pydna import PydnaDeprecationWarning
-    warnings.warn( "This function is obsolete; use download_text()" 
-                   "in combination with pydna.read instead", 
-                   PydnaDeprecationWarning )
-    wb = Web(proxy=proxy)
-    result = wb.download(url)
-    return read(result)
-
-def parse_url(url, proxy = None):
-    from pydna import PydnaDeprecationWarning
-    warnings.warn( "This function is obsolete; use download_text()" 
-                   "in combination with pydna.parse instead", 
-                   PydnaDeprecationWarning )
-    wb = Web(proxy=proxy)
-    result = wb.download(url)
-    return parse(result)
 
 if __name__=="__main__":
     import doctest

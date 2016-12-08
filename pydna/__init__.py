@@ -151,8 +151,8 @@ from pydna.assembly                                 import Assembly
 from pydna.download                                 import Genbank
 from pydna.download                                 import genbank
 from pydna.download                                 import download_text
-from pydna.download                                 import parse_url
-from pydna.download                                 import read_url
+#from pydna.download                                 import parse_url
+#from pydna.download                                 import read_url
 from pydna.dsdna                                    import Dseq
 from pydna.dsdna                                    import Dseqrecord
 from pydna.dsdna                                    import parse
