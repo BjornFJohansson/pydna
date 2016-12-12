@@ -23,26 +23,18 @@ import os
 from copy import copy
 from textwrap import dedent
 from collections import defaultdict
-#from collections import namedtuple
 
-#from Bio.SeqFeature import ExactPosition
 from Bio.SeqFeature import FeatureLocation
 from Bio.SeqFeature import SeqFeature
 
-from pydna.dsdna import Dseq
-from pydna.dsdna import Dseqrecord
-from pydna._simple_paths8 import all_simple_paths_edges, all_circular_paths_edges
+from .dseq  import Dseq
+from .dseqrecord import Dseqrecord
+from ._simple_paths8 import all_simple_paths_edges, all_circular_paths_edges
 from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .findsubstrings_suffix_arrays_python import terminal_overlap
 
 from ordered_set   import OrderedSet
 from ._pretty import pretty_str
-
-try:
-    from IPython.display import display, Markdown
-except ImportError:
-    def display(item): return item
-    Markdown = display
 
 class _Fragment(Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.
@@ -592,5 +584,9 @@ class Assembly(object):
                                                                          lp              = " ".join("[{}]".format(len(x)) for x in self.linear_products))
 
 if __name__=="__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
+    os.environ["pydna_cache"]=cache

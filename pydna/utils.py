@@ -7,7 +7,20 @@ from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
 from itertools import tee
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
-from pydna._pretty import pretty_string
+from ._pretty import pretty_string
+from Bio.Seq                import _maketrans
+from Bio.Data.IUPACData     import ambiguous_dna_complement as _amb_compl
+
+_amb_compl.update({"U":"A"})
+_complement_table = _maketrans(_amb_compl)
+
+def rc(sequence):
+    '''returns the reverse complement of sequence (string)
+    accepts mixed DNA/RNA
+    '''
+    return sequence.translate(_complement_table)[::-1]
+
+
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -414,8 +427,12 @@ def cseguid(seq):
     return pretty_string( seguid( min( SmallestRotation(str(seq).upper()), SmallestRotation(str(rc(seq)).upper()))))
 
 if __name__ == "__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
+    os.environ["pydna_cache"]=cache
 
 
 

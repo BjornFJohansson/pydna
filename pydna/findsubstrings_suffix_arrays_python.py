@@ -69,6 +69,12 @@ def terminal_overlap(stringx, stringy, limit=15):
                                                                    or (m[1]==0 and m[0]+m[2]==len(stringx))]
 
 if __name__=="__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod()
+    os.environ["pydna_cache"]=cache
 
     a="GGGCGCGGGCGGNNNNTATATCATATAAA"
     b=                "TATATCATATAAAnnGGGCGCGGGCGG"
@@ -77,9 +83,6 @@ if __name__=="__main__":
     print(terminal_overlap(a, b,lim))
     #x,y,l = terminal_overlap(a, b,lim).pop()
 
-
-
-if __name__=="__main_":
     #    x='atctgaacgctttgaatgttgtctctattccacgaggcattcaaaaactggttaccgaacctcaagactaaaagattcttgaccaactctttacccaagtaatggtcaattctgtacaactcttcttctttaaagaggggccccaggtttttttgcagctccctggcagaggccaggtcgtggccgaaaggtttctctacgattacacgggtgatgccattctctgcgtacacacgactcttgatctgcttggccaccgtcaaaaaaacgcttggcggcaaggccagatagaagagacggtgtgggacatcgacgttggcacttttctcgaatttctcgatctgcgttcttaattcgtcgaagccttcatctgtgtcgtaatttcccgaaatgtagctgaccatcttgaagaactgttcgaccttagagtcatcggcttcaccgtgaggttttttcaagtggggtaggacacgggacttcaggtcctcctccatggacaatttggaccgggcataaccgaagatcttggtagatggatcaaggtaaccttctctgaaaagcccaaataaggcgggaaaagtcttcttctttgccagatcacctgacgcaccaaagacagatatgacggtatttttttcgaatttgacggggccttcactcatctgcagcccgggggatccactagttctagaa'
     #    y='atcgataagcttgatatcgaattcctgcagctaattatccttcgtatcttctggcttagtcacgggccaagcgtaagggtgcttttcgggcataacatacttgtgtttttggtaatggtcaattctgtacaactcttcatatattccttcaatccctttggacctcttgatccgtaggggtaaatttccggtgttggaccgtccggacgctctatgtgcttcagtaatggggtgaatatgccccaactgatatccaattcgtcatctctgacaaagttggaatggtcacccagtagggcgtctcttatcaacacctcgtaagcctctggaatccaaaagtcttggtacctgcttgcgtaagttagattcagatctgtgacttgggtagcatttgacagaccaggggtcttagcattaaactttaggtacacagcggcatcgggctgcactctgatgaccagttcgttatttggaatgtctttgaagacacccgatgcgaccgctttgtactgcagtctgatctccaccttggactcattcaaagccttaccggcacgcatcatgatggggacgccctcccaacgctcgttttcgatgttgaaagtcattgctgcaaaagtgacacatttagagtccttgtctacagtgtcatcatccacgtaggcgggcttagacccgtcctcagatttaccgtactggcccaagaggacgtcgtccgtgtcgatgatctgaacgctttgaatgttgtctctattccacgaggcattcaaaaaggggccacggcctttagaaccttaaccttttcgtcacgaatagattccgggtcaaaagacaccggtctttccatagtcaagagagtcatgatttgtaacagatggttctgcatcacgtctctgattatgcctatagagtcgaaatagccgccacggccttcggtgccgaacctctctttaaacgaaatctgaacgctttgaatgttgtctctattccacgaggcattcaaaaa'
     #    print common_sub_strings(x,y)

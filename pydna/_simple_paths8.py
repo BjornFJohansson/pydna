@@ -91,6 +91,13 @@ def all_circular_paths_edges(G):
                 break
 
 if __name__=='__main__':
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod()
+    os.environ["pydna_cache"]=cache
+
     G = nx.MultiDiGraph()
     G.add_edge('a','b',weight=0.1)
     G.add_edge('a','b',weight=1.0)

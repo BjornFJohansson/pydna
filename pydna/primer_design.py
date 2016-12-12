@@ -15,41 +15,13 @@ from operator import itemgetter
 from Bio.Alphabet import Alphabet
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from pydna.amplify import Anneal, tmbresluc, Dseqrecord
-from pydna.dsdna import parse
-from pydna._pretty import pretty_str
+from .amplify import Anneal
+from .tm import tmbresluc
+from .parse import parse
+from .dseqrecord import Dseqrecord
+from ._pretty import pretty_str
+from .primer                   import Primer
 
-try:
-    from IPython.display import display, HTML
-except ImportError:
-    def display(item): return item
-    HTML = display
-
-class Primer(SeqRecord):
-
-    def __init__(self, seq = Seq(""), concentration = 1000.0,  *args, **kwargs):
-        if seq.alphabet == Alphabet():
-            seq.alphabet = IUPACAmbiguousDNA()
-        super(Primer, self).__init__(seq, *args, **kwargs)
-        self.concentration = concentration
-
-    def __repr__(self):
-        return self.__class__.__name__ \
-         + "(seq=%s, id=%s, name=%s, description=%s, dbxrefs=%s)" \
-         % tuple(map(repr, (self.seq, self.id, self.name,
-                            self.description, self.dbxrefs)))
-
-    def __add__(self, other):
-        new = super(Primer, self).__add__(other)
-        return Primer(new.seq)
-
-    def __radd__(self, other):
-        new = super(Primer, self).__radd__(other)
-        return Primer(new.seq)
-
-    def tm(self, saltc=50.0, formula=tmbresluc):
-        return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
 
 def print_primer_pair(*args,**kwargs):
     f,r = cloning_primers(*args,**kwargs)
@@ -155,9 +127,9 @@ def cloning_primers( template,
     Dseqrecord(-64)
     >>> pf,pr = pydna.cloning_primers(t)
     >>> pf
-    Primer(seq=Seq('atgactgctaacccttc', IUPACAmbiguousDNA()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
+    fw64 17-mer:5'atgactgctaacccttc-3'
     >>> pr
-    Primer(seq=Seq('catcgtaagtttcgaac', IUPACAmbiguousDNA()), id='rv64', name='rv64', description='rv64 -', dbxrefs=[])
+    rv64 17-mer:5'catcgtaagtttcgaac-3'
     >>> pcr_prod = pydna.pcr(pf, pr, t)
     >>> pcr_prod
     Amplicon(64)
@@ -171,9 +143,9 @@ def cloning_primers( template,
     3tactgacgattgggaag...caagctttgaatgctac5
     >>> pf,pr = pydna.cloning_primers(t, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    Primer(seq=Seq('GGATCCatgactgctaacccttc', IUPACAmbiguousDNA()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
+    fw64 23-mer:5'GGATCCatgactgctaacccttc-3'
     >>> pr
-    Primer(seq=Seq('GAATTCcatcgtaagtttcgaac', IUPACAmbiguousDNA()), id='rv64', name='rv64', description='rv64 -', dbxrefs=[])
+    rv64 23-mer:5'GAATTCcatcgtaagtttcgaac-3'
     >>> pcr_prod = pydna.pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
           5atgactgctaacccttc...gttcgaaacttacgatg3
@@ -190,9 +162,9 @@ def cloning_primers( template,
     >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
     >>> pf,pr = pydna.cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    Primer(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
+    SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
     >>> pr
-    Primer(seq=Seq('GAATTCcatcgtaagtttcgaacgaaatgtcgtc', IUPACAmbiguousDNA()), id='rv64', name='rv64', description='rv64 -', dbxrefs=[])
+    rv64 34-mer:5'GAATTCcatcgtaagtttcgaacgaaatgtcgtc-3'
     >>> ampl = pydna.pcr(pf,pr,t)
     >>> print(ampl.figure())
           5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
@@ -583,22 +555,9 @@ def assembly_primers(templates,
 
 
 if __name__=="__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-
-#    import pydna
-#    gfp = pydna.read("gfp.gb")
-#    pUC19 = pydna.read("puc19.gb")
-#    from Bio.Restriction import EcoRI
-#    pUC19_EcoRI=pUC19.linearize(EcoRI)
-#    
-#    
-#    p1, p2 = integration_primers( pUC19_EcoRI, gfp+gfp, pUC19_EcoRI, min_olap =35 , maxlength=100)
-#    #p1, p2 = assembly_primers([gfp,], vector=pUC19_EcoRI, circular=True).pop()
-#    
-#    print(p1, p2)
-#    
-#    gfp_prod = pydna.pcr(p1,p2,gfp)
-#    
-#    print(gfp_prod.dbd_program())
-#    print(gfp_prod.figure())
+    doctest.testmod(optionflags=doctest.ELLIPSIS)
+    os.environ["pydna_cache"]=cache

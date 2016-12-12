@@ -9,8 +9,8 @@ import os
 import requests
 import textwrap
 from Bio import Entrez
-from pydna.dsdna import read
-from pydna.dsdna import Dseqrecord
+from .read import read
+from .dseqrecord import Dseqrecord
 
 class GenbankRecord(Dseqrecord):
 
@@ -49,11 +49,11 @@ class Genbank(object):
     Examples
     --------
 
-    >>> import pydna                                                           #doctest: +SKIP
-    >>> gb=pydna.Genbank("bjornjobb@gmail.com")                                #doctest: +SKIP
-    >>> rec = gb.nucleotide("L09137") # <- pUC19 from genbank                  #doctest: +SKIP
-    >>> print(len(rec))                                                        #doctest: +SKIP
-    2686
+    >>> import pydna                                                           
+    >>> gb=pydna.Genbank("bjornjobb@gmail.com")                               
+    >>> rec = gb.nucleotide("AJ515731")                 # <- entry from genbank                  
+    >>> print(len(rec))                                                        
+    19
     '''
 
     def __init__(self, users_email):
@@ -203,5 +203,9 @@ def genbank(accession):
     return gb.nucleotide(accession)
 
 if __name__=="__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
+    os.environ["pydna_cache"]=cache

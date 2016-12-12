@@ -144,40 +144,34 @@ except OSError:
 #    else:
 #        raise
         
-from pydna.amplify                                  import Anneal
-from pydna.amplify                                  import pcr
-from pydna.amplify                                  import nopcr
-from pydna.assembly                                 import Assembly
-from pydna.download                                 import Genbank
-from pydna.download                                 import genbank
-from pydna.download                                 import download_text
-#from pydna.download                                 import parse_url
-#from pydna.download                                 import read_url
-from pydna.dsdna                                    import Dseq
-from pydna.dsdna                                    import Dseqrecord
-from pydna.dsdna                                    import parse
-from pydna.dsdna                                    import parse2
-from pydna.dsdna                                    import read
-from pydna.dsdna                                    import parse_primers
-from pydna.dsdna                                    import read_primer
+from .amplify    import Anneal
+from .amplify    import pcr
+from .amplify    import nopcr
+from .assembly   import Assembly
+from .download   import Genbank
+from .download   import genbank
+from .download   import download_text
+from .dseq       import Dseq
+from .dseqrecord import Dseqrecord
+from .parse      import parse
+from .read       import read
+from .parse      import parse_primers
+from .read       import read_primer
 
-
-
-#from pydna.editor                                   import Editor
-from pydna.findsubstrings_suffix_arrays_python      import common_sub_strings
-from pydna.primer_design                            import cloning_primers
-from pydna.primer_design                            import assembly_primers
-from pydna.primer_design                            import print_primer_pair
-from pydna.primer_design                            import integration_primers
-from pydna.utils                                    import copy_features
-from pydna.utils                                    import eq
-from pydna.utils                                    import shift_origin
-from pydna.utils                                    import pairwise
-from pydna.utils                                    import cseguid
-from pydna.primer_design                            import Primer
-from pydna._pretty                                  import pretty_str as _pretty_str
-
-from pydna.genbankfixer                             import gbtext_clean
+#from .editor                             import Editor
+from .findsubstrings_suffix_arrays_python import common_sub_strings
+from .primer_design                       import cloning_primers
+from .primer_design                       import assembly_primers
+from .primer_design                       import print_primer_pair
+from .primer_design                       import integration_primers
+from .utils                               import copy_features
+from .utils                               import eq
+from .utils                               import shift_origin
+from .utils                               import pairwise
+from .utils                               import cseguid
+from .primer                              import Primer
+from ._pretty                             import pretty_str as _pretty_str
+from .genbankfixer                        import gbtext_clean
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
@@ -212,23 +206,20 @@ if _missing_modules_for_gel:
     _logger.warning("gel simulation will NOT be available. Missing modules: {}"
         .format(", ".join(_missing_modules_for_gel)))
 else:
-    from pydna.gel import Gel
-
-
-
+    from .gel import Gel
 
 #numpy>=1.10.1
 #matplotlib>=1.5.0
 #scipy>=0.16.0
 #mpldatacursor>=0.6.1
 
-#from pydna.gel                                      import gen_sample
-#from pydna.gel                                      import weight_standards
-#from pydna.gel                                      import weight_standard_sample
-#from pydna.gel                                      import lin_div_Qty
-#from pydna.gel                                      import random_Dseqs
-#from pydna.gel                                      import ureg
-#from pydna.gel                                      import Q_
+#from .gel                                      import gen_sample
+#from .gel                                      import weight_standards
+#from .gel                                      import weight_standard_sample
+#from .gel                                      import lin_div_Qty
+#from .gel                                      import random_Dseqs
+#from .gel                                      import ureg
+#from .gel                                      import Q_
 
 try:
     del primer_design

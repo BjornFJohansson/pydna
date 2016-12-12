@@ -36,13 +36,9 @@ from scipy.optimize import leastsq, fsolve
 from scipy import stats
 
 from pint import UnitRegistry
-
-#from numbers import Number
 from io import BytesIO
-#from random import randint
-
-
-from .dsdna import Dseq, Dseqrecord
+from .dseq       import Dseq
+from .dseqrecord import Dseqrecord
 
 
 # Hacky fix for a python3 problem I don't understand
