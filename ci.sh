@@ -1,3 +1,4 @@
+#!/usr/bin/env bash 
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
