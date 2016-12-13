@@ -1,4 +1,4 @@
-#[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
+#[![icon](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/pics/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
 
 [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)[![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)[![Research software impact](http://depsy.org/api/package/pypi/pydna/badge.svg)](http://depsy.org/package/python/pydna)[![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/py3/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)[![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)[![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)[![CircleCI](https://circleci.com/gh/BjornFJohansson/pydna/tree/py3dev.svg?style=shield)](https://circleci.com/gh/BjornFJohansson/pydna/tree/py3dev)[![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)
 
@@ -32,7 +32,7 @@ format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-path
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
-[![abstr](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+[![abstr](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
 
 Please reference the above paper when using pydna.
 
@@ -87,7 +87,7 @@ can be easily simulated without any additional information besides the primary s
 Gel electrophoresis of DNA fragments can be simulated using the included gel module 
 by [Bruno Silva](https://github.com/bruno2git):
 
-![alt text](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/gel.png "simulated agarose gel")
+![alt text](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/pics/gel.png "simulated agarose gel")
 
 Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/master/scripts/gel_inline_ex.ipynb).
 
@@ -257,4 +257,4 @@ Tags like 1.0.3 are considered final builds and are built and uploaded to [Anaco
 and to the regular [pypi](https://pypi.python.org/pypi/pydna) server.
 
 ## Changelog
-See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/CHANGELOG.md) for recent changes.
+See the [change log](https://raw.githubusercontent.com/BjornFJohansson/pydna/py3/docs/CHANGELOG.md) for recent changes.

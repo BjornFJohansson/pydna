@@ -12,7 +12,8 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
-from .parsers import parse        
+from .parsers import parse
+from .primer  import Primer        
 
 def read(data, ds = True):
     '''This function is similar the :func:`parse` function but expects one and only
@@ -50,7 +51,7 @@ def read(data, ds = True):
     return results
 
 def read_primer(data):
-    return read(data, ds=False)    
+    return Primer(read(data, ds=False))
 
 if __name__=="__main__":
     import os

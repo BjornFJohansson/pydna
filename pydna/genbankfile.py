@@ -6,7 +6,8 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-from .dseqrecord            import Dseqrecord
+from .dseqrecord import Dseqrecord
+import pathlib
 
 class GenbankFile(Dseqrecord):
 

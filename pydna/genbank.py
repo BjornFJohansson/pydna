@@ -6,14 +6,11 @@ import pickle
 import shelve
 import re
 import os
-import requests
-import textwrap
 import logging
 module_logger = logging.getLogger("pydna."+__name__)
 
 from Bio import Entrez
 from .readers import read
-from .dseqrecord import Dseqrecord
 from .genbankrecord import GenbankRecord
 
 class Genbank(object):

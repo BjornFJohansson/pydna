@@ -162,7 +162,7 @@ def cloning_primers( template,
     >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
     >>> pf,pr = pydna.cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 -', dbxrefs=[])
+    SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 id?', dbxrefs=[])
     >>> pr
     rv64 34-mer:5'GAATTCcatcgtaagtttcgaacgaaatgtcgtc-3'
     >>> ampl = pydna.pcr(pf,pr,t)

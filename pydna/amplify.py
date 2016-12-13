@@ -139,7 +139,7 @@ class Anneal(object):
     >>> p2 = pydna.read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
     >>> ann = pydna.Anneal((p1, p2), template)
     >>> print(ann.report())
-    Template na 51 nt linear:
+    Template name? 51 nt linear:
     Primer p1 anneals forward at position 23
     <BLANKLINE>
     Primer p2 anneals reverse at position 29

@@ -5,6 +5,7 @@ import os            as _os
 import sys           as _sys
 import subprocess    as _subprocess
 import errno         as _errno
+import glob          as _glob
 from ._pretty        import pretty_str as _pretty_str
 
 '''
@@ -313,14 +314,26 @@ def _open_folder(pth):
         except OSError:
             return "no cache to open."
             
-def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
-    msg = ""
-    for file_ in delete:
-        msg += file_
-        try:
-            _os.remove( _os.path.join( _os.environ["pydna_data_dir"], file_) )
-            msg += " deleted.\n"
-        except OSError as e:
-            if e._errno == _errno.ENOENT:
-                msg += " no file to delete.\n"
+def delete_cache(categories=[ "amplify*", "assembly*", "genbank*", "web*", "synced*" ]):
+    msg = "cache file deletion\n"
+    for cat in categories:
+        files = _glob.glob(_os.path.join( _os.environ["pydna_data_dir"], cat))
+        for file_ in files:
+            msg += file_
+            try:
+                _os.remove( file_ )
+                msg += " deleted.\n"
+            except OSError as e:
+                if e._errno == _errno.ENOENT:
+                    msg += " no file to delete.\n"
     return _pretty_str(msg)
+   
+def nocache():
+    _os.environ["pydna_cache"]="nocache"
+def cached():
+    _os.environ["pydna_cache"]="cached"
+def refresh():
+    _os.environ["pydna_cache"] ="refresh"
+    
+def getcache():
+    return _pretty_str( _os.getenv("pydna_cache") )

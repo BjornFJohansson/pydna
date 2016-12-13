@@ -23,6 +23,7 @@ from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA
 from Bio.GenBank            import RecordParser
 from .genbankfile            import GenbankFile
 from .dseqrecord             import Dseqrecord
+from .primer                 import Primer  
 
 def parse2(data, ds = True):
     '''experimental'''
@@ -198,7 +199,7 @@ def parse(data, ds = True):
     return sequences
     
 def parse_primers(data):
-    return parse(data, ds=False)
+    return [Primer(x) for x in parse(data, ds=False)]
 
     
 if __name__=="__main__":

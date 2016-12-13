@@ -191,13 +191,13 @@ class Dseqrecord(SeqRecord):
             self.name = short_name
 
         if self.name == "<unknown name>":
-            self.name = "na"
+            self.name = "name?"
 
         if self.id == "<unknown id>":
-            self.id = "-"
+            self.id = "id?"
 
         if self.description =="<unknown description>":
-            self.description = "@"
+            self.description = "description?"
 
         if not 'date' in self.annotations:
             self.annotations.update({"date": datetime.date.today().strftime("%d-%b-%Y").upper()})
@@ -214,8 +214,6 @@ class Dseqrecord(SeqRecord):
         '''The circular property'''
         return self.seq.circular
 
-
-
     @property
     def locus(self):
         ''' alias for name property '''
@@ -228,8 +226,6 @@ class Dseqrecord(SeqRecord):
             raise Exception()
         self.name = value
         return
-
-
 
     @property
     def accession(self):
@@ -552,7 +548,7 @@ class Dseqrecord(SeqRecord):
             stamp = "{}_{}_{}".format(name,
                                       alg(str(self.seq)),
                                       now)
-            if not self.description or self.description=="@":
+            if not self.description or self.description=="description?":
                 self.description = stamp
             elif not re.search(pattern, self.description):
                 self.description += " "+stamp
@@ -687,10 +683,10 @@ class Dseqrecord(SeqRecord):
         >>> x
         Dseqrecord(-3)
         >>> print(x.format("gb"))
-        LOCUS       na                         3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  @
-        ACCESSION   -
-        VERSION     -
+        LOCUS       name?                      3 bp    DNA     linear   UNK 02-FEB-2013
+        DEFINITION  description?
+        ACCESSION   id?
+        VERSION     id?
         KEYWORDS    .
         SOURCE      .
           ORGANISM  .
@@ -752,7 +748,7 @@ class Dseqrecord(SeqRecord):
             if not os.path.isfile(filename):
                 with open(filename, "w") as fp: fp.write(self.format(f))
             else:
-                from .read import read
+                from .readers import read
                 old_file = read(filename)
                 if self.seguid() != old_file.seguid() or self.circular != old_file.circular:
                     # If new sequence is different, the old file is rnamed with "OLD" suffix:
