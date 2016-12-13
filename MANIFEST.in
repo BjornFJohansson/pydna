@@ -11,8 +11,7 @@ include gpl.txt
 recursive-include pydna *
 recursive-include tests *
 recursive-include docs *
-recursive-include scripts *
-recursive-include pydna/py_rstr_max *
+recursive-include pydna/_py_rstr_max *
 
 include versioneer.py
 include pydna/_version.py
@@ -22,4 +21,3 @@ global-exclude *~
 
 prune dist*
 prune tests/htmlcov*
-prune scripts*
