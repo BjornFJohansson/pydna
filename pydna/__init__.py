@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os            as _os
+import sys           as _sys
+import subprocess    as _subprocess
+import errno         as _errno
+from ._pretty        import pretty_str as _pretty_str
+
 '''
 # pydna
 
@@ -55,9 +61,6 @@ which can have three different values:
 '''
 
 import os            as _os
-import sys           as _sys
-import errno         as _errno
-import subprocess    as _subprocess
 import appdirs       as _appdirs
 from configparser import SafeConfigParser as _SafeConfigParser
 
@@ -104,10 +107,10 @@ if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare")
 # create log directory if not present
 try:
     _os.makedirs( _os.environ["pydna_log_dir"] )
-    logmsg = "Created log directory {}".format(_os.environ["pydna_log_dir"])
+    _logmsg = "Created log directory {}".format(_os.environ["pydna_log_dir"])
 except OSError:
     if _os.path.isdir( _os.environ["pydna_log_dir"] ):
-        logmsg = "Log directory {} found.".format(_os.environ["pydna_log_dir"])
+        _logmsg = "Log directory {} found.".format(_os.environ["pydna_log_dir"])
     else:
         raise
 
@@ -120,7 +123,7 @@ _hdlr = _handlers.RotatingFileHandler(_os.path.join( _os.environ["pydna_log_dir"
 _formatter = _logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
-_logger.info(logmsg)
+_logger.info(_logmsg)
 
 _logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
 
@@ -148,30 +151,27 @@ from .amplify    import Anneal
 from .amplify    import pcr
 from .amplify    import nopcr
 from .assembly   import Assembly
-from .download   import Genbank
-from .download   import genbank
+from .genbank    import Genbank
+from .genbank    import genbank
 from .download   import download_text
 from .dseq       import Dseq
 from .dseqrecord import Dseqrecord
-from .parse      import parse
-from .read       import read
-from .parse      import parse_primers
-from .read       import read_primer
+from .parsers    import parse
+from .readers    import read
+from .parsers    import parse_primers
+from .readers    import read_primer
 
 #from .editor                             import Editor
 from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .primer_design                       import cloning_primers
 from .primer_design                       import assembly_primers
-from .primer_design                       import print_primer_pair
 from .primer_design                       import integration_primers
-from .utils                               import copy_features
 from .utils                               import eq
-from .utils                               import shift_origin
-from .utils                               import pairwise
-from .utils                               import cseguid
-from .primer                              import Primer
-from ._pretty                             import pretty_str as _pretty_str
-from .genbankfixer                        import gbtext_clean
+#from .utils                               import shift_origin
+#from .utils                               import pairwise
+#from .utils                               import cseguid
+#from .primer                              import Primer
+#from .genbankfixer                        import gbtext_clean
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
@@ -207,106 +207,6 @@ if _missing_modules_for_gel:
         .format(", ".join(_missing_modules_for_gel)))
 else:
     from .gel import Gel
-
-#numpy>=1.10.1
-#matplotlib>=1.5.0
-#scipy>=0.16.0
-#mpldatacursor>=0.6.1
-
-#from .gel                                      import gen_sample
-#from .gel                                      import weight_standards
-#from .gel                                      import weight_standard_sample
-#from .gel                                      import lin_div_Qty
-#from .gel                                      import random_Dseqs
-#from .gel                                      import ureg
-#from .gel                                      import Q_
-
-try:
-    del primer_design
-except NameError:
-    pass
-
-try:
-    del assembly
-except NameError:
-    pass
-
-try:
-    del dsdna
-except NameError:
-    pass
-
-try:
-    del editor
-except NameError:
-    pass
-
-try:
-    del amplify
-except NameError:
-    pass
-
-try:
-    del utils
-except NameError:
-    pass
-
-try:
-    del download
-except NameError:
-    pass
-
-try:
-    del _simple_paths8
-except NameError:
-    pass
-
-try:
-    del py_rstr_max
-except NameError:
-    pass
-
-try:
-    del findsubstrings_suffix_arrays_python
-except NameError:
-    pass
-
-try:
-    del genbankfixer
-except NameError:
-    pass
-
-def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
-    msg = ""
-    for file_ in delete:
-        msg += file_
-        try:
-            _os.remove( _os.path.join( _os.environ["pydna_data_dir"], file_) )
-            msg += " deleted.\n"
-        except OSError as e:
-            if e._errno == _errno.ENOENT:
-                msg += " no file to delete.\n"
-    return _pretty_str(msg)
-
-def open_cache_folder():
-    _open_folder( _os.environ["pydna_data_dir"] )
-
-def open_config_folder():
-    _open_folder( _os.environ["pydna_config_dir"] )
-
-def open_log_folder():
-    _open_folder( _os.environ["pydna_log_dir"] )
-
-def _open_folder(pth):
-    if _sys.platform=='win32':
-        _subprocess.Popen(['start', pth], shell= True)
-    elif _sys.platform=='darwin':
-        _subprocess.Popen(['open', pth])
-    else:
-        try:
-            _subprocess.Popen(['xdg-open', pth])
-        except OSError:
-            return "no cache to open."
 
 from ._version import get_versions
 __version__ = get_versions()['version']
@@ -345,3 +245,82 @@ class PydnaDeprecationWarning(PydnaWarning):
     
     """
     pass
+
+try:
+    del amplify
+except NameError:
+    pass
+try:
+    del assembly
+except NameError:
+    pass
+try:
+    del download
+except NameError:
+    pass
+try:
+    del dseq
+except NameError:
+    pass
+try:
+    del dseqrecord
+except NameError:
+    pass
+try:
+    del readers
+except NameError:
+    pass
+try:
+    del parsers
+except NameError:
+    pass
+try:
+    del _findsubstrings_suffix_arrays_python
+except NameError:
+    pass
+from .genbank    import genbank
+try:
+    del primer_design
+except NameError:
+    pass
+try:
+    del utils
+except NameError:
+    pass
+try:
+    del genbankfixer
+except NameError:
+    pass
+
+
+def open_cache_folder():
+    _open_folder( _os.environ["pydna_data_dir"] )
+
+def open_config_folder():
+    _open_folder( _os.environ["pydna_config_dir"] )
+
+def open_log_folder():
+    _open_folder( _os.environ["pydna_log_dir"] )
+
+def _open_folder(pth):
+    if _sys.platform=='win32':
+        _subprocess.Popen(['start', pth], shell= True)
+    elif _sys.platform=='darwin':
+        _subprocess.Popen(['open', pth])
+    else:
+        try:
+            _subprocess.Popen(['xdg-open', pth])
+        except OSError:
+            return "no cache to open."
+            
+def delete_cache(delete=[ "amplify", "assembly", "genbank", "web", "synced" ]):
+    msg = ""
+    for file_ in delete:
+        msg += file_
+        try:
+            _os.remove( _os.path.join( _os.environ["pydna_data_dir"], file_) )
+            msg += " deleted.\n"
+        except OSError as e:
+            if e._errno == _errno.ENOENT:
+                msg += " no file to delete.\n"
+    return _pretty_str(msg)

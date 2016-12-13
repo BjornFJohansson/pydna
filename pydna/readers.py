@@ -12,7 +12,7 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
-from .parse import parse        
+from .parsers import parse        
 
 def read(data, ds = True):
     '''This function is similar the :func:`parse` function but expects one and only
@@ -23,8 +23,8 @@ def read(data, ds = True):
     data : string
         see below
     ds : bool
-        Double stranded or single stranded DNA, Return
-        "Dseqrecord" or "SeqRecord" objects.
+        Double stranded or single stranded DNA, if True return
+        Dseqrecord objects, else Bio.SeqRecord objects.
 
     Returns
     -------

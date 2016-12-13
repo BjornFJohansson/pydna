@@ -20,8 +20,6 @@ def rc(sequence):
     '''
     return sequence.translate(_complement_table)[::-1]
 
-
-
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
@@ -188,14 +186,14 @@ def shift_origin(seq, shift):
     Examples
     --------
 
-    >>> import pydna
-    >>> pydna.shift_origin("taaa",1)
+    >>> from pydna.utils import shift_origin
+    >>> shift_origin("taaa",1)
     'aaat'
-    >>> pydna.shift_origin("taaa",0)
+    >>> shift_origin("taaa",0)
     'taaa'
-    >>> pydna.shift_origin("taaa",2)
+    >>> shift_origin("taaa",2)
     'aata'
-    >>> pydna.shift_origin("gatc",2)
+    >>> shift_origin("gatc",2)
     'tcga'
 
     See also

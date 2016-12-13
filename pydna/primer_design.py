@@ -17,7 +17,7 @@ from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
 from .amplify import Anneal
 from .tm import tmbresluc
-from .parse import parse
+from .parsers import parse
 from .dseqrecord import Dseqrecord
 from ._pretty import pretty_str
 from .primer                   import Primer

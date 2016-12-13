@@ -213,7 +213,7 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
 
     '''
 
-    from . import thermodynamic_data
+    from . import _thermodynamic_data
 
     saltc = float(saltc)/1000
     pri  = primerc/10E7
@@ -225,8 +225,8 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
     for i in range(len(STR)-1):
         n1=ord(STR[i])
         n2=ord(STR[i+1])
-        dH += thermodynamic_data.dHBr[n1 - 97][n2 - 97]
-        dS += thermodynamic_data.dSBr[n1 - 97][n2 - 97]
+        dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
+        dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
 
     tm = (dH / (1.9872 * math.log(pri / 1600) + dS) + (16.6 * math.log(saltc)) / math.log(10)) - 273.15
 

@@ -6,7 +6,7 @@
 '''
 import os as _os
 
-from .parse import parse as _parse
+from .parsers import parse as _parse
 
 primer_list = _parse( _os.environ["pydna_primers"] , ds=False)[::-1]
 

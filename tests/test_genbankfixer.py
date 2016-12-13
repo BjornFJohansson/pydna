@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+
 import pytest
-import pydna
+from pydna.readers import read
+from pydna.genbankfixer import gbtext_clean
 
 def test_pydna_gbtext_clean():
 
@@ -20,8 +21,8 @@ def test_pydna_gbtext_clean():
         #print('("'+file_+'", ', end="")        
         with open("broken_genbank_files/"+file_, "r") as f:
             infile = f.read()
-        #print(file_, pydna.read( pydna.gbtext_clean(infile).gbtext ).seguid(), seg)
-        assert pydna.read( pydna.gbtext_clean(infile).gbtext ).seguid() == seg
+        #print(file_, pydna.read( gbtext_clean(infile).gbtext ).seguid(), seg)
+        assert read( gbtext_clean(infile).gbtext ).seguid() == seg
         #calcseg = pydna.read( pydna.gbtext_clean(infile).gbtext ).seguid()
         #print('"'+calcseg+'"),')
 

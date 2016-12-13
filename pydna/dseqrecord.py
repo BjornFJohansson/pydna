@@ -6,7 +6,7 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''Provides two classes, Dseq and Dseqrecord, for handling double stranded
+'''Provides Dseqrecord, for handling double stranded
 DNA sequences. Dseq and Dseqrecord are subclasses of Biopythons
 Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
@@ -40,7 +40,6 @@ from Bio.SeqUtils           import GC
 from Bio.Data.CodonTable    import TranslationError
 
 from ._sequencetrace         import SequenceTraceFactory
-
 from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .utils  import seguid  as seg
 from .utils  import cseguid as cseg
