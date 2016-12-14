@@ -161,7 +161,7 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py bdist --formats=wininst
+        python setup.py bdist_msi
         appveyor PushArtifact dist/*
         echo "APPVEYOR: exe package is registered"
         twine register -r $pypiserver dist/pydna*.exe
