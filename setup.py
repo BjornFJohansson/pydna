@@ -23,7 +23,7 @@ setup(  name            = 'pydna',
         author_email    = __email__,
         zip_safe = True,
         packages=['pydna',
-                  'pydna.py_rstr_max',],
+                  '_pydna.py_rstr_max',],
         url='http://pypi.python.org/pypi/pydna/',
         license='LICENSE.txt',
         description='''Contains classes and code for representing double
