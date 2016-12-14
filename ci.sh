@@ -164,7 +164,7 @@ then
         python setup.py bdist_msi
         appveyor PushArtifact dist/*
         echo "APPVEYOR: exe package is registered"
-        twine register -r $pypiserver dist/pydna*.exe
+        twine register -r $pypiserver dist/pydna*.msi
     elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
