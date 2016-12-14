@@ -116,6 +116,7 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
+    conda update -yq conda-build
     #conda config --add channels conda-forge
     conda config --add channels BjornFJohansson
 else
@@ -125,8 +126,8 @@ if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
-    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc nbval
+    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
+    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc nbval pandoc
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
