@@ -116,7 +116,7 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
-    conda update -yq conda-build
+    #conda update -yq conda-build
     #conda config --add channels conda-forge
     conda config --add channels BjornFJohansson
 else
@@ -156,19 +156,27 @@ then
     then
         echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+        echo "TRAVIS: zip package is registered"
+        twine register dist/pydna*.zip
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
         python setup.py bdist --formats=wininst
         appveyor PushArtifact dist/*
+        echo "APPVEYOR: exe package is registered"
+        twine register dist/pydna*.exe
     elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+        echo "CIRCLECI: zip package is registered"
+        twine register dist/pydna*.zip
     elif [[ $(uname) = "Linux" ]]
     then
         echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+        echo "Local linux: zip package is registered"
+        twine register dist/pydna*.zip
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
