@@ -126,14 +126,8 @@ if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
-
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-<<<<<<< HEAD
     conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
-
-=======
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc nbval pandoc
->>>>>>> py3dev
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
