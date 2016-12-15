@@ -161,10 +161,10 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py bdist_msi
+        python setup.py bdist_exe
         appveyor PushArtifact dist/*
         echo "APPVEYOR: exe package is registered"
-        twine register -r $pypiserver dist/pydna*.msi
+        twine register -r $pypiserver dist/pydna*.exe
     elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
@@ -187,7 +187,7 @@ then
         exit 1
     fi
     ls dist
-    twine upload -r $pypiserver dist/* --skip-existing
+    twine upload -r $pypiserver dist/pydna*.* --skip-existing
 
 else
     echo "create test environment"
