@@ -151,7 +151,7 @@ then
         echo "DRONE: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
         echo "DRONE: zip package is registered"
-        twine register dist/pydna*.zip
+        twine register -r $pypiserver dist/pydna*.zip
     elif [[ $TRAVIS = true ]]
     then
         echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
