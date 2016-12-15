@@ -22,7 +22,7 @@ import re as _re
 import json as _json
 from pyparsing import *
 
-from pydna.dsdna import Dseqrecord
+from .dseqrecord import Dseqrecord
 
 GoodLocus =  ( Literal("LOCUS") +
                Word(alphas+nums+'-_().'+'\\').setResultsName("name") +
@@ -419,6 +419,10 @@ def gbtext_clean(gbtext):
         
         
 if __name__=="__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
+    os.environ["pydna_cache"]=cache
 

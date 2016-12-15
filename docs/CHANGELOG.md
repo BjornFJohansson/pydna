@@ -1,6 +1,22 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
+1.1.4     2016-12-15 split some files into more logical and smaller chunks.
+                     The Primer class is now the same in primer design and amplify modules
+                     less modules are imported in __init__.py
+                     pydna.getcache returns the pydna_cache environment variable
+                     pydna.cached sets pydna_cache to "cached"
+                     pydna.nocache sets pydna_cache to "nocache"
+                     pydna.refresh sets pydna_cache to "refresh"
+                     Many of the Classes have new __repr__ methods compatible with the Jupyter notebook.
+                     One Jupyter notebook is now run as a part of the test suite using pytest/nbval
+                     pydna.parse_primers now return a list of Primer class objects
+                     pydna.read_primer now a Primer class object
+                     pydna.read_url and pydna.parse_url removed, since they are too risky.
+                     it is better to use pydna.download_text in combination with read or parse.
+                     this way, the intermediate text can be inspected and genbankfixer can be applied if 
+                     necessary
+                     
 1.1.1     2016-11-20 New module genbankfixer for salvaging broken genbank files (pydna.gbtext_clean).
                      New pydna.readprimer function (shortcut for reading to Biopython.SeqRecord).
                      Tests merged to pytest.
@@ -10,7 +26,7 @@ version   date       comment
                      New key function for cache of Assemblies.
 
 1.0.2     2016-10-08 Python 3 only!
-                     open_cache -> open_cache_folder
+                     pydna.open_cache -> pydna.open_cache_folder; opens the cache folder in the file browser
                      logging level is not "info"
                      added the possiblity to specify a text file containing primers and  
                      a path to the ApE plasmid editor (http://biologylabs.utah.edu/jorgensen/wayned/ape/)

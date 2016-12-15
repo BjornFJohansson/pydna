@@ -7,7 +7,18 @@ from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
 from itertools import tee
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
-from pydna._pretty import pretty_string
+from ._pretty import pretty_string
+from Bio.Seq                import _maketrans
+from Bio.Data.IUPACData     import ambiguous_dna_complement as _amb_compl
+
+_amb_compl.update({"U":"A"})
+_complement_table = _maketrans(_amb_compl)
+
+def rc(sequence):
+    '''returns the reverse complement of sequence (string)
+    accepts mixed DNA/RNA
+    '''
+    return sequence.translate(_complement_table)[::-1]
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -175,14 +186,14 @@ def shift_origin(seq, shift):
     Examples
     --------
 
-    >>> import pydna
-    >>> pydna.shift_origin("taaa",1)
+    >>> from pydna.utils import shift_origin
+    >>> shift_origin("taaa",1)
     'aaat'
-    >>> pydna.shift_origin("taaa",0)
+    >>> shift_origin("taaa",0)
     'taaa'
-    >>> pydna.shift_origin("taaa",2)
+    >>> shift_origin("taaa",2)
     'aata'
-    >>> pydna.shift_origin("gatc",2)
+    >>> shift_origin("gatc",2)
     'tcga'
 
     See also
@@ -414,8 +425,12 @@ def cseguid(seq):
     return pretty_string( seguid( min( SmallestRotation(str(seq).upper()), SmallestRotation(str(rc(seq)).upper()))))
 
 if __name__ == "__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
+    os.environ["pydna_cache"]=cache
 
 
 

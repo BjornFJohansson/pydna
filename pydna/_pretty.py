@@ -7,8 +7,6 @@ class pretty_str(str):
     ''' Thanks to Min RK, UC Berkeley for this'''
     def _repr_pretty_(self, p, cycle):
         p.text(self)
-#    def _repr_html_(self):
-#        return "123"
 
 class pretty_unicode(str):
     def _repr_pretty_(self, p, cycle):
@@ -57,5 +55,9 @@ class MyCircle(object):
         return "alert('I am a circle!');"
         
 if __name__=="__main__":
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
+    os.environ["pydna_cache"]=cache

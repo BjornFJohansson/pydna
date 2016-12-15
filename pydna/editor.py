@@ -18,9 +18,9 @@ import os
 import subprocess
 import itertools
 import operator
-from Bio           import SeqIO
 from Bio.SeqRecord import SeqRecord
-from . import dsdna
+from .dseqrecord import Dseqrecord
+
 
 class Editor:
     '''
@@ -78,7 +78,7 @@ class Editor:
         seqs = []
         names = []
         for arg in itertools.chain.from_iterable(args):
-            seq=dsdna.Dseqrecord(arg)
+            seq=Dseqrecord(arg)
             for feature in seq.features:
                 qf = feature.qualifiers
                 if not "label" in qf:
@@ -130,8 +130,9 @@ def ape(*args,**kwargs):
 
 
 if __name__=="__main__":
-    from Bio import SeqIO
-    sr1 = next(SeqIO.parse("../tests/pUC19.gb","gb"))
-    sr2 = next(SeqIO.parse("../tests/pCAPs.gb","gb"))
-    aperunner = Ape("tclsh /home/bjorn/.ApE/apeextractor/ApE.vfs/lib/app-AppMain/AppMain.tcl")
-    aperunner.open(sr1,sr2)
+    import os
+    cache = os.getenv("pydna_cache")
+    os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod()
+    os.environ["pydna_cache"]=cache

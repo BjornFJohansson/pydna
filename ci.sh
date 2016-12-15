@@ -1,3 +1,4 @@
+#!/usr/bin/env bash 
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
@@ -115,6 +116,7 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
+    #conda update -yq conda-build
     #conda config --add channels conda-forge
     conda config --add channels BjornFJohansson
 else
@@ -126,8 +128,12 @@ then
     conda install -yq conda-build
 
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
+<<<<<<< HEAD
     conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
 
+=======
+    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc nbval pandoc
+>>>>>>> py3dev
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
@@ -153,25 +159,32 @@ then
         python setup.py sdist --formats=gztar,zip bdist_wheel
 
         echo "DRONE: zip package is registered"
-        twine register dist/pydna*.zip
+        twine register -r $pypiserver dist/pydna*.zip
     elif [[ $TRAVIS = true ]]
     then
         echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+        echo "TRAVIS: zip package is registered"
+        twine register -r $pypiserver dist/pydna*.zip
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py bdist --formats=wininst
+        python setup.py bdist_wininst
         appveyor PushArtifact dist/*
-
+        echo "APPVEYOR: exe package is registered"
+        twine register -r $pypiserver dist/pydna*.exe
     elif [[ $CIRCLECI = true ]]
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+        echo "CIRCLECI: zip package is registered"
+        twine register -r $pypiserver dist/pydna*.zip
     elif [[ $(uname) = "Linux" ]]
     then
         echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
+        echo "Local linux: zip package is registered"
+        twine register -r $pypiserver dist/pydna*.zip
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
@@ -182,7 +195,7 @@ then
         exit 1
     fi
     ls dist
-    twine upload -r $pypiserver dist/* --skip-existing
+    twine upload -r $pypiserver dist/pydna*.* --skip-existing
 
 else
     echo "create test environment"

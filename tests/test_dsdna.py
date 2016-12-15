@@ -181,13 +181,13 @@ def test_initialization():
 
     assert ds.linear == True
 
-    with pytest.raises(TypeError):
+    with pytest.raises(AttributeError):
         b = Dseqrecord([])
 
-    with pytest.raises(TypeError):
+    with pytest.raises(AttributeError):
         b = Dseqrecord(("a",))
 
-    with pytest.raises(TypeError):
+    with pytest.raises(AttributeError):
         b = Dseqrecord(0)
 
     from pydna import read
