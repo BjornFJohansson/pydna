@@ -43,9 +43,16 @@ from ._sequencetrace         import SequenceTraceFactory
 from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .utils  import seguid  as seg
 from .utils  import cseguid as cseg
-from ._pretty import pretty_str, pretty_string #, pretty_unicode
+from ._pretty import pretty_str, pretty_string
 from .dseq import Dseq
 from .utils import rc
+
+try:
+    from IPython.display import display
+    from IPython.display import HTML
+except ImportError:
+    def display(item): return item
+    def HTML(item): return item
 
 class Dseqrecord(SeqRecord):
     '''Dseqrecord is a double stranded version of the Biopython SeqRecord [#]_ class.
@@ -740,11 +747,13 @@ class Dseqrecord(SeqRecord):
         .. [#] http://biopython.org/wiki/SeqIO
 
         '''
+        msg=""
         if not filename:
             filename = "{name}.{type}".format(name=self.description, type=f)
-            # invent a name if none given
+            # invent a name if none was given
         if str(filename)==filename:                 # is filename a string???
             name, ext = os.path.splitext(filename)
+            msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(filename=filename)
             if not os.path.isfile(filename):
                 with open(filename, "w") as fp: fp.write(self.format(f))
             else:
@@ -753,10 +762,28 @@ class Dseqrecord(SeqRecord):
                 if self.seguid() != old_file.seguid() or self.circular != old_file.circular:
                     # If new sequence is different, the old file is rnamed with "OLD" suffix:
                     old_filename = "{}_OLD{}".format(name, ext)
-                    os.rename(filename, old_filename)            
+                    os.rename(filename, old_filename)
+                    
+                    msg = ("<font color='DarkOrange ' face=monospace>"
+                           "Sequence changed.<br>"
+                           "</font>"
+                           "<font color='red' face=monospace>"
+                           "new: <a href='{filename}' target='_blank'>{filename}</a> &nbsp&nbsp&nbsp size: {nlen}bp topology: {ntop} SEGUID: {ns}<br>"
+                           "</font>"
+                           "<font color='green' face=monospace>"
+                           "old: <a href='{oldfname}' target='_blank'>{oldfname}</a> size: {olen}bp topology: {otop} SEGUID: {os}<br>"
+                           "</font>").format(filename=filename, 
+                                             oldfname=old_filename, 
+                                             nlen=len(self),
+                                             olen=len(old_file),
+                                             ns=self.seguid(),
+                                             os=old_file.seguid(),
+                                             ntop={True:"-", False:"o"}[self.linear],
+                                             otop={True:"-", False:"o"}[old_file.linear])
+                    with open(filename, "w") as fp: fp.write(self.format(f))
         else:
             raise Exception("filename has to be a string, got", type(filename))
-        return 
+        return display(HTML(msg))
 
 
     def __str__(self):
