@@ -38,7 +38,6 @@ requirements:
         - matplotlib
         - mpldatacursor
         - pint
-
 test:
   requires:
     - pytest
@@ -47,12 +46,11 @@ test:
   source_files:
     - tests
     - pydna
-
 about:
   home: https://github.com/BjornFJohansson/pydna
   license: BSD
-  summary: Classes for representing double stranded DNA and functions for simulating cloning, homologous recombination and Gibson assembly.
-
+  summary: Representing double stranded DNA and simulating cloning, homologous recombination, Gibson assembly, Gel electrophoresis etc.
+  license_file: LICENSE.txt
 extra:
   maintainers:
    - "Björn Johansson <bjorn_johansson@bio.uminho.pt>"
