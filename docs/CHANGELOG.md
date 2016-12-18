@@ -1,6 +1,9 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
+next      ?         Removed the path argument in 
+
+
 1.1.4     2016-12-15 split some files into more logical and smaller chunks.
                      The Primer class is now the same in primer design and amplify modules
                      less modules are imported in __init__.py

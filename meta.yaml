@@ -48,9 +48,10 @@ test:
     - pydna
 about:
   home: https://github.com/BjornFJohansson/pydna
-  license: BSD
   summary: Representing double stranded DNA and simulating cloning, homologous recombination, Gibson assembly, Gel electrophoresis etc.
   license_file: LICENSE.txt
+  license: BSD-3-Clause
+  license_family: BSD
 extra:
   maintainers:
    - "Björn Johansson <bjorn_johansson@bio.uminho.pt>"

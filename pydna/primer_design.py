@@ -38,8 +38,7 @@ def cloning_primers( template,
                      fprimerc=1000.0,
                      rprimerc=1000.0,
                      saltc=50.0,
-                     formula = tmbresluc,
-                     path = ""):
+                     formula = tmbresluc):
 
     '''This function can design primers for PCR amplification of a given sequence.
     This function accepts a Dseqrecord object containing the template sequence and
@@ -94,21 +93,6 @@ def cloning_primers( template,
 
         These functions are imported from the :mod:`pydna.amplify` module, but can be
         substituted for some other custom made function.
-
-    path : unicode, optional
-        This variable can be set to a path to a text file, which will be created
-        if it does not exist.
-        This file (if it exists) will be parsed for sequences in fasta or
-        genbank format and a Biopython SeqRecord object will be created for
-        each sequence.
-
-        If a SeqRecord object is found with the same description as any of the
-        primers designed, the SeqRecord object parsed from the file will be
-        returned by this function instead of the newly designed primer.
-
-        If no sequence with the same description can be found, the primer(s)
-        will be appended to the file in fasta format.
-
 
     Returns
     -------
@@ -239,32 +223,6 @@ def cloning_primers( template,
     if rp.seq.alphabet == Alphabet():
         rp.seq.alphabet = IUPACAmbiguousDNA()
 
-#    If the path argument is supplied primers will be written to a file with that
-#    path. If the file does not exist, it will be created and both primers will be
-#    written to it. If the file exists, the file will be parsed for sequences in
-#    fasta or genbank into .
-
-    if path:
-        try:
-            with open(path, 'rU') as f: raw = f.read()
-        except IOError:
-            raw = ""
-            with open(path, 'w') as f:
-                f.write(fp.format("fasta"))
-                f.write(rp.format("fasta"))
-        else:
-            primer_dict = {x.description:x for x in parse(raw, ds=False)}
-            try:
-                fp = primer_dict[fp.description]
-            except KeyError:
-                with open(path, 'a') as f: f.write("\n"+fp.format("fasta").strip())
-            try:
-                rp = primer_dict[rp.description]
-            except KeyError:
-                with open(path, 'a') as f: f.write("\n"+rp.format("fasta").strip())
-                
-    msg = ("\n"+fp.format("fasta")+"\n"+rp.format("fasta")+"\n").replace('\n', '<br />')
-    #display(HTML(msg))
     return fp, rp
 
 def integration_primers( up,
@@ -279,8 +237,7 @@ def integration_primers( up,
                          fprimerc   = 1000.0,
                          rprimerc   = 1000.0,
                          saltc      = 50.0,
-                         formula    = tmbresluc,
-                         path       = ""):
+                         formula    = tmbresluc):
 
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
@@ -296,8 +253,7 @@ def integration_primers( up,
                             fprimerc=fprimerc,
                             rprimerc=rprimerc,
                             saltc=saltc,
-                            formula = formula,
-                            path = path)
+                            formula = formula)
 
 
 def assembly_primers(templates,
@@ -311,8 +267,7 @@ def assembly_primers(templates,
                      fprimerc   = 1000.0,
                      rprimerc   = 1000.0,
                      saltc      = 50.0,
-                     formula    = tmbresluc,
-                     path       = ""):
+                     formula    = tmbresluc):
 
 
     '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
@@ -533,8 +488,7 @@ def assembly_primers(templates,
                                     fprimerc   = fprimerc,
                                     rprimerc   = rprimerc,
                                     saltc      = saltc,
-                                    formula    = formula,
-                                    path       = path)
+                                    formula    = formula)
 
         #fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
         #rp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + rp
