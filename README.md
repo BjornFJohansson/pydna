@@ -2,12 +2,13 @@
 
 [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
 [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)[![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)[![Research software impact](http://depsy.org/api/package/pypi/pydna/badge.svg)](http://depsy.org/package/python/pydna)[![Code Climate](https://codeclimate.com/github/BjornFJohansson/pydna/badges/gpa.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)[![Issue Count](https://codeclimate.com/github/BjornFJohansson/pydna/badges/issue_count.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)[![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/py3/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)[![icon11](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb/badge.svg)](https://www.versioneye.com/user/projects/553174c010e714f9e50010bb)[![icon3](https://drone.io/github.com/BjornFJohansson/pydna/status.png)](https://drone.io/github.com/BjornFJohansson/pydna/latest)[![CircleCI](https://circleci.com/gh/BjornFJohansson/pydna/tree/py3dev.svg?style=shield)](https://circleci.com/gh/BjornFJohansson/pydna/tree/py3dev)[![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)[![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)[![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)[![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/installer/conda.svg)](https://conda.anaconda.org/bjornfjohansson)[![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna)[![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/downloads.svg)](https://anaconda.org/bjornfjohansson/pydna)
+
 Planning genetic constructs with many parts and assembly steps, such as recombinant
 metabolic pathways are often difficult to properly document.
 
 The Pydna python package provide a human-readable formal description of cloning and assembly 
 strategies in Python which also allows for simulation and verification of cloning strategies.
-Pydna can be though of as executable documentation for molecular biology.
+Pydna can be though of as executable documentation for molecular biology. 
 
 Pydna provides simulation of:
 
@@ -19,10 +20,10 @@ Pydna provides simulation of:
 - Homologous recombination
 - Gel electrophoresis of DNA (**NEW Feature**) 
 
-Any sub-cloning experiment can be described in pydna, and execution yield
-the sequence of the of the resulting DNA molecule and intermediate steps. 
+Any sub-cloning experiment can be described in pydna, and its execution yield
+the sequence of the of intermediate and final resulting DNA molecule(s). 
 A cloning strategy expressed in pydna is *complete*, *unambiguous* and *stable*. 
-Pydna has been designed to be understandable for biologists with some basic understanding of Python.
+Pydna has been designed to be understandable for biologists with only some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
