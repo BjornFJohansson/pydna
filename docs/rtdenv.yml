@@ -1,0 +1,5 @@
+name: readthedocsenv
+dependencies:
+- python=3.5
+- numpydoc>=0.6.0
+- ipython>=5.1.0
