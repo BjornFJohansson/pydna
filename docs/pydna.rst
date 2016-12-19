@@ -1,15 +1,16 @@
 pydna package
 =============
 
-Subpackages
------------
-
-.. toctree::
-
-    pydna.py_rstr_max
-
 Submodules
 ----------
+
+pydna.amplicon module
+---------------------
+
+.. automodule:: pydna.amplicon
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 pydna.amplify module
 --------------------
@@ -27,6 +28,14 @@ pydna.assembly module
     :undoc-members:
     :show-inheritance:
 
+pydna.contig module
+-------------------
+
+.. automodule:: pydna.contig
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pydna.download module
 ---------------------
 
@@ -35,10 +44,18 @@ pydna.download module
     :undoc-members:
     :show-inheritance:
 
-pydna.dsdna module
-------------------
+pydna.dseq module
+-----------------
 
-.. automodule:: pydna.dsdna
+.. automodule:: pydna.dseq
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.dseqrecord module
+-----------------------
+
+.. automodule:: pydna.dseqrecord
     :members:
     :undoc-members:
     :show-inheritance:
@@ -67,6 +84,38 @@ pydna.gel module
     :undoc-members:
     :show-inheritance:
 
+pydna.genbank module
+--------------------
+
+.. automodule:: pydna.genbank
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.genbankfile module
+------------------------
+
+.. automodule:: pydna.genbankfile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.genbankfixer module
+-------------------------
+
+.. automodule:: pydna.genbankfixer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.genbankrecord module
+--------------------------
+
+.. automodule:: pydna.genbankrecord
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pydna.ipynb_importer module
 ---------------------------
 
@@ -83,6 +132,22 @@ pydna.myprimers module
     :undoc-members:
     :show-inheritance:
 
+pydna.parsers module
+--------------------
+
+.. automodule:: pydna.parsers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.primer module
+-------------------
+
+.. automodule:: pydna.primer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pydna.primer_design module
 --------------------------
 
@@ -91,10 +156,26 @@ pydna.primer_design module
     :undoc-members:
     :show-inheritance:
 
-pydna.thermodynamic_data module
--------------------------------
+pydna.readers module
+--------------------
 
-.. automodule:: pydna.thermodynamic_data
+.. automodule:: pydna.readers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.seqrecord module
+----------------------
+
+.. automodule:: pydna.seqrecord
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.tm module
+---------------
+
+.. automodule:: pydna.tm
     :members:
     :undoc-members:
     :show-inheritance:

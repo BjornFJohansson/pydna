@@ -942,6 +942,7 @@ class Gel:
         * The DNA electrophoretic mobility in the well is given by the free
         solution mobility and is equal for every fragment.
 
+
     """
 
     def __init__(self,
