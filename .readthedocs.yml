@@ -3,3 +3,6 @@ formats:
 conda:
     file: docs/rtdenv.yml
 
+python:
+    setup_py_install: true
+
