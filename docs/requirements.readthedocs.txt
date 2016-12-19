@@ -1,2 +1,0 @@
-numpydoc>=0.5
-ipython>=5.1.0
