@@ -95,6 +95,7 @@ then
     then
         echo "Running on APPVEYOR, use installed Miniconda for Windows"
         miniconda="source appveyor_source_file.sh"
+        #miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe -O Miniconda_latest.sh"
     elif [[ $CIRCLECI = true ]]
     then
         miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
@@ -117,7 +118,7 @@ then
     fi
     conda update -yq conda
     conda update -yq pip
-    conda install conda-verify -yq 
+    conda install conda-verify -yq
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
@@ -129,7 +130,7 @@ then
     #conda install -yq conda-build
     conda-build -V
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
+    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval jinja2
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
