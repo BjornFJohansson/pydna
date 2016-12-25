@@ -116,6 +116,8 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
+    conda update pip
+    conda install conda-verify
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
