@@ -119,6 +119,7 @@ then
     conda update -yq conda
     conda update -yq pip
     conda install conda-verify -yq
+    conda install jinja2 -yq
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
@@ -130,7 +131,7 @@ then
     #conda install -yq conda-build
     conda-build -V
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval jinja2
+    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
