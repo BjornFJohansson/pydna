@@ -22,31 +22,32 @@ This code is at an early stage of development and documentation.
 
 """
 
+import numpy as _np
 
-import numpy as np
+import matplotlib.ticker as _mtick
+from   matplotlib import pyplot as _plt
+from   matplotlib import cm as _cm
+from   matplotlib.ticker import FixedLocator as _FixedLocator
 
-from matplotlib import pyplot as plt, cm
-import matplotlib.ticker as mtick
-from matplotlib.ticker import FixedLocator
+from mpldatacursor import datacursor as _datacursor #, HighlightingDataCursor  # version 0.5.0
 
-from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
+from scipy.interpolate    import griddata as _griddata
+from scipy.optimize       import leastsq  as _leastsq
+from scipy.optimize       import fsolve   as _fsolve
+from scipy                import stats    as _stats
 
-from scipy.interpolate import griddata
-from scipy.optimize import leastsq, fsolve
-from scipy import stats
-
-from pint import UnitRegistry
-from io import BytesIO
-from .dseq       import Dseq
-from .dseqrecord import Dseqrecord
+from pint        import UnitRegistry as _UnitRegistry
+from io          import BytesIO      as _BytesIO
+from .dseq       import Dseq         as _Dseq
+from .dseqrecord import Dseqrecord   as _Dseqrecord
 
 
 # Hacky fix for a python3 problem I don't understand
 # https://github.com/pallets/flask/issues/1680
-UnitRegistry.__wrapped__ = None
+_UnitRegistry.__wrapped__ = None
 
 # Unit registry
-ureg = UnitRegistry()
+ureg = _UnitRegistry()
 Q_ = ureg.Quantity
 ureg.define('base_pair = [] = bp = basepair')
 # ureg.define('base_pair = 3.4 angstrom = bp = basepair')
@@ -204,9 +205,9 @@ ver_str = '''
 
 # Strings of data as text files
 data_as_file = {'horizontal':
-                BytesIO(hor_str.replace('\n|', '\n').replace('|\n', '\n').encode()),
+                _BytesIO(hor_str.replace('\n|', '\n').replace('|\n', '\n').encode()),
                 'vertical':
-                BytesIO(ver_str.replace('\n|', '\n').replace('|\n', '\n').encode())
+                _BytesIO(ver_str.replace('\n|', '\n').replace('|\n', '\n').encode())
                 }
 
 # Load data into numpy arrays
@@ -214,7 +215,7 @@ datasets = {}
 for name in data_as_file:
     datasets[name] = {}
     data_source = data_as_file[name]
-    temp_dset = np.genfromtxt(data_source, delimiter='|', dtype=None,
+    temp_dset = _np.genfromtxt(data_source, delimiter='|', dtype=None,
                               skip_header=5, skip_footer=1,
                               usecols=(0, 1, 4, 5, 6),
                               names=('E', 'T', 'muS', 'muL', 'gamma'))
@@ -231,7 +232,7 @@ def vWBR(muS, muL, gamma):
     """vWBR equation"""
     alpha = 1/muL - 1/muS
     beta = 1/muS
-    return lambda L: 1/(beta + alpha * (1 - np.exp(-L/gamma)))
+    return lambda L: 1/(beta + alpha * (1 - _np.exp(-L/gamma)))
 
 # Mobility function: mu(L) = f(muS, muL, gamma)
 mu_funcs = {}
@@ -257,13 +258,13 @@ runtime = lambda distance, mobility, field: distance/(mobility*field)
 rundistance = lambda time, mobility, field: time*mobility*field
 
 # Intrinsic band broadening as function of the diffusion coefficient and time
-bandbroadening = lambda D, time: np.sqrt(2*D*time)
+bandbroadening = lambda D, time: _np.sqrt(2*D*time)
 
 pore_size = lambda gamma, muL, mu0, lp, b: (gamma*muL*lp*b/mu0)**(1/2)
 
 pore_size_fit = lambda C: 143*ureg('nm*g**0.59/mL**0.59')*C**(-0.59)
 
-radius_gyration = lambda L, lp: (lp*L/3*(1-lp/L+lp/L*np.exp(-L/lp)))**(1/2)
+radius_gyration = lambda L, lp: (lp*L/3*(1-lp/L+lp/L*_np.exp(-L/lp)))**(1/2)
 
 H2Oviscosity = lambda T: 2.414E-5*ureg('kg/m/s')*10**(247.8*ureg.K/(T-140*ureg.K))  # (Pa.s)=(kg/(m.s)) accurate to within 2.5% from 0 °C to 370 °C
 
@@ -291,14 +292,14 @@ Nbp_to_N = lambda Nbp, a, b, l: Nbp*(b/l)*(l/a)**2  # number of occupied pores
 reptation_equilibrium = lambda Dblob, N: Dblob/N**2
 reptation_accelerated = lambda Dblob, epsilon, N: Dblob*epsilon*N**(-1/2)
 reptation_plateau = lambda Dblob, epsilon: Dblob*epsilon**(3/2)
-free_solution = lambda kB, T, eta, Rh: kB*T/(6*np.pi*eta*Rh)
+free_solution = lambda kB, T, eta, Rh: kB*T/(6*_np.pi*eta*Rh)
 Zimm_g = lambda Nbp, DRouse, qeff, mu0, kB, T: DRouse*Nbp*qeff/(mu0*kB*T)
 Ogston_Zimm = lambda D0, g: D0 * g
 Ogston_Rouse = lambda Nbp, kB, T, a, eta, b, l: kB*T*a**3/(eta*b**2*l**2*Nbp**2)
 
 # Diffusion regime frontiers (in number of occupied pores)
 Zimm_Rouse = lambda x0, args: (
-    Nbp_to_N(fsolve(diff_Zimm_Rouse, x0, args)[0] * ureg.bp,
+    Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0] * ureg.bp,
              args[5], args[6], args[7]))
 equil_accel = lambda epsilon: epsilon**(-2/3)
 accel_plateau = lambda epsilon: epsilon**(-1)
@@ -376,7 +377,7 @@ def random_Dseqs(sizes):
     """
     sample = []
     for size in sizes:
-        seq = Dseq("n"*size) #Dseq(rand_str('actg', size))
+        seq = _Dseq("n"*size) #_Dseq(rand_str('actg', size))
         sample.append(seq)
     return sample
 
@@ -454,7 +455,7 @@ def gen_sample(sizes, quantities):
     quantities = quantities.to('g').magnitude
     if not hasattr(quantities, '__iter__'):
         quantities = lin_div_Qty(frags, quantities, criteria=len)
-    return [Dseqrecord(seq, n=quantities[i]/seq.mw()) for i, seq in
+    return [_Dseqrecord(seq, n=quantities[i]/seq.mw()) for i, seq in
             enumerate(frags)]
 
 
@@ -469,8 +470,8 @@ def weight_standard_sample(key, qty=Q_(500, 'ng')):
 
 
 def logspace_int(minimum, maximum, divs):
-    space = np.logspace(np.log10(minimum), np.log10(maximum), divs)
-    return np.array([int(round(val, 0)) for val in space])
+    space = _np.logspace(_np.log10(minimum), _np.log10(maximum), divs)
+    return _np.array([int(round(val, 0)) for val in space])
 
 
 def flatten(List):
@@ -486,11 +487,11 @@ def flatten(List):
     return flatL
 
 # Gaussian function
-Gaussian = lambda x, hgt, ctr, dev: hgt*np.exp(-(x-ctr)**2/(2*dev**2))
-Gauss_hgt = lambda auc, dev: auc/(dev*np.sqrt(2*np.pi))
-Gauss_dev = lambda FWHM: FWHM/(2*np.sqrt(2*np.log(2)))
-# Gauss_dev = lambda FWTM: FWTM/(2*np.sqrt(2*np.log(10)))
-Gauss_FWHM = lambda FWTM: FWTM * np.sqrt(2*np.log(2))/np.sqrt(2*np.log(10))
+Gaussian = lambda x, hgt, ctr, dev: hgt*_np.exp(-(x-ctr)**2/(2*dev**2))
+Gauss_hgt = lambda auc, dev: auc/(dev*_np.sqrt(2*_np.pi))
+Gauss_dev = lambda FWHM: FWHM/(2*_np.sqrt(2*_np.log(2)))
+# Gauss_dev = lambda FWTM: FWTM/(2*_np.sqrt(2*_np.log(10)))
+Gauss_FWHM = lambda FWTM: FWTM * _np.sqrt(2*_np.log(2))/_np.sqrt(2*_np.log(10))
 
 
 def _to_units(quantity, units, var_name=None):
@@ -557,7 +558,7 @@ def assign_quantitiesB(samples, maxdef=Q_(150, 'ng')):
     for sample in samples:
         sample_qts = []
         for qty in sample.quantities:
-            if not np.isnan(qty.magnitude) and qty.magnitude is not None:
+            if not _np.isnan(qty.magnitude) and qty.magnitude is not None:
                 sample_qts.append(qty)
                 if qty > maxQ:
                     maxQ = qty
@@ -592,21 +593,21 @@ def size_to_mobility(dna_len, field, percentage,
                      dataset=datasets['vertical'],
                      method='linear',
                      replNANs=True):
-    mobility = griddata((dataset['E'], dataset['T']), mu_func(dna_len),
+    mobility = _griddata((dataset['E'], dataset['T']), mu_func(dna_len),
                         (field, percentage), method)
-    if replNANs and np.isnan(mobility):
+    if replNANs and _np.isnan(mobility):
         # Replace NANs by 'nearest' interpolation
         print("WARNING: NAN replaced by 'nearest' interpolation.")  # #### ! ###
-        mobility = griddata((dataset['E'], dataset['T']), mu_func(dna_len),
+        mobility = _griddata((dataset['E'], dataset['T']), mu_func(dna_len),
                             (field, percentage), method='nearest')
     return mobility.item()
 
 
-def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
+def vWBRfit(field, percentage, DNAvals=_np.linspace(100, 50000, 100),
             dataset=datasets['vertical'], mu_func=mu_funcs['vertical'],
             method='linear', replNANs=True, plot=True):
-    mu = np.zeros(len(DNAvals))
-    vWBR = lambda L, muS, muL, gamma: (1/muS+(1/muL-1/muS)*(1-np.exp(-L/gamma)))**-1
+    mu = _np.zeros(len(DNAvals))
+    vWBR = lambda L, muS, muL, gamma: (1/muS+(1/muL-1/muS)*(1-_np.exp(-L/gamma)))**-1
     for i, Li in enumerate(DNAvals):
         mu[i] = size_to_mobility(Li, field, percentage, mu_func,
                                  dataset, method, replNANs)
@@ -616,7 +617,7 @@ def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
     muS0 = 3.5E-4  # cm^2/(V.sec)  ############################################
     muL0 = 1.0E-4  # cm^2/(V.sec)  ############################################
     gamma0 = 8000  # bp            ############################################
-    pars, cov, infodict, mesg, ier = leastsq(residuals, [muS0, muL0, gamma0],
+    pars, cov, infodict, mesg, ier = _leastsq(residuals, [muS0, muL0, gamma0],
                                              args=(DNAvals, mu),
                                              full_output=True)
     muS, muL, gamma = pars
@@ -625,7 +626,7 @@ def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
     if plot:
         DNAmin = min(DNAvals)
         DNAmax = max(DNAvals)
-        fig = plt.figure()
+        fig = _plt.figure()
         ax = fig.add_subplot(111)
         ax.scatter(DNAvals, mu*1E4, color='blue')
         ax.plot(DNAvals, vWBR(DNAvals, muS, muL, gamma)*1E4, label='fit',
@@ -633,7 +634,7 @@ def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
         ax.set_xlim(DNAmin-0.1*DNAmin, DNAmax+0.1*DNAmax)
         ax.set_ylim((min(mu)-0.1*min(mu))*1E4, (max(mu)+0.1*max(mu))*1E4)
         ax.set_xscale('log')
-        ax.xaxis.set_major_formatter(mtick.FormatStrFormatter('%d'))
+        ax.xaxis.set_major_formatter(_mtick.FormatStrFormatter('%d'))
         ax.tick_params(which='both', top='off', right='off')
         ax.set_xlabel('$\mathrm{DNA\,length\,(bp)}$', fontsize=14)
         ax.set_ylabel(r'$\mu\times{10^{8}}\,(\mathrm{m^{2}/V\cdot s})$',
@@ -641,7 +642,7 @@ def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
         ax.set_title('$\mu_S=%.2e,\,\mu_L=%.2e\,\mathrm{cm^2/(V.s)},\,'
                      '\gamma=%d \mathrm{bp}$' % (muS, muL, gamma))
         ax.legend().draggable()
-        plt.show()
+        _plt.show()
     return pars, cov, infodict, mesg, ier
 
 
@@ -662,38 +663,38 @@ def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
         for Ti in Tvals:
             mu = size_to_mobility(Lj, field, Ti, mu_func,
                                   dataset, adjmethod, replNANs)
-            ln_mu_T.append(np.log(mu))
+            ln_mu_T.append(_np.log(mu))
         ln_mu_LxT.append(ln_mu_T)
-    ln_mu_LxT = np.array(ln_mu_LxT)
+    ln_mu_LxT = _np.array(ln_mu_LxT)
     # Linear regression for each DNA size
     lregr_stats = []
     exclude = []
     for l in range(len(DNAvals)):
-        not_nan = np.logical_not(np.isnan(ln_mu_LxT[l]))
+        not_nan = _np.logical_not(_np.isnan(ln_mu_LxT[l]))
         if sum(not_nan) > 1:
             # (enough points for linear regression)
             gradient, intercept, r_value, p_value, std_err =\
-                      stats.linregress(Tvals[not_nan], ln_mu_LxT[l][not_nan])
+                      _stats.linregress(Tvals[not_nan], ln_mu_LxT[l][not_nan])
             lregr_stats.append((gradient, intercept, r_value, p_value,
                                 std_err))
             exclude.append(False)
         else:
             exclude.append(True)
-    exclude = np.array(exclude)
+    exclude = _np.array(exclude)
     DNAvals = DNAvals[~exclude]
     ln_mu_LxT = ln_mu_LxT[~exclude]
     if len(lregr_stats) > 0:
         # Free solution mobility determination
-        ln_mu0 = np.mean([row[1] for row in lregr_stats])  # mean of intercepts
-        mu0 = np.exp(ln_mu0)  # cm^2/(V.seg)
+        ln_mu0 = _np.mean([row[1] for row in lregr_stats])  # mean of intercepts
+        mu0 = _np.exp(ln_mu0)  # cm^2/(V.seg)
     else:
         mu0 = None
     if plot and len(ln_mu_LxT) > 0:
         # Ferguson Plot (ln(mu) vs. %T) --> mu0
         regline = lambda m, b, x: m*x+b  # Line function (for the plot)
-        colors = cm.rainbow(np.linspace(0, 1, len(DNAvals)))
-        Tvals0 = np.concatenate([[0], Tvals])
-        fig = plt.figure()
+        colors = _cm.rainbow(_np.linspace(0, 1, len(DNAvals)))
+        Tvals0 = _np.concatenate([[0], Tvals])
+        fig = _plt.figure()
         ax = fig.add_subplot(111)
         for l in range(len(DNAvals)):
             ax.scatter(Tvals, ln_mu_LxT[l], label=DNAvals[l],
@@ -713,7 +714,7 @@ def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
         ax.set_title('$\mathrm{Ferguson\,plot}$'+'\n'+\
                      '$\mathrm{ln(mobility)\,vs.\,\%\,agarose\,}$'+\
                      '$\mathrm{(field=%.3f\,V/cm)}$' %field.magnitude)
-        plt.show()
+        _plt.show()
     return mu0  # cm^2/(V.seg)
 
 
@@ -728,7 +729,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     pxl_y = int(round(gel_len * res))
     lane_centers = [(l+1)*wellsep + sum(wellx[:l]) + 0.5*wellx[l]
                     for l in range(nlanes)]
-    rgb_arr = np.zeros(shape=(pxl_y, pxl_x, 3), dtype=np.float32)
+    rgb_arr = _np.zeros(shape=(pxl_y, pxl_x, 3), dtype=_np.float32)
     bandlengths = wellx
     bands_pxlXYmid = []
     # Paint the bands
@@ -777,13 +778,13 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     if noise is None or noise <= 0:
         rgb_arr += back_col
     else:
-        bckg = np.random.normal(back_col, noise,
+        bckg = _np.random.normal(back_col, noise,
                                 (len(rgb_arr), len(rgb_arr[0])))
-        rgb_arr += bckg[:, :, np.newaxis]
+        rgb_arr += bckg[:, :, _np.newaxis]
     # Saturation
     rgb_arr[rgb_arr > 1] = 1
     rgb_arr[rgb_arr < 0] = 0
-    # bands_arr = np.ma.masked_where(rgb_arr == back_col, rgb_arr)  ###########
+    # bands_arr = _np.ma.masked_where(rgb_arr == back_col, rgb_arr)  ###########
     bands_arr = rgb_arr
     # Plot
     gel_len = gel_len.magnitude
@@ -794,7 +795,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     lane_centers = [c.magnitude for c in lane_centers]
     bandlengths = bandlengths.magnitude
     bandwidths = [[bw.magnitude for bw in bwlane] for bwlane in bandwidths]
-    fig = plt.figure()
+    fig = _plt.figure()
     ax1 = fig.add_subplot(111, axisbg=str(back_col))
     ax1.xaxis.tick_top()
     ax1.yaxis.set_ticks_position('left')
@@ -806,9 +807,9 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     ax1.spines['right'].set_color(str(back_col))
     ax1.spines['bottom'].set_color(str(back_col))
     ax1.xaxis.set_label_position('top')
-    plt.xticks(lane_centers, names)
-    majorLocator = FixedLocator(list(range(int(gel_len+1))))
-    minorLocator = FixedLocator([j/10.0 for k in
+    _plt.xticks(lane_centers, names)
+    majorLocator = _FixedLocator(list(range(int(gel_len+1))))
+    minorLocator = _FixedLocator([j/10.0 for k in
                                  range(0, int(gel_len+1)*10, 10)
                                  for j in range(1+k, 10+k, 1)])
     ax1.yaxis.set_major_locator(majorLocator)
@@ -838,22 +839,22 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
             pxlX, pxlY = bands_pxlXYmid[i][j]
             band_midI = bands_arr[pxlY, pxlX][0]
             alpha = 0 if abs(band_midI - back_col) >= detectlim else 0.4
-            band = plt.Rectangle((x, y), bandlength, bandwidth,
+            band = _plt.Rectangle((x, y), bandlength, bandwidth,
                                  fc='none', ec='w', ls=':', alpha=alpha,
                                  label='{} bp'.format(len(dna_frag)))
-            plt.gca().add_patch(band)
+            _plt.gca().add_patch(band)
             bands.append(band)
-    plt.ylim(gel_len, -max(welly))
+    _plt.ylim(gel_len, -max(welly))
     xlim = sum(wellx) + (nlanes+1)*wellsep
-    plt.xlim(0, xlim)
-    plt.ylabel('Distance (cm)')
-    plt.xlabel('Lanes')
+    _plt.xlim(0, xlim)
+    _plt.ylabel('Distance (cm)')
+    _plt.xlabel('Lanes')
     bbox_args = dict(boxstyle='round,pad=0.6', fc='none')
-    an1 = plt.annotate(title, xy=(0, 0),
+    an1 = _plt.annotate(title, xy=(0, 0),
                        xytext=(xlim+0.4, (gel_len+max(welly))/2.0),
                        va="center", bbox=bbox_args)
     an1.draggable()
-    plt.gca().set_aspect('equal', adjustable='box')
+    _plt.gca().set_aspect('equal', adjustable='box')
     cursor_args = dict(display='multiple',
                        draggable=True,
                        hover=False,
@@ -867,11 +868,11 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
             cursor_args[key] = cursor_ovr[key]
     if cursor_args['hover'] == True:
         cursor_args['display'] = 'single'
-    datacursor(bands, **cursor_args)
+    _datacursor(bands, **cursor_args)
     # fig.savefig('example.png', dpi=300)
     if show:
-        plt.show()
-    return plt
+        _plt.show()
+    return _plt
 
 
 class Gel:
@@ -976,7 +977,7 @@ class Gel:
                       self.samples]
         self.quantities = to_units(quantities, 'ng', 'quantities')
         self.quantities
-        self.runtime = np.nan                                      # ##########
+        self.runtime = _np.nan                                      # ##########
         self.freesol_mob = None
         self.mobilities = []
         self.distances = []
@@ -986,7 +987,7 @@ class Gel:
         self.intensities = []
         # exponential space of DNA sizes
         self.DNAspace_for_mu0 = logspace_int(100, 3000, 10)*ureg.bp
-        self.DNAspace_for_vWBRfit = np.linspace(100, 50000, 100)*ureg.bp
+        self.DNAspace_for_vWBRfit = _np.linspace(100, 50000, 100)*ureg.bp
         self.Tvals_for_mu0 = []
         self.H2Oviscosity = None
         self.accel_to_plateau = None
@@ -1181,7 +1182,7 @@ class Gel:
         DNAspace_mu0 = self.DNAspace_for_mu0
         DNAspace_vWBRfit = self.DNAspace_for_vWBRfit
         if self.Tvals_for_mu0 == []:
-            self.Tvals_for_mu0 = Q_(np.unique(dataset['T']),
+            self.Tvals_for_mu0 = Q_(_np.unique(dataset['T']),
                                     dataset['T'].units).to('(g/(100 mL))*100')
         else:
             self.Tvals_for_mu0 = to_units(self.Tvals_for_mu0,
@@ -1190,10 +1191,10 @@ class Gel:
         nlanes = len(lanes)
         exposure = 0 if exposure < 0 else 1 if exposure > 1 else exposure  # ##
         if not hasattr(wellx.magnitude, '__iter__'):
-            wellx = np.repeat(wellx, nlanes)
+            wellx = _np.repeat(wellx, nlanes)
         wellx = wellx.to('cm')
         if not hasattr(welly.magnitude, '__iter__'):
-            welly = np.repeat(welly, nlanes)
+            welly = _np.repeat(welly, nlanes)
         welly = welly.to('cm')
         wellsep = wellsep.to('cm')
         till_len = abs(till_len) if till_len is not None else 1
@@ -1327,8 +1328,8 @@ class Gel:
 
         # Max intensities
         raw_Is = []
-        maxI = Q_(-np.inf, 'ng/cm')
-        minI = Q_(np.inf, 'ng/cm')
+        maxI = Q_(-_np.inf, 'ng/cm')
+        minI = Q_(_np.inf, 'ng/cm')
         for i, lane in enumerate(lanes):
             lane_I = []
             for j in range(len(lane)):
@@ -1448,19 +1449,19 @@ if __name__ == "__main__":
     # DNAmin = 100
     # DNAmax = 20000
     # DNAdivs = 100
-    DNAvals = np.linspace(100, 20000, 100) * ureg.bp
+    DNAvals = _np.linspace(100, 20000, 100) * ureg.bp
     DNAspace = logspace_int(100, 3000, 10) * ureg.bp
     divsE = 10
     divsT = 10
     Evals = sorted(list(set(datasets[dset_name]['E'])))  # why sort and list?
     minE = min(Evals)
     maxE = max(Evals)
-    E_space = list(np.linspace(minE.magnitude, maxE.magnitude,
+    E_space = list(_np.linspace(minE.magnitude, maxE.magnitude,
                                divsE)) * ureg(str(minE.units))
     Tvals = sorted(list(set(datasets[dset_name]['T'])))
     minT = min(Tvals)
     maxT = max(Tvals)
-    T_space = list(np.linspace(minT.magnitude, maxT.magnitude,
+    T_space = list(_np.linspace(minT.magnitude, maxT.magnitude,
                                divsT)) * ureg(str(minT.units))
 
     if test_gel:
@@ -1546,12 +1547,12 @@ if __name__ == "__main__":
                                                            fracs[i].magnitude,
                                                            ns[i].magnitude))
             print('-'*80)
-        print("min(m) = %.4f ng" % np.min(store_m))
-        print("avg(m) = %.4f ng" % np.mean(store_m))
-        print("max(m) = %.4f ng" % np.max(store_m))
-        print("min(n) = %.4f pmol" % np.min(store_n))
-        print("avg(n) = %.4f pmol" % np.mean(store_n))
-        print("max(n) = %.4f pmol" % np.max(store_n))
+        print("min(m) = %.4f ng" % _np.min(store_m))
+        print("avg(m) = %.4f ng" % _np.mean(store_m))
+        print("max(m) = %.4f ng" % _np.max(store_m))
+        print("min(n) = %.4f pmol" % _np.min(store_n))
+        print("avg(n) = %.4f pmol" % _np.mean(store_n))
+        print("max(n) = %.4f pmol" % _np.max(store_n))
 
 
 # References (very incomplete)
@@ -1615,7 +1616,7 @@ if __name__ == "__main__":
 # - Integration with pydna;                                                   #
 # - Application exemples and guide in IPython Notebook;                       #
 # - <mu_func> as module variable??                                            #
-# - self.runtime = np.nan??                                                   #
+# - self.runtime = _np.nan??                                                   #
 # - Data and mu_funcs as module variables or class variables??                #
 # - Keep most values in numpy arrays?? (may be helpful to implement units)    #
 # - Experimental conditions on the plot's title;                              #
@@ -1661,11 +1662,11 @@ if __name__ == "__main__":
 # ============================================================================#
 # - Avoid integer division: from __future__ import division                   #
 # - Careful: Operations with unitary numpy arrays return numeric data types:  #
-#       + type(np.array(2)*np.array(2)) --> <'numpy.int32'>                   #
-#       + type(np.array(2)*np.array(2)/np.array(5)) --> <'numpy.int32'>       #
+#       + type(_np.array(2)*_np.array(2)) --> <'numpy.int32'>                   #
+#       + type(_np.array(2)*_np.array(2)/_np.array(5)) --> <'numpy.int32'>       #
 #       + from __future__ import division                                     #
-#         type(np.array(2)*np.array(2)/np.array(5)) --> <'numpy.float64'>     #
-#       + np.asarray(np.array(2)*np.array(2)/np.array(5)) --> array(0.8)      #
+#         type(_np.array(2)*_np.array(2)/_np.array(5)) --> <'numpy.float64'>     #
+#       + _np.asarray(_np.array(2)*_np.array(2)/_np.array(5)) --> array(0.8)      #
 # - The pore size in the diffusion coefficient equations might not be an      #
 #   "effective" pore size as that defined by Slater as function of muL, mu0   #
 #   and gamma. Note that Viovy defined the interval 200-500 nm as the         #

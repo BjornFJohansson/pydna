@@ -6,10 +6,10 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-from .dseqrecord import Dseqrecord
+from .dseqrecord import Dseqrecord  as _Dseqrecord
 from ._pretty import pretty_str as _ps
 
-class GenbankRecord(Dseqrecord):
+class GenbankRecord(_Dseqrecord):
 
     def __init__(self, record, *args, item="accession", start=None, stop=None, strand=1,**kwargs):
         super().__init__(record, *args, **kwargs)

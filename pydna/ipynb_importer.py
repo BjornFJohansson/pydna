@@ -12,18 +12,22 @@
 # so we can actually make IPython notebooks importable without much difficulty,
 # and only using public APIs.
 
-import io, os, sys, types
+import io     as _io
+import sys    as _sys
+import types  as _types
+import os     as _os
+
 
 try:
-    import IPython
+    import IPython  as _IPython
 except ImportError:
     pass
 
 try:
-    import nbformat
+    import nbformat  as _nbformat
 except ImportError:
     try:
-        from IPython import nbformat
+        from IPython import nbformat as _nbformat
     except ImportError:
         pass
 
@@ -37,21 +41,21 @@ def find_notebook(fullname, path=None):
 
     name = fullname.rsplit('.', 1)[-1]
     if not path:
-         path = sys.path #['']
+         path = _sys.path #['']
     for d in path:
-        nb_path = os.path.join(d, name + ".ipynb")
-        if os.path.isfile(nb_path):
+        nb_path = _os.path.join(d, name + ".ipynb")
+        if _os.path.isfile(nb_path):
             return nb_path
         # let import Notebook_Name find "Notebook Name.ipynb"
         nb_path = nb_path.replace("_", " ")
-        if os.path.isfile(nb_path):
+        if _os.path.isfile(nb_path):
             return nb_path
 
 
 class NotebookLoader(object):
     """Module Loader for IPython Notebooks"""
     def __init__(self, path=None):
-        self.shell = IPython.core.interactiveshell.InteractiveShell.instance()
+        self.shell = _IPython.core.interactiveshell.InteractiveShell.instance()
         self.path = path
 
     def load_module(self, fullname):
@@ -61,8 +65,8 @@ class NotebookLoader(object):
         #print ("importing IPython notebook from %s" % path)
 
         # load the notebook object
-        with io.open(path, 'r', encoding='utf-8') as f:
-            nb = nbformat.read(f, 4)
+        with _io.open(path, 'r', encoding='utf-8') as f:
+            nb = _nbformat.read(f, 4)
 
         #print type(nb)
         #print dir(nb)
@@ -70,13 +74,13 @@ class NotebookLoader(object):
 
         # nbformat_minor cells nbformat metadata
 
-        # create the module and add it to sys.modules
-        # if name in sys.modules:
-        #    return sys.modules[name]
-        mod = types.ModuleType(fullname)
+        # create the module and add it to _sys.modules
+        # if name in _sys.modules:
+        #    return _sys.modules[name]
+        mod = _types.ModuleType(fullname)
         mod.__file__ = path
         mod.__loader__ = self
-        sys.modules[fullname] = mod
+        _sys.modules[fullname] = mod
 
         # extra work to ensure that magics that would affect the user_ns
         # actually affect the notebook module's ns
@@ -110,17 +114,16 @@ class NotebookFinder(object):
         key = path
         if path:
             # lists aren't hashable
-            key = os.path.sep.join(path)
+            key = _os.path.sep.join(path)
         if key not in self.loaders:
             self.loaders[key] = NotebookLoader(path)
         return self.loaders[key]
 
-sys.meta_path.append(NotebookFinder())
+_sys.meta_path.append(NotebookFinder())
 
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cache"]=cache

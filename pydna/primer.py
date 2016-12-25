@@ -10,12 +10,12 @@
 This module contain functions for primer design.
 
 '''
-from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from .tm import tmbresluc
+from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
+from Bio.Seq import Seq                           as _Seq
+from Bio.SeqRecord import SeqRecord               as _SeqRecord
+from .tm import tmbresluc                         as _tmbresluc
 
-class Primer(SeqRecord):
+class Primer(_SeqRecord):
     '''This class holds information about a primer and its position on a template '''
     def __init__(self, record, *args,
                  position=None, footprint=None, tail=None, concentration = 1000.0, **kwargs):
@@ -25,7 +25,7 @@ class Primer(SeqRecord):
         elif hasattr(record, "alphabet"):
             super().__init__(record, *args, **kwargs)            
         else:        
-            super().__init__(Seq(record, IUPACAmbiguousDNA), *args, **kwargs)
+            super().__init__(_Seq(record, _IUPACAmbiguousDNA), *args, **kwargs)
         self.position  = position
         self.footprint = footprint
         self.tail      = tail
@@ -35,5 +35,5 @@ class Primer(SeqRecord):
     def __radd__(self, other):
         new = super().__radd__(other)
         return Primer(new.seq)
-    def tm(self, saltc=50.0, formula=tmbresluc):
+    def tm(self, saltc=50.0, formula=_tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )

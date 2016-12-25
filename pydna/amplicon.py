@@ -6,23 +6,22 @@
 circular templates are handled correctly.
 
 '''
-import math
-import itertools
+import math       as _math
+import itertools  as _itertools
+import re         as _re
+import textwrap   as _textwrap
+import copy       as _copy
+import logging    as _logging
+_module_logger = _logging.getLogger("pydna."+__name__)
 
-import re
-import textwrap
-import copy
-
-import logging
-module_logger = logging.getLogger("pydna."+__name__)
-
-from Bio.SeqRecord                  import SeqRecord
-from Bio.SeqUtils                   import GC
-from Bio.SeqUtils.MeltingTemp       import Tm_NN
-from .utils                        import rc
-from .dseqrecord                   import Dseqrecord
-from ._pretty                       import pretty_str, pretty_unicode
-from .tm                           import tmbresluc
+from Bio.SeqRecord                  import SeqRecord      as _SeqRecord
+from Bio.SeqUtils                   import GC             as _GC
+from Bio.SeqUtils.MeltingTemp       import Tm_NN          as _Tm_NN
+from .utils                         import rc             as _rc
+from .dseqrecord                    import Dseqrecord     as _Dseqrecord
+from ._pretty                       import pretty_str     as _pretty_str
+from ._pretty                       import pretty_unicode as _pretty_unicode
+from .tm                            import tmbresluc      as _tmbresluc
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -63,7 +62,7 @@ def _annealing_positions(primer, template, limit=15):
 
     if len(primer)<limit:
         return []
-    prc = rc(primer)
+    prc = _rc(primer)
     head = prc[:limit].upper()
 
     table = {"R":"(A|G)",
@@ -81,7 +80,7 @@ def _annealing_positions(primer, template, limit=15):
     for key in table:
         head=head.replace(key, table[key])
 
-    positions = [m.start() for m in re.finditer('(?={})'.format(head), template, re.I)]
+    positions = [m.start() for m in _re.finditer('(?={})'.format(head), template, _re.I)]
 
     if positions:
         tail = prc[limit:]
@@ -89,12 +88,12 @@ def _annealing_positions(primer, template, limit=15):
         results = []
         for match_start in positions:
             tm = template[match_start+limit:match_start+limit+length]
-            footprint = rc(template[match_start:match_start+limit]+"".join([b for a,b in itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
+            footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
             results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
         return results
     return []
 
-class Amplicon(Dseqrecord):
+class Amplicon(_Dseqrecord):
     '''The Amplicon class holds information about a PCR reaction involving two
     primers and one template. This class is used by the Anneal class and is not
     meant to be instantiated directly.
@@ -148,12 +147,12 @@ class Amplicon(Dseqrecord):
         self.saltc = saltc
 
     def __getitem__(self, sl):
-        answer = copy.copy(self)
+        answer = _copy.copy(self)
         answer.seq = answer.seq.__getitem__(sl)
         answer.seq.alphabet = self.seq.alphabet
-        sr = SeqRecord("n"*len(self))
+        sr = _SeqRecord("n"*len(self))
         sr.features = self.features
-        answer.features = SeqRecord.__getitem__(sr, sl).features
+        answer.features = _SeqRecord.__getitem__(sr, sl).features
         return answer
 
     def __repr__(self):
@@ -239,15 +238,15 @@ class Amplicon(Dseqrecord):
 
         '''
 
-        tmf = Tm_NN(str(self.forward_primer.footprint),
+        tmf = _Tm_NN(str(self.forward_primer.footprint),
                     dnac1=self.fprimerc,
                     Na=self.saltc)
-        tmr = Tm_NN(str(self.reverse_primer.footprint),
+        tmr = _Tm_NN(str(self.reverse_primer.footprint),
                     dnac1=self.fprimerc,
                     Na=self.saltc)
 
-        tmf_dbd = tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
-        tmr_dbd = tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
+        tmf_dbd = _tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
+        tmr_dbd = _tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
 
         f =   '''
             {sp1}5{faz}...{raz}3
@@ -274,7 +273,7 @@ class Amplicon(Dseqrecord):
                         sp2      = " "*(len(self.forward_primer.seq)-len(self.forward_primer.footprint)),
                         sp3      = " "*(3+len(self.forward_primer.seq))
                        )
-        return pretty_str(textwrap.dedent(f).strip("\n"))
+        return _pretty_str(_textwrap.dedent(f).strip("\n"))
 
 
     def program(self):
@@ -301,10 +300,10 @@ class Amplicon(Dseqrecord):
         # simple salt concentration correction is used and the template concentration
         # is ignored. dnac1 = primer concentration
         
-        tmf = Tm_NN(str(self.forward_primer.footprint),
+        tmf = _Tm_NN(str(self.forward_primer.footprint),
                     dnac1=self.fprimerc,
                     Na=self.saltc)
-        tmr = Tm_NN(str(self.reverse_primer.footprint),
+        tmr = _Tm_NN(str(self.reverse_primer.footprint),
                     dnac1=self.fprimerc,
                     Na=self.saltc)
 
@@ -317,7 +316,7 @@ class Amplicon(Dseqrecord):
 
         #GC_prod=GC(str(self.seq))
 
-        tmp = 81.5 + 0.41*GC(str(self.seq)) + 16.6*math.log10(self.saltc/1000.0) - 675/len(self)
+        tmp = 81.5 + 0.41*_GC(str(self.seq)) + 16.6*_math.log10(self.saltc/1000.0) - 675/len(self)
         tml = min(tmf,tmr)
         ta = 0.3*tml+0.7*tmp-14.9
 
@@ -325,7 +324,7 @@ class Amplicon(Dseqrecord):
         # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
         taq_extension_rate = 30  # seconds/kB PCR product length
         extension_time_taq = int(round(taq_extension_rate * len(self) / 1000)) # seconds
-        f  = textwrap.dedent('''
+        f  = _textwrap.dedent('''
                                  Taq (rate {rate} nt/s) 35 cycles             |{size}bp
                                  95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
                                  |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
@@ -340,7 +339,7 @@ class Amplicon(Dseqrecord):
                                                                                             *divmod(extension_time_taq,60),
                                                                                             size= len(self.seq),
                                                                                             GC_prod= int(self.gc()) ))
-        return pretty_unicode(f)
+        return _pretty_unicode(f)
 
     def taq_program(self):
         return self._program()
@@ -367,8 +366,8 @@ class Amplicon(Dseqrecord):
         # This depends on the tm and length of the primers in the
         # original instructions from finnzyme. These do not seem to be
 
-        tmf_dbd = tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
-        tmr_dbd = tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
+        tmf_dbd = _tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
+        tmr_dbd = _tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
 
         # Ta calculation for enzymes with dsDNA binding domains like Pfu-Sso7d
         # https://www.finnzymes.fi/tm_determination.html
@@ -377,7 +376,7 @@ class Amplicon(Dseqrecord):
         length_of_r = len(self.reverse_primer.footprint)
 
         if (length_of_f>20 and length_of_r>20 and tmf_dbd>=69.0 and tmr_dbd>=69.0) or (tmf_dbd>=72.0 and tmr_dbd>=72.0):
-            f=textwrap.dedent(  '''
+            f=_textwrap.dedent(  '''
                                     Pfu-Sso7d (rate {rate}s/kb)
                                     Two-step|    30 cycles |      |{size}bp
                                     98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
@@ -400,7 +399,7 @@ class Amplicon(Dseqrecord):
             else:
                 ta = min(tmf_dbd,tmr_dbd)
 
-            f=textwrap.dedent(  '''
+            f=_textwrap.dedent(  '''
                                     Pfu-Sso7d (rate {rate}s/kb)                 |{size}bp
                                     Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
@@ -416,7 +415,7 @@ class Amplicon(Dseqrecord):
                                             saltc= self.saltc,
                                             GC_prod= int(self.gc()),
                                             *map(int, divmod(extension_time_PfuSso7d,60)) ))
-        return pretty_str(f)
+        return _pretty_str(f)
 
     def pfu_sso7d_program(self):
         return self.dbd_program()

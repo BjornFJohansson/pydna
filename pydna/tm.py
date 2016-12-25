@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import math
+import math as _math
 
 def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
@@ -87,8 +87,8 @@ def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
         dS+=S
     R = 1.987 # universal gas constant in Cal/degrees C*Mol
     k = (dnac/4.0)*1e-9
-    dS = dS-0.368*(len(primer)-1)*math.log(float(saltc)/1e3)
-    tm = ((1000* (-dH))/(-dS+(R * (math.log(k)))))-273.15
+    dS = dS-0.368*(len(primer)-1)*_math.log(float(saltc)/1e3)
+    tm = ((1000* (-dH))/(-dS+(R * (_math.log(k)))))-273.15
     return tm
 
 def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
@@ -174,8 +174,8 @@ def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
     R = 1.9872          # universal gas constant in Cal/degrees C*Mol
     k = dnac*1E-9/2.0
     dH = dH - 5
-    dS = dS-0.368*(len(primer)-1)*math.log(float(saltc)/1E3) # SantaLucia salt correction formula
-    tm = 1000 * -dH /(-dS + R * math.log(k) )  - 273.15 # degrees Celsius
+    dS = dS-0.368*(len(primer)-1)*_math.log(float(saltc)/1E3) # SantaLucia salt correction formula
+    tm = 1000 * -dH /(-dS + R * _math.log(k) )  - 273.15 # degrees Celsius
 
     if thermodynamics:
         return tm,dH,dS
@@ -228,7 +228,7 @@ def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
         dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
         dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
 
-    tm = (dH / (1.9872 * math.log(pri / 1600) + dS) + (16.6 * math.log(saltc)) / math.log(10)) - 273.15
+    tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
 
     if thermodynamics:
         return tm,dH,dS

@@ -1,8 +1,8 @@
-import textwrap
-from ._pretty import pretty_str
-from .dseqrecord import Dseqrecord
+import textwrap as _textwrap
+from ._pretty import pretty_str    as _pretty_str
+from .dseqrecord import Dseqrecord as _Dseqrecord
 
-class Contig(Dseqrecord):
+class Contig(_Dseqrecord):
     '''This class holds information about a DNA assembly. This class is instantiated by
     the :class:`Assembly` class and is not meant to be instantiated directly.
 
@@ -165,4 +165,4 @@ class Contig(Dseqrecord):
             fig +="|{space}{o1:>2}-\n".format(space=" "*(space), o1=self.source_fragments[0].left_overlap_size)
             fig +="|{space}   |\n".format(space=" "*(space))
             fig +=" {space}".format(space="-"*(space+3))
-        return pretty_str(textwrap.dedent(fig))
+        return _pretty_str(_textwrap.dedent(fig))

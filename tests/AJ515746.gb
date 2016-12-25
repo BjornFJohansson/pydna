@@ -1,0 +1,31 @@
+LOCUS       AJ515746                  21 bp    DNA     linear   SYN 05-JAN-2004
+DEFINITION  Artificial oligonucleotide primer sequence (Sh3a-3) for Sarcophilus
+            laniarius microsatellite PCR analysis.
+ACCESSION   AJ515746
+VERSION     AJ515746.1
+KEYWORDS    oligonucleotide; primer.
+SOURCE      synthetic construct
+  ORGANISM  synthetic construct
+            other sequences; artificial sequences.
+REFERENCE   1
+  AUTHORS   Jones,M.E., Paetkou,D., Geffen,E. and Moritz,C.
+  TITLE     Microsatellites for the Tasmanian devil (Sarcophilus laniarius)
+  JOURNAL   Mol. Ecol. Notes 3 (2), 277-279 (2003)
+REFERENCE   2  (bases 1 to 21)
+  AUTHORS   Jones,M.E.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (12-NOV-2002) Jones M.E., School of Zoology, University
+            of Tasmania, GPO Box 252-5, Hobart, TAS, 7001, AUSTRALIA
+FEATURES             Location/Qualifiers
+     source          1..21
+                     /organism="synthetic construct"
+                     /mol_type="other DNA"
+                     /db_xref="taxon:32630"
+                     /note="synthetic oligonucleotide"
+     misc_feature    1..21
+                     /note="locus Sh3a 3' primer for Sarcophilus laniarius
+                     microsatellite PCR analysis"
+ORIGIN      
+        1 cttcccctgt aagtgtattt g
+//
+

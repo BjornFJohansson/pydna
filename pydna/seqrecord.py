@@ -6,7 +6,7 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-from Bio.SeqRecord import SeqRecord
+from Bio.SeqRecord import SeqRecord as _SeqRecord
 
-class SeqRecord(SeqRecord):
+class SeqRecord(_SeqRecord):
     pass 

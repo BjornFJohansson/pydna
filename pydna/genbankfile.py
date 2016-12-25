@@ -6,10 +6,9 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-from .dseqrecord import Dseqrecord
-import pathlib
+from .dseqrecord import Dseqrecord as _Dseqrecord
 
-class GenbankFile(Dseqrecord):
+class GenbankFile(_Dseqrecord):
 
     def __init__(self, record, *args, path=None, **kwargs):
         super().__init__(record, *args, **kwargs)

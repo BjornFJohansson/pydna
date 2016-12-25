@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from ._py_rstr_max import rstr_max
-import itertools
-from operator import itemgetter
+from ._py_rstr_max import rstr_max as _rstr_max
+import itertools                   as _itertools
+from operator import itemgetter    as _itemgetter
 '''
     findsubstrings
     ~~~~~~~~~~~~~~
@@ -36,7 +36,7 @@ def common_sub_strings(stringx, stringy, limit=25):
 
     from collections import defaultdict
 
-    rstr = rstr_max.Rstr_max()
+    rstr = _rstr_max.Rstr_max()
     rstr.add_str(stringx+"&"+stringy)
     r = rstr.go()
     match=defaultdict(int)
@@ -52,7 +52,7 @@ def common_sub_strings(stringx, stringy, limit=25):
             else:
                 startsx.append(offset)
 
-        for a,b in itertools.product(startsx, startsy):
+        for a,b in _itertools.product(startsx, startsy):
             match[(a,b)] = max(match[(a,b)], l)
 
 
@@ -60,7 +60,7 @@ def common_sub_strings(stringx, stringy, limit=25):
 
     match.sort()
 
-    match.sort(key=itemgetter(2), reverse=True)
+    match.sort(key=_itemgetter(2), reverse=True)
 
     return match
 

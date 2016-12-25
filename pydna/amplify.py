@@ -7,29 +7,26 @@ circular templates are handled correctly.
 
 '''
 
-import pickle
-import shelve
+import pickle    as _pickle
+import shelve    as _shelve
+import itertools as _itertools
+import re        as _re
+import copy      as _copy
+import operator  as _operator
+import os        as _os
+import logging   as _logging
+_module_logger = _logging.getLogger("pydna."+__name__)
 
-import itertools
+from Bio.Seq                        import Seq              as _Seq
+from Bio.SeqUtils.CheckSum          import seguid           as _seguid
+from Bio.SeqFeature                 import SeqFeature       as _SeqFeature
+from Bio.SeqFeature                 import CompoundLocation as _CompoundLocation
+from Bio.SeqFeature                 import FeatureLocation  as _FeatureLocation
 
-import re
-import copy
-import operator
-import os
-
-import logging
-module_logger = logging.getLogger("pydna."+__name__)
-
-from Bio.Seq                        import Seq
-from Bio.SeqUtils.CheckSum          import seguid
-from Bio.SeqFeature                 import SeqFeature
-from Bio.SeqFeature                 import CompoundLocation
-from Bio.SeqFeature                 import FeatureLocation
-from .utils                         import rc
-from .dseqrecord                    import Dseqrecord
-from .primer                        import Primer
-from .amplicon                      import Amplicon
-
+from .dseqrecord                    import Dseqrecord       as _Dseqrecord
+from .primer                        import Primer           as _Primer
+from .amplicon                      import Amplicon         as _Amplicon
+from .utils                         import rc               as _rc
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -70,7 +67,7 @@ def _annealing_positions(primer, template, limit=15):
 
     if len(primer)<limit:
         return []
-    prc = rc(primer)
+    prc = _rc(primer)
     head = prc[:limit].upper()
 
     table = {"R":"(A|G)",
@@ -88,7 +85,7 @@ def _annealing_positions(primer, template, limit=15):
     for key in table:
         head=head.replace(key, table[key])
 
-    positions = [m.start() for m in re.finditer('(?={})'.format(head), template, re.I)]
+    positions = [m.start() for m in _re.finditer('(?={})'.format(head), template, _re.I)]
 
     if positions:
         tail = prc[limit:]
@@ -96,7 +93,7 @@ def _annealing_positions(primer, template, limit=15):
         results = []
         for match_start in positions:
             tm = template[match_start+limit:match_start+limit+length]
-            footprint = rc(template[match_start:match_start+limit]+"".join([b for a,b in itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
+            footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
             results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
         return results
     return []
@@ -182,6 +179,8 @@ class Anneal(object):
     >>>
 
     '''
+
+    
     def __init__( self,
                   primers,
                   template,
@@ -192,127 +191,135 @@ class Anneal(object):
         refresh = False
         cached  = None
 
-        self.primerc=primerc
-        self.saltc = saltc
-
         primers = [p for p in primers if p.seq]
 
-        key = str(template.seguid()) + "|".join(sorted([seguid(p.seq) for p in primers]))+str(limit)
+        key = str(template.seguid()) + "|".join(sorted([_seguid(p.seq) for p in primers]))+str(limit)
 
-        if os.environ["pydna_cache"] in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+        if _os.environ["pydna_cache"] in ("compare", "cached"):
+            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "amplify"),
+                                flag="c",
+                                protocol=_pickle.HIGHEST_PROTOCOL, 
+                                writeback=False)
             try:
                 cached = cache[key]
             except:
-                if os.environ["pydna_cache"] == "compare":
+                if _os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
                 else:
                     refresh = True
             cache.close()
 
-        if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-
+        if refresh or _os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
+            self.primers=primers
+            self.primerc=primerc
+            self.saltc = saltc
             self.key = key
-            self.template = copy.deepcopy(template)
-
+            self.template = _copy.deepcopy(template)
             self.limit = limit
-            self._products = None
-
-            self.fwd_primers = []
-            self.rev_primers = []
-
-            twl = len(self.template.seq.watson)
-            tcl = len(self.template.seq.crick)
-
-            if self.template.linear:
-                tw = self.template.seq.watson
-                tc = self.template.seq.crick
-            else:
-                tw = self.template.seq.watson+self.template.seq.watson
-                tc = self.template.seq.crick +self.template.seq.crick
-
-            for p in primers:
-                self.fwd_primers.extend((Primer(p,
-                                                position = tcl-pos - min(self.template.seq.ovhg, 0),
-                                                footprint = Seq(fp),
-                                                tail = Seq(tl))
-                                        for pos, fp, tl in _annealing_positions(
-                                                            str(p.seq),
-                                                            tc,
-                                                            limit) if pos<tcl))
-                self.rev_primers.extend((Primer(p,
-                                                position = pos + max(0, self.template.seq.ovhg),
-                                                footprint = Seq(fp),
-                                                tail = Seq(tl))
-                                         for pos, fp, tl in _annealing_positions(
-                                                                         str(p.seq),
-                                                                         tw,
-                                                                         limit) if pos<twl))
-            self.fwd_primers.sort(key = operator.attrgetter('position'))
-            self.rev_primers.sort(key = operator.attrgetter('position'), reverse=True)
-
-            for fp in self.fwd_primers:
-                if fp.position-len(fp.footprint)>=0:
-                    start = fp.position-len(fp.footprint)
-                    end   = fp.position
-                    self.template.features.append(SeqFeature(FeatureLocation(start, end),
-                                                        type ="primer_bind",
-                                                        strand = 1,
-                                                        qualifiers = {"note":[fp.name],
-                                                                      "ApEinfo_fwdcolor":["green"],
-                                                                      "ApEinfo_revcolor":["red"]}))
-                else:
-                    start = len(self.template)-len(fp.footprint)+fp.position
-                    end = start+len(fp.footprint)-len(self.template)
-                    sf=SeqFeature(CompoundLocation([FeatureLocation(start,len(self.template)),
-                                                    FeatureLocation(0, end)]),
-                                                    type="primer_bind",
-                                                    location_operator="join",
-                                                    qualifiers = {"note":[fp.name]})
-
-                    self.template.features.append(sf)
-
-            for rp in self.rev_primers:
-                if rp.position+len(rp.footprint)<=len(self.template):
-                    start = rp.position
-                    end   = rp.position + len(rp.footprint)
-                    self.template.features.append(SeqFeature(FeatureLocation(start,end),
-                                                        type ="primer_bind",
-                                                        strand = -1,
-                                                        qualifiers = {"note":[rp.name],
-                                                                      "ApEinfo_fwdcolor":["green"],
-                                                                      "ApEinfo_revcolor":["red"]}))
-                else:
-                    start = rp.position
-                    end = rp.position+len(rp.footprint)-len(self.template)
-                    self.template.features.append(SeqFeature(CompoundLocation([FeatureLocation(start,len(self.template)),
-                                                                               FeatureLocation(0,end)]),
-                                                        type ="primer_bind",
-                                                        location_operator= "join",
-                                                        strand = -1,
-                                                        qualifiers = {"note":[rp.name]}))
-            self.forward_primers = self.fwd_primers
-            self.reverse_primers = self.rev_primers
-
-        if os.environ["pydna_cache"] == "compare":
+            self._do()
+ 
+        if _os.environ["pydna_cache"] == "compare":
             self._compare(cached)
 
-        if refresh or os.environ["pydna_cache"] == "refresh":
+        if refresh or _os.environ["pydna_cache"] == "refresh":
             self._save()
 
-        elif cached and os.environ["pydna_cache"] not in ("nocache","refresh"):
+        elif cached and _os.environ["pydna_cache"] not in ("nocache","refresh"):
             for key, value in list(cached.__dict__.items()):
                 setattr(self, key, value )
             cache.close()
 
     def _compare(self, cached):
         if str(self) != str(cached):
-            module_logger.warning('amplify error')
+            _module_logger.warning('amplify error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "amplify"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+        cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "amplify"),
+                            flag="w",
+                            protocol=_pickle.HIGHEST_PROTOCOL, 
+                            writeback=False)
         cache[self.key] = self
         cache.close()
+        
+    def _do(self):
+        self._products = None
+
+        self.fwd_primers = []
+        self.rev_primers = []
+
+        twl = len(self.template.seq.watson)
+        tcl = len(self.template.seq.crick)
+
+        if self.template.linear:
+            tw = self.template.seq.watson
+            tc = self.template.seq.crick
+        else:
+            tw = self.template.seq.watson+self.template.seq.watson
+            tc = self.template.seq.crick +self.template.seq.crick
+
+        for p in self.primers:
+            self.fwd_primers.extend((_Primer(p,
+                                            position = tcl-pos - min(self.template.seq.ovhg, 0),
+                                            footprint = _Seq(fp),
+                                            tail = _Seq(tl))
+                                    for pos, fp, tl in _annealing_positions(
+                                                        str(p.seq),
+                                                        tc,
+                                                        self.limit) if pos<tcl))
+            self.rev_primers.extend((_Primer(p,
+                                            position = pos + max(0, self.template.seq.ovhg),
+                                            footprint = _Seq(fp),
+                                            tail = _Seq(tl))
+                                     for pos, fp, tl in _annealing_positions(
+                                                                     str(p.seq),
+                                                                     tw,
+                                                                     self.limit) if pos<twl))
+        self.fwd_primers.sort(key = _operator.attrgetter('position'))
+        self.rev_primers.sort(key = _operator.attrgetter('position'), reverse=True)
+
+        for fp in self.fwd_primers:
+            if fp.position-len(fp.footprint)>=0:
+                start = fp.position-len(fp.footprint)
+                end   = fp.position
+                self.template.features.append(_SeqFeature(_FeatureLocation(start, end),
+                                                    type ="primer_bind",
+                                                    strand = 1,
+                                                    qualifiers = {"note":[fp.name],
+                                                                  "ApEinfo_fwdcolor":["green"],
+                                                                  "ApEinfo_revcolor":["red"]}))
+            else:
+                start = len(self.template)-len(fp.footprint)+fp.position
+                end = start+len(fp.footprint)-len(self.template)
+                sf=_SeqFeature(_CompoundLocation([_FeatureLocation(start,len(self.template)),
+                                                 _FeatureLocation(0, end)]),
+                                                  type="primer_bind",
+                                                  location_operator="join",
+                                                  qualifiers = {"note":[fp.name]})
+
+                self.template.features.append(sf)
+
+        for rp in self.rev_primers:
+            if rp.position+len(rp.footprint)<=len(self.template):
+                start = rp.position
+                end   = rp.position + len(rp.footprint)
+                self.template.features.append(_SeqFeature(_FeatureLocation(start,end),
+                                                    type ="primer_bind",
+                                                    strand = -1,
+                                                    qualifiers = {"note":[rp.name],
+                                                                  "ApEinfo_fwdcolor":["green"],
+                                                                  "ApEinfo_revcolor":["red"]}))
+            else:
+                start = rp.position
+                end = rp.position+len(rp.footprint)-len(self.template)
+                self.template.features.append(_SeqFeature(_CompoundLocation([_FeatureLocation(start,len(self.template)),
+                                                                           _FeatureLocation(0,end)]),
+                                                    type ="primer_bind",
+                                                    location_operator= "join",
+                                                    strand = -1,
+                                                    qualifiers = {"note":[rp.name]}))
+        self.forward_primers = self.fwd_primers
+        self.reverse_primers = self.rev_primers
+    
 
     @property
     def products(self):
@@ -336,7 +343,7 @@ class Anneal(object):
                 else:
                     tmpl = self.template[fp.position-len(fp.footprint):rp.position+len(rp.footprint)]
 
-                prd = ( Dseqrecord(fp.tail) + tmpl + Dseqrecord(rp.tail).reverse_complement())
+                prd = ( _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement())
 
                 prd.add_feature( 0, len(fp), label=fp.id)
                 prd.add_feature( len(prd)-len(rp),len(prd),label=rp.id, strand=-1)
@@ -346,7 +353,7 @@ class Anneal(object):
                 prd.description="Product_{0}_{1}".format( fp.description,
                                                           rp.description)
 
-                self._products.append( Amplicon(prd,
+                self._products.append( _Amplicon(prd,
                                                 template=tmpl,
                                                 forward_primer=fp,
                                                 reverse_primer=rp,
@@ -469,14 +476,14 @@ def pcr(*args,  **kwargs):
     new=[]
 
     for s in output:
-        if isinstance(s, Seq):
+        if isinstance(s, _Seq):
             s = SeqRecord(s)
         elif isinstance(s, SeqRecord):
             pass
         elif hasattr(s, "watson"):
             s=s.watson
         elif isinstance(s, str):
-            s = SeqRecord(Seq(s))
+            s = SeqRecord(_Seq(s))
         else:
             raise TypeError("the record property needs to be a string, Seq, SeqRecord or Dseqrecord object")
         new.append(s)
@@ -564,14 +571,14 @@ def nopcr(*args,  **kwargs):
     new=[]
 
     for s in output:
-        if isinstance(s, Seq):
+        if isinstance(s, _Seq):
             s = SeqRecord(s)
         elif isinstance(s, SeqRecord):
             pass
         elif hasattr(s, "watson"):
             s=s.watson
         elif isinstance(s, str):
-            s = SeqRecord(Seq(s))
+            s = SeqRecord(_Seq(s))
         else:
             raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
         new.append(s)
@@ -589,9 +596,8 @@ def nopcr(*args,  **kwargs):
 
 
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cache"]=cache

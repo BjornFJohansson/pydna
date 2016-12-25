@@ -10,22 +10,21 @@
 This module contain functions for primer design.
 
 '''
-import math
-from operator import itemgetter
-from Bio.Alphabet import Alphabet
-from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-from Bio.Seq import Seq
-from .amplify import Anneal
-from .tm import tmbresluc
-from .parsers import parse
-from .dseqrecord import Dseqrecord
-from ._pretty import pretty_str
-from .primer                   import Primer
+import math                                       as _math
+from operator import itemgetter                   as _itemgetter
+from Bio.Alphabet import Alphabet                 as _Alphabet
+from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
+from Bio.Seq import Seq                           as _Seq
+from .amplify import Anneal                       as _Anneal
+from .tm import tmbresluc                         as _tmbresluc
+from .dseqrecord import Dseqrecord                as _Dseqrecord
+from ._pretty import pretty_str                   as _pretty_str
+from .primer    import Primer                     as _Primer
 
 
 def print_primer_pair(*args,**kwargs):
     f,r = cloning_primers(*args,**kwargs)
-    return pretty_str("\n"+f.format("fasta")+"\n"+r.format("fasta") + "\n")
+    return _pretty_str("\n"+f.format("fasta")+"\n"+r.format("fasta") + "\n")
 
 def cloning_primers( template,
                      minlength=16,
@@ -38,7 +37,7 @@ def cloning_primers( template,
                      fprimerc=1000.0,
                      rprimerc=1000.0,
                      saltc=50.0,
-                     formula = tmbresluc):
+                     formula = _tmbresluc):
 
     '''This function can design primers for PCR amplification of a given sequence.
     This function accepts a Dseqrecord object containing the template sequence and
@@ -163,22 +162,22 @@ def cloning_primers( template,
     '''
 
     if fp and not rp:
-        fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
-        p  = Anneal([fp], template).fwd_primers.pop()
-        fp = Primer(p.footprint)
-        fp_tail = Primer(p.tail)
-        rp = Primer(Seq(str(template[-(maxlength*3-len(rp_tail)):].reverse_complement().seq), IUPACAmbiguousDNA()))
+        fp = _Primer(_Seq(fp_tail, _IUPACAmbiguousDNA())) + fp
+        p  = _Anneal([fp], template).fwd_primers.pop()
+        fp = _Primer(p.footprint)
+        fp_tail = _Primer(p.tail)
+        rp = _Primer(_Seq(str(template[-(maxlength*3-len(rp_tail)):].reverse_complement().seq), _IUPACAmbiguousDNA()))
         target_tm = formula(str(fp.seq).upper(), primerc=fprimerc, saltc=saltc)
     elif not fp and rp:
-        rp = Primer(Seq(rp_tail, IUPACAmbiguousDNA())) + rp
-        p =  Anneal([rp], template).rev_primers.pop()
-        rp = Primer(p.footprint)
-        rp_tail = Primer(p.tail)
-        fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq), IUPACAmbiguousDNA()))
+        rp = _Primer(_Seq(rp_tail, _IUPACAmbiguousDNA())) + rp
+        p =  _Anneal([rp], template).rev_primers.pop()
+        rp = _Primer(p.footprint)
+        rp_tail = _Primer(p.tail)
+        fp = _Primer(_Seq(str(template[:maxlength*3-len(fp_tail)].seq), _IUPACAmbiguousDNA()))
         target_tm = formula(str(rp.seq).upper(), primerc=rprimerc, saltc=saltc)
     elif not fp and not rp:
-        fp = Primer(Seq(str(template[:maxlength*3-len(fp_tail)].seq), IUPACAmbiguousDNA()))
-        rp = Primer(Seq(str(template[-maxlength*3+len(rp_tail):].reverse_complement().seq), IUPACAmbiguousDNA()))
+        fp = _Primer(_Seq(str(template[:maxlength*3-len(fp_tail)].seq), _IUPACAmbiguousDNA()))
+        rp = _Primer(_Seq(str(template[-maxlength*3+len(rp_tail):].reverse_complement().seq), _IUPACAmbiguousDNA()))
     else:
         raise Exception("Specify maximum one of the two primers, not both.")
 
@@ -186,7 +185,7 @@ def cloning_primers( template,
     rp.concentration = rprimerc
     
     lowtm, hightm = sorted( [( formula(str(fp.seq), fprimerc, saltc), fp, "f" ),
-                             ( formula(str(rp.seq), rprimerc, saltc), rp, "r" ) ] , key=itemgetter(0))
+                             ( formula(str(rp.seq), rprimerc, saltc), rp, "r" ) ] , key=_itemgetter(0))
                           
     while lowtm[0] > target_tm and len(lowtm[1])>minlength:
         shorter = lowtm[1][:-1]
@@ -198,7 +197,7 @@ def cloning_primers( template,
         tm = formula(str(shorter.seq).upper(), primerc = rprimerc, saltc = saltc)
         hightm = (tm, shorter, hightm[2])
 
-    fp, rp = sorted((lowtm, hightm), key=itemgetter(2))
+    fp, rp = sorted((lowtm, hightm), key=_itemgetter(2))
 
     fp = fp_tail + fp[1]
     rp = rp_tail + rp[1]
@@ -218,18 +217,18 @@ def cloning_primers( template,
     fp.name = fp.id
     rp.name = rp.id
 
-    if fp.seq.alphabet == Alphabet():
-        fp.seq.alphabet = IUPACAmbiguousDNA()
-    if rp.seq.alphabet == Alphabet():
-        rp.seq.alphabet = IUPACAmbiguousDNA()
+    if fp.seq.alphabet == _Alphabet():
+        fp.seq.alphabet = _IUPACAmbiguousDNA()
+    if rp.seq.alphabet == _Alphabet():
+        rp.seq.alphabet = _IUPACAmbiguousDNA()
 
     return fp, rp
 
 def integration_primers( up,
                          cas,
                          dn,
-                         uplink     = Dseqrecord(''),
-                         dnlink     = Dseqrecord(''),
+                         uplink     = _Dseqrecord(''),
+                         dnlink     = _Dseqrecord(''),
                          minlength  = 16,
                          maxlength  = 80,
                          min_olap   = 50,
@@ -237,7 +236,7 @@ def integration_primers( up,
                          fprimerc   = 1000.0,
                          rprimerc   = 1000.0,
                          saltc      = 50.0,
-                         formula    = tmbresluc):
+                         formula    = _tmbresluc):
 
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
@@ -267,7 +266,7 @@ def assembly_primers(templates,
                      fprimerc   = 1000.0,
                      rprimerc   = 1000.0,
                      saltc      = 50.0,
-                     formula    = tmbresluc):
+                     formula    = _tmbresluc):
 
 
     '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
@@ -444,7 +443,7 @@ def assembly_primers(templates,
     if not hasattr(templates, '__iter__'):
         raise Exception("first argument has to be an iterable")
 
-    tail_length =  int(math.ceil(float(min_olap)/2))
+    tail_length =  int(_math.ceil(float(min_olap)/2))
 
     if circular:
         templates = tuple(templates) + (templates[0],)
@@ -456,7 +455,7 @@ def assembly_primers(templates,
         if len(t)<=maxlink:
             linker = t
         else:
-            linker= Dseqrecord('')
+            linker= _Dseqrecord('')
             newtemplates.append(t)
         linkers.append(linker)
 
@@ -490,8 +489,8 @@ def assembly_primers(templates,
                                     saltc      = saltc,
                                     formula    = formula)
 
-        #fp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + fp
-        #rp = Primer(Seq(fp_tail, IUPACAmbiguousDNA())) + rp
+        #fp = _Primer(_Seq(fp_tail, IUPACAmbiguousDNA())) + fp
+        #rp = _Primer(_Seq(fp_tail, IUPACAmbiguousDNA())) + rp
 
         primer_pairs.append((fp, rp))
 

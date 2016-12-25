@@ -116,8 +116,6 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
-    #conda update -yq conda-build
-    #conda config --add channels conda-forge
     conda config --add channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
@@ -125,7 +123,9 @@ fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    conda install -yq conda-build
+    pip install git+git://github.com/conda/conda-build.git@2.1.0beta1
+    #conda install -yq conda-build
+    conda-build -V
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
     conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
     rm -rf dist

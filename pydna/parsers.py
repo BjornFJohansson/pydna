@@ -12,18 +12,18 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
-import os
-import re
-import io
-import textwrap
-import glob
+import os        as _os
+import re        as _re
+import io        as _io
+import textwrap  as _textwrap
+import glob      as _glob
 
-from Bio                    import SeqIO
-from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA
-from Bio.GenBank            import RecordParser
-from .genbankfile            import GenbankFile
-from .dseqrecord             import Dseqrecord
-from .primer                 import Primer  
+from Bio                    import SeqIO              as _SeqIO
+from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
+from Bio.GenBank            import RecordParser       as _RecordParser
+from .genbankfile           import GenbankFile        as _GenbankFile
+from .dseqrecord            import Dseqrecord         as _Dseqrecord
+from .primer                import Primer             as _Primer
 
 def parse2(data, ds = True):
     '''experimental'''
@@ -31,10 +31,10 @@ def parse2(data, ds = True):
     pattern =  r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
 
     def extract_seqs(raw):
-        raw = textwrap.dedent(raw).strip()
+        raw = _textwrap.dedent(raw).strip()
         raw = raw.replace( '\r\n', '\n')
         raw = raw.replace( '\r',   '\n')
-        return re.findall(pattern, textwrap.dedent(raw+ "\n\n"),re.MULTILINE)
+        return _re.findall(pattern, _textwrap.dedent(raw+ "\n\n"),_re.MULTILINE)
 
     files=[]
     rawseqs=[]
@@ -42,13 +42,13 @@ def parse2(data, ds = True):
     if not hasattr(data, '__iter__'):
         data = (data,)
     for item in data:
-        for pth in glob.glob(item):
-            if os.path.isfile(pth):
-                files.append(os.path.abspath(pth))
+        for pth in _glob.glob(item):
+            if _os.path.isfile(pth):
+                files.append(_os.path.abspath(pth))
             else:
-                for dirpath,_,filenames in os.walk(pth):
+                for dirpath,_,filenames in _os.walk(pth):
                     for f in filenames:
-                        files.append( os.path.abspath(os.path.join(dirpath, f)))
+                        files.append( _os.path.abspath(_os.path.join(dirpath, f)))
             for file_ in files:
                 with open(file_,'r') as f:
                     rawseqs.extend(extract_seqs(f.read()))
@@ -59,33 +59,33 @@ def parse2(data, ds = True):
     while rawseqs:
         circular = False
         rawseq = rawseqs.pop(0)
-        handle = io.StringIO(rawseq)
+        handle = _io.StringIO(rawseq)
         try:
-            parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
+            parsed = _SeqIO.read(handle, "embl", alphabet=_IUPACAmbiguousDNA())
             #original_format = "embl"
             if "circular" in rawseq.splitlines()[0]:
                 circular = True
         except ValueError:
             handle.seek(0)
             try:
-                parsed = SeqIO.read(handle, "genbank", alphabet=IUPACAmbiguousDNA())
+                parsed = _SeqIO.read(handle, "genbank", alphabet=_IUPACAmbiguousDNA())
                 #original_format = "genbank"
                 handle.seek(0)
-                parser = RecordParser()
+                parser = _RecordParser()
                 residue_type = parser.parse(handle).residue_type
                 if "circular" in residue_type:
                     circular = True
             except ValueError:
                 handle.seek(0)
                 try:
-                    parsed = SeqIO.read(handle, "fasta", alphabet=IUPACAmbiguousDNA())
+                    parsed = _SeqIO.read(handle, "fasta", alphabet=_IUPACAmbiguousDNA())
                     if "circular" in rawseq.splitlines()[0]:
                         circular = True
                 except ValueError:
                     continue
 
         if ds:
-            sequences.append(Dseqrecord(parsed, circular = circular))
+            sequences.append(_Dseqrecord(parsed, circular = circular))
         else:
             sequences.append(parsed)
         handle.close()
@@ -139,28 +139,28 @@ def parse(data, ds = True):
         
         result_list = []
         
-        rawseqs = re.findall(pattern, textwrap.dedent(raw + "\n\n"), flags=re.MULTILINE)
+        rawseqs = _re.findall(pattern, _textwrap.dedent(raw + "\n\n"), flags=_re.MULTILINE)
         
         for rawseq in rawseqs:
-            handle = io.StringIO(rawseq)
+            handle = _io.StringIO(rawseq)
             circular=False
             try:
-                parsed = SeqIO.read(handle, "embl", alphabet=IUPACAmbiguousDNA())
+                parsed = _SeqIO.read(handle, "embl", alphabet=_IUPACAmbiguousDNA())
                 if "circular" in rawseq.splitlines()[0]:
                     circular = True
             except ValueError:
                 handle.seek(0)
                 try:
-                    parsed = SeqIO.read(handle, "genbank", alphabet=IUPACAmbiguousDNA())
+                    parsed = _SeqIO.read(handle, "genbank", alphabet=_IUPACAmbiguousDNA())
                     handle.seek(0)
-                    parser = RecordParser()
+                    parser = _RecordParser()
                     residue_type = parser.parse(handle).residue_type
                     if "circular" in residue_type:
                         circular = True
                 except ValueError:
                     handle.seek(0)
                     try:
-                        parsed = SeqIO.read(handle, "fasta", alphabet=IUPACAmbiguousDNA())
+                        parsed = _SeqIO.read(handle, "fasta", alphabet=_IUPACAmbiguousDNA())
                         if "circular" in rawseq.splitlines()[0]:
                             circular = True
                     except ValueError:
@@ -168,9 +168,9 @@ def parse(data, ds = True):
             handle.close()
             
             if ds and path:
-                result_list.append( GenbankFile(parsed, circular=circular, path=path) )
+                result_list.append( _GenbankFile(parsed, circular=circular, path=path) )
             elif ds:
-                result_list.append( Dseqrecord(parsed, circular =circular) )
+                result_list.append( _Dseqrecord(parsed, circular =circular) )
             else:
                 result_list.append( parsed )
                 
@@ -199,13 +199,12 @@ def parse(data, ds = True):
     return sequences
     
 def parse_primers(data):
-    return [Primer(x) for x in parse(data, ds=False)]
+    return [_Primer(x) for x in parse(data, ds=False)]
 
     
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cache"]=cache

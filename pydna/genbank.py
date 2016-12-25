@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 '''Provides a class for downloading sequences from genbank.
 '''
-import pickle
-import shelve
-import re
-import os
-import logging
-module_logger = logging.getLogger("pydna."+__name__)
+import pickle as _pickle
+import shelve as _shelve
+import re as _re
+import os as _os
+import logging as _logging
+_module_logger = _logging.getLogger("pydna."+__name__)
 
-from Bio import Entrez
-from .readers import read
-from .genbankrecord import GenbankRecord
+from Bio import Entrez as _Entrez
+from .readers import read as _read
+from .genbankrecord import GenbankRecord as _GenbankRecord
 
 class Genbank(object):
     '''Class to facilitate download from genbank.
@@ -34,7 +34,7 @@ class Genbank(object):
 
     def __init__(self, users_email):
 
-        if not re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,re.IGNORECASE):
+        if not _re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,_re.IGNORECASE):
             raise ValueError
         if users_email == "someone@example.com":
             raise ValueError("you have to set your email address in order to download from Genbank")
@@ -81,23 +81,25 @@ class Genbank(object):
         cached  = False
         refresh = False
 
-        if os.environ["pydna_cache"] in ("compare", "cached"):
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"],"genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+        if _os.environ["pydna_cache"] in ("compare", "cached"):
+            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "genbank"),  
+                                protocol=_pickle.HIGHEST_PROTOCOL, 
+                                writeback=False)
             key = item+str(start)+str(stop)+str(strand)
             try:
                 cached, item, start, stop = cache[key]
             except:
-                if os.environ["pydna_cache"] == "compare":
+                if _os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
                 else:
                     refresh = True
 
-        if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
+        if refresh or _os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
 
-            matches =((1, re.search("(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
-                      (2, re.search("(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))",item)),
-                      (1, re.search(":(?P<start>\d+)-(?P<stop>\d+)",item)),
-                      (2, re.search(":c(?P<start>\d+)-(?P<stop>\d+)",item)),
+            matches =((1, _re.search("(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
+                      (2, _re.search("(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))",item)),
+                      (1, _re.search(":(?P<start>\d+)-(?P<stop>\d+)",item)),
+                      (2, _re.search(":c(?P<start>\d+)-(?P<stop>\d+)",item)),
                       (0, None))
 
             for strand, match in matches:
@@ -112,33 +114,33 @@ class Genbank(object):
             else:
                 strand = 1
 
-            Entrez.email = self.email
+            _Entrez.email = self.email
 
-            text = Entrez.efetch( db        ="nucleotide",
+            text = _Entrez.efetch( db        ="nucleotide",
                                   id        = item,
                                   rettype   = "gbwithparts",
                                   seq_start = start,
                                   seq_stop  = stop,
                                   strand    = strand,
                                   retmode   = "text" ).read()
-            dsr = read(text)
-            result = GenbankRecord(dsr, item = item, start=start, stop=stop, strand=strand)
+            dsr = _read(text)
+            result = _GenbankRecord(dsr, item = item, start=start, stop=stop, strand=strand)
     
-        if os.environ["pydna_cache"] == "compare":
+        if _os.environ["pydna_cache"] == "compare":
             if result!=cached:
-                module_logger.warning('download error')
+                _module_logger.warning('download error')
 
-        if refresh or os.environ["pydna_cache"] == "refresh":
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "genbank"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+        if refresh or _os.environ["pydna_cache"] == "refresh":
+            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "genbank"), protocol=_pickle.HIGHEST_PROTOCOL, writeback=False)
             cache[key] = result, item, start, stop
-        elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
+        elif cached and _os.environ["pydna_cache"] not in ("nocache", "refresh"):
             result = cached
             cache.close()
 
         return result
 
         
-email = os.getenv("pydna_email")
+email = _os.getenv("pydna_email")
 
 def genbank(accession):
     gb = Genbank(email)

@@ -1,0 +1,33 @@
+LOCUS       AM086621                  24 bp    DNA     linear   SYN 14-JUL-2008
+DEFINITION  Artificial oligonucleotide primer sequence (PsnRT_F) for
+            Pseudomonas savastanoi pv. nerii isolate ITM204 PCR detection.
+ACCESSION   AM086621
+VERSION     AM086621.1
+KEYWORDS    oligonucleotide; primer.
+SOURCE      synthetic construct
+  ORGANISM  synthetic construct
+            other sequences; artificial sequences.
+REFERENCE   1
+  AUTHORS   Tegli,S., Cerboneschi,M., Marsili Libelli,I. and Fontana,F.
+  TITLE     Detection and identification of Pseudomonas savastanoi by end point
+            and realtime PCR
+  JOURNAL   Unpublished
+REFERENCE   2  (bases 1 to 24)
+  AUTHORS   Tegli,S.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (16-SEP-2005) Tegli S., Dipartimento di Biotecnologie
+            Agrarie, Universita degli Studi di Firenze, Via della Lastruccia
+            10, Sesto Fiorentino (Firenze) 50019, ITALY
+COMMENT     Related sequences: AM051226.1 (Reverse primer PsnR1d).
+FEATURES             Location/Qualifiers
+     source          1..24
+                     /organism="synthetic construct"
+                     /mol_type="other DNA"
+                     /db_xref="taxon:32630"
+     misc_feature    1..24
+                     /note="PsnRT_F primer for Pseudomonas savastanoi pv. nerii
+                     isolate ITM204 PCR detection"
+ORIGIN      
+        1 gctcattcgc ttgttatcac ttca
+//
+

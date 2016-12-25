@@ -3,13 +3,14 @@
 '''This module provides miscellaneous functions.
 
 '''
-from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
-from itertools import tee
-from Bio.SeqFeature import SeqFeature
-from Bio.SeqFeature import FeatureLocation
-from ._pretty import pretty_string
-from Bio.Seq                import _maketrans
-from Bio.Data.IUPACData     import ambiguous_dna_complement as _amb_compl
+from Bio.SeqUtils.CheckSum  import seguid   as _base64_seguid
+from itertools import tee                   as _tee
+from Bio.SeqFeature import SeqFeature       as _SeqFeature
+from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
+from ._pretty import pretty_str             as _pretty_str
+from Bio.Seq             import _maketrans
+from Bio.Data.IUPACData  import ambiguous_dna_complement as _amb_compl
 
 _amb_compl.update({"U":"A"})
 _complement_table = _maketrans(_amb_compl)
@@ -22,7 +23,7 @@ def rc(sequence):
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-    a, b = tee(iterable)
+    a, b = _tee(iterable)
     next(b, None)
     return zip(a, b)
 
@@ -200,10 +201,6 @@ def shift_origin(seq, shift):
     --------
     pydna.dsdna.Dseqrecord.shifted
     '''
-    from Bio.SeqFeature import SeqFeature
-    from Bio.SeqFeature import FeatureLocation, CompoundLocation
-    from Bio.SeqRecord  import SeqRecord
-    import copy
 
     length=len(seq)
 
@@ -221,8 +218,8 @@ def shift_origin(seq, shift):
         new_start = length -(shift-feature.location.start)
         new_end   = feature.location.end-shift
 
-        c = SeqFeature(CompoundLocation( [FeatureLocation(0, new_end),
-                                          FeatureLocation(new_start, length)]),
+        c = _SeqFeature(_CompoundLocation( [_FeatureLocation(0, new_end),
+                                          _FeatureLocation(new_start, length)]),
                        type=feature.type,
                        location_operator="join",
                        strand=feature.strand,
@@ -231,7 +228,7 @@ def shift_origin(seq, shift):
         sub_features=[]
         for sf in feature.sub_features:
             if feature.location.end<shift:
-                sub_features.append(SeqFeature(FeatureLocation(length-feature.location.start,
+                sub_features.append(_SeqFeature(_FeatureLocation(length-feature.location.start,
                                                                length-feature.location.end),
                                     type=feature.type,
                                     location_operator=feature.location_operator,
@@ -240,7 +237,7 @@ def shift_origin(seq, shift):
                                     qualifiers=feature.qualifiers,
                                     sub_features=None))
             elif feature.location.start>shift:
-                sub_features.append(SeqFeature(FeatureLocation(feature.location.start-shift,
+                sub_features.append(_SeqFeature(_FeatureLocation(feature.location.start-shift,
                                                                feature.location.end-shift),
                                     type=feature.type,
                                     location_operator=feature.location_operator,
@@ -318,21 +315,21 @@ def copy_features(source_sr, target_sr, limit = 10):
             if circular and begin<target_length<end:
                 end = end-len(
                               target_sr)
-                sf1 = SeqFeature(FeatureLocation(begin, trgt_length),
+                sf1 = _SeqFeature(_FeatureLocation(begin, trgt_length),
                                  type=feature.type,
                                  location_operator=feature.location_operator,
                                  strand=strand,
                                  id=feature.id,
                                  qualifiers=feature.qualifiers,
                                  sub_features=None,)
-                sf2 = SeqFeature(FeatureLocation(0, end),
+                sf2 = _SeqFeature(_FeatureLocation(0, end),
                                  type=feature.type,
                                  location_operator=feature.location_operator,
                                  strand=strand,
                                  id=feature.id,
                                  qualifiers=feature.qualifiers,
                                  sub_features=None,)
-                nf =  SeqFeature(FeatureLocation(begin, end),
+                nf =  _SeqFeature(_FeatureLocation(begin, end),
                                  type=feature.type,
                                  location_operator="join",
                                  strand=strand,
@@ -340,7 +337,7 @@ def copy_features(source_sr, target_sr, limit = 10):
                                  qualifiers=feature.qualifiers,
                                  sub_features=[sf1,sf2],)
             else:
-                nf = SeqFeature(FeatureLocation(begin,end),
+                nf = _SeqFeature(_FeatureLocation(begin,end),
                      type=feature.type,
                      location_operator=feature.location_operator,
                      strand=strand,
@@ -414,7 +411,7 @@ def seguid(seq):
     checksum with the '+' and '/' characters of standard Base64 encoding are respectively
     replaced by '-' and '_'.
     '''
-    return pretty_string( base64_seguid( str(seq).upper() ).replace("+","-").replace("/","_") )
+    return _pretty_str( _base64_seguid( str(seq).upper() ).replace("+","-").replace("/","_") )
 
 def cseguid(seq):
     '''Returns the cSEGUID for the sequence. The cSEGUID is the url safe SEGUID checksum
@@ -422,7 +419,7 @@ def cseguid(seq):
     Only defined for circular sequences.
     '''
     from Bio.Seq import reverse_complement as rc
-    return pretty_string( seguid( min( SmallestRotation(str(seq).upper()), SmallestRotation(str(rc(seq)).upper()))))
+    return _pretty_str( seguid( min( SmallestRotation(str(seq).upper()), SmallestRotation(str(rc(seq)).upper()))))
 
 if __name__ == "__main__":
     import os

@@ -61,7 +61,6 @@ which can have three different values:
                 http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
 
-import os            as _os
 import appdirs       as _appdirs
 from configparser import SafeConfigParser as _SafeConfigParser
 
@@ -162,17 +161,17 @@ from .readers    import read
 from .parsers    import parse_primers
 from .readers    import read_primer
 
-#from .editor                             import Editor
+from .editor                              import Editor
 from .findsubstrings_suffix_arrays_python import common_sub_strings
 from .primer_design                       import cloning_primers
 from .primer_design                       import assembly_primers
 from .primer_design                       import integration_primers
 from .utils                               import eq
-#from .utils                               import shift_origin
-#from .utils                               import pairwise
-#from .utils                               import cseguid
-#from .primer                              import Primer
-#from .genbankfixer                        import gbtext_clean
+from .utils                               import shift_origin
+from .utils                               import pairwise
+from .utils                               import cseguid
+from .primer                              import Primer
+from .genbankfixer                        import gbtext_clean
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
@@ -209,10 +208,6 @@ if _missing_modules_for_gel:
 else:
     from .gel import Gel
 
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
-
 class PydnaWarning(Warning):
     """Pydna warning.
 
@@ -226,7 +221,6 @@ class PydnaWarning(Warning):
     Consult the warnings module documentation for more details.
     """
     pass
-
 
 class PydnaDeprecationWarning(PydnaWarning):
     """pydna deprecation warning.
@@ -246,53 +240,6 @@ class PydnaDeprecationWarning(PydnaWarning):
     
     """
     pass
-
-try:
-    del amplify
-except NameError:
-    pass
-try:
-    del assembly
-except NameError:
-    pass
-try:
-    del download
-except NameError:
-    pass
-try:
-    del dseq
-except NameError:
-    pass
-try:
-    del dseqrecord
-except NameError:
-    pass
-try:
-    del readers
-except NameError:
-    pass
-try:
-    del parsers
-except NameError:
-    pass
-try:
-    del _findsubstrings_suffix_arrays_python
-except NameError:
-    pass
-from .genbank    import genbank
-try:
-    del primer_design
-except NameError:
-    pass
-try:
-    del utils
-except NameError:
-    pass
-try:
-    del genbankfixer
-except NameError:
-    pass
-
 
 def open_cache_folder():
     _open_folder( _os.environ["pydna_data_dir"] )

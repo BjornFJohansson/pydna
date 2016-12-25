@@ -8,33 +8,35 @@ sequences separating the overlapping regions form edges.
 
 '''
 
-import pickle
-import shelve
+import pickle as _pickle
+import shelve as _shelve
 
-import logging
-module_logger = logging.getLogger("pydna."+__name__)
+import logging as _logging
+_module_logger = _logging.getLogger("pydna."+__name__)
 
-import itertools
-import networkx as nx
-import operator
-import random
-import os
+import itertools as _itertools
+import networkx as _nx
+import operator as _operator
+import random as _random
+import os as _os
 
-from copy import copy
-from collections import defaultdict
+from copy import copy as _copy
+from collections import defaultdict as _defaultdict
 
-from Bio.SeqFeature import FeatureLocation
-from Bio.SeqFeature import SeqFeature
+from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SeqFeature as _SeqFeature
 
-from .dseq  import Dseq
-from .dseqrecord import Dseqrecord
-from ._simple_paths8 import all_simple_paths_edges, all_circular_paths_edges
-from .findsubstrings_suffix_arrays_python import common_sub_strings
-from .findsubstrings_suffix_arrays_python import terminal_overlap
-from .contig import Contig
-from ordered_set   import OrderedSet
+from .dseq  import Dseq as _Dseq
+from .dseqrecord import Dseqrecord as _Dseqrecord
+from ._simple_paths8 import all_simple_paths_edges   as _all_simple_paths_edges
+from ._simple_paths8 import all_circular_paths_edges as _all_circular_paths_edges
 
-class _Fragment(Dseqrecord):
+from .findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from .findsubstrings_suffix_arrays_python import terminal_overlap as _terminal_overlap
+from .contig import Contig as _Contig
+from ordered_set   import OrderedSet as _OrderedSet
+
+class _Fragment(_Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.
     This class is instantiated by the :class:`Assembly` class and is not
     meant to be instantiated directly.
@@ -111,81 +113,83 @@ class Assembly(object):
 
         key = "|".join( [str(r.__hash__()) for r in dsrecs] )+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
 
-        if os.environ["pydna_cache"] in ("compare", "cached"):
+        if _os.environ["pydna_cache"] in ("compare", "cached"):
 
-            module_logger.info( 'open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
+            _module_logger.info( 'open shelf file {}'.format(_os.path.join(_os.environ["pydna_data_dir"], "assembly")))
 
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
-
-            module_logger.info( 'created key = {}'.format(key))
-            module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
+            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "assembly"),
+                                flag="c",
+                                protocol=_pickle.HIGHEST_PROTOCOL,
+                                writeback=False)
+            _module_logger.info( 'created key = {}'.format(key))
+            _module_logger.info( "pydna_cache = {}".format(_os.environ["pydna_cache"]) )
 
             try:
                 cached = cache[key]
             except:
-                if os.environ["pydna_cache"] == "compare":
+                if _os.environ["pydna_cache"] == "compare":
                     raise Exception("no result for this key!")
                 else:
                     refresh = True
-
             cache.close()
 
-        if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-            self.dsrecs    = dsrecs
+        if refresh or _os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
+            self.dsrecs = dsrecs
             ''' Sequences fed to this class is stored in this property'''
             self.only_terminal_overlaps = only_terminal_overlaps
             ''' Consider only terminal overlaps?'''
-            self.limit     = limit
+            self.limit = limit
             ''' The shortest common sub strings to be considered '''
             self.max_nodes = max_nodes or len(self.dsrecs)
             ''' The max number of nodes allowed. This can be reset to some other value'''
             self.key = key
             self.only_terminal_overlaps = only_terminal_overlaps
-            self._assemble()
+            self._do()
 
-        if os.environ["pydna_cache"] == "compare":
+        if _os.environ["pydna_cache"] == "compare":
             self._compare(cached)
 
-        if refresh or os.environ["pydna_cache"] == "refresh":
+        if refresh or _os.environ["pydna_cache"] == "refresh":
             self._save()
 
-        elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
+        elif cached and _os.environ["pydna_cache"] not in ("nocache", "refresh"):
             for key, value in list(cached.__dict__.items()):
                 setattr(self, key, value )
             cache.close()
-            
-        #display(Markdown("```\n"+self.__repr__()+"```".replace('\n', '<br />')))
 
     def _compare(self, cached):
         if str(self) != str(cached):
-            module_logger.warning('Assembly error')
+            _module_logger.warning('Assembly error')
 
     def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=pickle.HIGHEST_PROTOCOL, writeback=False)
+        cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "assembly"),
+                            flag="w",
+                            protocol=_pickle.HIGHEST_PROTOCOL, 
+                            writeback=False)
         cache[self.key] = self
         cache.close()
 
-    def _assemble(self):
+    def _do(self):
 
         for dr in self.dsrecs:
             if dr.name in ("",".", "<unknown name>", None):
                 dr.name = "frag{}".format(len(dr))
 
         if self.only_terminal_overlaps:
-            algorithm = terminal_overlap
+            algorithm = _terminal_overlap
         else:
-            algorithm = common_sub_strings
+            algorithm = _common_sub_strings
 
         # analyze_overlaps
         cols = {}
         for dsrec in self.dsrecs:
             dsrec.features = [f for f in dsrec.features if f.type!="overlap"]
-            dsrec.seq = Dseq(dsrec.seq.todata)
+            dsrec.seq = _Dseq(dsrec.seq.todata)
         rcs = {dsrec:dsrec.rc() for dsrec in self.dsrecs}
         matches=[]
-        dsset=OrderedSet()
+        dsset=_OrderedSet()
 
-        for a, b in itertools.combinations(self.dsrecs, 2):
+        for a, b in _itertools.combinations(self.dsrecs, 2):
             match = algorithm( str(a.seq).upper(),
                                str(b.seq).upper(),
                                self.limit)
@@ -215,8 +219,8 @@ class Assembly(object):
                 try:
                     fcol, revcol = cols[chksum]
                 except KeyError:
-                    fcol = '#%02X%02X%02X' % (random.randint(175,255),random.randint(175,255),random.randint(175,255))
-                    rcol = '#%02X%02X%02X' % (random.randint(175,255),random.randint(175,255),random.randint(175,255))
+                    fcol = '#%02X%02X%02X' % (_random.randint(175,255),_random.randint(175,255),_random.randint(175,255))
+                    rcol = '#%02X%02X%02X' % (_random.randint(175,255),_random.randint(175,255),_random.randint(175,255))
                     cols[chksum] = fcol,rcol
 
                 qual      = {"note"             : ["olp_{}".format(chksum)],
@@ -225,24 +229,24 @@ class Assembly(object):
                              "ApEinfo_revcolor" : [rcol]}
 
                 if not chksum in [f.qualifiers["chksum"][0] for f in a.features if f.type == "overlap"]:
-                    a.features.append( SeqFeature( FeatureLocation(start_in_a,
+                    a.features.append( _SeqFeature( _FeatureLocation(start_in_a,
                                                                    start_in_a + length),
                                                                    type = "overlap",
                                                                    qualifiers = qual))
                 if not chksum in [f.qualifiers["chksum"][0] for f in b.features if f.type == "overlap"]:
-                    b.features.append( SeqFeature( FeatureLocation(start_in_b,
+                    b.features.append( _SeqFeature( _FeatureLocation(start_in_b,
                                                                    start_in_b + length),
                                                                    type = "overlap",
                                                                    qualifiers = qual))
         for ds in dsset:
-            ds.features = sorted([f for f in ds.features], key = operator.attrgetter("location.start"))
+            ds.features = sorted([f for f in ds.features], key = _operator.attrgetter("location.start"))
 
         self.analyzed_dsrecs = list(dsset)
 
 
         # Create graph
 
-        self.G=nx.MultiDiGraph(multiedges=True, name ="original graph" , selfloops=False)
+        self.G=_nx.MultiDiGraph(multiedges=True, name ="original graph" , selfloops=False)
         self.G.add_node( '5' )
         self.G.add_node( '3' )
 
@@ -250,18 +254,18 @@ class Assembly(object):
 
             overlaps = sorted( list({f.qualifiers['chksum'][0]:f for f in dsrec.features
                                 if f.type=='overlap'}.values()),
-                               key = operator.attrgetter('location.start'))
+                               key = _operator.attrgetter('location.start'))
 
             if overlaps:
-                overlaps = ([SeqFeature(FeatureLocation(0, 0),
+                overlaps = ([_SeqFeature(_FeatureLocation(0, 0),
                              type = 'overlap',
                              qualifiers = {'chksum':['5']})]+
                              overlaps+
-                            [SeqFeature(FeatureLocation(len(dsrec),len(dsrec)),
+                            [_SeqFeature(_FeatureLocation(len(dsrec),len(dsrec)),
                                         type = 'overlap',
                                         qualifiers = {'chksum':['3']})])
 
-                for olp1, olp2 in itertools.combinations(overlaps, 2):
+                for olp1, olp2 in _itertools.combinations(overlaps, 2):
 
                     n1 = olp1.qualifiers['chksum'][0]
                     n2 = olp2.qualifiers['chksum'][0]
@@ -283,11 +287,11 @@ class Assembly(object):
 
         #linear assembly
 
-        linear_products=defaultdict(list)
+        linear_products=_defaultdict(list)
 
-        for path in all_simple_paths_edges(self.G, '5', '3', data=True, cutoff=self.max_nodes):
+        for path in _all_simple_paths_edges(self.G, '5', '3', data=True, cutoff=self.max_nodes):
 
-            pred_frag = copy(list(path[0][2].values()).pop()['frag'])
+            pred_frag = _copy(list(path[0][2].values()).pop()['frag'])
             source_fragments = [pred_frag, ]
 
             if pred_frag.start2<pred_frag.end1:
@@ -299,7 +303,7 @@ class Assembly(object):
 
                 edgedict = list(edgedict.values()).pop()
 
-                f  = copy(edgedict['frag'])
+                f  = _copy(edgedict['frag'])
 
                 f.alignment =  pred_frag.alignment + pred_frag.start2- f.start1
                 source_fragments.append(f)
@@ -323,25 +327,25 @@ class Assembly(object):
                     str(result.seq).lower() == str(dsrec.seq.reverse_complement()).lower()):
                     add=False
             if add:
-                linear_products[len(result)].append(Contig( result, source_fragments))
+                linear_products[len(result)].append(_Contig( result, source_fragments))
 
-        self.linear_products = list(itertools.chain.from_iterable(linear_products[size] for size in sorted(linear_products, reverse=True)))
+        self.linear_products = list(_itertools.chain.from_iterable(linear_products[size] for size in sorted(linear_products, reverse=True)))
 
 
         # circular assembly
 
         self.cG = self.G.copy()
         self.cG.remove_nodes_from(('5','3'))
-        #circular_products=defaultdict(list)
+        #circular_products=_defaultdict(list)
         circular_products={}
 
-        for pth in all_circular_paths_edges(self.cG):
+        for pth in _all_circular_paths_edges(self.cG):
 
             ns = min( enumerate(pth), key = lambda x:x[1][2]['i'] )[0]
 
             path = pth[ns:]+pth[:ns]
 
-            pred_frag = copy(path[0][2]['frag'])
+            pred_frag = _copy(path[0][2]['frag'])
 
             source_fragments = [pred_frag, ]
             
@@ -350,11 +354,11 @@ class Assembly(object):
             else:
                 result=pred_frag[pred_frag.end1:pred_frag.end2]
                 
-            result.seq = Dseq(str(result.seq))
+            result.seq = _Dseq(str(result.seq))
 
             for first_node, second_node, edgedict in path[1:]:
 
-                f  = copy(edgedict['frag'])
+                f  = _copy(edgedict['frag'])
 
                 f.alignment =  pred_frag.alignment + pred_frag.start2- f.start1
                 source_fragments.append(f)
@@ -363,7 +367,7 @@ class Assembly(object):
                     nxt = f[f.end1:f.end2]
                 else:
                     nxt =f[f.start2+(f.end1-f.start2):f.end2]
-                nxt.seq = Dseq(str(nxt.seq))
+                nxt.seq = _Dseq(str(nxt.seq))
                 result+=nxt
 
                 pred_frag = f
@@ -377,13 +381,13 @@ class Assembly(object):
             #        add=False
             #        print "##--"
             #if add:
-            #    circular_products[len(result)].append( Contig( Dseqrecord(result, circular=True), source_fragments))
+            #    circular_products[len(result)].append( _Contig( _Dseqrecord(result, circular=True), source_fragments))
 
-            r = Dseqrecord(result, circular=True)
-            circular_products[r.cseguid()] = Contig(r, source_fragments = source_fragments )
+            r = _Dseqrecord(result, circular=True)
+            circular_products[r.cseguid()] = _Contig(r, source_fragments = source_fragments )
 
 
-        #self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
+        #self.circular_products = list(_itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
         
         import functools
         def comp(item1, item2):
@@ -419,9 +423,8 @@ class Assembly(object):
                                                                          lp              = " ".join("[{}]".format(len(x)) for x in self.linear_products))
 
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
     doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cache"]=cache
