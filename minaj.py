@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "1.0.4"
+__version__ = "1.0.3"
 
 print('''
 
@@ -9,10 +9,7 @@ This script automatically builds, converts and uploads conda packages.
 
 It is meant to be placed in the same folder as the meta.yaml
 ''')
-try:
-    from termcolor import colored
-except ImportError:
-    def colored(text, color): return text
+from termcolor import colored
 import subprocess
 import pathlib
 
