@@ -5,4 +5,5 @@ test: off
 deploy: off
 install:
 #- bash ci.sh
-- C:\msys64\usr\bin\bash.exe ci.sh
+#- C:\msys64\usr\bin\bash ci.sh
+- C:\cygwin\bin\bash ci.sh
