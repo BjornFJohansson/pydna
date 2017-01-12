@@ -4,8 +4,6 @@
 import os
 import pytest
 import pydna
-import requests
-
 
 def test_efetch_download_text():
     # see https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EFetch
@@ -42,8 +40,7 @@ def test_pydna_download_cache():
     assert str(result.seq).lower() == "gcctgcccagatttcagtgt"
     result = gb.nucleotide("AJ580803.1")
     assert str(result.seq).lower() == "gcctgcccagatttcagtgt"    
-    os.environ["pydna_cache"] = cachevar 
-    
+    os.environ["pydna_cache"] = cachevar
 
 if __name__ == '__main__':
     pytest.cmdline.main([__file__, "-v", "-s"])

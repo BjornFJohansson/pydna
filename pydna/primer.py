@@ -13,7 +13,7 @@ This module contain functions for primer design.
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
 from Bio.SeqRecord import SeqRecord               as _SeqRecord
-from .tm import tmbresluc                         as _tmbresluc
+from pydna.tm import tmbresluc                         as _tmbresluc
 
 class Primer(_SeqRecord):
     '''This class holds information about a primer and its position on a template '''
@@ -37,3 +37,11 @@ class Primer(_SeqRecord):
         return Primer(new.seq)
     def tm(self, saltc=50.0, formula=_tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
+
+if __name__=="__main__":
+    import os as _os
+    cache = _os.getenv("pydna_cache", "nocache")
+    _os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache

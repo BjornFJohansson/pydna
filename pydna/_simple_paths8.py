@@ -5,7 +5,7 @@
 #    All rights reserved.
 #    BSD license (see second license in LICENSE.txt).
 
-import networkx as nx
+import networkx as _nx
 
 __author__ = """\n""".join(['Sérgio Nery Simões <sergionery@gmail.com>',
                              'Aric Hagberg <aric.hagberg@gmail.com>'])
@@ -13,9 +13,9 @@ __all__ = ['all_simple_paths', 'all_circular_paths_edges']
 
 def _all_simple_paths_graph(G, source, target, cutoff=None):
     if source not in G:
-        raise nx.NetworkXError('source node %s not in graph'%source)
+        raise _nx.NetworkXError('source node %s not in graph'%source)
     if target not in G:
-        raise nx.NetworkXError('target node %s not in graph'%source)
+        raise _nx.NetworkXError('target node %s not in graph'%source)
     if cutoff is None:
         cutoff = len(G)-1
 
@@ -70,7 +70,7 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
                 break
 
 def all_circular_paths_edges(G):
-    for path in sorted(nx.simple_cycles(G), key=len, reverse =True):
+    for path in sorted(_nx.simple_cycles(G), key=len, reverse =True):
         edges = list(zip(path, path[1:]+[path[0]]))
         N = []
         for u,v in edges:
@@ -90,15 +90,15 @@ def all_circular_paths_edges(G):
             if i == 0 and I[0] == 0:
                 break
 
-if __name__=='__main__':
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+if __name__=="__main__":
+    import os as _os
+    cache = _os.getenv("pydna_cache", "nocache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache
 
-    G = nx.MultiDiGraph()
+    G = _nx.MultiDiGraph()
     G.add_edge('a','b',weight=0.1)
     G.add_edge('a','b',weight=1.0)
     G.add_edge('b','c',weight=0.2)
@@ -124,7 +124,7 @@ if __name__=='__main__':
 
     print()
     # DIGRAPH
-    H = nx.DiGraph(G)
+    H = _nx.DiGraph(G)
     print('DIGRAPH (data=False)')
     for path in all_simple_paths_edges(H, source, target):
         print(path)

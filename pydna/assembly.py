@@ -8,9 +8,6 @@ sequences separating the overlapping regions form edges.
 
 '''
 
-import pickle as _pickle
-import shelve as _shelve
-
 import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
@@ -26,15 +23,16 @@ from collections import defaultdict as _defaultdict
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 
-from .dseq  import Dseq as _Dseq
-from .dseqrecord import Dseqrecord as _Dseqrecord
-from ._simple_paths8 import all_simple_paths_edges   as _all_simple_paths_edges
-from ._simple_paths8 import all_circular_paths_edges as _all_circular_paths_edges
+from pydna.dseq  import Dseq as _Dseq
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+from pydna._simple_paths8 import all_simple_paths_edges   as _all_simple_paths_edges
+from pydna._simple_paths8 import all_circular_paths_edges as _all_circular_paths_edges
 
-from .findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
-from .findsubstrings_suffix_arrays_python import terminal_overlap as _terminal_overlap
-from .contig import Contig as _Contig
+from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from pydna.findsubstrings_suffix_arrays_python import terminal_overlap as _terminal_overlap
+from pydna.contig import Contig as _Contig
 from ordered_set   import OrderedSet as _OrderedSet
+from pydna.utils   import memorize   as _memorize
 
 class _Fragment(_Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.
@@ -66,9 +64,12 @@ class _Fragment(_Dseqrecord):
     def __str__(self):
         return ("Fragment alignment {}\n").format(self.alignment)+super().__str__()
 
+class Memoize(type):
+    @_memorize("Assembly")
+    def __call__(cls, *args, **kwargs):
+        return super().__call__(*args, **kwargs)
 
-
-class Assembly(object):
+class Assembly(object, metaclass = Memoize):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
     The Assembly is meant to replace the Assembly method as it is easier to use.
     Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.
@@ -108,69 +109,16 @@ class Assembly(object):
 
     def __init__(self, dsrecs, limit = 25, only_terminal_overlaps=False, max_nodes=None):
 
-        refresh = False
-        cached  = None
-
-        key = "|".join( [str(r.__hash__()) for r in dsrecs] )+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
-
-        if _os.environ["pydna_cache"] in ("compare", "cached"):
-
-            _module_logger.info( 'open shelf file {}'.format(_os.path.join(_os.environ["pydna_data_dir"], "assembly")))
-
-            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "assembly"),
-                                flag="c",
-                                protocol=_pickle.HIGHEST_PROTOCOL,
-                                writeback=False)
-            _module_logger.info( 'created key = {}'.format(key))
-            _module_logger.info( "pydna_cache = {}".format(_os.environ["pydna_cache"]) )
-
-            try:
-                cached = cache[key]
-            except:
-                if _os.environ["pydna_cache"] == "compare":
-                    raise Exception("no result for this key!")
-                else:
-                    refresh = True
-            cache.close()
-
-        if refresh or _os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-            self.dsrecs = dsrecs
-            ''' Sequences fed to this class is stored in this property'''
-            self.only_terminal_overlaps = only_terminal_overlaps
-            ''' Consider only terminal overlaps?'''
-            self.limit = limit
-            ''' The shortest common sub strings to be considered '''
-            self.max_nodes = max_nodes or len(self.dsrecs)
-            ''' The max number of nodes allowed. This can be reset to some other value'''
-            self.key = key
-            self.only_terminal_overlaps = only_terminal_overlaps
-            self._do()
-
-        if _os.environ["pydna_cache"] == "compare":
-            self._compare(cached)
-
-        if refresh or _os.environ["pydna_cache"] == "refresh":
-            self._save()
-
-        elif cached and _os.environ["pydna_cache"] not in ("nocache", "refresh"):
-            for key, value in list(cached.__dict__.items()):
-                setattr(self, key, value )
-            cache.close()
-
-    def _compare(self, cached):
-        if str(self) != str(cached):
-            _module_logger.warning('Assembly error')
-
-    def _save(self):
-        cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "assembly"),
-                            flag="w",
-                            protocol=_pickle.HIGHEST_PROTOCOL, 
-                            writeback=False)
-        cache[self.key] = self
-        cache.close()
-
-    def _do(self):
-
+        self.dsrecs = dsrecs
+        ''' Sequences fed to this class is stored in this property'''
+        self.only_terminal_overlaps = only_terminal_overlaps
+        ''' Consider only terminal overlaps?'''
+        self.limit = limit
+        ''' The shortest common sub strings to be considered '''
+        self.max_nodes = max_nodes or len(self.dsrecs)
+        ''' The max number of nodes allowed. This can be reset to some other value'''
+        self.only_terminal_overlaps = only_terminal_overlaps
+        
         for dr in self.dsrecs:
             if dr.name in ("",".", "<unknown name>", None):
                 dr.name = "frag{}".format(len(dr))
@@ -327,7 +275,7 @@ class Assembly(object):
                     str(result.seq).lower() == str(dsrec.seq.reverse_complement()).lower()):
                     add=False
             if add:
-                linear_products[len(result)].append(_Contig( result, source_fragments))
+                linear_products[len(result)].append(_Contig( result, source_fragments = source_fragments))
 
         self.linear_products = list(_itertools.chain.from_iterable(linear_products[size] for size in sorted(linear_products, reverse=True)))
 
@@ -372,22 +320,9 @@ class Assembly(object):
 
                 pred_frag = f
 
-            #add=True
-            #for cp in circular_products[len(result)]:
-            #    if (str(result.seq).lower() in str(cp.seq).lower()*2
-            #        or
-            #        str(result.seq).lower() == str(cp.seq.reverse_complement()).lower()*2):
-            #        pass
-            #        add=False
-            #        print "##--"
-            #if add:
-            #    circular_products[len(result)].append( _Contig( _Dseqrecord(result, circular=True), source_fragments))
-
             r = _Dseqrecord(result, circular=True)
             circular_products[r.cseguid()] = _Contig(r, source_fragments = source_fragments )
 
-
-        #self.circular_products = list(_itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
         
         import functools
         def comp(item1, item2):
@@ -401,8 +336,6 @@ class Assembly(object):
         
         self.circular_products = sorted(circular_products.values(), key=functools.cmp_to_key(comp))
         self.circular_products.sort(key=len, reverse=True)
-        
-
 
     def __repr__(self):
         return   ( "Assembly:\n"
@@ -426,5 +359,5 @@ if __name__=="__main__":
     cache = _os.getenv("pydna_cache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True)
     _os.environ["pydna_cache"]=cache

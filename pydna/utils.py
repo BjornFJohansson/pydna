@@ -3,12 +3,20 @@
 '''This module provides miscellaneous functions.
 
 '''
+import shelve    as _shelve
+import os        as _os
+import logging   as _logging
+import base64    as _base64
+import pickle    as _pickle
+import hashlib   as _hashlib
+_module_logger = _logging.getLogger("pydna."+__name__)
+
 from Bio.SeqUtils.CheckSum  import seguid   as _base64_seguid
 from itertools import tee                   as _tee
 from Bio.SeqFeature import SeqFeature       as _SeqFeature
 from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from ._pretty import pretty_str             as _pretty_str
+from pydna._pretty import pretty_str        as _pretty_str
 from Bio.Seq             import _maketrans
 from Bio.Data.IUPACData  import ambiguous_dna_complement as _amb_compl
 
@@ -421,14 +429,53 @@ def cseguid(seq):
     from Bio.Seq import reverse_complement as rc
     return _pretty_str( seguid( min( SmallestRotation(str(seq).upper()), SmallestRotation(str(rc(seq)).upper()))))
 
-if __name__ == "__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+def memorize(filename):
+    def decorator(f):
+        def wrappee( *args, **kwargs):
+            _module_logger.info( "#### memorizer ####" )
+            _module_logger.info( "pydna_cache = %s", _os.getenv("pydna_cache") )
+            _module_logger.info( "cache filename = %s", filename )
+            fresh = cached = None
+            if not _os.environ["pydna_cache"] in ("cached","nocache","refresh","compare"):
+                raise Exception("pydna_cache is {}, should be compare,cached,nocache or refresh".format(_os.environ["pydna_cache"]))
+            cached = refresh = False
+            key = _base64.urlsafe_b64encode(_hashlib.sha1(_pickle.dumps((args, kwargs))).digest()).decode("ascii")
+            _module_logger.info( "key = %s", key )
+            if _os.environ["pydna_cache"] in ("cached","compare"):
+                cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], filename), writeback=False)
+                try:
+                    cached = cache[key]
+                    _module_logger.info( "found %s in cache", key)
+                except KeyError:
+                    if _os.environ["pydna_cache"] == "compare":
+                         _module_logger.warning("no result for key %s in shelve %s",key, filename)
+                    else:
+                        refresh = True
+                cache.close()
+            _module_logger.info("refresh = %s", refresh)
+            if refresh or _os.environ["pydna_cache"] in ("compare","refresh","nocache"):
+                fresh = f(*args, **kwargs)
+                _module_logger.info("made it new!")
+            
+            if _os.environ["pydna_cache"] == "compare":
+                if fresh==cached:
+                    _module_logger.info('cache ok for key %s in %s',key, filename)
+                else:
+                    _module_logger.warning('cache different from fresh for key %s in %s',key, filename)
+                                
+            if refresh or _os.environ["pydna_cache"] == "refresh":
+                cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], filename), writeback=False)
+                cache[key] = fresh
+                _module_logger.info("saved result under key %s", key)
+                cache.close()
+            return cached or fresh
+        return wrappee
+    return decorator      
+
+if __name__=="__main__":
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-    os.environ["pydna_cache"]=cache
-
-
-
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache
 

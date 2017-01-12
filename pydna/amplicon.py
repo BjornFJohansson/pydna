@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# doctest: +NORMALIZE_WHITESPACE
+# doctest: +NORMALIZE_WHITESPACE 
 # doctest: +SKIP
 '''This module provides functions for PCR. Primers with 5' tails as well as inverse PCR on
 circular templates are handled correctly.
@@ -17,11 +17,10 @@ _module_logger = _logging.getLogger("pydna."+__name__)
 from Bio.SeqRecord                  import SeqRecord      as _SeqRecord
 from Bio.SeqUtils                   import GC             as _GC
 from Bio.SeqUtils.MeltingTemp       import Tm_NN          as _Tm_NN
-from .utils                         import rc             as _rc
-from .dseqrecord                    import Dseqrecord     as _Dseqrecord
-from ._pretty                       import pretty_str     as _pretty_str
-from ._pretty                       import pretty_unicode as _pretty_unicode
-from .tm                            import tmbresluc      as _tmbresluc
+from pydna.utils                         import rc             as _rc
+from pydna.dseqrecord                    import Dseqrecord     as _Dseqrecord
+from pydna._pretty                       import pretty_str     as _pretty_str
+from pydna.tm                            import tmbresluc      as _tmbresluc
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -339,7 +338,7 @@ class Amplicon(_Dseqrecord):
                                                                                             *divmod(extension_time_taq,60),
                                                                                             size= len(self.seq),
                                                                                             GC_prod= int(self.gc()) ))
-        return _pretty_unicode(f)
+        return _pretty_str(f)
 
     def taq_program(self):
         return self._program()
@@ -419,3 +418,12 @@ class Amplicon(_Dseqrecord):
 
     def pfu_sso7d_program(self):
         return self.dbd_program()
+
+
+if __name__=="__main__":
+    import os as _os
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod(verbose=True)
+    _os.environ["pydna_cache"]=cache

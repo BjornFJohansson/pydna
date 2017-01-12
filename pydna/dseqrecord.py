@@ -12,9 +12,6 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
-import pickle as _pickle
-import shelve as _shelve
-
 import copy     as _copy
 import datetime as _datetime
 import operator as _operator
@@ -39,13 +36,16 @@ from Bio.SeqFeature         import CompoundLocation as _CompoundLocation
 from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
 
-from ._sequencetrace         import SequenceTraceFactory as _SequenceTraceFactory
-from .findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
-from .utils  import seguid  as _seg
-from .utils  import cseguid as _cseg
-from ._pretty import pretty_str as _pretty_str
-from .dseq import Dseq as _Dseq
-from .utils import rc as _rc
+from pydna._sequencetrace         import SequenceTraceFactory as _SequenceTraceFactory
+from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from pydna.utils  import seguid   as _seg
+from pydna.utils  import cseguid  as _cseg
+from pydna.utils  import rc       as _rc
+from pydna.utils  import memorize as _memorize
+
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.dseq import Dseq as _Dseq
+
 
 try:
     from IPython.display import display as _display
@@ -210,6 +210,7 @@ class Dseqrecord(_SeqRecord):
             self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
+        self.key = str( self.__hash__() )
     
     @property
     def linear(self):
@@ -549,20 +550,17 @@ class Dseqrecord(_SeqRecord):
 
         pattern = "({name})_\s*\S{{27}}_".format(name=name)
 
-        stamp = _re.search(pattern, self.description)
+        oldstamp = _re.search(pattern, self.description)
 
-        if not stamp:
-            stamp = "{}_{}_{}".format(name,
-                                      alg(str(self.seq)),
-                                      now)
+        if not oldstamp:
+            newstamp = "{}_{}".format(name,
+                                      alg(str(self.seq)))
             if not self.description or self.description=="description?":
-                self.description = stamp
+                self.description = newstamp+"_"+now
             elif not _re.search(pattern, self.description):
-                self.description += " "+stamp
-        else:
-            raise Exception("sequence already stamped {}")
+                self.description += " "+newstamp+"_"+now
 
-        return _pretty_str(stamp)
+        return _pretty_str(newstamp)
 
     def verify_stamp(self, chksum = (("SEGUID", _seg),("cSEGUID", _cseg))):
         '''Verifies the SEGUID stamp in the description property is
@@ -1288,6 +1286,7 @@ class Dseqrecord(_SeqRecord):
         new.description = self.description #!
         return new
 
+    @_memorize("Dseqrecord_synced")
     def synced(self, ref, limit = 25):
         '''This function returns a new circular sequence (Dseqrecord object), which has been rotated
         in such a way that there is maximum overlap between the sequence and
@@ -1325,7 +1324,6 @@ class Dseqrecord(_SeqRecord):
 
         '''
 
-
         if self.linear:
             raise Exception("Only circular DNA can be synced!")
         try:
@@ -1333,85 +1331,55 @@ class Dseqrecord(_SeqRecord):
         except AttributeError:
             rs = _seg(ref)
 
-        refresh = False
-        cached  = None
+        newseq = _copy.copy(self)
 
-        csh = _os.environ["pydna_cache"]
+        s    = str(self.seq.watson).lower()
+        s_rc = str(self.seq.crick).lower()
 
-        key = str(self.seguid())+"|"+rs+"|"+str(limit)
-
-        if csh in ("compare", "cached"):
-            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "synced"), 
-            protocol=_pickle.HIGHEST_PROTOCOL, 
-            writeback=False)
-            try:
-                cached = cache[str(key)]
-            except:
-                if _os.environ["pydna_cache"] == "compare":
-                    raise Exception("no result for this key!")
-                else:
-                    refresh = True
-
-        if refresh or _os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-
-            newseq = _copy.copy(self)
-
-            s    = str(self.seq.watson).lower()
-            s_rc = str(self.seq.crick).lower()
-
-            if hasattr(ref, "seq"):
-                r=ref.seq
-                if hasattr(ref, "watson"):
-                    r = str(r.watson).lower()
-                else:
-                    r = str(r).lower()
+        if hasattr(ref, "seq"):
+            r=ref.seq
+            if hasattr(ref, "watson"):
+                r = str(r.watson).lower()
             else:
-                r = str(ref.lower())
+                r = str(r).lower()
+        else:
+            r = str(ref.lower())
 
-            try:
-                circular_ref = ref.circular
-            except AttributeError:
-                circular_ref = False
+        try:
+            circular_ref = ref.circular
+        except AttributeError:
+            circular_ref = False
 
-            lim = min(limit, limit*(len(s)//limit)+1)
+        lim = min(limit, limit*(len(s)//limit)+1)
 
-            c = _common_sub_strings(s+s,       r, limit = lim)
-            d = _common_sub_strings(s_rc+s_rc, r, limit = lim)
+        c = _common_sub_strings(s+s,       r, limit = lim)
+        d = _common_sub_strings(s_rc+s_rc, r, limit = lim)
 
-            c =  [(x[0],x[2]) for x in c if x[1]==0]
-            d =  [(x[0],x[2]) for x in d if x[1]==0]
+        c =  [(x[0],x[2]) for x in c if x[1]==0]
+        d =  [(x[0],x[2]) for x in d if x[1]==0]
 
-            if not c and not d:
-                raise Exception("There is no overlap between sequences!")
+        if not c and not d:
+            raise Exception("There is no overlap between sequences!")
 
-            if c:
-                start, length = c.pop(0)
-            else:
-                start, length = 0,0
+        if c:
+            start, length = c.pop(0)
+        else:
+            start, length = 0,0
 
-            if d:
-                start_rc, length_rc = d.pop(0)
-            else:
-                start_rc, length_rc = 0,0
+        if d:
+            start_rc, length_rc = d.pop(0)
+        else:
+            start_rc, length_rc = 0,0
 
-            if length_rc>length:
-                start = start_rc
-                newseq = newseq.rc()
+        if length_rc>length:
+            start = start_rc
+            newseq = newseq.rc()
 
-            if start == 0:
-                result = newseq
-            else:
-                result = newseq.shifted(start)
-
-        if _os.environ["pydna_cache"] == "compare":
-            if result!=cached:
-                _module_logger.warning('dsdna error')
-
-        if refresh or _os.environ["pydna_cache"] == "refresh":
-            cache[key] = result
-        elif cached and _os.environ["pydna_cache"] not in ("nocache", "refresh"):
-            result = cached
-            cache.close()
+        if start == 0:
+            result = newseq
+        else:
+            result = newseq.shifted(start)
+        _module_logger.info("synced")
         return result
 
 
@@ -1420,5 +1388,5 @@ if __name__=="__main__":
     cache = _os.getenv("pydna_cache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod(optionflags=doctest.ELLIPSIS)
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cache"]=cache

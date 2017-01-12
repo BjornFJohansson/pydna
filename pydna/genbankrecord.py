@@ -6,8 +6,8 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-from .dseqrecord import Dseqrecord  as _Dseqrecord
-from ._pretty import pretty_str as _ps
+from pydna.dseqrecord import Dseqrecord  as _Dseqrecord
+from pydna._pretty import pretty_str as _ps
 
 class GenbankRecord(_Dseqrecord):
 
@@ -33,3 +33,11 @@ class GenbankRecord(_Dseqrecord):
             
     def _repr_html_(self):        
         return self.hyperlink
+
+if __name__=="__main__":
+    import os as _os
+    cache = _os.getenv("pydna_cache", "nocache")
+    _os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache

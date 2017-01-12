@@ -1,0 +1,12 @@
+LOCUS       name?                      3 bp    DNA     linear   UNK 11-JAN-2017
+DEFINITION  description?
+ACCESSION   id?
+VERSION     id?
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 aaa
+//

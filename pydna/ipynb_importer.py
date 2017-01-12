@@ -122,8 +122,8 @@ class NotebookFinder(object):
 _sys.meta_path.append(NotebookFinder())
 
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache")
+    cache = _os.getenv("pydna_cache", "nocache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cache"]=cache

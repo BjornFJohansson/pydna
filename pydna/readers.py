@@ -12,8 +12,8 @@ Seq and SeqRecord classes, respectively. These classes support the
 notion of circular and linear DNA.
 
 '''
-from .parsers import parse  as _parse
-from .primer  import Primer as _Primer       
+from pydna.parsers import parse  as _parse
+from pydna.primer  import Primer as _Primer       
 
 def read(data, ds = True):
     '''This function is similar the :func:`parse` function but expects one and only
@@ -54,9 +54,9 @@ def read_primer(data):
     return _Primer(read(data, ds=False))
 
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    import os as _os
+    cache = _os.getenv("pydna_cache", "nocache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache

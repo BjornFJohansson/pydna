@@ -6,7 +6,7 @@
 '''
 import os as _os
 
-from .parsers import parse as _parse
+from pydna.parsers import parse as _parse
 
 primer_list = _parse( _os.environ["pydna_primers"] , ds=False)[::-1]
 
@@ -16,9 +16,8 @@ for _i, _p in enumerate(primer_list):
     globals()["p{:03d}".format(_i)] = _p
 
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
+import logging
 import tempfile
 import pytest
 
@@ -33,18 +34,35 @@ def main():
 
     else:
         print("Tests run locally")
-        os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_test_")
-        os.environ["pydna_log_dir"]  = tempfile.mkdtemp(prefix="test_pydna_log_dir_test")
-
-    print("      _             _                     _               _            _               _ _       _ ")
-    print("     | |           | |                   | |             | |          | |             (_) |     | |")
-    print("  ___| |_ __ _ _ __| |_   _ __  _   _  __| |_ __   __ _  | |_ ___  ___| |_   ___ _   _ _| |_ ___| |")
-    print(" / __| __/ _` | '__| __| | '_ \| | | |/ _` | '_ \ / _` | | __/ _ \/ __| __| / __| | | | | __/ _ \ |")
-    print(" \__ \ || (_| | |  | |_  | |_) | |_| | (_| | | | | (_| | | ||  __/\__ \ |_  \__ \ |_| | | ||  __/_|")
-    print(" |___/\__\__,_|_|   \__| | .__/ \__, |\__,_|_| |_|\__,_|  \__\___||___/\__| |___/\__,_|_|\__\___(_)")
-    print("                         | |     __/ |                                                             ")
-    print("                         |_|    |___/                                                              ")
-
+        os.environ["pydna_data_dir"]    = tempfile.mkdtemp(prefix="pydna_data_dir_")
+        os.environ["pydna_log_dir"]     = tempfile.mkdtemp(prefix="pydna_log_dir_")
+        os.environ["pydna_config_dir"]  = tempfile.mkdtemp(prefix="pydna_config_dir_")
+        os.environ["pydna_loglevel"]    = str( logging.DEBUG )
+        
+        
+    print("                 _             ")
+    print("                | |            ")
+    print(" _ __  _   _  __| |_ __   __ _ ")
+    print("| '_ \| | | |/ _` | '_ \ / _` |")
+    print("| |_) | |_| | (_| | | | | (_| |")
+    print("| .__/ \__, |\__,_|_| |_|\__,_|")
+    print("| |     __/ |     ")
+    print("|_|    |___/      ")
+    print(" _            _   ")
+    print("| |          | |  ")
+    print("| |_ ___  ___| |_ ")
+    print("| __/ _ \/ __| __|")
+    print("| ||  __/\__ \ |_ ")
+    print(" \__\___||___/\__|")
+    print("           _ _       _ ")
+    print("          (_) |     | |")
+    print(" ___ _   _ _| |_ ___| |")
+    print("/ __| | | | | __/ _ \ |")
+    print("\__ \ |_| | | ||  __/_|")
+    print("|___/\__,_|_|\__\___(_)")
+    print("                       ")
+    print("                       ")
+    
     try:
         import coveralls
     except ImportError:
@@ -73,14 +91,13 @@ def main():
     args = ["pydna", "--doctest-modules", "-v", "-s"]
     pytest.cmdline.main(args)
 
-    print("                  _               _            _               _ _          __ _       _     _              _ _ ")
-    print("                 | |             | |          | |             (_) |        / _(_)     (_)   | |            | | |")
-    print("  _ __  _   _  __| |_ __   __ _  | |_ ___  ___| |_   ___ _   _ _| |_ ___  | |_ _ _ __  _ ___| |__   ___  __| | |")
-    print(" | '_ \| | | |/ _` | '_ \ / _` | | __/ _ \/ __| __| / __| | | | | __/ _ \ |  _| | '_ \| / __| '_ \ / _ \/ _` | |")
-    print(" | |_) | |_| | (_| | | | | (_| | | ||  __/\__ \ |_  \__ \ |_| | | ||  __/ | | | | | | | \__ \ | | |  __/ (_| |_|")
-    print(" | .__/ \__, |\__,_|_| |_|\__,_|  \__\___||___/\__| |___/\__,_|_|\__\___| |_| |_|_| |_|_|___/_| |_|\___|\__,_(_)")
-    print(" | |     __/ | ")
-    print(" |_|    |___/  ")
+    print("  __ _       _     _              _ _ ")
+    print(" / _(_)     (_)   | |            | | |")
+    print("| |_ _ _ __  _ ___| |__   ___  __| | |")
+    print("|  _| | '_ \| / __| '_ \ / _ \/ _` | |")
+    print("| | | | | | | \__ \ | | |  __/ (_| |_|")
+    print("|_| |_|_| |_|_|___/_| |_|\___|\__,_(_)")
+
 
 if __name__ == '__main__':
     main()

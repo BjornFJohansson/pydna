@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from ._py_rstr_max import rstr_max as _rstr_max
+from pydna._py_rstr_max import rstr_max as _rstr_max
 import itertools                   as _itertools
 from operator import itemgetter    as _itemgetter
 '''
@@ -69,12 +69,12 @@ def terminal_overlap(stringx, stringy, limit=15):
                                                                    or (m[1]==0 and m[0]+m[2]==len(stringx))]
 
 if __name__=="__main__":
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+    import os as _os
+    cache = _os.getenv("pydna_cache", "nocache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache
 
     a="GGGCGCGGGCGGNNNNTATATCATATAAA"
     b=                "TATATCATATAAAnnGGGCGCGGGCGG"

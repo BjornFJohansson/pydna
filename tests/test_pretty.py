@@ -22,7 +22,7 @@ def test_pretty():
 
     s = sr.format("gb").strip()
 
-    pretty_label = pydna._pretty.pretty_string( s[:55]+"circular"+s[63:] )[559:578]
+    pretty_label = pydna._pretty.pretty_str( s[:55]+"circular"+s[63:] )[559:578]
 
     fe=sr.features[0]
     label_from_sr = fe.qualifiers["label"][0]                                   

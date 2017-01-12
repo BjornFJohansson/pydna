@@ -1301,13 +1301,13 @@ class SCFSequenceTrace(SequenceTrace):
         if self.tf.read(1) != '\0':
             raise SCFError('Missing null character at end of comments section.  The file appears to be damaged.')
 
-if __name__ == '__main__':
-    import os
-    cache = os.getenv("pydna_cache")
-    os.environ["pydna_cache"]="nocache"
+if __name__=="__main__":
+    import os as _os
+    cache = _os.getenv("pydna_cache", "nocache")
+    _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
-    os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache
 
 
     #st = SCFSequenceTrace()

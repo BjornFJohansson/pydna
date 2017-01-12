@@ -19,10 +19,7 @@ which is the formatted genbank string.
 
 
 import re        as _re
-#import json      as _json
-import pyparsing as _pp     # _pp.
-
-#from .dseqrecord import Dseqrecord as _Dseqrecord
+import pyparsing as _pp
 
 GoodLocus =  ( _pp.Literal("LOCUS") +
                _pp.Word(_pp.alphas+_pp.nums+'-_().'+'\\').setResultsName("name") +
@@ -420,9 +417,9 @@ def gbtext_clean(gbtext):
         
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache")
+    cache = _os.getenv("pydna_cache", "nocache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cache"]=cache
 

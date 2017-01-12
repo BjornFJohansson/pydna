@@ -21,10 +21,9 @@ import math              as _math
 
 from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 from Bio.Seq                import Seq               as _Seq
-from .utils  import seguid                           as _seg
-from .utils  import rc                               as _rc
-
-from .findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from pydna.utils  import seguid                           as _seg
+from pydna.utils  import rc                               as _rc
+from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
 
 class Dseq(_Seq):
     '''Dseq is a class designed to hold information for a double stranded
@@ -1244,9 +1243,9 @@ class Dseq(_Seq):
         return self._circular
 
 if __name__=="__main__":
-    import os                as _os
+    import os        as _os
     cache = _os.getenv("pydna_cache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod(optionflags=doctest.ELLIPSIS)
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cache"]=cache

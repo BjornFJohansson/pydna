@@ -7,8 +7,6 @@ circular templates are handled correctly.
 
 '''
 
-import pickle    as _pickle
-import shelve    as _shelve
 import itertools as _itertools
 import re        as _re
 import copy      as _copy
@@ -18,15 +16,15 @@ import logging   as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 from Bio.Seq                        import Seq              as _Seq
-from Bio.SeqUtils.CheckSum          import seguid           as _seguid
 from Bio.SeqFeature                 import SeqFeature       as _SeqFeature
 from Bio.SeqFeature                 import CompoundLocation as _CompoundLocation
 from Bio.SeqFeature                 import FeatureLocation  as _FeatureLocation
 
-from .dseqrecord                    import Dseqrecord       as _Dseqrecord
-from .primer                        import Primer           as _Primer
-from .amplicon                      import Amplicon         as _Amplicon
-from .utils                         import rc               as _rc
+from pydna.dseqrecord                    import Dseqrecord       as _Dseqrecord
+from pydna.primer                        import Primer           as _Primer
+from pydna.amplicon                      import Amplicon         as _Amplicon
+from pydna.utils                         import rc               as _rc
+from pydna.utils                         import memorize         as _memorize
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -97,8 +95,13 @@ def _annealing_positions(primer, template, limit=15):
             results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
         return results
     return []
+    
+class Memoize(type):
+    @_memorize("Anneal")
+    def __call__(cls, *args, **kwargs):
+        return super().__call__(*args, **kwargs)
 
-class Anneal(object):
+class Anneal(object, metaclass = Memoize):
     '''
 
     Parameters
@@ -180,7 +183,6 @@ class Anneal(object):
 
     '''
 
-    
     def __init__( self,
                   primers,
                   template,
@@ -188,60 +190,12 @@ class Anneal(object):
                   primerc=1000.0, # nM
                   saltc=50):
 
-        refresh = False
-        cached  = None
+        self.primers=primers
+        self.primerc=primerc
+        self.saltc = saltc
+        self.template = _copy.deepcopy(template)
+        self.limit = limit
 
-        primers = [p for p in primers if p.seq]
-
-        key = str(template.seguid()) + "|".join(sorted([_seguid(p.seq) for p in primers]))+str(limit)
-
-        if _os.environ["pydna_cache"] in ("compare", "cached"):
-            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "amplify"),
-                                flag="c",
-                                protocol=_pickle.HIGHEST_PROTOCOL, 
-                                writeback=False)
-            try:
-                cached = cache[key]
-            except:
-                if _os.environ["pydna_cache"] == "compare":
-                    raise Exception("no result for this key!")
-                else:
-                    refresh = True
-            cache.close()
-
-        if refresh or _os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-            self.primers=primers
-            self.primerc=primerc
-            self.saltc = saltc
-            self.key = key
-            self.template = _copy.deepcopy(template)
-            self.limit = limit
-            self._do()
- 
-        if _os.environ["pydna_cache"] == "compare":
-            self._compare(cached)
-
-        if refresh or _os.environ["pydna_cache"] == "refresh":
-            self._save()
-
-        elif cached and _os.environ["pydna_cache"] not in ("nocache","refresh"):
-            for key, value in list(cached.__dict__.items()):
-                setattr(self, key, value )
-            cache.close()
-
-    def _compare(self, cached):
-        if str(self) != str(cached):
-            _module_logger.warning('amplify error')
-
-    def _save(self):
-        cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], "amplify"),
-                            flag="w",
-                            protocol=_pickle.HIGHEST_PROTOCOL, 
-                            writeback=False)
-        cache[self.key] = self
-        cache.close()
-        
-    def _do(self):
         self._products = None
 
         self.fwd_primers = []
@@ -398,11 +352,6 @@ class Anneal(object):
         else:
              mystring += "No reverse primers anneal...\n"
         return mystring.strip()
-
-
-
-
-
 
 def pcr(*args,  **kwargs):
     '''pcr is a convenience function for Anneal to simplify its usage,
@@ -599,5 +548,5 @@ if __name__=="__main__":
     cache = _os.getenv("pydna_cache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True)
     _os.environ["pydna_cache"]=cache

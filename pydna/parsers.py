@@ -21,9 +21,9 @@ import glob      as _glob
 from Bio                    import SeqIO              as _SeqIO
 from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.GenBank            import RecordParser       as _RecordParser
-from .genbankfile           import GenbankFile        as _GenbankFile
-from .dseqrecord            import Dseqrecord         as _Dseqrecord
-from .primer                import Primer             as _Primer
+from pydna.genbankfile           import GenbankFile        as _GenbankFile
+from pydna.dseqrecord            import Dseqrecord         as _Dseqrecord
+from pydna.primer                import Primer             as _Primer
 
 def parse2(data, ds = True):
     '''experimental'''
@@ -206,5 +206,5 @@ if __name__=="__main__":
     cache = _os.getenv("pydna_cache")
     _os.environ["pydna_cache"]="nocache"
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cache"]=cache
