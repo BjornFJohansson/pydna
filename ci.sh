@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo "=============================================================="
 echo "BASH_VERSION" $BASH_VERSION
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
@@ -128,8 +129,8 @@ fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    pip install git+git://github.com/conda/conda-build.git@2.1.0beta1
-    #conda install -yq conda-build
+    #pip install git+git://github.com/conda/conda-build.git@2.1.0beta1
+    conda install -yq conda-build
     conda-build -V
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
     conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
@@ -194,7 +195,11 @@ then
         exit 1
     fi
     ls dist
-    twine upload -r $pypiserver dist/pydna*.* --skip-existing
+    twine upload -r $pypiserver dist/pydna*.exe --skip-existing
+    twine upload -r $pypiserver dist/pydna*.msi --skip-existing
+    twine upload -r $pypiserver dist/pydna*.whl --skip-existing
+    twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
+    twine upload -r $pypiserver dist/pydna*.zip --skip-existing
 
 else
     echo "create test environment"
