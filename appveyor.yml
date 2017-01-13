@@ -7,7 +7,7 @@ build: off
 test: off
 deploy: off
 install:
-- "%CMD_IN_ENV%" ci.sh
+- "%CMD_IN_ENV% ci.sh"
 #- bash ci.sh
 #- C:\msys64\usr\bin\bash ci.sh
 #- C:\cygwin\bin\bash ci.sh
