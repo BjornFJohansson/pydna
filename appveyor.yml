@@ -1,9 +1,13 @@
+environment:
+  global:
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C run_with_env.cmd"
 init:
 - echo "init"
 build: off
 test: off
 deploy: off
 install:
-- bash ci.sh
+- %CMD_IN_ENV% ci.sh
+#- bash ci.sh
 #- C:\msys64\usr\bin\bash ci.sh
 #- C:\cygwin\bin\bash ci.sh
