@@ -1,4 +1,5 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
+echo "BASH_VERSION" $BASH_VERSION
 tagname="$(git describe --abbrev=0 --tags)"
 tag="$(git rev-list $tagname | head -n 1)"
 com="$(git rev-parse HEAD)"
@@ -108,7 +109,7 @@ then
         echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
-    echo "ececute: $miniconda"
+    echo "execute: $miniconda"
     $miniconda
     if [[ -f Miniconda_latest.sh ]]
     then
