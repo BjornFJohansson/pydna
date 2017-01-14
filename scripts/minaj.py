@@ -3,12 +3,12 @@
 
 __version__ = "1.0.4"
 
-print('''
+print('''Minaj version {}
 
 This script automatically builds, converts and uploads conda packages.
 
 It is meant to be placed in the same folder as the meta.yaml
-''')
+''').format(__version__)
 try:
     from termcolor import colored
 except ImportError:
