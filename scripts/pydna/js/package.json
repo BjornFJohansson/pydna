@@ -1,0 +1,29 @@
+{
+  "name": "jupyter-widget-example",
+  "version": "0.0.1",
+  "description": "A Custom Jupyter Widget Library",
+  "author": "BjornFJohansson",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MEC/pydna.git"
+  },
+  "keywords": [
+    "jupyter",
+    "widgets",
+    "ipython",
+    "ipywidgets"
+  ],
+  "scripts": {
+    "prepublish": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.4",
+    "webpack": "^1.12.14"
+  },
+  "dependencies": {
+    "jupyter-js-widgets": "^1.1.1",
+    "underscore": "^1.8.3"
+  }
+}

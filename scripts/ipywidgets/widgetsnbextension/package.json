@@ -1,0 +1,39 @@
+{
+  "name": "widgetsnbextension",
+  "version": "2.0.12",
+  "description": "Jupyter Widgets nbextension",
+  "main": "src/extension.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && webpack",
+    "clean": "rimraf widgetsnbextension/static",
+    "update": "rimraf node_modules/jupyter-js-widgets && npm install file:../jupyter-js-widgets && npm run build",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipython/ipywidgets.git"
+  },
+  "author": "Jupyter Project",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/ipython/ipywidgets/issues"
+  },
+  "homepage": "https://github.com/ipython/ipywidgets#readme",
+  "dependencies": {
+    "backbone": "^1.2.3",
+    "jupyter-js-widgets": "^2.0.20",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "json-loader": "^0.5.4",
+    "postcss-cssnext": "^2.8.0",
+    "postcss-import": "^8.1.2",
+    "postcss-loader": "^1.1.0",
+    "rimraf": "^2.5.1",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.12"
+  }
+}

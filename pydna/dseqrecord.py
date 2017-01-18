@@ -586,7 +586,7 @@ class Dseqrecord(_SeqRecord):
                 1 aaa
         //
         >>> b.stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE_...'
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
         >>> b
         Dseqrecord(-3)
         >>> print(b.format("gb"))
