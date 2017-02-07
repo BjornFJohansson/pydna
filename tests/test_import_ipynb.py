@@ -16,7 +16,7 @@ def test_ipynb_import():
         print("*** IPython not installed Jupyter notebook import not tested ***")
         assert True
     else:
-        from pydna import ipynb_importer
+        from pydna.ipynb_importer import NotebookFinder, NotebookLoader
         import mynotebook
         assert mynotebook.foo() == "bar"
 

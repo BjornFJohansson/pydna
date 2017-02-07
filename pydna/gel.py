@@ -39,7 +39,7 @@ from scipy                import stats    as _stats
 from pint        import UnitRegistry as _UnitRegistry
 from io          import BytesIO      as _BytesIO
 from pydna.dseq       import Dseq         as _Dseq
-from pydna.dseqrecord import Dseqrecord   as _Dseqrecord
+from pydna.dseqrecord import Dseqrecord  as _Dseqrecord
 
 
 # Hacky fix for a python3 problem I don't understand

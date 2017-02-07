@@ -28,8 +28,8 @@ from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna._simple_paths8 import all_simple_paths_edges   as _all_simple_paths_edges
 from pydna._simple_paths8 import all_circular_paths_edges as _all_circular_paths_edges
 
-from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
-from pydna.findsubstrings_suffix_arrays_python import terminal_overlap as _terminal_overlap
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
+from pydna.common_sub_strings import terminal_overlap as _terminal_overlap
 from pydna.contig import Contig as _Contig
 from ordered_set   import OrderedSet as _OrderedSet
 from pydna.utils   import memorize   as _memorize
@@ -85,7 +85,8 @@ class Assembly(object, metaclass = Memoize):
     Examples
     --------
 
-    >>> from pydna import Assembly, Dseqrecord
+    >>> from pydna.assembly import Assembly
+    >>> from pydna.dseqrecord import Dseqrecord
     >>> a = Dseqrecord("acgatgctatactgCCCCCtgtgctgtgctcta")
     >>> b = Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatc")
     >>> c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg")

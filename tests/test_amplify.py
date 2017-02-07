@@ -7,8 +7,8 @@ test parse
 import pytest
 import sys
 
-from pydna import parse
-from pydna import pcr
+from pydna.parsers import parse
+from pydna.amplify import pcr
 from Bio.SeqUtils.CheckSum import seguid
 
 def test_circ_pcr():

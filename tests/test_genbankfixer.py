@@ -3,7 +3,7 @@
 
 
 import pytest
-from pydna.readers import read
+from pydna.readers      import read
 from pydna.genbankfixer import gbtext_clean
 
 def test_pydna_gbtext_clean():

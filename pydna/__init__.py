@@ -105,6 +105,8 @@ _os.environ["pydna_cache"]    = _os.getenv("pydna_cache",    _mainsection.get("c
 _os.environ["pydna_ape"]      = _os.getenv("pydna_ape",      _mainsection.get("ape",'put/path/to/ape/here'))
 _os.environ["pydna_primers"]  = _os.getenv("pydna_primers",  _mainsection.get("primers", ''))
 
+
+
 # Check sanity of pydna_cache variable
 if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
     raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
@@ -127,43 +129,58 @@ _formatter = _logging.Formatter('%(asctime)s %(levelname)s %(funcName)s %(messag
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
 _logger.info(_logmsg)
-_logger.info('Assigning environmental variable pydna_data_dir = {}'.format( _os.environ["pydna_data_dir"] ))
+_logger.info('Assigning environmental variable pydna_data_dir = %s', _os.environ["pydna_data_dir"] )
 
 # create cache directory if not present
 try:
     _os.makedirs( _os.environ["pydna_data_dir"] )
-    _logger.info("Created data directory {}".format(_os.environ["pydna_data_dir"]))
+    _logger.info("Created data directory %s", _os.environ["pydna_data_dir"] )
 except OSError:
     if _os.path.isdir( _os.environ["pydna_data_dir"] ):
-        _logger.info("data directory {} found".format(_os.environ["pydna_data_dir"]))
+        _logger.info("data directory %s found", _os.environ["pydna_data_dir"])
     else:
         raise
+
+
 
 from pydna.amplify    import Anneal
 from pydna.amplify    import pcr
 from pydna.amplify    import nopcr
+
 from pydna.assembly   import Assembly
+
 from pydna.genbank    import Genbank
 from pydna.genbank    import genbank
+
 from pydna.download   import download_text
+
 from pydna.dseq       import Dseq
 from pydna.dseqrecord import Dseqrecord
-from pydna.parsers    import parse
+
 from pydna.readers    import read
-from pydna.parsers    import parse_primers
 from pydna.readers    import read_primer
 
-from pydna.editor                              import Editor
-from pydna.findsubstrings_suffix_arrays_python import common_sub_strings
-from pydna.primer_design                       import cloning_primers
-from pydna.primer_design                       import assembly_primers
-from pydna.primer_design                       import integration_primers
-from pydna.utils                               import eq
-from pydna.utils                               import shift_origin
-from pydna.utils                               import pairwise
-from pydna.utils                               import cseguid
-from pydna.primer                              import Primer
-from pydna.genbankfixer                        import gbtext_clean
+from pydna.parsers    import parse
+from pydna.parsers    import parse_primers
+
+from pydna.editor             import Editor
+from pydna.common_sub_strings import common_sub_strings
+
+from pydna.design      import cloning_primers
+from pydna.design      import assembly_primers
+from pydna.design      import integration_primers
+
+from pydna.design      import primer_design
+from pydna.design      import assembly_fragments
+
+from pydna.utils              import eq
+from pydna.utils              import shift_origin
+from pydna.utils              import pairwise
+from pydna.utils              import cseguid
+
+from pydna.genbankfixer       import gbtext_clean
+
+
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
@@ -195,26 +212,27 @@ except ImportError:
     _missing_modules_for_gel.append("pint")
 
 if _missing_modules_for_gel:
-    _logger.warning("gel simulation will NOT be available. Missing modules: {}"
-                     .format(", ".join(_missing_modules_for_gel)))
+    _logger.warning("gel simulation will NOT be available. Missing modules: %s",
+                     ", ".join(_missing_modules_for_gel))
 else:
-    from pydna.gel import Gel
+    _logger.info("gel simulation will be available.")
+    #from pydna.gel import Gel
 
-class PydnaWarning(Warning):
+class _PydnaWarning(Warning):
     """Pydna warning.
 
     Pydna uses this warning (or subclasses of it), to make it easy to
     silence all warning messages:
 
     >>> import warnings
-    >>> from pydna import PydnaWarning
-    >>> warnings.simplefilter('ignore', PydnaWarning)
+    >>> from pydna import _PydnaWarning
+    >>> warnings.simplefilter('ignore', _PydnaWarning)
 
     Consult the warnings module documentation for more details.
     """
     pass
 
-class PydnaDeprecationWarning(PydnaWarning):
+class _PydnaDeprecationWarning(_PydnaWarning):
     """pydna deprecation warning.
 
     Pydna uses this warning instead of the built in DeprecationWarning
@@ -223,8 +241,8 @@ class PydnaDeprecationWarning(PydnaWarning):
     To silence all our deprecation warning messages, use:
 
     >>> import warnings
-    >>> from pydna import PydnaDeprecationWarning
-    >>> warnings.simplefilter('ignore', PydnaDeprecationWarning)
+    >>> from pydna import _PydnaDeprecationWarning
+    >>> warnings.simplefilter('ignore', _PydnaDeprecationWarning)
 
     Code marked as deprecated will be removed in a future version
     of Pydna. This can be discussed in the Pydna google group:
@@ -279,24 +297,6 @@ def set_refresh():
 def set_compare():
     _os.environ["pydna_cache"] ="compare"
 
-_levels =     {  "CRITICAL":    _logging.CRITICAL,
-                 "ERROR":       _logging.ERROR,
-                 "WARNING":     _logging.WARNING,
-                 "INFO":        _logging.INFO,
-                 "DEBUG":       _logging.DEBUG}
-    
-def set_loglevel(level="WARNING"):
-    try:
-        level = _levels[level]
-    except KeyError:
-        try:
-            level = int(level)
-        except ValueError:
-            raise ValueError("argument has to be an integer 0-100 OR "
-                             "CRITICAL, ERROR, WARNING, INFO or DEBUG")
-    _logging.getLogger().setLevel(level)
-
-    
 def get_env():
     _table = _prettytable.PrettyTable(["Variable", "Value"])
     _table.set_style(_prettytable.DEFAULT)

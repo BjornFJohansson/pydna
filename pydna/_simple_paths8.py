@@ -9,7 +9,7 @@ import networkx as _nx
 
 __author__ = """\n""".join(['Sérgio Nery Simões <sergionery@gmail.com>',
                              'Aric Hagberg <aric.hagberg@gmail.com>'])
-__all__ = ['all_simple_paths', 'all_circular_paths_edges']
+__all__ = ['all_circular_paths_edges', 'all_circular_paths_edges']
 
 def _all_simple_paths_graph(G, source, target, cutoff=None):
     if source not in G:

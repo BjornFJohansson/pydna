@@ -24,20 +24,21 @@ class Genbank(object):
     Examples
     --------
 
-    >>> import pydna                                                           
-    >>> gb=pydna.Genbank("bjornjobb@gmail.com")                               
+    >>> from pydna.genbank import Genbank                                                           
+    >>> gb=Genbank("bjornjobb@gmail.com")                               
     >>> rec = gb.nucleotide("AJ515731")                 # <- entry from genbank                  
     >>> print(len(rec))                                                        
     19
     '''
 
-    def __init__(self, users_email):
+    def __init__(self, users_email, *args, tool="pydna", **kwargs):
 
         if not _re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,_re.IGNORECASE):
-            raise ValueError
+            raise ValueError("email address {} is not valid.".format(users_email))
         if users_email == "someone@example.com":
             raise ValueError("you have to set your email address in order to download from Genbank")
         self.email=users_email
+        self.tool = tool
 
     def __repr__(self):
         return "GenbankConnection({})".format(self.email)
@@ -102,10 +103,11 @@ class Genbank(object):
         _module_logger.info("strand  %s", str(strand))
 
         _Entrez.email = self.email
+        _Entrez.tool  = self.tool
 
         _module_logger.info("Entrez.email  %s", self.email)
 
-        text = _Entrez.efetch( db        ="nucleotide",
+        text = _Entrez.efetch(db        ="nucleotide",
                               id        = item,
                               rettype   = "gbwithparts",
                               seq_start = start,

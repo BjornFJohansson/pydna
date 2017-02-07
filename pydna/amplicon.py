@@ -139,8 +139,6 @@ class Amplicon(_Dseqrecord):
         self.template = template
         self.forward_primer = forward_primer
         self.reverse_primer = reverse_primer
-        self.fwd_primer = self.forward_primer
-        self.rev_primer = self.reverse_primer
         self.fprimerc = fprimerc
         self.rprimerc = rprimerc
         self.saltc = saltc

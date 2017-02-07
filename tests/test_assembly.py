@@ -6,9 +6,9 @@ test empty
 import pytest
 import sys
 
-from pydna import Assembly
-from pydna import parse
-from pydna import eq
+from pydna.assembly import Assembly
+from pydna.parsers  import parse
+from pydna.utils    import eq
 
 
 def test_assembly():

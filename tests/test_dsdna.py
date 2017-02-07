@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
-test empty
-'''
 
 import pytest
 import sys
 
-from pydna import Dseqrecord, Dseq, read,  eq
+from pydna.dseq import Dseq
+from pydna.dseqrecord import Dseqrecord
+from pydna.readers import read
+from pydna.utils import eq
+
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord as Srec
 
@@ -190,8 +191,6 @@ def test_initialization():
     with pytest.raises(AttributeError):
         b = Dseqrecord(0)
 
-    from pydna import read
-
     input =   '''
             LOCUS       New_DNA                    4 bp ds-DNA     linear       30-MAR-2013
             DEFINITION  .
@@ -280,8 +279,6 @@ def test_Dseq_cutting_adding():
     from Bio.Restriction import BamHI,EcoRI, PstI, EcoRV, SmaI
     from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
     from Bio.SeqUtils.CheckSum import seguid
-    from pydna import Dseq
-
 
     a = Dseq('GGATCCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGGATCC',
              'CCTAGGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCCTAGG'[::-1],
@@ -442,10 +439,6 @@ def test_Dseqrecord_cutting_adding():
             e=b+c+d
             assert str(e.seq).lower() == str(f.seq).lower()
 
-
-
-    #from pydna import *
-    #from pydna_helper import gb, ape
     from Bio.Restriction import KpnI, BamHI, Acc65I, NlaIV, EcoRI, EcoRV
 
     a=read('''
@@ -772,7 +765,7 @@ def test_features_change_ori():
                         1 gattttaatc acc
                 //''')
 
-    #from pydna_helper import ape
+
 
     for i in range(1, len(s)):
         b=s.shifted(i)

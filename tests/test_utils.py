@@ -5,8 +5,11 @@ utils tests
 '''
 import pytest
 
-from pydna import eq, read, Dseqrecord
-from pydna.utils import shift_origin
+from pydna.readers import read
+from pydna.dseqrecord import Dseqrecord
+
+
+from pydna.utils import shift_origin, eq
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
@@ -76,7 +79,7 @@ def test_shift_origin():
 def test_copy_features():
 
     from pydna.utils import seguid, copy_features
-    from pydna import read
+
     a=read("pCAPs.gb")
     b=read("pCAPs_fasta.txt")
 

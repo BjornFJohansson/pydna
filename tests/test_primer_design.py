@@ -5,12 +5,14 @@ test parse
 '''
 
 import pytest
-import sys
-import os
 
-from pydna import pcr, Assembly, Dseqrecord, assembly_primers, cloning_primers, parse
+from pydna.amplify       import pcr
+from pydna.assembly      import Assembly
+from pydna.dseqrecord    import Dseqrecord
+from pydna.design import assembly_primers
+from pydna.design import cloning_primers
+from pydna.parsers       import parse
 
-from textwrap import dedent
 
 def test_primer_Design():
     ''' test_primer_design'''
@@ -47,9 +49,6 @@ def test_primer_Design():
 
 def test_primer_Design_with_linker():
     ''' test_primer_design'''
-
-
-    from pydna import Dseqrecord, Assembly, pcr, assembly_primers
 
     b  = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     l  = Dseqrecord("AAATTTCCCGGG")

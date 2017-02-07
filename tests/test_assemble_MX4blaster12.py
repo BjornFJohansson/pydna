@@ -4,7 +4,11 @@
 import sys
 import pytest
 
-from pydna import read, parse, pcr, Assembly, eq
+from pydna.assembly import Assembly
+from pydna.amplify  import pcr
+from pydna.parsers  import parse
+from pydna.readers  import read
+from pydna.utils    import eq
 
 
 def test_MXblaster1():

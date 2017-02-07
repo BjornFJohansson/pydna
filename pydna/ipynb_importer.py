@@ -31,7 +31,7 @@ except ImportError:
     except ImportError:
         pass
 
-def find_notebook(fullname, path=None):
+def _find_notebook(fullname, path=None):
     """find a notebook, given its fully qualified name and an optional path
 
     This turns "foo.bar" into "foo/bar.ipynb"
@@ -60,7 +60,7 @@ class NotebookLoader(object):
 
     def load_module(self, fullname):
         """import a notebook as a module"""
-        path = find_notebook(fullname, self.path)
+        path = _find_notebook(fullname, self.path)
 
         #print ("importing IPython notebook from %s" % path)
 
@@ -108,7 +108,7 @@ class NotebookFinder(object):
 
 
     def find_module(self, fullname, path=None):
-        nb_path = find_notebook(fullname, path)
+        nb_path = _find_notebook(fullname, path)
         if not nb_path:
             return
         key = path

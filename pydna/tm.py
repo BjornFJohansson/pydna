@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import math as _math
 
-def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
+def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
     the nearest neighbour algorithm. Formula and thermodynamic data
     is taken from SantaLucia 1998 [1]_. This implementation gives the same
@@ -28,7 +28,7 @@ def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
     Parameters
     ----------
     primer : string
-        Primer sequence 5'-3' in UPPERCASE
+        Primer sequence 5'-3'
 
     Returns
     -------
@@ -43,8 +43,8 @@ def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
     >>> from Bio.SeqUtils.MeltingTemp import Tm_staluc
     >>> tmstaluc98("ACGTCATCGACACTATCATCGAC")
     54.55597724052518
-    >>>
-
+    >>> Tm_staluc("ACGTCATCGACACTATCATCGAC")
+    54.55597724052518
 
 
     '''
@@ -79,7 +79,7 @@ def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
     H ,  S = helixinit[primer[-1]]
     dH = dH+H
     dS = dS+S
-
+    primer = primer.upper()
     for p in range(len(primer)):
         dn = primer[p:p+2]
         H,S = nntermsl[dn]
@@ -91,7 +91,7 @@ def tmstaluc98(primer, dnac=50, saltc=50, **kwargs):
     tm = ((1000* (-dH))/(-dS+(R * (_math.log(k)))))-273.15
     return tm
 
-def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
+def tmbreslauer86(primer, *args, dnac=500.0, saltc=50, thermodynamics=False, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
     the nearest neighbour algorithm. Formula and thermodynamic data
     is taken from Breslauer 1986.
@@ -119,7 +119,7 @@ def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
     Parameters
     ----------
     primer : string
-        Primer sequence 5'-3' in UPPERCASE
+        Primer sequence 5'-3'
 
     Returns
     -------
@@ -164,6 +164,7 @@ def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
     dH=3.4
     dS=12.4
     dG=0
+    primer = primer.upper()
     for p in range(len(primer)):
         dn = primer[p:p+2]
         H,S,G = nntermbr[dn]
@@ -183,7 +184,7 @@ def tmbreslauer86(primer, dnac=500.0, saltc=50,thermodynamics=False):
         return tm
 
 
-def tmbresluc(primer, primerc=500.0, saltc=50, thermodynamics=False):
+def tmbresluc(primer, *args, primerc=500.0, saltc=50, thermodynamics=False, **kwargs):
     '''Returns the tm for a primer using a formula adapted to polymerases
     with a DNA binding domain, such as the Phusion polymerase.
 

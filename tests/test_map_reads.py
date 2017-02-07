@@ -4,7 +4,9 @@
 import pytest
 import sys
 
-from pydna import Dseqrecord, Dseq, read
+from pydna.dseqrecord import Dseqrecord
+from pydna.dseq import Dseq
+from pydna.readers import read
 
 from Bio.SeqIO import read as abiread
 

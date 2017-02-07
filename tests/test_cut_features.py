@@ -6,7 +6,11 @@ test cut
 import pytest
 import sys
 
-from pydna import pcr, cloning_primers, read, Dseqrecord
+from pydna.readers  import read
+from pydna.amplify  import pcr
+
+from pydna.design import cloning_primers
+from pydna.dseqrecord    import Dseqrecord
 
 from Bio.Restriction import EcoRI
 

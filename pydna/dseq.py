@@ -23,7 +23,7 @@ from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 from Bio.Seq                import Seq               as _Seq
 from pydna.utils  import seguid                           as _seg
 from pydna.utils  import rc                               as _rc
-from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
 class Dseq(_Seq):
     '''Dseq is a class designed to hold information for a double stranded
@@ -62,14 +62,14 @@ class Dseq(_Seq):
     in the 5' end of the fragment.
 
     The most common usage is probably to create a Dseq object as a
-    part of a Dseqrecord object (see :class:`pydna.dsdna.Dseqrecord`).
+    part of a Dseqrecord object (see :class:`pydna.dseqrecord.Dseqrecord`).
 
     There are three ways of creating a Dseq object directly:
 
     Only one argument (string):
 
-    >>> import pydna
-    >>> pydna.Dseq("aaa")
+    >>> from pydna.dseq import Dseq
+    >>> Dseq("aaa")
     Dseq(-3)
     aaa
     ttt
@@ -80,8 +80,8 @@ class Dseq(_Seq):
 
     Two arguments (string, string):
 
-    >>> import pydna
-    >>> pydna.Dseq("gggaaat","ttt")
+    >>> from pydna.dseq import Dseq
+    >>> Dseq("gggaaat","ttt")
     Dseq(-7)
     gggaaat
        ttt
@@ -124,23 +124,23 @@ class Dseq(_Seq):
 
     Example of creating Dseq objects with different amounts of stagger:
 
-    >>> pydna.Dseq(watson="agt",crick="actta",ovhg=-2)
+    >>> Dseq(watson="agt",crick="actta",ovhg=-2)
     Dseq(-7)
     agt
       attca
-    >>> pydna.Dseq(watson="agt",crick="actta",ovhg=-1)
+    >>> Dseq(watson="agt",crick="actta",ovhg=-1)
     Dseq(-6)
     agt
      attca
-    >>> pydna.Dseq(watson="agt",crick="actta",ovhg=0)
+    >>> Dseq(watson="agt",crick="actta",ovhg=0)
     Dseq(-5)
     agt
     attca
-    >>> pydna.Dseq(watson="agt",crick="actta",ovhg=1)
+    >>> Dseq(watson="agt",crick="actta",ovhg=1)
     Dseq(-5)
      agt
     attca
-    >>> pydna.Dseq(watson="agt",crick="actta",ovhg=2)
+    >>> Dseq(watson="agt",crick="actta",ovhg=2)
     Dseq(-5)
       agt
     attca
@@ -148,7 +148,7 @@ class Dseq(_Seq):
     If the ovhg parameter is psecified a crick strand also needs to be supplied,
     otherwise an exception is raised.
 
-    >>> pydna.Dseq(watson="agt",ovhg=2)
+    >>> Dseq(watson="agt",ovhg=2)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "/usr/local/lib/python2.7/dist-packages/pydna_/dsdna.py", line 169, in __init__
@@ -167,26 +167,26 @@ class Dseq(_Seq):
     circular = True (or linear = False).
 
 
-    >>> pydna.Dseq("aaa","ttt")
+    >>> Dseq("aaa","ttt")
     Dseq(-3)
     aaa
     ttt
-    >>> pydna.Dseq("aaa","ttt",ovhg=0)
+    >>> Dseq("aaa","ttt",ovhg=0)
     Dseq(-3)
     aaa
     ttt
-    >>> pydna.Dseq("aaa", "ttt", linear = False ,ovhg=0)
+    >>> Dseq("aaa", "ttt", linear = False ,ovhg=0)
     Dseq(o3)
     aaa
     ttt
-    >>> pydna.Dseq("aaa", "ttt", circular = True , ovhg=0)
+    >>> Dseq("aaa", "ttt", circular = True , ovhg=0)
     Dseq(o3)
     aaa
     ttt
 
     Coercing to string
 
-    >>> a=pydna.Dseq("tttcccc","aaacccc")
+    >>> a=Dseq("tttcccc","aaacccc")
     >>> a
     Dseq(-11)
         tttcccc
@@ -222,8 +222,8 @@ class Dseq(_Seq):
     ''
     >>> s[::2]
     'gac'
-    >>> import pydna
-    >>> d=pydna.Dseq(s, linear=True)
+    >>> from pydna.dseq import Dseq
+    >>> d=Dseq(s, linear=True)
     >>> d[2:3]
     Dseq(-1)
     a
@@ -246,7 +246,7 @@ class Dseq(_Seq):
 
 
     >>> s="ggAtCc"
-    >>> d=pydna.Dseq(s, circular=True)
+    >>> d=Dseq(s, circular=True)
     >>> d
     Dseq(o6)
     ggAtCc
@@ -261,7 +261,7 @@ class Dseq(_Seq):
     the linearized sequence starting at X:
 
     >>> s="ggatcc"
-    >>> d=pydna.Dseq(s, circular=True)
+    >>> d=Dseq(s, circular=True)
     >>> d
     Dseq(o6)
     ggatcc
@@ -275,7 +275,7 @@ class Dseq(_Seq):
 
     See also
     --------
-    pydna.dsdna.Dseqrecord
+    pydna.dseqrecord.Dseqrecord
 
     '''
 
@@ -387,15 +387,15 @@ class Dseq(_Seq):
 
         Examples
         --------
-        >>> import pydna
-        >>> seq = pydna.Dseq("atcgactgacgtgtt")
+        >>> from pydna.dseq import Dseq
+        >>> seq = Dseq("atcgactgacgtgtt")
         >>> seq
         Dseq(-15)
         atcgactgacgtgtt
         tagctgactgcacaa
         >>> seq.find("gac")
         3
-        >>> seq = pydna.Dseq(watson="agt",crick="actta",ovhg=-2)
+        >>> seq = Dseq(watson="agt",crick="actta",ovhg=-2)
         >>> seq
         Dseq(-7)
         agt
@@ -457,7 +457,9 @@ class Dseq(_Seq):
         try:
             same = (other.watson.lower() == self.watson.lower() and
                     other.crick.lower()  == self.crick.lower()  and
-                    other.ovhg == self._ovhg)
+                    other.ovhg == self._ovhg and
+                    self.circular == other.circular)
+                    # Also test for alphabet ?
         except AttributeError:
             same = False
         return same
@@ -470,8 +472,8 @@ class Dseq(_Seq):
        Examples
        --------
 
-       >>> import pydna
-       >>> a=pydna.Dseq("atcgcttactagcgtactgatcatctgact")
+       >>> from pydna.dseq import Dseq
+       >>> a=Dseq("atcgcttactagcgtactgatcatctgact")
        >>> a
        Dseq(-30)
        atcgcttactagcgtactgatcatctgact
@@ -563,17 +565,13 @@ class Dseq(_Seq):
                                                -self._ovhg*" "+ self.crick[::-1])
 
     def rc(self):
-        '''Alias of the reverse_complement method'''
-        return self.reverse_complement()
-
-    def reverse_complement(self):
         '''Returns a Dseq object where watson and crick have switched
-        places.
+        places. This represents the same double stranded sequence.
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseq("catcgatc")
+        >>> from pydna.dseq import Dseq
+        >>> a=Dseq("catcgatc")
         >>> a
         Dseq(-8)
         catcgatc
@@ -589,14 +587,18 @@ class Dseq(_Seq):
         ovhg = len(self.watson) - len(self.crick) + self._ovhg
         return Dseq(self.crick, self.watson, ovhg=ovhg, circular = self.circular)
 
+    def reverse_complement(self):
+        '''Alias of the rc method'''
+        return self.rc()
+
     def looped(self):
         '''Returns a circularized Dseq object. This can only be done if the
         two ends are compatible, otherwise a TypeError is raised.
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseq("catcgatc")
+        >>> from pydna.dseq import Dseq
+        >>> a=Dseq("catcgatc")
         >>> a
         Dseq(-8)
         catcgatc
@@ -647,8 +649,8 @@ class Dseq(_Seq):
        Examples
        --------
 
-       >>> import pydna
-       >>> a=pydna.Dseq("catcgatc", circular=True)
+       >>> from pydna.dseq import Dseq
+       >>> a=Dseq("catcgatc", circular=True)
        >>> a
        Dseq(o8)
        catcgatc
@@ -671,22 +673,22 @@ class Dseq(_Seq):
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseq("aaa", "ttt")
+        >>> from pydna.dseq import Dseq
+        >>> a=Dseq("aaa", "ttt")
         >>> a
         Dseq(-3)
         aaa
         ttt
         >>> a.five_prime_end()
         ('blunt', '')
-        >>> a=pydna.Dseq("aaa", "ttt", ovhg=1)
+        >>> a=Dseq("aaa", "ttt", ovhg=1)
         >>> a
         Dseq(-4)
          aaa
         ttt
         >>> a.five_prime_end()
         ("3'", 't')
-        >>> a=pydna.Dseq("aaa", "ttt", ovhg=-1)
+        >>> a=Dseq("aaa", "ttt", ovhg=-1)
         >>> a
         Dseq(-4)
         aaa
@@ -697,7 +699,7 @@ class Dseq(_Seq):
 
         See also
         --------
-        pydna.dsdna.Dseq.three_prime_end
+        pydna.dseq.Dseq.three_prime_end
 
         '''
         if self.watson and not self.crick:
@@ -719,22 +721,22 @@ class Dseq(_Seq):
         '''Returns a tuple describing the structure of the 5' end of
         the DNA fragment
 
-        >>> import pydna
-        >>> a=pydna.Dseq("aaa", "ttt")
+        >>> from pydna.dseq import Dseq
+        >>> a=Dseq("aaa", "ttt")
         >>> a
         Dseq(-3)
         aaa
         ttt
         >>> a.three_prime_end()
         ('blunt', '')
-        >>> a=pydna.Dseq("aaa", "ttt", ovhg=1)
+        >>> a=Dseq("aaa", "ttt", ovhg=1)
         >>> a
         Dseq(-4)
          aaa
         ttt
         >>> a.three_prime_end()
         ("3'", 'a')
-        >>> a=pydna.Dseq("aaa", "ttt", ovhg=-1)
+        >>> a=Dseq("aaa", "ttt", ovhg=-1)
         >>> a
         Dseq(-4)
         aaa
@@ -745,7 +747,7 @@ class Dseq(_Seq):
 
         See also
         --------
-        pydna.dsdna.Dseq.five_prime_end
+        pydna.dseq.Dseq.five_prime_end
 
         '''
 
@@ -850,8 +852,8 @@ class Dseq(_Seq):
         Examples
         --------
 
-        >>> import pydna
-        >>> a=pydna.Dseq("aaa", "ttt")
+        >>> from pydna.dseq import Dseq
+        >>> a=Dseq("aaa", "ttt")
         >>> a
         Dseq(-3)
         aaa
@@ -860,7 +862,7 @@ class Dseq(_Seq):
         Dseq(-3)
         aaa
         ttt
-        >>> b=pydna.Dseq("caaa", "cttt")
+        >>> b=Dseq("caaa", "cttt")
         >>> b
         Dseq(-5)
         caaa
@@ -877,7 +879,7 @@ class Dseq(_Seq):
         Dseq(-5)
         caaa
          tttc
-        >>> c=pydna.Dseq("aaac", "tttg")
+        >>> c=Dseq("aaac", "tttg")
         >>> c
         Dseq(-5)
          aaac
@@ -913,8 +915,8 @@ class Dseq(_Seq):
              ggatcc   ->      ggatc
             tcctag            cctag
 
-        >>> import pydna
-        >>> b=pydna.Dseq("caaa", "cttt")
+        >>> from pydna.dseq import Dseq
+        >>> b=Dseq("caaa", "cttt")
         >>> b
         Dseq(-5)
         caaa
@@ -923,7 +925,7 @@ class Dseq(_Seq):
         Dseq(-3)
         aaa
         ttt
-        >>> c=pydna.Dseq("aaac", "tttg")
+        >>> c=Dseq("aaac", "tttg")
         >>> c
         Dseq(-5)
          aaac
@@ -966,8 +968,8 @@ class Dseq(_Seq):
        Examples
        --------
 
-       >>> import pydna
-       >>> a=pydna.Dseq("gatcgatc")
+       >>> from pydna.dseq import Dseq
+       >>> a=Dseq("gatcgatc")
        >>> a
        Dseq(-8)
        gatcgatc
@@ -1113,7 +1115,7 @@ class Dseq(_Seq):
         Examples
         --------
 
-        >>> from pydna import Dseq
+        >>> from pydna.dseq import Dseq
         >>> seq=Dseq("ggatccnnngaattc")
         >>> seq
         Dseq(-15)

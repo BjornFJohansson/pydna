@@ -15,10 +15,11 @@ import os        as _os
 import logging   as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
-from Bio.Seq                        import Seq              as _Seq
-from Bio.SeqFeature                 import SeqFeature       as _SeqFeature
-from Bio.SeqFeature                 import CompoundLocation as _CompoundLocation
-from Bio.SeqFeature                 import FeatureLocation  as _FeatureLocation
+from Bio.Seq                        import Seq               as _Seq
+from Bio.SeqFeature                 import SeqFeature        as _SeqFeature
+from Bio.SeqFeature                 import CompoundLocation  as _CompoundLocation
+from Bio.SeqFeature                 import FeatureLocation   as _FeatureLocation
+from Bio.Alphabet.IUPAC             import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 
 from pydna.dseqrecord                    import Dseqrecord       as _Dseqrecord
 from pydna.primer                        import Primer           as _Primer
@@ -29,22 +30,22 @@ from pydna.utils                         import memorize         as _memorize
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
     primer anneals perfectly with at least limit nucleotides in the 3' part.
+    The primer is the lower strand in the figure below.
 
     start is a position (integer)
-    footprint1 and tail1 are strings.
+    
+    footprint and tail are strings.
 
     ::
 
         <- - - - - - - - - - template - - - - - - - - - - - - - >
 
-        <------------- start ---->
+        <------- start (int) ------>
      5'-...gctactacacacgtactgactgcctccaagatagagtcagtaaccacactcgat...3'
            ||||||||||||||||||||||||||||||||||||||||||||||||
                                   3'-gttctatctcagtcattggtgtATAGTG-5'
-
-                                                        <tail>
-                                     <---footprint----->
-                                     <--------- primer ------>
+                                     
+                                     <-footprint length -->
 
     Parameters
     ----------
@@ -59,13 +60,17 @@ def _annealing_positions(primer, template, limit=15):
 
     Returns
     -------
-    describe : list of tuples (int, string, string)
-        [ (start1, footprint1, tail1), (start2, footprint2, tail2),..., ]
+    describe : list of tuples (int, int)
+        [ (start1, footprint1), (start2, footprint2) ,..., ]
     '''
 
+    # return empty list if primer too short
     if len(primer)<limit:
         return []
+    
     prc = _rc(primer)
+    
+    # head is minimum part of primer that can anneal
     head = prc[:limit].upper()
 
     table = {"R":"(A|G)",
@@ -79,7 +84,8 @@ def _annealing_positions(primer, template, limit=15):
              "H":"(A|C|T)",
              "V":"(A|C|G)",
              "N":"(A|G|C|T)"}
-
+    
+    # Make regex pattern that reflects extended IUPAC DNA code
     for key in table:
         head=head.replace(key, table[key])
 
@@ -91,8 +97,9 @@ def _annealing_positions(primer, template, limit=15):
         results = []
         for match_start in positions:
             tm = template[match_start+limit:match_start+limit+length]
-            footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
-            results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
+            #footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
+            footprint = len(list(_itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), zip(tail, tm))))
+            results.append((match_start, footprint+limit))
         return results
     return []
     
@@ -132,12 +139,14 @@ class Anneal(object, metaclass = Memoize):
 
     Examples
     --------
-    >>> import pydna
-    >>> template = pydna.Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+    >>> from pydna.readers import read
+    >>> from pydna.amplify import Anneal
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
     >>> from Bio.SeqRecord import SeqRecord
-    >>> p1 = pydna.read(">p1\\ntacactcaccgtctatcattatc", ds = False)
-    >>> p2 = pydna.read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
-    >>> ann = pydna.Anneal((p1, p2), template)
+    >>> p1 = read(">p1\\ntacactcaccgtctatcattatc", ds = False)
+    >>> p2 = read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
+    >>> ann = Anneal((p1, p2), template)
     >>> print(ann.report())
     Template name? 51 nt linear:
     Primer p1 anneals forward at position 23
@@ -188,7 +197,7 @@ class Anneal(object, metaclass = Memoize):
                   template,
                   limit=13,
                   primerc=1000.0, # nM
-                  saltc=50):
+                  saltc=50):      # mM
 
         self.primers=primers
         self.primerc=primerc
@@ -198,8 +207,8 @@ class Anneal(object, metaclass = Memoize):
 
         self._products = None
 
-        self.fwd_primers = []
-        self.rev_primers = []
+        self.forward_primers = []
+        self.reverse_primers = []
 
         twl = len(self.template.seq.watson)
         tcl = len(self.template.seq.crick)
@@ -212,28 +221,24 @@ class Anneal(object, metaclass = Memoize):
             tc = self.template.seq.crick +self.template.seq.crick
 
         for p in self.primers:
-            self.fwd_primers.extend((_Primer(p,
-                                            position = tcl-pos - min(self.template.seq.ovhg, 0),
-                                            footprint = _Seq(fp),
-                                            tail = _Seq(tl))
-                                    for pos, fp, tl in _annealing_positions(
-                                                        str(p.seq),
-                                                        tc,
-                                                        self.limit) if pos<tcl))
-            self.rev_primers.extend((_Primer(p,
-                                            position = pos + max(0, self.template.seq.ovhg),
-                                            footprint = _Seq(fp),
-                                            tail = _Seq(tl))
-                                     for pos, fp, tl in _annealing_positions(
-                                                                     str(p.seq),
-                                                                     tw,
-                                                                     self.limit) if pos<twl))
-        self.fwd_primers.sort(key = _operator.attrgetter('position'))
-        self.rev_primers.sort(key = _operator.attrgetter('position'), reverse=True)
+            self.forward_primers.extend((_Primer(p,
+                                             position  = tcl-pos - min(self.template.seq.ovhg, 0),
+                                             footprint = fp)
+                                    for pos, fp in _annealing_positions( str(p.seq),
+                                                                         tc,
+                                                                         self.limit) if pos<tcl))
+            self.reverse_primers.extend((_Primer(p,
+                                             position  = pos + max(0, self.template.seq.ovhg),
+                                             footprint = fp)
+                                     for pos, fp in _annealing_positions(str(p.seq),
+                                                                         tw,
+                                                                         self.limit) if pos<twl))
+        self.forward_primers.sort(key = _operator.attrgetter('position'))
+        self.reverse_primers.sort(key = _operator.attrgetter('position'), reverse=True)
 
-        for fp in self.fwd_primers:
-            if fp.position-len(fp.footprint)>=0:
-                start = fp.position-len(fp.footprint)
+        for fp in self.forward_primers:
+            if fp.position-fp._fp>=0:
+                start = fp.position-fp._fp
                 end   = fp.position
                 self.template.features.append(_SeqFeature(_FeatureLocation(start, end),
                                                     type ="primer_bind",
@@ -242,8 +247,8 @@ class Anneal(object, metaclass = Memoize):
                                                                   "ApEinfo_fwdcolor":["green"],
                                                                   "ApEinfo_revcolor":["red"]}))
             else:
-                start = len(self.template)-len(fp.footprint)+fp.position
-                end = start+len(fp.footprint)-len(self.template)
+                start = len(self.template)-fp._fp+fp.position
+                end = start+fp._fp-len(self.template)
                 sf=_SeqFeature(_CompoundLocation([_FeatureLocation(start,len(self.template)),
                                                  _FeatureLocation(0, end)]),
                                                   type="primer_bind",
@@ -252,10 +257,10 @@ class Anneal(object, metaclass = Memoize):
 
                 self.template.features.append(sf)
 
-        for rp in self.rev_primers:
-            if rp.position+len(rp.footprint)<=len(self.template):
+        for rp in self.reverse_primers:
+            if rp.position+rp._fp<=len(self.template):
                 start = rp.position
-                end   = rp.position + len(rp.footprint)
+                end   = rp.position + rp._fp
                 self.template.features.append(_SeqFeature(_FeatureLocation(start,end),
                                                     type ="primer_bind",
                                                     strand = -1,
@@ -264,15 +269,15 @@ class Anneal(object, metaclass = Memoize):
                                                                   "ApEinfo_revcolor":["red"]}))
             else:
                 start = rp.position
-                end = rp.position+len(rp.footprint)-len(self.template)
+                end = rp.position+rp._fp-len(self.template)
                 self.template.features.append(_SeqFeature(_CompoundLocation([_FeatureLocation(start,len(self.template)),
                                                                            _FeatureLocation(0,end)]),
                                                     type ="primer_bind",
                                                     location_operator= "join",
                                                     strand = -1,
                                                     qualifiers = {"note":[rp.name]}))
-        self.forward_primers = self.fwd_primers
-        self.reverse_primers = self.rev_primers
+        self.forward_primers = self.forward_primers
+        self.reverse_primers = self.reverse_primers
     
 
     @property
@@ -283,19 +288,19 @@ class Anneal(object, metaclass = Memoize):
 
         self._products = []
 
-        for fp in self.fwd_primers:
-            for rp in self.rev_primers:
+        for fp in self.forward_primers:
+            for rp in self.reverse_primers:
 
                 if self.template.circular and fp.position>rp.position:
-                    tmpl = self.template.shifted(fp.position-len(fp.footprint))
+                    tmpl = self.template.shifted(fp.position-fp._fp)
                     tmpl = tmpl._multiply_circular(2)
-                    tmpl = tmpl[:len(self.template) - (fp.position - rp.position) + len(rp.footprint) + len(fp.footprint)]
+                    tmpl = tmpl[:len(self.template) - (fp.position - rp.position) + rp._fp + fp._fp]
 
                 elif self.template.circular:
                     tmpl = self.template._multiply_circular(3)
-                    tmpl = tmpl[fp.position-len(fp.footprint)+len(self.template):rp.position+len(rp.footprint)+len(self.template)]
+                    tmpl = tmpl[fp.position-fp._fp+len(self.template):rp.position+rp._fp+len(self.template)]
                 else:
-                    tmpl = self.template[fp.position-len(fp.footprint):rp.position+len(rp.footprint)]
+                    tmpl = self.template[fp.position-fp._fp:rp.position+rp._fp]
 
                 prd = ( _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement())
 
@@ -329,7 +334,7 @@ class Anneal(object, metaclass = Memoize):
 
     def __repr__(self):
         ''' returns a short string representation '''
-        return "Reaction(products = {})".format(len(self.fwd_primers*len(self.rev_primers)))
+        return "Reaction(products = {})".format(len(self.forward_primers*len(self.reverse_primers)))
 
     def __str__(self):
         '''returns a short report describing if or where primer
@@ -340,14 +345,14 @@ class Anneal(object, metaclass = Memoize):
                                                                top={True:"circular",
                                                                     False:"linear"}[self.template.circular]
                                                                     )
-        if self.fwd_primers:
-            for p in self.fwd_primers:
+        if self.forward_primers:
+            for p in self.forward_primers:
                 mystring += "Primer {name} anneals forward at position {pos}\n".format(name=p.name, pos=p.position)
         else:
             mystring += "No forward primers anneal...\n"
         mystring +="\n"
-        if self.rev_primers:
-            for p in self.rev_primers:
+        if self.reverse_primers:
+            for p in self.reverse_primers:
                 mystring += "Primer {name} anneals reverse at position {pos}\n".format(name=p.name, pos=p.position)
         else:
              mystring += "No reverse primers anneal...\n"
@@ -396,16 +401,18 @@ def pcr(*args,  **kwargs):
     Examples
     --------
 
-    >>> import pydna
-    >>> template = pydna.Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.readers import read
+    >>> from pydna.amplify import pcr
+    >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
     >>> from Bio.SeqRecord import SeqRecord
-    >>> p1 = pydna.read(">p1\\ntacactcaccgtctatcattatc", ds = False)
-    >>> p2 = pydna.read(">p2\\ncgactgtatcatctgatagcac", ds = False).reverse_complement()
-    >>> pydna.pcr(p1, p2, template)
+    >>> p1 = read(">p1\\ntacactcaccgtctatcattatc", ds = False)
+    >>> p2 = read(">p2\\ncgactgtatcatctgatagcac", ds = False).reverse_complement()
+    >>> pcr(p1, p2, template)
     Amplicon(51)
-    >>> pydna.pcr([p1, p2], template)
+    >>> pcr([p1, p2], template)
     Amplicon(51)
-    >>> pydna.pcr((p1,p2,), template)
+    >>> pcr((p1,p2,), template)
     Amplicon(51)
     >>>
 
@@ -432,7 +439,7 @@ def pcr(*args,  **kwargs):
         elif hasattr(s, "watson"):
             s=s.watson
         elif isinstance(s, str):
-            s = SeqRecord(_Seq(s))
+            s = SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
         else:
             raise TypeError("the record property needs to be a string, Seq, SeqRecord or Dseqrecord object")
         new.append(s)
@@ -496,13 +503,14 @@ def nopcr(*args,  **kwargs):
     Examples
     --------
 
-    >>> import pydna
-    >>> template = pydna.Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.amplify    import nopcr
+    >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
     >>> from Bio.SeqRecord import SeqRecord
     >>> from Bio.Seq import Seq
     >>> p1 = SeqRecord(Seq("tacactcaccgtctatcattatc"))
     >>> p2 = SeqRecord(Seq("gtgctatcagatgatacagtG")) # This primer does not anneal
-    >>> pydna.nopcr(p1, p2, template)
+    >>> nopcr(p1, p2, template)
     True
     '''
 
@@ -527,7 +535,7 @@ def nopcr(*args,  **kwargs):
         elif hasattr(s, "watson"):
             s=s.watson
         elif isinstance(s, str):
-            s = SeqRecord(_Seq(s))
+            s = SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
         else:
             raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
         new.append(s)

@@ -37,7 +37,7 @@ from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
 
 from pydna._sequencetrace         import SequenceTraceFactory as _SequenceTraceFactory
-from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.utils  import seguid   as _seg
 from pydna.utils  import cseguid  as _cseg
 from pydna.utils  import rc       as _rc
@@ -95,7 +95,7 @@ class Dseqrecord(_SeqRecord):
     Examples
     --------
 
-    >>> from pydna import Dseqrecord
+    >>> from pydna.dseqrecord import Dseqrecord
     >>> a=Dseqrecord("aaa")
     >>> a
     Dseqrecord(-3)
@@ -193,8 +193,8 @@ class Dseqrecord(_SeqRecord):
                              **kwargs)
 
         if len(self.name)>16:
-            short_name = self.name[:16]
-            _warn("name property {} truncated to 16 chars {}".format(self.name, short_name))
+            short_name = self.name[:16]            
+            _module_logger.warning("name property %s truncated to 16 chars: %s", self.name, short_name)
             self.name = short_name
 
         if self.name == "<unknown name>":
@@ -210,7 +210,7 @@ class Dseqrecord(_SeqRecord):
             self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
-        self.key = str( self.__hash__() )
+        #self.key = str( self.__hash__() )
     
     @property
     def linear(self):
@@ -229,10 +229,8 @@ class Dseqrecord(_SeqRecord):
 
     @locus.setter
     def locus(self, value):
-        ''' alias for name property '''
-        if len(value)>16:
-            raise Exception()
-        self.name = value
+        ''' alias for name property, max 16 letters'''
+        self.name = value[:16]
         return
 
     @property
@@ -266,8 +264,8 @@ class Dseqrecord(_SeqRecord):
 
            Examples
            --------
-           >>> import pydna
-           >>> a=pydna.Dseqrecord("aaaaaaa")
+           >>> from pydna.dseqrecord import Dseqrecord
+           >>> a=Dseqrecord("aaaaaaa")
            >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
            '-bKGnebMkia5kNg_gF7IORXMnIU'
 
@@ -300,7 +298,7 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna import Dseqrecord
+        >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.isorf()
         True
@@ -338,7 +336,7 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna import Dseqrecord
+        >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.features
         []
@@ -375,7 +373,7 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna import Dseqrecord
+        >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.add_feature(2,4)
         >>> b=a.extract_feature(0)
@@ -417,7 +415,7 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna import Dseqrecord
+        >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.add_feature(2,4)
         >>> print(a.list_features())
@@ -461,12 +459,12 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("agtatcgtacatg", circular=True)
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("agtatcgtacatg", circular=True)
         >>> a.cseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
         'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
 
-        >>> a=pydna.Dseqrecord("gagtatcgtacat", circular=True)
+        >>> a=Dseqrecord("gagtatcgtacat", circular=True)
         >>> a.cseguid()
         'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
 
@@ -489,12 +487,12 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("agtatcgtacatg")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("agtatcgtacatg")
         >>> a.lseguid()
         'DPshMN4KeAjMovEjGEV4Kzj18lU'
 
-        >>> b=pydna.Dseqrecord("catgtacgatact")
+        >>> b=Dseqrecord("catgtacgatact")
         >>> a.lseguid()
         'DPshMN4KeAjMovEjGEV4Kzj18lU'
 
@@ -503,35 +501,27 @@ class Dseqrecord(_SeqRecord):
             raise Exception("lseguid is only defined for linear sequences.")
         return self.seq.seguid()
 
-    def stamp(self, chksum = (("SEGUID", _seg),("cSEGUID", _cseg))):
-        '''Adds a checksum to the description property. This will
-        show in the genbank format. Default is seguid for linear sequences
-        and cseguid for circular.
+    def stamp(self):
+        '''Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
+        This will show in the genbank format. 
+        
+        For linear sequences:
 
-        The following string:
+        ``SEGUID_<seguid>_<datestring>``
 
-        ``<type><seguid>``
+        For circular sequences:
 
-        For example:
+        ``cSEGUID_<seguid>_<datestring>``
 
-        ``SEGUID_<seguid>``
-
-        for linear sequences or:
-
-        ``cSEGUID_<seguid>``
-
-        for circular sequences will be appended to the description property
-        of the Dseqrecord object (string).
-
-        https://xkcd.com/1179/
-
+        If there is already a stamp,  
+        
         The stamp can be verified with :func:`verify_stamp`
 
         Examples
         --------
 
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("aaa")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("aaa")
         >>> a.stamp()
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
         >>> a.description
@@ -541,34 +531,37 @@ class Dseqrecord(_SeqRecord):
 
         See also
         --------
-        pydna.dsdna.Dseqrecord.verify_stamp
+        pydna.dseqrecord.Dseqrecord.verify_stamp
         '''
-
-        name, alg = {True:chksum[0], False:chksum[1]}[self.linear]
-
-        now = _datetime.datetime.utcnow().isoformat("T")
-
-        pattern = "({name})_\s*\S{{27}}_".format(name=name)
-
+     
+        alg = {True:"SEGUID", False:"cSEGUID"}[self.linear]        
+        chksum = getattr(self, alg.lower())()        
+        pattern = "(SEGUID|cSEGUID)_\s*(\S{27})_(\S{26})"
         oldstamp = _re.search(pattern, self.description)
-
-        if not oldstamp:
-            newstamp = "{}_{}".format(name,
-                                      alg(str(self.seq)))
+        
+        if oldstamp:
+            old_alg, old_chksum, old_datestring = oldstamp.groups()
+            if alg==old_alg and chksum==old_chksum:
+                return _pretty_str("{}_{}".format(alg,chksum))
+            else:
+                raise Exception("Stamp incorrect.")
+        else:
+            datestring = _datetime.datetime.utcnow().isoformat("T")
+            newstamp = "{}_{}_{}".format(alg, chksum, datestring)
             if not self.description or self.description=="description?":
-                self.description = newstamp+"_"+now
-            elif not _re.search(pattern, self.description):
-                self.description += " "+newstamp+"_"+now
+                self.description = newstamp
+            else:
+                self.description += " "+newstamp
+        return _pretty_str("{}_{}".format(alg, chksum))
 
-        return _pretty_str(newstamp)
-
-    def verify_stamp(self, chksum = (("SEGUID", _seg),("cSEGUID", _cseg))):
+    def verify_stamp(self):
         '''Verifies the SEGUID stamp in the description property is
        valid. True if stamp match the sequid calculated from the sequence.
        Exception raised if no stamp can be found.
 
-        >>> import pydna
-        >>> b=pydna.read(">a\\naaa")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> from pydna.readers import read
+        >>> b=read(">a\\naaa")
         >>> b.annotations['date'] = '02-FEB-2013'
         >>> b.seguid()
         'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
@@ -608,10 +601,10 @@ class Dseqrecord(_SeqRecord):
 
        See also
        --------
-       pydna.dsdna.Dseqrecord.stamp
+       pydna.dseqrecord.Dseqrecord.stamp
 
        '''
-        name, alg = {True:chksum[0], False:chksum[1]}[self.linear]
+        name, alg = {True:("SEGUID", _seg), False:("cSEGUID", _cseg)}[self.linear]
         pattern = "{name}_{chksum}".format(name=name, chksum=alg(self.seq))
 
         if not pattern in self.description:
@@ -627,8 +620,8 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("aaa")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("aaa")
         >>> a
         Dseqrecord(-3)
         >>> b=a.looped()
@@ -638,7 +631,7 @@ class Dseqrecord(_SeqRecord):
 
         See also
         --------
-        pydna.dsdna.Dseq.looped
+        pydna.dseq.Dseq.looped
         '''
         new = _copy.copy(self)
         for key, value in list(self.__dict__.items()):
@@ -656,8 +649,8 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("aaa", circular = True)
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("aaa", circular = True)
         >>> a
         Dseqrecord(o3)
         >>> b=a.tolinear()
@@ -682,8 +675,8 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-        >>> import pydna
-        >>> x=pydna.Dseqrecord("aaa")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> x=Dseqrecord("aaa")
         >>> x.annotations['date'] = '02-FEB-2013'
         >>> x
         Dseqrecord(-3)
@@ -732,13 +725,13 @@ class Dseqrecord(_SeqRecord):
 
         If obj is the Dseqrecord object, the default file name will be:
 
-        ``<obj.description>.<f>``
+        ``<obj.locus>.<f>``
 
         Where <f> is "gb" by default. If the filename already exists and
         AND the sequence it contains is different, a new file name will be
         used so that the old file is not lost:
 
-        ``<obj.description>_NEW.<f>``
+        ``<obj.locus>_NEW.<f>``
 
         References
         ----------
@@ -747,18 +740,18 @@ class Dseqrecord(_SeqRecord):
         '''
         msg=""
         if not filename:
-            filename = "{name}.{type}".format(name=self.description, type=f)
-            # invent a name if none was given
+            filename = "{name}.{type}".format(name=self.locus, type=f)
+            # generate a name if no name was given
         if str(filename)==filename:                 # is filename a string???
             name, ext = _os.path.splitext(filename)
             msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(filename=filename)
             if not _os.path.isfile(filename):
                 with open(filename, "w") as fp: fp.write(self.format(f))
             else:
-                from .readers import read
+                from pydna.readers import read
                 old_file = read(filename)
-                if self.seguid() != old_file.seguid() or self.circular != old_file.circular:
-                    # If new sequence is different, the old file is rnamed with "OLD" suffix:
+                if self.seq != old_file.seq:
+                    # If new sequence is different, the old file is renamed with "OLD" suffix:
                     old_filename = "{}_OLD{}".format(name, ext)
                     _os.rename(filename, old_filename)
                     
@@ -778,6 +771,7 @@ class Dseqrecord(_SeqRecord):
                                              os=old_file.seguid(),
                                              ntop={True:"-", False:"o"}[self.linear],
                                              otop={True:"-", False:"o"}[old_file.linear])
+
                     with open(filename, "w") as fp: fp.write(self.format(f))
         else:
             raise Exception("filename has to be a string, got", type(filename))
@@ -814,8 +808,8 @@ class Dseqrecord(_SeqRecord):
 
     def find_aminoacids(self, other):
         '''
-        >>> import pydna
-        >>> s=pydna.Dseqrecord("atgtacgatcgtatgctggttatattttag")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> s=Dseqrecord("atgtacgatcgtatgctggttatattttag")
         >>> s.seq.translate()
         Seq('MYDRMLVIF*', HasStopCodon(ExtendedIUPACProtein(), '*'))
         >>> "RML" in s
@@ -952,7 +946,7 @@ class Dseqrecord(_SeqRecord):
             return self.__class__("")
 
     def __getitem__(self, sl):
-        answer = _copy.copy(self)
+        answer = Dseqrecord(_copy.copy(self))        
         answer.seq = answer.seq.__getitem__(sl)
         answer.seq.alphabet = self.seq.alphabet
 
@@ -1019,8 +1013,8 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("ggatcc")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("ggatcc")
         >>> from Bio.Restriction import BamHI
         >>> a.cut(BamHI)
         [Dseqrecord(-5), Dseqrecord(-5)]
@@ -1115,8 +1109,8 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("ggaatt")
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("ggaatt")
         >>> a
         Dseqrecord(-6)
         >>> a.seq
@@ -1131,7 +1125,7 @@ class Dseqrecord(_SeqRecord):
 
         See also
         --------
-        pydna.dsdna.Dseq.reverse_complement
+        pydna.dseq.Dseq.reverse_complement
 
         '''
 
@@ -1221,8 +1215,8 @@ class Dseqrecord(_SeqRecord):
          Examples
          --------
 
-         >>> import pydna
-         >>> a=pydna.Dseqrecord("aaat",circular=True)
+         >>> from pydna.dseqrecord import Dseqrecord
+         >>> a=Dseqrecord("aaat",circular=True)
          >>> a
          Dseqrecord(o4)
          >>> a.seq
@@ -1300,8 +1294,8 @@ class Dseqrecord(_SeqRecord):
         Examples
         --------
 
-        >>> import pydna
-        >>> a=pydna.Dseqrecord("gaat",circular=True)
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("gaat",circular=True)
         >>> a.seq
         Dseq(o4)
         gaat
@@ -1311,7 +1305,7 @@ class Dseqrecord(_SeqRecord):
         Dseq(-4)
         atga
         tact
-        >>> insert=pydna.Dseqrecord("CCC")
+        >>> insert=Dseqrecord("CCC")
         >>> recombinant = (d+insert).looped()
         >>> recombinant.seq
         Dseq(o7)

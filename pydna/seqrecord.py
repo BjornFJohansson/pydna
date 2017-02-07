@@ -36,7 +36,7 @@ from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
 
 from pydna._sequencetrace         import SequenceTraceFactory as _SequenceTraceFactory
-from pydna.findsubstrings_suffix_arrays_python import common_sub_strings as _common_sub_strings
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.utils  import seguid  as _seg
 from pydna.utils  import cseguid as _cseg
 from pydna._pretty import pretty_str as _pretty_str
@@ -121,7 +121,7 @@ class SeqRecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna import Dseqrecord
+        >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.isorf()
         True
@@ -170,7 +170,7 @@ class SeqRecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna import Dseqrecord
+        >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.add_feature(2,4)
         >>> print(a.list_features())

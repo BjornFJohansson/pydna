@@ -10,17 +10,25 @@
 This module contain functions for primer design.
 
 '''
+
+
+
 import math                                       as _math
 from operator import itemgetter                   as _itemgetter
 from Bio.Alphabet import Alphabet                 as _Alphabet
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
-from pydna.amplify import Anneal                       as _Anneal
-from pydna.tm import tmbresluc                         as _tmbresluc
-from pydna.dseqrecord import Dseqrecord                as _Dseqrecord
-from pydna._pretty import pretty_str                   as _pretty_str
-from pydna.primer    import Primer                     as _Primer
+from pydna.amplify import Anneal                  as _Anneal
+from pydna.amplify import pcr                     as _pcr
+from pydna.tm import tmbresluc                    as _tmbresluc
+from pydna.dseqrecord import Dseqrecord           as _Dseqrecord
+from pydna._pretty import pretty_str              as _pretty_str
+from pydna.primer    import Primer                as _Primer
+import os                                         as _os
+import copy as _copy
 
+import logging    as _logging
+_module_logger = _logging.getLogger("pydna."+__name__)
 
 def print_primer_pair(*args,**kwargs):
     f,r = cloning_primers(*args,**kwargs)
@@ -104,16 +112,18 @@ def cloning_primers( template,
     Examples
     --------
 
-    >>> import pydna
-    >>> t=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.design import cloning_primers
+    >>> from pydna.amplify import pcr
+    >>> t=Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
     >>> t
     Dseqrecord(-64)
-    >>> pf,pr = pydna.cloning_primers(t)
+    >>> pf,pr = cloning_primers(t)
     >>> pf
-    fw64 17-mer:5'atgactgctaacccttc-3'
+    fw64 17-mer:5'-atgactgctaacccttc-3'
     >>> pr
-    rv64 17-mer:5'catcgtaagtttcgaac-3'
-    >>> pcr_prod = pydna.pcr(pf, pr, t)
+    rv64 17-mer:5'-catcgtaagtttcgaac-3'
+    >>> pcr_prod = pcr(pf, pr, t)
     >>> pcr_prod
     Amplicon(64)
     >>>
@@ -124,12 +134,12 @@ def cloning_primers( template,
     5atgactgctaacccttc3
      ||||||||||||||||| tm 51.6 (dbd) 54.0
     3tactgacgattgggaag...caagctttgaatgctac5
-    >>> pf,pr = pydna.cloning_primers(t, fp_tail="GGATCC", rp_tail="GAATTC")
+    >>> pf,pr = cloning_primers(t, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
-    fw64 23-mer:5'GGATCCatgactgctaacccttc-3'
+    fw64 23-mer:5'-GGATCCatgactgct..ttc-3'
     >>> pr
-    rv64 23-mer:5'GAATTCcatcgtaagtttcgaac-3'
-    >>> pcr_prod = pydna.pcr(pf, pr, t)
+    rv64 23-mer:5'-GAATTCcatcgtaag..aac-3'
+    >>> pcr_prod = pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
           5atgactgctaacccttc...gttcgaaacttacgatg3
                                ||||||||||||||||| tm 49.0 (dbd) 52.9
@@ -143,12 +153,12 @@ def cloning_primers( template,
     >>> from Bio.Seq import Seq
     >>> from Bio.SeqRecord import SeqRecord
     >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
-    >>> pf,pr = pydna.cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
+    >>> pf,pr = cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
     >>> pf
     SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 id?', dbxrefs=[])
     >>> pr
-    rv64 34-mer:5'GAATTCcatcgtaagtttcgaacgaaatgtcgtc-3'
-    >>> ampl = pydna.pcr(pf,pr,t)
+    rv64 34-mer:5'-GAATTCcatcgtaag..gtc-3'
+    >>> ampl = pcr(pf,pr,t)
     >>> print(ampl.figure())
           5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
                                          |||||||||||||||||||||||||||| tm 61.7 (dbd) 72.2
@@ -163,14 +173,14 @@ def cloning_primers( template,
 
     if fp and not rp:
         fp = _Primer(_Seq(fp_tail, _IUPACAmbiguousDNA())) + fp
-        p  = _Anneal([fp], template).fwd_primers.pop()
+        p  = _Anneal([fp], template).forward_primers.pop()
         fp = _Primer(p.footprint)
         fp_tail = _Primer(p.tail)
         rp = _Primer(_Seq(str(template[-(maxlength*3-len(rp_tail)):].reverse_complement().seq), _IUPACAmbiguousDNA()))
         target_tm = formula(str(fp.seq).upper(), primerc=fprimerc, saltc=saltc)
     elif not fp and rp:
         rp = _Primer(_Seq(rp_tail, _IUPACAmbiguousDNA())) + rp
-        p =  _Anneal([rp], template).rev_primers.pop()
+        p =  _Anneal([rp], template).reverse_primers.pop()
         rp = _Primer(p.footprint)
         rp_tail = _Primer(p.tail)
         fp = _Primer(_Seq(str(template[:maxlength*3-len(fp_tail)].seq), _IUPACAmbiguousDNA()))
@@ -223,6 +233,65 @@ def cloning_primers( template,
         rp.seq.alphabet = _IUPACAmbiguousDNA()
 
     return fp, rp
+
+def primer_design(    template,
+                      fp=None,
+                      rp=None,
+                      target_tm=55.0,
+                      fprimerc=1000.0,  # nM
+                      rprimerc=1000.0,  # nM
+                      saltc=50.0,
+                      formula = _tmbresluc):
+    
+    def design(target_tm, template):
+        tmp=0
+        length=0
+        while tmp<target_tm:
+            length+=1
+            p = str(template.seq[:length])
+            tmp = formula(p.upper())
+        ps = p[:-1]
+        tmps = formula(str(ps).upper())
+        _module_logger.debug(((p,   tmp),(ps, tmps)))
+        return min( ( abs(target_tm-tmp), p), (abs(target_tm-tmps), ps) )[1]
+    
+    if fp and not rp:
+        fp  = _Anneal((fp,), template).forward_primers.pop()
+        target_tm = formula( str(fp.footprint), primerc=fprimerc, saltc=saltc)
+        _module_logger.debug("forward primer given, design reverse primer:")
+        rp = design(target_tm, template.rc())
+    elif not fp and rp:
+        rp =  _Anneal([rp], template).reverse_primers.pop()
+        target_tm = formula( str(rp.footprint), primerc=rprimerc, saltc=saltc)
+        _module_logger.debug("reverse primer given, design forward primer:")
+        fp = design(target_tm, template)
+    elif not fp and not rp:
+        _module_logger.debug("no primer given, design forward primer:")
+        fp = design(target_tm, template)
+        target_tm = formula( str(fp), primerc=fprimerc, saltc=saltc)
+        _module_logger.debug("no primer given, design reverse primer:")
+        rp = design(target_tm, template.rc())
+    else:
+        raise Exception("Specify maximum one of the two primers.")
+
+    ampl = _Anneal( (_Primer(fp),_Primer(rp)), template)
+    
+    prod = ampl.products[0]
+    
+    prod.forward_primer.concentration = fprimerc
+    prod.reverse_primer.concentration = rprimerc
+
+    prod.forward_primer.name = "fw{}".format(len(template))
+    prod.reverse_primer.name = "rv{}".format(len(template))
+ 
+    prod.forward_primer.id = "fw{}".format(len(template))
+    prod.reverse_primer.id = "rv{}".format(len(template))
+    
+    prod.forward_primer.description = prod.forward_primer.id+' '+template.accession
+    prod.reverse_primer.description = prod.reverse_primer.id+' '+template.accession
+
+    return prod
+
 
 def integration_primers( up,
                          cas,
@@ -369,12 +438,12 @@ def assembly_primers(templates,
         this is the name of a function.
         built in options are:
 
-        1. :func:`pydna.amplify.tmbresluc` (default)
-        2. :func:`pydna.amplify.basictm`
-        3. :func:`pydna.amplify.tmstaluc98`
-        4. :func:`pydna.amplify.tmbreslauer86`
+        1. :func:`pydna.tm.tmbresluc` (default)
+        2. :func:`pydna.tm.basictm`
+        3. :func:`pydna.tm.tmstaluc98`
+        4. :func:`pydna.tm.tmbreslauer86`
 
-        These functions are imported from the :mod:`pydna.amplify` module, but can be
+        These functions are imported from the :mod:`pydna.tm` module, but can be
         substituted for some other custom made function.
 
     Returns
@@ -390,16 +459,19 @@ def assembly_primers(templates,
     Examples
     --------
 
-    >>> import pydna
-    >>> a=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
-    >>> b=pydna.Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
-    >>> c=pydna.Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
-    >>> primer_pairs = pydna.assembly_primers([a,b,c], circular = True)
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.assembly import Assembly
+    >>> from pydna.design import assembly_primers
+    >>> from pydna.amplify import pcr
+    >>> a=Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
+    >>> b=Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
+    >>> c=Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
+    >>> primer_pairs = assembly_primers([a,b,c], circular = True)
     >>> p=[]
-    >>> for t, (f,r) in zip([a,b,c], primer_pairs): p.append(pydna.pcr(f,r,t))
+    >>> for t, (f,r) in zip([a,b,c], primer_pairs): p.append(pcr(f,r,t))
     >>> p
     [Amplicon(100), Amplicon(101), Amplicon(102)]
-    >>> assemblyobj = pydna.Assembly(p)
+    >>> assemblyobj = Assembly(p)
     >>> assemblyobj
     Assembly:
     Sequences........................: [100] [101] [102]
@@ -506,6 +578,51 @@ def assembly_primers(templates,
 
     return primer_pairs
 
+def assembly_fragments(f, overlap=35, maxlink=40):
+    
+    # sanity check
+    nf = [item for item in f if len(item)>maxlink]
+    if not all(hasattr(i[0],"template") or hasattr(i[1],"template") for i in zip(nf,nf[1:])):
+        raise Exception("Every second fragment larger than maxlink has to be an Amplicon object")
+    
+    tail_length = _math.ceil(overlap/2)
+    f = [_copy.copy(f) for f in f]    
+    if len(f[0])<=maxlink:
+        f[1].forward_primer = f[0].seq.todata + f[1].forward_primer
+        f=f[1:]
+    if len(f[-1])<=maxlink:
+        f[-2].reverse_primer = f[-1].seq.rc().todata + f[-2].reverse_primer
+        f=f[:-1]    
+    empty = _Dseqrecord("")    
+    for i in range(len(f)-1):                                  
+        if len(f[i+1])<=maxlink:  # f[i+1] is smaller than maxlink
+            if hasattr(f[i], "template") and hasattr(f[i+2], "template"):
+                lnk = str(f[i].seq[(-tail_length+len(f[i+1])//2 if len(f[i+1])//2<overlap else len(f[i+1])): ])
+                f[i+2].forward_primer = lnk + f[i+1].seq.todata + f[i+2].forward_primer
+                lnk = str(f[i+2].seq[ :(tail_length-len(f[i+1])//2 if len(f[i+1])//2<overlap else 0)].rc())
+                f[i].reverse_primer = lnk + f[i+1].seq.rc().todata + f[i].reverse_primer
+            elif hasattr(f[i] , "template"):
+                lnk = str(f[i+2].seq[:overlap].rc())
+                f[i].reverse_primer = lnk + f[i+1].seq.rc().todata + f[i].reverse_primer
+            elif hasattr(f[i+2] , "template"):
+               lnk = str(f[i].seq[-overlap:])
+               f[i+2].forward_primer = lnk + f[i+1].seq.todata + f[i+2].forward_primer
+            f[i+1]=empty
+        else:                    # f[i+1] is larger than maxlink
+            if hasattr(f[i], "template") and hasattr(f[i+1], "template"):
+                lnk = str(f[i].seq[-tail_length:])            
+                f[i+1].forward_primer = lnk + f[i+1].forward_primer
+                lnk = str(f[i+1].seq[:tail_length].rc())
+                f[i].reverse_primer = lnk + f[i].reverse_primer            
+            elif hasattr(f[i] , "template"):
+                lnk = str(f[i+1].seq[:overlap].rc())
+                f[i].reverse_primer = lnk + f[i].reverse_primer                
+            elif hasattr(f[i+1] , "template"):
+                lnk = str(f[i].seq[-overlap:])
+                f[i+1].forward_primer = lnk + f[i+1].forward_primer
+ 
+    f = [item for item in f if len(item)]
+    return [_pcr(p.forward_primer,p.reverse_primer,p.template) if hasattr(p, "template") else p for p in f]
 
 if __name__=="__main__":
     import os as _os

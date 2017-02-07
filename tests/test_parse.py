@@ -7,7 +7,8 @@ test parse
 import pytest
 import sys
 
-from pydna import parse, read
+from pydna.parsers import parse
+from pydna.readers import read
 
 def test_parse1():
     ''' test parsing fasta sequences from a text'''

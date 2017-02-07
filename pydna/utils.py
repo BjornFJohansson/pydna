@@ -16,7 +16,7 @@ from itertools import tee                   as _tee
 from Bio.SeqFeature import SeqFeature       as _SeqFeature
 from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from pydna._pretty import pretty_str        as _pretty_str
+from pydna._pretty  import pretty_str       as _pretty_str
 from Bio.Seq             import _maketrans
 from Bio.Data.IUPACData  import ambiguous_dna_complement as _amb_compl
 
@@ -82,7 +82,8 @@ def eq(*args,**kwargs):
     Examples
     --------
 
-    >>> from pydna import eq, Dseqrecord
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.utils import eq
     >>> eq("aaa","AAA")
     True
     >>> eq("aaa","AAA","TTT")
@@ -207,7 +208,7 @@ def shift_origin(seq, shift):
 
     See also
     --------
-    pydna.dsdna.Dseqrecord.shifted
+    pydna.dseqrecord.Dseqrecord.shifted
     '''
 
     length=len(seq)
@@ -448,7 +449,7 @@ def memorize(filename):
                     _module_logger.info( "found %s in cache", key)
                 except KeyError:
                     if _os.environ["pydna_cache"] == "compare":
-                         _module_logger.warning("no result for key %s in shelve %s",key, filename)
+                         _module_logger.warning("no result for key %s in shelve %s", key, filename)
                     else:
                         refresh = True
                 cache.close()
@@ -459,9 +460,9 @@ def memorize(filename):
             
             if _os.environ["pydna_cache"] == "compare":
                 if fresh==cached:
-                    _module_logger.info('cache ok for key %s in %s',key, filename)
+                    _module_logger.info('cache ok for key %s in %s', key, filename)
                 else:
-                    _module_logger.warning('cache different from fresh for key %s in %s',key, filename)
+                    _module_logger.warning('cache different from fresh for key %s in %s', key, filename)
                                 
             if refresh or _os.environ["pydna_cache"] == "refresh":
                 cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], filename), writeback=False)
