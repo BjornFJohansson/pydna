@@ -4,20 +4,6 @@ init:
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
 install:
-- conda install -y -q conda-build 
-- conda install -y -q nose 
-- conda install -y -q ipython 
-- conda install -y -q jupyter 
-- conda install -y -q biopython 
-- conda install -y -q networkx 
-- conda install -y -q appdirs 
-- conda install -y -q prettytable 
-- conda install -y -q numpy 
-- conda install -y -q scipy 
-- conda install -y -q matplotlib 
-- conda install -y -q mpldatacursor 
-- conda install -y -q pint 
-- conda install -y -q ordered-set
-- conda install python-coveralls
+- conda env create -f build_environment.yml
 build_script:
   - conda build .
