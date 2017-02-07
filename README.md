@@ -234,7 +234,6 @@ The pydna conda package installs the optional requirements listed above as well 
 
 The test suit is run automatically after each commit on:
 
-- Ubuntu 12.04 using drone.io
 - Ubuntu 14.04 using CircleCI
 - OSX-64 using TravisCI
 - Windows using AppveyorCI
@@ -243,7 +242,7 @@ See the badges at the top of this page.
 
 ## Automatic builds
 
-[Conda](http://conda.pydata.org/docs/intro.html) packages are built on CircleCI(Linux), Drone.io(Linux), TravisCI(MacOS) and AppveyorCI(Windows). 
+[Conda](http://conda.pydata.org/docs/intro.html) packages are built on CircleCI(Linux), TravisCI(MacOS) and AppveyorCI(Windows). 
 Source setuptools packages and wheels are built on Linux for all systems.
 Binary setuptools packages are built for Windows and MacOSX.
 
