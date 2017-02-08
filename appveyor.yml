@@ -4,6 +4,8 @@ init:
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
 install:
+- conda install -yq conda-build
+- conda-build -V
 - conda env create -f build_environment.yml
 - activate pydnacondabuild
 - conda-build -V

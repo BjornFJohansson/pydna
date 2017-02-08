@@ -24,4 +24,3 @@ dependencies:
 - pypandoc
 - pandoc
 - nbval
-- conda-build
