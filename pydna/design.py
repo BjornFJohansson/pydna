@@ -325,26 +325,24 @@ def primer_design(    template,
      |||||||||||||||||| tm 54.4 (dbd) 58.4
     3tactgacgattgggaagg...agcaagctttgaatgctac5
     >>> pf = "GGATCC" + ampl.forward_primer
-    >>> pr = "GGATCC" + reverse_primer  
+    >>> pr = "GGATCC" + ampl.reverse_primer  
     >>> pf
     fw64 23-mer:5'-GGATCCatgactgct..ttc-3'
     >>> pr
     rv64 23-mer:5'-GAATTCcatcgtaag..aac-3'
     >>> pcr_prod = pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
-          5atgactgctaacccttc...gttcgaaacttacgatg3
-                               ||||||||||||||||| tm 49.0 (dbd) 52.9
-                              3caagctttgaatgctacCTTAAG5
-    5GGATCCatgactgctaacccttc3
-           ||||||||||||||||| tm 51.6 (dbd) 54.0
-          3tactgacgattgggaag...caagctttgaatgctac5
+          5atgactgctaacccttcc...tcgttcgaaacttacgatg3
+                                ||||||||||||||||||| tm 53.8 (dbd) 60.6
+                               3agcaagctttgaatgctacCCTAGG5
+    5GGATCCatgactgctaacccttcc3
+           |||||||||||||||||| tm 54.4 (dbd) 58.4
+          3tactgacgattgggaagg...agcaagctttgaatgctac5
     >>> print(pcr_prod.seq)
     GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGAATTC
-    >>>
-    >>> from Bio.Seq import Seq
-    >>> from Bio.SeqRecord import SeqRecord
-    >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
-    >>> pf,pr = cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
+    >>> from pydna.primer import Primer
+    >>> pf = Primer("atgactgctaacccttccttggtgttg")
+    >>> pf, pr = primer_design(t, fp = pf)
     >>> pf
     SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 id?', dbxrefs=[])
     >>> pr
