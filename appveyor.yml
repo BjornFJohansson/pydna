@@ -4,12 +4,17 @@ environment:
     # /E:ON and /V:ON options are not enabled in the batch script interpreter
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C run_with_env.cmd"
-init:
-- "set path C:\\Miniconda35-x64;C:\\Miniconda35-x64\\Scripts;%PATH%"
-- conda update -y -q conda
-- conda install -y conda-build anaconda-client
-- conda-build -V
+
+  matrix:
+    - PYTHON_VERSION: 3.5
+      PYTHON_ARCH: "64"
+      MINICONDA: C:\Miniconda35-x64
+
+build: false
+
 install:
+- "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+- conda config --set always_yes yes
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
 - conda env create -f build_environment.yml
