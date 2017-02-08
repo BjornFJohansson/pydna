@@ -1,13 +1,12 @@
 init:
 - path C:\Miniconda3-x64;C:\Miniconda3-x64\Scripts;%PATH%
 - conda update -y -q conda
-- conda config --add channels conda-forge 
-- conda config --add channels BjornFJohansson
-install:
 - conda install -yq conda-build
 - conda-build -V
+install:
+- conda config --add channels conda-forge 
+- conda config --add channels BjornFJohansson
 - conda env create -f build_environment.yml
 - activate pydnacondabuild
-- conda-build -V
 build_script:
 - conda build .
