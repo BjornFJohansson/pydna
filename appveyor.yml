@@ -6,5 +6,6 @@ init:
 install:
 - conda env create -f build_environment.yml
 - activate pydnacondabuild
+- conda-build -V
 build_script:
 - conda build .
