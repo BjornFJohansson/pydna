@@ -15,6 +15,8 @@ build: false
 install:
 - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
 - conda config --set always_yes yes
+- conda update conda
+- conda install conda-build
 - conda config --add channels conda-forge 
 - conda config --add channels BjornFJohansson
 - conda env create -f build_environment.yml
