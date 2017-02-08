@@ -5,6 +5,6 @@ init:
 - conda config --add channels BjornFJohansson
 install:
 - conda env create -f build_environment.yml
-- activate testenv
+- activate pydnacondabuild
 build_script:
 - conda build .
