@@ -22,9 +22,9 @@ class Primer(_SeqRecord):
     '''
     def __init__(self, record, 
                  *args,
-                 template = None,
-                 position=None, 
-                 footprint=None,
+                 template =  None,
+                 position =  None, 
+                 footprint = None,
                  concentration = 1000.0,   # nM (= 1µM)
                  **kwargs):
         if hasattr(record, "features"):            
@@ -52,7 +52,7 @@ class Primer(_SeqRecord):
     
     def __radd__(self, other):
         new = super().__radd__(other)
-        return Primer(new.seq)
+        return Primer(new)
     
     def tm(self, saltc=50.0, formula=_tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )

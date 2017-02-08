@@ -242,6 +242,125 @@ def primer_design(    template,
                       rprimerc=1000.0,  # nM
                       saltc=50.0,
                       formula = _tmbresluc):
+
+    '''This function designs a forward primer and a rverse primer for PCR amplification 
+    of a given template sequence.
+    
+    The argument is a Dseqrecord object or equivalent containing the template sequence 
+    and returns a pydna.amplicon.Amplicon tuple cntaining two ::mod`Bio.SeqRecord.SeqRecord` objects describing
+    the primers.
+
+    Primer tails can optionally be given in the form of strings.
+
+    An predesigned primer can be given, either the forward or reverse primers. In this
+    case this function tries to design a primer with a Tm to match the given primer.
+
+
+    Parameters
+    ----------
+
+    template : Dseqrecord
+        a Dseqrecord object. The only required argument.
+
+    fp, rp : Primer, optional
+        optional pydna.primer.Primer objects containing one primer each.
+
+    fp_tail, rp_tail : string, optional
+        optional tails to be added to the forwars or reverse primers.
+
+    target_tm : float, optional
+        target tm for the primers, set to 55°C by default.
+
+    fprimerc : float, optional
+        Concentration of forward primer in nM, set to 1000.0 nM by default.
+
+    rprimerc : float, optional
+        Concentration of reverse primer in nM, set to 1000.0 nM by default.
+
+    saltc  : float, optional
+        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
+
+    formula : function
+        formula used for tm calculation
+        this is the name of a function.
+        built in options are:
+
+        1. :func:`pydna.amplify.tmbresluc` (default)
+        2. :func:`pydna.amplify.basictm`
+        3. :func:`pydna.amplify.tmstaluc98`
+        4. :func:`pydna.amplify.tmbreslauer86`
+
+        These functions are imported from the :mod:`pydna.amplify` module, but can be
+        substituted for some other custom made function.
+
+    Returns
+    -------
+    fp, rp : Amplicon
+        fp is a :mod:Bio.SeqRecord object describing the forward primer
+        rp is a :mod:Bio.SeqRecord object describing the reverse primer
+
+
+
+    Examples
+    --------
+
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.design import primer_design
+    >>> from pydna.amplify import pcr
+    >>> t=Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
+    >>> t
+    Dseqrecord(-64)
+    >>> ampl = primer_design(t)
+    >>> ampl
+    Amplicon(64)    
+    >>> ampl.forward_primer
+    fw64 18-mer:5'-atgactgctaacccttcc-3'
+    >>> ampl.reverse_primer
+    rv64 19-mer:5'-catcgtaagtttcgaacga-3'
+    >>> print(ampl.figure())
+    5atgactgctaacccttcc...tcgttcgaaacttacgatg3
+                          ||||||||||||||||||| tm 53.8 (dbd) 60.6
+                         3agcaagctttgaatgctac5
+    5atgactgctaacccttcc3
+     |||||||||||||||||| tm 54.4 (dbd) 58.4
+    3tactgacgattgggaagg...agcaagctttgaatgctac5
+    >>> pf = "GGATCC" + ampl.forward_primer
+    >>> pr = "GGATCC" + reverse_primer  
+    >>> pf
+    fw64 23-mer:5'-GGATCCatgactgct..ttc-3'
+    >>> pr
+    rv64 23-mer:5'-GAATTCcatcgtaag..aac-3'
+    >>> pcr_prod = pcr(pf, pr, t)
+    >>> print(pcr_prod.figure())
+          5atgactgctaacccttc...gttcgaaacttacgatg3
+                               ||||||||||||||||| tm 49.0 (dbd) 52.9
+                              3caagctttgaatgctacCTTAAG5
+    5GGATCCatgactgctaacccttc3
+           ||||||||||||||||| tm 51.6 (dbd) 54.0
+          3tactgacgattgggaag...caagctttgaatgctac5
+    >>> print(pcr_prod.seq)
+    GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGAATTC
+    >>>
+    >>> from Bio.Seq import Seq
+    >>> from Bio.SeqRecord import SeqRecord
+    >>> pf = SeqRecord(Seq("atgactgctaacccttccttggtgttg"))
+    >>> pf,pr = cloning_primers(t, fp = pf, fp_tail="GGATCC", rp_tail="GAATTC")
+    >>> pf
+    SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 id?', dbxrefs=[])
+    >>> pr
+    rv64 34-mer:5'-GAATTCcatcgtaag..gtc-3'
+    >>> ampl = pcr(pf,pr,t)
+    >>> print(ampl.figure())
+          5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
+                                         |||||||||||||||||||||||||||| tm 61.7 (dbd) 72.2
+                                        3ctgctgtaaagcaagctttgaatgctacCTTAAG5
+    5GGATCCatgactgctaacccttccttggtgttg3
+           ||||||||||||||||||||||||||| tm 63.7 (dbd) 72.3
+          3tactgacgattgggaaggaaccacaac...ctgctgtaaagcaagctttgaatgctac5
+    >>>
+
+
+    '''
     
     def design(target_tm, template):
         tmp=0
@@ -580,6 +699,176 @@ def assembly_primers(templates,
 
 def assembly_fragments(f, overlap=35, maxlink=40):
     
+    '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
+    Given two sequences that we wish to fuse (a and b) to form fragment c.
+
+    ::
+
+       _________ a _________           __________ b ________
+      /                     \\         /                     \\
+      agcctatcatcttggtctctgca   <-->  TTTATATCGCATGACTCTTCTTT
+      |||||||||||||||||||||||         |||||||||||||||||||||||
+      tcggatagtagaaccagagacgt   <-->  AAATATAGCGTACTGAGAAGAAA
+
+
+           agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT
+           ||||||||||||||||||||||||||||||||||||||||||||||
+           tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
+           \\___________________ c ______________________/
+
+
+    We can design tailed primers to fuse a and b by fusion PCR, Gibson assembly or
+    in-vivo homologous recombination. The basic requirements for the primers for
+    the three techniques are the same.
+
+
+    Design tailed primers incorporating a part of the next or previous fragment to be assembled.
+
+    ::
+
+
+      agcctatcatcttggtctctgca
+      |||||||||||||||||||||||
+                      gagacgtAAATATA
+
+      |||||||||||||||||||||||
+      tcggatagtagaaccagagacgt
+
+
+                             TTTATATCGCATGACTCTTCTTT
+                             |||||||||||||||||||||||
+
+                      ctctgcaTTTATAT
+                             |||||||||||||||||||||||
+                             AAATATAGCGTACTGAGAAGAAA
+
+    PCR products with flanking sequences are formed in the PCR process.
+
+    ::
+
+      agcctatcatcttggtctctgcaTTTATAT
+      ||||||||||||||||||||||||||||||
+      tcggatagtagaaccagagacgtAAATATA
+                      \\____________/
+
+                         identical
+                         sequences
+                       ____________
+                      /            \\
+                      ctctgcaTTTATATCGCATGACTCTTCTTT
+                      ||||||||||||||||||||||||||||||
+                      gagacgtAAATATAGCGTACTGAGAAGAAA
+
+    The fragments can be fused by any of the techniques mentioned earlier.
+
+    ::
+
+      agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT
+      ||||||||||||||||||||||||||||||||||||||||||||||
+      tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
+
+
+
+
+    Parameters
+    ----------
+
+    templates : list of Dseqrecord
+        list Dseqrecord object for which fusion primers should be constructed.
+
+    minlength : int, optional
+        Minimum length of the annealing part of the primer.
+
+    maxlength : int, optional
+        Maximum length (including tail) for designed primers.
+
+    tot_length : int, optional
+        Maximum total length of a the primers
+
+    target_tm : float, optional
+        target tm for the primers
+
+    primerc : float, optional
+        Concentration of each primer in nM, set to 1000.0 nM by default
+
+    saltc  : float, optional
+        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
+
+    formula : function
+        formula used for tm calculation
+        this is the name of a function.
+        built in options are:
+
+        1. :func:`pydna.tm.tmbresluc` (default)
+        2. :func:`pydna.tm.basictm`
+        3. :func:`pydna.tm.tmstaluc98`
+        4. :func:`pydna.tm.tmbreslauer86`
+
+        These functions are imported from the :mod:`pydna.tm` module, but can be
+        substituted for some other custom made function.
+
+    Returns
+    -------
+    primer_pairs : list of tuples of :mod:`Bio.Seqrecord` objects
+
+        ::
+
+          [(forward_primer_1, reverse_primer_1),
+           (forward_primer_2, reverse_primer_2), ...]
+
+
+    Examples
+    --------
+
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.assembly import Assembly
+    >>> from pydna.design import assembly_primers
+    >>> from pydna.amplify import pcr
+    >>> a=Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
+    >>> b=Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
+    >>> c=Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
+    >>> primer_pairs = assembly_primers([a,b,c], circular = True)
+    >>> p=[]
+    >>> for t, (f,r) in zip([a,b,c], primer_pairs): p.append(pcr(f,r,t))
+    >>> p
+    [Amplicon(100), Amplicon(101), Amplicon(102)]
+    >>> assemblyobj = Assembly(p)
+    >>> assemblyobj
+    Assembly:
+    Sequences........................: [100] [101] [102]
+    Sequences with shared homologies.: [100] [101] [102]
+    Homology limit (bp)..............: 25
+    Number of overlaps...............: 3
+    Nodes in graph(incl. 5' & 3')....: 5
+    Only terminal overlaps...........: No
+    Circular products................: [195]
+    Linear products..................: [231] [231] [231] [167] [166] [165] [36] [36] [36]
+    >>> assemblyobj.linear_products
+    [Contig(-231), Contig(-231), Contig(-231), Contig(-167), Contig(-166), Contig(-165), Contig(-36), Contig(-36), Contig(-36)]
+    >>> assemblyobj.circular_products[0].cseguid()
+    'V3Mi8zilejgyoH833UbjJOtDMbc'
+    >>> (a+b+c).looped().cseguid()
+    'V3Mi8zilejgyoH833UbjJOtDMbc'
+    >>> print(assemblyobj.circular_products[0].small_fig())
+     -|100bp_PCR_prod|36
+    |                 \\/
+    |                 /\\
+    |                 36|101bp_PCR_prod|36
+    |                                   \\/
+    |                                   /\\
+    |                                   36|102bp_PCR_prod|36
+    |                                                     \\/
+    |                                                     /\\
+    |                                                     36-
+    |                                                        |
+     --------------------------------------------------------
+    >>>
+
+
+
+
+
+    '''
     # sanity check
     nf = [item for item in f if len(item)>maxlink]
     if not all(hasattr(i[0],"template") or hasattr(i[1],"template") for i in zip(nf,nf[1:])):
