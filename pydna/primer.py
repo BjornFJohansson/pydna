@@ -27,8 +27,8 @@ class Primer(_SeqRecord):
                  footprint = None,
                  concentration = 1000.0,   # nM (= 1µM)
                  **kwargs):
-        if hasattr(record, "features"):            
-            for key, value in list(record.__dict__.items()):
+        if hasattr(record, "features"):
+            for key, value in record.__dict__.items():
                 setattr(self, key, value )
         elif hasattr(record, "alphabet"):
             super().__init__(record, *args, **kwargs)            

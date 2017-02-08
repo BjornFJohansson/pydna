@@ -276,8 +276,8 @@ class Anneal(object, metaclass = Memoize):
                                                     location_operator= "join",
                                                     strand = -1,
                                                     qualifiers = {"note":[rp.name]}))
-        self.forward_primers = self.forward_primers
-        self.reverse_primers = self.reverse_primers
+        #self.forward_primers = self.forward_primers
+        #self.reverse_primers = self.reverse_primers
     
 
     @property
@@ -319,8 +319,6 @@ class Anneal(object, metaclass = Memoize):
                                                 saltc=self.saltc,
                                                 fprimerc=self.primerc,
                                                 rprimerc=self.primerc))
-                assert " " not in str(prd.seq.watson)
-                assert " " not in str(prd.seq.crick)
 
         return self._products
 

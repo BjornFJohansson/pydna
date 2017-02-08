@@ -259,14 +259,11 @@ def primer_design(    template,
     Parameters
     ----------
 
-    template : Dseqrecord
+    template : pydna.dseqrecord.Dseqrecord
         a Dseqrecord object. The only required argument.
 
-    fp, rp : Primer, optional
+    fp, rp : pydna.primer.Primer, optional
         optional pydna.primer.Primer objects containing one primer each.
-
-    fp_tail, rp_tail : string, optional
-        optional tails to be added to the forwars or reverse primers.
 
     target_tm : float, optional
         target tm for the primers, set to 55°C by default.
@@ -295,24 +292,19 @@ def primer_design(    template,
 
     Returns
     -------
-    fp, rp : Amplicon
-        fp is a :mod:Bio.SeqRecord object describing the forward primer
-        rp is a :mod:Bio.SeqRecord object describing the reverse primer
-
-
+    result : Amplicon
 
     Examples
     --------
 
     >>> from pydna.dseqrecord import Dseqrecord
-    >>> from pydna.design import primer_design
-    >>> from pydna.amplify import pcr
     >>> t=Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
     >>> t
     Dseqrecord(-64)
+    >>> from pydna.design import primer_design
     >>> ampl = primer_design(t)
     >>> ampl
-    Amplicon(64)    
+    Amplicon(64)
     >>> ampl.forward_primer
     fw64 18-mer:5'-atgactgctaacccttcc-3'
     >>> ampl.reverse_primer
@@ -327,9 +319,10 @@ def primer_design(    template,
     >>> pf = "GGATCC" + ampl.forward_primer
     >>> pr = "GGATCC" + ampl.reverse_primer  
     >>> pf
-    fw64 23-mer:5'-GGATCCatgactgct..ttc-3'
+    fw64 24-mer:5'-GGATCCatgactgct..tcc-3'
     >>> pr
-    rv64 23-mer:5'-GAATTCcatcgtaag..aac-3'
+    rv64 25-mer:5'-GGATCCcatcgtaag..cga-3'
+    >>> from pydna.amplify import pcr
     >>> pcr_prod = pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
           5atgactgctaacccttcc...tcgttcgaaacttacgatg3
@@ -339,28 +332,19 @@ def primer_design(    template,
            |||||||||||||||||| tm 54.4 (dbd) 58.4
           3tactgacgattgggaagg...agcaagctttgaatgctac5
     >>> print(pcr_prod.seq)
-    GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGAATTC
+    GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGGATCC
     >>> from pydna.primer import Primer
-    >>> pf = Primer("atgactgctaacccttccttggtgttg")
-    >>> pf, pr = primer_design(t, fp = pf)
-    >>> pf
-    SeqRecord(seq=Seq('GGATCCatgactgctaacccttccttggtgttg', Alphabet()), id='fw64', name='fw64', description='fw64 id?', dbxrefs=[])
-    >>> pr
-    rv64 34-mer:5'-GAATTCcatcgtaag..gtc-3'
-    >>> ampl = pcr(pf,pr,t)
-    >>> print(ampl.figure())
-          5atgactgctaacccttccttggtgttg...gacgacatttcgttcgaaacttacgatg3
-                                         |||||||||||||||||||||||||||| tm 61.7 (dbd) 72.2
-                                        3ctgctgtaaagcaagctttgaatgctacCTTAAG5
-    5GGATCCatgactgctaacccttccttggtgttg3
-           ||||||||||||||||||||||||||| tm 63.7 (dbd) 72.3
-          3tactgacgattgggaaggaaccacaac...ctgctgtaaagcaagctttgaatgctac5
-    >>>
-
+    >>> pf = Primer("atgactgctaacccttccttggtgttg", id="myprimer")
+    >>> ampl = primer_design(t, fp = pf)
+    >>> ampl.forward_primer
+    myprimer 27-mer:5'-atgactgctaaccct..ttg-3'
+    >>> ampl.reverse_primer
+    rv64 28-mer:5'-catcgtaagtttcga..gtc-3'
 
     '''
     
     def design(target_tm, template):
+        ''' returns a string '''
         tmp=0
         length=0
         while tmp<target_tm:
@@ -376,34 +360,40 @@ def primer_design(    template,
         fp  = _Anneal((fp,), template).forward_primers.pop()
         target_tm = formula( str(fp.footprint), primerc=fprimerc, saltc=saltc)
         _module_logger.debug("forward primer given, design reverse primer:")
-        rp = design(target_tm, template.rc())
+        rp = _Primer(design(target_tm, template.rc()))
     elif not fp and rp:
         rp =  _Anneal([rp], template).reverse_primers.pop()
         target_tm = formula( str(rp.footprint), primerc=rprimerc, saltc=saltc)
         _module_logger.debug("reverse primer given, design forward primer:")
-        fp = design(target_tm, template)
+        fp = _Primer(design(target_tm, template))
     elif not fp and not rp:
         _module_logger.debug("no primer given, design forward primer:")
-        fp = design(target_tm, template)
-        target_tm = formula( str(fp), primerc=fprimerc, saltc=saltc)
+        fp = _Primer((design(target_tm, template)))
+        target_tm = formula( str(fp.seq), primerc=fprimerc, saltc=saltc)
         _module_logger.debug("no primer given, design reverse primer:")
-        rp = design(target_tm, template.rc())
+        rp = _Primer(design(target_tm, template.rc()))
     else:
         raise Exception("Specify maximum one of the two primers.")
 
-    ampl = _Anneal( (_Primer(fp),_Primer(rp)), template)
+    ampl = _Anneal( (fp, rp), template)
     
     prod = ampl.products[0]
     
     prod.forward_primer.concentration = fprimerc
     prod.reverse_primer.concentration = rprimerc
 
-    prod.forward_primer.name = "fw{}".format(len(template))
-    prod.reverse_primer.name = "rv{}".format(len(template))
- 
-    prod.forward_primer.id = "fw{}".format(len(template))
-    prod.reverse_primer.id = "rv{}".format(len(template))
-    
+    if prod.forward_primer.id == "<unknown id>":
+        prod.forward_primer.id = "fw{}".format(len(template))
+        
+    if prod.reverse_primer.id == "<unknown id>":
+        prod.reverse_primer.id = "rv{}".format(len(template))
+
+    if prod.forward_primer.name == "<unknown name>":
+        prod.forward_primer.name = "fw{}".format(len(template))
+        
+    if prod.reverse_primer.name == "<unknown name>":
+        prod.reverse_primer.name = "rv{}".format(len(template))
+
     prod.forward_primer.description = prod.forward_primer.id+' '+template.accession
     prod.reverse_primer.description = prod.reverse_primer.id+' '+template.accession
 
