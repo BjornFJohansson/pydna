@@ -5,7 +5,7 @@ environment:
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C run_with_env.cmd"
 init:
-- "set path C:\Miniconda35-x64;C:\Miniconda35-x64\Scripts;%PATH%"
+- "set path C:\\Miniconda35-x64;C:\\Miniconda35-x64\\Scripts;%PATH%"
 - conda update -y -q conda
 - conda install -y conda-build anaconda-client
 - conda-build -V
