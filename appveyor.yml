@@ -35,6 +35,6 @@ install:
   - twine register -r %pypiserver% dist/pydna*.zip
 
 
-#on_success:
+on_success:
   #- anaconda -t %TOKEN% upload %MINICONDA%\\conda-bld\\win-%PYTHON_ARCH%\\*.tar.bz2
    - twine upload -r $pypiserver dist/pydna*.exe --skip-existing
