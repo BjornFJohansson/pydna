@@ -17,7 +17,7 @@ install:
   - ps: Write-Host "This is PowerShell"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - ps: $tagname = git describe --abbrev=0 --tags
-  - echo %tagname%
+  - ps: echo $tagname
   - git rev-parse HEAD                     > com
   - git describe --tags --dirty --always   > dirty
   - git rev-list $tagname | head -n 1      >  tag
