@@ -15,12 +15,12 @@ build: false
 install:
 #- git submodule update --init --remote
 - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
-- "%CMD_IN_ENV% conda config --set always_yes yes"
-- "%CMD_IN_ENV% conda update conda"
-- "%CMD_IN_ENV% conda install conda-build"
-- "%CMD_IN_ENV% conda config --add channels conda-forge"
-- "%CMD_IN_ENV% conda config --add channels BjornFJohansson"
-- "%CMD_IN_ENV% conda env create -f build_environment.yml"
-- "%CMD_IN_ENV% activate pydnacondabuild"
+- "conda config --set always_yes yes"
+- "conda update conda"
+- "conda install conda-build"
+- "conda config --add channels conda-forge"
+- "conda config --add channels BjornFJohansson"
+- "conda env create -f build_environment.yml"
+- "activate pydnacondabuild"
 build_script:
 - "%CMD_IN_ENV% conda build ."
