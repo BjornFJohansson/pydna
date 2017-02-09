@@ -1,9 +1,9 @@
 environment:
   global:
     # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
-    # /E:ON and /V:ON options are not enabled in the batch script interpreter
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C run_with_env.cmd"
 
   matrix:
     - PYTHON_VERSION: 3.5
@@ -13,14 +13,17 @@ environment:
 build: false
 
 install:
-#- git submodule update --init --remote
-- "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
-- "conda config --set always_yes yes"
-- "conda update conda"
-- "conda install conda-build"
-- "conda config --add channels conda-forge"
-- "conda config --add channels BjornFJohansson"
-- "conda env create -f build_environment.yml"
-- "activate pydnacondabuild"
-build_script:
-- "%CMD_IN_ENV% conda build ."
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q --all
+  - conda config --add channels conda-forge
+  - conda config --add channels BjornFJohansson
+  - conda install conda-build anaconda-client
+  - conda env create -f build_environment.yml
+  - activate pydnacondabuild
+  # build
+  #- "%CMD_IN_ENV% conda build -c %CONDA_CHANNEL% --skip-existing brotli"
+  - "%CMD_IN_ENV% conda build ."
+
+on_success:
+  - anaconda -t %CONDA_TOKEN% upload %MINICONDA%\\conda-bld\\win-%PYTHON_ARCH%\\*.tar.bz2
