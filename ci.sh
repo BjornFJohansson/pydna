@@ -16,10 +16,9 @@ echo "=============================================================="
 echo "Environment variables:"
 echo "=============================================================="
 echo "CI                   = $CI"
-echo "DRONE                = $DRONE"
-echo "TRAVIS               = $TRAVIS"
 echo "APPVEYOR             = $APPVEYOR"
 echo "CIRCLECI             = $CIRCLECI"
+echo "TRAVIS               = $TRAVIS"
 echo "=============================================================="
 echo "Build information:"
 echo "=============================================================="
@@ -85,11 +84,8 @@ then
     repository = https://pypi.python.org/pypi
     username = $pypiusername
     password = $pypipassword" > $HOME/.pypirc
-    if [[ $DRONE = true ]]
-    then
-        echo "Running on DRONE, download Miniconda for Linux"
-        miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
-    elif [[ $TRAVIS = true ]]
+
+    if [[ $TRAVIS = true ]]
     then
         echo "Running on TRAVIS, download Miniconda for MacOSX"
         miniconda="wget -q http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O Miniconda_latest.sh"
@@ -104,7 +100,6 @@ then
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
-        echo "DRONE    = $DRONE"
         echo "TRAVIS   = $TRAVIS"
         echo "APPVEYOR = $APPVEYOR"
         echo "CIRCLECI = $CIRCLECI"
@@ -153,14 +148,7 @@ then
     source activate pydnapipbuild
     conda upgrade -yq pip
 
-    if [[ $DRONE = true ]]
-    then
-        echo "DRONE: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py sdist --formats=gztar,zip bdist_wheel
-
-        echo "DRONE: zip package is registered"
-        twine register -r $pypiserver dist/pydna*.zip
-    elif [[ $TRAVIS = true ]]
+    if [[ $TRAVIS = true ]]
     then
         echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
@@ -188,7 +176,6 @@ then
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
-        echo "DRONE    = $DRONE"
         echo "TRAVIS   = $TRAVIS"
         echo "APPVEYOR = $APPVEYOR"
         echo "CIRCLECI = $CIRCLECI"
