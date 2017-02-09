@@ -30,8 +30,8 @@ install:
   #- conda config --set always_yes yes --set changeps1 no
   #- conda install conda-build anaconda-client
   #- conda update -q --all
-  #- conda config --add channels conda-forge
-  #- conda config --add channels BjornFJohansson
+  - conda config --add channels conda-forge
+  - conda config --add channels BjornFJohansson
   #- conda env create -f build_environment.yml
   #- activate pydnacondabuild
   #- "%CMD_IN_ENV% conda build ."
