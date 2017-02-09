@@ -793,14 +793,6 @@ class Dseqrecord(_SeqRecord):
             for frame in range(3):
                 if other.lower() in _translate(s[frame:frame+spc+ln]).lower():
                     return True
-
-            #s = self.seq.crick.replace(" ","")
-            #ln=len(s)
-            #spc = 3-ln%3 if ln%3 else 0
-            #s = "n" * spc + s + "nnn"
-            #for frame in range(3):
-            #    if other.lower() in _translate(s[frame:frame+spc+ln]).lower():
-            #        return True
         return False
 
     def find_aa(self, other):
@@ -1338,11 +1330,6 @@ class Dseqrecord(_SeqRecord):
                 r = str(r).lower()
         else:
             r = str(ref.lower())
-
-        try:
-            circular_ref = ref.circular
-        except AttributeError:
-            circular_ref = False
 
         lim = min(limit, limit*(len(s)//limit)+1)
 

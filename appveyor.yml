@@ -14,6 +14,13 @@ build: false
 
 install:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - git describe --abbrev=0 --tags         > tagname
+  - git rev-list $tagname | head -n 1      >  tag
+  - git rev-parse HEAD)"                   > com
+  - git describe --tags --dirty --always)  > dirty
+  - git log -1 --pretty=%B)                > msg
+
+
   #- conda config --set always_yes yes --set changeps1 no
   #- conda install conda-build anaconda-client
   #- conda update -q --all
@@ -22,8 +29,12 @@ install:
   #- conda env create -f build_environment.yml
   #- activate pydnacondabuild
   #- "%CMD_IN_ENV% conda build ."
+  - conda install twine
   - python setup.py build
-  - python setup.py sdist 
+  - python setup.py sdist
+  - twine register -r %pypiserver% dist/pydna*.zip
 
-on_success:
-  - anaconda -t %TOKEN% upload %MINICONDA%\\conda-bld\\win-%PYTHON_ARCH%\\*.tar.bz2
+
+#on_success:
+  #- anaconda -t %TOKEN% upload %MINICONDA%\\conda-bld\\win-%PYTHON_ARCH%\\*.tar.bz2
+   - twine upload -r $pypiserver dist/pydna*.exe --skip-existing
