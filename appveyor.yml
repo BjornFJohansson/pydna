@@ -16,7 +16,7 @@ install:
   - cmd: ECHO this is batch
   - ps: Write-Host "This is PowerShell"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
-  - git describe --abbrev=0 --tags         > tagname
+  - ps: $tagname = git describe --abbrev=0 --tags
   - echo %tagname%
   - git rev-parse HEAD                     > com
   - git describe --tags --dirty --always   > dirty
