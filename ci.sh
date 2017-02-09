@@ -124,7 +124,6 @@ fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    #pip install git+git://github.com/conda/conda-build.git@2.1.0beta1
     conda install -yq conda-build
     conda-build -V
     conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
@@ -157,7 +156,9 @@ then
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py bdist_wininst bdist_msi
+        python setup.py bdist_wininst
+        appveyor PushArtifact dist/*
+        python setup.py bdist_msi
         appveyor PushArtifact dist/*
         echo "APPVEYOR: exe package is registered"
         twine register -r $pypiserver dist/pydna*.exe
