@@ -15,7 +15,7 @@ build: false
 install:
   - cmd: ECHO this is batch
   - ps: Write-Host "This is PowerShell"
-  - ps: "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - ps: "set PATH=$MINICONDA;$MINICONDA\\Scripts;$PATH"
   - ps: git describe --abbrev=0 --tags         > tagname
   - ps: echo $tagname
   - git rev-parse HEAD                     > com
