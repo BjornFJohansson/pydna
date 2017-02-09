@@ -13,12 +13,13 @@ environment:
 build: false
 
 install:
+  - echo $MINICONDA
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - git describe --abbrev=0 --tags         > tagname
   - git rev-parse HEAD                     > com
   - git describe --tags --dirty --always   > dirty
   - git rev-list $tagname | head -n 1      >  tag
-  - git log -1 --pretty=%25B                > msg
+  - git log -1 --pretty=%25B               > msg
 
 
   #- conda config --set always_yes yes --set changeps1 no
