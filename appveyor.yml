@@ -15,10 +15,11 @@ build: false
 install:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - conda config --set always_yes yes --set changeps1 no
+  - conda install conda-build anaconda-client
   - conda update -q --all
   - conda config --add channels conda-forge
   - conda config --add channels BjornFJohansson
-  - conda install conda-build anaconda-client
+  #- conda install conda-build anaconda-client
   - conda env create -f build_environment.yml
   - activate pydnacondabuild
   # build
