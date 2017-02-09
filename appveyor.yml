@@ -15,7 +15,7 @@ build: false
 install:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - git describe --abbrev=0 --tags         > tagname
-  - git rev-parse HEAD"                    > com
+  - git rev-parse HEAD                     > com
   - git describe --tags --dirty --always   > dirty
   - git log -1 --pretty=%B                 > msg
   - "git rev-list $tagname | head -n 1      >  tag"
