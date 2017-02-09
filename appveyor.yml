@@ -38,7 +38,7 @@ install:
   - conda install twine
   - python setup.py build
   - python setup.py sdist
-  - twine register -r %pypiserver% dist/pydna*.zip
+  - twine register -r %pypiserver% dist\pydna*.zip
 
 
 on_success:
