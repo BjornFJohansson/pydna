@@ -10,6 +10,10 @@ environment:
       PYTHON_ARCH: "64"
       MINICONDA: C:\Miniconda35-x64
 
+before_build:
+  - cmd: ECHO this is batch
+  - ps: Write-Host "This is PowerShell"
+
 build: false
 
 install:
