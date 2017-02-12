@@ -126,8 +126,8 @@ then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
     conda-build -V
-    conda create -q -y -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-    conda create -q -y -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
+    conda create -yq -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
@@ -150,30 +150,38 @@ then
     if [[ $TRAVIS = true ]]
     then
         echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py sdist --formats=gztar,zip bdist_wheel
+        python setup.py build sdist --formats=gztar,zip bdist_wheel
         echo "TRAVIS: zip package is registered"
-        twine register -r $pypiserver dist/pydna*.zip
+        #twine register -r $pypiserver dist/pydna*.zip
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
         echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py bdist_wininst
-        appveyor PushArtifact dist/*
-        python setup.py bdist_msi
+        python setup.py build bdist_wininst
+        python setup.py build bdist_msi
         appveyor PushArtifact dist/*
         echo "APPVEYOR: exe package is registered"
         twine register -r $pypiserver dist/pydna*.exe
-    elif [[ $CIRCLECI = true ]]
+        twine upload -r $pypiserver dist/pydna*.exe --skip-existing
+        twine upload -r $pypiserver dist/pydna*.msi --skip-existing
+    elif [[ $CIRCLECI = true ]] # Linux
     then
         echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py sdist --formats=gztar,zip bdist_wheel
+        python setup.py sdist --formats=gztar,zip
         echo "CIRCLECI: zip package is registered"
         twine register -r $pypiserver dist/pydna*.zip
+        twine upload -r $pypiserver dist/pydna*.zip --skip-existing
+        twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
+        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     elif [[ $(uname) = "Linux" ]]
     then
         echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
         echo "Local linux: zip package is registered"
         twine register -r $pypiserver dist/pydna*.zip
+        twine register -r $pypiserver dist/pydna*.zip
+        twine upload -r $pypiserver dist/pydna*.zip --skip-existing
+        twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
+        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
@@ -183,12 +191,6 @@ then
         exit 1
     fi
     ls dist
-    twine upload -r $pypiserver dist/pydna*.exe --skip-existing
-    twine upload -r $pypiserver dist/pydna*.msi --skip-existing
-    twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-    twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
-    twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-
 else
     echo "create test environment"
     conda env create -f test_environment.yml -q

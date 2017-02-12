@@ -49,6 +49,7 @@ from pydna.dseq import Dseq as _Dseq
 
 try:
     from IPython.display import display as _display
+    from IPython.display import display_html as _display_html
     from IPython.display import HTML    as _HTML
 except ImportError:
     def _display(item): return item
@@ -775,7 +776,7 @@ class Dseqrecord(_SeqRecord):
                     with open(filename, "w") as fp: fp.write(self.format(f))
         else:
             raise Exception("filename has to be a string, got", type(filename))
-        return _display(_HTML(msg))
+        return _display_html(_HTML(msg))
 
 
     def __str__(self):

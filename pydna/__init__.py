@@ -307,7 +307,6 @@ def get_env():
         if k.startswith("pydna"):
             _table.add_row([k,v])
     return _pretty_str(_table)
-
     
 logo=_pretty_str("                 _             \n"       
                  "                | |            \n"            

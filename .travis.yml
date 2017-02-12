@@ -6,7 +6,7 @@ cache:
  - brew
  - conda
 script:
- - sh ci.sh
+ - bash ci.sh
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 notifications:
