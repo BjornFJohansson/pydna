@@ -151,7 +151,7 @@ then
     then
         echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py build sdist --formats=gztar,zip bdist_wheel
-        echo "TRAVIS: zip package is registered"
+        #echo "TRAVIS: zip package is registered"
         #twine register -r $pypiserver dist/pydna*.zip
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
