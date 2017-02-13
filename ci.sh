@@ -76,7 +76,7 @@ then
         testpypi
 
     [testpypi]
-    repository = https://testpypi.python.org/pypi
+    repository = https://test.upload.pypi.org/legacy/
     username = $pypiusername
     password = $pypipassword
 
