@@ -27,19 +27,18 @@ then
     echo "Tagged commit      : $tagname"
     tagged_commit=true
     re_final="^[0-9]\.[0-9]\.[0-9]$"
-    re_pre="^[0-9]\.[0-9]\.[0-9](a|b|rc)[0-9]+$"
+    re_alpha="^[0-9]\.[0-9]\.[0-9]a[0-9]+$"
     if [[ $tagname =~  $re_final ]]
     then
         echo "Tag indicate Final release"
         echo "deploy to pypi and anaconda.org with label 'main'."
         pypiserver="pypi"
         condalabel="main"
-    elif  [[ $tagname =~ $re_pre ]]
+    elif  [[ $tagname =~ $re_alpha ]]
     then
-        echo "Release tag indicate pre release"
-        echo "deploy sdist zip package to pypi "
-        echo "conda package anaconda.org with label 'test'."
-        pypiserver="pypi"
+        echo "Release tag indicate Alpha release"
+        echo "deploy to testpypi and anaconda.org with label 'test'."
+        pypiserver="testpypi"
         condalabel="test"
     else
         echo "Build cancelled because"
@@ -82,7 +81,7 @@ then
     password = $pypipassword
 
     [pypi]
-    repository = https://upload.pypi.io/legacy/
+    repository = https://pypi.python.org/pypi
     username = $pypiusername
     password = $pypipassword" > $HOME/.pypirc
 
@@ -151,22 +150,17 @@ then
     if [[ $TRAVIS = true ]] # MacOSX
     then
         python setup.py build bdist_wheel bdist_egg
-        if [[ $condalabel = "main" ]]
+        if [[ $pypiserver="pypi" ]]
         then
             twine upload -r $pypiserver dist/pydna*.whl --skip-existing
             twine upload -r $pypiserver dist/pydna*.egg --skip-existing
         else
-            echo "pre release, no upload to pypi."
+            echo "no upload to test server."
         fi
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
     then
         python setup.py build bdist_wininst
-        if [[ $condalabel = "main" ]]
-        then
-            twine upload -r $pypiserver dist/pydna*.exe --skip-existing
-        else
-            echo "pre release, no upload to pypi."
-        fi
+        twine upload -r $pypiserver dist/pydna*.exe --skip-existing
         appveyor PushArtifact dist/*
     elif [[ $CIRCLECI = true ]] # Linux
     then
@@ -175,14 +169,10 @@ then
     elif [[ $(uname) = "Linux" ]]
     then
         echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py sdist --formats=zip bdist_wheel
+        python setup.py sdist --formats=gztar,zip bdist_wheel
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-        if [[ $condalabel = "main" ]]
-        then
-            twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-        else
-            echo "pre release, no upload to pypi."
-        fi
+        twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
+        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
