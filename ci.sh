@@ -149,36 +149,22 @@ then
 
     if [[ $TRAVIS = true ]]
     then
-        echo "TRAVIS: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py build sdist --formats=gztar,zip bdist_wheel
-        #echo "TRAVIS: zip package is registered"
-        #twine register -r $pypiserver dist/pydna*.zip
+        python setup.py build bdist_wheel
+        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
-        echo "APPVEYOR: python setup.py bdist_wininst"
-        python setup.py build bdist_wininst
-        python setup.py build bdist_msi
-        appveyor PushArtifact dist/*
-        echo "APPVEYOR: exe package is registered"
-        twine register -r $pypiserver dist/pydna*.exe
+        python setup.py build bdist_wininst bdist_msi
         twine upload -r $pypiserver dist/pydna*.exe --skip-existing
         twine upload -r $pypiserver dist/pydna*.msi --skip-existing
+        appveyor PushArtifact dist/*
     elif [[ $CIRCLECI = true ]] # Linux
     then
-        echo "CIRCLECI: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py sdist --formats=gztar,zip
-        echo "CIRCLECI: zip package is registered"
-        twine register -r $pypiserver dist/pydna*.zip
+        python setup.py sdist --formats=zip
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-        twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
-        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     elif [[ $(uname) = "Linux" ]]
     then
         echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
         python setup.py sdist --formats=gztar,zip bdist_wheel
-        echo "Local linux: zip package is registered"
-        twine register -r $pypiserver dist/pydna*.zip
-        twine register -r $pypiserver dist/pydna*.zip
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
         twine upload -r $pypiserver dist/pydna*.gz  --skip-existing
         twine upload -r $pypiserver dist/pydna*.whl --skip-existing
