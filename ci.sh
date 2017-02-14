@@ -170,6 +170,7 @@ then
         appveyor PushArtifact dist/*
     elif [[ $CIRCLECI = true ]] # Linux
     then
+        python setup.py register
         python setup.py sdist --formats=zip
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
     elif [[ $(uname) = "Linux" ]]

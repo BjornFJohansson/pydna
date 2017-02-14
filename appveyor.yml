@@ -1,2 +1,3 @@
 install:
 - bash ci.sh
+build: off

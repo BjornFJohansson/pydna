@@ -9,12 +9,18 @@ for line in open('pydna/__init__.py'):
         exec(line.strip())
 
 from setuptools import setup
+
+with open("README.md") as f:
+    long_description = f.read()
+
 try:
-    from pypandoc import convert
-    read_md = lambda f: convert(f, 'rst')
+    from pypandoc import convert_file
 except ImportError:
     print("warning: pypandoc module not found, could not convert Markdown to RST")
-    read_md = lambda f: open(f, 'r').read()
+    with open("README.md", encoding="utf-8") as f:
+        long_description = f.read()
+else:
+    long_description = convert_file("README.md", 'rst')                                    
 
 setup(  name            = 'pydna',
         version=versioneer.get_version()[:5],
@@ -29,7 +35,7 @@ setup(  name            = 'pydna',
         description='''Contains classes and code for representing double
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
-        long_description=read_md('README.md'),
+        long_description=long_description,
         setup_requires=['pytest-runner', "appdirs", "biopython", "prettytable",  "networkx", "ordered-set", "pyparsing", "requests"],
         tests_require=['pytest',         "appdirs", "biopython", "prettytable",  "networkx", "ordered-set", "pyparsing", "requests"],
         install_requires = [             "appdirs", "biopython", "prettytable",  "networkx", "ordered-set", "pyparsing", "requests"],
