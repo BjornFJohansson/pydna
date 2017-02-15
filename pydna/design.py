@@ -47,7 +47,12 @@ def cloning_primers( template,
                      saltc=50.0,
                      formula = _tmbresluc):
 
-    '''This function can design primers for PCR amplification of a given sequence.
+    '''
+    **Do not use this function, use pydna.design.primer_design instead**
+    **This function will be deprecated and removed in a future version of pydna**
+    **This can be discussed in the google group https://groups.google.com/forum/#!forum/pydna ***
+    
+    This function can design primers for PCR amplification of a given sequence.
     This function accepts a Dseqrecord object containing the template sequence and
     returns a tuple cntaining two ::mod`Bio.SeqRecord.SeqRecord` objects describing
     the primers.
@@ -243,19 +248,27 @@ def primer_design(    template,
                       saltc=50.0,
                       formula = _tmbresluc):
 
-    '''This function designs a forward primer and a rverse primer for PCR amplification 
+    '''This function designs a forward primer and a reverse primer for PCR amplification 
     of a given template sequence.
     
-    The argument is a Dseqrecord object or equivalent containing the template sequence 
-    and returns a pydna.amplicon.Amplicon tuple cntaining two ::mod`Bio.SeqRecord.SeqRecord` objects describing
-    the primers.
-
-    Primer tails can optionally be given in the form of strings.
-
-    An predesigned primer can be given, either the forward or reverse primers. In this
-    case this function tries to design a primer with a Tm to match the given primer.
-
-
+    The template argument is a Dseqrecord object or equivalent containing the template sequence.
+    
+    The optional fp and rp arguments can contain an existing primer for the sequence (either the forward or reverse primer).
+    One or the other primers can be specified, not both (since then there is nothing to design!, use the pydna.amplify.pcr function instead).
+    
+    If one ofthe primers is given, the other primer is designed to match in terms of Tm.
+    If both primers are designed, they will be designed to target_tm
+    
+    fprimerc, rprimerc and saltc are formward and reverse primer concentration (nM). Saltc is the salt concentration. 
+    These arguments might affect how Tm is calculated.
+    
+    formula is a function that can take at least three arguments f( str, primerc=float, saltc=float).
+    There are several of these in the pydna.tm module.
+    
+    The function returns a pydna.amplicon.Amplicon class instance. This object has 
+    the object.forward_primer and object.reverse_primer properties which contain the designed primers.
+    
+    
     Parameters
     ----------
 
@@ -416,9 +429,11 @@ def integration_primers( up,
 
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
-
-    #maxlength  = minlength + max(len(fp_tail), len(rp_tail))
-
+    '''
+    **Do not use this function, use pydna.design.assembly_fragments instead**
+    **This function will be deprecated and removed in a future version of pydna**
+    **This can be discussed in the google group https://groups.google.com/forum/#!forum/pydna ***
+    '''
     return cloning_primers( cas,
                             minlength=minlength,
                             maxlength=maxlength,
@@ -445,7 +460,11 @@ def assembly_primers(templates,
                      formula    = _tmbresluc):
 
 
-    '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
+    '''**Do not use this function, use pydna.design.assembly_fragments instead**
+    **This function will be deprecated and removed in a future version of pydna**
+    **This can be discussed in the google group https://groups.google.com/forum/#!forum/pydna *** 
+    
+    This function return primer pairs that are useful for fusion of DNA sequences given in template.
     Given two sequences that we wish to fuse (a and b) to form fragment c.
 
     ::
