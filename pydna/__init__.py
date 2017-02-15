@@ -216,7 +216,7 @@ if _missing_modules_for_gel:
                      ", ".join(_missing_modules_for_gel))
 else:
     _logger.info("gel simulation will be available.")
-    #from pydna.gel import Gel
+    from pydna.gel import Gel
 
 class _PydnaWarning(Warning):
     """Pydna warning.
