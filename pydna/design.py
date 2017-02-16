@@ -706,8 +706,13 @@ def assembly_primers(templates,
 
 def assembly_fragments(f, overlap=35, maxlink=40):
     
-    '''This function return primer pairs that are useful for fusion of DNA sequences given in template.
-    Given two sequences that we wish to fuse (a and b) to form fragment c.
+    '''This function return a modified list of :mod:`pydna.amplicon.Amplicon` and other sequence objects where
+    primers have been tailed so that the fragments can be fused in the order they appear in the list 
+    by for example Gibson assembly or homologous rcombination.
+    
+    The primer tails are modified like in the example below.
+    
+    Given two sequences (a, b) that we wish to fuse to form fragment c.
 
     ::
 
@@ -766,7 +771,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                       ||||||||||||||||||||||||||||||
                       gagacgtAAATATAGCGTACTGAGAAGAAA
 
-    The fragments can be fused by any of the techniques mentioned earlier.
+    The fragments can be fused by any of the techniques mentioned earlier to form c:
 
     ::
 
@@ -775,48 +780,158 @@ def assembly_fragments(f, overlap=35, maxlink=40):
       tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
 
 
+    The first argument of this function is a list of sequence objects containing Amplicons and other similar objects.
+    
+    **At least every second sequence object needs to be an Amplicon**
+    
+    The overlap argument controls how many base pairs of overlap required between adjacent sequence fragments.
+    In the junction between Amplicons, tails with the length of about half of this value is added to the two primers
+    closest to the junction.
+    
+    ::
+        
+            >       <
+            Amplicon1
+                     Amplicon2
+                     >       <
+                     
+                     ⇣
+
+            >       <-
+            Amplicon1
+                     Amplicon2
+                    ->       <                     
+                     
+    In the case of an Amplicon adjacent to a Dseqrecord object, the tail will be twice as long (1*overlap) since the 
+    recombining sequence is present entierly on this primer:
+        
+    ::
+        
+            Dseqrecd1
+                     Amplicon1
+                     >       <
+                     
+                     ⇣
+
+            Dseqrecd1
+                     Amplicon1
+                   -->       <
+    
+    Note that if the sequence of DNA fragments starts or stops with Amplicons, the very first and very last prinmer
+    will not be modified i.e. assembles are always assumed to be linear. There are simple tricks around that depicted 
+    in the last two examples below.
+
+    ::
+
+        ------ Example 1: Linear assembly of PCR products (pydna.amplicon.Amplicon class objects) ------
+        
+        
+        >       <         >       <
+        Amplicon1         Amplicon3
+                 Amplicon2         Amplicon4
+                 >       <         >       <
+        
+                             ⇣
+                             pydna.design.assembly_fragments
+                             ⇣ 
+        
+        >       <-       ->       <-                       pydna.assembly.Assembly
+        Amplicon1         Amplicon3                         
+                 Amplicon2         Amplicon4     ➤  Amplicon1Amplicon2Amplicon3Amplicon4
+                ->       <-       ->       <
+        
+        
+        Example 2: Llinear assembly of alternating Amplicons and other fragments
+        
+        
+        >       <         >       <
+        Amplicon1         Amplicon2
+                 Dseqrecd1         Dseqrecd2
+                      
+                             ⇣
+                             pydna.design.assembly_fragments
+                             ⇣ 
+                          
+        >       <--     -->       <--                     pydna.assembly.Assembly
+        Amplicon1         Amplicon2
+                 Dseqrecd1         Dseqrecd2     ➤  Amplicon1Dseqrecd1Amplicon2Dseqrecd2
+        
+        
+        Example 3: Linear assembly of alternating Amplicons and other fragments
+        
+        
+        Dseqrecd1         Dseqrecd2
+                 Amplicon1         Amplicon2
+                 >       <       -->       <
+        
+                             ⇣
+                     pydna.design.assembly_fragments
+                             ⇣
+                                                          pydna.assembly.Assembly
+        Dseqrecd1         Dseqrecd2
+                 Amplicon1         Amplicon2     ➤  Dseqrecd1Amplicon1Dseqrecd2Amplicon2
+               -->       <--     -->       <
+        
+        
+        Example 4: Circular assembly of alternating Amplicons and other fragments
+        
+                         ->       <==
+        Dseqrecd1         Amplicon2
+                 Amplicon1         Dseqrecd1
+               -->       <-
+                             ⇣
+                             pydna.design.assembly_fragments
+                             ⇣ 
+                                                           pydna.assembly.Assembly
+                         ->       <==
+        Dseqrecd1         Amplicon2                    -Dseqrecd1Amplicon1Amplicon2-  
+                 Amplicon1                       ➤    |                             |
+               -->       <-                            -----------------------------
+        
+        ------ Example 5: Circular assembly of Amplicons
+        
+        >       <         >       <
+        Amplicon1         Amplicon3
+                 Amplicon2         Amplicon1
+                 >       <         >       <
+        
+                             ⇣
+                             pydna.design.assembly_fragments
+                             ⇣ 
+        
+        >       <=       ->       <-        
+        Amplicon1         Amplicon3                  
+                 Amplicon2         Amplicon1
+                ->       <-       +>       <
+        
+                             ⇣
+                     make new Amplicon using the Amplicon1.template and 
+                     the last fwd primer and the first rev primer.
+                             ⇣
+                                                           pydna.assembly.Assembly
+        +>       <=       ->       <-        
+         Amplicon1         Amplicon3                  -Amplicon1Amplicon2Amplicon3-
+                  Amplicon2                      ➤   |                             |
+                 ->       <-                          -----------------------------
+        
+        
 
 
     Parameters
     ----------
 
-    templates : list of Dseqrecord
-        list Dseqrecord object for which fusion primers should be constructed.
+    f : list of :mod:`pydna.amplicon.Amplicon` and other Dseqrecord like objects
+        list Amplicon and Dseqrecord object for which fusion primers should be constructed.
 
-    minlength : int, optional
+    overlap : int, optional
         Minimum length of the annealing part of the primer.
 
-    maxlength : int, optional
+    maxlink : int, optional
         Maximum length (including tail) for designed primers.
-
-    tot_length : int, optional
-        Maximum total length of a the primers
-
-    target_tm : float, optional
-        target tm for the primers
-
-    primerc : float, optional
-        Concentration of each primer in nM, set to 1000.0 nM by default
-
-    saltc  : float, optional
-        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
-
-    formula : function
-        formula used for tm calculation
-        this is the name of a function.
-        built in options are:
-
-        1. :func:`pydna.tm.tmbresluc` (default)
-        2. :func:`pydna.tm.basictm`
-        3. :func:`pydna.tm.tmstaluc98`
-        4. :func:`pydna.tm.tmbreslauer86`
-
-        These functions are imported from the :mod:`pydna.tm` module, but can be
-        substituted for some other custom made function.
 
     Returns
     -------
-    primer_pairs : list of tuples of :mod:`Bio.Seqrecord` objects
+    seqs : list of :mod:`pydna.amplicon.Amplicon` and other Dseqrecord like objects :mod:`pydna.amplicon.Amplicon` objects
 
         ::
 
