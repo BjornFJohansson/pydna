@@ -28,10 +28,26 @@ pydna.assembly module
     :undoc-members:
     :show-inheritance:
 
+pydna.common_sub_strings module
+-------------------------------
+
+.. automodule:: pydna.common_sub_strings
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pydna.contig module
 -------------------
 
 .. automodule:: pydna.contig
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pydna.design module
+-------------------
+
+.. automodule:: pydna.design
     :members:
     :undoc-members:
     :show-inheritance:
@@ -64,14 +80,6 @@ pydna.editor module
 -------------------
 
 .. automodule:: pydna.editor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pydna.findsubstrings_suffix_arrays_python module
-------------------------------------------------
-
-.. automodule:: pydna.findsubstrings_suffix_arrays_python
     :members:
     :undoc-members:
     :show-inheritance:
@@ -144,14 +152,6 @@ pydna.primer module
 -------------------
 
 .. automodule:: pydna.primer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pydna.primer_design module
---------------------------
-
-.. automodule:: pydna.primer_design
     :members:
     :undoc-members:
     :show-inheritance:
