@@ -276,9 +276,6 @@ class Anneal(object, metaclass = Memoize):
                                                     location_operator= "join",
                                                     strand = -1,
                                                     qualifiers = {"note":[rp.name]}))
-        #self.forward_primers = self.forward_primers
-        #self.reverse_primers = self.reverse_primers
-    
 
     @property
     def products(self):
