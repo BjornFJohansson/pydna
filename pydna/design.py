@@ -734,7 +734,8 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     fusion fusion PCR, Gibson assembly or in-vivo homologous recombination.
     The basic requirements for the primers for the three techniques are the same.
 
-    ::                          <-->
+    ::                          
+                                <-->
 
        _________ a _________           __________ b ________
       /                     \\         /                     \\
