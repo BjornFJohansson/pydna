@@ -863,14 +863,26 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                       ||||||||||||||||||||||||||||||
                       gagacgtAAATATAGCGTACTGAGAAGAAA
 
-    The fragments can be fused by any of the techniques mentioned earlier to form c:
+    The fragments can be fused by for example Gibson assembly:
 
     ::
 
+      agcctatcatcttggtctctgcaTTTATAT
+      ||||||||||||||||||||||||||||||
+      tcggatagtagaacca
+                      
+                                   TCGCATGACTCTTCTTT
+                      ||||||||||||||||||||||||||||||
+                      gagacgtAAATATAGCGTACTGAGAAGAAA 
+                      
+    to form c:
+
+    ::
+                
       agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT
       ||||||||||||||||||||||||||||||||||||||||||||||
       tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
-
+      
 
     The first argument of this function is a list of sequence objects containing 
     Amplicons and other similar objects.
