@@ -803,11 +803,11 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     
     **At least every second sequence object needs to be an Amplicon**
     
-    
-
-
-
-
+    This rule exists because if a sequence object is that is not a PCR product
+    is to be fused with another fragment, that other fragment needs to be an Amplicon
+    so that the primer of the other object can be modified to include the whole stretch
+    of sequence homology needed for the fusion. See the example below where a is a 
+    non-amplicon (a linear plasmid  vector for instance)
 
     ::
 
@@ -827,23 +827,20 @@ def assembly_fragments(f, overlap=35, maxlink=40):
            \\___________________ c ______________________/
 
 
-    Design tailed primers incorporating a part of the next or previous fragment to be assembled.
+    In this case only the forward primer of b is fitted with a tail with a part a:
 
     ::
 
 
       agcctatcatcttggtctctgca
       |||||||||||||||||||||||
-                      gagacgtAAATATA
-
-      |||||||||||||||||||||||
       tcggatagtagaaccagagacgt
 
 
                              TTTATATCGCATGACTCTTCTTT
                              |||||||||||||||||||||||
-
-                      ctctgcaTTTATAT
+                                              <AGAAA
+               tcttggtctctgcaTTTATAT
                              |||||||||||||||||||||||
                              AAATATAGCGTACTGAGAAGAAA
 
@@ -875,48 +872,6 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
     The first argument of this function is a list of sequence objects containing 
     Amplicons and other similar objects.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     The overlap argument controls how many base pairs of overlap required between 
     adjacent sequence fragments. In the junction between Amplicons, tails with the 
@@ -937,8 +892,9 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                      Amplicon2
                     ->       <                     
                      
-    In the case of an Amplicon adjacent to a Dseqrecord object, the tail will be twice as long (1*overlap) since the 
-    recombining sequence is present entierly on this primer:
+    In the case of an Amplicon adjacent to a Dseqrecord object, the tail will 
+    be twice as long (1*overlap) since the 
+    recombining sequence is present entirely on this primer:
         
     ::
         
@@ -952,13 +908,19 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                      Amplicon1
                    -->       <
     
-    Note that if the sequence of DNA fragments starts or stops with Amplicons, the very first and very last prinmer
-    will not be modified i.e. assembles are always assumed to be linear. There are simple tricks around that depicted 
-    in the last two examples below.
+    Note that if the sequence of DNA fragments starts or stops with an Amplicon, 
+    the very first and very last prinmer will not be modified i.e. assembles are 
+    always assumed to be linear. There are simple tricks around that for circular
+    assemblies depicted in the last two examples below.
+    
+    The maxlink arguments controls the cut off length for sequences that will be
+    synhtesized by adding them to primers for the adjacent fragment(s). The 
+    argument list may contain short spacers (such as spacers between fusion proteins).
+    
 
     ::
 
-        ------ Example 1: Linear assembly of PCR products (pydna.amplicon.Amplicon class objects) ------
+        Example 1: Linear assembly of PCR products (pydna.amplicon.Amplicon class objects) ------
         
         
         >       <         >       <
@@ -976,7 +938,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                 ->       <-       ->       <
         
         
-        Example 2: Llinear assembly of alternating Amplicons and other fragments
+        Example 2: Linear assembly of alternating Amplicons and other fragments
         
         
         >       <         >       <
@@ -1062,7 +1024,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
         Minimum length of the annealing part of the primer.
 
     maxlink : int, optional
-        Maximum length (including tail) for designed primers.
+        Maximum length of spacers that will be included in tails for designed primers.
 
     Returns
     -------
@@ -1123,12 +1085,8 @@ def assembly_fragments(f, overlap=35, maxlink=40):
      --------------------------------------------------------
     >>>
 
-
-
-
-
     '''
-    # sanity check
+    # sanity check for arguments
     nf = [item for item in f if len(item)>maxlink]
     if not all(hasattr(i[0],"template") or hasattr(i[1],"template") for i in zip(nf,nf[1:])):
         raise Exception("Every second fragment larger than maxlink has to be an Amplicon object")
