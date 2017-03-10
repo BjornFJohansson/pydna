@@ -1,7 +1,9 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
-1.2.0     2017-03-10 New and simpler primer design api, especially for gibson assembly primers. 
+1.2.0     2017-03-10 New and simpler primer design api, especially for gibson assembly primers. See docstrings
+                     Dseqrecord.find method that allows finding subsequences "over the edge" of circular 
+                     sequences.
 
 1.1.5     2016-12-16 added message for Dseqrecord write
 
