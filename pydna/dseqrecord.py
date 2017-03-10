@@ -777,6 +777,18 @@ class Dseqrecord(_SeqRecord):
         else:
             raise Exception("filename has to be a string, got", type(filename))
         return _display_html(_HTML(msg))
+    
+    def find(self, other):
+        # TODO allow strings, seqs, seqrecords or Dseqrecords 
+        # TODO check for linearity of other, raise exception if not
+        # TODO add tests and docstring for this method   
+        o = str(other.seq).upper()
+        
+        if self.linear:
+            s = str(self.seq).upper()
+        else:
+            s = str(self.seq).upper()+str(self.seq).upper()[:len(other)-1] #allow wrapping around origin
+        return s.find(o)
 
 
     def __str__(self):
