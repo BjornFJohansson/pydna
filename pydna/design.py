@@ -10,11 +10,12 @@
 This module contain functions for primer design.
 
 '''
-
-
+import warnings
 
 import math                                       as _math
 from operator import itemgetter                   as _itemgetter
+import os                                         as _os
+import copy                                       as _copy
 from Bio.Alphabet import Alphabet                 as _Alphabet
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
@@ -24,13 +25,16 @@ from pydna.tm import tmbresluc                    as _tmbresluc
 from pydna.dseqrecord import Dseqrecord           as _Dseqrecord
 from pydna._pretty import pretty_str              as _pretty_str
 from pydna.primer    import Primer                as _Primer
-import os                                         as _os
-import copy as _copy
 
 import logging    as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
+
 def print_primer_pair(*args,**kwargs):
+    from pydna import _PydnaDeprecationWarning
+    warnings.warn("This function has been deprecated."
+                  "consider using the primer_design"
+                  "function instead", _PydnaDeprecationWarning)
     f,r = cloning_primers(*args,**kwargs)
     return _pretty_str("\n"+f.format("fasta")+"\n"+r.format("fasta") + "\n")
 
@@ -46,6 +50,10 @@ def cloning_primers( template,
                      rprimerc=1000.0,
                      saltc=50.0,
                      formula = _tmbresluc):
+    from pydna import _PydnaDeprecationWarning
+    warnings.warn("This function has been deprecated."
+                  "consider using the primer_design"
+                  "function instead", _PydnaDeprecationWarning)
 
     '''
     **Do not use this function, use pydna.design.primer_design instead**
@@ -429,6 +437,11 @@ def integration_primers( up,
 
     fp_tail = str(up[-min_olap:].seq) + str(uplink.seq)
     rp_tail = str(dn[:min_olap].rc().seq) + str(dnlink.rc().seq)
+    from pydna import _PydnaDeprecationWarning
+    warnings.warn("This function has been deprecated."
+                  "consider using the primer_design"
+                  "function instead", _PydnaDeprecationWarning)
+    
     '''
     **Do not use this function, use pydna.design.assembly_fragments instead**
     **This function will be deprecated and removed in a future version of pydna**
@@ -458,6 +471,10 @@ def assembly_primers(templates,
                      rprimerc   = 1000.0,
                      saltc      = 50.0,
                      formula    = _tmbresluc):
+    from pydna import _PydnaDeprecationWarning
+    warnings.warn("This function has been deprecated."
+              "consider using the primer_design"
+              "function instead", _PydnaDeprecationWarning)
 
 
     '''**Do not use this function, use pydna.design.assembly_fragments instead**
@@ -706,32 +723,33 @@ def assembly_primers(templates,
 
 def assembly_fragments(f, overlap=35, maxlink=40):
     
-    '''This function return a modified list of :mod:`pydna.amplicon.Amplicon` and other sequence objects where
-    primers have been tailed so that the fragments can be fused in the order they appear in the list 
-    by for example Gibson assembly or homologous rcombination.
+    '''This function return a list of :mod:`pydna.amplicon.Amplicon` objects where 
+    primers have been modified with tails so that the fragments can be fused in 
+    the order they appear in the list by for example Gibson assembly or homologous 
+    recombination.
     
-    The primer tails are modified like in the example below.
+    Given that we have two linear :mod:`pydna.amplicon.Amplicon` objects a and b 
     
-    Given two sequences (a, b) that we wish to fuse to form fragment c.
+    we can modify the reverse primer of a and forward primer of b with tails to allow 
+    fusion fusion PCR, Gibson assembly or in-vivo homologous recombination.
+    The basic requirements for the primers for the three techniques are the same.
 
-    ::
+    ::                          <-->
 
        _________ a _________           __________ b ________
       /                     \\         /                     \\
-      agcctatcatcttggtctctgca   <-->  TTTATATCGCATGACTCTTCTTT
+      agcctatcatcttggtctctgca         TTTATATCGCATGACTCTTCTTT
       |||||||||||||||||||||||         |||||||||||||||||||||||
-      tcggatagtagaaccagagacgt   <-->  AAATATAGCGTACTGAGAAGAAA
+                       <gacgt                          <AGAAA
+      agcct>                          TTTAT>
+      |||||||||||||||||||||||         |||||||||||||||||||||||
+      tcggatagtagaaccagagacgt         AAATATAGCGTACTGAGAAGAAA
 
 
            agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT
            ||||||||||||||||||||||||||||||||||||||||||||||
            tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
            \\___________________ c ______________________/
-
-
-    We can design tailed primers to fuse a and b by fusion PCR, Gibson assembly or
-    in-vivo homologous recombination. The basic requirements for the primers for
-    the three techniques are the same.
 
 
     Design tailed primers incorporating a part of the next or previous fragment to be assembled.
@@ -780,12 +798,129 @@ def assembly_fragments(f, overlap=35, maxlink=40):
       tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
 
 
-    The first argument of this function is a list of sequence objects containing Amplicons and other similar objects.
+    The first argument of this function is a list of sequence objects containing 
+    Amplicons and other similar objects.
     
     **At least every second sequence object needs to be an Amplicon**
     
-    The overlap argument controls how many base pairs of overlap required between adjacent sequence fragments.
-    In the junction between Amplicons, tails with the length of about half of this value is added to the two primers
+    
+
+
+
+
+
+    ::
+
+       _________ a _________           __________ b ________
+      /                     \\         /                     \\
+      agcctatcatcttggtctctgca   <-->  TTTATATCGCATGACTCTTCTTT
+      |||||||||||||||||||||||         |||||||||||||||||||||||
+      tcggatagtagaaccagagacgt                          <AGAAA
+                                      TTTAT>
+                                      |||||||||||||||||||||||
+                                <-->  AAATATAGCGTACTGAGAAGAAA
+
+
+           agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT
+           ||||||||||||||||||||||||||||||||||||||||||||||
+           tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
+           \\___________________ c ______________________/
+
+
+    Design tailed primers incorporating a part of the next or previous fragment to be assembled.
+
+    ::
+
+
+      agcctatcatcttggtctctgca
+      |||||||||||||||||||||||
+                      gagacgtAAATATA
+
+      |||||||||||||||||||||||
+      tcggatagtagaaccagagacgt
+
+
+                             TTTATATCGCATGACTCTTCTTT
+                             |||||||||||||||||||||||
+
+                      ctctgcaTTTATAT
+                             |||||||||||||||||||||||
+                             AAATATAGCGTACTGAGAAGAAA
+
+    PCR products with flanking sequences are formed in the PCR process.
+
+    ::
+
+      agcctatcatcttggtctctgcaTTTATAT
+      ||||||||||||||||||||||||||||||
+      tcggatagtagaaccagagacgtAAATATA
+                      \\____________/
+
+                         identical
+                         sequences
+                       ____________
+                      /            \\
+                      ctctgcaTTTATATCGCATGACTCTTCTTT
+                      ||||||||||||||||||||||||||||||
+                      gagacgtAAATATAGCGTACTGAGAAGAAA
+
+    The fragments can be fused by any of the techniques mentioned earlier to form c:
+
+    ::
+
+      agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT
+      ||||||||||||||||||||||||||||||||||||||||||||||
+      tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
+
+
+    The first argument of this function is a list of sequence objects containing 
+    Amplicons and other similar objects.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    The overlap argument controls how many base pairs of overlap required between 
+    adjacent sequence fragments. In the junction between Amplicons, tails with the 
+    length of about half of this value is added to the two primers
     closest to the junction.
     
     ::
@@ -935,26 +1070,28 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
         ::
 
-          [(forward_primer_1, reverse_primer_1),
-           (forward_primer_2, reverse_primer_2), ...]
+          [Amplicon1,
+           Amplicon2, ...]
 
 
     Examples
     --------
 
-    >>> from pydna.dseqrecord import Dseqrecord
-    >>> from pydna.assembly import Assembly
-    >>> from pydna.design import assembly_primers
+    >>> from pydna.dseqrecord import Dseqrecord    
+    >>> from pydna.design import primer_design
+    >>> a=primer_design(Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg"))
+    >>> b=primer_design(Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc"))
+    >>> c=primer_design(Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt"))
+    >>> from pydna.design import assembly_fragments
+    >>> # We would like a circular recombination, so the first sequence has to be repeated
+    >>> fa1,fb,fc,fa2 = assembly_fragments([a,b,c,a])
+    >>> # Since all fragments are Amplicons, we need to extract the rp of the 1st and fp of the last fragments.
     >>> from pydna.amplify import pcr
-    >>> a=Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
-    >>> b=Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
-    >>> c=Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
-    >>> primer_pairs = assembly_primers([a,b,c], circular = True)
-    >>> p=[]
-    >>> for t, (f,r) in zip([a,b,c], primer_pairs): p.append(pcr(f,r,t))
-    >>> p
+    >>> fa = pcr(fa2.forward_primer, fa1.reverse_primer, a)
+    >>> [fa,fb,fc]
     [Amplicon(100), Amplicon(101), Amplicon(102)]
-    >>> assemblyobj = Assembly(p)
+    >>> from pydna.assembly import Assembly
+    >>> assemblyobj = Assembly([fa,fb,fc])
     >>> assemblyobj
     Assembly:
     Sequences........................: [100] [101] [102]

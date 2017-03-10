@@ -1,8 +1,9 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
-next      ?         Removed the path argument in 
+1.2.0     2017-03-10 New and simpler primer design api, especially for gibson assembly primers. 
 
+1.1.5     2016-12-16 added message for Dseqrecord write
 
 1.1.4     2016-12-15 split some files into more logical and smaller chunks.
                      The Primer class is now the same in primer design and amplify modules
