@@ -115,6 +115,7 @@ then
         rm Miniconda_latest.sh
     fi
     conda update -yq conda
+    conda config --set always_yes yes --set show_channel_urls yes
     conda update -yq pip
     conda install conda-verify -yq
     conda install jinja2 -yq
