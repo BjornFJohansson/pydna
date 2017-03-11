@@ -1,6 +1,7 @@
 name: testenv36
 channels:
 - BjornFJohansson
+- conda-forge
 dependencies:
 - python=3.6
 - appdirs
