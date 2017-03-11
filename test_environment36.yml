@@ -11,6 +11,8 @@ dependencies:
 - ordered-set
 - pyparsing
 
+- requests
+
 - ipython
 - jupyter
 - numpy
