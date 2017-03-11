@@ -1,8 +1,8 @@
-name: testenv
+name: testenv36
 channels:
 - BjornFJohansson
 dependencies:
-- python=3.5
+- python=3.6
 - appdirs
 - biopython
 - prettytable

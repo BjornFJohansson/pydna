@@ -1,0 +1,31 @@
+name: testenv35
+channels:
+- BjornFJohansson
+dependencies:
+- python=3.5
+- appdirs
+- biopython
+- prettytable
+- networkx
+- ordered-set
+- pyparsing
+
+- ipython
+- jupyter
+- numpy
+- scipy
+- matplotlib
+- mpldatacursor
+- pint
+
+- pytest
+- coverage
+- python-coveralls
+- pytest-cov
+- pytest-runner
+- nbval
+
+- setuptools
+
+
+

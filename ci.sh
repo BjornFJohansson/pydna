@@ -127,29 +127,40 @@ then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
     conda-build -V
-    conda create -yq -n pydnapipbuild   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-    conda create -yq -n pydnacondabuild python=3.5 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
+    conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client urllib3 twine pypandoc pandoc
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
-    source activate pydnacondabuild
-    which python
-    python --version
-    pth="$(conda build . --output)"
-    echo $pth
-    #conda info -a
-    conda build .
+    #source activate pydnacondabuild35
+    #which python
+    #python --version
+    pth1="$(conda build . --output --py 3.5)"
+    pth2="$(conda build . --output --py 3.6)"
+    echo $pth1
+    echo $pth2
+    source activate pydnacondabuild35
+    conda build --python 3.5 .
+    source activate pydnacondabuild36
+    conda build --python 3.6 .
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
-        anaconda -t $TOKEN upload $pth --label $condalabel --force
+        anaconda -t $TOKEN upload $pth1 --label $condalabel --force
+        anaconda -t $TOKEN upload $pth2 --label $condalabel --force
     else
-        anaconda upload $pth --label $condalabel --force
+        anaconda upload $pth1 --label $condalabel --force
+        anaconda upload $pth2 --label $condalabel --force
     fi
-    source activate pydnapipbuild
-    conda upgrade -yq pip
 
     if [[ $TRAVIS = true ]] # MacOSX
     then
+        source activate pydnapipbuild35
+        conda upgrade -yq pip
+        python setup.py build bdist_wheel bdist_egg
+        source activate pydnapipbuild36
+        conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]]
         then
@@ -160,7 +171,12 @@ then
         fi
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
     then
+        source activate pydnapipbuild35
+        conda upgrade -yq pip
         python setup.py build bdist_wininst
+        source activate pydnapipbuild36
+        conda upgrade -yq pip
+        python setup.py build bdist_wininst        
         if [[ $condalabel = "main" ]]
         then
             twine upload -r $pypiserver dist/pydna*.exe --skip-existing
@@ -171,11 +187,22 @@ then
     elif [[ $CIRCLECI = true ]] # Linux
     then
         python setup.py register
+        source activate pydnapipbuild35
+        conda upgrade -yq pip
         python setup.py sdist --formats=zip
+        source activate pydnapipbuild36
+        conda upgrade -yq pip
+        python setup.py sdist --formats=zip        
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
     elif [[ $(uname) = "Linux" ]]
     then
         echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
+        python setup.py register
+        source activate pydnapipbuild35
+        conda upgrade -yq pip
+        python setup.py sdist --formats=zip bdist_wheel
+        source activate pydnapipbuild36
+        conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
         if [[ $condalabel = "main" ]]
@@ -195,9 +222,16 @@ then
     ls dist
 else
     echo "create test environment"
-    conda env create -f test_environment.yml -q
-    source activate testenv
+    conda env create -f test_environment35.yml -q
+    source activate testenv35
     which python
     python --version
     python run_test.py
+    conda env create -f test_environment36.yml -q
+    source activate testenv36
+    which python
+    python --version
+    python run_test.py
+    conda remove -n testenv35 --all
+    conda remove -n testenv36 --all
 fi

@@ -33,7 +33,6 @@ requirements:
 
         - ipython
         - jupyter
-        - numpy
         - scipy
         - matplotlib
         - mpldatacursor
