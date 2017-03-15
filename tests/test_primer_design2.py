@@ -58,6 +58,20 @@ def test_primer_design_third_Dseqrecord():
     result = z.linear_products[0]
     assert result.seq == (frags[0]+frags[1]+frags[2]).seq
     
+def test_primer_design_first_and_third_Dseqrecord():
+    x = [primer_design(f) for f in frags]
+    y = assembly_fragments([frags[0],x[1],frags[2]], 20)
+    z = Assembly(y, limit=20)
+    result = z.linear_products[0]
+    assert result.seq == (frags[0]+frags[1]+frags[2]).seq 
+
+def test_primer_design_same_first_and_third_Dseqrecord():
+    x = [primer_design(f) for f in frags]
+    y = assembly_fragments([frags[0],x[1],frags[0]], 20)
+    z = Assembly(y, limit=20)
+    result = z.circular_products[0]
+    assert result.cseguid()  == (frags[0]+frags[1]).looped().cseguid()    
+    
 def test_primer_design_linker_first():
     x = [primer_design(f) for f in frags]
     y = assembly_fragments([ bam, x[0], x[1], x[2] ], 20)

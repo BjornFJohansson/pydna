@@ -223,13 +223,14 @@ then
     ls dist
 else
     echo "create test environment for python 3.5"
-    conda env create -f test_environment35.yml -q
+    conda env create -f test_environment35.yml
     source activate testenv35
     which python
     python --version
     python run_test.py
+    echo
     echo "create test environment for python 3.6"
-    conda env create -f test_environment36.yml -q
+    conda env create -f test_environment36.yml
     source activate testenv36
     which python
     python --version

@@ -143,42 +143,42 @@ except OSError:
 
 
 
-from pydna.amplify    import Anneal
-from pydna.amplify    import pcr
-from pydna.amplify    import nopcr
-
-from pydna.assembly   import Assembly
-
-from pydna.genbank    import Genbank
-from pydna.genbank    import genbank
-
-from pydna.download   import download_text
-
-from pydna.dseq       import Dseq
-from pydna.dseqrecord import Dseqrecord
-
-from pydna.readers    import read
-from pydna.readers    import read_primer
-
-from pydna.parsers    import parse
-from pydna.parsers    import parse_primers
-
-from pydna.editor             import Editor
-from pydna.common_sub_strings import common_sub_strings
-
-from pydna.design      import cloning_primers
-from pydna.design      import assembly_primers
-from pydna.design      import integration_primers
-
-from pydna.design      import primer_design
-from pydna.design      import assembly_fragments
-
-from pydna.utils              import eq
-from pydna.utils              import shift_origin
-from pydna.utils              import pairwise
-from pydna.utils              import cseguid
-
-from pydna.genbankfixer       import gbtext_clean
+#from pydna.amplify    import Anneal
+#from pydna.amplify    import pcr
+#from pydna.amplify    import nopcr
+#
+#from pydna.assembly   import Assembly
+#
+#from pydna.genbank    import Genbank
+#from pydna.genbank    import genbank
+#
+#from pydna.download   import download_text
+#
+#from pydna.dseq       import Dseq
+#from pydna.dseqrecord import Dseqrecord
+#
+#from pydna.readers    import read
+#from pydna.readers    import read_primer
+#
+#from pydna.parsers    import parse
+#from pydna.parsers    import parse_primers
+#
+#from pydna.editor             import Editor
+#from pydna.common_sub_strings import common_sub_strings
+#
+#from pydna.design      import cloning_primers
+#from pydna.design      import assembly_primers
+#from pydna.design      import integration_primers
+#
+#from pydna.design      import primer_design
+#from pydna.design      import assembly_fragments
+#
+#from pydna.utils              import eq
+#from pydna.utils              import shift_origin
+#from pydna.utils              import pairwise
+#from pydna.utils              import cseguid
+#
+#from pydna.genbankfixer       import gbtext_clean
 
 
 
@@ -216,7 +216,7 @@ if _missing_modules_for_gel:
                      ", ".join(_missing_modules_for_gel))
 else:
     _logger.info("gel simulation will be available.")
-    from pydna.gel import Gel
+    #from pydna.gel import Gel
 
 class _PydnaWarning(Warning):
     """Pydna warning.
