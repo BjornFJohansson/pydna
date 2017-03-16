@@ -1,6 +1,15 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
+2.0.0a1              removed setting functions for cache in __init_ and the delete_cache function for simplicity
+                     commented out these functions
+                     pydna.design.print_primer_pair
+                     pydna.design.cloning_primers 
+                     pydna.design.integration_primers
+                     pydna.design.assembly_primers
+2.0.0a0   2017-03-15 alpha release, removed imports in __init__
+
+
 1.2.0     2017-03-10 New and simpler primer design api, especially for gibson assembly primers. See docstrings
                      Dseqrecord.find method that allows finding subsequences "over the edge" of circular 
                      sequences.

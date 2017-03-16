@@ -4,8 +4,6 @@
 import os               as _os
 import sys              as _sys
 import subprocess       as _subprocess
-import errno            as _errno
-import glob             as _glob
 import logging          as _logging
 import logging.handlers as _handlers
 import appdirs          as _appdirs
@@ -64,9 +62,6 @@ which can have three different values:
                 if possible and as much details as possible.
                 http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
-
-
-
 # create config directory
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir", _appdirs.user_config_dir("pydna"))
 try:
@@ -95,7 +90,7 @@ else: # otherwise it is created with default settings
                             'primers' : ''}
         _parser.write(f)
 
-# Seven pydna related environmental variables are set from pydna.ini if they are not set already
+# pydna related environmental variables are set from pydna.ini if they are not set already
 _mainsection = _parser["main"]
 _os.environ["pydna_loglevel"] = _os.getenv("pydna_loglevel", _mainsection.get("loglevel",str(_logging.WARNING)))
 _os.environ["pydna_email"]    = _os.getenv("pydna_email",    _mainsection.get("email","someone@example.com"))
@@ -104,8 +99,6 @@ _os.environ["pydna_log_dir"]  = _os.getenv("pydna_log_dir",  _mainsection.get("l
 _os.environ["pydna_cache"]    = _os.getenv("pydna_cache",    _mainsection.get("cache", 'nocache'))
 _os.environ["pydna_ape"]      = _os.getenv("pydna_ape",      _mainsection.get("ape",'put/path/to/ape/here'))
 _os.environ["pydna_primers"]  = _os.getenv("pydna_primers",  _mainsection.get("primers", ''))
-
-
 
 # Check sanity of pydna_cache variable
 if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
@@ -141,47 +134,6 @@ except OSError:
     else:
         raise
 
-
-
-#from pydna.amplify    import Anneal
-#from pydna.amplify    import pcr
-#from pydna.amplify    import nopcr
-#
-#from pydna.assembly   import Assembly
-#
-#from pydna.genbank    import Genbank
-#from pydna.genbank    import genbank
-#
-#from pydna.download   import download_text
-#
-#from pydna.dseq       import Dseq
-#from pydna.dseqrecord import Dseqrecord
-#
-#from pydna.readers    import read
-#from pydna.readers    import read_primer
-#
-#from pydna.parsers    import parse
-#from pydna.parsers    import parse_primers
-#
-#from pydna.editor             import Editor
-#from pydna.common_sub_strings import common_sub_strings
-#
-#from pydna.design      import cloning_primers
-#from pydna.design      import assembly_primers
-#from pydna.design      import integration_primers
-#
-#from pydna.design      import primer_design
-#from pydna.design      import assembly_fragments
-#
-#from pydna.utils              import eq
-#from pydna.utils              import shift_origin
-#from pydna.utils              import pairwise
-#from pydna.utils              import cseguid
-#
-#from pydna.genbankfixer       import gbtext_clean
-
-
-
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
 
@@ -216,7 +168,6 @@ if _missing_modules_for_gel:
                      ", ".join(_missing_modules_for_gel))
 else:
     _logger.info("gel simulation will be available.")
-    #from pydna.gel import Gel
 
 class _PydnaWarning(Warning):
     """Pydna warning.
@@ -274,29 +225,6 @@ def _open_folder(pth):
         except OSError:
             return "no cache to open."
             
-def delete_cache(categories=[ "amplify*", "assembly*", "genbank*", "web*", "synced*" ]):
-    msg = "cache file deletion\n"
-    for cat in categories:
-        files = _glob.glob(_os.path.join( _os.environ["pydna_data_dir"], cat))
-        for file_ in files:
-            msg += file_
-            try:
-                _os.remove( file_ )
-                msg += " deleted.\n"
-            except OSError as e:
-                if e._errno == _errno.ENOENT:
-                    msg += " no file to delete.\n"
-    return _pretty_str(msg)
-
-def set_nocache():
-    _os.environ["pydna_cache"]="nocache"
-def set_cached():
-    _os.environ["pydna_cache"]="cached"
-def set_refresh():
-    _os.environ["pydna_cache"] ="refresh"
-def set_compare():
-    _os.environ["pydna_cache"] ="compare"
-
 def get_env():
     _table = _prettytable.PrettyTable(["Variable", "Value"])
     _table.set_style(_prettytable.DEFAULT)
