@@ -135,9 +135,6 @@ then
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
-    #source activate pydnacondabuild35
-    #which python
-    #python --version
     pth1="$(conda build . --output --py 3.5)"
     pth2="$(conda build . --output --py 3.6)"
     echo $pth1
@@ -168,7 +165,7 @@ then
             twine upload -r $pypiserver dist/pydna*.whl --skip-existing
             twine upload -r $pypiserver dist/pydna*.egg --skip-existing
         else
-            echo "pre release, no upload to pypi."
+            echo "prerelease, no upload to pypi."
         fi
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
     then
@@ -177,13 +174,8 @@ then
         python setup.py build bdist_wininst
         source activate pydnapipbuild36
         conda upgrade -yq pip
-        python setup.py build bdist_wininst        
-        if [[ $condalabel = "main" ]]
-        then
-            twine upload -r $pypiserver dist/pydna*.exe --skip-existing
-        else
-            echo "pre release, no upload to pypi."
-        fi
+        python setup.py build bdist_wininst
+        twine upload -r $pypiserver dist/pydna*.exe --skip-existing
         appveyor PushArtifact dist/*
     elif [[ $CIRCLECI = true ]] # Linux
     then
@@ -206,12 +198,7 @@ then
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-        if [[ $condalabel = "main" ]]
-        then
-            twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-        else
-            echo "pre release, no upload to pypi."
-        fi
+        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
