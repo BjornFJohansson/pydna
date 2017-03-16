@@ -4,19 +4,19 @@
 test cut
 '''
 import pytest
-import sys
 
-from pydna.readers  import read
-from pydna.amplify  import pcr
+from pydna.readers       import read
+from pydna.amplify       import pcr
 
-from pydna.design import cloning_primers
+from pydna.design        import primer_design
 from pydna.dseqrecord    import Dseqrecord
 
 from Bio.Restriction import EcoRI
 
 def test_cut_feat():
     puc19 = read('PUC19_MarkBudde.gb')
-    pf, pr = cloning_primers(puc19)
+    ampl = primer_design(puc19.tolinear())
+    pf, pr = ampl.forward_primer, ampl.reverse_primer
     pcrProd = pcr(pf, pr, puc19)
     assert len(pcrProd.features) == 23
     #print len(pcrProd.cut(EcoRI)[1].features)

@@ -38,7 +38,7 @@ del _get_versions
 
 
 '''
-Pydna caches results from the assembly dsdna and amplify
+Pydna can cache results from the assembly dsdna and amplify
 modules. pydna sets an environmental variable "pydna_cache"
 which can have three different values:
 
