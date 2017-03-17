@@ -120,7 +120,11 @@ Please post a message in the [google group](https://groups.google.com/d/forum/py
 for pydna if you have problems, questions or comments.
 
 Feedback is very welcome!
+## Who is using pydna?
 
+[An Automated Protein Synthesis Pipeline with Transcriptic and Snakemake](http://blog.booleanbiotech.com/transcriptic_protein_synthesis_pipeline.html)
+
+[Pyviko: an automated Python tool to design gene knockouts in complex viruses with overlapping genes](https://www.ncbi.nlm.nih.gov/pubmed/28061810)
 
 ## Documentation
 
@@ -228,7 +232,6 @@ The pydna conda package installs the optional requirements listed above as well 
 - [python-coveralls >= 2.9.0](https://pypi.python.org/pypi/python-coveralls)
 - [coverage >= 3.7.1](https://pypi.python.org/pypi/coverage)
 - [pytest-cov >= 2.3.1](https://pypi.python.org/pypi/pytest-cov)
-
 
 ## Automatic testing
 

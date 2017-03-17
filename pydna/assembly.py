@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 '''This module provides functions for assembly of sequences by homologous recombination and other
 related techniques. Given a list of sequences (Dseqrecords), all sequences will be analyzed for
-overlapping regions of DNA (common substrings).
 
 The assembly algorithm is based on graph theory where each overlapping region forms a node and
 sequences separating the overlapping regions form edges.
@@ -64,12 +63,12 @@ class _Fragment(_Dseqrecord):
     def __str__(self):
         return ("Fragment alignment {}\n").format(self.alignment)+super().__str__()
 
-class Memoize(type):
+class _Memoize(type):
     @_memorize("Assembly")
     def __call__(cls, *args, **kwargs):
         return super().__call__(*args, **kwargs)
 
-class Assembly(object, metaclass = Memoize):
+class Assembly(object, metaclass = _Memoize):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
     The Assembly is meant to replace the Assembly method as it is easier to use.
     Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.

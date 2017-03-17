@@ -28,6 +28,3 @@ if __name__=="__main__":
     import doctest
     doctest.testmod(verbose=True)
     _os.environ["pydna_cache"]=cache
-    
-    
-

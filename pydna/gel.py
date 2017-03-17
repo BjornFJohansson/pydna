@@ -796,7 +796,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     bandlengths = bandlengths.magnitude
     bandwidths = [[bw.magnitude for bw in bwlane] for bwlane in bandwidths]
     fig = _plt.figure()
-    ax1 = fig.add_subplot(111, axisbg=str(back_col))
+    ax1 = fig.add_subplot(111, facecolor=str(back_col))
     ax1.xaxis.tick_top()
     ax1.yaxis.set_ticks_position('left')
     ax1.spines['left'].set_position(('outward', 8))

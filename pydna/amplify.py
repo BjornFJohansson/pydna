@@ -103,12 +103,12 @@ def _annealing_positions(primer, template, limit=15):
         return results
     return []
     
-class Memoize(type):
+class _Memoize(type):
     @_memorize("Anneal")
     def __call__(cls, *args, **kwargs):
         return super().__call__(*args, **kwargs)
 
-class Anneal(object, metaclass = Memoize):
+class Anneal(object, metaclass = _Memoize):
     '''
 
     Parameters
