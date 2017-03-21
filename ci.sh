@@ -160,13 +160,8 @@ then
         source activate pydnapipbuild36
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
-        if [[ $condalabel = "main" ]]
-        then
-            twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-            twine upload -r $pypiserver dist/pydna*.egg --skip-existing
-        else
-            echo "prerelease, no upload to pypi."
-        fi
+        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
+        twine upload -r $pypiserver dist/pydna*.egg --skip-existing
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
     then
         source activate pydnapipbuild35
@@ -223,6 +218,6 @@ else
     python --version
     python run_test.py
     source activate root
-    conda remove -n testenv35 --all
-    conda remove -n testenv36 --all
+    conda remove -n testenv35 --all -q
+    conda remove -n testenv36 --all -q
 fi

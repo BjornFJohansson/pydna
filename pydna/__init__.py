@@ -40,26 +40,25 @@ Pydna can cache results from the assembly dsdna and amplify
 modules. pydna sets an environmental variable "pydna_cache"
 which can have three different values:
 
-"cached"        A cache directory if created.
+    
+"nocache"       Results are not written to or read from cache.
+                No cache directory is created.
+                No cache key is calculated.
+                
+"cached"        *This is the default.*
+                A cache directory if created.
                 if possible, cached results are returned.
                 if cached results are not available,
-                new results are created and cached.
-                This is the default.
-
-"nocache"       Results are not written or read from cache.
-                No cache directory is created.
-
-"refresh"       new results are made and old are overwritten if they
+                new results are created and saved to cache.
+                
+"refresh"       New results are made and old are overwritten if they
                 exist.
 
-"compare"       The compare functionality is not implemented yet.
-                Results are made new and compared with cached results.
+"compare"       Results are made new and compared with cached results.
                 If cached results are not available an exception is raised.
 
-                If new results are not identical with cached, a warning is raised
-                and details written to a log located in the data_dir
-                The log entry should give the name of the calling script
-                if possible and as much details as possible.
+                If new results are not identical with cached, 
+                a log entry is made. Use loglevel 10 to see these messages.
                 http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
 # create config directory
@@ -85,7 +84,8 @@ else: # otherwise it is created with default settings
                             'email'   : "someone@example.com",
                             'data_dir': _appdirs.user_data_dir("pydna"),
                             'log_dir' : _appdirs.user_log_dir("pydna"),
-                            'cache'   : 'nocache',
+                            'cache'   : 'cached',
+                            'cached_funcs':'Genbank_nucleotide #Anneal,Assembly,download_text,Dseqrecord_synced,Genbank_nucleotide',
                             'ape'     : 'put/path/to/ape/here',
                             'primers' : ''}
         _parser.write(f)
@@ -97,6 +97,7 @@ _os.environ["pydna_email"]    = _os.getenv("pydna_email",    _mainsection.get("e
 _os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir", _mainsection.get("data_dir",_appdirs.user_data_dir("pydna")))
 _os.environ["pydna_log_dir"]  = _os.getenv("pydna_log_dir",  _mainsection.get("log_dir",_appdirs.user_log_dir("pydna")))
 _os.environ["pydna_cache"]    = _os.getenv("pydna_cache",    _mainsection.get("cache", 'nocache'))
+_os.environ["pydna_cached_funcs"] = _os.getenv("cached_funcs", _mainsection.get("cached_funcs", 'Genbank_nucleotide'))
 _os.environ["pydna_ape"]      = _os.getenv("pydna_ape",      _mainsection.get("ape",'put/path/to/ape/here'))
 _os.environ["pydna_primers"]  = _os.getenv("pydna_primers",  _mainsection.get("primers", ''))
 

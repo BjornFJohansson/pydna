@@ -12,6 +12,8 @@ from pydna.readers import read as _read
 from pydna.genbankrecord import GenbankRecord as _GenbankRecord
 from pydna.utils  import memorize as _memorize
 
+#TODO http://httpbin.org/ use for testing?
+
 class Genbank(object):
     '''Class to facilitate download from genbank.
 

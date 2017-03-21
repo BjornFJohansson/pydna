@@ -437,11 +437,16 @@ def memorize(filename):
             _module_logger.info( "pydna_cache = %s", _os.getenv("pydna_cache") )
             _module_logger.info( "cache filename = %s", filename )
             fresh = cached = None
-            if not _os.environ["pydna_cache"] in ("cached","nocache","refresh","compare"):
+            if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
                 raise Exception("pydna_cache is {}, should be compare,cached,nocache or refresh".format(_os.environ["pydna_cache"]))
+            if _os.environ["pydna_cache"] == "nocache" or filename not in _os.environ["pydna_cached_funcs"].split(","):
+                _module_logger.info("made it new!")
+                return f(*args, **kwargs)                 
             cached = refresh = False
+
             key = _base64.urlsafe_b64encode(_hashlib.sha1(_pickle.dumps((args, kwargs))).digest()).decode("ascii")
             _module_logger.info( "key = %s", key )
+
             if _os.environ["pydna_cache"] in ("cached","compare"):
                 cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], filename), writeback=False)
                 try:
@@ -454,12 +459,12 @@ def memorize(filename):
                         refresh = True
                 cache.close()
             _module_logger.info("refresh = %s", refresh)
-            if refresh or _os.environ["pydna_cache"] in ("compare","refresh","nocache"):
+            if refresh or _os.environ["pydna_cache"] in ("compare","refresh"):
                 fresh = f(*args, **kwargs)
                 _module_logger.info("made it new!")
             
             if _os.environ["pydna_cache"] == "compare":
-                if fresh==cached:
+                if fresh == cached:
                     _module_logger.info('cache ok for key %s in %s', key, filename)
                 else:
                     _module_logger.warning('cache different from fresh for key %s in %s', key, filename)
