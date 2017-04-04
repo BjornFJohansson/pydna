@@ -47,7 +47,7 @@ def test_primer_Design_with_linker():
 
     assert asm1.linear_products[0].seguid(),(b+l+c).seguid() == 'l95igKB8iKAKrvvqE9CYksyNx40'
 
-    frags = assembly_fragments( (primer_design(b),l,primer_design(c), primer_design(b)) )
+    frags = assembly_fragments( (primer_design(b), l, primer_design(c), primer_design(b)) )
     
     b2 = pcr(frags[-1].forward_primer, frags[0].reverse_primer, b)
     

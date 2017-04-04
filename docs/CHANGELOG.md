@@ -1,14 +1,21 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
+2.0.0a3   2017-04-04 added the all module, from pydna.all import *, now imports a set of useful pydna modules 
+                     into the main namespace.
+                     Finer control over cacheing, genbank download is now on by default.
+                     Bug fix in assembly_fragments function that created too long primer tails.
+2.0.0a2   ---        ----
+
+
 2.0.0a1              removed setting functions for cache in __init_ and the delete_cache function for simplicity
-                     commented out these functions
+                     removed these functions
                      pydna.design.print_primer_pair
                      pydna.design.cloning_primers 
                      pydna.design.integration_primers
                      pydna.design.assembly_primers
 2.0.0a0   2017-03-15 alpha release, removed imports in __init__
-
+                     This version breaks compatibility.
 
 1.2.0     2017-03-10 New and simpler primer design api, especially for gibson assembly primers. See docstrings
                      Dseqrecord.find method that allows finding subsequences "over the edge" of circular 
@@ -83,8 +90,8 @@ version   date       comment
                      fixed ipynb_import test code.
 
 0.8.4     2015-04-17 Bugfix for parsing text files with unicode characters.
-0.8.3     ?          ?
-0.8.2     ?          ?
+0.8.3     -          -
+0.8.2     -          -
 0.8.1     2015-03-07 Bugfix for windows. The data directory was not created.
 
 0.8.0	  2015-02-06 Mapping reads added.

@@ -8,11 +8,11 @@ import os as _os
 
 from pydna.parsers import parse_primers as _parse_primers
 
-primer_list = _parse_primers( _os.environ["pydna_primers"] )[::-1]
+list_primers = _parse_primers( _os.environ["pydna_primers"] )[::-1]
 
-primer_dict = dict((p.id, p) for p in primer_list)
+dict_primers = dict((p.id, p) for p in list_primers)
 
-for _i, _p in enumerate(primer_list):
+for _i, _p in enumerate(list_primers):
     globals()["p{:03d}".format(_i)] = _p
            
 

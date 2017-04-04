@@ -43,13 +43,14 @@ then
         condalabel="test"
     else
         echo "Build cancelled because"
-        echo "Release tag ($tagname) was not recognized"
+        echo "release tag ($tagname) was not recognized"
         echo "or"
         echo "$dirty != $tagname"
         exit 0
     fi
 elif [[ $msg = *"skip"* ]]
 then
+    echo "Not a tagged commit"
     echo "'skip' found in commit msg: '$msg'"
     echo "tests and builds skipped."
     echo "=============================================================="
@@ -160,8 +161,13 @@ then
         source activate pydnapipbuild36
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
-        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-        twine upload -r $pypiserver dist/pydna*.egg --skip-existing
+        if [[ $condalabel = "main" ]] # bdist_egg, bdist_wheel do not handle alpha versions, so no upload unless final release.
+        then
+            twine upload -r $pypiserver dist/pydna*.whl --skip-existing
+            twine upload -r $pypiserver dist/pydna*.egg --skip-existing
+        else
+            echo "pre release, no upload to pypi."
+        fi
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
     then
         source activate pydnapipbuild35
@@ -170,8 +176,13 @@ then
         source activate pydnapipbuild36
         conda upgrade -yq pip
         python setup.py build bdist_wininst
-        twine upload -r $pypiserver dist/pydna*.exe --skip-existing
-        appveyor PushArtifact dist/*
+        if [[ $condalabel = "main" ]] # bdist_wininst does not handle alpha versions, so no upload unless final release.
+        then
+            twine upload -r $pypiserver dist/pydna*.exe --skip-existing
+        else
+            echo "pre release, no upload to pypi."
+        fi
+        appveyor PushArtifact dist/*        
     elif [[ $CIRCLECI = true ]] # Linux
     then
         python setup.py register

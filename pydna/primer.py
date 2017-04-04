@@ -37,6 +37,7 @@ class Primer(_SeqRecord):
         self.concentration = concentration           
         self.position      = position
         self._fp           = footprint
+        self.template      = template
     
     @property
     def footprint(self):
@@ -52,7 +53,7 @@ class Primer(_SeqRecord):
     
     def __radd__(self, other):
         new = super().__radd__(other)
-        return Primer(new)
+        return Primer(new, template = self.template, position=self.position, footprint=self._fp)
     
     def tm(self, saltc=50.0, formula=_tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
