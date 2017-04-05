@@ -17,12 +17,13 @@ Pydna provides simulation of:
 - PCR
 - Primer design
 - Gibson assembly
+- Golden gate assembly
 - Homologous recombination
-- Gel electrophoresis of DNA (**NEW Feature**) 
+- Gel electrophoresis of DNA with generation of gel images
 
-Any sub-cloning experiment can be described in pydna, and its execution yield
+Virtually any sub-cloning experiment can be described in pydna, and its execution yield
 the sequence of the of intermediate and final resulting DNA molecule(s). 
-A cloning strategy expressed in pydna is *complete*, *unambiguous* and *stable*. 
+A cloning strategy expressed in pydna is *complete*, *unambiguous* and can be made *stable*. 
 Pydna has been designed to be understandable for biologists with only some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
