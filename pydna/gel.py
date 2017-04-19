@@ -31,7 +31,7 @@ except ImportError:
     pass
 
 try:
-    from mpldatacursor import datacursor #, HighlightingDataCursor  # version 0.5.0
+    from mpldatacursor import datacursor   # version 0.5.0
 except ImportError:
     pass
 
@@ -42,7 +42,11 @@ try:
 except ImportError:
     pass
 
-from pint import UnitRegistry #, DimensionalityError
+try:
+    from pint import UnitRegistry
+except ImportError:
+    pass
+
 
 from numbers import Number
 from StringIO import StringIO
@@ -235,7 +239,7 @@ del hor_str, ver_str, data_as_file, data_source, temp_dset
 
 # vWBR equation
 def vWBR(muS, muL, gamma):
-    '''vWBR equation'''
+    """vWBR equation"""
     alpha = 1/muL - 1/muS
     beta = 1/muS
     return lambda L: 1/(beta + alpha * (1 - np.exp(-L/gamma)))
@@ -388,6 +392,17 @@ def random_Dseqs(sizes):
     return sample
 
 
+
+class Fakeseq(object):
+
+    def __init__(self, l, n=10E-12):
+        self._length = l
+        self.n = n
+
+    def __len__(self):
+        return self._length
+
+
 def gen_sample(sizes, quantities):
     """Return list of pydna Dseqrecords of given size and quantity.
 
@@ -490,10 +505,10 @@ Gauss_FWHM = lambda FWTM: FWTM * np.sqrt(2*np.log(2))/np.sqrt(2*np.log(10))
 
 
 def _to_units(quantity, units, var_name=None):
-    '''Asserts that the quantity has the proper dimensions
+    """Asserts that the quantity has the proper dimensions
     (inferred from the default units) if the quantity is an instance of
     pint.unit.Quantity or assigns the default units if it's not.
-    '''
+    """
     if isinstance(quantity, Q_):
         try:
             quantity = quantity.to(units)
@@ -509,10 +524,10 @@ def _to_units(quantity, units, var_name=None):
 
 
 def to_units(quantity, units, var_name=None):
-    '''Asserts that the quantity has the proper dimensions
+    """Asserts that the quantity has the proper dimensions
     (inferred from the default units) if the quantity is an instance of
     pint.unit.Quantity or assigns the default units if it's not.
-    '''
+    """
     if (not isinstance(quantity, Q_) and hasattr(quantity, '__iter__') and
             len(quantity) > 0 and
             sum([isinstance(q, Q_) for q in flatten(quantity)]) > 0):
@@ -539,14 +554,14 @@ def dim_or_units(quantity, reference):
 
 
 def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
-    '''
+    """
     Assigns quantities (masses in nanograms) to the DNA fragments without
     corresponding quantity assuming a linear relationship between the DNA
     length (in basepairs) and its mass. As if the fragments originated in
     a restriction procedure.
     For each sample takes the maximum quantity (either from the other samples
     or from the default) and assigns it to the fragment with greater length.
-    '''
+    """
     outQs = []
     units = Vars['quantities']['units']
     maxQ = Q_(0, units)
@@ -601,14 +616,14 @@ def assign_quantities(samples, quantities, maxdef=Q_(150, 'ng')):
 
 
 def assign_quantitiesB(samples, maxdef=Q_(150, 'ng')):
-    '''
+    """
     Assigns quantities (masses in nanograms) to the DNA fragments without
     corresponding quantity assuming a linear relationship between the DNA
     length (in basepairs) and its mass. As if the fragments originated in
     a restriction procedure.
     For each sample takes the maximum quantity (either from the other samples
     or from the default) and assigns it to the fragment with greater length.
-    '''
+    """
     quantities = []
     units = Vars['quantities']['units']
     maxQ = Q_(0, units)
@@ -706,14 +721,14 @@ def vWBRfit(field, percentage, DNAvals=np.linspace(100, 50000, 100),
 
 def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
                     adjmethod='linear', replNANs=True, plot=True):
-    '''
+    """
     This function extrapolates the free solution mobility (mu0)
     for a specified electric field intensity (field), via Ferguson plot
     (ln(mobility) vs. %agarose).
 
     Mobiliy calculation method:
     [E,T,muS,muL,gamma] -> [E,T,mu(L)] -(L*)-> [E,T,mu] -(E*,T*,interp.)-> mu*
-    '''
+    """
     # Mobility dependence on size (mu(L)) for each agarose percentage (Ti)
     ln_mu_LxT = []
     for Lj in DNAvals:
@@ -789,19 +804,15 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
                     for l in xrange(nlanes)]
     rgb_arr = np.zeros(shape=(pxl_y, pxl_x, 3), dtype=np.float32)
     bandlengths = wellx
-    bands_pxlXYmid = []
     # Paint the bands
     for i in xrange(nlanes):
         distXmid = lane_centers[i]
-        pxlXmid = int(round(distXmid * res))
         bandlength = bandlengths[i]
         from_x = int(round((distXmid - bandlength/2.0) * res))
         to_x = int(round((distXmid + bandlength/2.0) * res))
-        bands_pxlXYmid.append([])
         for j in xrange(len(lanes[i])):
             distYmid = distances[i][j]
             pxlYmid = int(round(distYmid * res))
-            bands_pxlXYmid[i].append((pxlXmid, pxlYmid))
             bandwidth = bandwidths[i][j]  # w=FWHM or w=FWTM ???
             if FWTM:
                 FWHM = Gauss_FWHM(bandwidth)
@@ -889,14 +900,20 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
         bandlength = bandlengths[i]
         center = lane_centers[i]
         x = center - bandlength/2.0
+        from_x = int(round(x * res.magnitude))
+        to_x = int(round((center + bandlength/2.0) * res.magnitude))
         for j in xrange(len(lanes[i])):
             dna_frag = lanes[i][j]
             bandwidth = bandwidths[i][j]
             dist = distances[i][j].magnitude
             y = dist - bandwidth/2.0
-            pxlX, pxlY = bands_pxlXYmid[i][j]
-            band_midI = bands_arr[pxlY, pxlX][0]
-            alpha = 0 if abs(band_midI - back_col) >= detectlim else 0.4
+            pxlY = int(round(y * res.magnitude))
+            if pxlY < bands_arr.shape[0]:
+                # top of the band is inside the gel
+                band_avgI = np.mean(bands_arr[pxlY, from_x:to_x])
+                alpha = 0 if abs(band_avgI - back_col) >= detectlim else 0.4
+            else:
+                alpha = 0
             band = plt.Rectangle((x, y), bandlength, bandwidth,
                                  fc='none', ec='w', ls=':', alpha=alpha,
                                  label='{} bp'.format(len(dna_frag)))
@@ -1013,9 +1030,12 @@ class Gel:
                  wellxy=Q_([7, 2], 'mm'),
                  wellsep=Q_(2, 'mm')
                  ):
-        self.samples = [[dna if isinstance(dna, Dseqrecord) else
-                         Dseqrecord(dna) for dna in sample] for sample in
-                        samples]    # len(DNA) in bp
+        #self.samples = [[dna if isinstance(dna, Dseqrecord) else
+        #                 Dseqrecord(dna) for dna in sample] for sample in
+        #                samples]    # len(DNA) in bp
+
+        self.samples = samples
+
         self.names = names if names else [str(i) for i in      #
                                           xrange(1, len(samples)+1)]  #
         self.percent = to_units(percentgel, '(g/(100 mL))*100', 'percentgel')
@@ -1097,7 +1117,7 @@ class Gel:
             band_col=1,
             well_col=0.05,
             noise=0.015,
-            detectlim=0.04,
+            detectlim=0.02,
             interpol='linear',     # 'cubic','nearest'
             dset_name='vertical',  # 'horizontal'
             replNANs=True          # replace NANs by 'nearest' interpolation
@@ -1254,7 +1274,7 @@ class Gel:
             welly = np.repeat(welly, nlanes)
         welly = welly.to('cm')
         wellsep = wellsep.to('cm')
-        till_len = abs(till_len) if till_len is not None else 1
+        till_len = abs(till_len) if till_len is not None else np.inf
         if till_time is not None:
             till_time = to_units(till_time, 'hr', 'till_time').to('s')
         res = to_units(res, 'px/cm', 'res')
@@ -1436,14 +1456,6 @@ class Gel:
                                     noise, Itol, detectlim, title, FWTM, False)
             return #gelpic
         return None
-
-class fake_seq(object):
-
-    def __init__(self, length=0):
-        self.length=length
-
-    def __len__(self):
-        return self.length
 
 
 if __name__ == "__main__":
@@ -1653,37 +1665,30 @@ if __name__ == "__main__":
 
 # Questions for Professor Björn
 # ============================================================================#
-# - Ask for guidance for the simple SAMPLE objects and basic operations.      #
-# - Ask for guidance for the default values.                                  #
-# - Ask for guidance for the user friendliness from the standpoint of a       #
-#   researcher.                                                               #
 # - Would an "excise band" method be useful?                                  #
 # ============================================================================#
 
 # To-do list
 # ============================================================================#
-# - Band convolution (https://en.wikipedia.org/wiki/Convolution);             #
-# - Qualitative and quantitative validation;                                  #
+# - Search for better way of predicting band convolution;                     #
+#   https://en.wikipedia.org/wiki/Convolution                                 #
+# - Qualitative and quantitative validation against experimental data;        #
 # - Comparison with other softwares;                                          #
 # - Gather more data (obtained at well controlled conditions);                #
 #       + Professor Beheshti's Phd thesis                                     #
 #       + Extend the dataset with new experimental data                       #
 # - Study extrapolation options beyond the data range:                        #
 #       + parameters dependence on gel concentration equations (at low field) #
-# - Train and validate a regression predictive model;                         #
+# - Revert to a simpler predictive method when beyond the data interpolation  #
+#   range and emmit a warning;                                                #
+# - Train and validate a regression predictive model (?);                     #
 # - Interpolation of user's experimental data with vWBR equation;             #
 # ----------------------------------------------------------------------------#
 # - Documentation (Numpy style);                                              #
 # - Code readability and conformity to standards and style guides;            #
 # - User friendliness;                                                        #
 # - Testing module;                                                           #
-# - Sharing on GitHub;                                                        #
-# - Integration with pydna;                                                   #
-# - Application exemples and guide in IPython Notebook;                       #
-# - <mu_func> as module variable??                                            #
-# - self.runtime = np.nan??                                                   #
 # - Data and mu_funcs as module variables or class variables??                #
-# - Keep most values in numpy arrays?? (may be helpful to implement units)    #
 # - Experimental conditions on the plot's title;                              #
 # - Keep and return the plots objects;                                        #
 # - Passing the matplotlib's **keyargs;                                       #
@@ -1695,37 +1700,23 @@ if __name__ == "__main__":
 # - Recognize unequivocal initials: 'v':'vertical', 'h':'horizontal', etc.;   #
 # - There should be a single (Pint) UnitRegistry for the entire project.      #
 # - Show DNA size in matplotlib coordinate viewer:                            #
-#       "http://stackoverflow.com/questions/14754931/matplotlib-values-under- #
-#        cursor"                                                              #
-# - Click band to print DNA fragment data in console;                         #
+#   http://stackoverflow.com/questions/14754931/matplotlib-values-under-cursor#
+# - Click band to print DNA fragment data in console (?);                     #
 # - Defaults, Assertions, warnings, errors, etc.                              #
-# - Assert dimension concordance:                                             #
-#       if wellx is iterable: len(wellx) == len(lanes)                        #
-# - Combine gels;                                                             #
 # - Mosaic of gels: same samples, different conditions;                       #
 # - Method <save_with_resolution>;                                            #
 # - Attention to pixel [0], in pixel->cm / cm->pixel conversions;             #
 # - Study more carefully the distance <-> pixel conversion;                   #
-# - At this point, the "exposure time" is being optimized so that no band's   #
-#   intensity saturates (reaches white color) before it's peak. All curves    #
-#   are perfect Gaussians. This benefites the highest curves in detriment of  #
-#   the wider ones. It may be better for visualization to allow saturation    #
-#   basing the "exposure time" on a parameter, maximizing the average hight   #
-#   band or assuring that no peak falls bellow a certain level.               #
-# - There is pehaps a wiser way to perform peak convolution.                  #
-# - The stoping condition for the evaluation of the intensity function is too #
-#   strick. "color <= background" goes till the order of 1E-16. A toletance   #
-#   is needed.                                                                #
-# - Peak convolution in the perpendicular direction.                          #
-# - premade Ladder addition.                                                  #
 # - Dimension concordance, data type and missing values verification on input.#
 # - Full spell check.                                                         #
 # - Most assert statements must be replaced with proper errors.               #
+# - Look into replacing the use of `isinstance` by `hasattr`.                 #
+# - Remove the pan capacity of the gel plots.                                 #
+#   There is no interest in exploring the plot beyond the gel borders.        #
 # ============================================================================#
 
 # Random notes
 # ============================================================================#
-# - Avoid integer division: from __future__ import division                   #
 # - Careful: Operations with unitary numpy arrays return numeric data types:  #
 #       + type(np.array(2)*np.array(2)) --> <'numpy.int32'>                   #
 #       + type(np.array(2)*np.array(2)/np.array(5)) --> <'numpy.int32'>       #
@@ -1739,8 +1730,6 @@ if __name__ == "__main__":
 #   method we arrive at an effective pore size of 135.4 nm.                   #
 # - I'm getting a smaller free solution mobility than the muS parameter.      #
 #   I think it should be the other way around!...                             #
-# - Is it better to never have unused lanes (as it is now) or to build a gel  #
-#   with a chosen dimension and number of wells (used or not)?                #
 # - The one thing that causes troubles with quantities is to assign a         #
 #   quantity to a list of quantities. Ex: Q_([Q_(1, 'nm')], 'nm')             #
 #   With that in mind, there might be simpler ways to implement the           #
