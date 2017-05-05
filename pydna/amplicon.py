@@ -130,7 +130,7 @@ class Amplicon(_Dseqrecord):
                      template=None,
                      forward_primer=None,
                      reverse_primer=None,
-                     saltc=None,
+                     saltc=50.0,
                      fprimerc=1000.0,
                      rprimerc=1000.0,
                      **kwargs):

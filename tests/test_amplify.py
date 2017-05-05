@@ -5,7 +5,6 @@ test parse
 '''
 
 import pytest
-import sys
 
 from pydna.parsers import parse
 from pydna.amplify import pcr

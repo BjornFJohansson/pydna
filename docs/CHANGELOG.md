@@ -1,9 +1,14 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
+2.0.0     2017-04-   First release of 2.0.0. 
+
+
+
+
 2.0.0a3   2017-04-04 added the all module, from pydna.all import *, now imports a set of useful pydna modules 
                      into the main namespace.
-                     Finer control over cacheing, genbank download is now on by default.
+                     Finer control over cache, genbank download is now on by default.
                      Bug fix in assembly_fragments function that created too long primer tails.
 2.0.0a2   ---        ----
 

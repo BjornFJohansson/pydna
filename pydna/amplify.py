@@ -7,6 +7,7 @@ circular templates are handled correctly.
 
 '''
 
+from collections import defaultdict
 import itertools as _itertools
 import re        as _re
 import copy      as _copy
@@ -197,13 +198,15 @@ class Anneal(object, metaclass = _Memoize):
                   template,
                   limit=13,
                   primerc=1000.0, # nM
-                  saltc=50):      # mM
+                  saltc=50,       # mM
+                  **kwargs):      
 
         self.primers=primers
         self.primerc=primerc
         self.saltc = saltc
         self.template = _copy.deepcopy(template)
         self.limit = limit
+        self.kwargs=defaultdict(str, kwargs)
 
         self._products = None
 
@@ -222,17 +225,17 @@ class Anneal(object, metaclass = _Memoize):
 
         for p in self.primers:
             self.forward_primers.extend((_Primer(p,
-                                             position  = tcl-pos - min(self.template.seq.ovhg, 0),
-                                             footprint = fp)
-                                    for pos, fp in _annealing_positions( str(p.seq),
-                                                                         tc,
-                                                                         self.limit) if pos<tcl))
+                                                 position  = tcl-pos - min(self.template.seq.ovhg, 0),
+                                                 footprint = fp)
+                                         for pos, fp in _annealing_positions( str(p.seq),
+                                                                              tc,
+                                                                              self.limit) if pos<tcl))
             self.reverse_primers.extend((_Primer(p,
-                                             position  = pos + max(0, self.template.seq.ovhg),
-                                             footprint = fp)
-                                     for pos, fp in _annealing_positions(str(p.seq),
-                                                                         tw,
-                                                                         self.limit) if pos<twl))
+                                                 position  = pos + max(0, self.template.seq.ovhg),
+                                                 footprint = fp)
+                                         for pos, fp in _annealing_positions(str(p.seq),
+                                                                             tw,
+                                                                             self.limit) if pos<twl))
         self.forward_primers.sort(key = _operator.attrgetter('position'))
         self.reverse_primers.sort(key = _operator.attrgetter('position'), reverse=True)
 
@@ -254,7 +257,6 @@ class Anneal(object, metaclass = _Memoize):
                                                   type="primer_bind",
                                                   location_operator="join",
                                                   qualifiers = {"note":[fp.name]})
-
                 self.template.features.append(sf)
 
         for rp in self.reverse_primers:
@@ -270,8 +272,8 @@ class Anneal(object, metaclass = _Memoize):
             else:
                 start = rp.position
                 end = rp.position+rp._fp-len(self.template)
-                self.template.features.append(_SeqFeature(_CompoundLocation([_FeatureLocation(start,len(self.template)),
-                                                                           _FeatureLocation(0,end)]),
+                self.template.features.append(_SeqFeature(_CompoundLocation([ _FeatureLocation(0, end),
+                                                                              _FeatureLocation(start, len(self.template))]),
                                                     type ="primer_bind",
                                                     location_operator= "join",
                                                     strand = -1,
@@ -299,23 +301,24 @@ class Anneal(object, metaclass = _Memoize):
                 else:
                     tmpl = self.template[fp.position-fp._fp:rp.position+rp._fp]
 
-                prd = ( _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement())
-
+                prd = ( _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement() )
+                
                 prd.add_feature( 0, len(fp), label=fp.id)
                 prd.add_feature( len(prd)-len(rp),len(prd),label=rp.id, strand=-1)
 
-                prd.name = "{0}bp_PCR_prod".format(len(prd))[:16]
-                prd.id = "{0}bp {1}".format( str(len(prd))[:14], prd.seguid() )
-                prd.description="Product_{0}_{1}".format( fp.description,
-                                                          rp.description)
-
+                prd.name = self.kwargs["name"] or "{0}bp_PCR_prod".format(len(prd))[:16]
+                prd.id = self.kwargs["id"] or"{0}bp {1}".format( str(len(prd))[:14], prd.seguid() )
+                prd.description = self.kwargs["description"] or"Product_{0}_{1}".format( fp.description,
+                                                                                         rp.description)
+                
                 self._products.append( _Amplicon(prd,
-                                                template=tmpl,
-                                                forward_primer=fp,
-                                                reverse_primer=rp,
-                                                saltc=self.saltc,
-                                                fprimerc=self.primerc,
-                                                rprimerc=self.primerc))
+                                                 template=tmpl,
+                                                 forward_primer=fp,
+                                                 reverse_primer=rp,
+                                                 saltc=self.saltc,
+                                                 fprimerc=self.primerc,
+                                                 rprimerc=self.primerc,
+                                                 **self.kwargs))
 
         return self._products
 

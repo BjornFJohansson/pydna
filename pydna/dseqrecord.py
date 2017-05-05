@@ -212,7 +212,7 @@ class Dseqrecord(_SeqRecord):
 
         self.map_target = None
         #self.key = str( self.__hash__() )
-    
+
     @property
     def linear(self):
         '''The linear property'''
@@ -1161,13 +1161,27 @@ class Dseqrecord(_SeqRecord):
         new_features = []
 
         for feature in self.features:
+            #print(feature)
             new_feature = _copy.deepcopy(feature)
             if len(new_feature.location.parts)>1:    # CompoundFeature
                 j=0
-                while (j+1)<=len(new_feature.location.parts):
-                    if new_feature.location.parts[j].end == len(self) and new_feature.location.parts[j+1].start==0:
+                #print(new_feature)
+                while (j+1)<len(new_feature.location.parts):
+                    #print(new_feature.location.parts[j])
+                    # Test if CompoundFeature spans ORI
+                    if (new_feature.strand == 1 and 
+                        new_feature.location.parts[j].end == len(self) and
+                        new_feature.location.parts[j+1].start==0):
                         new_feature.location.parts[j] = _FeatureLocation(new_feature.location.parts[j].start,
-                                                                        new_feature.location.parts[j].end+len(new_feature.location.parts[j+1]))
+                                                                         new_feature.location.parts[j].end+len(new_feature.location.parts[j+1]),
+                                                                         strand = 1)                        
+                        del new_feature.location.parts[j+1]
+                    elif (new_feature.strand == -1 and 
+                          new_feature.location.parts[j].start == 0 and
+                          new_feature.location.parts[j+1].end == len(self)):
+                        new_feature.location.parts[j] = _FeatureLocation(new_feature.location.parts[j+1].start,
+                                                                         new_feature.location.parts[j+1].end+len(new_feature.location.parts[j]),
+                                                                         strand = -1)
                         del new_feature.location.parts[j+1]
                     j+=1
                 slask = [new_feature.location.parts.pop(0)]
@@ -1263,21 +1277,21 @@ class Dseqrecord(_SeqRecord):
                         nps.append(part)
 
                     elif part.start<length<part.end:
-                        nps.append(_FeatureLocation(part.start,length))
-                        nps.append(_FeatureLocation(0, part.end-length))
+                        nps.append(_FeatureLocation(part.start,length,strand=part.strand))
+                        nps.append(_FeatureLocation(0, part.end-length,strand=part.strand))
 
                     elif length<=part.start<part.end:
-                        nps.append(_FeatureLocation(part.start-length, part.end-length))
+                        nps.append(_FeatureLocation(part.start-length, part.end-length,strand=part.strand))
 
                 folded_features.append(_SeqFeature(_CompoundLocation(nps),
-                                                  qualifiers = feature.qualifiers,
-                                                  type=feature.type))
+                                                   qualifiers = feature.qualifiers,
+                                                   type=feature.type))
 
             else:
-                folded_features.append(_SeqFeature(_CompoundLocation([_FeatureLocation(feature.location.start, length),
-                                                                    _FeatureLocation(0, feature.location.end-length)]),
-                                                  qualifiers = feature.qualifiers,
-                                                  type=feature.type))
+                folded_features.append(_SeqFeature(_CompoundLocation([_FeatureLocation(feature.location.start, length,strand=feature.strand),
+                                                                     _FeatureLocation(0, feature.location.end-length,strand=feature.strand)]),
+                                                   qualifiers = feature.qualifiers,
+                                                   type=feature.type))
 
         new = new[:length].looped()
         new.features.extend(folded_features)

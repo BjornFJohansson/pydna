@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-import sys
 
 from pydna.dseq import Dseq
 from pydna.dseqrecord import Dseqrecord
@@ -807,12 +806,15 @@ def test_features_change_ori():
         assert  [str(f.extract(b).seq) for f in b.features if f.qualifiers["label"][0]=='ins'][0] == "GTACCTTTGGATC" 
         assert  [str(f.extract(b).seq) for f in b.features if f.qualifiers["label"][0]=='bb'][0] == "CGGGAAAG" 
 
-    from Bio.Restriction import Acc65I,KpnI, BamHI
+    from Bio.Restriction import Acc65I, BamHI
 
     bb1, ins1 = sorted(s.cut(Acc65I, BamHI), key=len, reverse=True)
 
     for i in range(1, len(s)):
+        
         b = s.shifted(i)
+        
+        #print(b.format())
 
         bb, ins = sorted(b.cut(Acc65I, BamHI), key=len, reverse=True)
 
