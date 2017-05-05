@@ -1,10 +1,9 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
-2.0.0     2017-04-   First release of 2.0.0. 
+2.0.0     2017-      First release of 2.0.0. .... 
 
-
-
+2.0.0a4   2017-05-05 Fixed bug in _multiply_circular 
 
 2.0.0a3   2017-04-04 added the all module, from pydna.all import *, now imports a set of useful pydna modules 
                      into the main namespace.
