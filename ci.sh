@@ -132,7 +132,8 @@ then
     conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
     conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
     conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client urllib3 twine pypandoc pandoc
-    conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client urllib3 twine pypandoc pandoc
+    conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client twine pypandoc pandoc
+    conda create -yq -n twine             python=3.5 twine
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
@@ -163,6 +164,7 @@ then
         python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]] # bdist_egg, bdist_wheel do not handle alpha versions, so no upload unless final release.
         then
+            source activate twine
             twine upload -r $pypiserver dist/pydna*.whl --skip-existing
             twine upload -r $pypiserver dist/pydna*.egg --skip-existing
         else
@@ -178,6 +180,7 @@ then
         python setup.py build bdist_wininst
         if [[ $condalabel = "main" ]] # bdist_wininst does not handle alpha versions, so no upload unless final release.
         then
+            source activate twine
             twine upload -r $pypiserver dist/pydna*.exe --skip-existing
         else
             echo "pre release, no upload to pypi."
@@ -191,7 +194,8 @@ then
         python setup.py sdist --formats=zip
         source activate pydnapipbuild36
         conda upgrade -yq pip
-        python setup.py sdist --formats=zip        
+        python setup.py sdist --formats=zip
+        source activate twine       
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
     elif [[ $(uname) = "Linux" ]]
     then
@@ -203,6 +207,7 @@ then
         source activate pydnapipbuild36
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
+        source activate twine
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
         twine upload -r $pypiserver dist/pydna*.whl --skip-existing
     else
