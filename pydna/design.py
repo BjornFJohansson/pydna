@@ -151,6 +151,7 @@ def primer_design(    template,
         ''' returns a string '''
         tmp=0
         length=limit
+        p = str(template.seq[:length])
         while tmp<target_tm:
             length+=1
             p = str(template.seq[:length])
