@@ -153,7 +153,7 @@ class Dseq(_Seq):
       File "<stdin>", line 1, in <module>
       File "/usr/local/lib/python2.7/dist-packages/pydna_/dsdna.py", line 169, in __init__
         else:
-    Exception: ovhg defined without crick strand!
+    ValueError: ovhg defined without crick strand!
 
 
     The default alphabet is set to Biopython IUPACAmbiguousDNA
@@ -184,13 +184,25 @@ class Dseq(_Seq):
     aaa
     ttt
 
-    Coercing to string
-
     >>> a=Dseq("tttcccc","aaacccc")
     >>> a
     Dseq(-11)
         tttcccc
     ccccaaa
+    >>> a.ovhg
+    4
+    >>>   
+    
+    >>> b=Dseq("ccccttt","ccccaaa")
+    >>> b
+    Dseq(-11)
+    ccccttt
+        aaacccc
+    >>> b.ovhg
+    -4
+    >>>   
+
+    Coercing to string
 
     >>> str(a)
     'ggggtttcccc'
@@ -286,19 +298,24 @@ class Dseq(_Seq):
                   linear        = None,
                   circular      = None,
                   alphabet      = _IUPACAmbiguousDNA() ):
-
-        watson = "".join(watson.split())
-
-        if ovhg is None:
-            if crick is None:
+        
+        self.watson = "".join(watson.split())
+        
+        if crick is None:
+            if ovhg is None:
                 self.crick = _rc(watson)
                 self._ovhg = 0
-            else:
-                crick = "".join(crick.split())
+                self.todata = self.dsdata = self.watson     
+            else: # ovhg given
+                raise ValueError("ovhg defined without crick strand!")                
+        else: # crick strand given
+            if ovhg is None: # ovhg not given
+            
+                self.crick = "".join(crick.split())
 
-                olaps = _common_sub_strings(str(watson).lower(),
-                                            str(_rc(crick).lower()),
-                                            int(_math.log(len(watson))/_math.log(4)))
+                olaps = _common_sub_strings(str(self.watson).lower(),
+                                            str(_rc(self.crick).lower()),
+                                            int(_math.log(len(self.watson))/_math.log(4)))
                 try:
                     F,T,L = olaps[0]
                 except IndexError:
@@ -306,26 +323,64 @@ class Dseq(_Seq):
                                     "ovhg should be provided")
                 ovhgs = [ol[1]-ol[0] for ol in olaps if ol[2]==L]
                 if len(ovhgs)>1:
-                    for o in ovhgs:
-                        print(o)
                     raise Exception("More than one way of annealing the strands "
                                     "ovhg should be provided")
 
                 self._ovhg = T-F
-                self.crick = crick
-        elif crick is None:
-            raise Exception("ovhg defined without crick strand!")
-        else:
-            self._ovhg = ovhg
-            self.crick = "".join(crick.split())
+                
+                sns = ((self._ovhg*" ")  + str(self.watson))
+                asn = ((-self._ovhg*" ") + str(_rc(self.crick)))
 
-        self.watson = watson
+                self.todata = "".join([a.strip() or b.strip() for a,b in _itertools.zip_longest(sns,asn, fillvalue=" ")])
+                self.dsdata = "".join([a for a, b in _itertools.zip_longest(sns,asn, fillvalue=" ") if a.lower()==b.lower()])
+               
+            else: # ovhg given
+            
+                self._ovhg = ovhg
+                self.crick = "".join(crick.split())
 
-        sns = ((self._ovhg*" ")  + str(self.watson))
-        asn = ((-self._ovhg*" ") + str(_rc(self.crick)))
+                lw=len(self.watson)
+                lc=len(self.crick)
+                
+                if self._ovhg==0:
+                    
+                    if lw==lc:
+                        self.dsdata = self.todata = self.watson
+                    elif lw>lc:
+                        self.dsdata = self.watson[:lc]
+                        self.todata = self.watson                    
+                    else:
+                        self.dsdata = self.watson
+                        self.todata = self.watson + _rc(self.crick[:lc-lw])
+                    
+                else:
+                    
+                    if self._ovhg>0:
+                        
+                        if self._ovhg+lw > lc:
+                            
+                            self.dsdata = self.watson[:lc-lw-self._ovhg]
+                            self.todata = _rc(self.crick[-self._ovhg:])+self.watson
+                            
+                        else:
+                            
+                            self.dsdata = self.watson
+                            self.todata = _rc(self.crick[-self.ovhg:]) + self.watson + _rc(self.crick[: lc-self._ovhg-lw])
+  
+                    else:
 
-        self.todata = "".join([a.strip() or b.strip() for a,b in _itertools.zip_longest(sns,asn, fillvalue=" ")])
-        self.dsdata = "".join([a for a, b in _itertools.zip_longest(sns,asn, fillvalue=" ") if a.lower()==b.lower()])
+                        if -self._ovhg+lc > lw:
+                            self.dsdata = self.watson[-self._ovhg:]
+                            self.todata = self.watson+_rc(self.crick[:-self._ovhg+lc-lw])
+                            
+                        else:
+                            
+                            self.dsdata = self.watson[-self._ovhg:-self._ovhg+lc]
+                            self.todata = self.watson
+        
+
+
+
 
         if circular == None and linear in (True, False,):
             self._linear   = linear
@@ -665,7 +720,10 @@ class Dseq(_Seq):
 
         if self.linear:
             raise TypeError("DNA is not circular.\n")
-        return self.__class__(self.watson, self.crick, ovhg=0, linear=True)
+        selfcopy = _copy.copy(self)
+        selfcopy._linear = True
+        selfcopy._circular = False
+        return selfcopy# self.__class__(self.watson, linear=True)
 
     def five_prime_end(self):
         '''Returns a tuple describing the structure of the 5' end of
@@ -768,15 +826,16 @@ class Dseq(_Seq):
         '''Simulates ligation between two DNA fragments.
 
         Add other Dseq object at the end of the sequence.
-        Type error if all of the points below are fulfilled:
+        Type error is raised if any of the points below are fulfilled:
 
-        * either objects are circular
+        * one or more objects are circular
         * if three prime sticky end of self is not the same type
           (5' or 3') as the sticky end of other
         * three prime sticky end of self complementary with five
           prime sticky end of other.
 
         Phosphorylation and dephosphorylation is not considered.
+        
         DNA is allways presumed to have the necessary 5' phospate
         group necessary for ligation.
 
@@ -795,9 +854,10 @@ class Dseq(_Seq):
 
         if (self_type == other_type and
             str(self_tail) == str(_rc(other_tail))):
+            
             answer = Dseq(self.watson + other.watson,
                           other.crick + self.crick,
-                          self._ovhg,)
+                          self._ovhg)
         elif not self:
             answer = _copy.copy(other)
         elif not other:
@@ -1243,6 +1303,9 @@ class Dseq(_Seq):
     def circular(self):
         '''The circular property'''
         return self._circular
+    
+    
+
 
 if __name__=="__main__":
     import os        as _os
@@ -1251,3 +1314,5 @@ if __name__=="__main__":
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cache"]=cache
+    
+

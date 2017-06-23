@@ -156,14 +156,10 @@ class Dseqrecord(_SeqRecord):
             super().__init__(record, *args, **kwargs)
         # record is a Bio.Seq object ?
         elif hasattr(record, "alphabet"):          
-            super().__init__(_Dseq(str(record),
-                                  str(record.reverse_complement()),
-                             *args,
-                             ovhg=0 ,
-                             linear=linear,
-                             circular=circular),                                          
+            super().__init__(_Dseq(str(record),linear=linear,circular=circular),
+                             *args,                                          
                              **kwargs)
-        # record is aBio.SeqRecord or Dseqrecord object ?           
+        # record is a Bio.SeqRecord or Dseqrecord object ?           
         elif hasattr(record, "features"):            
             for key, value in list(record.__dict__.items()):
                 setattr(self, key, value )
@@ -179,17 +175,13 @@ class Dseqrecord(_SeqRecord):
             # record is Bio.SeqRecord object ?
             else:                                   
                 self.seq=_Dseq(str(self.seq),
-                              _rc(str(self.seq)),
-                              ovhg=0 ,
-                              linear=linear,
-                              circular=circular)
+                               linear=linear,
+                               circular=circular)
         # assume that record is a string
         else:                                   
             super().__init__(_Dseq(record,
-                                  _rc(record),
-                                  ovhg=0 ,
-                                  linear=linear,
-                                  circular=circular),
+                                   linear=linear,
+                                   circular=circular),
                              *args,
                              **kwargs)
 

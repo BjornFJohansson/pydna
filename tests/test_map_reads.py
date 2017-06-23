@@ -28,7 +28,7 @@ def test_map():
             tag = "tat cca tat gac gtt cca gac tat gca"
             trc = "ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
 
-            s = Dseqrecord(Dseq(tag,trc))
+            s = Dseqrecord(Dseq(tag,trc,0))
             sl = s.find_aa("YPYDVPDYA")
             assert str( s[sl].seq.translate() ) == "YPYDVPDYA"
             assert "YPYDVPDYA" in s
@@ -36,7 +36,7 @@ def test_map():
             tag = "AAA tat cca tat gac gtt cca gac tat gca"
             trc = "    ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
 
-            s = Dseqrecord(Dseq(tag,trc))
+            s = Dseqrecord(Dseq(tag,trc,0))
             sl = s.find_aa("YPYDVPDYA")
             assert str( s[sl].seq.translate() ) == "YPYDVPDYA" 
             assert "YPYDVPDYA" in s 
@@ -44,7 +44,7 @@ def test_map():
             tag = "    tat cca tat gac gtt cca gac tat gca"
             trc = "AAA ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
 
-            s = Dseqrecord(Dseq(tag,trc))
+            s = Dseqrecord(Dseq(tag,trc,0))
             sl = s.find_aa("YPYDVPDYA")
             assert str( s[sl].seq.translate() ) == "YPYDVPDYA" 
             assert "YPYDVPDYA" in s 
@@ -52,7 +52,7 @@ def test_map():
             tag = "    tat cca tat gac gtt cca gac tat gca"
             trc = "AAA ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
 
-            s = Dseqrecord(Dseq(tag,trc))
+            s = Dseqrecord(Dseq(tag,trc,0))
             sl = s.find_aa("YPYDVPDYA")
             assert str( s[sl].seq.translate() ) == "YPYDVPDYA" 
 
@@ -61,7 +61,7 @@ def test_map():
 
             tag, trc = trc, tag
 
-            s = Dseqrecord(Dseq(tag,trc))
+            s = Dseqrecord(Dseq(tag,trc,0))
             sl = s.rc().find_aa("YPYDVPDYA")
 
             assert str( s.rc()[sl].seq.translate()) == "YPYDVPDYA" 
@@ -70,7 +70,7 @@ def test_map():
             tag = "aaa tat cca tat gac gtt cca gac tat gca"
             trc = "ttt ata ggt ata ctg caa ggt ctg ata cgt"[::-1]
 
-            s = Dseqrecord(Dseq(tag,trc, circular=True))
+            s = Dseqrecord(Dseq(tag,trc,0, circular=True))
             sl = s.find_aa("YPYDVPDYA")
             assert str( s[sl].seq.translate() ) == "YPYDVPDYA" 
             assert "YPYDVPDYA" in s 

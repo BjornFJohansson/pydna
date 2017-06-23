@@ -411,14 +411,15 @@ def test_Dseq_cutting_adding():
     assert  eq(pUC19_EcoRI_PstI_d.rc(), read("pUC19-EcoRI_PstI-d-rc.gb"))
 
 
-def test_Dseqrecord_cutting_adding():
+def test_Dseqrecord_cutting_adding_1():
     from Bio.Restriction import Bsu36I, BstAPI
     pCAPs = read("pCAPs.gb")
     a,b = pCAPs.cut(Bsu36I, BstAPI)
     c=(a+b).looped()
     assert  eq(c, pCAPs)
 
-
+def test_Dseqrecord_cutting_adding_2():
+    
     a = (Dseqrecord( Dseq(  'AATTCACANGGTACCNGGTACCNGCGGATATC',
                              'GTGTNCCATGGNCCATGGNCGCCTATAG'[::-1], -4)),
 
@@ -437,7 +438,8 @@ def test_Dseqrecord_cutting_adding():
             b,c,d = f.cut(enz)
             e=b+c+d
             assert str(e.seq).lower() == str(f.seq).lower()
-
+    
+def test_Dseqrecord_cutting_adding_3():
     from Bio.Restriction import KpnI, BamHI, Acc65I, NlaIV, EcoRI, EcoRV
 
     a=read('''
@@ -523,7 +525,8 @@ ORIGIN
 
 
 
-
+def test_Dseqrecord_cutting_adding_4():
+    from Bio.Restriction import KpnI, Acc65I, NlaIV, EcoRI, EcoRV
     a=read('''
 
 LOCUS       New_DNA                   33 bp ds-DNA     linear       08-NOV-2012

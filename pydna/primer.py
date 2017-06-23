@@ -22,8 +22,8 @@ class Primer(_SeqRecord):
     '''
     def __init__(self, record, 
                  *args,
-                 template =  None,
-                 position =  None, 
+                 template  = None,
+                 position  = None, 
                  footprint = None,
                  concentration = 1000.0,   # nM (= 1µM)
                  **kwargs):
