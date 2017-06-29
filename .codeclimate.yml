@@ -26,3 +26,7 @@ ratings:
   - "**.py"
 exclude_paths:
 - tests/
+- appveyor/
+- docs/
+- scripts/
+
