@@ -187,16 +187,16 @@ def primer_design(    template,
     prod.forward_primer.concentration = fprimerc
     prod.reverse_primer.concentration = rprimerc
 
-    if prod.forward_primer.id == "<unknown id>":
+    if prod.forward_primer.id == "id?": #<unknown id>
         prod.forward_primer.id = "fw{}".format(len(template))
         
-    if prod.reverse_primer.id == "<unknown id>":
+    if prod.reverse_primer.id == "id?":
         prod.reverse_primer.id = "rv{}".format(len(template))
 
-    if prod.forward_primer.name == "<unknown name>":
+    if prod.forward_primer.name == "id?":
         prod.forward_primer.name = "fw{}".format(len(template))
         
-    if prod.reverse_primer.name == "<unknown name>":
+    if prod.reverse_primer.name == "id?":
         prod.reverse_primer.name = "rv{}".format(len(template))
 
     prod.forward_primer.description = prod.forward_primer.id+' '+template.accession

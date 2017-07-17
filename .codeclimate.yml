@@ -13,7 +13,7 @@ engines:
   fixme:
     enabled: true
   radon:
-    enabled: true
+    enabled: false
   pep8:
     enabled: true
 ratings:

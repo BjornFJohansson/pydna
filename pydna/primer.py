@@ -12,7 +12,8 @@ This module contain functions for primer design.
 '''
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
-from Bio.SeqRecord import SeqRecord               as _SeqRecord
+#from Bio.SeqRecord import SeqRecord               as _SeqRecord
+from pydna.seqrecord import SeqRecord             as _SeqRecord
 from pydna.tm import tmbresluc                    as _tmbresluc
 
 class Primer(_SeqRecord):

@@ -200,8 +200,28 @@ class SeqRecord(_SeqRecord):
     def gc(self):
         '''Returns GC content '''
         return round(_GC(str(self.seq)), 1)
+    
+    def __lt__( self, other ):
+        try:
+            return self.id < other.id
+        except AttributeError:
+            # I don't know how to compare to other
+            return NotImplemented
 
-            
+    def __eq__( self, other ):
+        try:
+            if self.seq == other.seq and str(self.__dict__) == str(other.__dict__):
+                return True
+        except AttributeError:
+            pass
+        return False
+
+    def __ne__( self, other ):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        """__hash__ must be based on __eq__"""
+        return hash( (str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
         
         
         
