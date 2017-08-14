@@ -45,8 +45,8 @@ classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biop
 
 These classes make cut and paste cloning and PCR very simple:
 
-    >>> import pydna
-    >>> seq = pydna.Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
+    >>> from pydna.dseq import Dseq
+    >>> seq = Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
     >>> seq
     Dseq(-9)
     GGATCCAAA
@@ -96,16 +96,17 @@ Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter
 Pydna can be very compact. The nine lines of Python below, simulates the construction of a recombinant plasmid. 
 DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
 
-    import pydna
-    gb = pydna.Genbank("myself@email.com") # Tell Genbank who you are!
+    from pydna.genbank import Genbank
+    gb = Genbank("myself@email.com") # Tell Genbank who you are!
     gene = gb.nucleotide("X06997") # Kluyveromyces lactis LAC12 gene for lactose permease.
-    primer_f,primer_r = pydna.parse(''' >760_KlLAC12_rv (20-mer)
-                                        ttaaacagattctgcctctg
+    from pydna.parsers import parse_primers
+    primer_f,primer_r = parse_primers(''' >760_KlLAC12_rv (20-mer)
+                                          ttaaacagattctgcctctg
 
-                                        >759_KlLAC12_fw (19-mer)
-                                        aaatggcagatcattcgag
-                                        ''', ds=False)
-    pcr_prod = pydna.pcr(primer_f,primer_r, gene)
+                                          >759_KlLAC12_fw (19-mer)
+                                          aaatggcagatcattcgag ''')
+    from pydna.amplify import pcr
+    pcr_prod = pcr(primer_f,primer_r, gene)
     vector = gb.nucleotide("AJ001614") # pCAPs cloning vector
     from Bio.Restriction import EcoRV
     lin_vector = vector.linearize(EcoRV)
