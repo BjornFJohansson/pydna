@@ -560,7 +560,7 @@ class Dseqrecord(_SeqRecord):
         'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
         >>> print(b.format("gb"))
         LOCUS       a                          3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  a
+        DEFINITION  a.
         ACCESSION   a
         VERSION     a
         KEYWORDS    .
@@ -675,7 +675,7 @@ class Dseqrecord(_SeqRecord):
         Dseqrecord(-3)
         >>> print(x.format("gb"))
         LOCUS       name?                      3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  description?
+        DEFINITION  description?.
         ACCESSION   id?
         VERSION     id?
         KEYWORDS    .

@@ -13,7 +13,7 @@ def pydna_read_test():
     print("sys.getdefaultencoding()",sys.getdefaultencoding())
     import locale
     print("locale.getpreferredencoding()", locale.getpreferredencoding())
-    assert read("pydna_read_test.txt").format("gb")[559:578] == '/label="2micron 2µ"'
+    assert read("pydna_read_test.txt").format("gb")[349:368] == '/label="2micron 2µ"'
 
 def test_parse_and_read_with_biopython_and_pydna():
 
@@ -30,7 +30,7 @@ def test_parse_and_read_with_biopython_and_pydna():
     print("|"+a.format("gb")[3314:3324]+"|")
     
     assert a.features[13].qualifiers['label'][0] == '2micron 2µ'
-    assert a.format("gb")[3314:3324] == '2micron 2µ'
+    assert a.format("gb")[3268:3278] == '2micron 2µ'
 
     x, y = parse("pth1.txt")
 
@@ -127,7 +127,7 @@ def test_read_from_unicode():
         text = f.read()
     assert type(text) == str
     x,y = parse( text )
-    assert x.format()[3314:3324] == '2micron 2µ'
+    assert x.format()[3268:3278] == '2micron 2µ'
 
 def test_read_from_file():
     a = read("read1.gb")
@@ -142,7 +142,7 @@ def test_read_from_file():
     d.format("gb")
     x.format("gb")
     y.format("gb")
-    assert x.format()[3314:3324] == '2micron 2µ'
+    assert x.format()[3268:3278] == '2micron 2µ'
     assert x.features[13].qualifiers['label'][0] == u'2micron 2µ'
     assert str(a.seq).lower()==str(b.seq).lower()==str(c.seq).lower()==str(d.seq).lower()
 

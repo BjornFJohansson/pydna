@@ -20,7 +20,7 @@ def test_pretty():
 
     s = sr.format("gb").strip()
 
-    pretty_label = pretty_str( s[:55]+"circular"+s[63:] )[559:578]
+    pretty_label = pretty_str( s[:55]+"circular"+s[63:] )[349:368] #[559:578]
 
     fe=sr.features[0]
     label_from_sr = fe.qualifiers["label"][0]                                   
@@ -29,7 +29,7 @@ def test_pretty():
 
     assert label_from_sr == "2micron 2µ"
 
-    assert s[559:578] == '/label="2micron 2µ"'
+    assert s[349:368] == '/label="2micron 2µ"' #s[559:578]
 
     assert pretty_label == '/label="2micron 2µ"'
 
