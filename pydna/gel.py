@@ -471,7 +471,7 @@ def weight_standard_sample(key, qty=Q_(500, 'ng')):
 
 def logspace_int(minimum, maximum, divs):
     space = _np.logspace(_np.log10(minimum), _np.log10(maximum), divs)
-    return _np.array([int(round(val, 0)) for val in space])
+    return _np.array([round(val, 0) for val in space])
 
 
 def flatten(List):
@@ -725,8 +725,8 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     nlanes = len(lanes)
     gel_width = sum(wellx) + (nlanes+1)*wellsep  # cm
     res = res.to('px/cm')
-    pxl_x = int(round(gel_width * res))
-    pxl_y = int(round(gel_len * res))
+    pxl_x = int(round((gel_width * res).magnitude))
+    pxl_y = int(round((gel_len * res).magnitude))
     lane_centers = [(l+1)*wellsep + sum(wellx[:l]) + 0.5*wellx[l]
                     for l in range(nlanes)]
     rgb_arr = _np.zeros(shape=(pxl_y, pxl_x, 3), dtype=_np.float32)
@@ -735,14 +735,14 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
     # Paint the bands
     for i in range(nlanes):
         distXmid = lane_centers[i]
-        pxlXmid = int(round(distXmid * res))
+        pxlXmid = int(round((distXmid * res).magnitude))
         bandlength = bandlengths[i]
-        from_x = int(round((distXmid - bandlength/2.0) * res))
-        to_x = int(round((distXmid + bandlength/2.0) * res))
+        from_x = int(round(((distXmid - bandlength/2.0) * res).magnitude))
+        to_x = int(round(((distXmid + bandlength/2.0) * res).magnitude))
         bands_pxlXYmid.append([])
         for j in range(len(lanes[i])):
             distYmid = distances[i][j]
-            pxlYmid = int(round(distYmid * res))
+            pxlYmid = int(round((distYmid * res).magnitude))
             bands_pxlXYmid[i].append((pxlXmid, pxlYmid))
             bandwidth = bandwidths[i][j]  # w=FWHM or w=FWTM ???
             if FWTM:
