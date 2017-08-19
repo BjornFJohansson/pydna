@@ -1,9 +1,9 @@
 package:
     name: pydna
-    version: {{ GIT_DESCRIBE_TAG }}
+    version: {{ environ.get('GIT_DESCRIBE_TAG', 'default') }}
 
 build:
-  number: '0'
+  number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
 
 source:
   git_url: .
