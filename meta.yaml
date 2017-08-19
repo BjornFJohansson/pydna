@@ -3,7 +3,7 @@ package:
     version: {{ GIT_DESCRIBE_TAG }}
 
 build:
-  number: 0
+  number: '0'
 
 source:
   git_url: .
