@@ -36,7 +36,7 @@ setup(  name            = 'pydna',
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
         long_description=long_description,
-        setup_requires=['pytest-runner', "appdirs", "numpy", "biopython", "prettytable",  "networkx", "ordered-set", "pyparsing", "requests"],
+        setup_requires=['pytest-runner', "numpy"],
         tests_require =['pytest',        "appdirs", "numpy", "biopython", "prettytable",  "networkx", "ordered-set", "pyparsing", "requests"],
         install_requires = [             "appdirs", "numpy", "biopython", "prettytable",  "networkx", "ordered-set", "pyparsing", "requests"],
         keywords = "bioinformatics",
