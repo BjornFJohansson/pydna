@@ -20,6 +20,7 @@ echo "CI                   = $CI"
 echo "APPVEYOR             = $APPVEYOR"
 echo "CIRCLECI             = $CIRCLECI"
 echo "TRAVIS               = $TRAVIS"
+echo "CODESHIP             = $CI_NAME"
 echo "=============================================================="
 echo "Build information:"
 echo "=============================================================="
@@ -100,12 +101,16 @@ then
     elif [[ $CIRCLECI = true ]]
     then
         miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
+    elif [[ $CI_NAME = codeship ]]
+    then
+        miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
         echo "TRAVIS   = $TRAVIS"
         echo "APPVEYOR = $APPVEYOR"
         echo "CIRCLECI = $CIRCLECI"
+        echo "CI_NAME  = $CI_NAME"
         exit 1
     fi
     echo "execute: $miniconda"
