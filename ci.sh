@@ -41,7 +41,7 @@ then
         echo "Release tag indicate pre release"
         echo "deploy sdist zip package to pypi "
         echo "conda package anaconda.org with label 'test'."
-        pypiserver="pypi"
+        pypiserver="testpypi"
         condalabel="test"
     else
         echo "Build cancelled because"
