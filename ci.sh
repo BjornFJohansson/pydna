@@ -192,7 +192,7 @@ then
             echo "pre release, no upload to pypi."
         fi
         appveyor PushArtifact dist/*        
-    elif [[ $CIRCLECI = true ]] # Linux
+    elif [[ $CIRCLECI = true ]]||[[$CI_NAME = codeship]]  # Linux
     then
         python setup.py register
         source activate pydnapipbuild35
