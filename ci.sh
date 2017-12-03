@@ -224,7 +224,7 @@ then
         echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
-    ls dist
+    #ls dist
 else
     echo "create test environment for python 3.5"
     conda env create -f test_environment35.yml

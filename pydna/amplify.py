@@ -439,8 +439,11 @@ def pcr(*args,  **kwargs):
         elif isinstance(s, str):
             s = SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
         else:
-            raise TypeError("the record property needs to be a string, Seq, SeqRecord or Dseqrecord object")
+            raise TypeError("the record property needs to be a string, Seq, SeqRecord, Dseqrecord or Amplicon object")
         new.append(s)
+
+    if len(new) == 1 and hasattr(new[0], "forward_primer"): # A single Amplicon object
+        new = [ new[0].forward_primer, new[0].reverse_primer, new[0] ]
 
     anneal_primers = Anneal(  new[:-1],
                               new[-1],
@@ -549,6 +552,12 @@ def nopcr(*args,  **kwargs):
         raise Exception(anneal_primers.report())
     return True
 
+if __name__=="__main__":
+    
+    from pydna.design import primer_design
+    from pydna.dseqrecord import Dseqrecord
+    a = primer_design(Dseqrecord("gtcatcgtactactcgtaagtcatcagtcgtacgtatagtcatcgtagtatatcgatcta"))
+    z = pcr(a)
 
 if __name__=="__main__":
     cache = _os.getenv("pydna_cache")
