@@ -24,3 +24,4 @@ global-exclude *~
 prune dist*
 prune tests/htmlcov*
 prune scripts*
+prune __pycache__
