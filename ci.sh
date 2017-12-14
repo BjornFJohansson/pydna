@@ -225,7 +225,15 @@ then
         echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
-    #ls dist
+    if [[ $local_computer = true ]]
+    then
+        source activate root
+        conda remove -n condabuild35 --all -q
+        conda remove -n condabuild36 --all -q
+        conda remove -n pipbuild35   --all -q
+        conda remove -n pipbuild36   --all -q
+        conda remove -n twine        --all -q
+    fi
 else
     echo "create test environment for python 3.5"
     conda env create -f conda_envs/test_env35.yml
@@ -243,7 +251,7 @@ else
     if [[ $local_computer = true ]]
     then
         source activate root
-        conda remove -n conda_envs/testenv35 --all -q
-        conda remove -n conda_envs/testenv36 --all -q
+        conda remove -n testenv35 --all -q
+        conda remove -n testenv36 --all -q
     fi
 fi
