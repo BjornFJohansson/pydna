@@ -85,7 +85,6 @@ then
     password = $pypipassword
 
     [pypi]
-    repository = https://upload.pypi.io/legacy/
     username = $pypiusername
     password = $pypipassword" > $HOME/.pypirc
 
@@ -181,14 +180,15 @@ then
     then
         source activate pydnapipbuild35
         conda upgrade -yq pip
-        python setup.py build bdist_wininst
+        python setup.py build bdist_wheel bdist_egg
         source activate pydnapipbuild36
         conda upgrade -yq pip
-        python setup.py build bdist_wininst
+        python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]] # bdist_wininst does not handle alpha versions, so no upload unless final release.
         then
             source activate twine
-            twine upload -r $pypiserver dist/pydna*.exe --skip-existing
+            twine upload -r $pypiserver dist/pygenome*.whl --skip-existing
+            twine upload -r $pypiserver dist/pygenome*.egg --skip-existing
         else
             echo "pre release, no upload to pypi."
         fi

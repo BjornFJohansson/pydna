@@ -168,10 +168,10 @@ class Contig(_Dseqrecord):
         return _pretty_str(_textwrap.dedent(fig))
 
 
-if __name__=="__main__":
-    import os        as _os
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
-    import doctest
-    doctest.testmod(verbose=True)
-    _os.environ["pydna_cache"]=cache
+if __name__=="__main__":                                    # pragma: no cover
+    import os        as _os                                 # pragma: no cover
+    cache = _os.getenv("pydna_cache")                       # pragma: no cover
+    _os.environ["pydna_cache"]="nocache"                    # pragma: no cover
+    import doctest                                          # pragma: no cover
+    doctest.testmod(verbose=True)                           # pragma: no cover
+    _os.environ["pydna_cache"]=cache                        # pragma: no cover
