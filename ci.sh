@@ -129,7 +129,7 @@ then
     conda config --append channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
-    export localcomputer=true
+    export local_computer=true
 fi
 if [[ $tagged_commit = true ]]
 then
@@ -194,7 +194,7 @@ then
             echo "pre release, no upload to pypi."
         fi
         appveyor PushArtifact dist/*        
-    elif [[ $CIRCLECI = true ]]||[[$CI_NAME = codeship]]  # Linux
+    elif [[$CI_NAME = "codeship"]]  # Linux
     then
         source activate pydnapipbuild35
         conda upgrade -yq pip
@@ -204,7 +204,7 @@ then
         python setup.py sdist --formats=zip
         source activate twine       
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-    elif [[ $localcomputer = true ]]
+    elif [[ $local_computer = true ]]
     then
         echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
         source activate pydnapipbuild35
@@ -242,4 +242,9 @@ else
     source activate root
     conda remove -n testenv35 --all -q
     conda remove -n testenv36 --all -q
+    if [[ $local_computer = true ]]
+    then
+        source activate root
+        conda remove -n testenv35 --all -q
+        conda remove -n testenv36 --all -q
 fi
