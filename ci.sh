@@ -136,10 +136,10 @@ then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
     conda-build -V
-    conda env create -f condabuild35.yml
-    conda env create -f condabuild36.yml
-    conda env create -f pipbuild35.yml
-    conda env create -f pipbuild36.yml
+    conda env create -f conda_envs/condabuild35.yml
+    conda env create -f conda_envs/condabuild36.yml
+    conda env create -f conda_envs/pipbuild35.yml
+    conda env create -f conda_envs/pipbuild36.yml
     conda create -yq -n twine python=3.5 twine
     rm -rf dist
     rm -rf build
@@ -228,14 +228,14 @@ then
     #ls dist
 else
     echo "create test environment for python 3.5"
-    conda env create -f test_env35.yml
+    conda env create -f conda_envs/test_env35.yml
     source activate testenv35
     which python
     python --version
     python run_test.py
     echo
     echo "create test environment for python 3.6"
-    conda env create -f test_env36.yml
+    conda env create -f conda_envs/test_env36.yml
     source activate testenv36
     which python
     python --version
@@ -243,7 +243,7 @@ else
     if [[ $local_computer = true ]]
     then
         source activate root
-        conda remove -n testenv35 --all -q
-        conda remove -n testenv36 --all -q
+        conda remove -n conda_envs/testenv35 --all -q
+        conda remove -n conda_envs/testenv36 --all -q
     fi
 fi
