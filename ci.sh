@@ -134,7 +134,7 @@ fi
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    conda install -yq conda-build
+    conda install -n root conda-build   
     conda-build -V
     conda env create -f conda_envs/condabuild35.yml
     conda env create -f conda_envs/condabuild36.yml
