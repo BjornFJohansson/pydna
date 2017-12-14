@@ -129,7 +129,7 @@ then
     conda config --append channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
-    export local_computer=true
+    local_computer=true
 fi
 if [[ $tagged_commit = true ]]
 then
@@ -163,6 +163,7 @@ then
 
     if [[ $TRAVIS = true ]] # MacOSX
     then
+        brew update
         source activate pydnapipbuild35
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
@@ -247,4 +248,5 @@ else
         source activate root
         conda remove -n testenv35 --all -q
         conda remove -n testenv36 --all -q
+    fi
 fi
