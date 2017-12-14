@@ -136,11 +136,11 @@ then
     echo "build conda package and setuptools package(s)"
     conda install -yq conda-build
     conda-build -V
-    conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
-    conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
-    conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client urllib3  pypandoc pandoc
-    conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client pypandoc pandoc
-    conda create -yq -n twine             python=3.5 twine
+    conda env create -f condabuild35.yml
+    conda env create -f condabuild36.yml
+    conda env create -f pipbuild35.yml
+    conda env create -f pipbuild36.yml
+    conda create -yq -n twine python=3.5 twine
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
@@ -148,9 +148,9 @@ then
     pth2="$(conda build . --output --py 3.6)"
     echo $pth1
     echo $pth2
-    source activate pydnacondabuild35
+    source activate condabuild35
     conda build --python 3.5 .
-    source activate pydnacondabuild36
+    source activate condabuild36
     conda build --python 3.6 .
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
@@ -164,59 +164,59 @@ then
     if [[ $TRAVIS = true ]] # MacOSX
     then
         brew update
-        source activate pydnapipbuild35
+        source activate pipbuild35
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
-        source activate pydnapipbuild36
+        source activate pipbuild36
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]] # bdist_egg, bdist_wheel do not handle alpha versions, so no upload unless final release.
         then
             source activate twine
-            twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-            twine upload -r $pypiserver dist/pydna*.egg --skip-existing
+            twine upload -r $pypiserver dist/*.whl --skip-existing
+            twine upload -r $pypiserver dist/*.egg --skip-existing
         else
             echo "pre release, no upload to pypi."
         fi
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
     then
-        source activate pydnapipbuild35
+        source activate pipbuild35
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
-        source activate pydnapipbuild36
+        source activate pipbuild36
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]] # bdist_wininst does not handle alpha versions, so no upload unless final release.
         then
             source activate twine
-            twine upload -r $pypiserver dist/pygenome*.whl --skip-existing
-            twine upload -r $pypiserver dist/pygenome*.egg --skip-existing
+            twine upload -r $pypiserver dist/*.whl --skip-existing
+            twine upload -r $pypiserver dist/*.egg --skip-existing
         else
             echo "pre release, no upload to pypi."
         fi
         appveyor PushArtifact dist/*        
-    elif [[$CI_NAME = "codeship"]]  # Linux
+    elif [[ $CI_NAME = codeship ]]  # Linux
     then
-        source activate pydnapipbuild35
+        source activate pipbuild35
         conda upgrade -yq pip
         python setup.py sdist --formats=zip
-        source activate pydnapipbuild36
+        source activate pipbuild36
         conda upgrade -yq pip
         python setup.py sdist --formats=zip
         source activate twine       
-        twine upload -r $pypiserver dist/pydna*.zip --skip-existing
+        twine upload -r $pypiserver dist/*.zip --skip-existing
     elif [[ $local_computer = true ]]
     then
         echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
-        source activate pydnapipbuild35
+        source activate pipbuild35
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
-        source activate pydnapipbuild36
+        source activate pipbuild36
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
         source activate twine
-        twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
+        twine upload -r $pypiserver dist/*.zip --skip-existing
+        twine upload -r $pypiserver dist/*.whl --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
@@ -228,21 +228,18 @@ then
     #ls dist
 else
     echo "create test environment for python 3.5"
-    conda env create -f test_environment35.yml
+    conda env create -f test_env35.yml
     source activate testenv35
     which python
     python --version
     python run_test.py
     echo
     echo "create test environment for python 3.6"
-    conda env create -f test_environment36.yml
+    conda env create -f test_env36.yml
     source activate testenv36
     which python
     python --version
     python run_test.py
-    source activate root
-    conda remove -n testenv35 --all -q
-    conda remove -n testenv36 --all -q
     if [[ $local_computer = true ]]
     then
         source activate root

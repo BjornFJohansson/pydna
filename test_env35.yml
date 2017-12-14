@@ -1,6 +1,7 @@
 name: testenv35
 channels:
 - BjornFJohansson
+- conda-forge
 dependencies:
 - python=3.5
 - appdirs

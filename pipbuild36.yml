@@ -1,0 +1,9 @@
+name: pipbuild36
+channels:
+- BjornFJohansson
+- conda-forge
+dependencies:
+- python=3.6 
+- anaconda-client          
+- pypandoc pandoc            
+- requests-mock 

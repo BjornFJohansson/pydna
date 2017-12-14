@@ -1,0 +1,11 @@
+name: condabuild35
+channels:
+- BjornFJohansson
+- conda-forge
+dependencies:
+- python=3.5 
+- anaconda-client          
+- pypandoc 
+- pandoc 
+- nbval 
+- requests-mock  

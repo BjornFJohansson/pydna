@@ -1,0 +1,11 @@
+name: pipbuild35
+channels:
+- BjornFJohansson
+- conda-forge
+dependencies:
+- python=3.5 
+- anaconda-client 
+- urllib3  
+- pypandoc 
+- pandoc            
+- requests-mock
