@@ -4,7 +4,7 @@
 import versioneer
 
 # Read author etc. from __init__.py
-for line in open('pydna/__init__.py'):
+for line in open('pydna/__init__.py', encoding="utf-8"):
     if line.startswith('__') and not line.startswith('__version') and not line.startswith('__long'):
         exec(line.strip())
 
