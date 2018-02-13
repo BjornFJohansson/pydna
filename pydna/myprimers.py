@@ -17,6 +17,7 @@ for _i, _p in enumerate(list_primers):
            
 
 def append_primer_list(primers):
+    #TODO: implement!
     pass
 
 

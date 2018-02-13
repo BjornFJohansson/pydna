@@ -186,6 +186,8 @@ def primer_design(    template,
     
     prod.forward_primer.concentration = fprimerc
     prod.reverse_primer.concentration = rprimerc
+    
+    ## TODO primer id should be set to something based on the template id
 
     if prod.forward_primer.id == "id?": #<unknown id>
         prod.forward_primer.id = "fw{}".format(len(template))

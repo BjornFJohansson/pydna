@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
+# doctest: +NORMALIZE_WHITESPACE
+# doctest: +SKIP
+
 # Copyright 2015 by Bruno Silva <bruno.phoenix@gmail.com>, Björn Johansson.
 # All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-#from pint import UnitRegistry #, DimensionalityError
+# from pint import UnitRegistry #, DimensionalityError
 # Hacky fix for a python3 problem I don't understand
 # https://github.com/pallets/flask/issues/1680
-#UnitRegistry.__wrapped__ = None
-#ureg = UnitRegistry()
+# UnitRegistry.__wrapped__ = None
+# ureg = UnitRegistry()
 
 """Provides the class `Gel` for the simulation of agarose slab-gel
 electrophoresis of DNA at constant electric field.
@@ -29,17 +31,17 @@ from   matplotlib import pyplot as _plt
 from   matplotlib import cm as _cm
 from   matplotlib.ticker import FixedLocator as _FixedLocator
 
-from mpldatacursor import datacursor as _datacursor #, HighlightingDataCursor  # version 0.5.0
+# from mpldatacursor import datacursor as _datacursor #, HighlightingDataCursor  # version 0.5.0
 
 from scipy.interpolate    import griddata as _griddata
 from scipy.optimize       import leastsq  as _leastsq
 from scipy.optimize       import fsolve   as _fsolve
 from scipy                import stats    as _stats
 
-from pint        import UnitRegistry as _UnitRegistry
-from io          import BytesIO      as _BytesIO
-from pydna.dseq       import Dseq         as _Dseq
-from pydna.dseqrecord import Dseqrecord  as _Dseqrecord
+from pint                 import UnitRegistry as _UnitRegistry
+from io                   import BytesIO      as _BytesIO
+from pydna.dseq           import Dseq         as _Dseq
+from pydna.dseqrecord     import Dseqrecord   as _Dseqrecord
 
 
 # Hacky fix for a python3 problem I don't understand
@@ -224,7 +226,6 @@ for name in data_as_file:
     datasets[name]['muS'] = temp_dset['muS'] * ureg('1.0E-8 m**2/(V*s)')
     datasets[name]['muL'] = temp_dset['muL'] * ureg('1.0E-8 m**2/(V*s)')
     datasets[name]['gamma'] = temp_dset['gamma'] * ureg('kbp')
-del hor_str, ver_str, data_as_file, data_source, temp_dset
 
 
 # vWBR equation
@@ -241,7 +242,7 @@ for name in datasets:
                           datasets[name]['muL'].to('cm**2/V/s'),
                           datasets[name]['gamma'].to('bp')
                           )
-del name
+
 
 # Constants
 kB = (1 * ureg.boltzmann_constant).to('m**2 * kg / s**2 / K')  # Boltzmann constant
@@ -868,7 +869,7 @@ def gelplot_imshow(distances, bandwidths, intensities, lanes, names,
             cursor_args[key] = cursor_ovr[key]
     if cursor_args['hover'] == True:
         cursor_args['display'] = 'single'
-    _datacursor(bands, **cursor_args)
+    # _datacursor(bands, **cursor_args)
     # fig.savefig('example.png', dpi=300)
     if show:
         _plt.show()
@@ -1381,7 +1382,7 @@ class Gel:
         return None
 
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
     test_gel = True
     test_mu0 = True
     test_vWBRfit = True

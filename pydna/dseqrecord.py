@@ -702,7 +702,7 @@ class Dseqrecord(_SeqRecord):
             if self.circular:
                 return _pretty_str(s[:55]+"circular"+s[63:])
             else:
-                return _pretty_str(s[:55]+"linear"+s[61:])
+                return _pretty_str(s[:55]+"linear  "+s[63:])
         else:
             return _pretty_str(s)
 
@@ -745,6 +745,8 @@ class Dseqrecord(_SeqRecord):
                 old_file = read(filename)
                 if self.seq != old_file.seq:
                     # If new sequence is different, the old file is renamed with "OLD" suffix:
+                    # TODO: add this timestamp so that all old versions are stored
+                    # int(time.time() * 1000000)  = 1512035297658778
                     old_filename = "{}_OLD{}".format(name, ext)
                     _os.rename(filename, old_filename)
                     

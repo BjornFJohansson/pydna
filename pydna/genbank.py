@@ -33,7 +33,7 @@ class Genbank(object):
     19
     '''
 
-    def __init__(self, users_email, *args, tool="pydna", **kwargs):
+    def __init__(self, users_email:str, *args, tool="pydna", **kwargs):
 
         if not _re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,_re.IGNORECASE):
             raise ValueError("email address {} is not valid.".format(users_email))
@@ -46,7 +46,7 @@ class Genbank(object):
         return "GenbankConnection({})".format(self.email)
 
     @_memorize("Genbank_nucleotide")
-    def nucleotide(self, item, start=None, stop=None, strand="watson" ):
+    def nucleotide(self, item:str, start=None, stop=None, strand="watson" ):
         '''Download a genbank nuclotide record.
 
         Item is a string containing one genbank acession number.
@@ -121,7 +121,9 @@ class Genbank(object):
         
         return _GenbankRecord(_read(text), item = item, start=start, stop=stop, strand=strand)
 
-def genbank(accession):
+def genbank(accession:str):
+    '''Download a genbank nuclotide record.
+    '''
     email = _os.getenv("pydna_email")
     gb = Genbank(email)
     return gb.nucleotide(accession)
