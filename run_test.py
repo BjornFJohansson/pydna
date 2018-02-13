@@ -47,7 +47,17 @@ def main():
     print("| |_) | |_| | (_| | | | | (_| |")
     print("| .__/ \__, |\__,_|_| |_|\__,_|")
     print("| |     __/ |     ")
-    print("|_|    |___/      ")
+    print("|_|    |___/      ")   
+    print("     _            _            _         ")
+    print("    | |          | |          | |        ")
+    print("  __| | ___   ___| |_ ___  ___| |_ ___   ")
+    print(" / _` |/ _ \ / __| __/ _ \/ __| __/ __|  ")
+    print("| (_| | (_) | (__| ||  __/\__ \ |_\__ \  ")
+    print(" \__,_|\___/ \___|\__\___||___/\__|___/  ")
+
+    doctestargs = ["pydna", "--doctest-modules", "-v", "-s"]
+    pytest.cmdline.main(doctestargs)
+
     print(" _            _   ")
     print("| |          | |  ")
     print("| |_ ___  ___| |_ ")
@@ -69,6 +79,7 @@ def main():
         print("python-coveralls NOT installed!")
         args = []
     else:
+        print("python-coveralls is installed!")
         del coveralls
         args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
     try:
@@ -76,20 +87,20 @@ def main():
     except ImportError:
         print("nbval NOT installed!")
     else:
+        print("nbval is installed!")
         del nbval
-        args.append("--nbval")   
-
-    args = [".", "-v", "-s"] + args 
+        args.append("--nbval") 
+    
+    mainargs = [".", "-v", "-s"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
-    pytest.cmdline.main(args)
+    pytest.cmdline.main(mainargs)
     os.chdir(cwd)
+    
     try:
         shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
     except FileNotFoundError:
-        pass
-    args = ["pydna", "--doctest-modules", "-v", "-s"]
-    pytest.cmdline.main(args)
+        pass    
 
     print("  __ _       _     _              _ _ ")
     print(" / _(_)     (_)   | |            | | |")

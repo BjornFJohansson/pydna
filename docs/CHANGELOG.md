@@ -1,7 +1,21 @@
 =======   ========== ==========================================================================================
 version   date       comment
 =======   ========== ==========================================================================================
-2.0.0     2017-      First release of 2.0.0. .... 
+
+2.0.3     2017-12-14 ---
+
+2.0.3a1   2017-12-14 pcr function now takes an amplicon. This way an amplicon can easily be rerun after 
+                     modification of primers or template 
+
+2.0.3a0   2017-12-03 ---
+
+2.0.2     2017-08-26 ---
+
+2.0.2     2017-08-26 ---
+
+2.0.1     2017-08-24 ---
+
+2.0.0     2017-06-23 First release of 2.0.0. This version adds changes in the alpha versions
 
 2.0.0a4   2017-05-05 Fixed bug in _multiply_circular 
 

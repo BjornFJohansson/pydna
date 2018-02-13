@@ -27,8 +27,8 @@ This code is at an early stage of development and documentation.
 import numpy as _np
 
 import matplotlib.ticker as _mtick
-from   matplotlib import pyplot as _plt
-from   matplotlib import cm as _cm
+import matplotlib.pyplot as _plt
+import matplotlib.cm    as _cm
 from   matplotlib.ticker import FixedLocator as _FixedLocator
 
 # from mpldatacursor import datacursor as _datacursor #, HighlightingDataCursor  # version 0.5.0

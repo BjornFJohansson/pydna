@@ -125,9 +125,11 @@ then
     conda update -yq pip
     conda install conda-verify -yq
     conda install jinja2 -yq
-    conda config --add channels BjornFJohansson
+    conda config --append channels conda-forge 
+    conda config --append channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
+    local_computer=true
 fi
 if [[ $tagged_commit = true ]]
 then
@@ -161,6 +163,7 @@ then
 
     if [[ $TRAVIS = true ]] # MacOSX
     then
+        brew update
         source activate pydnapipbuild35
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
@@ -192,9 +195,8 @@ then
             echo "pre release, no upload to pypi."
         fi
         appveyor PushArtifact dist/*        
-    elif [[ $CIRCLECI = true ]]||[[$CI_NAME = codeship]]  # Linux
+    elif [[$CI_NAME = "codeship"]]  # Linux
     then
-        python setup.py register
         source activate pydnapipbuild35
         conda upgrade -yq pip
         python setup.py sdist --formats=zip
@@ -203,10 +205,9 @@ then
         python setup.py sdist --formats=zip
         source activate twine       
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-    elif [[ $(uname) = "Linux" ]]
+    elif [[ $local_computer = true ]]
     then
-        echo "Local linux: python setup.py sdist --formats=gztar,zip bdist_wheel"
-        python setup.py register
+        echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
         source activate pydnapipbuild35
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
@@ -242,4 +243,10 @@ else
     source activate root
     conda remove -n testenv35 --all -q
     conda remove -n testenv36 --all -q
+    if [[ $local_computer = true ]]
+    then
+        source activate root
+        conda remove -n testenv35 --all -q
+        conda remove -n testenv36 --all -q
+    fi
 fi
