@@ -161,7 +161,7 @@ then
         anaconda upload $pth2 --label $condalabel --force
     fi
 
-    if [[ $TRAVIS = true ]] # MacOSX
+    if [[ $TRAVIS = true ]] # MacOSX on Travis
     then
         brew update
         source activate pydnapipbuild35
@@ -178,7 +178,7 @@ then
         else
             echo "pre release, no upload to pypi."
         fi
-    elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows
+    elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows on appveyor
     then
         source activate pydnapipbuild35
         conda upgrade -yq pip
@@ -195,7 +195,7 @@ then
             echo "pre release, no upload to pypi."
         fi
         appveyor PushArtifact dist/*        
-    elif [[$CI_NAME = "codeship"]]  # Linux
+    elif [[ $CI_NAME = codeship ]]  # Linux on codeship
     then
         source activate pydnapipbuild35
         conda upgrade -yq pip
