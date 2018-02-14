@@ -120,13 +120,13 @@ then
         export PATH="$HOME/miniconda/bin:$PATH"
         rm Miniconda_latest.sh
     fi
-    conda update -yq conda
     conda config --set always_yes yes --set show_channel_urls yes
-    conda update -yq pip
-    conda install conda-verify -yq
-    conda install jinja2 -yq
+    #conda install conda-verify -yq
+    #conda install jinja2 -yq
     conda config --append channels conda-forge 
     conda config --append channels BjornFJohansson
+    conda update -yq conda
+    conda update -yq pip
 else
     echo "Not running on CI server, probably running on local computer"
     local_computer=true

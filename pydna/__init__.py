@@ -85,7 +85,7 @@ else: # otherwise it is created with default settings
                             'data_dir': _appdirs.user_data_dir("pydna"),
                             'log_dir' : _appdirs.user_log_dir("pydna"),
                             'cache'   : 'cached',
-                            'cached_funcs':'Genbank_nucleotide #Anneal,Assembly,download_text,Dseqrecord_synced,Genbank_nucleotide',
+                            'cached_funcs':'Genbank_nucleotide ; Anneal,Assembly,download_text,Dseqrecord_synced,Genbank_nucleotide',
                             'ape'     : 'put/path/to/ape/here',
                             'primers' : ''}
         _parser.write(f)
