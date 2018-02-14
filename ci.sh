@@ -131,6 +131,9 @@ else
     echo "Not running on CI server, probably running on local computer"
     local_computer=true
 fi
+
+set -x
+
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
