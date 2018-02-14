@@ -1,15 +1,5 @@
 # [![icon](docs/pics/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
 
-[![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)[![Research software impact](http://depsy.org/api/package/pypi/pydna/badge.svg)](http://depsy.org/package/python/pydna)
-
-[![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
-
-[![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)[![Code Climate](https://codeclimate.com/github/BjornFJohansson/pydna/badges/gpa.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)[![Issue Count](https://codeclimate.com/github/BjornFJohansson/pydna/badges/issue_count.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)[![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/py3/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)
-
-[![Codeship Status for BjornFJohansson/pydna](https://app.codeship.com/projects/de24d6c0-f3a7-0135-0950-76dd9f7b94ca/status?branch=py3dev)](https://app.codeship.com/projects/272770)[![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)[![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)
-
-[![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)[![Anaconda-Server Badge0](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)[![Anaconda-Server Badge1](https://anaconda.org/bjornfjohansson/pydna/badges/installer/conda.svg)](https://conda.anaconda.org/bjornfjohansson)[![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna)[![Anaconda-Server Badge3](https://anaconda.org/bjornfjohansson/pydna/badges/downloads.svg)](https://anaconda.org/bjornfjohansson/pydna)
-
 Planning genetic constructs with many parts and assembly steps, such as recombinant
 metabolic pathways are often difficult to properly document.
 
@@ -270,3 +260,19 @@ and to the regular [pypi](https://pypi.python.org/pypi/pydna) server.
 
 ## Changelog
 See the [change log](docs/CHANGELOG.md) for recent changes.
+
+
+|                                |                                                                                                                                                                                       |
+|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Stars                          | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)                                                 |
+| Impact                         | [![Research software impact](http://depsy.org/api/package/pypi/pydna/badge.svg)](http://depsy.org/package/python/pydna)                                                               |
+| Documentation                  | [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)                                                    |
+| Issues                         | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                                                   |
+| Code quality                   | [![Code Climate](https://codeclimate.com/github/BjornFJohansson/pydna/badges/gpa.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)                                          |
+| Test coverage                  | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/py3/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)                                                     |
+| Conda package built on Linux   | [![Codeship Status for BjornFJohansson/pydna](https://app.codeship.com/projects/de24d6c0-f3a7-0135-0950-76dd9f7b94ca/status?branch=py3dev)](https://app.codeship.com/projects/272770) |
+| Conda package built on MacOSX  | [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)                                                                              |
+| Conda package built on Windows | [![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)                                              |
+| Pypi package                   | [![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)                                                                                                 |
+| Conda package version          | [![Anaconda-Server Badge0](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)                                                |
+| Software license               | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna)                                                |
