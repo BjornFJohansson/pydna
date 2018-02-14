@@ -80,7 +80,7 @@ then
         testpypi
 
     [testpypi]
-    repository = https://test.upload.pypi.org/legacy/
+    repository = https://test.pypi.org/legacy/
     username = $pypiusername
     password = $pypipassword
 
