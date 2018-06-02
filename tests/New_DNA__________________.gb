@@ -1,0 +1,22 @@
+LOCUS       New_DNA                   20 bp    ds-DNA  circular UNK 11-JAN-2018
+DEFINITION  .
+ACCESSION   New_DNA
+VERSION     New_DNA
+KEYWORDS    .
+SOURCE      
+  ORGANISM  .
+            .
+COMMENT     
+            ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     misc_feature    complement(join(4..6,9..12))
+                     /locus_tag="MyFeature"
+                     /label="MyFeature"
+                     /ApEinfo_label="MyFeature"
+                     /ApEinfo_fwdcolor="cyan"
+                     /ApEinfo_revcolor="green"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
+ORIGIN
+        1 agactatctt tggtcgtctt
+//

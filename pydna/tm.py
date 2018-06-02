@@ -74,12 +74,11 @@ def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
                     "C": (-0.1 ,2.8),
                     "A": (-2.3, -4.1),
                     "T": (-2.3, -4.1) }
-
+    primer = primer.upper()
     dH, dS = helixinit[primer[0]]
     H ,  S = helixinit[primer[-1]]
     dH = dH+H
     dS = dS+S
-    primer = primer.upper()
     for p in range(len(primer)):
         dn = primer[p:p+2]
         H,S = nntermsl[dn]
@@ -271,19 +270,19 @@ def basictm(primer, *args, **kwargs):
 # http://www.promega.com/techserv/tools/biomath/calc11.htm#melt_results        
         
 
-def Q5():
+def Q5(*args,**kwargs):
     '''
     for Q5 Ta they take the lower of the two Tms and add 1C 
     (up to 72C). For Phusion they take the lower of the two 
     and add 3C (up to 72C). 
     '''
-    pass
+    raise NotImplementedError
 
 
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cached

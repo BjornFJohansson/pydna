@@ -23,8 +23,9 @@ def download_text(url):
     return _pretty_str(result)
     
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
-    doctest.testmod(verbose=True)
-    _os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached

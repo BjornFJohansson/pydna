@@ -282,7 +282,7 @@ def wrapstring(str_, rowstart, rowend, padfirst=True):
     #multiple lines so wrap:
     for linenum in range(1+int(len(str_)/rowlen)):
         if linenum==0 and not padfirst:
-            wrappedstr+= str[linenum*rowlen:(linenum+1)*rowlen]+"\n"
+            wrappedstr+= str_[linenum*rowlen:(linenum+1)*rowlen]+"\n"
         else:
             wrappedstr+=" "*leftpad + str_[linenum*rowlen:(linenum+1)*rowlen]+"\n"
 #    if str_.startswith("/translation="):
@@ -319,14 +319,8 @@ def originstr(sequence):
            sequence[pos+50:pos+60]+"\n"
     return outstr
 
-def toGB(jseqs):
+def toGB(jseq):
     "parses json jseq data and prints out ApE compatible genbank"
-
-    #take first jseq from parsed list
-    if type(jseqs)==type([]):
-        jseq=jseqs[0]
-    else:
-        jseq=jseqs
     
     #construct the LOCUS header string
     #  LOCUS format: 
@@ -383,19 +377,20 @@ def toGB(jseqs):
 
     #build the feature table
     featuresstr=""
-    for feat in jseq["features"]:
-        fstr= " "*5 + feat["type"] +\
-              " "*(16-len(feat["type"])) + \
-              wrapstring(locstr(feat["location"],feat["strand"]),21,80,False)
-        for k in feat.keys():
-            if k not in ["type","location","strand"]:
-                #ApE idiosyncrasy: don't wrap val in quotation marks
-                if k in ["ApEinfo_label","ApEinfo_fwdcolor","ApEinfo_revcolor","label"]:
-                    fstr+=wrapstring("/"+str(k)+"="+str(feat[k]),21,80)
-                #standard: wrap val in quotes
-                else:
-                    fstr+=wrapstring("/"+str(k)+"="+"\""+str(feat[k])+"\"",21,80)
-        featuresstr+=fstr
+    if "features" in jseq:
+        for feat in jseq["features"]:
+            fstr= " "*5 + feat["type"] +\
+                  " "*(16-len(feat["type"])) + \
+                  wrapstring(locstr(feat["location"],feat["strand"]),21,80,False)
+            for k in feat.keys():
+                if k not in ["type","location","strand"]:
+                    #ApE idiosyncrasy: don't wrap val in quotation marks
+                    if k in ["ApEinfo_label","ApEinfo_fwdcolor","ApEinfo_revcolor","label"]:
+                        fstr+=wrapstring("/"+str(k)+"="+str(feat[k]),21,80)
+                    #standard: wrap val in quotes
+                    else:
+                        fstr+=wrapstring("/"+str(k)+"="+"\""+str(feat[k])+"\"",21,80)
+            featuresstr+=fstr
 
     #the spaced, numbered sequence
     gborigin="ORIGIN\n"+\
@@ -417,9 +412,9 @@ def gbtext_clean(gbtext):
         
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cached
 

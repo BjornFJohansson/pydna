@@ -7,7 +7,8 @@ __all__=["Anneal",
          "genbank",
          "Genbank",
          "download_text",  
-         "Dseqrecord", 
+         "Dseqrecord",
+         "Dseq",
          "read", 
          "read_primer",  
          "parse", 
@@ -15,37 +16,35 @@ __all__=["Anneal",
          "ape", 
          "primer_design", 
          "assembly_fragments",  
-         "eq", 
-         "shift_origin", 
-         "pairwise", 
+         "eq",
          "gbtext_clean", 
          "list_primers"]
 
 
-from pydna.amplify    import Anneal
-from pydna.amplify    import pcr
-from pydna.assembly   import Assembly
-from pydna.genbank    import genbank
-from pydna.genbank    import Genbank
-from pydna.download   import download_text
-from pydna.dseqrecord import Dseqrecord
-from pydna.readers    import read
-from pydna.readers    import read_primer
-from pydna.parsers    import parse
-from pydna.parsers    import parse_primers
-from pydna.editor     import ape
-from pydna.design     import primer_design
-from pydna.design     import assembly_fragments
-from pydna.utils      import eq
-from pydna.utils      import shift_origin
-from pydna.utils              import pairwise
-from pydna.genbankfixer       import gbtext_clean
-from pydna.myprimers   import list_primers
+from pydna.amplify       import Anneal
+from pydna.amplify       import pcr
+from pydna.assembly      import Assembly
+from pydna.genbank       import genbank
+from pydna.genbank       import Genbank
+from pydna.download      import download_text
+from pydna.dseqrecord    import Dseqrecord
+from pydna.dseq          import Dseq
+from pydna.readers       import read
+from pydna.readers       import read_primer
+from pydna.parsers       import parse
+from pydna.parsers       import parse_primers
+from pydna.editor        import ape
+from pydna.design        import primer_design
+from pydna.design        import assembly_fragments
+from pydna.utils         import eq
+from pydna.genbankfixer  import gbtext_clean
+from pydna.myprimers     import list_primers
+
 
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cached

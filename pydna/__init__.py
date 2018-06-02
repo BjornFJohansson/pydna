@@ -9,7 +9,7 @@ import logging.handlers as _handlers
 import appdirs          as _appdirs
 import configparser     as _configparser
 import prettytable      as _prettytable
-from pydna._pretty      import pretty_str  as _pretty_str
+
 '''
 # pydna
 
@@ -36,30 +36,18 @@ del _get_versions
 
 
 '''
-Pydna can cache results from the assembly dsdna and amplify
-modules. pydna sets an environmental variable "pydna_cache"
-which can have three different values:
+Pydna can cache results from the following functions or methods:
 
-    
-"nocache"       Results are not written to or read from cache.
-                No cache directory is created.
-                No cache key is calculated.
-                
-"cached"        *This is the default.*
-                A cache directory if created.
-                if possible, cached results are returned.
-                if cached results are not available,
-                new results are created and saved to cache.
-                
-"refresh"       New results are made and old are overwritten if they
-                exist.
+    Genbank_nucleotide
+    Anneal
+    Assembly
+    download_text
+    Dseqrecord_synced
+    Genbank_nucleotide
 
-"compare"       Results are made new and compared with cached results.
-                If cached results are not available an exception is raised.
+These can be added separated by a comma to the 
+pydna_cached_funcs environment variable.
 
-                If new results are not identical with cached, 
-                a log entry is made. Use loglevel 10 to see these messages.
-                http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python/
 '''
 # create config directory
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir", _appdirs.user_config_dir("pydna"))
@@ -79,15 +67,15 @@ _parser = _configparser.ConfigParser()
 if _os.path.exists(_ini_path):
     _parser.read(_ini_path)
 else: # otherwise it is created with default settings
-    with open(_ini_path, 'w') as f:
+    with open(_ini_path, 'w', encoding="utf-8") as f:    # TODO needs encoding?
         _parser["main"] = { 'loglevel': str(_logging.WARNING),
                             'email'   : "someone@example.com",
                             'data_dir': _appdirs.user_data_dir("pydna"),
                             'log_dir' : _appdirs.user_log_dir("pydna"),
-                            'cache'   : 'cached',
-                            'cached_funcs':'Genbank_nucleotide ; Anneal,Assembly,download_text,Dseqrecord_synced,Genbank_nucleotide',
+                            'cached_funcs':'Genbank_nucleotide',
                             'ape'     : 'put/path/to/ape/here',
-                            'primers' : ''}
+                            'primers' : 'put/path/to/primers/here',
+                            'enzymes' : 'put/path/to/enzymes/here'}
         _parser.write(f)
 
 # pydna related environmental variables are set from pydna.ini if they are not set already
@@ -96,24 +84,15 @@ _os.environ["pydna_loglevel"] = _os.getenv("pydna_loglevel", _mainsection.get("l
 _os.environ["pydna_email"]    = _os.getenv("pydna_email",    _mainsection.get("email","someone@example.com"))
 _os.environ["pydna_data_dir"] = _os.getenv("pydna_data_dir", _mainsection.get("data_dir",_appdirs.user_data_dir("pydna")))
 _os.environ["pydna_log_dir"]  = _os.getenv("pydna_log_dir",  _mainsection.get("log_dir",_appdirs.user_log_dir("pydna")))
-_os.environ["pydna_cache"]    = _os.getenv("pydna_cache",    _mainsection.get("cache", 'nocache'))
-_os.environ["pydna_cached_funcs"] = _os.getenv("cached_funcs", _mainsection.get("cached_funcs", 'Genbank_nucleotide'))
+_os.environ["pydna_cached_funcs"] = _os.getenv("cached_funcs", _mainsection.get("cached_funcs", 'none'))
 _os.environ["pydna_ape"]      = _os.getenv("pydna_ape",      _mainsection.get("ape",'put/path/to/ape/here'))
-_os.environ["pydna_primers"]  = _os.getenv("pydna_primers",  _mainsection.get("primers", ''))
+_os.environ["pydna_primers"]  = _os.getenv("pydna_primers",  _mainsection.get("primers", 'put/path/to/primers/here'))
+_os.environ["pydna_enzymes"]  = _os.getenv("pydna_enzymes",  _mainsection.get("enzymes", 'put/path/to/enzymes/here'))
 
-# Check sanity of pydna_cache variable
-if _os.environ["pydna_cache"] not in ("cached", "nocache", "refresh", "compare"):
-    raise Exception("cache (os.environ['pydna_cache']) is not cached, nocache, refresh or compare")
 
 # create log directory if not present
-try:
-    _os.makedirs( _os.environ["pydna_log_dir"] )
-    _logmsg = "Created log directory {}".format(_os.environ["pydna_log_dir"])
-except OSError:
-    if _os.path.isdir( _os.environ["pydna_log_dir"] ):
-        _logmsg = "Log directory {} found.".format(_os.environ["pydna_log_dir"])
-    else:
-        raise
+_os.makedirs( _os.environ["pydna_log_dir"], exist_ok=True)                     #### changes to file system ####
+_logmsg = "Log directory {}".format(_os.environ["pydna_log_dir"])
 
 # create logger
 _logger = _logging.getLogger("pydna")
@@ -126,44 +105,43 @@ _logger.info(_logmsg)
 _logger.info('Assigning environmental variable pydna_data_dir = %s', _os.environ["pydna_data_dir"] )
 
 # create cache directory if not present
-try:
-    _os.makedirs( _os.environ["pydna_data_dir"] )
-    _logger.info("Created data directory %s", _os.environ["pydna_data_dir"] )
-except OSError:
-    if _os.path.isdir( _os.environ["pydna_data_dir"] ):
-        _logger.info("data directory %s found", _os.environ["pydna_data_dir"])
-    else:
-        raise
+
+_os.makedirs( _os.environ["pydna_data_dir"], exist_ok=True)                              #### changes to file system ####
+_logger.info("Data directory %s", _os.environ["pydna_data_dir"] )
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
-
 try:
     import scipy
-    del scipy
 except ImportError:
     _missing_modules_for_gel.append("scipy")
+else:
+    del scipy
 try:
     import numpy
-    del numpy
 except ImportError:
     _missing_modules_for_gel.append("numpy")
+else:
+    del numpy
 try:
     import matplotlib
-    del matplotlib
 except ImportError:
     _missing_modules_for_gel.append("matplotlib")
+else:
+    del matplotlib 
 try:
     import mpldatacursor
-    del mpldatacursor
 except ImportError:
     _missing_modules_for_gel.append("mpldatacursor")
+else:
+    del mpldatacursor
 try:
     import pint
-    del pint
 except ImportError:
     _missing_modules_for_gel.append("pint")
-
+else:
+    del pint 
+    
 if _missing_modules_for_gel:
     _logger.warning("gel simulation will NOT be available. Missing modules: %s",
                      ", ".join(_missing_modules_for_gel))
@@ -207,26 +185,27 @@ def open_current_folder():
     return _open_folder( _os.getcwd() )
     
 def open_cache_folder():
-    _open_folder( _os.environ["pydna_data_dir"] )
+    return _open_folder( _os.environ["pydna_data_dir"] )
 
 def open_config_folder():
-    _open_folder( _os.environ["pydna_config_dir"] )
+    return _open_folder( _os.environ["pydna_config_dir"] )
 
 def open_log_folder():
-    _open_folder( _os.environ["pydna_log_dir"] )
+    return _open_folder( _os.environ["pydna_log_dir"] )
 
 def _open_folder(pth):
     if _sys.platform=='win32':
-        _subprocess.Popen(['start', pth], shell=True)
+        _subprocess.run(['start', pth], shell=True)
     elif _sys.platform=='darwin':
-        _subprocess.Popen(['open', pth])
+        _subprocess.run(['open', pth])
     else:
         try:
-            _subprocess.Popen(['xdg-open', pth])
+            _subprocess.run(['xdg-open', pth])
         except OSError:
             return "no cache to open."
-            
+
 def get_env():
+    from pydna._pretty import pretty_str  as _pretty_str
     _table = _prettytable.PrettyTable(["Variable", "Value"])
     _table.set_style(_prettytable.DEFAULT)
     _table.align["Variable"] = "l" # Left align
@@ -236,11 +215,21 @@ def get_env():
         if k.startswith("pydna"):
             _table.add_row([k,v])
     return _pretty_str(_table)
-    
-logo=_pretty_str("                 _             \n"       
-                 "                | |            \n"            
-                 " ____  _   _  __| |___   __ ___\n"
-                 "|  _ \| | | |/ _  |  _ \(____ |\n"
-                 "| |_| | |_| ( (_| | | | / ___ |\n"
-                 "|  __/ \__  |\____|_| |_\_____|\n"
-                 "|_|   (____/                   \n")
+
+def logo():
+    from pydna._pretty import pretty_str  as _pretty_str
+    return _pretty_str("                 _             \n"       
+                       "                | |            \n"            
+                       " ____  _   _  __| |___   __ ___\n"
+                       "|  _ \| | | |/ _  |  _ \(____ |\n"
+                       "| |_| | |_| ( (_| | | | / ___ |\n"
+                       "|  __/ \__  |\____|_| |_\_____|\n"
+                       "|_|   (____/                   \n")
+
+if __name__=="__main__":
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached

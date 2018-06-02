@@ -18,6 +18,7 @@ import operator as _operator
 import os       as _os
 import re       as _re
 import colorsys as _colorsys
+from collections.abc import Iterable as _Iterable
 
 from warnings import warn as _warn
 
@@ -25,35 +26,41 @@ import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 from prettytable import PrettyTable as _PrettyTable
+from pydna.utils import identifier_from_string as _identifier_from_string
 
 from Bio.Seq                import Seq as _Seq
 from Bio.Seq                import translate as _translate
+from itertools              import tee as _tee
 
-from Bio.SeqRecord          import SeqRecord as _SeqRecord
-from Bio.SeqFeature         import SeqFeature as _SeqFeature
+from pydna.seqrecord        import SeqRecord  as _SeqRecord
 from Bio.SeqFeature         import FeatureLocation as _FeatureLocation
 from Bio.SeqFeature         import CompoundLocation as _CompoundLocation
+from pydna.seqfeature       import SeqFeature as _SeqFeature
 from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
 
-from pydna._sequencetrace         import SequenceTraceFactory as _SequenceTraceFactory
+from pydna._sequencetrace     import SequenceTraceFactory as _SequenceTraceFactory
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.utils  import seguid   as _seg
 from pydna.utils  import cseguid  as _cseg
 from pydna.utils  import rc       as _rc
 from pydna.utils  import memorize as _memorize
+from pydna.utils  import flatten     as _flatten
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.dseq import Dseq as _Dseq
 
+from Bio.Restriction import RestrictionBatch as _RestrictionBatch
+from Bio.Restriction import CommOnly
 
 try:
     from IPython.display import display as _display
-    from IPython.display import display_html as _display_html
-    from IPython.display import HTML    as _HTML
 except ImportError:
-    def _display(item): return item
+    def _display_html(item): return item
     def _HTML(item): return item
+else:
+    from IPython.display import display_html as _display_html
+    from IPython.display import HTML         as _HTML
 
 class Dseqrecord(_SeqRecord):
     '''Dseqrecord is a double stranded version of the Biopython SeqRecord [#]_ class.
@@ -137,74 +144,60 @@ class Dseqrecord(_SeqRecord):
 
     def __init__(self, record,
                        *args,
-                       circular               = None,
                        linear                 = None,
+                       circular               = None,
                        n                      = 5E-14, # mol ( = 0.05 pmol)
                        **kwargs):
-        self.n = n
-        if circular == None and linear in (True, False,):
-            circular = not linear
-        elif linear == None and circular in (True, False,):
+        
+        if not (linear is None and circular is None):
+            circular = bool(circular) and bool(linear)^bool(circular) or linear==False and circular is None
             linear   = not circular
-
-        # record is Dseq object ?
-        if hasattr(record, "watson"): 
+        
+        if isinstance(record, str):
+            super().__init__( _Dseq(record,
+                                    linear=linear,
+                                    circular=circular),
+                              *args,
+                              **kwargs )       
+        # record is a Dseq object ?
+        elif hasattr(record, "watson"):
             if record.circular and linear:
-                record = record.tolinear()
-            if record.linear and circular:
+                record = record[:]
+            elif record.linear and circular:
                 record = record.looped()
             super().__init__(record, *args, **kwargs)
         # record is a Bio.Seq object ?
-        elif hasattr(record, "alphabet"):          
-            super().__init__(_Dseq(str(record),linear=linear,circular=circular),
-                             *args,                                          
-                             **kwargs)
-        # record is a Bio.SeqRecord or Dseqrecord object ?           
-        elif hasattr(record, "features"):            
-            for key, value in list(record.__dict__.items()):
-                setattr(self, key, value )
-            record.letter_annotations = {}
-            # record.seq is a Dseq object ?
-            if hasattr(record.seq, "watson"):          
-                new_seq = _copy.copy(record.seq)
-                if new_seq.circular and linear:
-                    new_seq = new_seq.tolinear()
-                if new_seq.linear and circular:
-                    new_seq = new_seq.looped()
-                self.seq=new_seq
-            # record is Bio.SeqRecord object ?
-            else:                                   
-                self.seq=_Dseq(str(self.seq),
-                               linear=linear,
-                               circular=circular)
-        # assume that record is a string
-        else:                                   
-            super().__init__(_Dseq(record,
+        elif hasattr(record, "alphabet"):
+            super().__init__(_Dseq(str(record),
                                    linear=linear,
                                    circular=circular),
                              *args,
                              **kwargs)
-
-        if len(self.name)>16:
-            short_name = self.name[:16]            
-            _module_logger.warning("name property %s truncated to 16 chars: %s", self.name, short_name)
-            self.name = short_name
-
-        if self.name == "<unknown name>":
-            self.name = "name?"
-
-        if self.id == "<unknown id>":
-            self.id = "id?"
-
-        if self.description =="<unknown description>":
-            self.description = "description?"
-
-        if not 'date' in self.annotations:
-            self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
+        # record is a Bio.SeqRecord or Dseqrecord object ?
+        elif hasattr(record, "features"):
+            for key, value in list(record.__dict__.items()):
+                setattr(self, key, value )
+            record.letter_annotations = {}
+            # record.seq is a Dseq object ?
+            if hasattr(record.seq, "watson"):
+                new_seq = _copy.copy(record.seq)
+                if new_seq.circular and linear:
+                    new_seq = new_seq[:]
+                elif new_seq.linear and circular:
+                    new_seq = new_seq.looped()
+                self.seq=new_seq
+            # record.seq is Bio.SeqRecord object ?
+            else:
+                self.seq=_Dseq(str(self.seq),
+                               linear=linear,
+                               circular=circular)
+        else:
+            raise ValueError("don't know what to do with {}".format(record))
 
         self.map_target = None
-        #self.key = str( self.__hash__() )
-
+        self.n = n
+        
+        
     @property
     def linear(self):
         '''The linear property'''
@@ -215,145 +208,8 @@ class Dseqrecord(_SeqRecord):
         '''The circular property'''
         return self.seq.circular
 
-    @property
-    def locus(self):
-        ''' alias for name property '''
-        return self.name
-
-    @locus.setter
-    def locus(self, value):
-        ''' alias for name property, max 16 letters'''
-        self.name = value[:16]
-        return
-
-    @property
-    def accession(self):
-        ''' alias for id property '''
-        return self.id
-
-    @accession.setter
-    def accession(self, value):
-        ''' alias for id property '''
-        self.id = value
-        return
-
-    @property
-    def definition(self):
-        ''' alias for description property '''
-        return self.description
-
-    @definition.setter
-    def definition(self, value):
-        ''' alias for id property '''
-        self.description = value
-        return
-
-    def seguid(self):
-        '''Returns the url safe SEGUID [#]_ for the sequence.
-           This checksum is the same as seguid but with base64.urlsafe
-           encoding [#]_ instead of the normal base 64. This means that
-           the characters + and / are replaced with - and _ so that
-           the checksum can be a pert of and URL or a filename.
-
-           Examples
-           --------
-           >>> from pydna.dseqrecord import Dseqrecord
-           >>> a=Dseqrecord("aaaaaaa")
-           >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
-           '-bKGnebMkia5kNg_gF7IORXMnIU'
-
-           References
-           ----------
-
-       .. [#] http://wiki.christophchamp.com/index.php/SEGUID
-
-       '''
-        return _seg(self.seq)
-
     def m(self):
         return self.seq.mw() * self.n # Da(g/mol) * mol = g
-
-    def isorf(self, table=1):
-        '''Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
-        Translation tables are numbers according to the NCBI numbering [#]_.
-
-        Parameters
-        ----------
-        table  : int
-            Sets the translation table, default is 1 (standard code)
-
-        Returns
-        -------
-        bool
-            True if sequence is an orf, False otherwise.
-
-
-        Examples
-        --------
-
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("atgtaa")
-        >>> a.isorf()
-        True
-        >>> b=Dseqrecord("atgaaa")
-        >>> b.isorf()
-        False
-        >>> c=Dseqrecord("atttaa")
-        >>> c.isorf()
-        False
-
-        References
-        ----------
-
-        .. [#] http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=c
-
-        '''
-
-        try:
-            self.seq.translate(table=table, cds=True)
-        except _TranslationError:
-            return False
-        else:
-            return True
-
-    def add_feature(self, x=None, y=None, seq=None, label=None, type="misc", **kwargs):
-        '''Adds a feature of type misc to the feature list of the sequence.
-
-        Parameters
-        ----------
-        x  : int
-            Indicates start of the feature
-        y  : int
-            Indicates end of the feature
-
-        Examples
-        --------
-
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("atgtaa")
-        >>> a.features
-        []
-        >>> a.add_feature(2,4)
-        >>> a.features
-        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4)), type='misc')]
-        '''
-        qualifiers = {"label": label}
-        if seq:
-            seq = Dseqrecord(seq)
-            x = self.seq.lower().find(seq.seq.lower())
-            if x==-1:
-                return
-            y = x + len(seq)
-        self.features.append( _SeqFeature(_FeatureLocation(x, y), type=type, qualifiers = qualifiers, **kwargs))
-
-        '''
-
-        In [11]: a.seq.translate()
-        Out[11]: Seq('K', ExtendedIUPACProtein())
-
-        In [12]:
-        '''
-
 
     def extract_feature(self, n):
         '''Extracts a feature and creates a new Dseqrecord object.
@@ -378,66 +234,9 @@ class Dseqrecord(_SeqRecord):
         ca
 
         '''
-        return self.features[n].extract(self)
+        return super().extract_feature(n)
 
-    def spread_ape_colors(self):
-        ''' This method assigns random colors compatible with the ApE editor
-        to features.
-        '''
 
-        def get_N_HexCol(N):
-            HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
-            hex_out = []
-            for rgb in HSV_tuples:
-                rgb = [int(x*255) for x in _colorsys.hsv_to_rgb(*rgb)]
-                hex_out.append("".join([chr(x).encode('hex') for x in rgb]))
-            return hex_out
-
-        for i, color in enumerate(get_N_HexCol(len(self.features))):
-            self.features[i].qualifiers['ApEinfo_fwdcolor'] = "#"+color
-            self.features[i].qualifiers['ApEinfo_revcolor'] = "#"+color
-
-    def olaps(self, other, *args, **kwargs):
-        other = Dseqrecord(other)
-        olaps = _common_sub_strings(str(self.seq).lower(), str(other.seq).lower(), **kwargs)
-        return [ self[olap[0]:olap[0]+olap[2]] for olap in olaps ]
-
-    def list_features(self):
-        '''Prints an ASCII table with all features.
-
-        Examples
-        --------
-
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("atgtaa")
-        >>> a.add_feature(2,4)
-        >>> print(a.list_features())
-        +----------+-----------+-------+-----+--------+--------------+------+------+
-        | Feature# | Direction | Start | End | Length | id           | type | orf? |
-        +----------+-----------+-------+-----+--------+--------------+------+------+
-        | 0        |    None   |   2   |  4  |      2 | <unknown id> | misc |  no  |
-        +----------+-----------+-------+-----+--------+--------------+------+------+
-        >>>
-        '''
-
-        x = _PrettyTable(["Feature#", "Direction", "Start", "End", "Length", "id", "type", "orf?"])
-        x.align["Feature#"] = "l" # Left align
-        x.align["Length"] = "r"
-        x.align["id"] = "l"
-        x.align["type"] = "l"
-        x.padding_width = 1 # One space between column edges and contents
-        for i, sf in enumerate(self.features):
-            x.add_row([ i,
-                        {1:"-->", -1:"<--", 0:"---", None:"None"}[sf.strand],
-                        sf.location.start,
-                        sf.location.end,
-                        len(sf), sf.id, sf.type,
-                        {True:"yes",False:"no"}[self.extract_feature(i).isorf() or self.extract_feature(i).rc().isorf()]])
-        return _pretty_str(x)
-
-    def gc(self):
-        '''Returns GC content '''
-        return round(_GC(str(self.seq)), 1)
 
     def cseguid(self):
         '''Returns the url safe cSEGUID for the sequence.
@@ -463,8 +262,8 @@ class Dseqrecord(_SeqRecord):
 
        '''
         if self.linear:
-            raise Exception("cseguid is only defined for circular sequences.")
-        return _cseg(self.seq)
+            raise TypeError("cseguid is only defined for circular sequences.")
+        return _cseg(str(self.seq))
 
     def lseguid(self):
         '''Returns the url safe lSEGUID for the sequence.
@@ -491,13 +290,13 @@ class Dseqrecord(_SeqRecord):
 
        '''
         if self.circular:
-            raise Exception("lseguid is only defined for linear sequences.")
+            raise TypeError("lseguid is only defined for linear sequences.")
         return self.seq.seguid()
 
     def stamp(self):
         '''Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
-        This will show in the genbank format. 
-        
+        This will show in the genbank format.
+
         For linear sequences:
 
         ``SEGUID_<seguid>_<datestring>``
@@ -506,9 +305,6 @@ class Dseqrecord(_SeqRecord):
 
         ``cSEGUID_<seguid>_<datestring>``
 
-        If there is already a stamp,  
-        
-        The stamp can be verified with :func:`verify_stamp`
 
         Examples
         --------
@@ -519,91 +315,14 @@ class Dseqrecord(_SeqRecord):
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
         >>> a.description
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
-        >>> a.verify_stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
 
         See also
         --------
         pydna.dseqrecord.Dseqrecord.verify_stamp
         '''
-     
-        alg = {True:"SEGUID", False:"cSEGUID"}[self.linear]        
-        chksum = getattr(self, alg.lower())()        
-        pattern = "(SEGUID|cSEGUID)_\s*(\S{27})_(\S{26})"
-        oldstamp = _re.search(pattern, self.description)
-        
-        if oldstamp:
-            old_alg, old_chksum, old_datestring = oldstamp.groups()
-            if alg==old_alg and chksum==old_chksum:
-                return _pretty_str("{}_{}".format(alg,chksum))
-            else:
-                raise Exception("Stamp incorrect.")
-        else:
-            datestring = _datetime.datetime.utcnow().isoformat("T")
-            newstamp = "{}_{}_{}".format(alg, chksum, datestring)
-            if not self.description or self.description=="description?":
-                self.description = newstamp
-            else:
-                self.description += " "+newstamp
-        return _pretty_str("{}_{}".format(alg, chksum))
 
-    def verify_stamp(self):
-        '''Verifies the SEGUID stamp in the description property is
-       valid. True if stamp match the sequid calculated from the sequence.
-       Exception raised if no stamp can be found.
+        return super().stamp()
 
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> from pydna.readers import read
-        >>> b=read(">a\\naaa")
-        >>> b.annotations['date'] = '02-FEB-2013'
-        >>> b.seguid()
-        'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-        >>> print(b.format("gb"))
-        LOCUS       a                          3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  a.
-        ACCESSION   a
-        VERSION     a
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 aaa
-        //
-        >>> b.stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-        >>> b
-        Dseqrecord(-3)
-        >>> print(b.format("gb"))
-        LOCUS       a                          3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  a SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE_...
-        ACCESSION   a
-        VERSION     a
-        KEYWORDS    .
-        SOURCE      .
-          ORGANISM  .
-                    .
-        FEATURES             Location/Qualifiers
-        ORIGIN
-                1 aaa
-        //
-        >>> b.verify_stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-        >>>
-
-       See also
-       --------
-       pydna.dseqrecord.Dseqrecord.stamp
-
-       '''
-        name, alg = {True:("SEGUID", _seg), False:("cSEGUID", _cseg)}[self.linear]
-        pattern = "{name}_{chksum}".format(name=name, chksum=alg(self.seq))
-
-        if not pattern in self.description:
-            raise Exception("No stamp present in the description property.")
-        else:
-            return _pretty_str(pattern)
 
     def looped(self):
         '''
@@ -635,10 +354,12 @@ class Dseqrecord(_SeqRecord):
 
         return new
 
-    def tolinear(self):
+    def tolinear(self): # pragma: no cover
         '''
         Returns a linear, blunt copy of a circular Dseqrecord object. The
         underlying Dseq object has to be circular.
+        
+        This method is deprecated, use slicing instead. See example below.
 
         Examples
         --------
@@ -646,13 +367,18 @@ class Dseqrecord(_SeqRecord):
         >>> a=Dseqrecord("aaa", circular = True)
         >>> a
         Dseqrecord(o3)
-        >>> b=a.tolinear()
+        >>> b=a[:]
         >>> b
         Dseqrecord(-3)
         >>>
 
         '''
-
+        import warnings as _warnings
+        from pydna import _PydnaDeprecationWarning
+        _warnings.warn("tolinear method is obsolete; "
+                       "please use obj[:] "
+                       "instead of obj.tolinear().",
+                       _PydnaDeprecationWarning)
         new = _copy.copy(self)
         for key, value in list(self.__dict__.items()):
             setattr(new, key, value )
@@ -674,10 +400,10 @@ class Dseqrecord(_SeqRecord):
         >>> x
         Dseqrecord(-3)
         >>> print(x.format("gb"))
-        LOCUS       name?                      3 bp    DNA     linear   UNK 02-FEB-2013
-        DEFINITION  description?.
-        ACCESSION   id?
-        VERSION     id?
+        LOCUS       name                       3 bp    DNA     linear   UNK 02-FEB-2013
+        DEFINITION  description.
+        ACCESSION   id
+        VERSION     id
         KEYWORDS    .
         SOURCE      .
           ORGANISM  .
@@ -696,7 +422,7 @@ class Dseqrecord(_SeqRecord):
 
         '''
 
-        s = _SeqRecord.format(self, f).strip()
+        s = super().format(f).strip()
 
         if f in ("genbank","gb"):
             if self.circular:
@@ -704,7 +430,7 @@ class Dseqrecord(_SeqRecord):
             else:
                 return _pretty_str(s[:55]+"linear  "+s[63:])
         else:
-            return _pretty_str(s)
+            return _pretty_str(s).strip()
 
     def write(self, filename=None, f="gb"):
         '''Writes the Dseqrecord to a file using the format f, which must
@@ -735,49 +461,61 @@ class Dseqrecord(_SeqRecord):
         if not filename:
             filename = "{name}.{type}".format(name=self.locus, type=f)
             # generate a name if no name was given
-        if str(filename)==filename:                 # is filename a string???
-            name, ext = _os.path.splitext(filename)
-            msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(filename=filename)
-            if not _os.path.isfile(filename):
-                with open(filename, "w") as fp: fp.write(self.format(f))
-            else:
-                from pydna.readers import read
-                old_file = read(filename)
-                if self.seq != old_file.seq:
-                    # If new sequence is different, the old file is renamed with "OLD" suffix:
-                    # TODO: add this timestamp so that all old versions are stored
-                    # int(time.time() * 1000000)  = 1512035297658778
-                    old_filename = "{}_OLD{}".format(name, ext)
-                    _os.rename(filename, old_filename)
-                    
-                    msg = ("<font color='DarkOrange ' face=monospace>"
-                           "Sequence changed.<br>"
-                           "</font>"
-                           "<font color='red' face=monospace>"
-                           "new: <a href='{filename}' target='_blank'>{filename}</a> &nbsp&nbsp&nbsp size: {nlen}bp topology: {ntop} SEGUID: {ns}<br>"
-                           "</font>"
-                           "<font color='green' face=monospace>"
-                           "old: <a href='{oldfname}' target='_blank'>{oldfname}</a> size: {olen}bp topology: {otop} SEGUID: {os}<br>"
-                           "</font>").format(filename=filename, 
-                                             oldfname=old_filename, 
-                                             nlen=len(self),
-                                             olen=len(old_file),
-                                             ns=self.seguid(),
-                                             os=old_file.seguid(),
-                                             ntop={True:"-", False:"o"}[self.linear],
-                                             otop={True:"-", False:"o"}[old_file.linear])
-
-                    with open(filename, "w") as fp: fp.write(self.format(f))
+        if not isinstance(filename, str): # is filename a string???
+            raise ValueError("filename has to be a string, got", type(filename))
+        name, ext = _os.path.splitext(filename)
+        msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(filename=filename)
+        if not _os.path.isfile(filename):
+            with open(filename, "w") as fp: fp.write(self.format(f))
         else:
-            raise Exception("filename has to be a string, got", type(filename))
+            from pydna.readers import read
+            old_file = read(filename)
+            if self.seq != old_file.seq:
+                # If new sequence is different, the old file is renamed with "OLD" suffix:
+                # TODO: add this timestamp so that all old versions are stored
+                # int(time.time() * 1000000)  = 1512035297658778
+                old_filename = "{}_OLD{}".format(name, ext)
+                _os.rename(filename, old_filename)
+                msg = ("<font color='DarkOrange ' face=monospace>"
+                       "Sequence changed.<br>"
+                       "</font>"
+                       "<font color='red' face=monospace>"
+                       "new: <a href='{filename}' target='_blank'>{filename}</a> &nbsp&nbsp&nbsp size: {nlen}bp topology: {ntop} SEGUID: {ns}<br>"
+                       "</font>"
+                       "<font color='green' face=monospace>"
+                       "old: <a href='{oldfname}' target='_blank'>{oldfname}</a> size: {olen}bp topology: {otop} SEGUID: {os}<br>"
+                       "</font>").format(filename=filename,
+                                         oldfname=old_filename,
+                                         nlen=len(self),
+                                         olen=len(old_file),
+                                         ns=self.seguid(),
+                                         os=old_file.seguid(),
+                                         ntop={True:"-", False:"o"}[self.linear],
+                                         otop={True:"-", False:"o"}[old_file.linear])
+                with open(filename, "w") as fp: fp.write(self.format(f))
+            elif "SEGUID" in old_file.description:
+                pattern = "(lSEGUID|cSEGUID|SEGUID)_\s*(\S{27})_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}"
+                oldstamp = _re.search(pattern, old_file.description)
+                newstamp = _re.search(pattern, self.description)
+                newdescription = self.description
+                if oldstamp and newstamp:
+                    if oldstamp.group(0)[:35] == newstamp.group(0)[:35]:
+                        newdescription = newdescription.replace(newstamp.group(0), oldstamp.group(0))
+                elif oldstamp:
+                    newdescription+=" "+oldstamp.group(0)
+                newobj = _copy.copy(self)
+                newobj.description = newdescription
+                with open(filename, "w") as fp: fp.write(newobj.format(f))
+            else:
+                with open(filename, "w") as fp: fp.write(self.format(f))
         return _display_html(_HTML(msg))
-    
+
     def find(self, other):
-        # TODO allow strings, seqs, seqrecords or Dseqrecords 
+        # TODO allow strings, seqs, seqrecords or Dseqrecords
         # TODO check for linearity of other, raise exception if not
-        # TODO add tests and docstring for this method   
+        # TODO add tests and docstring for this method
         o = str(other.seq).upper()
-        
+
         if self.linear:
             s = str(self.seq).upper()
         else:
@@ -849,24 +587,28 @@ class Dseqrecord(_SeqRecord):
                 pass
         oh = self.seq.ovhg if self.seq.ovhg>0 else 0
         if start == None:
-            return None
+            return None      #TODO return an emoty slice or False...?
         else:
             return slice(frame+start*3+oh, frame+(start+len(other))*3+oh)
 
-    def map_trace_files(self, pth):
+    def map_trace_files(self, pth):  # TODO allow path-like objects
         import glob
         traces = []
         stf = _SequenceTraceFactory()
         for name in glob.glob(pth):
             traces.append( stf.loadTraceFile( name ))
+            from Bio import SeqIO
+            x=str(SeqIO.read(name, "abi").seq).lower()
+            y=str(stf.loadTraceFile( name ).basecalls).lower()
+            assert x==y
         if not traces:
-            raise Exception
+            raise ValueError("No trace files found in {}".format(pth))
         if hasattr( self.map_target, "step" ):
             area = self.map_target
         elif hasattr( self.map_target, "extract" ):
             area = slice(self.map_target.location.start, self.map_target.location.end)
         else:
-            area = None
+            area = None  # TODO allow other objects as well and do some checks on map target
 
         if area:
             self.matching_reads     = []
@@ -884,18 +626,25 @@ class Dseqrecord(_SeqRecord):
             self.not_matching_reads = None
             reads = traces
 
+        matching_reads = []
+
         for read_ in reads:
-            matches = _common_sub_strings(str(self.seq).lower(), read_.basecalls.lower(), 25)
+
+            matches = _common_sub_strings(str(self.seq).lower(), read_.basecalls.lower(), limit=25)
+            
+            if not matches:
+                continue            
+            
             if len(matches)>1:
                 newmatches = [matches[0],]
                 for i, x in enumerate(matches[1:]):
                     g,f,h = matches[i]
                     if g+h < x[0] and f+h < x[1]:
                         newmatches.append(x)
-            elif len(matches)==1:
+            else: #  len(matches)==1
                 newmatches = matches
-            else:
-                continue
+
+            matching_reads.append(read_)
 
             if len(newmatches)>1:
                 ms = []
@@ -907,10 +656,10 @@ class Dseqrecord(_SeqRecord):
                 loc = _FeatureLocation(a,a+c)
 
             self.features.append( _SeqFeature(loc,
-                                             qualifiers = {"label": read_.getFileName()},
-                                             type="trace") )
+                                             qualifiers = {"label": [read_.getFileName()]},
+                                                           type="trace") )
 
-        return [x.getFileName() for x in reads]
+        return [x.getFileName() for x in matching_reads]
 
     def __repr__(self):
         return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
@@ -920,13 +669,11 @@ class Dseqrecord(_SeqRecord):
 
     def __add__(self, other):
         if hasattr(other, "seq") and hasattr(other.seq, "watson"):
-            offset = other.seq.ovhg
-            other.features = [f._shift(offset) for f in other.features]
-            #answer = self.__class__(_SeqRecord.__add__(self, other))
+            other = _copy.deepcopy(other)
+            for f in other.features: f.location=f.location+other.seq.ovhg
             answer = Dseqrecord(_SeqRecord.__add__(self, other))
             answer.n = min(self.n, other.n)
         else:
-            #answer = self.__class__(_SeqRecord.__add__(self, Dseqrecord(other)))
             answer = Dseqrecord(_SeqRecord.__add__(self, Dseqrecord(other)))
             answer.n = self.n
         return answer
@@ -935,7 +682,7 @@ class Dseqrecord(_SeqRecord):
         if not isinstance(number, int):
             raise TypeError("TypeError: can't multiply Dseqrecord by non-int of type {}".format(type(number)))
         if self.circular:
-            raise TypeError("TypeError: can't multiply circular Dseqrecord")
+            raise TypeError("TypeError: can't multiply circular Dseqrecord.")
         if number>0:
             new = _copy.copy(self)
             for i in range(1, number):
@@ -945,21 +692,27 @@ class Dseqrecord(_SeqRecord):
             return self.__class__("")
 
     def __getitem__(self, sl):
-        answer = Dseqrecord(_copy.copy(self))        
-        answer.seq = answer.seq.__getitem__(sl)
+        answer = Dseqrecord(_copy.copy(self))
+        answer.seq = self.seq.__getitem__(sl)
         answer.seq.alphabet = self.seq.alphabet
 
-        sl_start = sl.start if sl.start is not None else 0
-        sl_stop = sl.stop if sl.stop is not None else len(answer.seq)
-        
+        sl_start = sl.start or 0
+        sl_stop = sl.stop or len(answer.seq)
+
         if self.linear or sl_start<sl_stop:
-            answer.features = _SeqRecord.__getitem__(self, sl).features
+            answer.features = super().__getitem__(sl).features
         else:
-            try:
-                answer.features = self.shifted(sl.stop).features
-            except Exception:
-                answer.features = self.features
+            answer.features = self.shifted(sl_stop).features
             answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
+        identifier= f"part_{self.id}"
+        if answer.features:
+            sf = max(answer.features, key=len) # default
+            if "label" in sf.qualifiers:
+                identifier = " ".join(sf.qualifiers["label"])
+            elif "note" in sf.qualifiers:
+                identifier = " ".join(sf.qualifiers["note"])
+        answer.id   = _identifier_from_string(identifier)[:16]
+        answer.name = answer.id
         return answer
 
     def __eq__( self, other ):
@@ -979,18 +732,34 @@ class Dseqrecord(_SeqRecord):
 
     def linearize(self, *enzymes):
         '''This method is similar to :func:`cut` but throws an exception if there
-        is not excactly on cut i.e. none or more than one digestion products.
+        is not excactly one cut i.e. none or more than one digestion products.
 
         '''
 
         if self.seq._linear:
-            raise Exception("Can only linearize circular molecules!")
+            raise TypeError("Can only linearize circular molecules!")
         fragments = self.cut(*enzymes)
         if len(fragments)>1:
-            raise Exception("More than one fragment is formed!")
-        if not fragments:
-            raise Exception("The enzyme(s) do not cut!")
-        return fragments.pop()
+            raise TypeError("More than one fragment is formed!")
+        elif fragments[0].circular:
+            raise TypeError("The enzyme(s) do not cut!")
+        answer = fragments[0]
+        answer.id = f"{self.name}_lin"
+        answer.name = answer.id[:16]
+        return fragments[0]
+
+    def no_cutters(self, batch = CommOnly):
+        return self.seq.no_cutters(batch=batch)
+    def unique_cutters(self, batch = CommOnly):
+        return self.seq.unique_cutters(batch=batch)
+    def once_cutters(self, batch = CommOnly):
+        return self.seq.once_cutters(batch=batch)
+    def twice_cutters(self, batch = CommOnly):
+        return self.seq.twice_cutters(batch=batch)
+    def n_cutters(self, n=3, batch = CommOnly):
+        return self.seq.n_cutters(n=n, batch=batch)
+    def cutters(self, batch = CommOnly):
+        return self.seq.cutters(batch=batch)
 
     def cut(self, *enzymes):
         '''Digest the Dseqrecord object with one or more restriction enzymes.
@@ -1016,7 +785,7 @@ class Dseqrecord(_SeqRecord):
         >>> a=Dseqrecord("ggatcc")
         >>> from Bio.Restriction import BamHI
         >>> a.cut(BamHI)
-        [Dseqrecord(-5), Dseqrecord(-5)]
+        (Dseqrecord(-5), Dseqrecord(-5))
         >>> frag1, frag2 = a.cut(BamHI)
         >>> frag1.seq
         Dseq(-5)
@@ -1030,78 +799,30 @@ class Dseqrecord(_SeqRecord):
 
         '''
 
-        output, stack = [], []
-        stack.extend(reversed(enzymes))
-        while stack:
-            top = stack.pop()
-            if hasattr(top, "__iter__"):
-                stack.extend(reversed(top))
-            else:
-                output.append(top)
-        enzymes = output
-        if not hasattr(enzymes, '__iter__'):
-            enzymes = (enzymes,)
-
         frags = self.seq.cut(enzymes)
 
-        if not frags:
-            return []
-
+        if frags[0].circular or frags[0]==self.seq: 
+            return (self,)
+       
         if self.linear:
-            last_pos=0
-            #template = self.__class__(self, linear=True)
-            #template = _copy.copy(self)
-            template = self
+            shift=0
+            features = self.features
         else:
-            last_pos = [p.pop(0)-max(0,e.ovhg)-1 for (p,e) in
-                         sorted([(enzyme.search(_Seq(self.seq.dsdata),
-                                                linear = self.linear)[::-1],
-                                   enzyme) for enzyme in enzymes]) if p]
-            if not last_pos:
-                return [self]
-            if 0 in last_pos:
-                last_pos=0
-            else:
-                last_pos = last_pos.pop()
-            template = self._multiply_circular(3)
-
-        Dseqrecord_frags = []
-        start = last_pos
-
-        for f in frags:
-
-            end = start + len(str(f))
-            Dseqrecord_frag = Dseqrecord(f, linear=True, n=self.n)
-
-            Dseqrecord_frag.features = template[start:end].features
-            Dseqrecord_frag.annotations         = _copy.copy(self[start:end].annotations)
-            Dseqrecord_frag.name                = _copy.copy(self.name)
-            Dseqrecord_frag.dbxrefs             = _copy.copy(self[start:end].dbxrefs)
-            Dseqrecord_frag.id                  = _copy.copy(self.id)
-            Dseqrecord_frag.letter_annotations  = _copy.copy(self[start:end].letter_annotations)
-
-            Dseqrecord_frag.description = self.description+"_"+"_".join(str(e) for e in enzymes)
-
-            Dseqrecord_frags.append(Dseqrecord_frag)
-            start = end
-            start-= len(f.three_prime_end()[1])
-
-        return Dseqrecord_frags
+            shift = frags[0].pos            
+            features = self.shifted(shift).features
+            for fr in frags: fr.pos-=shift
+        dsfs = []        
+        for fr in frags:
+            dsf = Dseqrecord(fr, linear=True, n=self.n)
+            start = fr.pos #- shift
+            end   = fr.pos + fr.length #- shift
+            dsf.features = [_copy.copy(fe) for fe in features if start<=fe.location.start and end>=fe.location.end]
+            for fe in dsf.features:  fe.location+= (-fr.pos)
+            dsfs.append(dsf)
+        return tuple(dsfs)
 
     def number_of_cuts(self, *enzymes):
-        output = []
-        stack = []
-        stack.extend(reversed(enzymes))
-        while stack:
-            top = stack.pop()
-            if hasattr(top, "__iter__"):
-                stack.extend(reversed(top))
-            else:
-                output.append(top)
-        enzymes = output
-        if not hasattr(enzymes, '__iter__'):
-            enzymes = (enzymes,)
-        return sum([len(enzyme.search(self.seq)) for enzyme in enzymes])
+        return sum([len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]) # flatten
 
     def reverse_complement(self):
         '''Returns the reverse complement.
@@ -1127,76 +848,15 @@ class Dseqrecord(_SeqRecord):
         pydna.dseq.Dseq.reverse_complement
 
         '''
-
-        return self.rc()
-
-    def rc(self):
-        '''alias of the reverse_complement method'''
-        answer = Dseqrecord(super(Dseqrecord, self).reverse_complement())
-        assert answer.circular == self.circular
+        answer = type(self)(super().reverse_complement())
         answer.name       = "{}_rc".format(self.name[:13])
         answer.description= self.description+"_rc"
         answer.id         = self.id+"_rc"
+        answer.seq._circular   = self.seq.circular
+        answer.seq._linear     = self.seq.linear
         return answer
-        #return Dseqrecord(self.seq.rc())
-
-
-    def _multiply_circular(self, multiplier):
-        '''returns a linearised version of a circular sequence multiplied by
-       multiplier '''
-
-        if self.linear:
-            raise TypeError("sequence has to be circular!")
-        if not isinstance(multiplier, int):
-            raise TypeError("TypeError: can't multiply Dseq by non-int of type {}".format(type(multiplier)))
-        if multiplier<=0:
-            return self.__class__("")
-
-        new_features = []
-
-        for feature in self.features:
-            #print(feature)
-            new_feature = _copy.deepcopy(feature)
-            if len(new_feature.location.parts)>1:    # CompoundFeature
-                j=0
-                #print(new_feature)
-                while (j+1)<len(new_feature.location.parts):
-                    #print(new_feature.location.parts[j])
-                    # Test if CompoundFeature spans ORI
-                    if (new_feature.strand == 1 and 
-                        new_feature.location.parts[j].end == len(self) and
-                        new_feature.location.parts[j+1].start==0):
-                        new_feature.location.parts[j] = _FeatureLocation(new_feature.location.parts[j].start,
-                                                                         new_feature.location.parts[j].end+len(new_feature.location.parts[j+1]),
-                                                                         strand = 1)                        
-                        del new_feature.location.parts[j+1]
-                    elif (new_feature.strand == -1 and 
-                          new_feature.location.parts[j].start == 0 and
-                          new_feature.location.parts[j+1].end == len(self)):
-                        new_feature.location.parts[j] = _FeatureLocation(new_feature.location.parts[j+1].start,
-                                                                         new_feature.location.parts[j+1].end+len(new_feature.location.parts[j]),
-                                                                         strand = -1)
-                        del new_feature.location.parts[j+1]
-                    j+=1
-                slask = [new_feature.location.parts.pop(0)]
-                for fl in new_feature.location.parts:
-                    if fl.start < slask[-1].start:
-                        slask.append(fl+len(self))
-                    else:
-                        slask.append(fl)
-                if len(slask)>1:
-                    new_feature.location.parts=slask
-                else:
-                    new_feature.location=slask[0]
-            new_features.append(new_feature)
-
-        sequence = self.tolinear()
-        sequence.features = new_features
-        sequence = sequence * multiplier
-
-        sequence.features = [f for f in sequence.features if f.location.end <= len(sequence)]
-        sequence.features.sort(key = _operator.attrgetter('location.start'))
-        return sequence
+    
+    rc = reverse_complement
 
     def shifted(self, shift):
         '''Returns a circular Dseqrecord with a new origin <shift>.
@@ -1222,9 +882,6 @@ class Dseqrecord(_SeqRecord):
          | ``AAATG``
          | ``TTTAC``
 
-         Shift is always positive and 0<shift<length, so in the example
-         below, permissible values of shift are 1,2 and 3
-
          Examples
          --------
 
@@ -1246,54 +903,53 @@ class Dseqrecord(_SeqRecord):
 
         '''
         if self.linear:
-            raise Exception("Sequence is linear.\n"
-                             "The origin can only be\n"
-                             "shifted for a circular sequence!\n")
+            raise TypeError("Sequence is linear, origin can only be shifted for circular sequences.\n")
+            
+        ln=len(self)
+        
+        if not shift%ln:
+            return self   # shift is a multiple of ln or 0
+        else:
+            shift%=ln     # 0<=shift<=ln 
+        
+        newseq=(self.seq[shift:]+self.seq[:shift]).looped()
+        shift = ln-shift
+        newfeatures=[]
+        for feature in self.features:
+            shiftedparts    =   [featurelocation+shift for featurelocation in feature.location.parts]
+            zero_length_parts = [featurelocation for featurelocation in shiftedparts if featurelocation.start==featurelocation.end]
+            newparts = []
+            for location in shiftedparts:
+                newstart = location.start%ln
+                newend   = location.end%ln
+                if newstart<newend:
+                    newparts.append(_FeatureLocation(newstart,newend,location.strand,location.ref,location.ref_db))
+                elif newstart>newend:
+                    if location.strand==1:
+                        newparts.extend(  [_FeatureLocation(newstart, ln,     location.strand,location.ref,location.ref_db),
+                                           _FeatureLocation(0,        newend, location.strand,location.ref,location.ref_db) ])
+                    else:
+                        newparts.extend(  [_FeatureLocation(0,        newend, location.strand,location.ref,location.ref_db),
+                                           _FeatureLocation(newstart, ln,     location.strand,location.ref,location.ref_db) ])
+            p=next((p for p in newparts if p.end==shift),   None)
+            s=next((p for p in newparts if p.start==shift), None)
+            if p and s:
+                newparts.remove(p)
+                newparts[newparts.index(s)]=_FeatureLocation(p.start,s.end,p.strand,p.ref,p.ref_db)
+            newparts=[p for p in newparts if p]
+            newparts.extend(zero_length_parts)
+            if newparts:
+                newfeatures.append(_SeqFeature(location   = sum(newparts),
+                                               type       = feature.type,
+                                               id         = feature.id,
+                                               qualifiers = feature.qualifiers))
+        newfeatures.sort(key = _operator.attrgetter('location.start'))
+        answer=_copy.copy(self)
+        answer.features = newfeatures
+        answer.seq=newseq
+        return answer
 
-        length=len(self)
-
-        if not 0<shift<length:
-            raise Exception("shift is {}, has to be 0<shift<{}".format(shift, length))
-
-        new = self._multiply_circular(3)[shift:]
-
-        features_to_fold = [f for f in new.features if f.location.start<length<f.location.end]
-
-        folded_features = []
-
-        for feature in features_to_fold:
-
-            if len(feature.location.parts)>1: # CompoundFeature
-                nps=[]
-                for part in feature.location.parts:
-
-                    if part.start<part.end<=length:
-                        nps.append(part)
-
-                    elif part.start<length<part.end:
-                        nps.append(_FeatureLocation(part.start,length,strand=part.strand))
-                        nps.append(_FeatureLocation(0, part.end-length,strand=part.strand))
-
-                    elif length<=part.start<part.end:
-                        nps.append(_FeatureLocation(part.start-length, part.end-length,strand=part.strand))
-
-                folded_features.append(_SeqFeature(_CompoundLocation(nps),
-                                                   qualifiers = feature.qualifiers,
-                                                   type=feature.type))
-
-            else:
-                folded_features.append(_SeqFeature(_CompoundLocation([_FeatureLocation(feature.location.start, length,strand=feature.strand),
-                                                                     _FeatureLocation(0, feature.location.end-length,strand=feature.strand)]),
-                                                   qualifiers = feature.qualifiers,
-                                                   type=feature.type))
-
-        new = new[:length].looped()
-        new.features.extend(folded_features)
-        new.features.sort(key = _operator.attrgetter('location.start'))
-        new.description = self.description #!
-        return new
-
-    @_memorize("Dseqrecord_synced")
+    #@_memorize("Dseqrecord_synced")
     def synced(self, ref, limit = 25):
         '''This function returns a new circular sequence (Dseqrecord object), which has been rotated
         in such a way that there is maximum overlap between the sequence and
@@ -1332,11 +988,7 @@ class Dseqrecord(_SeqRecord):
         '''
 
         if self.linear:
-            raise Exception("Only circular DNA can be synced!")
-        try:
-            rs = ref.seguid()
-        except AttributeError:
-            rs = _seg(ref)
+            raise TypeError("Only circular DNA can be synced!")
 
         newseq = _copy.copy(self)
 
@@ -1345,7 +997,7 @@ class Dseqrecord(_SeqRecord):
 
         if hasattr(ref, "seq"):
             r=ref.seq
-            if hasattr(ref, "watson"):
+            if hasattr(r, "watson"):
                 r = str(r.watson).lower()
             else:
                 r = str(r).lower()
@@ -1361,7 +1013,7 @@ class Dseqrecord(_SeqRecord):
         d =  [(x[0],x[2]) for x in d if x[1]==0]
 
         if not c and not d:
-            raise Exception("There is no overlap between sequences!")
+            raise TypeError("There is no overlap between sequences!")
 
         if c:
             start, length = c.pop(0)
@@ -1385,10 +1037,50 @@ class Dseqrecord(_SeqRecord):
         return result
 
 
-    
+
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+#    cache = _os.getenv("pydna_cache")
+#    _os.environ["pydna_cache"]="nocache"
+#    import doctest
+#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+#    _os.environ["pydna_cache"]=cache
+    
+    from Bio.SeqFeature import SeqFeature, CompoundLocation, FeatureLocation, ExactPosition
+    
+    
+    from Bio.Restriction import BamHI, EcoRI, EcoRV, BglII
+    cs1=Dseqrecord("aaaGGATCCggg", circular=True)    
+    cs1.features = [SeqFeature(CompoundLocation([FeatureLocation(ExactPosition(5), ExactPosition(12), strand=1), FeatureLocation(ExactPosition(0), ExactPosition(3), strand=1)], 'join'), type='misc_feature', location_operator='join')]
+    (a,) = cs1.cut(BamHI, EcoRI+EcoRV+BglII+BamHI)
+    assert a.looped().seq == Dseqrecord("GATCCgggaaaG", circular=True).seq
+    assert str(a.features[0].extract(a).seq) == str(cs1.features[0].extract(cs1).seq)
+    
+    from Bio.Restriction import BamHI, EcoRI 
+    ss1=Dseqrecord("aaaGGATCCnnngaattcGGG")
+    ss1.features = [SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(3), strand=1), type='misc_feature'),
+                    SeqFeature(FeatureLocation(ExactPosition(5), ExactPosition(12), strand=1), type='misc_feature'),
+                    SeqFeature(FeatureLocation(ExactPosition(14), ExactPosition(20), strand=1), type='misc_feature')]
+    b,c,d = ss1.cut(BamHI, EcoRI)
+    assert  (b+c+d).seq == ss1.seq
+
+ 
+    cs2=Dseqrecord("aaaGGATCCnnngaattcGGG", circular=True)
+    cs2.features = [SeqFeature(FeatureLocation(ExactPosition(5), ExactPosition(11), strand=1), type='misc_feature'),
+                    SeqFeature(FeatureLocation(ExactPosition(14), ExactPosition(17), strand=1), type='misc_feature'),
+                    SeqFeature(CompoundLocation([FeatureLocation(ExactPosition(18), ExactPosition(21), strand=1), FeatureLocation(ExactPosition(0), ExactPosition(4), strand=1)], 'join'), type='misc_feature', location_operator='join')]
+    e,f = cs2.cut(BamHI, EcoRI)
+    assert str(e.features[0].extract(e).seq) == str(cs2.features[0].extract(cs2).seq)
+    assert str(f.features[0].extract(f).seq) == str(cs2.features[1].extract(cs2).seq)
+    assert str(f.features[1].extract(f).seq) == str(cs2.features[2].extract(cs2).seq)
+    
+    assert (e+f).looped().shifted(17).seq == cs2.seq
+
+    from Bio.Restriction import BsaI  
+    cs3 = Dseqrecord("gaaaaaggtctcaAAA",circular=True)
+    cs3.features = [SeqFeature(CompoundLocation([FeatureLocation(ExactPosition(14), ExactPosition(16), strand=1), FeatureLocation(ExactPosition(0), ExactPosition(12), strand=1)], 'join'), type='misc_feature', location_operator='join')]
+    g, = cs3.cut(BsaI)
+    
+    assert g.looped().shifted(3).seq == cs3.seq
+    assert str(g.features[0].extract(g).seq) == str(cs3.features[0].extract(cs3).seq)
+    
+    from pydna.editor import ape

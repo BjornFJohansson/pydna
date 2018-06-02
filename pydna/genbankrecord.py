@@ -20,8 +20,8 @@ class GenbankRecord(_Dseqrecord):
         self._repr = item
         if self.start != None and self.stop != None:
             self._repr += " {}-{}".format(self.start, self.stop)
-        link = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{text}</a>"
-        self.hyperlink = _ps(link.format(item=self.item, start=self.start or "", stop=self.stop or "", strand=self.strand, text=self._repr))
+        self._linktemplate = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{text}</a>"
+        self.hyperlink = _ps(self._linktemplate.format(item=self.item, start=self.start or "", stop=self.stop or "", strand=self.strand, text=self._repr))
 
     def __repr__(self):
         '''returns a short string representation of the object'''
@@ -33,11 +33,19 @@ class GenbankRecord(_Dseqrecord):
             
     def _repr_html_(self):        
         return self.hyperlink
+    
+    def reverse_complement(self):
+        answer = type(self)(super().reverse_complement(),item=self.item,start=self.start, stop=self.stop,strand={1:2,2:1}[self.strand])
+        return answer
+    
+    rc = reverse_complement
+        
+
 
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cached

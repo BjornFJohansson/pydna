@@ -29,15 +29,15 @@ from pydna.primer    import Primer                as _Primer
 import logging    as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
-def primer_design(    template,
-                      fp=None,
-                      rp=None,
-                      target_tm=55.0,
-                      fprimerc=1000.0,  # nM
-                      rprimerc=1000.0,  # nM
-                      saltc=50.0,
-                      limit=13,
-                      formula = _tmbresluc):
+def primer_design( template,
+                   fp=None,
+                   rp=None,
+                   target_tm=55.0,
+                   fprimerc=1000.0,  # nM
+                   rprimerc=1000.0,  # nM
+                   saltc=50.0,
+                   limit=13,
+                   formula = _tmbresluc):
 
     '''This function designs a forward primer and a reverse primer for PCR amplification 
     of a given template sequence.
@@ -47,7 +47,7 @@ def primer_design(    template,
     The optional fp and rp arguments can contain an existing primer for the sequence (either the forward or reverse primer).
     One or the other primers can be specified, not both (since then there is nothing to design!, use the pydna.amplify.pcr function instead).
     
-    If one ofthe primers is given, the other primer is designed to match in terms of Tm.
+    If one of the primers is given, the other primer is designed to match in terms of Tm.
     If both primers are designed, they will be designed to target_tm
     
     fprimerc, rprimerc and saltc are formward and reverse primer concentration (nM). Saltc is the salt concentration. 
@@ -110,9 +110,9 @@ def primer_design(    template,
     >>> ampl
     Amplicon(64)
     >>> ampl.forward_primer
-    fw64 18-mer:5'-atgactgctaacccttcc-3'
+    f64 18-mer:5'-atgactgctaacccttcc-3'
     >>> ampl.reverse_primer
-    rv64 19-mer:5'-catcgtaagtttcgaacga-3'
+    r64 19-mer:5'-catcgtaagtttcgaacga-3'
     >>> print(ampl.figure())
     5atgactgctaacccttcc...tcgttcgaaacttacgatg3
                           ||||||||||||||||||| tm 53.8 (dbd) 60.6
@@ -123,9 +123,9 @@ def primer_design(    template,
     >>> pf = "GGATCC" + ampl.forward_primer
     >>> pr = "GGATCC" + ampl.reverse_primer  
     >>> pf
-    fw64 24-mer:5'-GGATCCatgactgct..tcc-3'
+    f64 24-mer:5'-GGATCCatgactgct..tcc-3'
     >>> pr
-    rv64 25-mer:5'-GGATCCcatcgtaag..cga-3'
+    r64 25-mer:5'-GGATCCcatcgtaag..cga-3'
     >>> from pydna.amplify import pcr
     >>> pcr_prod = pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
@@ -143,7 +143,7 @@ def primer_design(    template,
     >>> ampl.forward_primer
     myprimer 27-mer:5'-atgactgctaaccct..ttg-3'
     >>> ampl.reverse_primer
-    rv64 28-mer:5'-catcgtaagtttcga..gtc-3'
+    r64 28-mer:5'-catcgtaagtttcga..gtc-3'
 
     '''
     
@@ -178,33 +178,60 @@ def primer_design(    template,
         _module_logger.debug("no primer given, design reverse primer:")
         rp = _Primer(design(target_tm, template.rc()))
     else:
-        raise Exception("Specify maximum one of the two primers.")
+        raise ValueError("Specify maximum one of the two primers.")
 
+    fp.concentration = fprimerc
+    rp.concentration = rprimerc
+
+    if fp.id == "id": #<unknown id>
+        fp.id = "f{}".format(len(template))
+        
+    if rp.id == "id":
+        rp.id = "r{}".format(len(template))
+
+    if fp.name == "name":
+        fp.name = "f{}".format(len(template))
+        
+    if rp.name == "name":
+        rp.name = "r{}".format(len(template))
+
+    fp.description = fp.id+' '+template.accession
+    rp.description = rp.id+' '+template.accession
+    
     ampl = _Anneal( (fp, rp), template, limit=limit)
     
     prod = ampl.products[0]
     
-    prod.forward_primer.concentration = fprimerc
-    prod.reverse_primer.concentration = rprimerc
-    
-    ## TODO primer id should be set to something based on the template id
-
-    if prod.forward_primer.id == "id?": #<unknown id>
-        prod.forward_primer.id = "fw{}".format(len(template))
-        
-    if prod.reverse_primer.id == "id?":
-        prod.reverse_primer.id = "rv{}".format(len(template))
-
-    if prod.forward_primer.name == "id?":
-        prod.forward_primer.name = "fw{}".format(len(template))
-        
-    if prod.reverse_primer.name == "id?":
-        prod.reverse_primer.name = "rv{}".format(len(template))
-
-    prod.forward_primer.description = prod.forward_primer.id+' '+template.accession
-    prod.reverse_primer.description = prod.reverse_primer.id+' '+template.accession
+    if len(ampl.products)>1:
+        import warnings as _warnings
+        from pydna import _PydnaWarning
+        _warnings.warn("designed primers do not yield a unique PCR product",
+                       _PydnaWarning)
 
     return prod
+#    ampl = _Anneal( (fp, rp), template, limit=limit)
+#    
+#    prod = ampl.products[0]
+#    
+#    prod.forward_primer.concentration = fprimerc
+#    prod.reverse_primer.concentration = rprimerc
+#
+#    if prod.forward_primer.id == "id": #<unknown id>
+#        prod.forward_primer.id = "f{}".format(len(template))
+#        
+#    if prod.reverse_primer.id == "id":
+#        prod.reverse_primer.id = "r{}".format(len(template))
+#
+#    if prod.forward_primer.name == "id":
+#        prod.forward_primer.name = "f{}".format(len(template))
+#        
+#    if prod.reverse_primer.name == "id":
+#        prod.reverse_primer.name = "r{}".format(len(template))
+#
+#    prod.forward_primer.description = prod.forward_primer.id+' '+template.accession
+#    prod.reverse_primer.description = prod.reverse_primer.id+' '+template.accession
+#
+#    return prod
 
 def assembly_fragments(f, overlap=35, maxlink=40):
     
@@ -554,17 +581,15 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> from pydna.assembly import Assembly
     >>> assemblyobj = Assembly([fa,fb,fc])
     >>> assemblyobj
-    Assembly:
-    Sequences........................: [100] [101] [102]
-    Sequences with shared homologies.: [100] [101] [102]
-    Homology limit (bp)..............: 25
-    Number of overlaps...............: 3
-    Nodes in graph(incl. 5' & 3')....: 5
-    Only terminal overlaps...........: No
-    Circular products................: [195]
-    Linear products..................: [231] [231] [231] [167] [166] [165] [36] [36] [36]
+    ## Assembly object ##
+    fragments....: 100bp 101bp 102bp
+    limit(bp)....: 25
+    G.nodes......: 10
+    algorithm....: common_sub_strings
+    linear(3)....: -231 -166 -36
+    circular(1)..: o195
     >>> assemblyobj.linear_products
-    [Contig(-231), Contig(-231), Contig(-231), Contig(-167), Contig(-166), Contig(-165), Contig(-36), Contig(-36), Contig(-36)]
+    [Contig(-231), Contig(-166), Contig(-36)]
     >>> assemblyobj.circular_products[0].cseguid()
     'V3Mi8zilejgyoH833UbjJOtDMbc'
     >>> (a+b+c).looped().cseguid()
@@ -588,7 +613,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     # sanity check for arguments
     nf = [item for item in f if len(item)>maxlink]
     if not all(hasattr(i[0],"template") or hasattr(i[1],"template") for i in zip(nf,nf[1:])):
-        raise Exception("Every second fragment larger than maxlink has to be an Amplicon object")
+        raise ValueError("Every second fragment larger than maxlink has to be an Amplicon object")
     
     _module_logger.debug("### assembly fragments ###")
     _module_logger.debug("overlap     = %s", overlap)
@@ -686,10 +711,19 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     
     return [_pcr(p.forward_primer, p.reverse_primer, p.template) if hasattr(p, "template") else p for p in f]
 
+def circular_assembly_fragments(f, overlap=35, maxlink=40):
+    
+    fragments = assembly_fragments( f+f[0:1], overlap=overlap, maxlink=maxlink)
+    
+    if hasattr( fragments[0], "template"):
+        fragments[0] = _pcr( (fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0])
+    return fragments
+
+
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cach

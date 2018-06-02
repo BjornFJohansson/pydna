@@ -17,16 +17,19 @@ import logging   as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 from Bio.Seq                        import Seq               as _Seq
-from Bio.SeqFeature                 import SeqFeature        as _SeqFeature
 from Bio.SeqFeature                 import CompoundLocation  as _CompoundLocation
 from Bio.SeqFeature                 import FeatureLocation   as _FeatureLocation
+from pydna.seqfeature               import SeqFeature        as _SeqFeature
 from Bio.Alphabet.IUPAC             import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 
 from pydna.dseqrecord                    import Dseqrecord       as _Dseqrecord
+from pydna.seqrecord                     import SeqRecord        as _SeqRecord
 from pydna.primer                        import Primer           as _Primer
 from pydna.amplicon                      import Amplicon         as _Amplicon
 from pydna.utils                         import rc               as _rc
 from pydna.utils                         import memorize         as _memorize
+from pydna.utils                         import flatten          as _flatten
+from pydna._pretty                       import pretty_str       as _pretty_str
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -114,7 +117,7 @@ class Anneal(object, metaclass = _Memoize):
 
     Parameters
     ----------
-    primers : iterable containing SeqRecord objects
+    primers : iterable containing SeqRecord like objects
         Primer sequences 5'-3'.
 
     template : Dseqrecord object
@@ -149,7 +152,7 @@ class Anneal(object, metaclass = _Memoize):
     >>> p2 = read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
     >>> ann = Anneal((p1, p2), template)
     >>> print(ann.report())
-    Template name? 51 nt linear:
+    Template name 51 nt linear:
     Primer p1 anneals forward at position 23
     <BLANKLINE>
     Primer p2 anneals reverse at position 29
@@ -173,8 +176,8 @@ class Anneal(object, metaclass = _Memoize):
     size: 51
     ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
     Name: 51bp_PCR_prod
-    Description: Product_p1_p2
-    Number of features: 4
+    Description: pcr product_p1_p2
+    Number of features: 2
     /date=02-FEB-2013
     Dseq(-51)
     taca..gcac
@@ -205,6 +208,7 @@ class Anneal(object, metaclass = _Memoize):
         self.primerc=primerc
         self.saltc = saltc
         self.template = _copy.deepcopy(template)
+
         self.limit = limit
         self.kwargs=defaultdict(str, kwargs)
 
@@ -238,46 +242,47 @@ class Anneal(object, metaclass = _Memoize):
                                                                              self.limit) if pos<twl))
         self.forward_primers.sort(key = _operator.attrgetter('position'))
         self.reverse_primers.sort(key = _operator.attrgetter('position'), reverse=True)
-
         for fp in self.forward_primers:
             if fp.position-fp._fp>=0:
                 start = fp.position-fp._fp
                 end   = fp.position
                 self.template.features.append(_SeqFeature(_FeatureLocation(start, end),
-                                                    type ="primer_bind",
-                                                    strand = 1,
-                                                    qualifiers = {"note":[fp.name],
-                                                                  "ApEinfo_fwdcolor":["green"],
-                                                                  "ApEinfo_revcolor":["red"]}))
+                                                           type ="primer_bind",
+                                                           strand = 1,
+                                                           qualifiers = {"label":[fp.name],
+                                                                         "ApEinfo_fwdcolor":["#baffa3"],
+                                                                         "ApEinfo_revcolor":["#ffbaba"]}))
             else:
                 start = len(self.template)-fp._fp+fp.position
                 end = start+fp._fp-len(self.template)
                 sf=_SeqFeature(_CompoundLocation([_FeatureLocation(start,len(self.template)),
-                                                 _FeatureLocation(0, end)]),
-                                                  type="primer_bind",
-                                                  location_operator="join",
-                                                  qualifiers = {"note":[fp.name]})
+                                                  _FeatureLocation(0, end)]),
+                                                   type="primer_bind",
+                                                   location_operator="join",
+                                                   qualifiers = {"label":[fp.name],
+                                                                 "ApEinfo_fwdcolor":["#baffa3"],
+                                                                 "ApEinfo_revcolor":["#ffbaba"]})
                 self.template.features.append(sf)
-
         for rp in self.reverse_primers:
             if rp.position+rp._fp<=len(self.template):
                 start = rp.position
                 end   = rp.position + rp._fp
                 self.template.features.append(_SeqFeature(_FeatureLocation(start,end),
-                                                    type ="primer_bind",
-                                                    strand = -1,
-                                                    qualifiers = {"note":[rp.name],
-                                                                  "ApEinfo_fwdcolor":["green"],
-                                                                  "ApEinfo_revcolor":["red"]}))
+                                                           type ="primer_bind",
+                                                           strand = -1,
+                                                           qualifiers = {"label":[rp.name],
+                                                                         "ApEinfo_fwdcolor":["#baffa3"],
+                                                                         "ApEinfo_revcolor":["#ffbaba"]}))
             else:
                 start = rp.position
                 end = rp.position+rp._fp-len(self.template)
                 self.template.features.append(_SeqFeature(_CompoundLocation([ _FeatureLocation(0, end),
                                                                               _FeatureLocation(start, len(self.template))]),
-                                                    type ="primer_bind",
-                                                    location_operator= "join",
-                                                    strand = -1,
-                                                    qualifiers = {"note":[rp.name]}))
+                                                                              type ="primer_bind",
+                                                                              location_operator= "join",
+                                                                              strand = -1,
+                                                                              qualifiers = {"label":[rp.name]}))
+    
 
     @property
     def products(self):
@@ -290,29 +295,40 @@ class Anneal(object, metaclass = _Memoize):
         for fp in self.forward_primers:
             for rp in self.reverse_primers:
 
-                if self.template.circular and fp.position>rp.position:
+                if self.template.circular:
                     tmpl = self.template.shifted(fp.position-fp._fp)
-                    tmpl = tmpl._multiply_circular(2)
-                    tmpl = tmpl[:len(self.template) - (fp.position - rp.position) + rp._fp + fp._fp]
-
-                elif self.template.circular:
-                    tmpl = self.template._multiply_circular(3)
-                    tmpl = tmpl[fp.position-fp._fp+len(self.template):rp.position+rp._fp+len(self.template)]
+                    tmpl = tmpl[:]*2
+                    for f in tmpl.features:
+                        for x,y in zip(f.location.parts, f.location.parts[1:]):
+                            if x.end == y.start+len(self.template):
+                                f.location = _FeatureLocation(x.start, y.end+len(self.template), strand=f.location.strand)
+                    if fp.position>rp.position:                    
+                        tmpl = tmpl[:len(self.template) - fp.position + rp.position + rp._fp + fp._fp]
+                    else:
+                        tmpl = tmpl[:rp.position+rp._fp - (fp.position-fp._fp)]
                 else:
                     tmpl = self.template[fp.position-fp._fp:rp.position+rp._fp]
 
                 prd = ( _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement() )
-                
-                prd.add_feature( 0, len(fp), label=fp.id)
-                prd.add_feature( len(prd)-len(rp),len(prd),label=rp.id, strand=-1)
 
-                prd.name = self.kwargs["name"] or "{0}bp_PCR_prod".format(len(prd))[:16]
-                prd.id = self.kwargs["id"] or"{0}bp {1}".format( str(len(prd))[:14], prd.seguid() )
-                prd.description = self.kwargs["description"] or"Product_{0}_{1}".format( fp.description,
-                                                                                         rp.description)
+                full_tmpl_features = [f for f in tmpl.features if f.location.start==0 and f.location.end==len(tmpl)]
+                
+                new_identifier = ""
+                if full_tmpl_features:
+                    ft = full_tmpl_features[0]
+                    if "label" in ft.qualifiers:
+                        new_identifier = " ".join(ft.qualifiers["label"])
+                    elif "note" in ft.qualifiers:
+                        new_identifier = " ".join(ft.qualifiers["note"])
+                        
+                from pydna.utils import identifier_from_string as _identifier_from_string # TODO:  clean this up
+                prd.name = _identifier_from_string(new_identifier)[:16] or self.kwargs["name"] or "{}bp_PCR_prod".format(len(prd))[:16]
+                prd.id   = _identifier_from_string(new_identifier)[:16] or self.kwargs["id"]   or "{}bp {}".format( str(len(prd))[:14], prd.seguid() )
+                prd.description = self.kwargs["description"] or"pcr product_{}_{}".format( fp.description,
+                                                                                           rp.description)
                 
                 self._products.append( _Amplicon(prd,
-                                                 template=tmpl,
+                                                 template=self.template,
                                                  forward_primer=fp,
                                                  reverse_primer=rp,
                                                  saltc=self.saltc,
@@ -354,7 +370,7 @@ class Anneal(object, metaclass = _Memoize):
                 mystring += "Primer {name} anneals reverse at position {pos}\n".format(name=p.name, pos=p.position)
         else:
              mystring += "No reverse primers anneal...\n"
-        return mystring.strip()
+        return _pretty_str(mystring.strip())
 
 def pcr(*args,  **kwargs):
     '''pcr is a convenience function for Anneal to simplify its usage,
@@ -383,8 +399,8 @@ def pcr(*args,  **kwargs):
     * SeqRecord
     * Dseqrecord
 
-    The last sequence will be interpreted as the template
-    all preceeding sequences as primers.
+    The last sequence will be assumed to be the template while
+    all preceeding sequences will be assumed to be primers.
 
     This is a powerful function, use with care!
 
@@ -416,152 +432,55 @@ def pcr(*args,  **kwargs):
 
     '''
 
-    from Bio.SeqRecord import SeqRecord
-    # flatten args
-    output = []
-    stack = []
-    stack.extend(reversed(args))
-    while stack:
-        top = stack.pop()
-        if hasattr(top, "__iter__") and not isinstance(top, SeqRecord):
-            stack.extend(reversed(top))
-        else:
-            output.append(top)
+    output = _flatten(args)       # flatten   
     new=[]
-
     for s in output:
-        if isinstance(s, _Seq):
-            s = SeqRecord(s)
-        elif isinstance(s, SeqRecord):
-            pass
-        elif hasattr(s, "watson"):
-            s=s.watson
+        if hasattr(s, "watson"):
+            s = _SeqRecord(_Seq(s.watson , _IUPACAmbiguousDNA()))      
+        elif hasattr(s, "alphabet"):
+            s = _SeqRecord(s)
         elif isinstance(s, str):
-            s = SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
+            s = _SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
+        elif hasattr(s, "features"):
+            pass
         else:
-            raise TypeError("the record property needs to be a string, Seq, SeqRecord, Dseqrecord or Amplicon object")
+            raise TypeError("arguments need to be a string, Bio.Seq, SeqRecord, Primer, Dseqrecord or Amplicon object")
         new.append(s)
 
     if len(new) == 1 and hasattr(new[0], "forward_primer"): # A single Amplicon object
         new = [ new[0].forward_primer, new[0].reverse_primer, new[0] ]
-
-    anneal_primers = Anneal(  new[:-1],
-                              new[-1],
-                              **kwargs)
-
-    if anneal_primers:
-        if len(anneal_primers.products) == 1:
-            return anneal_primers.products[0]
-        elif len(anneal_primers.products) == 0:
-            raise Exception("No PCR products! {}".format(anneal_primers.report()))
-        else:
-            raise Exception("PCR not specific! {}".format(anneal_primers.report()))
-    else:
-        raise Exception(anneal_primers.report())
-    return
-
-
-def nopcr(*args,  **kwargs):
-    '''no pcr is a convenience function for Anneal to simplify its usage,
-    especially from the command line. If one or more PCR products are
-    formed, an exception is raised.
-
-    args is any iterable of sequences or an iterable of iterables of sequences.
-    args will be greedily flattened.
-
-    Parameters
-    ----------
-
-    args : iterable containing sequence objects
-        Several arguments are also accepted.
-
-    limit : int = 13, optional
-        limit length of the annealing part of the primers.
-
-    Notes
-    -----
-
-    sequences in args could be of type:
-
-    * string
-    * Seq
-    * SeqRecord
-    * Dseqrecord
-
-    The last sequence will be interpreted as the template
-    all preceeding sequences as primers.
-
-    This is a powerful function, use with care!
-
-    Returns
-    -------
-
-    product : Dseqrecord
-        a Dseqrecord object representing the PCR product.
-        The direction of the PCR product will be the same as
-        for the template sequence.
-
-    Examples
-    --------
-
-    >>> from pydna.dseqrecord import Dseqrecord
-    >>> from pydna.amplify    import nopcr
-    >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
-    >>> from Bio.SeqRecord import SeqRecord
-    >>> from Bio.Seq import Seq
-    >>> p1 = SeqRecord(Seq("tacactcaccgtctatcattatc"))
-    >>> p2 = SeqRecord(Seq("gtgctatcagatgatacagtG")) # This primer does not anneal
-    >>> nopcr(p1, p2, template)
-    True
-    '''
-
-    from Bio.SeqRecord import SeqRecord
-    # flatten args
-    output = []
-    stack = []
-    stack.extend(reversed(args))
-    while stack:
-        top = stack.pop()
-        if hasattr(top, "__iter__") and not isinstance(top, SeqRecord):
-            stack.extend(reversed(top))
-        else:
-            output.append(top)
-    new=[]
-
-    for s in output:
-        if isinstance(s, _Seq):
-            s = SeqRecord(s)
-        elif isinstance(s, SeqRecord):
-            pass
-        elif hasattr(s, "watson"):
-            s=s.watson
-        elif isinstance(s, str):
-            s = SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
-        else:
-            raise TypeError("the record property needs to be a string, a Seq object or a SeqRecord object")
-        new.append(s)
-
-    anneal_primers = Anneal(  new[:-1],
-                              new[-1],
-                              **kwargs)
-
-    if anneal_primers:
-        if len(anneal_primers.products) != 0:
-            raise Exception("PCR products formed! {}".format(anneal_primers.report()))
-    else:
-        raise Exception(anneal_primers.report())
-    return True
-
-if __name__=="__main__":
     
-    from pydna.design import primer_design
-    from pydna.dseqrecord import Dseqrecord
-    a = primer_design(Dseqrecord("gtcatcgtactactcgtaagtcatcagtcgtacgtatagtcatcgtagtatatcgatcta"))
-    z = pcr(a)
+    if not hasattr(new[-1].seq, "watson"):
+        new[-1] = _Dseqrecord(s)
+
+    anneal_primers = Anneal(  new[:-1],
+                              new[-1],
+                              **kwargs)
+
+    if len(anneal_primers.products) == 1:
+        return anneal_primers.products[0]
+    elif len(anneal_primers.products) == 0:
+        raise ValueError("No PCR product! {}".format(anneal_primers.report()))
+    raise ValueError("PCR not specific! {}".format(anneal_primers.report()))
+       
+    
 
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
-    import doctest
-    doctest.testmod(verbose=True)
-    _os.environ["pydna_cache"]=cache
+       
+    t=_Dseqrecord("ATGACGGGCGTATTCCTCTGGCCACA", circular=True)
+    pf =               _Primer("TCCTCTGGCCACA")
+    pr =  _Primer("ATACGCCCGTCAT")
+
+    t.id="tid"
+    t.name="tname"
+
+    p = pcr(pf,pr,t)    
+
+  
+#if __name__=="__main__":
+#    import os as _os
+#    cached = _os.getenv("pydna_cached_funcs", "")
+#    _os.environ["pydna_cached_funcs"]=""
+#    import doctest
+#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+#    _os.environ["pydna_cached_funcs"]=cached

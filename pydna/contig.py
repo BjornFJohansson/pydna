@@ -1,6 +1,7 @@
 import textwrap as _textwrap
 from pydna._pretty import pretty_str    as _pretty_str
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+from pydna.utils import rc
 
 class Contig(_Dseqrecord):
     '''This class holds information about a DNA assembly. This class is instantiated by
@@ -11,41 +12,74 @@ class Contig(_Dseqrecord):
     def __init__(self,
                  record,
                  *args,
-                 source_fragments=[],
+                 graph = None,
+                 path  = None,
                  **kwargs):
 
         super().__init__(record, *args, **kwargs)
-        self.source_fragments = source_fragments
-        self.number_of_fragments = len(self.source_fragments)
+        self.graph = graph
+        self.path = path or []
+
 
     def __repr__(self):
         return "Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self))
+
         
     def _repr_pretty_(self, p, cycle):
         '''returns a short string representation of the object'''
         p.text("Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self)))
-            
+
+           
     def _repr_html_(self):
         return "<pre>"+self.small_fig()+"</pre>"
-        #"Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self))
+    
+    
+    def reverse_complement(self):
+        answer = type(self)(super().reverse_complement())
+        answer.graph = self.graph.reverse()
+        for node in answer.graph.nodes():
+            answer.graph.nodes[node]["fragment"] = rc(answer.graph.nodes[node]["fragment"])
+        for edge in answer.graph.edges():
+            answer.graph.edges[edge]["fragment"] = rc(answer.graph.edges[edge]["fragment"])
+            l=len(answer.graph.edges[edge]["seq"])
+            answer.graph.edges[edge]["seq"] = answer.graph.edges[edge]["seq"].rc()
+            answer.graph.edges[edge]["start"] = l-answer.graph.edges[edge]["end"]   - answer.graph.node[edge[0]]["length"]  
+            answer.graph.edges[edge]["end"]   = l-answer.graph.edges[edge]["start"] - answer.graph.node[edge[1]]["length"]
+            answer.graph.edges[edge]["length"] = answer.graph.edges[edge]["end"] - answer.graph.edges[edge]["start"]
+        answer.path  = self.path[::-1]
+        return answer
+    
+    
+    rc = reverse_complement
 
-    def detailed_figure(self):
-        '''Synonym of :func:`detailed_fig`'''
-        return self.detailed_fig()
 
     def detailed_fig(self):
         fig=""
-        for s in self.source_fragments:
-            fig +="{}{}\n".format(" "*s.alignment, str(s.seq))
-        return fig
+        fragmentposition=0
+        nodeposition = self.graph[self.path[0]][self.path[1]]["length"]
+        nodeposition = 0
+        mylist = []
+        for u, v, e in [(self.graph.node[u], self.graph.node[v], self.graph[u][v]) for u, v in zip(self.path, self.path[1:])]:
+            nodeposition += e["length"]
+            fragmentposition-=e["start"]
+            mylist.append([fragmentposition, str(e["seq"].seq)])
+            mylist.append([nodeposition, v["fragment"].upper()])
+            fragmentposition+=e["end"]
+                
+        if self.circular:
+            nodeposition = self.graph[self.path[0]][self.path[1]]["start"]
+            mylist= [[nodeposition,"|"*v["length"]]] + mylist
+        
+        firstpos = -1 * min(0, min(mylist)[0])
+        
+        for p,s in mylist:
+            fig+="{}{}\n".format(" "*(p+firstpos), s)
+            
+        return _pretty_str(fig)
+    
 
-    def figure(self):
-        '''Synonym of :func:`small_fig`'''
-        return self.small_fig()
-
-    def small_figure(self):
-        '''Synonym of :func:`small_fig`'''
-        return self.small_fig()
+    detailed_figure = detailed_fig
+    
 
     def small_fig(self):
         '''
@@ -89,6 +123,7 @@ class Contig(_Dseqrecord):
 
         '''
 
+        edges = [self.graph[u][v] for u,v in zip(self.path, self.path[1:])]
         if self.linear:
             '''
             frag20| 6
@@ -99,32 +134,34 @@ class Contig(_Dseqrecord):
                              /\
                               6|frag14
             '''
-            f = self.source_fragments[0]
-            space2 = len(f.name)
+
+            f = edges[0]
+            space2 = len(f["seq"].name)
 
 
             fig = ("{name}|{o2:>2}\n"
                    "{space2} \/\n"
-                   "{space2} /\\\n").format(name = f.name,
-                                            o2 = f.right_overlap_size,
+                   "{space2} /\\\n").format(name   = f["seq"].name,
+                                            o2     = self.graph.node[self.path[1]]["length"],
                                             space2 = " "*space2)
-            space = len(f.name)
+            space = space2 #len(f.name)
 
-            for f in self.source_fragments[1:-1]:
-                name= "{o1:>2}|{name}|".format(o1   = f.left_overlap_size,
-                                               name = f.name)
+            for i,f in enumerate( edges[1:-1] ):
+                name = "{o1:>2}|{name}|".format(o1   = self.graph.node[self.path[i+1]]["length"],
+                                                name = f["seq"].name)
                 space2 = len(name)
+                
                 fig +=("{space} {name}{o2:>2}\n"
                        "{space} {space2}\/\n"
-                       "{space} {space2}/\\\n").format( name = name,
-                                                        o2 = f.right_overlap_size,
-                                                        space = " "*space,
+                       "{space} {space2}/\\\n").format( name   = name,
+                                                        o2     = self.graph.node[self.path[i+2]]["length"],
+                                                        space  = " "*space,
                                                         space2 = " "*space2)
                 space +=space2
-            f = self.source_fragments[-1]
-            fig += ("{space} {o1:>2}|{name}").format(name = f.name,
-                                                    o1 = f.left_overlap_size,
-                                                    space = " "*(space))
+            f = edges[-1]
+            fig += ("{space} {o1:>2}|{name}").format(name  = f["seq"].name,
+                                                     o1    = self.graph.node[self.path[-2]]["length"],
+                                                     space = " "*(space))
 
 
 
@@ -143,35 +180,59 @@ class Contig(_Dseqrecord):
             |                          |
              --------------------------
             '''
-            f = self.source_fragments[0]
-            space = len(f.name)+3
+
+            f = edges[0]
+            
+            space = len(f["seq"].name)+3
+            
             fig =(" -|{name}|{o2:>2}\n"
                   "|{space}\/\n"
-                  "|{space}/\\\n").format(name = f.name,
-                                           o2 = f.right_overlap_size,
-                                           space = " "*space)
-            for f in self.source_fragments[1:]:
-                name= "{o1:>2}|{name}|".format(o1 = f.left_overlap_size,
-                                                      name = f.name)
+                  "|{space}/\\\n").format( name = f["seq"].name,
+                                           o2 = self.graph.node[self.path[1]]["length"],
+                                           space = " "*space )
+            
+            for i, f in enumerate( edges[1:] ):
+                name= "{o1:>2}|{name}|".format(o1   = self.graph.node[self.path[i+1]]["length"],
+                                               name = f["seq"].name)
                 space2 = len(name)
                 fig +=("|{space}{name}{o2:>2}\n"
                        "|{space}{space2}\/\n"
-                       "|{space}{space2}/\\\n").format(o2 = f.right_overlap_size,
-                                                       name = name,
-                                                       space = " "*space,
-                                                       space2 = " "*space2)
+                       "|{space}{space2}/\\\n").format( o2     = self.graph.node[self.path[i+2]]["length"],
+                                                        name   = name,
+                                                        space  = " "*space,
+                                                        space2 = " "*space2 )
                 space +=space2
 
-            fig +="|{space}{o1:>2}-\n".format(space=" "*(space), o1=self.source_fragments[0].left_overlap_size)
+            fig +="|{space}{o1:>2}-\n".format(space=" "*(space), o1=self.graph.node[self.path[0]]["length"])
             fig +="|{space}   |\n".format(space=" "*(space))
             fig +=" {space}".format(space="-"*(space+3))
         return _pretty_str(_textwrap.dedent(fig))
 
 
-if __name__=="__main__":                                    # pragma: no cover
-    import os        as _os                                 # pragma: no cover
-    cache = _os.getenv("pydna_cache")                       # pragma: no cover
-    _os.environ["pydna_cache"]="nocache"                    # pragma: no cover
-    import doctest                                          # pragma: no cover
-    doctest.testmod(verbose=True)                           # pragma: no cover
-    _os.environ["pydna_cache"]=cache                        # pragma: no cover
+    figure = small_figure = small_fig
+    
+    
+
+if __name__=="__main__":
+#    import os as _os
+#    cached = _os.getenv("pydna_cached_funcs", "")
+#    _os.environ["pydna_cached_funcs"]=""
+#    import doctest
+#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+#    _os.environ["pydna_cached_funcs"]=cached
+
+    from pydna.assembly import Assembly
+    from pydna.dseqrecord import Dseqrecord
+    a = Dseqrecord("acgatgctatactgtgCCNCCtgtgctgtgctcta")
+    b = Dseqrecord("tgtgctgtgctctaTTTTTTTtattctggctgtatc")
+    c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactgtg")
+    a.name="aaa"
+    b.name="bbb"
+    c.name="ccc"
+    x = Assembly((a,b,c), limit=14)
+    y = x.circular[0]
+    print(y.figure())
+    print(y.detailed_figure())
+    z=y.rc()
+    print(z.figure())
+    print(z.detailed_figure())

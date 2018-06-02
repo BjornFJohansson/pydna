@@ -11,62 +11,50 @@ import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 import itertools as _itertools
+from   copy     import deepcopy as _deepcopy
 import networkx as _nx
-import operator as _operator
-import random as _random
-import os as _os
 
-from copy import copy as _copy
-from collections import defaultdict as _defaultdict
-
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
-from Bio.SeqFeature import SeqFeature as _SeqFeature
-
-from pydna.dseq  import Dseq as _Dseq
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from pydna._simple_paths8 import all_simple_paths_edges   as _all_simple_paths_edges
-from pydna._simple_paths8 import all_circular_paths_edges as _all_circular_paths_edges
 
-from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-from pydna.common_sub_strings import terminal_overlap as _terminal_overlap
-from pydna.contig import Contig as _Contig
-from ordered_set   import OrderedSet as _OrderedSet
+from pydna.common_sub_strings import common_sub_strings
+from pydna.common_sub_strings import terminal_overlap
+from pydna.contig  import Contig as _Contig
+from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils   import memorize   as _memorize
+from pydna.utils   import lseguid as _lseguid
+from pydna.utils   import cseguid as _cseguid
+
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
+from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
+from Bio.SeqFeature import ExactPosition    as _ExactPosition
 
 class _Fragment(_Dseqrecord):
     '''This class holds information about a DNA fragment in an assembly.
     This class is instantiated by the :class:`Assembly` class and is not
     meant to be instantiated directly.
-
     '''
-    
-    def __init__(self, record, *args,
-                               start1    = 0,
-                               end1      = 0,
-                               start2    = 0,
-                               end2      = 0,
-                               alignment = 0,
-                               i         = 0, 
-                               **kwargs):
-
+    def __init__(self, record, *args, nodes=None ,**kwargs):
+        self.nodes = nodes or []
         super().__init__(record, *args, **kwargs)
+        self.seq = type(self.seq)(self.seq._data)
 
-        self.start1             = start1
-        self.end1               = end1
-        self.left_overlap_size  = end1-start1
-        self.start2             = start2
-        self.end2               = end2
-        self.right_overlap_size = end2-start2
-        self.alignment          = alignment
-        self.i                  = i
+    def rc(self):
+        answer             = _deepcopy(self)
+        answer._seq         = answer._seq.rc()
+        answer.name        = "{}_rc".format(self.name[:13])
+        answer.description = self.description+"_rc"
+        answer.id          = self.id+"_rc"   
+        answer.nodes       = []
+        return answer
 
-    def __str__(self):
-        return ("Fragment alignment {}\n").format(self.alignment)+super().__str__()
+    reverse_complement = rc
+
 
 class _Memoize(type):
     @_memorize("Assembly")
     def __call__(cls, *args, **kwargs):
         return super().__call__(*args, **kwargs)
+
 
 class Assembly(object, metaclass = _Memoize):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
@@ -78,7 +66,7 @@ class Assembly(object, metaclass = _Memoize):
     Parameters
     ----------
 
-    dsrecs : list
+    fragments : list
         a list of Dseqrecord objects.
 
     Examples
@@ -91,273 +79,286 @@ class Assembly(object, metaclass = _Memoize):
     >>> c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg")
     >>> x = Assembly((a,b,c), limit=14)
     >>> x
-    Assembly:
-    Sequences........................: [33] [34] [35]
-    Sequences with shared homologies.: [33] [34] [35]
-    Homology limit (bp)..............: 14
-    Number of overlaps...............: 3
-    Nodes in graph(incl. 5' & 3')....: 5
-    Only terminal overlaps...........: No
-    Circular products................: [59]
-    Linear products..................: [74] [73] [73] [54] [54] [53] [15] [14] [14]
-    >>> x.circular_products
+    ## Assembly object ##
+    fragments....: 33bp 34bp 35bp
+    limit(bp)....: 14
+    G.nodes......: 10
+    algorithm....: common_sub_strings
+    linear(3)....: -73 -54 -14
+    circular(1)..: o59
+    >>> x.circular
     [Contig(o59)]
     >>> x.circular_products[0].seq.watson
-    'CCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGtacgatgctatactg'
+    'acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGt'
 
     '''
-
-    def __init__(self, dsrecs, limit = 25, only_terminal_overlaps=False, max_nodes=None):
-
-        self.dsrecs = dsrecs
-        ''' Sequences fed to this class is stored in this property'''
-        self.only_terminal_overlaps = only_terminal_overlaps
+    
+    def __init__(self, fragments, limit = 25, algorithm=common_sub_strings, max_nodes=None):
+        
         ''' Consider only terminal overlaps?'''
         self.limit = limit
         ''' The shortest common sub strings to be considered '''
-        self.max_nodes = max_nodes or len(self.dsrecs)
+        self.max_nodes = max_nodes or len(fragments)
         ''' The max number of nodes allowed. This can be reset to some other value'''
-        self.only_terminal_overlaps = only_terminal_overlaps
-        
-        for dr in self.dsrecs:
-            if dr.name in ("",".", "<unknown name>", None):
-                dr.name = "frag{}".format(len(dr))
-
-        if self.only_terminal_overlaps:
-            algorithm = _terminal_overlap
-        else:
-            algorithm = _common_sub_strings
 
         # analyze_overlaps
-        cols = {}
-        for dsrec in self.dsrecs:
-            dsrec.features = [f for f in dsrec.features if f.type!="overlap"]
-            dsrec.seq = _Dseq(dsrec.seq.todata)
-        rcs = {dsrec:dsrec.rc() for dsrec in self.dsrecs}
-        matches=[]
-        dsset=_OrderedSet()
+        
+        #print(123)
+        
+        fragments = [_Fragment(f) for f in fragments]
+        rcfragments = { f.seguid():f.rc() for f in fragments}
+        g=_nx.MultiDiGraph(selfloops=False)
+        
+#        for first, secnd in zip(fragments, rcfragments.values()):
+#                    
+#                matches = algorithm( str(first.seq).upper(),
+#                                     str(secnd.seq).upper(),
+#                                     self.limit)
+#
+#                for start_in_first, start_in_secnd, length in matches:
+#                    node    = first[start_in_first:start_in_first+length]
+#                    node_id = node.seguid()
+#                    g.add_node(node_id, length = length, fragment=str(node.seq))
+#                    first.nodes.append( (start_in_first, node_id))
+#                    secnd.nodes.append( (start_in_secnd, node_id))
 
-        for a, b in _itertools.combinations(self.dsrecs, 2):
-            match = algorithm( str(a.seq).upper(),
-                               str(b.seq).upper(),
-                               self.limit)
-            if match:
-                matches.append((a, b, match))
-                dsset.add(a)
-                dsset.add(b)
-            match = algorithm( str(a.seq).upper(),
-                               str(rcs[b].seq).upper(),
-                               self.limit)
-            if match:
-                matches.append((a, rcs[b], match))
-                dsset.add(a)
-                dsset.add(rcs[b])
-                matches.append((rcs[a], b, [(len(a)-sa-le,len(b)-sb-le,le) for sa,sb,le in match]))
-                dsset.add(b)
-                dsset.add(rcs[a])
-
-        self.no_of_olaps=0
-
-        for a, b, match in matches:
-            for start_in_a, start_in_b, length in match:
-                self.no_of_olaps+=1
-                chksum = a[start_in_a:start_in_a+length].seguid()
-                #assert chksum == b[start_in_b:start_in_b+length].seguid()
-
-                try:
-                    fcol, revcol = cols[chksum]
-                except KeyError:
-                    fcol = '#%02X%02X%02X' % (_random.randint(175,255),_random.randint(175,255),_random.randint(175,255))
-                    rcol = '#%02X%02X%02X' % (_random.randint(175,255),_random.randint(175,255),_random.randint(175,255))
-                    cols[chksum] = fcol,rcol
-
-                qual      = {"note"             : ["olp_{}".format(chksum)],
-                             "chksum"           : [chksum],
-                             "ApEinfo_fwdcolor" : [fcol],
-                             "ApEinfo_revcolor" : [rcol]}
-
-                if not chksum in [f.qualifiers["chksum"][0] for f in a.features if f.type == "overlap"]:
-                    a.features.append( _SeqFeature( _FeatureLocation(start_in_a,
-                                                                   start_in_a + length),
-                                                                   type = "overlap",
-                                                                   qualifiers = qual))
-                if not chksum in [f.qualifiers["chksum"][0] for f in b.features if f.type == "overlap"]:
-                    b.features.append( _SeqFeature( _FeatureLocation(start_in_b,
-                                                                   start_in_b + length),
-                                                                   type = "overlap",
-                                                                   qualifiers = qual))
-        for ds in dsset:
-            ds.features = sorted([f for f in ds.features], key = _operator.attrgetter("location.start"))
-
-        self.analyzed_dsrecs = list(dsset)
-
-
-        # Create graph
-
-        self.G=_nx.MultiDiGraph(multiedges=True, name ="original graph" , selfloops=False)
-        self.G.add_node( '5' )
-        self.G.add_node( '3' )
-
-        for i, dsrec in enumerate(self.analyzed_dsrecs):
-
-            overlaps = sorted( list({f.qualifiers['chksum'][0]:f for f in dsrec.features
-                                if f.type=='overlap'}.values()),
-                               key = _operator.attrgetter('location.start'))
-
-            if overlaps:
-                overlaps = ([_SeqFeature(_FeatureLocation(0, 0),
-                             type = 'overlap',
-                             qualifiers = {'chksum':['5']})]+
-                             overlaps+
-                            [_SeqFeature(_FeatureLocation(len(dsrec),len(dsrec)),
-                                        type = 'overlap',
-                                        qualifiers = {'chksum':['3']})])
-
-                for olp1, olp2 in _itertools.combinations(overlaps, 2):
-
-                    n1 = olp1.qualifiers['chksum'][0]
-                    n2 = olp2.qualifiers['chksum'][0]
-
-                    if n1 == '5' and n2=='3':
-                        continue
-
-                    s1,e1,s2,e2 = (olp1.location.start.position,
-                                   olp1.location.end.position,
-                                   olp2.location.start.position,
-                                   olp2.location.end.position,)
-
-                    source_fragment = _Fragment(dsrec, start1=s1,end1=e1,start2=s2,end2=e2,i=i) #_Fragment(dsrec,s1,e1,s2,e2,i)
-
-                    self.G.add_edge( n1, n2,
-                                     frag=source_fragment,
-                                     weight = s1-e1,
-                                     i = i)
-
-        #linear assembly
-
-        linear_products=_defaultdict(list)
-
-        for path in _all_simple_paths_edges(self.G, '5', '3', data=True, cutoff=self.max_nodes):
-
-            pred_frag = _copy(list(path[0][2].values()).pop()['frag'])
-            source_fragments = [pred_frag, ]
-
-            if pred_frag.start2<pred_frag.end1:
-                result=pred_frag[pred_frag.start2+(pred_frag.end1-pred_frag.start2):pred_frag.end2]
-            else:
-                result=pred_frag[pred_frag.end1:pred_frag.end2]
-
-            for first_node, second_node, edgedict in path[1:]:
-
-                edgedict = list(edgedict.values()).pop()
-
-                f  = _copy(edgedict['frag'])
-
-                f.alignment =  pred_frag.alignment + pred_frag.start2- f.start1
-                source_fragments.append(f)
-
-                if f.start2>f.end1:
-                    result+=f[f.end1:f.end2]
-                else:
-                    result+=f[f.start2+(f.end1-f.start2):f.end2]
-
-                pred_frag = f
-
-            add=True
-            for lp in linear_products[len(result)]:
-                if (str(result.seq).lower() == str(lp.seq).lower()
-                    or
-                    str(result.seq).lower() == str(lp.seq.reverse_complement()).lower()):
-                    add=False
-            for dsrec in self.dsrecs:
-                if (str(result.seq).lower() == str(dsrec.seq).lower()
-                    or
-                    str(result.seq).lower() == str(dsrec.seq.reverse_complement()).lower()):
-                    add=False
-            if add:
-                linear_products[len(result)].append(_Contig( result, source_fragments = source_fragments))
-
-        self.linear_products = list(_itertools.chain.from_iterable(linear_products[size] for size in sorted(linear_products, reverse=True)))
-
-
-        # circular assembly
-
-        self.cG = self.G.copy()
-        self.cG.remove_nodes_from(('5','3'))
-        #circular_products=_defaultdict(list)
-        circular_products={}
-
-        for pth in _all_circular_paths_edges(self.cG):
-
-            ns = min( enumerate(pth), key = lambda x:x[1][2]['i'] )[0]
-
-            path = pth[ns:]+pth[:ns]
-
-            pred_frag = _copy(path[0][2]['frag'])
-
-            source_fragments = [pred_frag, ]
+        for first, secnd in _itertools.combinations(fragments, 2):
             
-            if pred_frag.start2<pred_frag.end1:
-                result=pred_frag[pred_frag.start2+(pred_frag.end1-pred_frag.start2):pred_frag.end2]
-            else:
-                result=pred_frag[pred_frag.end1:pred_frag.end2]
+                fseguid,rseguid = first.seguid(), secnd.seguid()
                 
-            result.seq = _Dseq(str(result.seq))
+                if fseguid==rseguid: continue
 
-            for first_node, second_node, edgedict in path[1:]:
+                firrc = rcfragments[fseguid]
+                secrc = rcfragments[rseguid]
 
-                f  = _copy(edgedict['frag'])
+                matches = algorithm( str(first.seq).upper(),
+                                     str(secnd.seq).upper(),
+                                     self.limit)
+                
+                for start_in_first, start_in_secnd, length in matches:
+                    node    = first[start_in_first:start_in_first+length] 
+                    node_id = node.seguid()
+                    g.add_node(node_id, length = length, fragment=str(node.seq))
+                    first.nodes.append((start_in_first, node_id))
+                    secnd.nodes.append((start_in_secnd, node_id))
+                    
+                    start_in_firrc, start_in_secrc = len(first.seq) - start_in_first - length, len(secnd.seq) - start_in_secnd - length # 
+                    node    = firrc[start_in_firrc:start_in_firrc+length] 
+                    node_id = node.seguid()
+                    g.add_node(node_id, length = length, fragment=str(node.seq))
+                    firrc.nodes.append((start_in_firrc, node_id) )
+                    secrc.nodes.append((start_in_secrc, node_id) )
 
-                f.alignment =  pred_frag.alignment + pred_frag.start2- f.start1
-                source_fragments.append(f)
+                matches = algorithm( str(first.seq).upper(),
+                                     str(secrc.seq).upper(),
+                                     self.limit)
+                
+                for start_in_first, start_in_secrc, length in matches:
+                    node    = first[start_in_first:start_in_first+length] 
+                    node_id = node.seguid()
+                    g.add_node(node_id, length = length, fragment=str(node.seq))
+                    first.nodes.append( (start_in_first, node_id))
+                    secrc.nodes.append( (start_in_secrc, node_id))
 
-                if f.start2>f.end1:
-                    nxt = f[f.end1:f.end2]
+                    start_in_firrc, start_in_secnd = len(first.seq) - start_in_first - length, len(secnd.seq) - start_in_secrc - length
+                    node    = firrc[start_in_firrc:start_in_firrc+length]
+                    node_id = node.seguid()
+                    g.add_node(node_id, length = length, fragment=str(node.seq))
+                    firrc.nodes.append( (start_in_firrc, node_id) )
+                    secnd.nodes.append( (start_in_secnd, node_id) )
+
+        for f in _itertools.chain(fragments, rcfragments.values()):
+            f.nodes.sort()
+            #print(f.nodes)
+            for (s1, n1),(s2, n2) in _itertools.combinations(f.nodes,2):
+                if n1==n2:
+                    continue
+                if not g.has_edge(n1, n2) or (str(f._seq)[s1:s2].lower() not in (e["fragment"].lower() for e in g[n1][n2].values())):
+                    #print(n1, n2, g.has_edge(n1, n2))
+                    #print(str(f._seq)[:10]+"|"+str(f._seq)[-10:]+str(len(str(f._seq))))
+#                    try: 
+#                        print([e["fragment"][:10]+"|"+e["fragment"][-10:]+str(len(e["fragment"])) for e in g[n1][n2].values()])
+#                    except:
+#                        pass
+                    #input(21)
+                    feats = [f for f in f.features if s1<=int(f.location.start) and s2+g.node[n2]["length"]>=int(f.location.end)]
+                    for feat in feats:
+                        feat.location+=(-s1)
+                    g.add_edge(n1, n2, fragment=str(f._seq)[s1:s2], 
+                                       feats=feats, 
+                                       length=s2-s1, 
+                                       start=s1, 
+                                       end=s2, 
+                                       seq = f)
+        #print(777)
+
+        # add nodes "begin", "begin_rc", "end" and "end_rc" for linear assembles
+        g.add_node("begin",    length=0, fragment="")
+        g.add_node("begin_rc", length=0, fragment="")
+        g.add_node("end",      length=0, fragment="")
+        g.add_node("end_rc",   length=0, fragment="")
+       
+        # add edges from "begin" to nodes in the first sequence
+        for start, node_id in fragments[0].nodes:
+            feats = [f for f in fragments[0].features if start+g.node[node_id]["length"]>=int(f.location.end)]
+            g.add_edge("begin", node_id, fragment=str(fragments[0]._seq)[0:start], feats=feats, length=start, start=0, end=start, seq = fragments[0])
+
+        # add edges from "begin_rc" to nodes in the first reverse complement sequence
+        for start, node_id in list(rcfragments.values())[0].nodes:
+            feats = [f for f in list(rcfragments.values())[0].features if start+g.node[node_id]["length"]>=int(f.location.end)]
+            g.add_edge("begin_rc", node_id, fragment=str(list(rcfragments.values())[0]._seq)[0:start], feats=feats, length =start, start=0, end=start, seq = list(rcfragments.values())[0])
+
+        # add edges from nodes in last sequence to "end"
+        for start_in_last, last_node_id in fragments[-1].nodes:
+            feats = [f for f in fragments[-1].features if start_in_last<=int(f.location.start)]
+            g.add_edge(last_node_id, "end", fragment=str(fragments[-1]._seq)[start_in_last:len(fragments[-1])],feats=feats, length =start, start=start_in_last, end=len(fragments[-1]), seq=fragments[-1])
+
+        # add edges from nodes in last reverse complement sequence to "end_rc"
+        for start_in_last, last_node_id in list(rcfragments.values())[-1].nodes:
+            feats = [f for f in list(rcfragments.values())[-1].features if start_in_last<=int(f.location.start)]
+            g.add_edge(last_node_id, "end_rc", fragment=str(list(rcfragments.values())[-1]._seq)[start_in_last:len(list(rcfragments.values())[-1])], feats=feats, length =start, start=start_in_last, end=len(fragments[-1]), seq=list(rcfragments.values())[-1])
+        
+        lps={}     #linear assembly
+               
+        lpths = _itertools.chain(_nx.all_simple_paths(_nx.DiGraph(g),"begin","end",      cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin","end_rc",   cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc","end",   cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc","end_rc",cutoff=self.max_nodes))
+        #print(g['h0FkKjiojpATbfkOM0C3u4zg9hs'][ 'gmfjuQLVSPP4ayjJMPuig1jxxmE'])
+        
+        #print(888)
+
+        for lpath in lpths:
+            #print(lpath)
+            e1=[]
+            for u,v in zip(lpath,lpath[1:]):
+                e2=[]
+                for d in g[u][v].values():
+                    e2.append((u,v,d))
+                e1.append(e2)
+            #print(e1)
+            #input(42)
+            for edges in _itertools.product(*e1):
+                #print("edges")
+                sg=_nx.DiGraph(g.subgraph(lpath).copy())
+                sg.add_edges_from(edges)
+                ct = "".join(e[2]["fragment"] for e in edges)
+                lseguid = _lseguid(ct)
+                if lseguid in lps:
+                    continue
+                edgefeatures=[]
+                offset=0
+                for e in edges:
+                    feats = _deepcopy(e[2]["feats"])
+                    for f in feats:
+                        f.location+=offset
+                    edgefeatures.extend(feats)
+                    offset+=e[2]["length"]
+                lps[lseguid]= _Contig( ct, features=edgefeatures, graph=sg, path=lpath)
+        #print(111)
+        cps = {} # circular assembly
+        nodes  = list(_itertools.chain.from_iterable([f.nodes for f in fragments]))
+        nodes  = list(dict.fromkeys([n[1] for n in nodes]))
+
+        cpaths = [list(x) for x in _nx.simple_cycles(g)]
+
+        first_cpaths  = []
+        second_cpaths = []
+        #cpaths.sort(key=len)
+        
+        for cpath in cpaths:
+            for j, node in enumerate(nodes):
+                cp=[]
+                try:
+                    i = cpath.index(node)
+                except ValueError:
+                    pass
                 else:
-                    nxt =f[f.start2+(f.end1-f.start2):f.end2]
-                nxt.seq = _Dseq(str(nxt.seq))
-                result+=nxt
+                    cp = cpath[i:]+cpath[:i]
+                    first_cpaths.append((j, cp))
+                if cp:
+                    break
+            if not cp:
+                second_cpaths.append(cpath)
 
-                pred_frag = f
+        first_cpaths.sort()
+        first_cpaths = [cp for (j,cp) in first_cpaths]
 
-            r = _Dseqrecord(result, circular=True)
-            circular_products[r.cseguid()] = _Contig(r, source_fragments = source_fragments )
-
+        cpaths = first_cpaths + second_cpaths
+        cpaths.sort(key=len)
         
-        import functools
-        def comp(item1, item2):
-            item1_len = len(item1.source_fragments)
-            item2_len = len(item2.source_fragments)
-            if item1_len < item2_len:
-                return -1
-            if item1_len > item2_len:
-                return 1
-            return 0
-        
-        self.circular_products = sorted(circular_products.values(), key=functools.cmp_to_key(comp))
-        self.circular_products.sort(key=len, reverse=True)
+        for cp in cpaths:
+            e1=[]
+            cp+=cp[0:1]
+            for u,v in zip(cp, cp[1:]):
+                e2=[]
+                for d in g[u][v].values():
+                    e2.append((u,v,d))
+                e1.append(e2)
+            for edges in _itertools.product(*e1):
+                ct = "".join(e[2]["fragment"] for e in edges)
+                if ct in [str(s.seq) for s in cps.values()]:
+                    continue
+                cseguid = _cseguid(ct)                
+                if cseguid in cps:
+                    continue           
+                sg=_nx.DiGraph(g.subgraph(cp).copy())
+                sg.add_edges_from(edges)
+                edgefeatures=[]
+                offset=0
+                for e in edges:
+                    feats = _deepcopy(e[2]["feats"])
+                    for feat in feats:
+                        feat.location+=offset                    
+                    edgefeatures.extend(feats)
+                    offset+=e[2]["length"]
+                for f in edgefeatures:
+                    if f.location.start>len(ct) and f.location.end>len(ct):                        
+                        f.location+=(-len(ct))                    
+                    elif f.location.end>len(ct):
+                        f.location = _CompoundLocation((_FeatureLocation(f.location.start,_ExactPosition(len(ct))),_FeatureLocation(_ExactPosition(0), f.location.end-len(ct))))
+                cps[cseguid]=_Contig( ct, features = edgefeatures, graph=sg, path=cp, circular=True)
 
+        self.linear   = self.linear_products   = sorted(lps.values(), key=len, reverse=True)
+        self.circular = self.circular_products = sorted(cps.values(), key=len, reverse=True)
+        self.fragments = fragments
+        self.G = g
+        self.algorithm = algorithm
+        #globals().update(locals());import sys;sys.exit(42)
+
+    def list_circular(self):
+        return _pretty_str("\n".join(f"{i} {repr(p)} {p.cseguid()}" for i,p in enumerate(self.circular)))
+        
+    list_circular_products = list_circular
+    
+    def list_linear(self):
+        return _pretty_str("\n".join(f"{i} {repr(p)} {p.lseguid()}" for i,p in enumerate(self.linear)))
+        
+    list_linear_products = list_linear
+        
     def __repr__(self):
-        return   ( "Assembly:\n"
-                   "Sequences........................: {sequences}\n"
-                   "Sequences with shared homologies.: {analyzed_dsrecs}\n"
-                   "Homology limit (bp)..............: {limit}\n"
-                   "Number of overlaps...............: {no_of_olaps}\n"
-                   "Nodes in graph(incl. 5' & 3')....: {nodes}\n"
-                   "Only terminal overlaps...........: {pr}\n"
-                   "Circular products................: {cp}\n"
-                   "Linear products..................: {lp}"    ).format(sequences       = " ".join("[{}]".format(len(x)) for x in self.dsrecs),
-                                                                         analyzed_dsrecs = " ".join("[{}]".format(len(x)) for x in self.analyzed_dsrecs),
-                                                                         limit           = self.limit,
-                                                                         no_of_olaps     = self.no_of_olaps,
-                                                                         nodes           = self.G.order(),
-                                                                         pr              = {True:"Yes",False:"No"}[self.only_terminal_overlaps],
-                                                                         cp              = " ".join("[{}]".format(len(x)) for x in self.circular_products),
-                                                                         lp              = " ".join("[{}]".format(len(x)) for x in self.linear_products))
+        # https://pyformat.info
+        return _pretty_str( "## Assembly object ##\n"
+                            "fragments....: {sequences}\n"
+                            "limit(bp)....: {limit}\n"
+                            "G.nodes......: {nodes}\n"
+                            "algorithm....: {al}\n"
+                            "linear{lenlp:.<7}: {lp}\n"    
+                            "circular{lencp:.<5}: {cp}".format(sequences       = " ".join("{}bp".format(len(x)) for x in self.fragments),
+                                                                        limit           = self.limit,
+                                                                        nodes           = self.G.order(),
+                                                                        al              = self.algorithm.__name__,
+                                                                        lencp           = "({lencp})".format(lencp=len(self.circular_products)),                                                          
+                                                                        cp              = " ".join("o{}".format(len(x)) for x in self.circular_products[:8]),
+                                                                        lenlp           = "({lenlp})".format(lenlp=len(self.linear_products)),
+                                                                        lp              = " ".join("-{}".format(len(x)) for x in self.linear_products[:8])))
 
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
-    import doctest
-    doctest.testmod(verbose=True)
-    _os.environ["pydna_cache"]=cache
+    from pydna.readers import read
+    
+    pMEC1135 = read("pMEC1135.gb")
+    hygromycin_product = read("hygromycin_product.gb")
+    
+    asm_hyg = Assembly((pMEC1135, hygromycin_product, pMEC1135))
+
+    

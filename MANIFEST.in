@@ -13,7 +13,6 @@ recursive-include pydna *
 recursive-include tests *
 recursive-include docs *
 recursive-include scripts *
-recursive-include pydna/_py_rstr_max *
 
 include versioneer.py
 include pydna/_version.py

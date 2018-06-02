@@ -17,6 +17,11 @@ import tempfile    as _tempfile
 import os          as _os
 import subprocess  as _subprocess
 import operator    as _operator
+import string      as _string
+import copy        as _copy
+import uuid        as _uuid
+
+_wl = "{}{}-_.()".format(_string.ascii_letters, _string.digits)
 
 class Editor:
     '''
@@ -48,7 +53,7 @@ class Editor:
         except OSError:
             pass
 
-    def open(self, seq):
+    def open(self, seq_to_open):
         '''Open a sequence for editing in an external (DNA) editor.
 
         Parameters
@@ -56,22 +61,24 @@ class Editor:
         args : SeqRecord or Dseqrecord object
         
         '''
+        seq = _copy.deepcopy(seq_to_open)
         for feature in seq.features:
             qf = feature.qualifiers
             if not "label" in qf:
                 try:
                     qf["label"] = qf["note"]
                 except KeyError:
-                    qf["label"] = "feat{}".format(len(feature))
+                    qf["label"] = ["feat{}".format(len(feature))]
             if not "ApEinfo_fwdcolor" in qf:
-                qf["ApEinfo_fwdcolor"]="cyan"
+                qf["ApEinfo_fwdcolor"]="#ddfeff"
             if not "ApEinfo_revcolor" in qf:
-                qf["ApEinfo_revcolor"]="red"
+                qf["ApEinfo_revcolor"]="#ffe6cc"
+        # TODO: pick feature colors 
+        # https://stackoverflow.com/questions/470690/how-to-automatically-generate-n-distinct-colors
         seq.features.sort(key = _operator.attrgetter("location.start"))
-        
-        name = seq.name.strip(".?").replace(" ","_")
+        name = "{name}.gb".format(name = ''.join(c for c in seq.name.strip().replace(" ","_") if c in _wl) or _uuid.uuid3(_uuid.NAMESPACE_DNS,seq.name))
         tdir = _tempfile.mkdtemp(dir=self.tmpdir)
-        tpth = _os.path.join(tdir, name+".gb")
+        tpth = _os.path.join(tdir, name)
         
         with open(tpth, "w") as f:
             f.write(seq.format("gb"))
@@ -89,8 +96,9 @@ def ape(*args,**kwargs):
 
 
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cached

@@ -25,7 +25,7 @@ class Primer(_SeqRecord):
                  *args,
                  template  = None,
                  position  = None, 
-                 footprint = None,
+                 footprint = 0,
                  concentration = 1000.0,   # nM (= 1µM)
                  **kwargs):
         if hasattr(record, "features"):
@@ -60,44 +60,21 @@ class Primer(_SeqRecord):
         result = super().__getitem__(index)
         if hasattr(index, "indices"): # index is a slice
             i1,i2,i3 = index.indices(len(self))
-            j1,j2,j3 = slice(-self._fp, None).indices(len(self))
+            j1,j2,j3 = slice(-(self._fp or 0), None).indices(len(self))
             result._fp = self._fp - (i1-j1>0)*abs(i1-j1)
         return result
     
     def tm(self, saltc=50.0, formula=_tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
 
+
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache", "nocache")
-    _os.environ["pydna_cache"]="nocache"
-    
-    x=Primer("gtatcatatctatctatcta", footprint=12)
-    print(str(x.seq).rjust(20))
-    print(str(x.tail))
-    print(str(x.footprint).rjust(20))
-    
-    w=x[:15]
-    print(str(w.seq).ljust(20))
-    print(str(w.tail))
-    print(str(w.footprint).rjust(15))
-    
-#    y=x[-13:]
-#    print("---")
-#    print(str(y.seq).rjust(20))
-#    print(str(y.tail))   
-#    print(str(y.footprint).rjust(20))
-#    
-#    z=x[7:20]
-#    print("===")
-#    print(str(z.seq).rjust(20))
-#    print(str(z.tail))   
-#    print(str(z.footprint).rjust(20))
-    
-    
-    #import doctest
-    #doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached
     
     
     

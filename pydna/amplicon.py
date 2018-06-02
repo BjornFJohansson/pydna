@@ -22,75 +22,6 @@ from pydna.dseqrecord                    import Dseqrecord     as _Dseqrecord
 from pydna._pretty                       import pretty_str     as _pretty_str
 from pydna.tm                            import tmbresluc      as _tmbresluc
 
-def _annealing_positions(primer, template, limit=15):
-    '''Finds the annealing position(s) for a primer on a template where the
-    primer anneals perfectly with at least limit nucleotides in the 3' part.
-
-    start is a position (integer)
-    footprint1 and tail1 are strings.
-
-    ::
-
-        <- - - - - - - - - - template - - - - - - - - - - - - - >
-
-        <------------- start ---->
-     5'-...gctactacacacgtactgactgcctccaagatagagtcagtaaccacactcgat...3'
-           ||||||||||||||||||||||||||||||||||||||||||||||||
-                                  3'-gttctatctcagtcattggtgtATAGTG-5'
-
-                                                        <tail>
-                                     <---footprint----->
-                                     <--------- primer ------>
-
-    Parameters
-    ----------
-    primer : string
-        The primer sequence 5'-3'
-
-    template : string
-        The template sequence 5'-3'
-
-    limit : int = 15, optional
-        footprint needs to be at least of length limit.
-
-    Returns
-    -------
-    describe : list of tuples (int, string, string)
-        [ (start1, footprint1, tail1), (start2, footprint2, tail2),..., ]
-    '''
-
-    if len(primer)<limit:
-        return []
-    prc = _rc(primer)
-    head = prc[:limit].upper()
-
-    table = {"R":"(A|G)",
-             "Y":"(C|T)",
-             "S":"(G|C)",
-             "W":"(A|T)",
-             "K":"(G|T)",
-             "M":"(A|C)",
-             "B":"(C|G|T)",
-             "D":"(A|G|T)",
-             "H":"(A|C|T)",
-             "V":"(A|C|G)",
-             "N":"(A|G|C|T)"}
-
-    for key in table:
-        head=head.replace(key, table[key])
-
-    positions = [m.start() for m in _re.finditer('(?={})'.format(head), template, _re.I)]
-
-    if positions:
-        tail = prc[limit:]
-        length = len(tail)
-        results = []
-        for match_start in positions:
-            tm = template[match_start+limit:match_start+limit+length]
-            footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
-            results.append((match_start, footprint, primer[: len(primer) - len(footprint) ]))
-        return results
-    return []
 
 class Amplicon(_Dseqrecord):
     '''The Amplicon class holds information about a PCR reaction involving two
@@ -136,12 +67,12 @@ class Amplicon(_Dseqrecord):
                      **kwargs):
 
         super().__init__(record, *args, **kwargs)
-        self.template = template
+        self.template       = template
         self.forward_primer = forward_primer
         self.reverse_primer = reverse_primer
-        self.fprimerc = fprimerc
-        self.rprimerc = rprimerc
-        self.saltc = saltc
+        self.fprimerc       = fprimerc
+        self.rprimerc       = rprimerc
+        self.saltc          = saltc
 
     def __getitem__(self, sl):
         answer = _copy.copy(self)
@@ -157,43 +88,22 @@ class Amplicon(_Dseqrecord):
         return "Amplicon({})".format(self.__len__())
 
     def _repr_pretty_(self, p, cycle):
-            p.text("Amplicon({})".format(self.__len__()))
+        p.text("Amplicon({})".format(self.__len__()))
             
     def _repr_html_(self):
         return "Amplicon({})".format(self.__len__())
 
-    def flankup(self, flankuplength=50):
-        '''Returns a Dseqrecord object containing flankuplength bases upstream of the forward primer footprint,
-       Truncated if the template is not long enough.
-
-       ::
-
-        <--- flankup --->
-
-                  5TAATAAactactgactatct3
-                         ||||||||||||||
-        acgcattcagctactgtactactgactatctatcg
-
-       '''
-        return self.template.seq[self.forward_primer.position-flankuplength-len(self.forward_primer.footprint):self.forward_primer.position-len(self.forward_primer.footprint)]
-
-    def flankdn(self, flankdnlength=50):
-        '''Returns a Dseqrecord object containing flankdnlength bases downstream of the reverse primer footprint.
-       Truncated if the template is not long enough.
-
-       ::
-
-                                       <---- flankdn ------>
-
-                        3actactgactatctTAATAA5
-                         ||||||||||||||
-        acgcattcagctactgtactactgactatctatcgtacatgtactatcgtat
-
-
-       '''
-        return self.template.seq[self.reverse_primer.position+len(self.reverse_primer.footprint):self.reverse_primer.position+flankdnlength+len(self.reverse_primer.footprint)]
-
-
+    def reverse_complement(self):
+        answer = type(self)(super().reverse_complement())
+        answer.template       = self.template.rc()
+        answer.forward_primer = self.reverse_primer
+        answer.reverse_primer = self.forward_primer
+        answer.fprimerc       = self.rprimerc
+        answer.rprimerc       = self.fprimerc
+        answer.saltc          = self.saltc
+        return answer
+    
+    rc = reverse_complement
 
     def figure(self):
         '''
@@ -338,8 +248,10 @@ class Amplicon(_Dseqrecord):
                                                                                             GC_prod= int(self.gc()) ))
         return _pretty_str(f)
 
+
     def taq_program(self):
-        return self._program()
+        return self.program()
+
 
     def dbd_program(self):
         '''Returns a string containing a text representation of a proposed
@@ -414,14 +326,18 @@ class Amplicon(_Dseqrecord):
                                             *map(int, divmod(extension_time_PfuSso7d,60)) ))
         return _pretty_str(f)
 
+
     def pfu_sso7d_program(self):
         return self.dbd_program()
 
 
+
+
 if __name__=="__main__":
     import os as _os
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
-    doctest.testmod(verbose=True)
-    _os.environ["pydna_cache"]=cache
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached
+

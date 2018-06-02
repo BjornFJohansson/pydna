@@ -38,16 +38,7 @@ def main():
         os.environ["pydna_log_dir"]     = tempfile.mkdtemp(prefix="pydna_log_dir_")
         os.environ["pydna_config_dir"]  = tempfile.mkdtemp(prefix="pydna_config_dir_")
         os.environ["pydna_loglevel"]    = str( logging.DEBUG )
-        
-        
-    print("                 _             ")
-    print("                | |            ")
-    print(" _ __  _   _  __| |_ __   __ _ ")
-    print("| '_ \| | | |/ _` | '_ \ / _` |")
-    print("| |_) | |_| | (_| | | | | (_| |")
-    print("| .__/ \__, |\__,_|_| |_|\__,_|")
-    print("| |     __/ |     ")
-    print("|_|    |___/      ")   
+          
     print("     _            _            _         ")
     print("    | |          | |          | |        ")
     print("  __| | ___   ___| |_ ___  ___| |_ ___   ")
@@ -55,15 +46,9 @@ def main():
     print("| (_| | (_) | (__| ||  __/\__ \ |_\__ \  ")
     print(" \__,_|\___/ \___|\__\___||___/\__|___/  ")
 
-    doctestargs = ["pydna", "--doctest-modules", "-v", "-s"]
+    doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
     pytest.cmdline.main(doctestargs)
 
-    print(" _            _   ")
-    print("| |          | |  ")
-    print("| |_ ___  ___| |_ ")
-    print("| __/ _ \/ __| __|")
-    print("| ||  __/\__ \ |_ ")
-    print(" \__\___||___/\__|")
     print("           _ _       _ ")
     print("          (_) |     | |")
     print(" ___ _   _ _| |_ ___| |")
@@ -91,7 +76,7 @@ def main():
         del nbval
         args.append("--nbval") 
     
-    mainargs = [".", "-v", "-s"] + args 
+    mainargs = [".", "-vv", "-s"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
     pytest.cmdline.main(mainargs)

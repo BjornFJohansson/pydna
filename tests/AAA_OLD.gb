@@ -1,0 +1,12 @@
+LOCUS       name?                      6 bp    DNA     circular UNK 01-JAN-2018
+DEFINITION  description?.
+ACCESSION   id?
+VERSION     id?
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 ggatcn
+//

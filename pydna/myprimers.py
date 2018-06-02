@@ -10,6 +10,8 @@ from pydna.parsers import parse_primers as _parse_primers
 
 list_primers = _parse_primers( _os.environ["pydna_primers"] )[::-1]
 
+#TODO: warn if no primers found!
+
 dict_primers = dict((p.id, p) for p in list_primers)
 
 for _i, _p in enumerate(list_primers):

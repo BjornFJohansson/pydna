@@ -6,18 +6,13 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-from Bio.SeqRecord import SeqRecord as _SeqRecord
-import datetime as _datetime
-import pickle as _pickle
-import shelve as _shelve
 
-import copy     as _copy
 import datetime as _datetime
-import operator as _operator
 import os       as _os
 import re       as _re
 import colorsys as _colorsys
 
+from pydna import _PydnaWarning
 from warnings import warn as _warn
 
 import logging as _logging
@@ -26,47 +21,50 @@ _module_logger = _logging.getLogger("pydna."+__name__)
 from prettytable import PrettyTable as _PrettyTable
 
 from Bio.Seq                import Seq as _Seq
-from Bio.Seq                import translate as _translate
-
-from Bio.SeqRecord          import SeqRecord as _SeqRecord
-from Bio.SeqFeature         import SeqFeature as _SeqFeature
 from Bio.SeqFeature         import FeatureLocation as _FeatureLocation
-from Bio.SeqFeature         import CompoundLocation as _CompoundLocation
+from Bio.SeqRecord import SeqRecord as _SeqRecord
 from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
+from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 
-from pydna._sequencetrace         import SequenceTraceFactory as _SequenceTraceFactory
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.utils  import seguid  as _seg
-from pydna.utils  import cseguid as _cseg
 from pydna._pretty import pretty_str as _pretty_str
-from pydna.dseq import Dseq as _Dseq
-from pydna.utils import rc as _rc
+from pydna.seqfeature       import SeqFeature as _SeqFeature
 
 
 class SeqRecord(_SeqRecord):
 
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        
         if len(self.name)>16:
             short_name = self.name[:16]
-            _warn("name property {} truncated to 16 chars {}".format(self.name, short_name))
+            _warn("name property {} truncated to 16 chars {}".format(self.name, short_name), _PydnaWarning, stacklevel=2)
             self.name = short_name
 
         if self.name == "<unknown name>":
-            self.name = "name?"
+            self.name = "name"
 
         if self.id == "<unknown id>":
-            self.id = "id?"
+            self.id = "id"
 
         if self.description =="<unknown description>":
-            self.description = "description?"
+            self.description = "description"
 
         if not 'date' in self.annotations:
             self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
+        
+        if not hasattr(self.seq, "alphabet"):
+            self.seq = _Seq(self.seq, _IUPACAmbiguousDNA())
+            
+        self.id          = _pretty_str(self.id)
+        self.name        = _pretty_str(self.name)
+        self.description = _pretty_str(self.description)
+        self.annotations = {_pretty_str(k):_pretty_str(v) for k,v in self.annotations.items()} 
+        
 
     @property
     def locus(self):
@@ -77,7 +75,9 @@ class SeqRecord(_SeqRecord):
     def locus(self, value):
         ''' alias for name property '''
         if len(value)>16:
-            raise Exception()
+            shortvalue = value[:16]
+            _warn("locus property {} truncated to 16 chars {}".format(value, shortvalue), _PydnaWarning, stacklevel=2)
+            value = shortvalue
         self.name = value
         return
 
@@ -103,6 +103,10 @@ class SeqRecord(_SeqRecord):
         self.description = value
         return
 
+    def reverse_complement(self,*args,**kwargs):
+        answer = type(self)(super().reverse_complement(*args,**kwargs).seq, *args,**kwargs)
+        return answer
+         
     def isorf(self, table=1):
         '''Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
         Translation tables are numbers according to the NCBI numbering [#]_.
@@ -121,14 +125,14 @@ class SeqRecord(_SeqRecord):
         Examples
         --------
 
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("atgtaa")
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("atgtaa")
         >>> a.isorf()
         True
-        >>> b=Dseqrecord("atgaaa")
+        >>> b=SeqRecord("atgaaa")
         >>> b.isorf()
         False
-        >>> c=Dseqrecord("atttaa")
+        >>> c=SeqRecord("atttaa")
         >>> c.isorf()
         False
 
@@ -146,64 +150,259 @@ class SeqRecord(_SeqRecord):
         else:
             return True
 
-    def spread_ape_colors(self):
-        ''' This method assigns random colors compatible with the ApE editor
-        to features.
-        '''
+    def add_colors_to_features_for_ape(self):
+        '''This method assigns random colors to features compatible with the ApE editor'''
 
         def get_N_HexCol(N):
             HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
             hex_out = []
             for rgb in HSV_tuples:
                 rgb = [int(x*255) for x in _colorsys.hsv_to_rgb(*rgb)]
-                hex_out.append("".join([chr(x).encode('hex') for x in rgb]))
+                hex_out.append("".join([chr(x).encode("utf-8").hex() for x in rgb]))
             return hex_out
 
         for i, color in enumerate(get_N_HexCol(len(self.features))):
-            self.features[i].qualifiers['ApEinfo_fwdcolor'] = "#"+color
-            self.features[i].qualifiers['ApEinfo_revcolor'] = "#"+color
+            self.features[i].qualifiers['ApEinfo_fwdcolor'] = ["#"+color]
+            self.features[i].qualifiers['ApEinfo_revcolor'] = ["#"+color]
 
+    def add_feature(self, x=None, y=None, seq=None, type="misc", *args, **kwargs):
+        
+#         location=None, 
+#         type='', 
+#         location_operator='',                 
+#         strand=None, 
+#         id="<unknown id>",                 
+#         qualifiers=None, 
+#         sub_features=None,
+#         ref=None, 
+#         ref_db=None
+        
+        '''Adds a feature of type misc to the feature list of the sequence.
+
+        Parameters
+        ----------
+        x  : int
+            Indicates start of the feature
+        y  : int
+            Indicates end of the feature
+
+        Examples
+        --------
+
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("atgtaa")
+        >>> a.features
+        []
+        >>> a.add_feature(2,4)
+        >>> a.features
+        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4)), type='misc')]
+        '''
+        qualifiers = {}
+        qualifiers.update(kwargs)
+        
+        if seq:
+            if hasattr(seq, "seq"):
+                seq=seq.seq
+                if hasattr(seq, "watson"):
+                    seq = str(seq.watson).lower()
+                else:
+                    seq = str(seq).lower()
+            else:
+                seq = str(seq).lower()
+            x = self.seq.lower().find(seq)
+            if x==-1:
+                raise TypeError("Could not find {}".format(seq))
+            y = x + len(seq)
+        else:
+            x = x or 0
+            y = y or len(self)
+        
+        if "label" not in qualifiers:
+            qualifiers["label"] = [f"ft{y-x}"]
             
+            if self[x:y].isorf() or self[x:y].reverse_complement().isorf():
+                qualifiers["label"] = [f"orf{y-x}"]
+        
+        sf = _SeqFeature(_FeatureLocation(x, y), type=type, qualifiers = qualifiers)
+                   
+        self.features.append(sf)
+
+        '''
+
+        In [11]: a.seq.translate()
+        Out[11]: Seq('K', ExtendedIUPACProtein())
+
+        In [12]:
+        '''
+        
     def list_features(self):
         '''Prints an ASCII table with all features.
 
         Examples
         --------
-
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("atgtaa")
+        >>> from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+        >>> from Bio.Seq import Seq
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord(Seq("atgtaa",IUPACAmbiguousDNA()))
         >>> a.add_feature(2,4)
         >>> print(a.list_features())
-        +----------+-----------+-------+-----+--------+--------------+------+------+
-        | Feature# | Direction | Start | End | Length | id           | type | orf? |
-        +----------+-----------+-------+-----+--------+--------------+------+------+
-        | 0        |    None   |   2   |  4  |      2 | <unknown id> | misc |  no  |
-        +----------+-----------+-------+-----+--------+--------------+------+------+
-        >>>
-        '''
+        +-----+---------------+-----+-----+-----+-----+------+------+
+        | Ft# | Label or Note | Dir | Sta | End | Len | type | orf? |
+        +-----+---------------+-----+-----+-----+-----+------+------+
+        |   0 | L:ft2         | --- | 2   | 4   |   2 | misc |  no  |
+        +-----+---------------+-----+-----+-----+-----+------+------+'''
 
-        x = _PrettyTable(["Feature#", "Direction", "Start", "End", "Length", "id", "type", "orf?"])
-        x.align["Feature#"] = "l" # Left align
-        x.align["Length"] = "r"
-        x.align["id"] = "l"
+        x = _PrettyTable(["Ft#", "Label or Note", "Dir", "Sta", "End", "Len", "type", "orf?"])
+        x.align["Ft#"] = "r" # Left align
+        x.align["Label or Note"] = "l" # Left align
+        x.align["Len"] = "r"
+        x.align["Sta"] = "l"
+        x.align["End"] = "l"
         x.align["type"] = "l"
         x.padding_width = 1 # One space between column edges and contents
         for i, sf in enumerate(self.features):
+            try:
+                lbl = sf.qualifiers["label"]
+            except KeyError:
+                try:
+                    lbl = sf.qualifiers["note"]
+                except KeyError:
+                    lbl = "nd"
+                else:
+                    lbl = "N:{}".format(" ".join(lbl).strip())
+            else:
+                lbl = "L:{}".format(" ".join(lbl).strip())
             x.add_row([ i,
-                        {1:"-->", -1:"<--", 0:"---", None:"None"}[sf.strand],
+                        lbl[:16],
+                        {1:"-->", -1:"<--", 0:"---", None:"---"}[sf.strand],
                         sf.location.start,
                         sf.location.end,
-                        len(sf), sf.id, sf.type,
-                        {True:"yes",False:"no"}[self.extract_feature(i).isorf() or self.extract_feature(i).rc().isorf()]])
+                        len(sf), 
+                        sf.type,
+                        {True:"yes",False:"no"}[self.extract_feature(i).isorf() or self.extract_feature(i).reverse_complement().isorf()]])
         return _pretty_str(x)
 
+    def extract_feature(self, n):
+        '''Extracts a feature and creates a new SeqRecord object.
+
+        Parameters
+        ----------
+        n  : int
+            Indicates the feature to extract
+
+        Examples
+        --------
+
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("atgtaa")
+        >>> a.add_feature(2,4)
+        >>> b=a.extract_feature(0)
+        >>> b
+        SeqRecord(seq=Seq('gt', IUPACAmbiguousDNA()), id='ft2', name='ft2', description='description', dbxrefs=[])
+        '''
+        return self.features[n].extract(self)
+    
+    def stamp(self):
+        '''Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
+        This will show in the genbank format. 
+        
+        For linear sequences:
+
+        ``SEGUID_<seguid>_<datestring>``
+
+        For circular sequences:
+
+        ``cSEGUID_<seguid>_<datestring>``
+
+
+
+        Examples
+        --------
+
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("aaa")
+        >>> a.stamp()
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+        >>> a.description
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+
+
+        '''
+        
+        try: 
+            linear = self.seq.linear
+        except AttributeError:
+            linear = True
+        alg = {True:"SEGUID", False:"cSEGUID"}[linear]        
+        chksum = getattr(self, alg.lower())()        
+        pattern = "(SEGUID|cSEGUID)_\s*(\S{27})_(\S{26})"
+        oldstamp = _re.search(pattern, self.description)
+        
+        if oldstamp:
+            old_alg, old_chksum, old_datestring = oldstamp.groups()
+            if alg==old_alg and chksum==old_chksum:
+                return _pretty_str("{}_{}".format(alg,chksum))
+            else:
+                raise ValueError("Stamp is wrong!")
+        else:
+            datestring = _datetime.datetime.utcnow().isoformat(sep="T")
+            newstamp = "{}_{}_{}".format(alg, chksum, datestring)
+            if not self.description or self.description=="description":
+                self.description = newstamp
+            else:
+                self.description += " "+newstamp
+        return _pretty_str("{}_{}".format(alg, chksum))
+    
+    def seguid(self):
+        '''Returns the url safe SEGUID [#]_ for the sequence.
+           This checksum is the same as seguid but with base64.urlsafe
+           encoding [#]_ instead of the normal base 64. This means that
+           the characters + and / are replaced with - and _ so that
+           the checksum can be a pert of and URL or a filename.
+
+           Examples
+           --------
+           >>> from pydna.seqrecord import SeqRecord
+           >>> a=SeqRecord("aaaaaaa")
+           >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
+           '-bKGnebMkia5kNg_gF7IORXMnIU'
+
+           References
+           ----------
+
+       .. [#] http://wiki.christophchamp.com/index.php/SEGUID
+
+       '''
+        return _seg(str(self.seq))
+    
+
+    
+    def olaps(self, other, *args, **kwargs):
+        if hasattr(other, "seq"):
+            r=other.seq
+            if hasattr(r, "watson"):
+                r = str(r.watson).lower()
+            else:
+                r = str(r).lower()
+        else:
+            r = str(other.lower())
+        olaps = _common_sub_strings(str(self.seq).lower(), r, **kwargs)
+        return [ self[olap[0]:olap[0]+olap[2]] for olap in olaps ]
+    
     def gc(self):
         '''Returns GC content '''
         return round(_GC(str(self.seq)), 1)
     
     def __lt__( self, other ):
         try:
-            return self.id < other.id
+            return str(self.seq) < str(other.seq)
+        except AttributeError:
+            # I don't know how to compare to other
+            return NotImplemented
+        
+    def __gt__( self, other ):
+        try:
+            return str(self.seq) > str(other.seq)
         except AttributeError:
             # I don't know how to compare to other
             return NotImplemented
@@ -223,11 +422,44 @@ class SeqRecord(_SeqRecord):
         """__hash__ must be based on __eq__"""
         return hash( (str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
         
+    def __str__(self):
+        return _pretty_str(super().__str__())
+
+    def __repr__(self):
+        return _pretty_str(super().__repr__())
+    
+    def __format__(self, format):
+        return _pretty_str(super().__format__(format))
+
+    def __add__(self, other):
+        answer = super().__add__(other)
+        if answer.name == '<unknown name>':
+            answer.name="name"
+        return answer
+
+
+    def __getitem__(self, index):
+        from pydna.utils import identifier_from_string as _identifier_from_string ## TODO: clean this up
+        answer = super().__getitem__(index)
+        if len(answer)<2:
+            return answer
+        identifier= f"part_{self.id}"
+        if answer.features:
+            sf = max(answer.features, key=len) # default
+            if "label" in sf.qualifiers:
+                identifier = " ".join(sf.qualifiers["label"])
+            elif "note" in sf.qualifiers:
+                identifier = " ".join(sf.qualifiers["note"])
+        answer.id   = _identifier_from_string(identifier)[:16]
+        answer.name = answer.id
+        return answer
         
-        
+
+
 if __name__=="__main__":
-    cache = _os.getenv("pydna_cache")
-    _os.environ["pydna_cache"]="nocache"
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"]=cache
+    _os.environ["pydna_cached_funcs"]=cached
