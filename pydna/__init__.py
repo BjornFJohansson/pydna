@@ -233,3 +233,6 @@ if __name__=="__main__":
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"]=cached
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
