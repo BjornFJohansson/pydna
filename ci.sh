@@ -125,7 +125,7 @@ then
     #conda install jinja2 -yq
     conda update -yq conda
     conda update -yq pip
-    conda config --append channels conda-forge 
+    conda config --prepend channels conda-forge 
     conda config --append channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"

@@ -421,8 +421,8 @@ def gen_sample(sizes, quantities):
     >>> sample = gen_sample(sizes, qts)
     >>> sample
     [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
-    >>> sample[0].m()  # g
-    7.0000000000000005e-08
+    >>> sample[0].m() * 1E6  # µg
+    0.07
     >>> Q_([dna.m() for dna in sample], 'g').to('ng')
     <Quantity([ 70.   11.7  35. ], 'nanogram')>
     >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
