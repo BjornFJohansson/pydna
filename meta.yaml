@@ -21,6 +21,8 @@ requirements:
         - pytest
         - pytest-runner
         - setuptools
+        - pypandoc
+        - pandoc
     run:
         - python
         - appdirs
