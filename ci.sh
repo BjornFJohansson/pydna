@@ -141,7 +141,7 @@ then
     conda-build -V
     conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
     conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
-    conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client urllib3  pypandoc pandoc
+    conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client pypandoc pandoc urllib3  
     conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client pypandoc pandoc
     conda create -yq -n twine             python=3.5 twine pyOpenSSL ndg-httpsclient pyasn1
     rm -rf dist
@@ -248,6 +248,11 @@ else
     conda remove -n testenv36 --all -q
     if [[ $local_computer = true ]]
     then
+        conda remove -n pydnacondabuild35 --all -q
+        conda remove -n pydnacondabuild36 --all -q
+        conda remove -n pydnapipbuild35   --all -q
+        conda remove -n pydnapipbuild36   --all -q
+        conda remove -n twine             --all -q
         source activate root
         conda remove -n testenv35 --all -q
         conda remove -n testenv36 --all -q
