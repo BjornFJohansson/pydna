@@ -152,9 +152,9 @@ then
     echo $pth1
     echo $pth2
     source activate pydnacondabuild35
-    conda build --python 3.5 .
+    conda build --python 3.5 --no-include-recipe .
     source activate pydnacondabuild36
-    conda build --python 3.6 .
+    conda build --python 3.6 --no-include-recipe .
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
         anaconda -t $TOKEN upload $pth1 --label $condalabel --force
