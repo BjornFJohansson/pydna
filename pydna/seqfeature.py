@@ -19,7 +19,7 @@ class SeqFeature(_SeqFeature):
 
     def extract(self, parent_sequence):
         answer = super().extract(parent_sequence)
-        identifier= f"feat_{parent_sequence.id}"
+        identifier= "feat_{}".format(parent_sequence.id)
         if "label" in self.qualifiers:
             identifier = " ".join(self.qualifiers["label"])
         elif "note" in self.qualifiers:

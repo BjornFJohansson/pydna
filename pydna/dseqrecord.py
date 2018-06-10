@@ -704,7 +704,7 @@ class Dseqrecord(_SeqRecord):
         else:
             answer.features = self.shifted(sl_stop).features
             answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
-        identifier= f"part_{self.id}"
+        identifier= "part_{id}".format(id=self.id)
         if answer.features:
             sf = max(answer.features, key=len) # default
             if "label" in sf.qualifiers:
@@ -744,7 +744,7 @@ class Dseqrecord(_SeqRecord):
         elif fragments[0].circular:
             raise TypeError("The enzyme(s) do not cut!")
         answer = fragments[0]
-        answer.id = f"{self.name}_lin"
+        answer.id = "{name}_lin".format(name=self.name)
         answer.name = answer.id[:16]
         return fragments[0]
 

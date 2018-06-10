@@ -242,7 +242,7 @@ def identifier_from_string(s:str) -> str:
     s.replace("-", "_")
     s = _re.sub('[^0-9a-zA-Z_]', '', s)
     if s and not s[0].isidentifier() or _keyword.iskeyword(s):
-        s=f"_{s}"
+        s="_{s}".format(s=s)
     assert s=="" or s.isidentifier()
     return s
 

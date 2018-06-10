@@ -218,10 +218,10 @@ class SeqRecord(_SeqRecord):
             y = y or len(self)
         
         if "label" not in qualifiers:
-            qualifiers["label"] = [f"ft{y-x}"]
+            qualifiers["label"] = ["ft{}".format(y-x)]
             
             if self[x:y].isorf() or self[x:y].reverse_complement().isorf():
-                qualifiers["label"] = [f"orf{y-x}"]
+                qualifiers["label"] = ["orf{}".format(y-x)]
         
         sf = _SeqFeature(_FeatureLocation(x, y), type=type, qualifiers = qualifiers)
                    
@@ -443,7 +443,7 @@ class SeqRecord(_SeqRecord):
         answer = super().__getitem__(index)
         if len(answer)<2:
             return answer
-        identifier= f"part_{self.id}"
+        identifier= "part_{id}".format(id=self.id)
         if answer.features:
             sf = max(answer.features, key=len) # default
             if "label" in sf.qualifiers:

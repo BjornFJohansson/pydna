@@ -327,12 +327,12 @@ class Assembly(object, metaclass = _Memoize):
         #globals().update(locals());import sys;sys.exit(42)
 
     def list_circular(self):
-        return _pretty_str("\n".join(f"{i} {repr(p)} {p.cseguid()}" for i,p in enumerate(self.circular)))
+        return _pretty_str("\n".join("{i} {repr(p)} {cs}".format(i=i,p=p,cs=p.cseguid()) for i,p in enumerate(self.circular)))
         
     list_circular_products = list_circular
     
     def list_linear(self):
-        return _pretty_str("\n".join(f"{i} {repr(p)} {p.lseguid()}" for i,p in enumerate(self.linear)))
+        return _pretty_str("\n".join("{i} {repr(p)} {ls}".format(i=i,p=p,ls=p.lseguid()) for i,p in enumerate(self.linear)))
         
     list_linear_products = list_linear
         
