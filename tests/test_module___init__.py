@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import pytest, appdirs, tempfile,  os, shutil, subprocess, sys
-subprocess      # shut up spyder!
-appdirs         # shut up spyder!
 
 from unittest import mock
+
+import importlib
+
 
 def test_makedirs_fail(monkeypatch, caplog):
 
@@ -31,7 +32,7 @@ def test_makedirs_fail(monkeypatch, caplog):
 def test_default_env(monkeypatch):
     
     pydna_base_dir = os.path.join( tempfile.gettempdir(), "pydna_test")
-    
+
     try:
         shutil.rmtree(pydna_base_dir)
     except FileNotFoundError:
@@ -89,89 +90,24 @@ def test_default_env(monkeypatch):
     monkeypatch.setattr("sys.platform", "darwin")
     pydna.open_current_folder()
     subp.assert_called_with(['open', os.getcwd() ])
+
     
 def test_read_ini_file():
     import pydna
 
-    
-def test_scipy_missing(monkeypatch):
-    import pydna
-    import copy
-    fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["scipy"] = None
-    monkeypatch.delitem(sys.modules,"scipy")
-    monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-    reload(pydna)
 
-
-def test_numpy_missing(monkeypatch):
-    import pydna
-    import copy
-    fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["numpy"] = None
-    monkeypatch.delitem(sys.modules,"numpy")
-    monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-    reload(pydna)
-    assert "numpy" in pydna._missing_modules_for_gel
+#def test_missing_modules(monkeypatch):
+#    find_spec_orig = importlib.util.find_spec
+#    def mocked_find_spec(name, *args):
+#        if name == 'scipy':
+#            return None
+#        return find_spec_orig(name, *args)
+#    with monkeypatch.context() as m:
+#        m.setattr("pydna._importlib.util.find_spec", mocked_find_spec)
+#        sys.modules.pop("pydna", None)
+#        import pydna
+#        assert  "scipy" in pydna._missing_modules_for_gel
     
-    
-def test_matplotlib_missing(monkeypatch):
-    import pydna
-    import copy
-    fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["matplotlib"] = None
-    monkeypatch.delitem(sys.modules,"matplotlib")
-    monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-    reload(pydna)
-    assert "matplotlib" in pydna._missing_modules_for_gel 
-    
-    
-def test_mpldatacursor_missing(monkeypatch):
-    import pydna
-    import copy
-    fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["mpldatacursor"] = None
-    monkeypatch.delitem(sys.modules,"mpldatacursor")
-    monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-    reload(pydna)
-    assert "mpldatacursor" in pydna._missing_modules_for_gel
-    
-    
-def test_pint_missing(monkeypatch):
-    import pydna
-    import copy
-    fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["pint"] = None
-    monkeypatch.delitem(sys.modules,"pint")
-    monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-    reload(pydna)
-    assert "pint" in pydna._missing_modules_for_gel
-       
-#def test_open_folders(monkeypatch):
-#    subp = mock.MagicMock()
-#    monkeypatch.setattr("sys.platform", "linux")
-#    monkeypatch.setattr("subprocess.run", subp)
-#    import pydna
-#    import appdirs
-#    pydna.open_current_folder()
-#    subp.assert_called_with(['xdg-open', os.getcwd() ])
-#    pydna.open_cache_folder()
-#    subp.assert_called_with(['xdg-open', appdirs.user_data_dir("pydna")   ])
-#    pydna.open_config_folder()
-#    subp.assert_called_with(['xdg-open', appdirs.user_config_dir("pydna") ])
-#    pydna.open_log_folder()
-#    subp.assert_called_with(['xdg-open', appdirs.user_log_dir("pydna") ])
-#    monkeypatch.setattr("sys.platform", "win32")
-#    pydna.open_current_folder()
-#    subp.assert_called_with(['start', os.getcwd() ], shell=True)
-#    monkeypatch.setattr("sys.platform", "darwin")
-#    pydna.open_current_folder()
-#    subp.assert_called_with(['open', os.getcwd() ])
     
 def test_no_xdg_open(monkeypatch):
     subp = mock.MagicMock( side_effect=OSError(['xdg-open', os.getcwd() ]) )

@@ -3,9 +3,15 @@
 related techniques. Given a list of sequences (Dseqrecords), all sequences will be analyzed for
 
 The assembly algorithm is based on graph theory where each overlapping region forms a node and
-sequences separating the overlapping regions form edges.
+sequences separating the overlapping regions form edges in a graph.
 
 '''
+import sys
+    
+if sys.version_info[1] < 6:
+    from collections import OrderedDict as _od
+else:
+    _od = dict
 
 import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
@@ -106,7 +112,7 @@ class Assembly(object, metaclass = _Memoize):
         #print(123)
         
         fragments = [_Fragment(f) for f in fragments]
-        rcfragments = { f.seguid():f.rc() for f in fragments}
+        rcfragments = _od( (f.seguid(),f.rc()) for f in fragments )
         g=_nx.MultiDiGraph(selfloops=False)
         
 #        for first, secnd in zip(fragments, rcfragments.values()):
@@ -219,17 +225,14 @@ class Assembly(object, metaclass = _Memoize):
             g.add_edge(last_node_id, "end_rc", fragment=str(list(rcfragments.values())[-1]._seq)[start_in_last:len(list(rcfragments.values())[-1])], feats=feats, length =start, start=start_in_last, end=len(fragments[-1]), seq=list(rcfragments.values())[-1])
         
         lps={}     #linear assembly
+        lps=_od(lps)  # fix
                
-        lpths = _itertools.chain(_nx.all_simple_paths(_nx.DiGraph(g),"begin","end",      cutoff=self.max_nodes),
-                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin","end_rc",   cutoff=self.max_nodes),
-                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc","end",   cutoff=self.max_nodes),
-                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc","end_rc",cutoff=self.max_nodes))
-        #print(g['h0FkKjiojpATbfkOM0C3u4zg9hs'][ 'gmfjuQLVSPP4ayjJMPuig1jxxmE'])
-        
-        #print(888)
+        lpths = _itertools.chain(_nx.all_simple_paths(_nx.DiGraph(g),"begin",    "end",      cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin",    "end_rc",   cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc", "end",      cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc", "end_rc",   cutoff=self.max_nodes))
 
         for lpath in lpths:
-            #print(lpath)
             e1=[]
             for u,v in zip(lpath,lpath[1:]):
                 e2=[]
@@ -257,8 +260,9 @@ class Assembly(object, metaclass = _Memoize):
                 lps[lseguid]= _Contig( ct, features=edgefeatures, graph=sg, path=lpath)
         #print(111)
         cps = {} # circular assembly
+        cps = _od(cps)
         nodes  = list(_itertools.chain.from_iterable([f.nodes for f in fragments]))
-        nodes  = list(dict.fromkeys([n[1] for n in nodes]))
+        nodes  = list(_od.fromkeys([n[1] for n in nodes]))
 
         cpaths = [list(x) for x in _nx.simple_cycles(g)]
 
@@ -327,12 +331,12 @@ class Assembly(object, metaclass = _Memoize):
         #globals().update(locals());import sys;sys.exit(42)
 
     def list_circular(self):
-        return _pretty_str("\n".join("{i} {repr(p)} {cs}".format(i=i,p=p,cs=p.cseguid()) for i,p in enumerate(self.circular)))
+        return _pretty_str("\n".join("{i} {r} {cs}".format(i=i,p=p,r=repr(p),cs=p.cseguid()) for i,p in enumerate(self.circular)))
         
     list_circular_products = list_circular
     
     def list_linear(self):
-        return _pretty_str("\n".join("{i} {repr(p)} {ls}".format(i=i,p=p,ls=p.lseguid()) for i,p in enumerate(self.linear)))
+        return _pretty_str("\n".join("{i} {r} {ls}".format(i=i,p=p,r=repr(p),ls=p.lseguid()) for i,p in enumerate(self.linear)))
         
     list_linear_products = list_linear
         

@@ -9,7 +9,7 @@ import logging.handlers as _handlers
 import appdirs          as _appdirs
 import configparser     as _configparser
 import prettytable      as _prettytable
-
+import importlib        as _importlib
 '''
 # pydna
 
@@ -29,10 +29,15 @@ __license__      = "BSD"
 __maintainer__   = "Björn Johansson"
 __email__        = "bjorn_johansson@bio.uminho.pt"
 __status__       = "Development" # "Production" #"Prototype"
-from pydna._version import get_versions as _get_versions
-__version__      = _get_versions()['version'][:5]
-__long_version__ = _get_versions()['version']
-del _get_versions
+
+
+
+
+from pydna import _version
+__version__      = _version.get_versions()['version'][:5]
+__long_version__ = _version.get_versions()['version']
+del _version
+_sys.modules.pop("pydna._version", None)
 
 
 '''
@@ -111,37 +116,10 @@ _logger.info("Data directory %s", _os.environ["pydna_data_dir"] )
 
 # find out if optional dependecies for gel module are in place
 _missing_modules_for_gel = []
-try:
-    import scipy
-except ImportError:
-    _missing_modules_for_gel.append("scipy")
-else:
-    del scipy
-try:
-    import numpy
-except ImportError:
-    _missing_modules_for_gel.append("numpy")
-else:
-    del numpy
-try:
-    import matplotlib
-except ImportError:
-    _missing_modules_for_gel.append("matplotlib")
-else:
-    del matplotlib 
-try:
-    import mpldatacursor
-except ImportError:
-    _missing_modules_for_gel.append("mpldatacursor")
-else:
-    del mpldatacursor
-try:
-    import pint
-except ImportError:
-    _missing_modules_for_gel.append("pint")
-else:
-    del pint 
-    
+
+for _optm in ["scipy","numpy", "matplotlib", "mpldatacursor", "pint"]:
+    _missing_modules_for_gel.extend( [_optm] if not _importlib.util.find_spec(_optm) else [])
+
 if _missing_modules_for_gel:
     _logger.warning("gel simulation will NOT be available. Missing modules: %s",
                      ", ".join(_missing_modules_for_gel))
@@ -211,7 +189,7 @@ def get_env():
     _table.align["Variable"] = "l" # Left align
     _table.align["Value"] = "l" # Left align
     _table.padding_width = 1 # One space between column edges and contents
-    for k,v in _os.environ.items():
+    for k,v in sorted(_os.environ.items()):
         if k.startswith("pydna"):
             _table.add_row([k,v])
     return _pretty_str(_table)
@@ -233,6 +211,3 @@ if __name__=="__main__":
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"]=cached
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions

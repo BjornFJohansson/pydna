@@ -1,3 +1,6 @@
+.pytest_cache/
+
+
 # Backup files
 *~
 

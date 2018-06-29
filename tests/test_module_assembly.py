@@ -633,6 +633,31 @@ def test_assemble_pGUP1(monkeypatch):
     assert eq(pGUP1, pGUP1_correct)     
     assert pGUP1_correct.seguid() == "42wIByERn2kSe_Exn405RYwhffU"       
     assert pGUP1.seguid() == "42wIByERn2kSe_Exn405RYwhffU"
+    
+  
+def test_35(monkeypatch):
+    import sys
+    sys.modules.pop("pydna.assembly", None)
+    from collections import namedtuple
+    Mock_version_info = namedtuple('version_info', "major minor micro releaselevel serial")
+    mvi35 = Mock_version_info(major=3, minor=5, micro=5, releaselevel='final', serial=0)
+    monkeypatch.setattr("sys.version_info", mvi35)
+    from pydna.assembly import _od
+    from collections import OrderedDict
+    assert _od==OrderedDict
+    sys.modules.pop("pydna.assembly", None)
 
+
+def test_36(monkeypatch):
+    import sys
+    sys.modules.pop("pydna.assembly", None)
+    from collections import namedtuple
+    Mock_version_info = namedtuple('version_info', "major minor micro releaselevel serial")
+    mvi36 = Mock_version_info(major=3, minor=6, micro=5, releaselevel='final', serial=0)
+    monkeypatch.setattr("sys.version_info", mvi36)
+    from pydna.assembly import _od
+    assert _od==dict
+    sys.modules.pop("pydna.assembly", None)
+    
 if __name__ == '__main__':
     pytest.main([__file__, "-x", "-vv", "-s","--cov=pydna","--cov-report=html"])

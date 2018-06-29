@@ -421,34 +421,34 @@ def gen_sample(sizes, quantities):
     >>> sample = gen_sample(sizes, qts)
     >>> sample
     [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
-    >>> sample[0].m() * 1E6  # µg
+    >>> float("{0:.2f}".format(sample[0].m() * 1E6))  # µg
     0.07
-    >>> Q_([dna.m() for dna in sample], 'g').to('ng')
-    <Quantity([ 70.   11.7  35. ], 'nanogram')>
-    >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
-    <Quantity([ 0.03776682  0.03786665  0.03776521], 'picomole')>
+    >>> Q_([dna.m() for dna in sample], 'g').to('ng') # doctest: +SKIP
+    <Quantity([70.  11.7 35. ], 'nanogram')>
+    >>> Q_([dna.n for dna in sample], 'mol').to('pmol') # doctest: +SKIP
+    <Quantity([0.03776682 0.03786665 0.03776521], 'picomole')>
 
     Direct quantity assignment with declared units.
 
     >>> sizes = Q_([3000, 500, 1500], 'bp')
-    >>> qts = Q_([70.0, 11.7, 35.0],  'ng')
+    >>> qts = Q_([70.0, 11.7, 35.0],  'ng') 
     >>> sample = gen_sample(sizes, qts)
     >>> sample
     [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
-    >>> Q_([dna.m() for dna in sample], 'g').to('ng')
-    <Quantity([ 70.   11.7  35. ], 'nanogram')>
-    >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
-    <Quantity([ 0.03776682  0.03786665  0.03776521], 'picomole')>
+    >>> Q_([dna.m() for dna in sample], 'g').to('ng') # doctest: +SKIP
+    <Quantity([70.  11.7 35. ], 'nanogram')>
+    >>> Q_([dna.n for dna in sample], 'mol').to('pmol') # doctest: +SKIP
+    <Quantity([0.03776682 0.03786665 0.03776521], 'picomole')>
 
     Assignment of total quantity (with declared units).
 
     >>> sample = gen_sample(Q_([3000, 500, 1500], 'bp'), Q_(200, 'ng'))
     >>> sample
     [Dseqrecord(-3000), Dseqrecord(-500), Dseqrecord(-1500)]
-    >>> Q_([dna.m() for dna in sample], 'g').to('ng')
-    <Quantity([ 120.   20.   60.], 'nanogram')>
-    >>> Q_([dna.n for dna in sample], 'mol').to('pmol')
-    <Quantity([ 0.06474311  0.06472932  0.06474035], 'picomole')>
+    >>> Q_([dna.m() for dna in sample], 'g').to('ng') # doctest: +SKIP
+    <Quantity([120.  20.  60.], 'nanogram')>
+    >>> Q_([dna.n for dna in sample], 'mol').to('pmol') # doctest: +SKIP
+    <Quantity([0.06474311 0.06472932 0.06474035], 'picomole')>
 
     """
     frags = random_Dseqs([int(s.magnitude) for s in to_units(sizes, 'bp')])
