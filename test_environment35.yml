@@ -27,6 +27,6 @@ dependencies:
 - nbval
 
 - setuptools
-- requests_mock
+- requests-mock
 
 
