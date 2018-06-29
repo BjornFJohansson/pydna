@@ -23,6 +23,7 @@ requirements:
         - setuptools
         - pypandoc
         - pandoc
+        - numpy
     run:
         - python
         - appdirs
@@ -32,7 +33,7 @@ requirements:
         - ordered-set
         - pyparsing
         - requests
-
+        - numpy
         - ipython
         - jupyter
         - scipy
