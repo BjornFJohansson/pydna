@@ -5,7 +5,7 @@ import pytest, appdirs, tempfile,  os, shutil, subprocess, sys
 
 from unittest import mock
 
-import importlib
+#import importlib
 
 
 def test_makedirs_fail(monkeypatch, caplog):
@@ -71,6 +71,10 @@ def test_default_env(monkeypatch):
     with open("getenv.txt", "rt", encoding="utf-8") as f:
         saved_env = f.read()
     assert pydnaenv in saved_env
+    
+    print(pydnaenv)
+    print()
+    print(saved_env)
 
     subp = mock.MagicMock()
     monkeypatch.setattr("sys.platform", "linux")
