@@ -42,6 +42,7 @@ requirements:
         - pint
 test:
   requires:
+    - appdirs
     - pytest
     - requests-mock
   imports:
