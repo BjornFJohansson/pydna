@@ -68,14 +68,12 @@ def test_default_env(monkeypatch):
     assert( os.getenv("pydna_data_dir")   == pydna_base_dir )
     assert( os.getenv("pydna_config_dir") == pydna_base_dir )
     pydnaenv = pydna.get_env()
-    with open("getenv.txt", "rt", encoding="utf-8") as f:
-        saved_env = f.read()
-    assert pydnaenv in saved_env
     
-    print(pydnaenv)
-    print()
-    print(saved_env)
-
+    pydna_env_vars = [v for v in os.environ if v.startswith("pydna")]
+    
+    for envvar in pydna_env_vars:
+        assert envvar in pydnaenv
+    
     subp = mock.MagicMock()
     monkeypatch.setattr("sys.platform", "linux")
     monkeypatch.setattr("subprocess.run", subp)
