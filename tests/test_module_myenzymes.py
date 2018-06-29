@@ -35,9 +35,9 @@ def test_file_is_folder(monkeypatch, caplog):
     record = next(iter(caplog.records)) 
     assert record.levelno == logging.WARNING
     if os.name.startswith('nt'):
-        assert record.message == 'subfolder is a directory.'
-    else:
         assert record.message == "subfolder found, but could not be read."
+    else:
+        assert record.message == 'subfolder is a directory.'
         
         
 def test_IOError(monkeypatch, caplog):
