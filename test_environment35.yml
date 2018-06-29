@@ -1,5 +1,6 @@
 name: testenv35
 channels:
+- conda-forge
 - BjornFJohansson
 dependencies:
 - python=3.5
@@ -26,6 +27,6 @@ dependencies:
 - nbval
 
 - setuptools
-
+- requests_mock
 
 
