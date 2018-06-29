@@ -73,6 +73,8 @@ def test_default_env(monkeypatch):
     
     for envvar in pydna_env_vars:
         assert envvar in pydnaenv
+        assert os.environ[envvar] in pydnaenv
+
     
     subp = mock.MagicMock()
     monkeypatch.setattr("sys.platform", "linux")

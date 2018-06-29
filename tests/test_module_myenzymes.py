@@ -3,6 +3,7 @@
 
 import pytest
 import logging
+import os
 
 def test_myenzymes(monkeypatch):
     monkeypatch.setenv("pydna_enzymes", "my_test_enzymes.txt")
@@ -10,6 +11,7 @@ def test_myenzymes(monkeypatch):
     from importlib import reload
     reload(myenzymes)
     assert len(list(myenzymes.myenzymes)) == 892
+    
 
 def test_file_not_exist(monkeypatch, caplog):
     monkeypatch.setenv("pydna_enzymes", "file_that_does_not_exist.txt")
@@ -22,6 +24,7 @@ def test_file_not_exist(monkeypatch, caplog):
     assert record.levelno == logging.WARNING
     assert record.message == 'file_that_does_not_exist.txt not found.'
     
+    
 def test_file_is_folder(monkeypatch, caplog):
     monkeypatch.setenv("pydna_enzymes", "subfolder")
     from pydna import myenzymes
@@ -31,8 +34,12 @@ def test_file_is_folder(monkeypatch, caplog):
     assert len(caplog.records) == 1
     record = next(iter(caplog.records)) 
     assert record.levelno == logging.WARNING
-    assert record.message == 'subfolder is a directory.'
-
+    if os.name.startswith('nt'):
+        assert record.message == 'subfolder is a directory.'
+    else:
+        assert record.message == "subfolder found, but could not be read."
+        
+        
 def test_IOError(monkeypatch, caplog):
     from io import StringIO
     monkeypatch.setenv("pydna_enzymes",  "my_test_enzymes.txt")
@@ -52,6 +59,7 @@ def test_IOError(monkeypatch, caplog):
     record = next(iter(caplog.records)) 
     assert record.levelno == logging.WARNING
     assert record.message == "my_test_enzymes.txt found, but could not be read." 
+    
     
 def test_Exception(monkeypatch, caplog):
     from io import StringIO
