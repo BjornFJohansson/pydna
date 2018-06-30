@@ -1,8 +1,9 @@
 name: readthedocsenv
 channels:
+- conda-forge
 - BjornFJohansson
 dependencies:
-- python=3.5
+- python=3.6
 - numpy
 - matplotlib
 - pint
