@@ -5,6 +5,7 @@ package:
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
   include_recipe: False
+  script: python setup.py install --single-version-externally-managed --record=record.txt
 
 source:
   git_url: .
