@@ -4,6 +4,7 @@ package:
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
+  include_recipe: False
 
 source:
   git_url: .
