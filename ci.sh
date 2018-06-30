@@ -157,8 +157,10 @@ then
     conda build --python 3.6 --no-include-recipe --dirty .
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
+        set -v
         anaconda -t $TOKEN upload $pth1 --label $condalabel --force
         anaconda -t $TOKEN upload $pth2 --label $condalabel --force
+        set -x
     else
         anaconda upload $pth1 --label $condalabel --force
         anaconda upload $pth2 --label $condalabel --force
