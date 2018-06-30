@@ -12,29 +12,17 @@ source:
 requirements:
     build:
         - python
-        - appdirs
-        - biopython
-        - prettytable
-        - networkx
-        - ordered-set
-        - pyparsing
-        - requests
-        - pytest
-        - pytest-runner
         - setuptools
         - pypandoc
         - pandoc
-        - numpy
     run:
         - python
         - appdirs
         - biopython
         - prettytable
         - networkx
-        - ordered-set
         - pyparsing
         - requests
-        - numpy
         - ipython
         - jupyter
         - scipy
