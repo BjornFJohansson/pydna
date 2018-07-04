@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
 import math as _math
 
 def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
     the nearest neighbour algorithm. Formula and thermodynamic data
-    is taken from SantaLucia 1998 [1]_. This implementation gives the same
+    is taken from SantaLucia 1998 [#]_. This implementation gives the same
     answer as the one provided by Biopython (See Examples).
 
     Thermodynamic data used:
@@ -35,6 +39,9 @@ def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
     tm : float
         tm of the primer
 
+    References
+    ----------
+    .. [#] SantaLucia J Jr. A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics. Proc Natl Acad Sci U S A 1998;95:1460–5.
 
     Examples
     --------

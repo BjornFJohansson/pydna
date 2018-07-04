@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright 2013 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''Provides two classes, Dseq and Dseqrecord, for handling double stranded
-DNA sequences. Dseq and Dseqrecord are subclasses of Biopythons
-Seq and SeqRecord classes, respectively. These classes support the
-notion of circular and linear DNA.
+'''Provides two functions, parse and parse_primers'''
 
-'''
 import os        as _os
 import re        as _re
 import io        as _io

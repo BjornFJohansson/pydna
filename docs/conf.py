@@ -29,8 +29,14 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.viewcode',
               'sphinx.ext.autosummary',
-              'numpydoc']
+              'numpydoc',
+              'sphinx.ext.intersphinx']
 
+# Add mappings https://kev.inburke.com/kevin/sphinx-interlinks/
+intersphinx_mapping = {
+    'biopython': ('https://biopython.readthedocs.io/en/latest', None),
+    'python':    ('http://docs.python.org/3.6', None),
+}
 
 numpydoc_show_class_members = False
 

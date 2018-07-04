@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''Provides a class for downloading sequences from genbank.
-'''
+'''Provides a function for downloading online text files'''
+
 import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
@@ -11,7 +11,7 @@ import os        as _os
 import requests  as _requests
 import textwrap  as _textwrap           
 
-@_memorize("download_text")
+@_memorize("pydna.download.download_text")
 def download_text(url):
     _module_logger.info("#### DOWNLOAD TEXT ####")
     _module_logger.info("url = %s", url)

@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+'''
+pydna.common_sub_strings
+------------------------
+
+This module is based on the Py-rstr-max package that was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
+(https://brixtel.users.greyc.fr/) and is available from https://code.google.com/p/py-rstr-max/
+the original code was covered by an MIT licence.'''
 
 from array import array                 as _array
 from collections import defaultdict     as _defaultdict
 import itertools                        as _itertools
 from operator import itemgetter         as _itemgetter
-'''
-    findsubstrings
-    ~~~~~~~~~~~~~~
 
-    The Python-dna package.
-
-http://cython.readthedocs.io/en/latest/src/tutorial/cython_tutorial.html
-http://cython.readthedocs.io/en/latest/src/tutorial/array.html
-
-'''
 
 
 
@@ -243,25 +241,54 @@ class Rstr_max :
 
 
 
-def common_sub_strings(stringx, stringy, limit=25):
-    '''
-    common_sub_strings(stringx , stringy , limit=25)
-
-    Finds all the common substrings between stringx and stringy
+def common_sub_strings(stringx:str, stringy:str, limit=25):
+    '''Finds all common substrings between stringx and stringy
     longer than limit. This function is case sensitive.
+    The substrings may overlap.
 
     returns a list of tuples describing the substrings
     The list is sorted longest -> shortest.
 
+    Parameters
+    ----------
+    stringx : str    
+    stringy : str    
+    limit : int, optional
+
+    Returns
+    -------
+    list of tuple
+        [(startx1,starty1,length1),(startx2,starty2,length2), ...]
+        
+        startx1 = startposition in x, where substring 1 starts
+        starty1 = position in y where substring 1 starts
+        length1 = lenght of substring
+    
+    
     Examples
     --------
+    
+    >>> from pydna.common_sub_strings import common_sub_strings
+    >>> common_sub_strings("gatgatttcggtagtta", "gtcagtatgtctatctatcgcg", limit=3)
+    [(1, 6, 3), (7, 17, 3), (10, 4, 3), (12, 3, 3)]
 
-    [(startx1,starty1,length1),(startx2,starty2,length2), ...]
+    ::        
 
-    startx1 = position in x where substring 1 starts
-    starty1 = position in y where substring 1 starts
-    length  = lenght of substring
-
+        Overlaps   Symbols
+        (1, 6,  3)   ---
+        (7, 17, 3)   +++
+        (10, 4, 3)   ...
+        (12, 3, 3)   ===    
+        
+        
+                    ===       
+        gatgatttcggtagtta           stringx
+         ---   +++...  
+ 
+            ...           
+        gtcagtatgtctatctatcgcg      stringy
+           ===---        +++  
+ 
     '''
 
     rstr = Rstr_max()
@@ -292,17 +319,56 @@ def common_sub_strings(stringx, stringy, limit=25):
 
     return match
 
-def terminal_overlap(stringx, stringy, limit=15):
+def terminal_overlap(stringx:str, stringy:str, limit=15):
+    '''Finds the the flanking common substrings between stringx and stringy
+    longer than limit. This means that the results only contains substrings
+    that starts or ends at the the ends of stringx and stringy.
+    
+    This function is case sensitive.
+
+    returns a list of tuples describing the substrings
+    The list is sorted longest -> shortest.
+    
+    Parameters
+    ----------
+    stringx : str    
+    stringy : str    
+    limit : int, optional
+
+    Returns
+    -------
+    list of tuple
+        [(startx1,starty1,length1),(startx2,starty2,length2), ...]
+        
+        startx1 = startposition in x, where substring 1 starts
+        starty1 = position in y where substring 1 starts
+        length1 = lenght of substring
+    
+    
+    Examples
+    --------
+    
+    >>> from pydna.common_sub_strings import terminal_overlap
+    >>> terminal_overlap("agctatgtatcttgcatcgta", "gcatcgtagtctatttgcttac", limit=8)
+    [(13, 0, 8)]
+
+    ::                  
+        
+                        <-- 8 ->
+           <---- 13 --->               
+           agctatgtatcttgcatcgta                    stringx
+                        gcatcgtagtctatttgcttac      stringy
+                        0
+    
+    '''
     return [m for m in common_sub_strings(stringx, stringy, limit) if (m[0]==0 and m[1]+m[2]==len(stringy))
-                                                                   or (m[1]==0 and m[0]+m[2]==len(stringx))]
+                                                                    or (m[1]==0 and m[0]+m[2]==len(stringx))]
 
 if __name__=="__main__":
-#    import os as _os
-#    cached = _os.getenv("pydna_cached_funcs", "")
-#    _os.environ["pydna_cached_funcs"]=""
-#    import doctest
-#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-#    _os.environ["pydna_cached_funcs"]=cached
-    
-    
-    print( common_sub_strings("ataatatat", "ataatatat", limit=5) )
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached
+

@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright 2013, 2014 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''
-This module contain functions for primer design.
+'''This module contain provide the Primer class that is a subclass of the biopython SeqRecord.'''
 
-'''
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
 #from Bio.SeqRecord import SeqRecord               as _SeqRecord

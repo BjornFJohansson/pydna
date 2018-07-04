@@ -19,7 +19,6 @@ from Bio.SeqUtils.CheckSum  import seguid   as _base64_seguid
 from pydna._pretty  import pretty_str       as _pretty_str
 from Bio.Seq             import _maketrans
 from Bio.Seq             import reverse_complement as _reverse_complement
-from Bio.SeqRecord       import SeqRecord as _SeqRecord
 from Bio.Data.IUPACData  import ambiguous_dna_complement as _amb_compl
 from Bio.Seq import reverse_complement as _rc
 
@@ -30,20 +29,22 @@ _complement_table = _maketrans(_amb_compl)
 
 
 def memorize(filename):
+    """Decorator for caching fucntions and classes, see pydna.download and pydna.Assembly for use"""
     def decorator(f):
         def wrappee( *args, **kwargs):
             _module_logger.info( "#### memorizer ####" )
-            _module_logger.info( "cache filename = %s", filename )
-            if filename not in _os.environ["pydna_cached_funcs"].split(","):
+            _module_logger.info( "cache filename                   = %s", filename )
+            _module_logger.info( "os.environ['pydna_cached_funcs'] = %s", _os.environ["pydna_cached_funcs"] )
+            if filename not in _os.environ["pydna_cached_funcs"]:
                 _module_logger.info("cache filename not among cached functions, made it new!")
                 return f(*args, **kwargs)               
             key = _base64.urlsafe_b64encode(_hashlib.sha1(_pickle.dumps((args, kwargs))).digest()).decode("ascii")
             _module_logger.info( "key = %s", key )
-            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], filename), writeback=False)
+            cache = _shelve.open(_os.path.join(_os.environ["pydna_data_dir"], identifier_from_string(filename)), writeback=False)
             try:
                 result = cache[key]
             except KeyError:
-                _module_logger.info("no result for key %s in shelve %s", key, filename)
+                _module_logger.info("no result for key %s in shelve %s", key, identifier_from_string(filename))
                 result = f(*args, **kwargs)
                 _module_logger.info("made it new!")
                 cache[key] = result
@@ -272,6 +273,7 @@ def cseguid(seq: str) -> _pretty_str:
 
 
 def flatten(*args): # flatten
+    """Flattens an iterable of iterables down to str, bytes, bytearray or any of the pydna or Biopython seq objects"""
     output = []
     args=list(args)
     while args:

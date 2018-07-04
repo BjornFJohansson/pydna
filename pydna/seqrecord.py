@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright 2013 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
+"""This module provide a subclass of the Biopython SeqRecord class.
+It has a number of extra methods and uses 
+the :class:`pydna._pretty_str.pretty_str` class instread of str for a 
+nicer output in the IPython shell.
+"""
+
 
 
 import datetime as _datetime
@@ -151,7 +156,8 @@ class SeqRecord(_SeqRecord):
             return True
 
     def add_colors_to_features_for_ape(self):
-        '''This method assigns random colors to features compatible with the ApE editor'''
+        '''This method assigns random colors to features compatible with the 
+        `ApE editor <http://jorgensen.biology.utah.edu/wayned/ape/>`_'''
 
         def get_N_HexCol(N):
             HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
@@ -355,29 +361,28 @@ class SeqRecord(_SeqRecord):
     
     def seguid(self):
         '''Returns the url safe SEGUID [#]_ for the sequence.
-           This checksum is the same as seguid but with base64.urlsafe
-           encoding [#]_ instead of the normal base 64. This means that
-           the characters + and / are replaced with - and _ so that
-           the checksum can be a pert of and URL or a filename.
+        This checksum is the same as seguid but with base64.urlsafe
+        encoding [#]_ instead of the normal base 64. This means that
+        the characters + and / are replaced with - and _ so that
+        the checksum can be a part of and URL or a filename.
 
-           Examples
-           --------
-           >>> from pydna.seqrecord import SeqRecord
-           >>> a=SeqRecord("aaaaaaa")
-           >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
-           '-bKGnebMkia5kNg_gF7IORXMnIU'
+        Examples
+        --------
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("aaaaaaa")
+        >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
+        '-bKGnebMkia5kNg_gF7IORXMnIU'
 
-           References
-           ----------
+        References
+        ----------
 
-       .. [#] http://wiki.christophchamp.com/index.php/SEGUID
-
-       '''
+        .. [#] http://wiki.christophchamp.com/index.php/SEGUID'''
         return _seg(str(self.seq))
     
 
-    
     def olaps(self, other, *args, **kwargs):
+        """Returns the overlaps between the sequence and another sequence,
+        The other sequence can be a string, Seq, SeqRecord, Dseq or DseqRecord"""
         if hasattr(other, "seq"):
             r=other.seq
             if hasattr(r, "watson"):
@@ -390,7 +395,7 @@ class SeqRecord(_SeqRecord):
         return [ self[olap[0]:olap[0]+olap[2]] for olap in olaps ]
     
     def gc(self):
-        '''Returns GC content '''
+        '''Returns GC content'''
         return round(_GC(str(self.seq)), 1)
     
     def __lt__( self, other ):

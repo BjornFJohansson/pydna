@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
 '''This module provides functions for PCR. Primers with 5' tails as well as inverse PCR on
@@ -108,7 +112,7 @@ def _annealing_positions(primer, template, limit=15):
     return []
     
 class _Memoize(type):
-    @_memorize("Anneal")
+    @_memorize("pydna.amplify.Anneal")
     def __call__(cls, *args, **kwargs):
         return super().__call__(*args, **kwargs)
 
@@ -465,22 +469,12 @@ def pcr(*args,  **kwargs):
        
     
 
-if __name__=="__main__":
-       
-    t=_Dseqrecord("ATGACGGGCGTATTCCTCTGGCCACA", circular=True)
-    pf =               _Primer("TCCTCTGGCCACA")
-    pr =  _Primer("ATACGCCCGTCAT")
-
-    t.id="tid"
-    t.name="tname"
-
-    p = pcr(pf,pr,t)    
 
   
-#if __name__=="__main__":
-#    import os as _os
-#    cached = _os.getenv("pydna_cached_funcs", "")
-#    _os.environ["pydna_cached_funcs"]=""
-#    import doctest
-#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-#    _os.environ["pydna_cached_funcs"]=cached
+if __name__=="__main__":
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached

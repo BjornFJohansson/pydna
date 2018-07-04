@@ -214,25 +214,9 @@ class Contig(_Dseqrecord):
     
 
 if __name__=="__main__":
-#    import os as _os
-#    cached = _os.getenv("pydna_cached_funcs", "")
-#    _os.environ["pydna_cached_funcs"]=""
-#    import doctest
-#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-#    _os.environ["pydna_cached_funcs"]=cached
-
-    from pydna.assembly import Assembly
-    from pydna.dseqrecord import Dseqrecord
-    a = Dseqrecord("acgatgctatactgtgCCNCCtgtgctgtgctcta")
-    b = Dseqrecord("tgtgctgtgctctaTTTTTTTtattctggctgtatc")
-    c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactgtg")
-    a.name="aaa"
-    b.name="bbb"
-    c.name="ccc"
-    x = Assembly((a,b,c), limit=14)
-    y = x.circular[0]
-    print(y.figure())
-    print(y.detailed_figure())
-    z=y.rc()
-    print(z.figure())
-    print(z.detailed_figure())
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached

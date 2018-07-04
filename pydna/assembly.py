@@ -1,9 +1,41 @@
 #!/usr/bin/env python3
-'''This module provides functions for assembly of sequences by homologous recombination and other
-related techniques. Given a list of sequences (Dseqrecords), all sequences will be analyzed for
+# -*- coding: utf-8 -*-
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
 
-The assembly algorithm is based on graph theory where each overlapping region forms a node and
-sequences separating the overlapping regions form edges in a graph.
+'''This module provides functions for assembly of sequences by homologous 
+recombination and other related techniques. Given a list of sequences 
+(Dseqrecords), all sequences are analyzed for shared homology longer than the 
+set limit.
+
+A graph is constructed where each overlapping region form a node and
+sequences separating the overlapping regions form edges.
+
+::
+           
+                 -- A --
+     catgatctacgtatcgtgt     -- B --
+                 atcgtgtactgtcatattc
+                             catattcaaagttct
+                 
+     Graph:
+                 --x--> A --y--> B --z-->
+                 
+                 Nodes:
+                     
+                 A : atcgtgt
+                 B : catattc
+                 
+                 Edges:
+
+                 x : catgatctacgt
+                 y : actgt
+                 z : aaagttct
+
+The NetworkX package is used to trace linear and circular paths through the
+graph.
 
 '''
 import sys
@@ -57,7 +89,7 @@ class _Fragment(_Dseqrecord):
 
 
 class _Memoize(type):
-    @_memorize("Assembly")
+    @_memorize("pydna.assembly.Assembly")
     def __call__(cls, *args, **kwargs):
         return super().__call__(*args, **kwargs)
 
@@ -74,6 +106,15 @@ class Assembly(object, metaclass = _Memoize):
 
     fragments : list
         a list of Dseqrecord objects.
+    limit : int, optional
+        The shortest shared homology to be considered
+    algorithm : function, optional
+        The algorithm used to determine the shared sequences.
+    max_nodes : int
+        The maximum number of nodes in the graph. This can be tweaked to manage 
+        sequences with a high number of shared sub sequences.
+    
+    
 
     Examples
     --------
@@ -106,27 +147,10 @@ class Assembly(object, metaclass = _Memoize):
         ''' The shortest common sub strings to be considered '''
         self.max_nodes = max_nodes or len(fragments)
         ''' The max number of nodes allowed. This can be reset to some other value'''
-
-        # analyze_overlaps
-        
-        #print(123)
         
         fragments = [_Fragment(f) for f in fragments]
         rcfragments = _od( (f.seguid(),f.rc()) for f in fragments )
         g=_nx.MultiDiGraph(selfloops=False)
-        
-#        for first, secnd in zip(fragments, rcfragments.values()):
-#                    
-#                matches = algorithm( str(first.seq).upper(),
-#                                     str(secnd.seq).upper(),
-#                                     self.limit)
-#
-#                for start_in_first, start_in_secnd, length in matches:
-#                    node    = first[start_in_first:start_in_first+length]
-#                    node_id = node.seguid()
-#                    g.add_node(node_id, length = length, fragment=str(node.seq))
-#                    first.nodes.append( (start_in_first, node_id))
-#                    secnd.nodes.append( (start_in_secnd, node_id))
 
         for first, secnd in _itertools.combinations(fragments, 2):
             
@@ -175,18 +199,12 @@ class Assembly(object, metaclass = _Memoize):
 
         for f in _itertools.chain(fragments, rcfragments.values()):
             f.nodes.sort()
-            #print(f.nodes)
+
             for (s1, n1),(s2, n2) in _itertools.combinations(f.nodes,2):
                 if n1==n2:
                     continue
                 if not g.has_edge(n1, n2) or (str(f._seq)[s1:s2].lower() not in (e["fragment"].lower() for e in g[n1][n2].values())):
-                    #print(n1, n2, g.has_edge(n1, n2))
-                    #print(str(f._seq)[:10]+"|"+str(f._seq)[-10:]+str(len(str(f._seq))))
-#                    try: 
-#                        print([e["fragment"][:10]+"|"+e["fragment"][-10:]+str(len(e["fragment"])) for e in g[n1][n2].values()])
-#                    except:
-#                        pass
-                    #input(21)
+
                     feats = [f for f in f.features if s1<=int(f.location.start) and s2+g.node[n2]["length"]>=int(f.location.end)]
                     for feat in feats:
                         feat.location+=(-s1)
@@ -196,9 +214,7 @@ class Assembly(object, metaclass = _Memoize):
                                        start=s1, 
                                        end=s2, 
                                        seq = f)
-        #print(777)
 
-        # add nodes "begin", "begin_rc", "end" and "end_rc" for linear assembles
         g.add_node("begin",    length=0, fragment="")
         g.add_node("begin_rc", length=0, fragment="")
         g.add_node("end",      length=0, fragment="")
@@ -239,10 +255,8 @@ class Assembly(object, metaclass = _Memoize):
                 for d in g[u][v].values():
                     e2.append((u,v,d))
                 e1.append(e2)
-            #print(e1)
-            #input(42)
+
             for edges in _itertools.product(*e1):
-                #print("edges")
                 sg=_nx.DiGraph(g.subgraph(lpath).copy())
                 sg.add_edges_from(edges)
                 ct = "".join(e[2]["fragment"] for e in edges)

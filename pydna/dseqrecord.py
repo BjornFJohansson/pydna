@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright 2013 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
+'''
+pydna.dseqrecord
+----------------
 
-'''Provides Dseqrecord, for handling double stranded
-DNA sequences. Dseq and Dseqrecord are subclasses of Biopythons
-Seq and SeqRecord classes, respectively. These classes support the
-notion of circular and linear DNA.
+This module provides the Dseqrecord class, for handling double stranded
+DNA sequences. The Dseqrecord holds sequence information in the form of a :class:`pydna.dseq.Dseq`
+object. The Dseq and Dseqrecord classes are subclasses of Biopythons
+Seq and SeqRecord classes, respectively. 
 
+The Dseq and Dseqrecord classes support the notion of circular and linear DNA topology.
 '''
 import copy     as _copy
 import datetime as _datetime
@@ -67,17 +70,21 @@ class Dseqrecord(_SeqRecord):
     The Dseqrecord object holds a Dseq object describing the sequence.
     Additionally, Dseqrecord hold meta information about the sequence in the
     from of a list of SeqFeatures, in the same way as the SeqRecord does.
+    
     The Dseqrecord can be initialized with a string, Seq, Dseq, SeqRecord
     or another Dseqrecord. The sequence information will be stored in a
-    Dseq object in all cases. Dseqrecord objects can be read or parsed
-    from sequences in Fasta, Embl or Genbank format.
+    Dseq object in all cases. 
+    
+    Dseqrecord objects can be read or parsed from sequences in FASTA, EMBL or Genbank formats.
+    See the :mod:`pydna.readers` and :mod:`pydna.parsers` modules for further information. 
 
     There is a short representation associated with the Dseqrecord.
     ``Dseqrecord(-3)`` represents a linear sequence of length 2
     while ``Dseqrecord(o7)``
     represents a circular sequence of length 7.
 
-    Dseqrecord and Dseq share the same concept of length
+    Dseqrecord and Dseq share the same concept of length. This length can be larger
+    than each strand alone if they are staggered as in the example below.
 
     ::
 
@@ -149,11 +156,19 @@ class Dseqrecord(_SeqRecord):
                        n                      = 5E-14, # mol ( = 0.05 pmol)
                        **kwargs):
         
+        _module_logger.info("### Dseqrecord initialized ###")
+        _module_logger.info("argument linear = %s", linear)
+        _module_logger.info("argument circular = %s", circular)
+        
         if not (linear is None and circular is None):
             circular = bool(circular) and bool(linear)^bool(circular) or linear==False and circular is None
             linear   = not circular
-        
+
+        _module_logger.info("linear = %s", linear)
+        _module_logger.info("circular = %s", circular)
+
         if isinstance(record, str):
+            _module_logger.info("record is a string")
             super().__init__( _Dseq(record,
                                     linear=linear,
                                     circular=circular),
@@ -165,9 +180,11 @@ class Dseqrecord(_SeqRecord):
                 record = record[:]
             elif record.linear and circular:
                 record = record.looped()
+            _module_logger.info("record is a Dseq object")
             super().__init__(record, *args, **kwargs)
         # record is a Bio.Seq object ?
         elif hasattr(record, "alphabet"):
+            _module_logger.info("record is a Seq object")
             super().__init__(_Dseq(str(record),
                                    linear=linear,
                                    circular=circular),
@@ -175,6 +192,7 @@ class Dseqrecord(_SeqRecord):
                              **kwargs)
         # record is a Bio.SeqRecord or Dseqrecord object ?
         elif hasattr(record, "features"):
+            _module_logger.info("record is a Bio.SeqRecord or Dseqrecord object")
             for key, value in list(record.__dict__.items()):
                 setattr(self, key, value )
             record.letter_annotations = {}
@@ -195,20 +213,26 @@ class Dseqrecord(_SeqRecord):
             raise ValueError("don't know what to do with {}".format(record))
 
         self.map_target = None
-        self.n = n
+        
+        self.n = n # ammount, set to 5E-14 which is 5 pmols
         
         
     @property
     def linear(self):
-        '''The linear property'''
+        '''The linear property can not be set directly. 
+        Use :meth:`looped` or :meth:`tolinear`'''
         return self.seq.linear
 
     @property
     def circular(self):
-        '''The circular property'''
+        '''The circular property can not be set directly. 
+        Use :meth:`looped` or :meth:`tolinear`'''
         return self.seq.circular
 
     def m(self):
+        """This method returns the mass of the DNA molecule in grams. This is
+        calculated as the product between the molecular weight of the Dseq object
+        and the """
         return self.seq.mw() * self.n # Da(g/mol) * mol = g
 
     def extract_feature(self, n):
@@ -354,7 +378,7 @@ class Dseqrecord(_SeqRecord):
 
         return new
 
-    def tolinear(self): # pragma: no cover
+    def tolinear(self):
         '''
         Returns a linear, blunt copy of a circular Dseqrecord object. The
         underlying Dseq object has to be circular.
@@ -749,15 +773,26 @@ class Dseqrecord(_SeqRecord):
         return fragments[0]
 
     def no_cutters(self, batch = CommOnly):
+        """See """
         return self.seq.no_cutters(batch=batch)
+    
+    
     def unique_cutters(self, batch = CommOnly):
         return self.seq.unique_cutters(batch=batch)
+    
+    
     def once_cutters(self, batch = CommOnly):
         return self.seq.once_cutters(batch=batch)
+    
+    
     def twice_cutters(self, batch = CommOnly):
         return self.seq.twice_cutters(batch=batch)
+    
+    
     def n_cutters(self, n=3, batch = CommOnly):
         return self.seq.n_cutters(n=n, batch=batch)
+    
+    
     def cutters(self, batch = CommOnly):
         return self.seq.cutters(batch=batch)
 
@@ -822,6 +857,8 @@ class Dseqrecord(_SeqRecord):
         return tuple(dsfs)
 
     def number_of_cuts(self, *enzymes):
+        """ This method returns the number of cuts by digestion with the Restriction enzymes contained in 
+        the iterable."""
         return sum([len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]) # flatten
 
     def reverse_complement(self):
@@ -949,14 +986,14 @@ class Dseqrecord(_SeqRecord):
         answer.seq=newseq
         return answer
 
-    #@_memorize("Dseqrecord_synced")
+    @_memorize("pydna.dseqrecord.Dseqrecord.synced")
     def synced(self, ref, limit = 25):
-        '''This function returns a new circular sequence (Dseqrecord object), which has been rotated
+        '''This method returns a new circular sequence (Dseqrecord object), which has been rotated
         in such a way that there is maximum overlap between the sequence and
         ref, which may be a string, Biopython Seq, SeqRecord object or
         another Dseqrecord object.
 
-        The reason for using this could be to rotate a recombinant plasmid so
+        The reason for using this could be to rotate a new recombinant plasmid so
         that it starts at the same position after cloning. See the example below:
 
 
@@ -1035,52 +1072,11 @@ class Dseqrecord(_SeqRecord):
             result = newseq.shifted(start)
         _module_logger.info("synced")
         return result
-
-
+    
 
 if __name__=="__main__":
-#    cache = _os.getenv("pydna_cache")
-#    _os.environ["pydna_cache"]="nocache"
-#    import doctest
-#    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-#    _os.environ["pydna_cache"]=cache
-    
-    from Bio.SeqFeature import SeqFeature, CompoundLocation, FeatureLocation, ExactPosition
-    
-    
-    from Bio.Restriction import BamHI, EcoRI, EcoRV, BglII
-    cs1=Dseqrecord("aaaGGATCCggg", circular=True)    
-    cs1.features = [SeqFeature(CompoundLocation([FeatureLocation(ExactPosition(5), ExactPosition(12), strand=1), FeatureLocation(ExactPosition(0), ExactPosition(3), strand=1)], 'join'), type='misc_feature', location_operator='join')]
-    (a,) = cs1.cut(BamHI, EcoRI+EcoRV+BglII+BamHI)
-    assert a.looped().seq == Dseqrecord("GATCCgggaaaG", circular=True).seq
-    assert str(a.features[0].extract(a).seq) == str(cs1.features[0].extract(cs1).seq)
-    
-    from Bio.Restriction import BamHI, EcoRI 
-    ss1=Dseqrecord("aaaGGATCCnnngaattcGGG")
-    ss1.features = [SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(3), strand=1), type='misc_feature'),
-                    SeqFeature(FeatureLocation(ExactPosition(5), ExactPosition(12), strand=1), type='misc_feature'),
-                    SeqFeature(FeatureLocation(ExactPosition(14), ExactPosition(20), strand=1), type='misc_feature')]
-    b,c,d = ss1.cut(BamHI, EcoRI)
-    assert  (b+c+d).seq == ss1.seq
-
- 
-    cs2=Dseqrecord("aaaGGATCCnnngaattcGGG", circular=True)
-    cs2.features = [SeqFeature(FeatureLocation(ExactPosition(5), ExactPosition(11), strand=1), type='misc_feature'),
-                    SeqFeature(FeatureLocation(ExactPosition(14), ExactPosition(17), strand=1), type='misc_feature'),
-                    SeqFeature(CompoundLocation([FeatureLocation(ExactPosition(18), ExactPosition(21), strand=1), FeatureLocation(ExactPosition(0), ExactPosition(4), strand=1)], 'join'), type='misc_feature', location_operator='join')]
-    e,f = cs2.cut(BamHI, EcoRI)
-    assert str(e.features[0].extract(e).seq) == str(cs2.features[0].extract(cs2).seq)
-    assert str(f.features[0].extract(f).seq) == str(cs2.features[1].extract(cs2).seq)
-    assert str(f.features[1].extract(f).seq) == str(cs2.features[2].extract(cs2).seq)
-    
-    assert (e+f).looped().shifted(17).seq == cs2.seq
-
-    from Bio.Restriction import BsaI  
-    cs3 = Dseqrecord("gaaaaaggtctcaAAA",circular=True)
-    cs3.features = [SeqFeature(CompoundLocation([FeatureLocation(ExactPosition(14), ExactPosition(16), strand=1), FeatureLocation(ExactPosition(0), ExactPosition(12), strand=1)], 'join'), type='misc_feature', location_operator='join')]
-    g, = cs3.cut(BsaI)
-    
-    assert g.looped().shifted(3).seq == cs3.seq
-    assert str(g.features[0].extract(g).seq) == str(cs3.features[0].extract(cs3).seq)
-    
-    from pydna.editor import ape
+    cache = _os.getenv("pydna_cache")
+    _os.environ["pydna_cache"]="nocache"
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cache"]=cache

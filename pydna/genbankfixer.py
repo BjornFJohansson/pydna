@@ -2,20 +2,22 @@
 # -*- coding: utf-8 -*-
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
-'''This module provides a way to clean up broken Genbank files enough to pass the BioPython Genbank parser
-This parser is based on pyparsing.
+# doctest: +IGNORE_EXCEPTION_DETAIL
+'''This module provides the :func:`gbtext_clean` function which can clean up broken Genbank files enough to 
+pass the BioPython Genbank parser 
+
 Almost all of this code was lifted from BioJSON (https://github.com/levskaya/BioJSON) by Anselm Levskaya.
-The code put up was not accompanied by any software licence.
+The original code was not accompanied by any software licence. This parser is based on pyparsing.
 
 There are some modifications to deal with fringe cases.
 
-The parser first produces JSON as an intermediate format which is then formatted back into a string in Genbank format.
+The parser first produces JSON as an intermediate format which is then formatted back into a 
+string in Genbank format.
 
-The parser is not complete, so some fields do not survive the roundtrip (see below). This should not be a difficult fix, though.
-The returned result has two properties,  .jseq which is the intermediate JSON produced by the parser and .gbtext 
-which is the formatted genbank string.
-
-'''
+The parser is not complete, so some fields do not survive the roundtrip (see below). 
+This should not be a difficult fix. The returned result has two properties,  
+.jseq which is the intermediate JSON produced by the parser and .gbtext 
+which is the formatted genbank string.'''
 
 
 import re        as _re
@@ -232,16 +234,16 @@ def toJSON(gbkstring):
         #build JSON object
         
         nl=[]
-        
-        for a in list(map(dict, seq['features'].asList())):
-            dct={}
-            for key in a:
-                val=a[key]
-                #print(key, a[key])
-                dct[key]=a[key]
-                if isinstance(val, str):
-                    dct[key]=a[key].strip()
-            nl.append(dct)
+        if 'features' in seq:
+            for a in list(map(dict, seq['features'].asList())):
+                dct={}
+                for key in a:
+                    val=a[key]
+                    #print(key, a[key])
+                    dct[key]=a[key]
+                    if isinstance(val, str):
+                        dct[key]=a[key].strip()
+                nl.append(dct)
             
         #import sys;sys.exit(42)    
         
@@ -400,13 +402,92 @@ def toGB(jseq):
     return locusstr+gbprops+featuresstr+gborigin
             
 def gbtext_clean(gbtext):
+    """This function takes a string containing **one** genbank sequence
+    in Genbank format and returns a named tuple containing two fields,
+    the gbtext containing a string with the corrected genbank sequence and
+    jseq which contains the JSON intermediate.
+    
+    Examples
+    --------
+    
+    >>> s = '''LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013
+    ... DEFINITION  .
+    ... ACCESSION   
+    ... VERSION     
+    ... SOURCE      .
+    ...   ORGANISM  .
+    ... COMMENT     
+    ... COMMENT     ApEinfo:methylated:1
+    ... ORIGIN
+    ...         1 aaa     
+    ... //'''
+    >>> from pydna.readers import read
+    >>> read(s)  # doctest: +SKIP
+    /home/bjorn/anaconda3/envs/bjorn36/lib/python3.6/site-packages/Bio/GenBank/Scanner.py:1388: BiopythonParserWarning: Malformed LOCUS line found - is this correct?
+    :'LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013\\n'
+      "correct?\\n:%r" % line, BiopythonParserWarning)
+    Traceback (most recent call last):
+      File "/home/bjorn/python_packages/pydna/pydna/readers.py", line 48, in read
+        results = results.pop()
+    IndexError: pop from empty list
+    <BLANKLINE>
+    During handling of the above exception, another exception occurred:
+    <BLANKLINE>
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/home/bjorn/python_packages/pydna/pydna/readers.py", line 50, in read
+        raise ValueError("No sequences found in data:\\n({})".format(data[:79]))
+    ValueError: No sequences found in data:
+    (LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013
+    DEFINITI)
+    >>> from pydna.genbankfixer import gbtext_clean
+    >>> s2, j2 = gbtext_clean(s)
+    >>> print(s2)
+    LOCUS       New_DNA                    3 bp ds-DNA     circular SYN 19-JUN-2013
+    DEFINITION  .
+    ACCESSION   
+    VERSION     
+    SOURCE      .
+    ORGANISM  .
+    COMMENT     
+    COMMENT     ApEinfo:methylated:1
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 aaa     
+    //
+    <BLANKLINE>
+    >>> s3 = read(s2)
+    >>> s3
+    Dseqrecord(o3)
+    >>> print(s3.format())
+    LOCUS       New_DNA                    3 bp    ds-DNA  circular SYN 19-JUN-2013
+    DEFINITION  .
+    ACCESSION   New_DNA
+    VERSION     New_DNA
+    KEYWORDS    .
+    SOURCE      
+      ORGANISM  .
+                .
+    COMMENT     
+                ApEinfo:methylated:1
+    FEATURES             Location/Qualifiers
+    ORIGIN
+            1 aaa
+    //
+"""
+    
+
     jseqlist=toJSON(gbtext)
     jseq = jseqlist.pop()
-    class Result(object):
-        pass
-    result=Result()
-    result.jseq   = jseq
-    result.gbtext = toGB(jseq)
+#    class Result(object):
+#        pass
+#    result=Result()
+    from collections import namedtuple as _namedtuple
+    from pydna._pretty import pretty_str as _pretty_str
+    Result = _namedtuple("Result", "gbtext jseq")
+    result=Result(_pretty_str(toGB(jseq)), jseq)
+#    result.jseq   = jseq
+#    result.gbtext = toGB(jseq)
     return result
         
         

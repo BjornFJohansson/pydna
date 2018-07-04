@@ -209,29 +209,7 @@ def primer_design( template,
                        _PydnaWarning)
 
     return prod
-#    ampl = _Anneal( (fp, rp), template, limit=limit)
-#    
-#    prod = ampl.products[0]
-#    
-#    prod.forward_primer.concentration = fprimerc
-#    prod.reverse_primer.concentration = rprimerc
-#
-#    if prod.forward_primer.id == "id": #<unknown id>
-#        prod.forward_primer.id = "f{}".format(len(template))
-#        
-#    if prod.reverse_primer.id == "id":
-#        prod.reverse_primer.id = "r{}".format(len(template))
-#
-#    if prod.forward_primer.name == "id":
-#        prod.forward_primer.name = "f{}".format(len(template))
-#        
-#    if prod.reverse_primer.name == "id":
-#        prod.reverse_primer.name = "r{}".format(len(template))
-#
-#    prod.forward_primer.description = prod.forward_primer.id+' '+template.accession
-#    prod.reverse_primer.description = prod.reverse_primer.id+' '+template.accession
-#
-#    return prod
+
 
 def assembly_fragments(f, overlap=35, maxlink=40):
     

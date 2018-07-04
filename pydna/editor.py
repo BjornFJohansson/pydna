@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
 '''This module provides a class for opening a sequence using an editor
 that accepts a file as a command line argument.
 

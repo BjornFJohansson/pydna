@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright 2013 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''Provides two classes, Dseq and Dseqrecord, for handling double stranded
-DNA sequences. Dseq and Dseqrecord are subclasses of Biopythons
-Seq and SeqRecord classes, respectively. These classes support the
-notion of circular and linear DNA.
+'''
+pydna.dseq
+----------
 
+Provides the Dseq class for handling double stranded DNA sequences. 
+Dseq is a subclass of :class:`~biopython:Bio.Seq.Seq`. The Dseq class
+is mostly useful as a part of the :class:`pydna.dseqrecord.Dseqrecord` class which
+can hold more meta data.
+
+The Dseq class support the notion of circular and linear DNA topology.
 '''
 
 from collections.abc import Iterable as _Iterable
@@ -105,30 +109,29 @@ class Dseq(_Seq):
 
     The ovhg parameter controls the stagger at the five prime end::
 
-        ovhg=-2
+        ovhg = -2
 
         XXXXX
-          XXXXX
+          XXX
 
-        ovhg=-1
-
-        XXXXX
-         XXXXX
-
-
-        ovhg=0
+        ovhg = -1
 
         XXXXX
+         XXXX
+
+        ovhg = 0
+
+        XXXXX
         XXXXX
 
-        ovhg=1
+        ovhg = 1
 
-         XXXXX
+         XXXX
         XXXXX
 
-        ovhg=2
+        ovhg = 2
 
-          XXXXX
+          XXX
         XXXXX                          
 
     Example of creating Dseq objects with different amounts of stagger:
@@ -373,25 +376,36 @@ class Dseq(_Seq):
 
     @property
     def ovhg(self):
-        '''The ovhg property'''
+        '''The ovhg property. This cannot be set directly, but is a 
+        consequence of how the watson and crick strands anneal to 
+        each other'''
         return self._ovhg
 
 
     @property
     def linear(self):
-        '''The linear property'''
+        '''The linear property can not be set directly. 
+        Use an empty slice [:] to create a linear object.'''
         return self._linear
 
 
     @property
     def circular(self):
-        '''The circular property'''
+        '''The circular property can not be set directly. 
+        Use :meth:`looped` to create a circular Dseq object'''
         return self._circular
 
 
     def mw(self):
+        """This method returns the molecular weight of the DNA molecule
+        in g/mol. The following formula is used::
+           
+               MW = (A x 313.2) + (T x 304.2) + 
+                    (C x 289.2) + (G x 329.2) + 
+                    (N x 308.9) + 79.0
+        """
         nts = ( self.watson + self.crick ).lower()
-        # (A x 313.2) + (T x 304.2) + (C x 289.2) + (G x 329.2) + 79.0
+       
         return sum( [313.2 for n in nts if n=="a"] +
                     [304.2 for n in nts if n=="t"] +
                     [289.2 for n in nts if n=="c"] +
@@ -400,9 +414,7 @@ class Dseq(_Seq):
 
 
     def find(self, sub, start=0, end=_sys.maxsize):
-        """Find method, like that of a python string.
-
-        This behaves like the python string method of the same name.
+        """This method behaves like the python string method of the same name.
 
         Returns an integer, the index of the first occurrence of substring
         argument sub in the (sub)sequence given by [start:end].
@@ -449,8 +461,7 @@ class Dseq(_Seq):
 
 
     def __getitem__(self, sl):
-        '''Returns a subsequence.
-        '''
+        '''Returns a subsequence. This method is used by the slice notation'''
 
         if self.linear:
             sns = (self._ovhg*" " + self.watson)[sl]
@@ -575,7 +586,7 @@ class Dseq(_Seq):
                                                         -self._ovhg*" "+ self.crick[::-1]))
 
 
-    def rc(self):
+    def reverse_complement(self):
         '''Returns a Dseq object where watson and crick have switched
         places. This represents the same double stranded sequence.
 
@@ -599,9 +610,7 @@ class Dseq(_Seq):
         return Dseq(self.crick, self.watson, ovhg=ovhg, circular = self.circular)
 
 
-    def reverse_complement(self):
-        '''Alias of the rc method'''
-        return self.rc()
+    rc = reverse_complement # alias for reverse_complement
 
     
     def shifted(self, shift):
@@ -990,10 +999,6 @@ class Dseq(_Seq):
         '''
         return Dseq(self.watson[max(0,-self.ovhg):min(len(self.watson),len(self.crick)-self.ovhg)])
 
-    def t4(self,*args,**kwargs):
-        '''Alias for the :func:`T4` method '''
-        return self.T4(*args,**kwargs)
-
 
     def T4(self, nucleotides=None):
         '''Fill in five prime protruding ends and chewing back
@@ -1003,11 +1008,8 @@ class Dseq(_Seq):
        combination of the four A, G, C or T. Default are all four
        nucleotides together.
 
-       Alias for the :func:`t4` method
-
        Parameters
        ----------
-
        nucleotides : str
 
 
@@ -1077,38 +1079,52 @@ class Dseq(_Seq):
         watson=watson[:x+1]
         return Dseq(watson, crick, ovhg)
 
+
+    t4 = T4 # alias for the T4 method.
+
     
     def no_cutters(self, batch = CommOnly):
+        """Returns the enzymes in a RestrictionBatch that do **not** 
+        cut the sequence."""
         ana = batch.search(self)
         ncut = {enz:sitelist for (enz,sitelist) in ana.items() if not sitelist}
         return _RestrictionBatch(ncut)
     
     
     def unique_cutters(self, batch = CommOnly):
+        """Returns the enzymes in a RestrictionBatch that cut the sequence 
+        exactly once."""
         return self.n_cutters(n=1, batch=batch) 
     
     
-    def once_cutters(self, batch = CommOnly):
-        return self.unique_cutters(batch=batch)
+    once_cutters = unique_cutters # alias for unique_cutters
     
     
     def twice_cutters(self, batch = CommOnly):
+        """Returns the enzymes in a RestrictionBatch that cut the sequence 
+        exactly twice."""
         return self.n_cutters(n=2, batch=batch)
     
     
     def n_cutters(self, n=3, batch = CommOnly):
+        """Returns the enzymes in a RestrictionBatch that cut the sequence 
+        n times."""
         ana = batch.search(self)
         ncut = {enz:sitelist for (enz,sitelist) in ana.items() if len(sitelist)==n}
         return _RestrictionBatch(ncut)
     
     
     def cutters(self, batch = CommOnly):
+        """Returns the enzymes in a RestrictionBatch that cut the sequence 
+        at least once."""
         ana = batch.search(self)
         ncut = {enz:sitelist for (enz,sitelist) in ana.items() if sitelist}
         return _RestrictionBatch(ncut)
 
 
     def seguid(self):
+        """Returns the SEGUID for the Dseq. The definition 
+        varies with the amount of stagger between the sequences."""
         rc_ovhg = len(self.watson) - len(self.crick) + self._ovhg
         if self._ovhg==rc_ovhg==0:
             return _seg(min(self.watson, self.crick))
@@ -1124,6 +1140,7 @@ class Dseq(_Seq):
             w, c = sorted((self.watson, self.crick))
             o = self._ovhg
         return _seg( _pretty_str(o) + w + "|" + c)
+
 
     def cut(self, *enzymes):
         '''Returns a list of linear Dseq fragments produced in the digestion.

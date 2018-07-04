@@ -30,6 +30,7 @@ requirements:
         - matplotlib
         - mpldatacursor
         - pint
+
 test:
   requires:
     - pytest

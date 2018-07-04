@@ -15,7 +15,9 @@ def test_myprimers(monkeypatch):
     assert len(primerdict) == 4
     primer_list = myprimers.list_primers
     assert primer_list==newlist
-    myprimers.append_primer_list("slask")       
+    
+    with pytest.raises(NotImplementedError):
+        myprimers.append_primer_list("slask")       
 
 if __name__ == '__main__':
     pytest.main([__file__, "-v", "-s", "--cov=pydna","--cov-report=html"])

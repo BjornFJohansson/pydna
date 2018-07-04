@@ -52,7 +52,7 @@ def test_pydna_Genbank_from_cache(urlopenMock,monkeypatch):
     from pydna.genbank import Genbank
     urlopenMock.return_value = open("X60065.gb", "rb")
     Entrez._urlopen = urlopenMock
-    monkeypatch.setenv("pydna_cached_funcs", "Genbank_nucleotide")
+    monkeypatch.setenv("pydna_cached_funcs", "pydna.genbank.Genbank.nucleotide")
     gb = Genbank("bjornjobb@gmail.com")
     result = gb.nucleotide("X60065.1")
     from Bio import SeqIO
