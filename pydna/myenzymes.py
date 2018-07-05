@@ -22,7 +22,8 @@ import traceback as _traceback
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 
-_text=""   # 894
+_text=""
+
 
 try:
     with open( _os.environ["pydna_enzymes"], encoding="utf-8") as _f:

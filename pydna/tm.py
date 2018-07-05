@@ -278,8 +278,7 @@ def basictm(primer, *args, **kwargs):
         
 
 def Q5(*args,**kwargs):
-    '''
-    for Q5 Ta they take the lower of the two Tms and add 1C 
+    '''For Q5 Ta they take the lower of the two Tms and add 1C 
     (up to 72C). For Phusion they take the lower of the two 
     and add 3C (up to 72C). 
     '''

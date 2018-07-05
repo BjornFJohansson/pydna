@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''
-pydna.common_sub_strings
-------------------------
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
 
-This module is based on the Py-rstr-max package that was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
+'''This module is based on the Py-rstr-max package that was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
 (https://brixtel.users.greyc.fr/) and is available from https://code.google.com/p/py-rstr-max/
 the original code was covered by an MIT licence.'''
 

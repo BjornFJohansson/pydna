@@ -1,5 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
+"""This module provide most pydna functionality in the local namespace.
+
+Example
+-------
+
+>>> from pydna.all import *
+>>> Dseq("aaa")
+Dseq(-3)
+aaa
+ttt
+>>> Dseqrecord("aaa")
+Dseqrecord(-3)
+>>> from pydna.all import __all__
+>>> __all__
+['Anneal', 'pcr', 'Assembly', 'genbank', 'Genbank', 'download_text', 'Dseqrecord', 'Dseq', 'read', 'read_primer', 'parse', 'parse_primers', 'ape', 'primer_design', 'assembly_fragments', 'eq', 'gbtext_clean', 'list_primers']
+>>> 
+"""
+
    
 __all__=["Anneal", 
          "pcr", 

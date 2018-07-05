@@ -4,11 +4,7 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-'''
-pydna.dseqrecord
-----------------
-
-This module provides the Dseqrecord class, for handling double stranded
+'''This module provides the :class:`Dseqrecord` class, for handling double stranded
 DNA sequences. The Dseqrecord holds sequence information in the form of a :class:`pydna.dseq.Dseq`
 object. The Dseq and Dseqrecord classes are subclasses of Biopythons
 Seq and SeqRecord classes, respectively. 
@@ -223,17 +219,20 @@ class Dseqrecord(_SeqRecord):
         Use :meth:`looped` or :meth:`tolinear`'''
         return self.seq.linear
 
+
     @property
     def circular(self):
         '''The circular property can not be set directly. 
         Use :meth:`looped` or :meth:`tolinear`'''
         return self.seq.circular
 
+
     def m(self):
         """This method returns the mass of the DNA molecule in grams. This is
         calculated as the product between the molecular weight of the Dseq object
         and the """
         return self.seq.mw() * self.n # Da(g/mol) * mol = g
+
 
     def extract_feature(self, n):
         '''Extracts a feature and creates a new Dseqrecord object.
@@ -259,7 +258,6 @@ class Dseqrecord(_SeqRecord):
 
         '''
         return super().extract_feature(n)
-
 
 
     def cseguid(self):
@@ -289,6 +287,7 @@ class Dseqrecord(_SeqRecord):
             raise TypeError("cseguid is only defined for circular sequences.")
         return _cseg(str(self.seq))
 
+
     def lseguid(self):
         '''Returns the url safe lSEGUID for the sequence.
 
@@ -316,6 +315,7 @@ class Dseqrecord(_SeqRecord):
         if self.circular:
             raise TypeError("lseguid is only defined for linear sequences.")
         return self.seq.seguid()
+
 
     def stamp(self):
         '''Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
@@ -378,6 +378,7 @@ class Dseqrecord(_SeqRecord):
 
         return new
 
+
     def tolinear(self):
         '''
         Returns a linear, blunt copy of a circular Dseqrecord object. The
@@ -411,6 +412,7 @@ class Dseqrecord(_SeqRecord):
             fn.qualifiers = fo.qualifiers
 
         return new
+
 
     def format(self, f="gb"):
         '''Returns the sequence as a string using a format supported by Biopython
@@ -455,6 +457,7 @@ class Dseqrecord(_SeqRecord):
                 return _pretty_str(s[:55]+"linear  "+s[63:])
         else:
             return _pretty_str(s).strip()
+
 
     def write(self, filename=None, f="gb"):
         '''Writes the Dseqrecord to a file using the format f, which must
@@ -534,6 +537,7 @@ class Dseqrecord(_SeqRecord):
                 with open(filename, "w") as fp: fp.write(self.format(f))
         return _display_html(_HTML(msg))
 
+
     def find(self, other):
         # TODO allow strings, seqs, seqrecords or Dseqrecords
         # TODO check for linearity of other, raise exception if not
@@ -551,6 +555,8 @@ class Dseqrecord(_SeqRecord):
         return ( "Dseqrecord\n"
                  "circular: {}\n"
                  "size: {}\n").format(self.circular, len(self))+_SeqRecord.__str__(self)
+
+
     def __contains__(self, other):
         if other.lower() in str(self.seq).lower():
             return True
@@ -564,8 +570,6 @@ class Dseqrecord(_SeqRecord):
                     return True
         return False
 
-    def find_aa(self, other):
-        return self.find_aminoacids(other)
 
     def find_aminoacids(self, other):
         '''
@@ -614,6 +618,10 @@ class Dseqrecord(_SeqRecord):
             return None      #TODO return an emoty slice or False...?
         else:
             return slice(frame+start*3+oh, frame+(start+len(other))*3+oh)
+
+
+    find_aa=find_aminoacids
+
 
     def map_trace_files(self, pth):  # TODO allow path-like objects
         import glob
@@ -685,11 +693,14 @@ class Dseqrecord(_SeqRecord):
 
         return [x.getFileName() for x in matching_reads]
 
+
     def __repr__(self):
         return "Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self))
 
+
     def _repr_pretty_(self, p, cycle):
             p.text("Dseqrecord({}{})".format({True:"-", False:"o"}[self.linear],len(self)))
+
 
     def __add__(self, other):
         if hasattr(other, "seq") and hasattr(other.seq, "watson"):
@@ -701,6 +712,7 @@ class Dseqrecord(_SeqRecord):
             answer = Dseqrecord(_SeqRecord.__add__(self, Dseqrecord(other)))
             answer.n = self.n
         return answer
+
 
     def __mul__(self, number):
         if not isinstance(number, int):
@@ -714,6 +726,7 @@ class Dseqrecord(_SeqRecord):
             return new
         else:
             return self.__class__("")
+
 
     def __getitem__(self, sl):
         answer = Dseqrecord(_copy.copy(self))
@@ -739,6 +752,7 @@ class Dseqrecord(_SeqRecord):
         answer.name = answer.id
         return answer
 
+
     def __eq__( self, other ):
         try:
             if self.seq == other.seq and str(self.__dict__) == str(other.__dict__):
@@ -747,12 +761,15 @@ class Dseqrecord(_SeqRecord):
             pass
         return False
 
+
     def __ne__( self, other ):
         return not self.__eq__(other)
+
 
     def __hash__(self):
         """__hash__ must be based on __eq__"""
         return hash( (str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
+
 
     def linearize(self, *enzymes):
         '''This method is similar to :func:`cut` but throws an exception if there
@@ -771,6 +788,7 @@ class Dseqrecord(_SeqRecord):
         answer.id = "{name}_lin".format(name=self.name)
         answer.name = answer.id[:16]
         return fragments[0]
+
 
     def no_cutters(self, batch = CommOnly):
         """See """
@@ -795,6 +813,7 @@ class Dseqrecord(_SeqRecord):
     
     def cutters(self, batch = CommOnly):
         return self.seq.cutters(batch=batch)
+
 
     def cut(self, *enzymes):
         '''Digest the Dseqrecord object with one or more restriction enzymes.
@@ -856,10 +875,12 @@ class Dseqrecord(_SeqRecord):
             dsfs.append(dsf)
         return tuple(dsfs)
 
+
     def number_of_cuts(self, *enzymes):
         """ This method returns the number of cuts by digestion with the Restriction enzymes contained in 
         the iterable."""
         return sum([len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]) # flatten
+
 
     def reverse_complement(self):
         '''Returns the reverse complement.
@@ -892,8 +913,10 @@ class Dseqrecord(_SeqRecord):
         answer.seq._circular   = self.seq.circular
         answer.seq._linear     = self.seq.linear
         return answer
-    
+  
+  
     rc = reverse_complement
+
 
     def shifted(self, shift):
         '''Returns a circular Dseqrecord with a new origin <shift>.
@@ -985,6 +1008,7 @@ class Dseqrecord(_SeqRecord):
         answer.features = newfeatures
         answer.seq=newseq
         return answer
+
 
     @_memorize("pydna.dseqrecord.Dseqrecord.synced")
     def synced(self, ref, limit = 25):

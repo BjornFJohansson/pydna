@@ -6,9 +6,9 @@
 # as part of this package.
 # doctest: +NORMALIZE_WHITESPACE 
 # doctest: +SKIP
-'''This module provides the Amplicon class for PCR simulation. Primers with 5' tails as well as inverse PCR on
-circular templates are handled correctly.
-'''
+"""This module provides the :class:`Amplicon` class for PCR simulation. This class is not meant to be use directly
+but is used by the :mod:`amplify` module"""
+
 import math       as _math
 import itertools  as _itertools
 import re         as _re

@@ -137,6 +137,7 @@ def parse(data, ds = True):
     return sequences
     
 def parse_primers(data):
+    """ """
     return [_Primer(x) for x in parse(data, ds=False)]
 
     

@@ -4,18 +4,12 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-
-'''
-pydna.dseq
-----------
-
-Provides the Dseq class for handling double stranded DNA sequences. 
-Dseq is a subclass of :class:`~biopython:Bio.Seq.Seq`. The Dseq class
+'''Provides the Dseq class for handling double stranded DNA sequences. 
+Dseq is a subclass of :class:`biopython:Bio.Seq.Seq`. The Dseq class
 is mostly useful as a part of the :class:`pydna.dseqrecord.Dseqrecord` class which
 can hold more meta data.
 
-The Dseq class support the notion of circular and linear DNA topology.
-'''
+The Dseq class support the notion of circular and linear DNA topology.'''
 
 from collections.abc import Iterable as _Iterable
 

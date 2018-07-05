@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''This module provides miscellaneous functions.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
+'''This module provides miscellaneous functions.'''
 
-'''
 import shelve      as _shelve
 import os          as _os
 import re          as _re

@@ -15,9 +15,8 @@ from pydna.tm import tmbresluc                    as _tmbresluc
 
 class Primer(_SeqRecord):
     '''This class can hold information about a primer and its position on a template 
-       footprint and tail.   
-    
-    '''
+    footprint and tail.'''
+
     def __init__(self, record, 
                  *args,
                  template  = None,
@@ -37,22 +36,27 @@ class Primer(_SeqRecord):
         self._fp           = footprint
         self.template      = template
     
+
     @property
     def footprint(self):
         return self.seq[-self._fp:] if self._fp else ""
+
 
     @property
     def tail(self):
         return self.seq[:-self._fp] if self._fp else ""
 
+
     def __repr__(self):
         s = min( (self.seq,"{}..{}".format(self.seq[:15], self.seq[-3:])), key=len)
         return "{id} {len}-mer:5'-{seq}-3'".format(id=self.id,len=len(self),seq=s)
     
+
     def __radd__(self, other):
         new = super().__radd__(other)
         return Primer(new, template = self.template, position=self.position, footprint=self._fp)
     
+
     def __getitem__(self, index):
         result = super().__getitem__(index)
         if hasattr(index, "indices"): # index is a slice
@@ -61,6 +65,7 @@ class Primer(_SeqRecord):
             result._fp = self._fp - (i1-j1>0)*abs(i1-j1)
         return result
     
+
     def tm(self, saltc=50.0, formula=_tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
 

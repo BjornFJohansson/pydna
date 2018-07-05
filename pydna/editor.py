@@ -93,7 +93,9 @@ class Editor:
                          stderr = _tempfile.TemporaryFile()).pid
         _time.sleep(0.5)
 
+
 apeloader = Editor( _os.getenv("pydna_ape") )
+
 
 def ape(*args,**kwargs):
     return apeloader.open(*args,**kwargs)

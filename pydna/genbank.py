@@ -4,17 +4,13 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-'''
-pydna.genbank
--------------
-
-This module provides a class for downloading sequences from genbank
+'''This module provides a class for downloading sequences from genbank
 called Genbank and an function that does the same thing called genbank.
 
-The function can be used if the **pydna_email** has been set to a valid
-email address. The easiest way to do this permanantly is to edit the 
-`pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`
-'''
+The function can be used if the environmental variable **pydna_email** has 
+been set to a valid email address. The easiest way to do this permanantly is to edit the 
+`pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`'''
+
 import re as _re
 import os as _os
 import logging as _logging
@@ -42,7 +38,7 @@ class Genbank(object):
 
     >>> from pydna.genbank import Genbank
     >>> gb=Genbank("bjornjobb@gmail.com")
-    >>> rec = gb.nucleotide("AJ515731")                 # <- entry from genbank
+    >>> rec = gb.nucleotide("AJ515731")   # <- entry from genbank
     >>> print(len(rec))
     19
     '''

@@ -10,6 +10,7 @@ from pydna._pretty import pretty_str as _ps
 
 class GenbankRecord(_Dseqrecord):
 
+
     def __init__(self, record, *args, item="accession", start=None, stop=None, strand=1,**kwargs):
         super().__init__(record, *args, **kwargs)
         self.item = item
@@ -22,25 +23,29 @@ class GenbankRecord(_Dseqrecord):
         self._linktemplate = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{text}</a>"
         self.hyperlink = _ps(self._linktemplate.format(item=self.item, start=self.start or "", stop=self.stop or "", strand=self.strand, text=self._repr))
 
+
     def __repr__(self):
         '''returns a short string representation of the object'''
         return "Gbank({})({}{})".format(self._repr, {True:"-", False:"o"}[self.linear],len(self))
-        
+
+
     def _repr_pretty_(self, p, cycle):
         '''returns a short string representation of the object'''
         p.text("Gbank({})({}{})".format(self._repr, {True:"-", False:"o"}[self.linear],len(self)))
-            
+
+       
     def _repr_html_(self):        
         return self.hyperlink
-    
+
+
     def reverse_complement(self):
         answer = type(self)(super().reverse_complement(),item=self.item,start=self.start, stop=self.stop,strand={1:2,2:1}[self.strand])
         return answer
-    
+
+
     rc = reverse_complement
-        
 
-
+   
 if __name__=="__main__":
     import os as _os
     cached = _os.getenv("pydna_cached_funcs", "")

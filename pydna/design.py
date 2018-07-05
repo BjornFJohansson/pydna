@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright 2013, 2014 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
+'''This module contain functions for primer design for various purposes. 
 
-'''
-This module contain functions for primer design.
+- :func:primer_design for designing primers for a sequence or a matching primer for an existing primer. Returns an :class:`Amplicon` object (same as the :mod:`amplify` module returns).
+
+- :func:assembly_fragments Adds tails to primers for a linear assembly through homologous recombination or Gibson assembly.
+
+- :func:circular_assembly_fragments Adds tails to primers for a circular assembly through homologous recombination or Gibson assembly.
 
 '''
 #import warnings
@@ -211,8 +214,7 @@ def primer_design( template,
     return prod
 
 
-def assembly_fragments(f, overlap=35, maxlink=40):
-    
+def assembly_fragments(f, overlap=35, maxlink=40):    
     '''This function return a list of :mod:`pydna.amplicon.Amplicon` objects where 
     primers have been modified with tails so that the fragments can be fused in 
     the order they appear in the list by for example Gibson assembly or homologous 

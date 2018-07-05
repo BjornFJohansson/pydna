@@ -6,10 +6,11 @@
 # as part of this package.
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
-'''This module provides functions for PCR. Primers with 5' tails as well as inverse PCR on
-circular templates are handled correctly.
+'''This module provide the :class:`Anneal` class and the :func:`pcr` function for PCR simulation. 
+The pcr function is simpler to use, but expects only one PCR product. The Anneal class should be used 
+if more flexibility is required.
 
-'''
+Primers with 5' tails as well as inverse PCR on circular templates are handled correctly.'''
 
 from collections import defaultdict
 import itertools as _itertools
@@ -117,88 +118,22 @@ class _Memoize(type):
         return super().__call__(*args, **kwargs)
 
 class Anneal(object, metaclass = _Memoize):
-    '''
-
-    Parameters
-    ----------
-    primers : iterable containing SeqRecord like objects
-        Primer sequences 5'-3'.
-
-    template : Dseqrecord object
-        The template sequence 5'-3'.
-
-    limit : int, optional
-        limit length of the annealing part of the primers.
-
-    fprimerc : float, optional
-        Concentration of forward primer in nM, set to 1000.0 nM by default
-
-    rprimerc : float, optional
-        Concentration of reverse primer in nM, set to 1000.0 nM by default
-
-    saltc  : float, optional
-        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
+    """The Anneal class has the following important attributes:
 
     Attributes
     ----------
-    products: list
-        A list of Amplicon objects, one for each primer pair that may form a PCR product.
-
-
-    Examples
-    --------
-    >>> from pydna.readers import read
-    >>> from pydna.amplify import Anneal
-    >>> from pydna.dseqrecord import Dseqrecord
-    >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
-    >>> from Bio.SeqRecord import SeqRecord
-    >>> p1 = read(">p1\\ntacactcaccgtctatcattatc", ds = False)
-    >>> p2 = read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
-    >>> ann = Anneal((p1, p2), template)
-    >>> print(ann.report())
-    Template name 51 nt linear:
-    Primer p1 anneals forward at position 23
-    <BLANKLINE>
-    Primer p2 anneals reverse at position 29
-    >>> ann.products
-    [Amplicon(51)]
-    >>> amplicon_list = ann.products
-    >>> amplicon = amplicon_list.pop()
-    >>> amplicon
-    Amplicon(51)
-    >>> print(amplicon.figure())
-    5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
-                               |||||||||||||||||||||| tm 55.9 (dbd) 60.5
-                              3gctgacatagtagactatcgtg5
-    5tacactcaccgtctatcattatc3
-     ||||||||||||||||||||||| tm 54.6 (dbd) 58.8
-    3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5
-    >>> amplicon.annotations['date'] = '02-FEB-2013'   # Set the date for this example to pass the doctest
-    >>> print(amplicon)
-    Dseqrecord
-    circular: False
-    size: 51
-    ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
-    Name: 51bp_PCR_prod
-    Description: pcr product_p1_p2
-    Number of features: 2
-    /date=02-FEB-2013
-    Dseq(-51)
-    taca..gcac
-    atgt..cgtg
-    >>> print(amplicon.program())
-    <BLANKLINE>
-    Taq (rate 30 nt/s) 35 cycles             |51bp
-    95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
-    |_________|_____          72.0°C  |72.0°C|SaltC 50mM
-    | 03min00s|30s  \         ________|______|Primer1C 1.0µM
-    |         |      \ 45.4°C/ 0min 2s| 5min |Primer2C 1.0µM
-    |         |       \_____/         |      |GC 39%
-    |         |         30s           |      |4-12°C
-
-    >>>
-
-    '''
+    forward_primers : list
+        Description of `forward_primers`.
+    reverse_primers : list
+        Description of `reverse_primers`.
+    template : Dseqrecord
+        A copy of the template argument. Primers annealing sites has been added as features that can be visualized in a seqence editor such as ApE.
+    primerc : float
+        Primer concentration, affects some algorithms for primer Tm calculation. Both primers are expected to be present at the same concentration.
+    saltc   : int
+        Salt concentration, affects some algorithms for primer Tm calculation. 
+    limit : int, optional
+        The limit of PCR primer annealing, default is 13 bp."""
 
     def __init__( self,
                   primers,
@@ -207,7 +142,90 @@ class Anneal(object, metaclass = _Memoize):
                   primerc=1000.0, # nM
                   saltc=50,       # mM
                   **kwargs):      
+        '''The Anneal class has to be initiated with at least an iterable of primers and a template.
 
+
+
+        Parameters
+        ----------
+        primers : iterable of :class:`Primer` or Biopython SeqRecord like objects
+            Primer sequences 5'-3'.
+
+        template : Dseqrecord
+            The template sequence 5'-3'.
+
+        limit : int, optional
+            limit length of the annealing part of the primers.
+
+        fprimerc : float, optional
+            Concentration of forward primer in nM, set to 1000.0 nM by default
+
+        rprimerc : float, optional
+            Concentration of reverse primer in nM, set to 1000.0 nM by default
+
+        saltc  : float, optional
+            Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
+
+        Attributes
+        ----------
+        products: list
+            A list of Amplicon objects, one for each primer pair that may form a PCR product.
+
+
+        Examples
+        --------
+        >>> from pydna.readers import read
+        >>> from pydna.amplify import Anneal
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> p1 = read(">p1\\ntacactcaccgtctatcattatc", ds = False)
+        >>> p2 = read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
+        >>> ann = Anneal((p1, p2), template)
+        >>> print(ann.report())
+        Template name 51 nt linear:
+        Primer p1 anneals forward at position 23
+        <BLANKLINE>
+        Primer p2 anneals reverse at position 29
+        >>> ann.products
+        [Amplicon(51)]
+        >>> amplicon_list = ann.products
+        >>> amplicon = amplicon_list.pop()
+        >>> amplicon
+        Amplicon(51)
+        >>> print(amplicon.figure())
+        5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
+                                   |||||||||||||||||||||| tm 55.9 (dbd) 60.5
+                                  3gctgacatagtagactatcgtg5
+        5tacactcaccgtctatcattatc3
+         ||||||||||||||||||||||| tm 54.6 (dbd) 58.8
+        3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5
+        >>> amplicon.annotations['date'] = '02-FEB-2013'   # Set the date for this example to pass the doctest
+        >>> print(amplicon)
+        Dseqrecord
+        circular: False
+        size: 51
+        ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
+        Name: 51bp_PCR_prod
+        Description: pcr product_p1_p2
+        Number of features: 2
+        /date=02-FEB-2013
+        Dseq(-51)
+        taca..gcac
+        atgt..cgtg
+        >>> print(amplicon.program())
+        <BLANKLINE>
+        Taq (rate 30 nt/s) 35 cycles             |51bp
+        95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
+        |_________|_____          72.0°C  |72.0°C|SaltC 50mM
+        | 03min00s|30s  \         ________|______|Primer1C 1.0µM
+        |         |      \ 45.4°C/ 0min 2s| 5min |Primer2C 1.0µM
+        |         |       \_____/         |      |GC 39%
+        |         |         30s           |      |4-12°C
+
+        >>>
+
+        '''
         self.primers=primers
         self.primerc=primerc
         self.saltc = saltc
@@ -244,8 +262,10 @@ class Anneal(object, metaclass = _Memoize):
                                          for pos, fp in _annealing_positions(str(p.seq),
                                                                              tw,
                                                                              self.limit) if pos<twl))
+
         self.forward_primers.sort(key = _operator.attrgetter('position'))
         self.reverse_primers.sort(key = _operator.attrgetter('position'), reverse=True)
+
         for fp in self.forward_primers:
             if fp.position-fp._fp>=0:
                 start = fp.position-fp._fp
@@ -343,21 +363,14 @@ class Anneal(object, metaclass = _Memoize):
         return self._products
 
 
-
-    def report(self):
-        '''This method is an alias of str(Annealobj).
-        Returns a short string representation.
-        '''
-        return self.__str__()
-
     def __repr__(self):
         ''' returns a short string representation '''
         return "Reaction(products = {})".format(len(self.forward_primers*len(self.reverse_primers)))
 
     def __str__(self):
         '''returns a short report describing if or where primer
-       anneal on the template.
-       '''
+       anneal on the template.'''
+
         mystring = "Template {name} {size} nt {top}:\n".format(name=self.template.name,
                                                                size=len(self.template),
                                                                top={True:"circular",
@@ -376,12 +389,14 @@ class Anneal(object, metaclass = _Memoize):
              mystring += "No reverse primers anneal...\n"
         return _pretty_str(mystring.strip())
 
-def pcr(*args,  **kwargs):
-    '''pcr is a convenience function for Anneal to simplify its usage,
-    especially from the command line. If more than one PCR product is
-    formed, an exception is raised.
+    report = self.__str__()
 
-    args is any iterable of sequences or an iterable of iterables of sequences.
+def pcr(*args,  **kwargs):
+    '''pcr is a convenience function for the Anneal class to simplify its usage,
+    especially from the command line. If more than one or no PCR product is
+    formed, a ValueError is raised.
+
+    args is any iterable of Dseqrecords or an iterable of iterables of Dseqrecords.
     args will be greedily flattened.
 
     Parameters
@@ -400,8 +415,8 @@ def pcr(*args,  **kwargs):
 
     * string
     * Seq
-    * SeqRecord
-    * Dseqrecord
+    * SeqRecord (or subclass)
+    * Dseqrecord (or sublcass)
 
     The last sequence will be assumed to be the template while
     all preceeding sequences will be assumed to be primers.
@@ -411,10 +426,9 @@ def pcr(*args,  **kwargs):
     Returns
     -------
 
-    product : Dseqrecord
-        a Dseqrecord object representing the PCR product.
-        The direction of the PCR product will be the same as
-        for the template sequence.
+    product : Amplicon
+        An :class:`pydna.amplicon.Amplicon` object representing the PCR product.
+        The direction of the PCR product will be the same as for the template sequence.
 
     Examples
     --------

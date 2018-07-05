@@ -5,7 +5,7 @@ from pydna.utils import rc
 
 class Contig(_Dseqrecord):
     '''This class holds information about a DNA assembly. This class is instantiated by
-    the :class:`Assembly` class and is not meant to be instantiated directly.
+    the :class:`Assembly` class and is not meant to be used directly.
 
     '''
 
@@ -54,6 +54,34 @@ class Contig(_Dseqrecord):
 
 
     def detailed_fig(self):
+        """Returns a text representation of the assembled fragments.
+
+        Linear:
+
+        ::
+
+            acgatgctatactgCCCCCtgtgctgtgctcta
+                               TGTGCTGTGCTCTA
+                               tgtgctgtgctctaTTTTTtattctggctgtatc
+
+
+
+        Circular:
+
+        ::
+
+            ||||||||||||||
+            acgatgctatactgCCCCCtgtgctgtgctcta
+                               TGTGCTGTGCTCTA
+                               tgtgctgtgctctaTTTTTtattctggctgtatc
+                                                  TATTCTGGCTGTATC
+                                                  tattctggctgtatcGGGGGtacgatgctatactg
+                                                                       ACGATGCTATACTG
+
+
+        """
+
+
         fig=""
         fragmentposition=0
         nodeposition = self.graph[self.path[0]][self.path[1]]["length"]
@@ -82,8 +110,7 @@ class Contig(_Dseqrecord):
     
 
     def small_fig(self):
-        '''
-        Returns a small ascii representation of the assembled fragments. Each fragment is
+        '''Returns a small ascii representation of the assembled fragments. Each fragment is
         represented by:
 
         ::

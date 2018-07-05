@@ -1,5 +1,7 @@
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 from pydna.utils import identifier_from_string as _identifier_from_string
+"""This module provides a Biopython SeqFeature with an extract method that 
+preserves some of the meta data from the parent sequence"""
 
 class SeqFeature(_SeqFeature):
 

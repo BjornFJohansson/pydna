@@ -7,8 +7,7 @@
 """This module provide a subclass of the Biopython SeqRecord class.
 It has a number of extra methods and uses 
 the :class:`pydna._pretty_str.pretty_str` class instread of str for a 
-nicer output in the IPython shell.
-"""
+nicer output in the IPython shell."""
 
 
 
@@ -76,6 +75,7 @@ class SeqRecord(_SeqRecord):
         ''' alias for name property '''
         return self.name
 
+
     @locus.setter
     def locus(self, value):
         ''' alias for name property '''
@@ -86,10 +86,12 @@ class SeqRecord(_SeqRecord):
         self.name = value
         return
 
+
     @property
     def accession(self):
         ''' alias for id property '''
         return self.id
+
 
     @accession.setter
     def accession(self, value):
@@ -97,10 +99,12 @@ class SeqRecord(_SeqRecord):
         self.id = value
         return
 
+
     @property
     def definition(self):
         ''' alias for description property '''
         return self.description
+
 
     @definition.setter
     def definition(self, value):
@@ -108,10 +112,12 @@ class SeqRecord(_SeqRecord):
         self.description = value
         return
 
+
     def reverse_complement(self,*args,**kwargs):
         answer = type(self)(super().reverse_complement(*args,**kwargs).seq, *args,**kwargs)
         return answer
-         
+ 
+        
     def isorf(self, table=1):
         '''Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
         Translation tables are numbers according to the NCBI numbering [#]_.
@@ -155,6 +161,7 @@ class SeqRecord(_SeqRecord):
         else:
             return True
 
+
     def add_colors_to_features_for_ape(self):
         '''This method assigns random colors to features compatible with the 
         `ApE editor <http://jorgensen.biology.utah.edu/wayned/ape/>`_'''
@@ -170,6 +177,7 @@ class SeqRecord(_SeqRecord):
         for i, color in enumerate(get_N_HexCol(len(self.features))):
             self.features[i].qualifiers['ApEinfo_fwdcolor'] = ["#"+color]
             self.features[i].qualifiers['ApEinfo_revcolor'] = ["#"+color]
+
 
     def add_feature(self, x=None, y=None, seq=None, type="misc", *args, **kwargs):
         
@@ -240,7 +248,8 @@ class SeqRecord(_SeqRecord):
 
         In [12]:
         '''
-        
+
+       
     def list_features(self):
         '''Prints an ASCII table with all features.
 
@@ -288,6 +297,7 @@ class SeqRecord(_SeqRecord):
                         {True:"yes",False:"no"}[self.extract_feature(i).isorf() or self.extract_feature(i).reverse_complement().isorf()]])
         return _pretty_str(x)
 
+
     def extract_feature(self, n):
         '''Extracts a feature and creates a new SeqRecord object.
 
@@ -307,7 +317,8 @@ class SeqRecord(_SeqRecord):
         SeqRecord(seq=Seq('gt', IUPACAmbiguousDNA()), id='ft2', name='ft2', description='description', dbxrefs=[])
         '''
         return self.features[n].extract(self)
-    
+   
+ 
     def stamp(self):
         '''Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
         This will show in the genbank format. 
@@ -358,7 +369,8 @@ class SeqRecord(_SeqRecord):
             else:
                 self.description += " "+newstamp
         return _pretty_str("{}_{}".format(alg, chksum))
-    
+ 
+   
     def seguid(self):
         '''Returns the url safe SEGUID [#]_ for the sequence.
         This checksum is the same as seguid but with base64.urlsafe
@@ -394,23 +406,27 @@ class SeqRecord(_SeqRecord):
         olaps = _common_sub_strings(str(self.seq).lower(), r, **kwargs)
         return [ self[olap[0]:olap[0]+olap[2]] for olap in olaps ]
     
+
     def gc(self):
         '''Returns GC content'''
         return round(_GC(str(self.seq)), 1)
-    
+   
+ 
     def __lt__( self, other ):
         try:
             return str(self.seq) < str(other.seq)
         except AttributeError:
             # I don't know how to compare to other
             return NotImplemented
-        
+     
+   
     def __gt__( self, other ):
         try:
             return str(self.seq) > str(other.seq)
         except AttributeError:
             # I don't know how to compare to other
             return NotImplemented
+
 
     def __eq__( self, other ):
         try:
@@ -420,21 +436,27 @@ class SeqRecord(_SeqRecord):
             pass
         return False
 
+
     def __ne__( self, other ):
         return not self.__eq__(other)
+
 
     def __hash__(self):
         """__hash__ must be based on __eq__"""
         return hash( (str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
-        
+    
+    
     def __str__(self):
         return _pretty_str(super().__str__())
 
+
     def __repr__(self):
         return _pretty_str(super().__repr__())
-    
+   
+ 
     def __format__(self, format):
         return _pretty_str(super().__format__(format))
+
 
     def __add__(self, other):
         answer = super().__add__(other)
@@ -459,7 +481,6 @@ class SeqRecord(_SeqRecord):
         answer.name = answer.id
         return answer
         
-
 
 if __name__=="__main__":
     import os as _os

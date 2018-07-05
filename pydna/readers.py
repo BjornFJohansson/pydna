@@ -45,6 +45,9 @@ def read(data, ds = True):
     return results
 
 def read_primer(data):
+    """Use this function to read a primer sequence from a string or a local file. 
+    The usage is similar to the :func:`parse_primer` function."""
+
     return _Primer(read(data, ds=False))
 
 if __name__=="__main__":
