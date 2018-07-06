@@ -281,10 +281,8 @@ def open_config_folder():
     in the *pydna_config_dir* environmental variable.
     
     The `pydna.ini` file can be edited to make pydna quicker to use.
-    See the documentation of the :python:mod:´python:ConfigParser´ module.
-    
-    :py:class:`zipfile.ZipFile`
-    
+    See the documentation of the :class:configparser.ConfigParser´ class.
+
     Below is the content of a typical `pydna.ini` file on a Linux 
     system.
     

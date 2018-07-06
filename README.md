@@ -261,7 +261,6 @@ and to the regular [pypi](https://pypi.python.org/pypi/pydna) server.
 ## Changelog
 See the [change log](docs/CHANGELOG.md) for recent changes.
 
-
 |                                |                                                                                                                                                                                       |
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Stars                          | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)                                                 |
@@ -270,6 +269,7 @@ See the [change log](docs/CHANGELOG.md) for recent changes.
 | Issues                         | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                                                   |
 | Code quality                   | [![Code Climate](https://codeclimate.com/github/BjornFJohansson/pydna/badges/gpa.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)                                          |
 | Test coverage                  | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/py3/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)                                                     |
+| Conda package for platorms     | [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/platforms.svg)](https://anaconda.org/bjornfjohansson/pydna)                                               |
 | Conda package built on Linux   | [![Codeship Status for BjornFJohansson/pydna](https://app.codeship.com/projects/de24d6c0-f3a7-0135-0950-76dd9f7b94ca/status?branch=py3dev)](https://app.codeship.com/projects/272770) |
 | Conda package built on MacOSX  | [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)                                                                              |
 | Conda package built on Windows | [![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)                                              |

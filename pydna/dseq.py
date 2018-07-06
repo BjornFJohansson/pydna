@@ -5,7 +5,7 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 '''Provides the Dseq class for handling double stranded DNA sequences. 
-Dseq is a subclass of :class:`biopython:Bio.Seq.Seq`. The Dseq class
+Dseq is a subclass of :class:`Bio.Seq.Seq`. The Dseq class
 is mostly useful as a part of the :class:`pydna.dseqrecord.Dseqrecord` class which
 can hold more meta data.
 
