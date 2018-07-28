@@ -389,7 +389,7 @@ class Anneal(object, metaclass = _Memoize):
              mystring += "No reverse primers anneal...\n"
         return _pretty_str(mystring.strip())
 
-    report = self.__str__()
+    report = __str__
 
 def pcr(*args,  **kwargs):
     '''pcr is a convenience function for the Anneal class to simplify its usage,
