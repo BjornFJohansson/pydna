@@ -213,6 +213,12 @@ def test_read_with_feature_spanning_ori():
     assert str(a.seq).lower() == "accgggtttt"
     assert str(a.features[0].extract(a).seq) == "TTAC"
     assert a.features[0].strand == 1
+    
+    b = a.rc() 
+    
+    assert str(b.seq).lower() == "aaaacccggt"
+    assert str(b.features[0].extract(a).seq) == "GTAA"
+    
 
 if __name__ == '__main__':
     pytest.main([__file__, "-v", "-s", "--cov=pydna","--cov-report=html"])
