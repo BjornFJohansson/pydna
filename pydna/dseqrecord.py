@@ -882,7 +882,7 @@ class Dseqrecord(_SeqRecord):
         return sum([len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]) # flatten
 
 
-    def reverse_complement(self):
+    def reverse_complement(self, features=True):
         '''Returns the reverse complement.
 
         Examples
@@ -912,6 +912,22 @@ class Dseqrecord(_SeqRecord):
         answer.id         = self.id+"_rc"
         answer.seq._circular   = self.seq.circular
         answer.seq._linear     = self.seq.linear
+
+        # NOTE: Copied from Bio.SeqRecord because features get lost in
+        # the current way this method is implemented.
+        if isinstance(features, list):
+            answer.features = features
+        elif features:
+            # Copy the old features, adjusting location and string
+            l = len(answer)
+            answer.features = [f._flip(l) for f in self.features]
+            # The old list should have been sorted by start location,
+            # reversing it will leave it sorted by what is now the end position,
+            # so we need to resort in case of overlapping features.
+            # NOTE - In the common case of gene before CDS (and similar) with
+            # the exact same locations, this will still maintain gene before CDS
+            answer.features.sort(key=lambda x: x.location.start.position)
+
         return answer
   
   
