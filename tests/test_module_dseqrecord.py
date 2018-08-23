@@ -286,13 +286,29 @@ def test_revcomp():
     
     from Bio.Seq           import Seq
     from Bio.SeqRecord     import SeqRecord as Srec
-    a=Dseqrecord("attt")
+    
+    #      ----
+    #     attcccgggg
+    #     taagggcccc
+    #
+    #      ttcc
+    #
+    #         
+    #     ccccgggaat
+    #     ggggccctta
+    #          ----  
+    
+    
+    a=Dseqrecord("attcccgggg")
+    
+    a.add_feature(1,5)
+    
+    assert str(a.features[0].extract(a).seq) == "ttcc"
+    
+    rc=a.rc()
 
-    rc = a.rc()
-
-    assert  str(rc.seq) == "aaat"
-
-  
+    assert str(rc.features[0].extract(rc).seq) == "ttcc"
+    
 
 def test_m():
     from pydna.dseqrecord  import Dseqrecord
