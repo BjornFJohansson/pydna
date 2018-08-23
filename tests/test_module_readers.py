@@ -182,6 +182,37 @@ def test_read_from_file():
     assert x.format()[3268:3278] == '2micron 2µ'
     assert x.features[13].qualifiers['label'][0] == u'2micron 2µ'
     assert str(a.seq).lower()==str(b.seq).lower()==str(c.seq).lower()==str(d.seq).lower()
+    
+
+def test_read_with_feature_spanning_ori():
+    from pydna.readers import read
+    
+    test= '''
+    LOCUS       New_DNA                   10 bp ds-DNA     circular     23-AUG-2018
+    DEFINITION  .
+    ACCESSION   
+    VERSION     
+    SOURCE      .
+      ORGANISM  .
+    COMMENT     
+    COMMENT     ApEinfo:methylated:1
+    FEATURES             Location/Qualifiers
+         misc_feature    join(9..10,1..2)
+                         /locus_tag="myfeature"
+                         /label="myfeature"
+                         /ApEinfo_label="myfeature"
+                         /ApEinfo_fwdcolor="cyan"
+                         /ApEinfo_revcolor="green"
+                         /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                         width 5 offset 0"
+    ORIGIN
+            1 accgggtttt     
+    //    
+    '''
+    a = read(test)
+    assert str(a.seq).lower() == "accgggtttt"
+    assert str(a.features[0].extract(a).seq) == "TTAC"
+    assert a.features[0].strand == 1
 
 if __name__ == '__main__':
     pytest.main([__file__, "-v", "-s", "--cov=pydna","--cov-report=html"])
