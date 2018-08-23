@@ -113,8 +113,11 @@ class SeqRecord(_SeqRecord):
         return
 
 
-    def reverse_complement(self,*args,**kwargs):
-        answer = type(self)(super().reverse_complement(*args,**kwargs).seq, *args,**kwargs)
+    def reverse_complement(self, *args, **kwargs):
+        answer = super().reverse_complement(*args, **kwargs)
+        answer.__class__ = type(self) 
+        # https://stackoverflow.com/questions/15404256/changing-the-class-of-a-python-object-casting
+        # answer = type(self)(super().reverse_complement(*args,**kwargs).seq, *args,**kwargs)
         return answer
  
         
@@ -179,7 +182,7 @@ class SeqRecord(_SeqRecord):
             self.features[i].qualifiers['ApEinfo_revcolor'] = ["#"+color]
 
 
-    def add_feature(self, x=None, y=None, seq=None, type="misc", *args, **kwargs):
+    def add_feature(self, x=None, y=None, seq=None, type="misc", strand=1,*args, **kwargs):
         
 #         location=None, 
 #         type='', 
@@ -209,7 +212,7 @@ class SeqRecord(_SeqRecord):
         []
         >>> a.add_feature(2,4)
         >>> a.features
-        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4)), type='misc')]
+        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc')]
         '''
         qualifiers = {}
         qualifiers.update(kwargs)
@@ -237,7 +240,7 @@ class SeqRecord(_SeqRecord):
             if self[x:y].isorf() or self[x:y].reverse_complement().isorf():
                 qualifiers["label"] = ["orf{}".format(y-x)]
         
-        sf = _SeqFeature(_FeatureLocation(x, y), type=type, qualifiers = qualifiers)
+        sf = _SeqFeature(_FeatureLocation(x, y, strand=strand), type=type, qualifiers = qualifiers)
                    
         self.features.append(sf)
 
@@ -264,7 +267,7 @@ class SeqRecord(_SeqRecord):
         +-----+---------------+-----+-----+-----+-----+------+------+
         | Ft# | Label or Note | Dir | Sta | End | Len | type | orf? |
         +-----+---------------+-----+-----+-----+-----+------+------+
-        |   0 | L:ft2         | --- | 2   | 4   |   2 | misc |  no  |
+        |   0 | L:ft2         | --> | 2   | 4   |   2 | misc |  no  |
         +-----+---------------+-----+-----+-----+-----+------+------+'''
 
         x = _PrettyTable(["Ft#", "Label or Note", "Dir", "Sta", "End", "Len", "type", "orf?"])
