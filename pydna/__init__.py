@@ -353,7 +353,7 @@ def get_env():
 
 
 def logo():
-    """ This function prints the ascii logotype of pydna.
+    """ This function returns the ascii-art logotype of pydna.
     
     >>> import pydna
     >>> print(pydna.logo())
