@@ -5,10 +5,10 @@ import pytest
 import subprocess
 subprocess      # shut up spyder!
 from pydna.dseqrecord import Dseqrecord
-from pydna import editor
 from unittest import mock
 
 def test_editor_wo_features(monkeypatch):
+    from pydna import editor
     Popen = mock.MagicMock(name="subprocess.Popen")    
     monkeypatch.setattr("subprocess.Popen", Popen)
     monkeypatch.setenv("pydna_ape", "path/to/ape")
@@ -17,6 +17,7 @@ def test_editor_wo_features(monkeypatch):
     assert Popen.called
 
 def test_editor_with_feature_label(monkeypatch):
+    from pydna import editor
     Popen = mock.MagicMock(name="subprocess.Popen")    
     monkeypatch.setattr("subprocess.Popen", Popen)
     monkeypatch.setenv("pydna_ape", "path/to/ape")
@@ -27,6 +28,7 @@ def test_editor_with_feature_label(monkeypatch):
 
     
 def test_editor_with_feature_note(monkeypatch):
+    from pydna import editor
     Popen = mock.MagicMock(name="subprocess.Popen")    
     monkeypatch.setattr("subprocess.Popen", Popen)
     monkeypatch.setenv("pydna_ape", "path/to/ape")
@@ -39,6 +41,7 @@ def test_editor_with_feature_note(monkeypatch):
 
 
 def test_editor_with_feature_wo_label_and_note(monkeypatch):
+    from pydna import editor
     Popen = mock.MagicMock(name="subprocess.Popen")    
     monkeypatch.setattr("subprocess.Popen", Popen)
     monkeypatch.setenv("pydna_ape", "path/to/ape")

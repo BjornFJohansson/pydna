@@ -4,10 +4,10 @@
 
 import pytest
 from pydna.readers      import read
-from pydna.genbankfixer import gbtext_clean
 
 
 def test_pydna_gbtext_clean():
+    from pydna.genbankfixer import gbtext_clean
 
     files = [    ("sequence.gb", "j2yAlBCZ-txSTCkakAmykAielRI"),
                  ("NCBI_example.gb", "j2yAlBCZ-txSTCkakAmykAielRI"),

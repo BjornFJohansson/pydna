@@ -15,7 +15,7 @@ def requests_mock(request):
     
 def test_web(requests_mock, monkeypatch):
     
-    from pydna.download import download_text
+    from pydna import download
     
     monkeypatch.setenv("pydna_cached_funcs", "")
        
@@ -26,7 +26,7 @@ def test_web(requests_mock, monkeypatch):
                            'content-length' : "100"}, 
                   body = flo)
     
-    tx = download_text("http://www.fake.com/hej.txt")    
+    tx = download.download_text("http://www.fake.com/hej.txt")    
     
     assert tx=="some text data"
 

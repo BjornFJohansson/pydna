@@ -305,9 +305,23 @@ def test_revcomp():
     
     assert str(a.features[0].extract(a).seq) == "ttcc"
     
+    assert a.features[0].location.strand == 1
+    
     rc=a.rc()
 
     assert str(rc.features[0].extract(rc).seq) == "ttcc"
+    
+    assert rc.features[0].location.strand == -1
+    
+    a=Dseqrecord("attcccgggg")
+    
+    a.add_feature(1,5)
+    
+    a.features[0].location.strand = None
+    
+    rc=a.rc()
+    
+    assert rc.features[0].strand == None   
     
 
 def test_m():
