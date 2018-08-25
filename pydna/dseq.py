@@ -218,7 +218,7 @@ class Dseq(_Seq):
 
     Coercing to string
 
-    >>> _pretty_str(a)
+    >>> str(a)
     'ggggtttcccc'
 
     A Dseq object can be longer that either the watson or crick strands.
@@ -999,8 +999,8 @@ class Dseq(_Seq):
        three prime protruding ends by a DNA polymerase providing both
        5'-3' DNA polymerase activity and 3'-5' nuclease acitivty
        (such as T4 DNA polymerase). This can be done in presence of any
-       combination of the four A, G, C or T. Default are all four
-       nucleotides together.
+       combination of the four A, G, C or T. Removing one or more nucleotides
+       can facilitate engineering of sticky ends. Default are all four nucleotides together.
 
        Parameters
        ----------
