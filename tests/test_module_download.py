@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import io
 import pytest
 import requests_mock as rm_module
 
@@ -18,7 +16,9 @@ def test_web(requests_mock, monkeypatch):
     from pydna import download
     
     monkeypatch.setenv("pydna_cached_funcs", "")
-       
+    
+    import io
+    
     flo = io.BytesIO(b"some text data")
     
     requests_mock.get("http://www.fake.com/hej.txt", 
@@ -31,7 +31,6 @@ def test_web(requests_mock, monkeypatch):
     assert tx=="some text data"
 
 if __name__ == '__main__':
-    pytest.main([__file__, "-v", "-s", "--cov=pydna","--cov-report=html"])
-    
+    pytest.main([__file__, "-x", "-vv", "-s","--cov=pydna","--cov-report=html"])
 
     

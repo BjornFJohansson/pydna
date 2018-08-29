@@ -3,10 +3,9 @@
 
 
 import pytest
-from pydna.readers      import read
-
 
 def test_pydna_gbtext_clean():
+    from pydna.readers      import read
     from pydna.genbankfixer import gbtext_clean
 
     files = [    ("sequence.gb", "j2yAlBCZ-txSTCkakAmykAielRI"),
@@ -36,4 +35,4 @@ def test_wrapstring():
 
 
 if __name__ == '__main__':
-    pytest.cmdline.main([__file__, "-v", "-s"])
+    pytest.main([__file__, "-x", "-vv", "-s","--cov=pydna","--cov-report=html"])
