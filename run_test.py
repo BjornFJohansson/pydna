@@ -84,6 +84,7 @@ def main():
     
     try:
         shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
+        shutil.copy(os.path.join("tests",".coverage"),    ".coverage")
     except FileNotFoundError:
         pass    
 
