@@ -1,0 +1,29 @@
+name: testenv37
+channels:
+- conda-forge
+- BjornFJohansson
+dependencies:
+- python=3.7
+- appdirs
+- biopython
+- prettytable
+- networkx
+- ordered-set
+- pyparsing
+
+- requests
+
+- ipython
+- jupyter
+- numpy
+- scipy
+- matplotlib
+- mpldatacursor
+- pint
+
+- pytest
+- pytest-runner
+- nbval
+
+- setuptools
+- requests-mock

@@ -141,8 +141,12 @@ then
     conda-build -V
     conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
     conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnacondabuild37 python=3.7 anaconda-client pypandoc pandoc nbval
+    
     conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client pypandoc pandoc urllib3  
     conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client pypandoc pandoc
+    conda create -yq -n pydnapipbuild37   python=3.7 anaconda-client pypandoc pandoc
+
     conda create -yq -n twine             python=3.5 twine pyOpenSSL ndg-httpsclient pyasn1
     rm -rf dist
     rm -rf build
@@ -155,6 +159,8 @@ then
     conda build --python 3.5 --no-include-recipe --dirty .
     source activate pydnacondabuild36
     conda build --python 3.6 --no-include-recipe --dirty .
+    source activate pydnacondabuild37
+    conda build --python 3.7 --no-include-recipe --dirty .
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
         set +x
@@ -174,6 +180,8 @@ then
         python setup.py build bdist_wheel bdist_egg
         source activate pydnapipbuild36
         conda upgrade -yq pip
+        source activate pydnapipbuild37
+        conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]] # bdist_egg, bdist_wheel do not handle alpha versions, so no upload unless final release.
         then
@@ -189,6 +197,8 @@ then
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
         source activate pydnapipbuild36
+        conda upgrade -yq pip
+        source activate pydnapipbuild37
         conda upgrade -yq pip
         python setup.py build bdist_wheel bdist_egg
         if [[ $condalabel = "main" ]] # bdist_wininst does not handle alpha versions, so no upload unless final release.
@@ -208,6 +218,9 @@ then
         source activate pydnapipbuild36
         conda upgrade -yq pip
         python setup.py sdist --formats=zip
+        source activate pydnapipbuild37
+        conda upgrade -yq pip
+        python setup.py sdist --formats=zip
         source activate twine       
         twine upload -r $pypiserver dist/pydna*.zip --skip-existing
     elif [[ $local_computer = true ]]
@@ -217,6 +230,9 @@ then
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
         source activate pydnapipbuild36
+        conda upgrade -yq pip
+        python setup.py sdist --formats=zip bdist_wheel
+        source activate pydnapipbuild37
         conda upgrade -yq pip
         python setup.py sdist --formats=zip bdist_wheel
         source activate twine
@@ -245,18 +261,28 @@ else
     which python
     python --version
     python run_test.py
+    echo "create test environment for python 3.7"
+    conda env create -f test_environment37.yml
+    source activate testenv37
+    which python
+    python --version
+    python run_test.py
     source activate root
     conda remove -n testenv35 --all -q
     conda remove -n testenv36 --all -q
+    conda remove -n testenv37 --all -q
     if [[ $local_computer = true ]]
     then
         conda remove -n pydnacondabuild35 --all -q
         conda remove -n pydnacondabuild36 --all -q
+        conda remove -n pydnacondabuild37 --all -q
         conda remove -n pydnapipbuild35   --all -q
         conda remove -n pydnapipbuild36   --all -q
+        conda remove -n pydnapipbuild37   --all -q
         conda remove -n twine             --all -q
         source activate root
         conda remove -n testenv35 --all -q
         conda remove -n testenv36 --all -q
+        conda remove -n testenv37 --all -q
     fi
 fi
