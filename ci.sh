@@ -137,11 +137,12 @@ set -x
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    conda install -yq conda-build
+    conda install -yq conda-build conda-verify
+    echo "conda-build version used:"
     conda-build -V
-    conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval conda-verify
-    conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval conda-verify
-    conda create -yq -n pydnacondabuild37 python=3.7 anaconda-client pypandoc pandoc nbval conda-verify
+    conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
+    conda create -yq -n pydnacondabuild37 python=3.7 anaconda-client pypandoc pandoc nbval
     
     conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client pypandoc pandoc urllib3  
     conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client pypandoc pandoc
@@ -153,8 +154,10 @@ then
     rm -rf tests/htmlcov
     pth1="$(conda build . --output --py 3.5)"
     pth2="$(conda build . --output --py 3.6)"
+    pth3="$(conda build . --output --py 3.7)"
     echo $pth1
     echo $pth2
+    echo $pth3
     source activate pydnacondabuild35
     conda build --python 3.5 --no-include-recipe --dirty .
     source activate pydnacondabuild36
@@ -166,10 +169,12 @@ then
         set +x
         anaconda -t $TOKEN upload $pth1 --label $condalabel --force
         anaconda -t $TOKEN upload $pth2 --label $condalabel --force
+        anaconda -t $TOKEN upload $pth3 --label $condalabel --force
         set -x
     else
         anaconda upload $pth1 --label $condalabel --force
         anaconda upload $pth2 --label $condalabel --force
+        anaconda upload $pth3 --label $condalabel --force
     fi
 
     if [[ $TRAVIS = true ]] # MacOSX on Travis
