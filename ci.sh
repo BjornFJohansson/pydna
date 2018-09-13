@@ -137,7 +137,8 @@ set -x
 if [[ $tagged_commit = true ]]
 then
     echo "build conda package and setuptools package(s)"
-    conda install -yq conda-build conda-verify
+    conda install -yq -c anaconda conda-build
+    conda install -yq -c anaconda conda-verify
     echo "conda-build version used:"
     conda-build -V
     conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
