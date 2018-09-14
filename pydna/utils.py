@@ -242,7 +242,7 @@ def SmallestRotation(s):
 def identifier_from_string(s:str) -> str:
     '''This function returns a string that is a valid python identifier based on the argument s or an empty string'''
     s=s.strip()
-    s = _re.sub("\s+","_",s)
+    s = _re.sub(r"\s+",r"_",s)
     s.replace("-", "_")
     s = _re.sub('[^0-9a-zA-Z_]', '', s)
     if s and not s[0].isidentifier() or _keyword.iskeyword(s):

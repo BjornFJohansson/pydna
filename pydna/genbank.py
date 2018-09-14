@@ -45,7 +45,7 @@ class Genbank(object):
 
     def __init__(self, users_email:str, *args, tool="pydna", **kwargs):
         
-        if not _re.match("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,_re.IGNORECASE):
+        if not _re.match(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}",users_email,_re.IGNORECASE):
             raise ValueError("email address {} is not valid.".format(users_email))
             
         _module_logger.info("#### Genbank ititiation ####")
@@ -107,10 +107,10 @@ class Genbank(object):
         .. [#]   http://www.dsimb.inserm.fr/~fuchs/M2BI/AnalSeq/Annexes/Sequences/Accession_Numbers.htm
         .. [#]   http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EFetch
         '''
-        matches =((1, _re.search("(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
-                  (2, _re.search("(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))",item)),
-                  (1, _re.search(":(?P<start>\d+)-(?P<stop>\d+)",item)),
-                  (2, _re.search(":c(?P<start>\d+)-(?P<stop>\d+)",item)))
+        matches =((1, _re.search(r"(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
+                  (2, _re.search(r"(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))",item)),
+                  (1, _re.search(r":(?P<start>\d+)-(?P<stop>\d+)",item)),
+                  (2, _re.search(r":c(?P<start>\d+)-(?P<stop>\d+)",item)))
 
         for strand_, match in matches:
             if match:

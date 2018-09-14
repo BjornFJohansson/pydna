@@ -142,7 +142,7 @@ class Anneal(object, metaclass = _Memoize):
                   primerc=1000.0, # nM
                   saltc=50,       # mM
                   **kwargs):      
-        '''The Anneal class has to be initiated with at least an iterable of primers and a template.
+        r'''The Anneal class has to be initiated with at least an iterable of primers and a template.
 
 
 
@@ -179,8 +179,8 @@ class Anneal(object, metaclass = _Memoize):
         >>> from pydna.dseqrecord import Dseqrecord
         >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
         >>> from Bio.SeqRecord import SeqRecord
-        >>> p1 = read(">p1\\ntacactcaccgtctatcattatc", ds = False)
-        >>> p2 = read(">p2\\ngtgctatcagatgatacagtcg", ds = False)
+        >>> p1 = read(">p1\ntacactcaccgtctatcattatc", ds = False)
+        >>> p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
         >>> ann = Anneal((p1, p2), template)
         >>> print(ann.report())
         Template name 51 nt linear:

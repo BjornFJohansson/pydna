@@ -521,7 +521,7 @@ class Dseqrecord(_SeqRecord):
                                          otop={True:"-", False:"o"}[old_file.linear])
                 with open(filename, "w") as fp: fp.write(self.format(f))
             elif "SEGUID" in old_file.description:
-                pattern = "(lSEGUID|cSEGUID|SEGUID)_\s*(\S{27})_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}"
+                pattern = r"(lSEGUID|cSEGUID|SEGUID)_\s*(\S{27})_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}"
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description

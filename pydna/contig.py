@@ -167,7 +167,7 @@ class Contig(_Dseqrecord):
 
 
             fig = ("{name}|{o2:>2}\n"
-                   "{space2} \/\n"
+                   "{space2} \\/\n"
                    "{space2} /\\\n").format(name   = f["seq"].name,
                                             o2     = self.graph.node[self.path[1]]["length"],
                                             space2 = " "*space2)
@@ -179,7 +179,7 @@ class Contig(_Dseqrecord):
                 space2 = len(name)
                 
                 fig +=("{space} {name}{o2:>2}\n"
-                       "{space} {space2}\/\n"
+                       "{space} {space2}\\/\n"
                        "{space} {space2}/\\\n").format( name   = name,
                                                         o2     = self.graph.node[self.path[i+2]]["length"],
                                                         space  = " "*space,
@@ -193,7 +193,7 @@ class Contig(_Dseqrecord):
 
 
         else:
-            '''
+            r'''
              -|2577|61
             |       \/
             |       /\
@@ -213,7 +213,7 @@ class Contig(_Dseqrecord):
             space = len(f["seq"].name)+3
             
             fig =(" -|{name}|{o2:>2}\n"
-                  "|{space}\/\n"
+                  "|{space}\\/\n"
                   "|{space}/\\\n").format( name = f["seq"].name,
                                            o2 = self.graph.node[self.path[1]]["length"],
                                            space = " "*space )
@@ -223,7 +223,7 @@ class Contig(_Dseqrecord):
                                                name = f["seq"].name)
                 space2 = len(name)
                 fig +=("|{space}{name}{o2:>2}\n"
-                       "|{space}{space2}\/\n"
+                       "|{space}{space2}\\/\n"
                        "|{space}{space2}/\\\n").format( o2     = self.graph.node[self.path[i+2]]["length"],
                                                         name   = name,
                                                         space  = " "*space,

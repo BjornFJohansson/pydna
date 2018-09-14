@@ -355,7 +355,7 @@ class SeqRecord(_SeqRecord):
             linear = True
         alg = {True:"SEGUID", False:"cSEGUID"}[linear]        
         chksum = getattr(self, alg.lower())()        
-        pattern = "(SEGUID|cSEGUID)_\s*(\S{27})_(\S{26})"
+        pattern = r"(SEGUID|cSEGUID)_\s*(\S{27})_(\S{26})"
         oldstamp = _re.search(pattern, self.description)
         
         if oldstamp:

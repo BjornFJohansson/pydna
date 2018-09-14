@@ -188,7 +188,7 @@ class Amplicon(_Dseqrecord):
 
     def program(self):
 
-        '''Returns a string containing a text representation of a proposed
+        r'''Returns a string containing a text representation of a proposed
        PCR program using Taq or similar polymerase.
 
        ::
@@ -234,7 +234,7 @@ class Amplicon(_Dseqrecord):
         # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
         taq_extension_rate = 30  # seconds/kB PCR product length
         extension_time_taq = int(round(taq_extension_rate * len(self) / 1000)) # seconds
-        f  = _textwrap.dedent('''
+        f  = _textwrap.dedent(r'''
                                  Taq (rate {rate} nt/s) 35 cycles             |{size}bp
                                  95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
                                  |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
@@ -257,7 +257,7 @@ class Amplicon(_Dseqrecord):
 
 
     def dbd_program(self):
-        '''Returns a string containing a text representation of a proposed
+        r'''Returns a string containing a text representation of a proposed
        PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.
 
        ::
@@ -288,7 +288,7 @@ class Amplicon(_Dseqrecord):
         length_of_r = len(self.reverse_primer.footprint)
 
         if (length_of_f>20 and length_of_r>20 and tmf_dbd>=69.0 and tmr_dbd>=69.0) or (tmf_dbd>=72.0 and tmr_dbd>=72.0):
-            f=_textwrap.dedent(  '''
+            f=_textwrap.dedent( r'''
                                     Pfu-Sso7d (rate {rate}s/kb)
                                     Two-step|    30 cycles |      |{size}bp
                                     98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
@@ -311,7 +311,7 @@ class Amplicon(_Dseqrecord):
             else:
                 ta = min(tmf_dbd,tmr_dbd)
 
-            f=_textwrap.dedent(  '''
+            f=_textwrap.dedent( r'''
                                     Pfu-Sso7d (rate {rate}s/kb)                 |{size}bp
                                     Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM

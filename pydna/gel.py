@@ -637,11 +637,11 @@ def vWBRfit(field, percentage, DNAvals=_np.linspace(100, 50000, 100),
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(_mtick.FormatStrFormatter('%d'))
         ax.tick_params(which='both', top='off', right='off')
-        ax.set_xlabel('$\mathrm{DNA\,length\,(bp)}$', fontsize=14)
+        ax.set_xlabel(r'$\mathrm{DNA\,length\,(bp)}$', fontsize=14)
         ax.set_ylabel(r'$\mu\times{10^{8}}\,(\mathrm{m^{2}/V\cdot s})$',
                       fontsize=14)
-        ax.set_title('$\mu_S=%.2e,\,\mu_L=%.2e\,\mathrm{cm^2/(V.s)},\,'
-                     '\gamma=%d \mathrm{bp}$' % (muS, muL, gamma))
+        ax.set_title(r'$\mu_S=%.2e,\,\mu_L=%.2e\,\mathrm{cm^2/(V.s)},\,'
+                     r'\gamma=%d \mathrm{bp}$' % (muS, muL, gamma))
         ax.legend().draggable()
         _plt.show()
     return pars, cov, infodict, mesg, ier
@@ -706,15 +706,15 @@ def ferguson_to_mu0(field, Tvals, DNAvals, dataset, mu_func,
                     color=colors[l])
         ax.set_xlim(0)
         # ax.set_ylim(-10, -7.5)
-        ax.legend(title='$\mathrm{DNA size (bp)}$',
+        ax.legend(title=r'$\mathrm{DNA size (bp)}$',
                   prop={'size': 10}).draggable()
         ax.tick_params(which='both', top='off', right='off')
-        ax.set_xlabel('$\%\,agarose$', fontsize=14)
-        ax.set_ylabel('$\mathrm{ln(mobility\,[cm^{2}/V sec])}$',
+        ax.set_xlabel(r'$\%\,agarose$', fontsize=14)
+        ax.set_ylabel(r'$\mathrm{ln(mobility\,[cm^{2}/V sec])}$',
                       fontsize=14)
-        ax.set_title('$\mathrm{Ferguson\,plot}$'+'\n'+\
-                     '$\mathrm{ln(mobility)\,vs.\,\%\,agarose\,}$'+\
-                     '$\mathrm{(field=%.3f\,V/cm)}$' %field.magnitude)
+        ax.set_title(r'$\mathrm{Ferguson\,plot}$'+'\n'+\
+                     r'$\mathrm{ln(mobility)\,vs.\,\%\,agarose\,}$'+\
+                     r'$\mathrm{(field=%.3f\,V/cm)}$' %field.magnitude)
         _plt.show()
     return mu0  # cm^2/(V.seg)
 
