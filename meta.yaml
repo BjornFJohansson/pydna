@@ -12,12 +12,12 @@ source:
 
 requirements:
     build:
-        - python
+        - python {{ python }}
         - setuptools
         - pypandoc
         - pandoc
     run:
-        - python
+        - python {{ python }}
         - appdirs
         - biopython
         - prettytable
