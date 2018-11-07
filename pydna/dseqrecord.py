@@ -379,7 +379,7 @@ class Dseqrecord(_SeqRecord):
         return new
 
 
-    def tolinear(self):
+    def tolinear(self): # pragma: no cover
         '''
         Returns a linear, blunt copy of a circular Dseqrecord object. The
         underlying Dseq object has to be circular.

@@ -9,9 +9,6 @@ include run_test.py
 include gpl.txt
 
 recursive-include pydna *
-# recursive-include tests *
-# recursive-include docs *
-# recursive-include scripts *
 
 include versioneer.py
 include pydna/_version.py
