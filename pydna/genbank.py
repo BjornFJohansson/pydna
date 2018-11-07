@@ -96,7 +96,7 @@ class Genbank(object):
         downloaded. 
         
         If strand is 2. "c", "C", "crick", "Crick", "antisense","Antisense",
-        "2" or 2, the antisense (Crick) strand is returned, otherwise
+        "2", 2 or "-", the antisense (Crick) strand is returned, otherwise
         the sense (Watson) strand is returned.
 
         Result is returned as a :class:`pydna.genbankrecord.GenbankRecord` object.
@@ -121,12 +121,11 @@ class Genbank(object):
                 break
         
 
-        if not strand in [1,2]:
+        if strand not in [1,2]:
             try:
-                strand = {"c":2, "crick":2, "antisense":2, "2":2}[strand.lower()]
+                strand = {"c":2, "crick":2, "antisense":2, "2":2, "-":2}[strand.lower()]
             except (KeyError,AttributeError):
                 strand = 1
-
 
         _module_logger.info("#### Genbank download ####")
         _module_logger.info("item  %s", item)
