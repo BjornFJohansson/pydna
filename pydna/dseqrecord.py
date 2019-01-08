@@ -498,7 +498,7 @@ class Dseqrecord(_SeqRecord):
             from pydna.readers import read
             old_file = read(filename)
             if self.seq != old_file.seq:
-                # If new sequence is different, the old file is renamed with "OLD" suffix:
+                # If new sequence is different, the old file is renamed with "_OLD" suffix:
                 # TODO: add this timestamp so that all old versions are stored
                 # int(time.time() * 1000000)  = 1512035297658778
                 old_filename = "{}_OLD{}".format(name, ext)
