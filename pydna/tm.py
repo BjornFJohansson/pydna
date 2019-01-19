@@ -47,10 +47,10 @@ def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
     --------
 
     >>> from pydna.tm import tmstaluc98
-    >>> from Bio.SeqUtils.MeltingTemp import Tm_staluc
+    >>> from Bio.SeqUtils.MeltingTemp import Tm_NN
     >>> tmstaluc98("ACGTCATCGACACTATCATCGAC")
     54.55597724052518
-    >>> Tm_staluc("ACGTCATCGACACTATCATCGAC")
+    >>> Tm_NN("ACGTCATCGACACTATCATCGAC")
     54.55597724052518
 
 
