@@ -23,7 +23,7 @@ dependencies:
 - pint
 
 - pytest
-- coverage
+- coverage>=4.4
 - python-coveralls
 - pytest-cov
 - pytest-runner

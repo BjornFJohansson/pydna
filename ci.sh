@@ -33,14 +33,15 @@ then
     if [[ $tagname =~  $re_final ]]
     then
         echo "Tag indicate Final release"
-        echo "deploy to pypi and anaconda.org with label 'main'."
+        echo "deploy setuptools package pypi."
+        echo "deploy conda package to anaconda.org with label 'main'."
         pypiserver="pypi"
         condalabel="main"
     elif  [[ $tagname =~ $re_pre ]]
     then
         echo "Release tag indicate pre release"
         echo "deploy sdist zip package to pypi "
-        echo "conda package anaconda.org with label 'test'."
+        echo "deploy conda package to anaconda.org with label 'main'."
         pypiserver="testpypi"
         condalabel="test"
     else

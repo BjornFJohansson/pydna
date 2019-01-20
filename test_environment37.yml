@@ -23,6 +23,7 @@ dependencies:
 - pint
 
 - pytest
+- coverage>=4.4
 - pytest-runner
 - nbval
 
