@@ -1,5 +1,6 @@
 name: testenv37
 channels:
+- defaults
 - conda-forge
 - BjornFJohansson
 dependencies:

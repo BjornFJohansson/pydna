@@ -1,5 +1,6 @@
 name: testenv36
 channels:
+- defaults
 - conda-forge
 - BjornFJohansson
 dependencies:
