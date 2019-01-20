@@ -5,7 +5,7 @@ import pytest, appdirs, tempfile,  os, shutil, subprocess, sys
 
 from unittest import mock
 
-#import importlib
+import textwrap
 
 
 def test_makedirs_fail(monkeypatch, caplog):
@@ -123,13 +123,15 @@ def test_no_xdg_open(monkeypatch):
    
 def test_logo():
     import pydna
-    assert pydna.logo() == str("                 _             \n"       
-                               "                | |            \n"            
-                               " ____  _   _  __| |___   __ ___\n"
-                               "|  _ \| | | |/ _  |  _ \(____ |\n"
-                               "| |_| | |_| ( (_| | | | / ___ |\n"
-                               "|  __/ \__  |\____|_| |_\_____|\n"
-                               "|_|   (____/                   \n")
+    assert pydna.logo() == textwrap.dedent(r"""
+                     _             
+                    | |            
+     ____  _   _  __| |___   __ ___
+    |  _ \| | | |/ _  |  _ \(____ |
+    | |_| | |_| ( (_| | | | / ___ |
+    |  __/ \__  |\____|_| |_\_____|
+    |_|   (____/
+    """[1:])
 
 if __name__ == '__main__':
     pytest.main([__file__, "-vv", "-s", "--cov=pydna","--cov-report=html"])
