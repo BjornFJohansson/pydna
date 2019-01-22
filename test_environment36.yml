@@ -23,9 +23,11 @@ dependencies:
 - pint
 
 - pytest
+- pytest-cov
+- pytest-mock
+- pytest-runner
 - coverage
 - coveralls
-- pytest-runner
 - nbval
 
 - setuptools
