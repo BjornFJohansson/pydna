@@ -654,6 +654,7 @@ def test_36(monkeypatch):
     from collections import namedtuple
     Mock_version_info = namedtuple('version_info', "major minor micro releaselevel serial")
     mvi36 = Mock_version_info(major=3, minor=6, micro=5, releaselevel='final', serial=0)
+    import pathlib2
     monkeypatch.setattr("sys.version_info", mvi36)
     from pydna.assembly import _od
     assert _od==dict

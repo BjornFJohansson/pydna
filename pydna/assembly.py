@@ -40,7 +40,7 @@ graph.
 '''
 import sys
     
-if sys.version_info[1] < 6:
+if sys.version_info < (3, 6):
     from collections import OrderedDict as _od
 else:
     _od = dict
