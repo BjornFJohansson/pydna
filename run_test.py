@@ -61,10 +61,10 @@ def main():
     try:
         import coveralls
     except ImportError:
-        print("python-coveralls NOT installed!")
+        print("coveralls-python NOT installed!")
         args = []
     else:
-        print("python-coveralls is installed!")
+        print("coveralls-python is installed!")
         del coveralls
         args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
     try:

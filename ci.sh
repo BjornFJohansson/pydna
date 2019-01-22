@@ -97,7 +97,6 @@ then
     then
         echo "Running on APPVEYOR, use installed Miniconda for Windows"
         miniconda="source appveyor_source_file.sh"
-        #miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe -O Miniconda_latest.sh"
     elif [[ $CIRCLECI = true ]]
     then
         miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
@@ -287,9 +286,5 @@ else
         conda remove -n pydnapipbuild36   --all -q
         conda remove -n pydnapipbuild37   --all -q
         conda remove -n twine             --all -q
-        source activate root
-        conda remove -n testenv35 --all -q
-        conda remove -n testenv36 --all -q
-        conda remove -n testenv37 --all -q
     fi
 fi
