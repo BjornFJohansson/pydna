@@ -651,6 +651,8 @@ def test_35(monkeypatch):
 def test_36(monkeypatch):
     import sys
     sys.modules.pop("pydna.assembly", None)
+    sys.modules.pop("os", None)
+    sys.modules.pop("pathlib2", None)
     from collections import namedtuple
     Mock_version_info = namedtuple('version_info', "major minor micro releaselevel serial")
     mvi36 = Mock_version_info(major=3, minor=6, micro=5, releaselevel='final', serial=0)
