@@ -638,6 +638,7 @@ def test_35_36(monkeypatch):
     import sys
     from pydna.assembly import _od
     if sys.version_info < (3, 6):
+        from collections import OrderedDict
         assert _od==OrderedDict
     else:
         assert _od==dict
