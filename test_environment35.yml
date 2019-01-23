@@ -33,4 +33,4 @@ dependencies:
 - setuptools
 - requests-mock
 
-
+- pyfiglet

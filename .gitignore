@@ -1,5 +1,4 @@
-.pytest_cache/
-
+.pytest_cache
 
 # Backup files
 *~

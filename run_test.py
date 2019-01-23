@@ -1,10 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
 import os
 import shutil
 import logging
 import tempfile
 import pytest
+try:
+    from pyfiglet import Figlet
+except ImportError: 
+    asciitext = print
+else:
+    def asciitext(*args,**kwargs):
+        f = Figlet(font='standard') 
+        print(f.renderText(" ".join(args)), **kwargs)
+
 
 def main():
 
@@ -38,25 +48,8 @@ def main():
         os.environ["pydna_log_dir"]     = tempfile.mkdtemp(prefix="pydna_log_dir_")
         os.environ["pydna_config_dir"]  = tempfile.mkdtemp(prefix="pydna_config_dir_")
         os.environ["pydna_loglevel"]    = str( logging.DEBUG )
-          
-    print("     _            _            _         ")
-    print("    | |          | |          | |        ")
-    print("  __| | ___   ___| |_ ___  ___| |_ ___   ")
-    print(" / _` |/ _ \ / __| __/ _ \/ __| __/ __|  ")
-    print("| (_| | (_) | (__| ||  __/\__ \ |_\__ \  ")
-    print(" \__,_|\___/ \___|\__\___||___/\__|___/  ")
-
-    doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
-    pytest.cmdline.main(doctestargs)
-
-    print("           _ _       _ ")
-    print("          (_) |     | |")
-    print(" ___ _   _ _| |_ ___| |")
-    print("/ __| | | | | __/ _ \ |")
-    print("\__ \ |_| | | ||  __/_|")
-    print("|___/\__,_|_|\__\___(_)")
-    print("                       ")
-    print("                       ")
+    
+    asciitext("test suite")
     
     try:
         import coveralls
@@ -79,22 +72,23 @@ def main():
     mainargs = [".", "-vv", "-s"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
-    pytest.cmdline.main(mainargs)
+    result_suite = pytest.cmdline.main(mainargs)
     os.chdir(cwd)
     
     try:
         shutil.copy(os.path.join("tests","coverage.xml"), "coverage.xml")
         shutil.copy(os.path.join("tests",".coverage"),    ".coverage")
     except FileNotFoundError:
-        pass    
+        pass
 
-    print("  __ _       _     _              _ _ ")
-    print(" / _(_)     (_)   | |            | | |")
-    print("| |_ _ _ __  _ ___| |__   ___  __| | |")
-    print("|  _| | '_ \| / __| '_ \ / _ \/ _` | |")
-    print("| | | | | | | \__ \ | | |  __/ (_| |_|")
-    print("|_| |_|_| |_|_|___/_| |_|\___|\__,_(_)")
+    asciitext("doc tests")
+    doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
+    result_doctest = pytest.cmdline.main(doctestargs)
 
+    asciitext("done!")
+
+    return result_doctest and result_suite
 
 if __name__ == '__main__':
-    main()
+    result = main()
+    sys.exit(result)
