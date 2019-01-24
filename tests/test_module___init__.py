@@ -100,17 +100,18 @@ def test_read_ini_file():
     import pydna
 
 
-#def test_missing_modules(monkeypatch):
-#    find_spec_orig = importlib.util.find_spec
-#    def mocked_find_spec(name, *args):
-#        if name == 'scipy':
-#            return None
-#        return find_spec_orig(name, *args)
-#    with monkeypatch.context() as m:
-#        m.setattr("pydna._importlib.util.find_spec", mocked_find_spec)
-#        sys.modules.pop("pydna", None)
-#        import pydna
-#        assert  "scipy" in pydna._missing_modules_for_gel
+def test_missing_modules(monkeypatch):
+    import importlib
+    find_spec_orig = importlib.util.find_spec
+    def mocked_find_spec(name, *args):
+        if name == 'scipy':
+            return None
+        return find_spec_orig(name, *args)
+    with monkeypatch.context() as m:
+        m.setattr("pydna._importlib.util.find_spec", mocked_find_spec)
+        sys.modules.pop("pydna", None)
+        import pydna
+        assert  "scipy" in pydna._missing_modules_for_gel
     
     
 def test_no_xdg_open(monkeypatch):
