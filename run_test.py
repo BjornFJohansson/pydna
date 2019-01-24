@@ -5,6 +5,7 @@ import os
 import shutil
 import logging
 import tempfile
+import platform
 import pytest
 try:
     from pyfiglet import Figlet
@@ -49,7 +50,7 @@ def main():
         os.environ["pydna_config_dir"]  = tempfile.mkdtemp(prefix="pydna_config_dir_")
         os.environ["pydna_loglevel"]    = str( logging.DEBUG )
     
-    asciitext("test suite")
+    asciitext("test suite", platform.python_version())
     
     try:
         import coveralls
@@ -81,11 +82,11 @@ def main():
     except FileNotFoundError:
         pass
 
-    asciitext("doc tests")
+    asciitext("doc tests", platform.python_version())
     doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
-    asciitext("done!")
+    asciitext("done!", platform.python_version())
 
     return result_doctest and result_suite
 
