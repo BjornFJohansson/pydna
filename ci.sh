@@ -273,12 +273,9 @@ else
     which python
     python --version
     python run_test.py
-    source activate root
-    conda remove -n testenv35 --all -q
-    conda remove -n testenv36 --all -q
-    conda remove -n testenv37 --all -q
     if [[ $local_computer = true ]]
     then
+        source activate root
         conda remove -n pydnacondabuild35 --all -q
         conda remove -n pydnacondabuild36 --all -q
         conda remove -n pydnacondabuild37 --all -q
@@ -286,5 +283,8 @@ else
         conda remove -n pydnapipbuild36   --all -q
         conda remove -n pydnapipbuild37   --all -q
         conda remove -n twine             --all -q
+        conda remove -n testenv35         --all -q
+        conda remove -n testenv36         --all -q
+        conda remove -n testenv37         --all -q
     fi
 fi
