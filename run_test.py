@@ -50,7 +50,7 @@ def main():
         os.environ["pydna_config_dir"]  = tempfile.mkdtemp(prefix="pydna_config_dir_")
         os.environ["pydna_loglevel"]    = str( logging.DEBUG )
     
-    asciitext("test suite", platform.python_version())
+    asciitext("test suite on python {}".format(platform.python_version()))
     
     try:
         import coveralls
@@ -82,11 +82,11 @@ def main():
     except FileNotFoundError:
         pass
 
-    asciitext("doc tests", platform.python_version())
+    asciitext("doc testson python {}".format(platform.python_version()))
     doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
-    asciitext("done!", platform.python_version())
+    asciitext("done! python {}".format(platform.python_version()))
 
     return result_doctest and result_suite
 

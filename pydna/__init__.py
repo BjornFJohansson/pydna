@@ -202,17 +202,18 @@ _logger.info('Environmental variable pydna_primers      = %s', _os.environ["pydn
 _os.makedirs( _os.environ["pydna_data_dir"], exist_ok=True)                              #### changes to file system ####
 
 # find out if optional dependecies for gel module are in place
-_missing_modules_for_gel = []
 
+import importlib  as _importlib
 def _missing_modules_for_gel():
-    import importlib  as _importlib
     _missing = []
     for _optm in ["scipy","numpy", "matplotlib", "mpldatacursor", "pint"]:        
         _missing.extend( [_optm] if not _importlib.util.find_spec(_optm) else [])
     return _missing
 
-if _missing_modules_for_gel():
-    _logger.warning("gel simulation will NOT be available. Missing modules: %s", ", ".join(_missing_modules_for_gel))
+_missing = _missing_modules_for_gel()
+
+if _missing:
+    _logger.warning("gel simulation will NOT be available. Missing modules: %s", ", ".join(_missing))
 else:
     _logger.info("gel simulation is available, optional dependencies were found.")
 
