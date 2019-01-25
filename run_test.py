@@ -13,7 +13,7 @@ except ImportError:
     asciitext = print
 else:
     def asciitext(*args,**kwargs):
-        f = Figlet(font='standard') 
+        f = Figlet(font='doom') 
         print(f.renderText(" ".join(args)), **kwargs)
 
 
@@ -86,7 +86,7 @@ def main():
     doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
-    asciitext("done! python {}".format(platform.python_version()))
+    asciitext("done!")
 
     return result_doctest and result_suite
 

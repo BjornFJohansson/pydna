@@ -125,12 +125,12 @@ else
     local_computer=true
 fi
 
-set -x
+
 
 
 
 echo "====================create conda environments================="
-
+set -x
 
 
 
