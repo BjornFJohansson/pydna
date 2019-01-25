@@ -10,17 +10,10 @@ for line in open('pydna/__init__.py', encoding="utf-8"):
 
 from setuptools import setup
 
-with open("README.md") as f:
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
-
-try:
-    from pypandoc import convert_file
-except ImportError:
-    print("warning: pypandoc module not found, could not convert Markdown to RST")
-    with open("README.md", encoding="utf-8") as f:
-        long_description = f.read()
-else:
-    long_description = "\n"+convert_file("README.md", 'rst')                                    
 
 setup(  name            = 'pydna',
         version=versioneer.get_version()[:5],
@@ -35,6 +28,7 @@ setup(  name            = 'pydna',
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
         long_description=long_description,
+        long_description_content_type='text/markdown',
         install_requires = ["appdirs", "biopython", "prettytable",  "networkx", "pyparsing", "requests"],
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',

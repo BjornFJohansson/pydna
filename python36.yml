@@ -1,10 +1,10 @@
-name: testenv37
+name: python36
 channels:
 - defaults
 - conda-forge
 - BjornFJohansson
 dependencies:
-- python=3.7
+- python=3.6
 - appdirs
 - biopython
 - prettytable
@@ -12,6 +12,7 @@ dependencies:
 - ordered-set
 - pyparsing
 
+- anaconda-client
 - requests
 
 - ipython
@@ -23,9 +24,11 @@ dependencies:
 - pint
 
 - pytest
+- pytest-cov
+- pytest-mock
+- pytest-runner
 - coverage
 - coveralls
-- pytest-runner
 - nbval
 
 - setuptools

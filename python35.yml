@@ -1,4 +1,4 @@
-name: testenv35
+name: python35
 channels:
 - defaults
 - conda-forge
@@ -12,25 +12,21 @@ dependencies:
 - ordered-set
 - pyparsing
 
-
-
 - ipython
 - jupyter
 - numpy
 - scipy
 - matplotlib
+
+- urllib3
 - mpldatacursor
 - pint
-
 - pytest
 - coverage
-#- python-coveralls
 - coveralls
 - pytest-cov
 - pytest-runner
 - nbval
-
 - setuptools
 - requests-mock
-
 - pyfiglet

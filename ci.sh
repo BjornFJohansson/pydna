@@ -35,18 +35,17 @@ then
         echo "Tag indicate Final release"
         echo "deploy setuptools package pypi."
         echo "deploy conda package to anaconda.org with label 'main'."
-        pypiserver="pypi"
         condalabel="main"
     elif  [[ $tagname =~ $re_pre ]]
     then
         echo "Release tag indicate pre release"
-        echo "deploy sdist zip package to pypi "
-        echo "deploy conda package to anaconda.org with label 'main'."
-        pypiserver="testpypi"
+        echo "deploy to pypi "
+        echo "deploy to anaconda.org with label 'test'."
+        TWINE_REPOSITORY="https://test.pypi.org"
         condalabel="test"
     else
-        echo "Build cancelled because"
-        echo "release tag ($tagname) was not recognized"
+        echo "Testing but no build"
+        echo "git tag ($tagname) was not recognized"
         echo "or"
         echo "$dirty != $tagname"
         exit 0
@@ -66,29 +65,23 @@ else
 
 unset VIRTUAL_ENV
 fi
-echo "=============================================================="
+
+
+
+
+
+
+
+
+
+
+
 if [[ $CI = true ]]||[[ $CI = True ]]
 then
-    echo "Running on CI server"
-    echo "Creating a .pypirc file for setuptools"
-    echo "[server-login]
-    username: $pypiusername
-    password: $pypipassword
-
-    [distutils]
-    index-servers=
-        pypi
-        testpypi
-
-    [testpypi]
-    repository = https://test.pypi.org/legacy/
-    username = $pypiusername
-    password = $pypipassword
-
-    [pypi]
-    username = $pypiusername
-    password = $pypipassword" > $HOME/.pypirc
-
+    echo "====================Running on CI server======================"
+    [[ ! -z "$TWINE_USERNAME" ]] && echo "TWINE_USERNAME is set" || echo "TWINE_USERNAME is empty"
+    [[ ! -z "$TWINE_PASSWORD" ]] && echo "TWINE_PASSWORD is set" || echo "TWINE_PASSWORD is empty"
+    [[ ! -z "$ANACONDATOKEN" ]]  && echo "ANACONDATOKEN is set"  || echo "ANACONDATOKEN is empty"
     if [[ $TRAVIS = true ]]
     then
         echo "Running on TRAVIS, download Miniconda for MacOSX"
@@ -125,7 +118,7 @@ then
     #conda install jinja2 -yq
     conda update -yq conda
     conda update -yq pip
-    conda config --prepend channels conda-forge 
+    conda config --append channels conda-forge 
     conda config --append channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
@@ -134,22 +127,32 @@ fi
 
 set -x
 
+
+
+echo "====================create conda environments================="
+
+
+
+
+
+
+conda env create -f python35.yml
+conda env create -f python36.yml
+conda env create -f python37.yml
+
+
+
+
+
+
+
 if [[ $tagged_commit = true ]]
 then
-    echo "build conda package and setuptools package(s)"
+    echo "========build conda package and setuptools package(s)========="
     conda install -yq -c anaconda conda-build
     conda install -yq -c anaconda conda-verify
     echo "conda-build version used:"
     conda-build -V
-    conda create -yq -n pydnacondabuild35 python=3.5 anaconda-client pypandoc pandoc nbval
-    conda create -yq -n pydnacondabuild36 python=3.6 anaconda-client pypandoc pandoc nbval
-    conda create -yq -n pydnacondabuild37 python=3.7 anaconda-client pypandoc pandoc nbval
-    
-    conda create -yq -n pydnapipbuild35   python=3.5 anaconda-client pypandoc pandoc urllib3  
-    conda create -yq -n pydnapipbuild36   python=3.6 anaconda-client pypandoc pandoc
-    conda create -yq -n pydnapipbuild37   python=3.7 anaconda-client pypandoc pandoc
-
-    conda create -yq -n twine             python=3.5 twine pyOpenSSL ndg-httpsclient pyasn1
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
@@ -159,11 +162,11 @@ then
     echo $pth1
     echo $pth2
     echo $pth3
-    source activate pydnacondabuild35
+    source activate python35
     conda build --python 3.5 --no-include-recipe --dirty .
-    source activate pydnacondabuild36
+    source activate python36
     conda build --python 3.6 --no-include-recipe --dirty .
-    source activate pydnacondabuild37
+    source activate python37
     conda build --python 3.7 --no-include-recipe --dirty .
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
@@ -180,70 +183,43 @@ then
 
     if [[ $TRAVIS = true ]] # MacOSX on Travis
     then
-        brew update
-        source activate pydnapipbuild35
-        conda upgrade -yq pip
+        #brew update
+        source activate python35
         python setup.py build bdist_wheel bdist_egg
-        source activate pydnapipbuild36
-        conda upgrade -yq pip
-        source activate pydnapipbuild37
-        conda upgrade -yq pip
+        source activate python36
         python setup.py build bdist_wheel bdist_egg
-        if [[ $condalabel = "main" ]] # bdist_egg, bdist_wheel do not handle alpha versions, so no upload unless final release.
-        then
-            source activate twine
-            twine upload -r $pypiserver dist/pydna*.whl --skip-existing
-            twine upload -r $pypiserver dist/pydna*.egg --skip-existing
-        else
-            echo "pre release, no upload to pypi."
-        fi
+        source activate python37
+        python setup.py build bdist_wheel bdist_egg
+        twine upload dist/pydna* --skip-existing
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows on appveyor
     then
-        source activate pydnapipbuild35
-        conda upgrade -yq pip
+        source activate python35
         python setup.py build bdist_wheel bdist_egg
-        source activate pydnapipbuild36
-        conda upgrade -yq pip
-        source activate pydnapipbuild37
-        conda upgrade -yq pip
+        source activate python36
         python setup.py build bdist_wheel bdist_egg
-        if [[ $condalabel = "main" ]] # bdist_wininst does not handle alpha versions, so no upload unless final release.
-        then
-            source activate twine
-            twine upload -r $pypiserver dist/pygenome*.whl --skip-existing
-            twine upload -r $pypiserver dist/pygenome*.egg --skip-existing
-        else
-            echo "pre release, no upload to pypi."
-        fi
+        source activate python37
+        python setup.py build bdist_wheel bdist_egg
+        twine upload dist/pydna* --skip-existing
         appveyor PushArtifact dist/*        
     elif [[ $CI_NAME = codeship ]]  # Linux on codeship
     then
-        source activate pydnapipbuild35
-        conda upgrade -yq pip
-        python setup.py sdist --formats=zip
-        source activate pydnapipbuild36
-        conda upgrade -yq pip
-        python setup.py sdist --formats=zip
-        source activate pydnapipbuild37
-        conda upgrade -yq pip
-        python setup.py sdist --formats=zip
-        source activate twine       
-        twine upload -r $pypiserver dist/pydna*.zip --skip-existing
+        source activate python35
+        python setup.py build bdist_wheel bdist_egg
+        source activate python36
+        python setup.py build bdist_wheel bdist_egg
+        source activate python37
+        python setup.py build bdist_wheel bdist_egg
+        twine upload dist/pydna* --skip-existing
     elif [[ $local_computer = true ]]
     then
         echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
-        source activate pydnapipbuild35
-        conda upgrade -yq pip
-        python setup.py sdist --formats=zip bdist_wheel
-        source activate pydnapipbuild36
-        conda upgrade -yq pip
-        python setup.py sdist --formats=zip bdist_wheel
-        source activate pydnapipbuild37
-        conda upgrade -yq pip
-        python setup.py sdist --formats=zip bdist_wheel
-        source activate twine
-        twine upload -r $pypiserver dist/pydna*.zip --skip-existing
-        twine upload -r $pypiserver dist/pydna*.whl --skip-existing
+        source activate python35
+        python setup.py build bdist_wheel bdist_egg
+        source activate python36
+        python setup.py build bdist_wheel bdist_egg
+        source activate python37
+        python setup.py build bdist_wheel bdist_egg
+        twine upload dist/pydna* --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"
@@ -252,39 +228,13 @@ then
         echo "CIRCLECI = $CIRCLECI"
         exit 1
     fi
-    #ls dist
 else
-    echo "create test environment for python 3.5"
-    conda env create -f test_environment35.yml
-    source activate testenv35
-    which python
-    python --version
+
+echo "========run tests ============================================"
+    source activate python35
     python run_test.py
-    echo
-    echo "create test environment for python 3.6"
-    conda env create -f test_environment36.yml
-    source activate testenv36
-    which python
-    python --version
+    source activate python36
     python run_test.py
-    echo "create test environment for python 3.7"
-    conda env create -f test_environment37.yml
-    source activate testenv37
-    which python
-    python --version
+    source activate python37
     python run_test.py
-    if [[ $local_computer = true ]]
-    then
-        source activate root
-        conda remove -n pydnacondabuild35 --all -q
-        conda remove -n pydnacondabuild36 --all -q
-        conda remove -n pydnacondabuild37 --all -q
-        conda remove -n pydnapipbuild35   --all -q
-        conda remove -n pydnapipbuild36   --all -q
-        conda remove -n pydnapipbuild37   --all -q
-        conda remove -n twine             --all -q
-        conda remove -n testenv35         --all -q
-        conda remove -n testenv36         --all -q
-        conda remove -n testenv37         --all -q
-    fi
 fi
