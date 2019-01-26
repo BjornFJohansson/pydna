@@ -1,4 +1,19 @@
 #!/usr/bin/env bash
+
+
+
+export TWINE_REPOSITORY="https://test.pypi.org"
+condalabel="test"
+
+
+
+
+
+
+
+
+
+
 echo "=============================================================="
 echo "BASH_VERSION" $BASH_VERSION
 echo $(git --version)
@@ -27,24 +42,14 @@ echo "=============================================================="
 if [[ "$com" = "$tag" ]]&&[[ $dirty = $tagname ]]
 then
     echo "Tagged commit      : $tagname"
-    tagged_commit=true
-    re_final="^[0-9]\.[0-9]\.[0-9]$"
-    re_pre="^[0-9]\.[0-9]\.[0-9](a|b|rc)[0-9]+$"
-    if [[ $tagname =~  $re_final ]]
+    PEP440="^([1-9]\d*!)?(0|[1-9]\d*)(\.(0|[1-9]\d*))*((a|b|rc)(0|[1-9]\d*))?(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$"
+    if [[ $tagname =~  $PEP440 ]]
     then
-        echo "Tag indicate Final release"
-        echo "deploy setuptools package pypi."
-        echo "deploy conda package to anaconda.org with label 'main'."
-        condalabel="main"
-    elif  [[ $tagname =~ $re_pre ]]
-    then
-        echo "Release tag indicate pre release"
-        echo "deploy to pypi "
-        echo "deploy to anaconda.org with label 'test'."
-        TWINE_REPOSITORY="https://test.pypi.org"
-        condalabel="test"
+        echo "Git tag is a canonical PEP440 release version number"
+        echo "deploy a setuptools package to pypi."
+        echo "deploy conda packages to anaconda.org under the BjornFJohansson channel"
     else
-        echo "Testing but no build"
+        echo "Git tag is *NOT* a canonical PEP440 release version number"
         echo "git tag ($tagname) was not recognized"
         echo "or"
         echo "$dirty != $tagname"
@@ -52,7 +57,6 @@ then
     fi
 elif [[ $msg = *"skip"* ]]
 then
-    echo "Not a tagged commit"
     echo "'skip' found in commit msg: '$msg'"
     echo "tests and builds skipped."
     echo "=============================================================="
@@ -171,9 +175,9 @@ then
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
         set +x
-        anaconda -t $TOKEN upload $pth1 --label $condalabel --force
-        anaconda -t $TOKEN upload $pth2 --label $condalabel --force
-        anaconda -t $TOKEN upload $pth3 --label $condalabel --force
+        anaconda -t $ANACONDATOKEN upload $pth1 --label $condalabel --force
+        anaconda -t $ANACONDATOKEN upload $pth2 --label $condalabel --force
+        anaconda -t $ANACONDATOKEN upload $pth3 --label $condalabel --force
         set -x
     else
         anaconda upload $pth1 --label $condalabel --force
@@ -185,40 +189,38 @@ then
     then
         #brew update
         source activate python35
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel
         source activate python36
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel
         source activate python37
-        python setup.py build bdist_wheel bdist_egg
-        twine upload dist/pydna* --skip-existing
+        python setup.py build bdist_wheel
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows on appveyor
     then
         source activate python35
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         source activate python36
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         source activate python37
-        python setup.py build bdist_wheel bdist_egg
-        twine upload dist/pydna* --skip-existing
+        python setup.py build bdist_wheel
         appveyor PushArtifact dist/*        
     elif [[ $CI_NAME = codeship ]]  # Linux on codeship
     then
         source activate python35
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         source activate python36
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         source activate python37
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         twine upload dist/pydna* --skip-existing
     elif [[ $local_computer = true ]]
     then
         echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
         source activate python35
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         source activate python36
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         source activate python37
-        python setup.py build bdist_wheel bdist_egg
+        python setup.py build bdist_wheel 
         twine upload dist/pydna* --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
@@ -230,7 +232,6 @@ then
     fi
 else
 
-echo "========run tests ============================================"
     source activate python35
     python run_test.py
     source activate python36
