@@ -1,4 +1,4 @@
-# [![icon](docs/pics/pydna.resized.png)](https://pypi.python.org/pypi/pydna/) pydna
+# ![icon](https://raw.githubusercontent.com/bjornFJohansson/pydna/py3dev/docs/pics/pydna.resized.png) pydna
 
 Planning genetic constructs with many parts and assembly steps, such as recombinant
 metabolic pathways are often difficult to properly document.
@@ -31,7 +31,7 @@ format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-path
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
-[![abstr](docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/py3dev/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
           
 Please reference the above paper when using pydna.
 
@@ -86,7 +86,7 @@ can be easily simulated without any additional information besides the primary s
 Gel electrophoresis of DNA fragments can be simulated using the included gel module 
 by [Bruno Silva](https://github.com/bruno2git):
 
-![alt text](docs/pics/gel.png "simulated agarose gel")
+![alt text](https://raw.githubusercontent.com/bjornFJohansson/pydna/py3dev/docs/pics/gel.png "simulated agarose gel")
 
 Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/py3dev/scripts/gel_inline_ex.ipynb).
 

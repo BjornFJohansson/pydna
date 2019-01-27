@@ -5,7 +5,7 @@ import versioneer
 
 # Read author etc. from __init__.py
 for line in open('pydna/__init__.py', encoding="utf-8"):
-    if line.startswith('__') and not line.startswith('__version') and not line.startswith('__long'):
+    if line.startswith('__') and not line.startswith(('__version', '__long')):
         exec(line.strip())
 
 from setuptools import setup
@@ -16,7 +16,8 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(  name            = 'pydna',
-        version=versioneer.get_version()[:5],
+        version=versioneer.get_version().split("+", 1)[0],
+        product_version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
         author          = __author__,
         author_email    = __email__,
@@ -29,7 +30,7 @@ setup(  name            = 'pydna',
                      recombination between DNA molecules.''',
         long_description=long_description,
         long_description_content_type='text/markdown',
-        install_requires = ["appdirs", "biopython", "prettytable",  "networkx", "pyparsing", "requests"],
+        install_requires = ["appdirs", "biopython", "networkx", "prettytable", "pyparsing", "requests"],
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',
                        'Environment :: Console',
