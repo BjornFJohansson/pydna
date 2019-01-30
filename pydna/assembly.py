@@ -40,7 +40,7 @@ graph.
 '''
 import sys
     
-if sys.version_info < (3, 6):
+if sys.version_info[1] < 6:
     from collections import OrderedDict as _od
 else:
     _od = dict
@@ -66,26 +66,16 @@ from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
 from Bio.SeqFeature import ExactPosition    as _ExactPosition
 
-class _Fragment(_Dseqrecord):
+class _Fragment:
     '''This class holds information about a DNA fragment in an assembly.
     This class is instantiated by the :class:`Assembly` class and is not
     meant to be instantiated directly.
     '''
     def __init__(self, record, *args, nodes=None ,**kwargs):
-        self.nodes = nodes or []
-        super().__init__(record, *args, **kwargs)
-        self.seq = type(self.seq)(self.seq._data)
-
-    def rc(self):
-        answer             = _deepcopy(self)
-        answer._seq         = answer._seq.rc()
-        answer.name        = "{}_rc".format(self.name[:13])
-        answer.description = self.description+"_rc"
-        answer.id          = self.id+"_rc"   
-        answer.nodes       = []
-        return answer
-
-    reverse_complement = rc
+        self.nodes  = nodes or []
+        self.record = record
+        self.str    = str(record.seq).upper()
+        self.rcs    = str(record.seq.reverse_complement()).upper()
 
 
 class _Memoize(type):
@@ -94,7 +84,7 @@ class _Memoize(type):
         return super().__call__(*args, **kwargs)
 
 
-class Assembly(object, metaclass = _Memoize):
+class Assembly(_nx.MultiDiGraph, metaclass = _Memoize):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
     The Assembly is meant to replace the Assembly method as it is easier to use.
     Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.
@@ -140,60 +130,48 @@ class Assembly(object, metaclass = _Memoize):
 
     '''
     
-    def __init__(self, fragments, limit = 25, algorithm=common_sub_strings, max_nodes=None):
-        
-        ''' Consider only terminal overlaps?'''
-        self.limit = limit
-        ''' The shortest common sub strings to be considered '''
-        self.max_nodes = max_nodes or len(fragments)
-        ''' The max number of nodes allowed. This can be reset to some other value'''
-        
+    def __init__(self, fragments,  limit = 25, algorithm=common_sub_strings, max_nodes=None, **attr):
+
+        super().__init__(data=None, selfloops=False, **attr)      
+
         fragments = [_Fragment(f) for f in fragments]
-        rcfragments = _od( (f.seguid(),f.rc()) for f in fragments )
-        g=_nx.MultiDiGraph(selfloops=False)
+        rc_fragments = {f:_Fragment(f.rc()) for f in fragments}
 
         for first, secnd in _itertools.combinations(fragments, 2):
-            
-                fseguid,rseguid = first.seguid(), secnd.seguid()
-                
-                if fseguid==rseguid: continue
 
-                firrc = rcfragments[fseguid]
-                secrc = rcfragments[rseguid]
+                if first == secnd: continue
 
-                matches = algorithm( str(first.seq).upper(),
-                                     str(secnd.seq).upper(),
-                                     self.limit)
+                matches = algorithm( first.str,
+                                     secnd.str,
+                                     limit)
                 
                 for start_in_first, start_in_secnd, length in matches:
-                    node    = first[start_in_first:start_in_first+length] 
-                    node_id = node.seguid()
-                    g.add_node(node_id, length = length, fragment=str(node.seq))
-                    first.nodes.append((start_in_first, node_id))
-                    secnd.nodes.append((start_in_secnd, node_id))
+                    node    = first.record[start_in_first:start_in_first+length]
+                    self.add_node(node, length = length)
+                    first.nodes.append((start_in_first, node))
+                    secnd.nodes.append((start_in_secnd, node))
                     
-                    start_in_firrc, start_in_secrc = len(first.seq) - start_in_first - length, len(secnd.seq) - start_in_secnd - length # 
-                    node    = firrc[start_in_firrc:start_in_firrc+length] 
-                    node_id = node.seguid()
-                    g.add_node(node_id, length = length, fragment=str(node.seq))
-                    firrc.nodes.append((start_in_firrc, node_id) )
-                    secrc.nodes.append((start_in_secrc, node_id) )
+                    start_in_firrc, start_in_secrc = len(first.str) - start_in_first - length, len(secnd.str) - start_in_secnd - length
+                    node    = first.record[start_in_firrc:start_in_firrc+length]
+                    self.add_node(node, length = length, fragment=str(node.seq))
+                    firrc.nodes.append((start_in_firrc, node) )
+                    secrc.nodes.append((start_in_secrc, node) )
 
-                matches = algorithm( str(first.seq).upper(),
-                                     str(secrc.seq).upper(),
-                                     self.limit)
+                matches = algorithm( str(first.str).upper(),
+                                     str(secrc.strseq).upper(),
+                                     limit)
                 
                 for start_in_first, start_in_secrc, length in matches:
                     node    = first[start_in_first:start_in_first+length] 
                     node_id = node.seguid()
-                    g.add_node(node_id, length = length, fragment=str(node.seq))
+                    self.add_node(node_id, length = length, fragment=str(node.seq))
                     first.nodes.append( (start_in_first, node_id))
                     secrc.nodes.append( (start_in_secrc, node_id))
 
                     start_in_firrc, start_in_secnd = len(first.seq) - start_in_first - length, len(secnd.seq) - start_in_secrc - length
                     node    = firrc[start_in_firrc:start_in_firrc+length]
                     node_id = node.seguid()
-                    g.add_node(node_id, length = length, fragment=str(node.seq))
+                    self.add_node(node_id, length = length, fragment=str(node.seq))
                     firrc.nodes.append( (start_in_firrc, node_id) )
                     secnd.nodes.append( (start_in_secnd, node_id) )
 
@@ -203,61 +181,69 @@ class Assembly(object, metaclass = _Memoize):
             for (s1, n1),(s2, n2) in _itertools.combinations(f.nodes,2):
                 if n1==n2:
                     continue
-                if not g.has_edge(n1, n2) or (str(f._seq)[s1:s2].lower() not in (e["fragment"].lower() for e in g[n1][n2].values())):
+                if not self.has_edge(n1, n2) or (str(f._seq)[s1:s2].lower() not in (e["fragment"].lower() for e in self[n1][n2].values())):
 
-                    feats = [f for f in f.features if s1<=int(f.location.start) and s2+g.node[n2]["length"]>=int(f.location.end)]
+                    feats = [f for f in f.features if s1<=int(f.location.start) and s2+self.node[n2]["length"]>=int(f.location.end)]
                     for feat in feats:
                         feat.location+=(-s1)
-                    g.add_edge(n1, n2, fragment=str(f._seq)[s1:s2], 
+                    self.add_edge(n1, n2, fragment=str(f._seq)[s1:s2], 
                                        feats=feats, 
                                        length=s2-s1, 
                                        start=s1, 
                                        end=s2, 
                                        seq = f)
+            self.limit = limit
+            self.fragments = fragments
+            self.rcfragments = rcfragments
+            self.algorithm = algorithm
+            self.max_nodes = max_nodes or len(self.fragments)
 
-        g.add_node("begin",    length=0, fragment="")
-        g.add_node("begin_rc", length=0, fragment="")
-        g.add_node("end",      length=0, fragment="")
-        g.add_node("end_rc",   length=0, fragment="")
-       
+
+    def linear(self, start=None,end=None, max_nodes=0):
+        
+        self.add_node("begin",    length=0, fragment="")
+        self.add_node("begin_rc", length=0, fragment="")
+        self.add_node("end",      length=0, fragment="")
+        self.add_node("end_rc",   length=0, fragment="")
+   
         # add edges from "begin" to nodes in the first sequence
-        for start, node_id in fragments[0].nodes:
-            feats = [f for f in fragments[0].features if start+g.node[node_id]["length"]>=int(f.location.end)]
-            g.add_edge("begin", node_id, fragment=str(fragments[0]._seq)[0:start], feats=feats, length=start, start=0, end=start, seq = fragments[0])
+        for start, node_id in self.fragments[0].nodes:
+            feats = [f for f in self.fragments[0].features if start+self.node[node_id]["length"]>=int(f.location.end)]
+            self.add_edge("begin", node_id, fragment=str(self.fragments[0]._seq)[0:start], feats=feats, length=start, start=0, end=start, seq = self.fragments[0])
 
         # add edges from "begin_rc" to nodes in the first reverse complement sequence
-        for start, node_id in list(rcfragments.values())[0].nodes:
-            feats = [f for f in list(rcfragments.values())[0].features if start+g.node[node_id]["length"]>=int(f.location.end)]
-            g.add_edge("begin_rc", node_id, fragment=str(list(rcfragments.values())[0]._seq)[0:start], feats=feats, length =start, start=0, end=start, seq = list(rcfragments.values())[0])
+        for start, node_id in list(self.rcfragments.values())[0].nodes:
+            feats = [f for f in list(self.rcfragments.values())[0].features if start+self.node[node_id]["length"]>=int(f.location.end)]
+            self.add_edge("begin_rc", node_id, fragment=str(list(self.rcfragments.values())[0]._seq)[0:start], feats=feats, length =start, start=0, end=start, seq = list(self.rcfragments.values())[0])
 
         # add edges from nodes in last sequence to "end"
-        for start_in_last, last_node_id in fragments[-1].nodes:
-            feats = [f for f in fragments[-1].features if start_in_last<=int(f.location.start)]
-            g.add_edge(last_node_id, "end", fragment=str(fragments[-1]._seq)[start_in_last:len(fragments[-1])],feats=feats, length =start, start=start_in_last, end=len(fragments[-1]), seq=fragments[-1])
+        for start_in_last, last_node_id in self.fragments[-1].nodes:
+            feats = [f for f in self.fragments[-1].features if start_in_last<=int(f.location.start)]
+            self.add_edge(last_node_id, "end", fragment=str(self.fragments[-1]._seq)[start_in_last:len(self.fragments[-1])],feats=feats, length =start, start=start_in_last, end=len(self.fragments[-1]), seq=self.fragments[-1])
 
         # add edges from nodes in last reverse complement sequence to "end_rc"
-        for start_in_last, last_node_id in list(rcfragments.values())[-1].nodes:
-            feats = [f for f in list(rcfragments.values())[-1].features if start_in_last<=int(f.location.start)]
-            g.add_edge(last_node_id, "end_rc", fragment=str(list(rcfragments.values())[-1]._seq)[start_in_last:len(list(rcfragments.values())[-1])], feats=feats, length =start, start=start_in_last, end=len(fragments[-1]), seq=list(rcfragments.values())[-1])
+        for start_in_last, last_node_id in list(self.rcfragments.values())[-1].nodes:
+            feats = [f for f in list(self.rcfragments.values())[-1].features if start_in_last<=int(f.location.start)]
+            self.add_edge(last_node_id, "end_rc", fragment=str(list(self.rcfragments.values())[-1]._seq)[start_in_last:len(list(self.rcfragments.values())[-1])], feats=feats, length =start, start=start_in_last, end=len(self.fragments[-1]), seq=list(self.rcfragments.values())[-1])
         
         lps={}     #linear assembly
         lps=_od(lps)  # fix
-               
-        lpths = _itertools.chain(_nx.all_simple_paths(_nx.DiGraph(g),"begin",    "end",      cutoff=self.max_nodes),
-                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin",    "end_rc",   cutoff=self.max_nodes),
-                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc", "end",      cutoff=self.max_nodes),
-                                 _nx.all_simple_paths(_nx.DiGraph(g),"begin_rc", "end_rc",   cutoff=self.max_nodes))
+        
+        lpths = _itertools.chain(_nx.all_simple_paths(_nx.DiGraph(self),"begin",    "end",      cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(self),"begin",    "end_rc",   cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(self),"begin_rc", "end",      cutoff=self.max_nodes),
+                                 _nx.all_simple_paths(_nx.DiGraph(self),"begin_rc", "end_rc",   cutoff=self.max_nodes))
 
-        for lpath in lpths:
+        for lpth in lpths:
             e1=[]
-            for u,v in zip(lpath,lpath[1:]):
+            for u,v in zip(lpth,lpth[1:]):
                 e2=[]
-                for d in g[u][v].values():
+                for d in self[u][v].values():
                     e2.append((u,v,d))
                 e1.append(e2)
 
             for edges in _itertools.product(*e1):
-                sg=_nx.DiGraph(g.subgraph(lpath).copy())
+                sg=_nx.DiGraph(self.subgraph(lpth).copy())
                 sg.add_edges_from(edges)
                 ct = "".join(e[2]["fragment"] for e in edges)
                 lseguid = _lseguid(ct)
@@ -271,8 +257,11 @@ class Assembly(object, metaclass = _Memoize):
                         f.location+=offset
                     edgefeatures.extend(feats)
                     offset+=e[2]["length"]
-                lps[lseguid]= _Contig( ct, features=edgefeatures, graph=sg, path=lpath)
-        #print(111)
+                lps[lseguid]= _Contig( ct, features=edgefeatures, graph=sg, path=lpth)
+               
+        return sorted(lps.values(), key=len, reverse=True)
+
+    def circular(self):
         cps = {} # circular assembly
         cps = _od(cps)
         nodes  = list(_itertools.chain.from_iterable([f.nodes for f in fragments]))
@@ -336,47 +325,48 @@ class Assembly(object, metaclass = _Memoize):
                     elif f.location.end>len(ct):
                         f.location = _CompoundLocation((_FeatureLocation(f.location.start,_ExactPosition(len(ct))),_FeatureLocation(_ExactPosition(0), f.location.end-len(ct))))
                 cps[cseguid]=_Contig( ct, features = edgefeatures, graph=sg, path=cp, circular=True)
+                return sorted(cps.values(), key=len, reverse=True)
 
-        self.linear   = self.linear_products   = sorted(lps.values(), key=len, reverse=True)
-        self.circular = self.circular_products = sorted(cps.values(), key=len, reverse=True)
-        self.fragments = fragments
-        self.G = g
-        self.algorithm = algorithm
-        #globals().update(locals());import sys;sys.exit(42)
 
     def list_circular(self):
         return _pretty_str("\n".join("{i} {r} {cs}".format(i=i,p=p,r=repr(p),cs=p.cseguid()) for i,p in enumerate(self.circular)))
         
     list_circular_products = list_circular
     
-    def list_linear(self):
+    def list_linear(self, begin = None, end = None):
         return _pretty_str("\n".join("{i} {r} {ls}".format(i=i,p=p,r=repr(p),ls=p.lseguid()) for i,p in enumerate(self.linear)))
         
     list_linear_products = list_linear
         
     def __repr__(self):
         # https://pyformat.info
-        return _pretty_str( "## Assembly object ##\n"
+        return _pretty_str( "Assembly Graph\n"
                             "fragments....: {sequences}\n"
                             "limit(bp)....: {limit}\n"
-                            "G.nodes......: {nodes}\n"
-                            "algorithm....: {al}\n"
-                            "linear{lenlp:.<7}: {lp}\n"    
-                            "circular{lencp:.<5}: {cp}".format(sequences       = " ".join("{}bp".format(len(x)) for x in self.fragments),
-                                                                        limit           = self.limit,
-                                                                        nodes           = self.G.order(),
-                                                                        al              = self.algorithm.__name__,
-                                                                        lencp           = "({lencp})".format(lencp=len(self.circular_products)),                                                          
-                                                                        cp              = " ".join("o{}".format(len(x)) for x in self.circular_products[:8]),
-                                                                        lenlp           = "({lenlp})".format(lenlp=len(self.linear_products)),
-                                                                        lp              = " ".join("-{}".format(len(x)) for x in self.linear_products[:8])))
+                            "nodes........: {nodes}\n"
+                            "max_nodes....: {}\n"
+                            "algorithm....: {al}\n".format(sequences = " ".join("{}bp".format(len(x)) for x in self.fragments),
+                                                           limit     = self.limit,
+                                                           nodes     = self.order(),
+                                                           max_nodes = self.max_nodes,    
+                                                           al        = self.algorithm.__name__))
+
+
+example_fragments = ( _Dseqrecord("acgatgctatactgCCCCCtgtgctgtgctcta",  name ="a"),
+                      _Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatc", name ="b"),
+                      _Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg",name ="c") )
+
+
+
 
 if __name__=="__main__":
-    from pydna.readers import read
-    
-    pMEC1135 = read("pMEC1135.gb")
-    hygromycin_product = read("hygromycin_product.gb")
-    
-    asm_hyg = Assembly((pMEC1135, hygromycin_product, pMEC1135))
+    Assembly(example_fragments, limit=14)
 
+    
+    
+    # acgatgctatactgCCCCCtgtgctgtgctcta
+    #                    tgtgctgtgctctaTTTTTtattctggctgtatc
+    #                                       tattctggctgtatcGGGGGtacgatgctatactg
+    
+    # acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGtacgatgctatactg
     
