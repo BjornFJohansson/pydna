@@ -87,16 +87,18 @@ class Contig(_Dseqrecord):
         nodeposition = self.graph[self.path[0]][self.path[1]]["length"]
         nodeposition = 0
         mylist = []
-        for u, v, e in [(self.graph.node[u], self.graph.node[v], self.graph[u][v]) for u, v in zip(self.path, self.path[1:])]:
+        for u, v, e in [(u, v, self.graph[u][v]) for u, v in zip(self.path, self.path[1:])]:
             nodeposition += e["length"]
             fragmentposition-=e["start"]
-            mylist.append([fragmentposition, str(e["seq"].seq)])
-            mylist.append([nodeposition, v["fragment"].upper()])
+            mylist.append([fragmentposition, str(e["seq"])])
+            mylist.append([nodeposition, v.upper()])
             fragmentposition+=e["end"]
                 
         if self.circular:
             nodeposition = self.graph[self.path[0]][self.path[1]]["start"]
             mylist= [[nodeposition,"|"*v["length"]]] + mylist
+        else:
+            mylist = mylist[:-1]
         
         firstpos = -1 * min(0, min(mylist)[0])
         
@@ -163,19 +165,19 @@ class Contig(_Dseqrecord):
             '''
 
             f = edges[0]
-            space2 = len(f["seq"].name)
+            space2 = len(f["seq"].record.name)
 
 
             fig = ("{name}|{o2:>2}\n"
                    "{space2} \\/\n"
-                   "{space2} /\\\n").format(name   = f["seq"].name,
+                   "{space2} /\\\n").format(name   = f["seq"].record.name,
                                             o2     = self.graph.node[self.path[1]]["length"],
                                             space2 = " "*space2)
             space = space2 #len(f.name)
 
             for i,f in enumerate( edges[1:-1] ):
                 name = "{o1:>2}|{name}|".format(o1   = self.graph.node[self.path[i+1]]["length"],
-                                                name = f["seq"].name)
+                                                name = f["seq"].record.name)
                 space2 = len(name)
                 
                 fig +=("{space} {name}{o2:>2}\n"
@@ -186,7 +188,7 @@ class Contig(_Dseqrecord):
                                                         space2 = " "*space2)
                 space +=space2
             f = edges[-1]
-            fig += ("{space} {o1:>2}|{name}").format(name  = f["seq"].name,
+            fig += ("{space} {o1:>2}|{name}").format(name  = f["seq"].record.name,
                                                      o1    = self.graph.node[self.path[-2]]["length"],
                                                      space = " "*(space))
 
