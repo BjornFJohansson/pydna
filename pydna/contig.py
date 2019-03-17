@@ -1,4 +1,5 @@
 import textwrap as _textwrap
+import networkx as _nx
 from pydna._pretty import pretty_str    as _pretty_str
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.utils import rc
@@ -14,12 +15,13 @@ class Contig(_Dseqrecord):
                  *args,
                  graph = None,
                  path  = None,
+                 nodemap = None,
                  **kwargs):
 
         super().__init__(record, *args, **kwargs)
         self.graph = graph
         self.path = path or []
-
+        self.nodemap = nodemap or {}
 
     def __repr__(self):
         return "Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self))
@@ -36,17 +38,14 @@ class Contig(_Dseqrecord):
     
     def reverse_complement(self):
         answer = type(self)(super().reverse_complement())
-        answer.graph = self.graph.reverse()
-        for node in answer.graph.nodes():
-            answer.graph.nodes[node]["fragment"] = rc(answer.graph.nodes[node]["fragment"])
+        answer.graph = _nx.relabel_nodes(self.graph.reverse(), self.nodemap)
         for edge in answer.graph.edges():
-            answer.graph.edges[edge]["fragment"] = rc(answer.graph.edges[edge]["fragment"])
+            answer.graph.edges[edge]["seq"] = rc(answer.graph.edges[edge]["seq"])
             l=len(answer.graph.edges[edge]["seq"])
-            answer.graph.edges[edge]["seq"] = answer.graph.edges[edge]["seq"].rc()
             answer.graph.edges[edge]["start"] = l-answer.graph.edges[edge]["end"]   - answer.graph.node[edge[0]]["length"]  
             answer.graph.edges[edge]["end"]   = l-answer.graph.edges[edge]["start"] - answer.graph.node[edge[1]]["length"]
             answer.graph.edges[edge]["length"] = answer.graph.edges[edge]["end"] - answer.graph.edges[edge]["start"]
-        answer.path  = self.path[::-1]
+        answer.path  = [self.nodemap[n] for n in self.path[::-1]]
         return answer
     
     
@@ -96,7 +95,8 @@ class Contig(_Dseqrecord):
                 
         if self.circular:
             nodeposition = self.graph[self.path[0]][self.path[1]]["start"]
-            mylist= [[nodeposition,"|"*v["length"]]] + mylist
+            nodelength   = len(v) #len(self.path[-1])
+            mylist= [[nodeposition,"|"*nodelength]] + mylist
         else:
             mylist = mylist[:-1]
         
@@ -165,19 +165,19 @@ class Contig(_Dseqrecord):
             '''
 
             f = edges[0]
-            space2 = len(f["seq"].record.name)
+            space2 = len(f["name"])
 
 
             fig = ("{name}|{o2:>2}\n"
                    "{space2} \\/\n"
-                   "{space2} /\\\n").format(name   = f["seq"].record.name,
+                   "{space2} /\\\n").format(name   = f["name"],
                                             o2     = self.graph.node[self.path[1]]["length"],
                                             space2 = " "*space2)
             space = space2 #len(f.name)
 
             for i,f in enumerate( edges[1:-1] ):
                 name = "{o1:>2}|{name}|".format(o1   = self.graph.node[self.path[i+1]]["length"],
-                                                name = f["seq"].record.name)
+                                                name = f["name"])
                 space2 = len(name)
                 
                 fig +=("{space} {name}{o2:>2}\n"
@@ -188,7 +188,7 @@ class Contig(_Dseqrecord):
                                                         space2 = " "*space2)
                 space +=space2
             f = edges[-1]
-            fig += ("{space} {o1:>2}|{name}").format(name  = f["seq"].record.name,
+            fig += ("{space} {o1:>2}|{name}").format(name  = f["name"],
                                                      o1    = self.graph.node[self.path[-2]]["length"],
                                                      space = " "*(space))
 
@@ -212,17 +212,17 @@ class Contig(_Dseqrecord):
 
             f = edges[0]
             
-            space = len(f["seq"].name)+3
+            space = len(f["name"])+3
             
             fig =(" -|{name}|{o2:>2}\n"
                   "|{space}\\/\n"
-                  "|{space}/\\\n").format( name = f["seq"].name,
+                  "|{space}/\\\n").format( name = f["name"],
                                            o2 = self.graph.node[self.path[1]]["length"],
                                            space = " "*space )
             
             for i, f in enumerate( edges[1:] ):
                 name= "{o1:>2}|{name}|".format(o1   = self.graph.node[self.path[i+1]]["length"],
-                                               name = f["seq"].name)
+                                               name = f["name"])
                 space2 = len(name)
                 fig +=("|{space}{name}{o2:>2}\n"
                        "|{space}{space2}\\/\n"
