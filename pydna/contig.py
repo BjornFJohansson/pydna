@@ -41,11 +41,17 @@ class Contig(_Dseqrecord):
         answer.graph = _nx.relabel_nodes(self.graph.reverse(), self.nodemap)
         for edge in answer.graph.edges():
             answer.graph.edges[edge]["seq"] = rc(answer.graph.edges[edge]["seq"])
+            n = answer.graph.edges[edge]["name"]
+            n = n[:-3] if n.endswith("_rc") else "{}_rc".format(n)[:13]
+            answer.graph.edges[edge]["name"] = n
+            #n = "{}_rc".format(n) if not n.endswith("_rc") else answer.graph.edges[edge]["name"][:-3]
             l=len(answer.graph.edges[edge]["seq"])
             answer.graph.edges[edge]["start"] = l-answer.graph.edges[edge]["end"]   - answer.graph.node[edge[0]]["length"]  
             answer.graph.edges[edge]["end"]   = l-answer.graph.edges[edge]["start"] - answer.graph.node[edge[1]]["length"]
             answer.graph.edges[edge]["length"] = answer.graph.edges[edge]["end"] - answer.graph.edges[edge]["start"]
         answer.path  = [self.nodemap[n] for n in self.path[::-1]]
+        nm = self.nodemap
+        answer.nodemap = {nm[i]:i for i in nm}
         return answer
     
     

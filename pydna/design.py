@@ -561,20 +561,18 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> from pydna.assembly import Assembly
     >>> assemblyobj = Assembly([fa,fb,fc])
     >>> assemblyobj
-    ## Assembly object ##
+    Assembly (max_nodes=3)
     fragments....: 100bp 101bp 102bp
     limit(bp)....: 25
-    G.nodes......: 10
+    G.nodes......: 6
     algorithm....: common_sub_strings
-    linear(3)....: -231 -166 -36
-    circular(1)..: o195
-    >>> assemblyobj.linear_products
+    >>> assemblyobj.assemble_linear()
     [Contig(-231), Contig(-166), Contig(-36)]
-    >>> assemblyobj.circular_products[0].cseguid()
+    >>> assemblyobj.assemble_circular()[0].cseguid()
     'V3Mi8zilejgyoH833UbjJOtDMbc'
     >>> (a+b+c).looped().cseguid()
     'V3Mi8zilejgyoH833UbjJOtDMbc'
-    >>> print(assemblyobj.circular_products[0].small_fig())
+    >>> print(assemblyobj.assemble_circular()[0].small_fig())
      -|100bp_PCR_prod|36
     |                 \\/
     |                 /\\

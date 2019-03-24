@@ -12,7 +12,7 @@ def test_contig(monkeypatch):
     c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg", name="three")
     asm = Assembly((a,b,c), limit=14)
 
-    cnt = asm.circular_products[0]
+    cnt = asm.assemble_circular()[0]
     
     assert repr(cnt) == "Contig(o59)"
     
@@ -42,7 +42,7 @@ def test_contig(monkeypatch):
  -------------------------"""
     assert fig == cnt.small_fig()
     
-    cnt2 = asm.linear_products[0]
+    cnt2 = asm.assemble_linear()[0]
 
     
     fig = ('one|14\n'
@@ -79,10 +79,15 @@ def test_reverse_complement(monkeypatch):
     a.name="aaa"
     b.name="bbb"
     c.name="ccc"
-    x = Assembly((a,b,c), limit=14)
-    y = x.circular[0]
+    asm = Assembly((a,b,c), limit=14)
+    x = asm.assemble_circular()[0]
+    y = x.rc()
+    z = y.rc()
+    assert x.figure()==z.figure()
+    assert x.detailed_fig()==z.detailed_fig()
     
-    yfig = '''
+    
+    xfig = '''
  -|aaa|14
 |      \\/
 |      /\\
@@ -100,7 +105,7 @@ def test_reverse_complement(monkeypatch):
      
      
      
-    ydfig= pretty_str('''
+    xdfig= pretty_str('''
 ||||||||||||||||
 acgatgctatactgtgCCNCCtgtgctgtgctcta
                      TGTGCTGTGCTCTA
@@ -112,12 +117,10 @@ acgatgctatactgtgCCNCCtgtgctgtgctcta
     
     
 
-    assert y.figure() == yfig
-    assert y.detailed_figure() == ydfig
+    assert x.figure() == xfig
+    assert x.detailed_figure() == xdfig
     
-    z=y.rc()
-    
-    zfig = '''
+    yfig = '''
  -|ccc_rc|15
 |         \\/
 |         /\\
@@ -133,7 +136,7 @@ acgatgctatactgtgCCNCCtgtgctgtgctcta
      '''[1:].rstrip()
      
      
-    zdfig= '''
+    ydfig= '''
 ||||||||||||||||
 cacagtatagcatcgtaCCCCCgatacagccagaata
                       GATACAGCCAGAATA
@@ -143,8 +146,8 @@ cacagtatagcatcgtaCCCCCgatacagccagaata
                                                                CACAGTATAGCATCGT
     '''[1:].rstrip()+"\n"
     
-    assert z.figure() == zfig
-    assert z.detailed_figure() == zdfig
+    assert y.figure() == yfig
+    assert y.detailed_figure() == ydfig
     
 
 if __name__ == '__main__':

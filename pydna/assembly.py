@@ -123,21 +123,19 @@ class Assembly(object, metaclass = _Memoize):
 
     >>> from pydna.assembly import Assembly
     >>> from pydna.dseqrecord import Dseqrecord
-    >>> a = Dseqrecord("acgatgctatactgCCCCf[s1:s2]Ctgtgctgtgctcta")
+    >>> a = Dseqrecord("acgatgctatactgCCCCCtgtgctgtgctcta")
     >>> b = Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatc")
     >>> c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg")
     >>> x = Assembly((a,b,c), limit=14)
     >>> x
-    ## Assembly object ##
+    Assembly (max_nodes=3)
     fragments....: 33bp 34bp 35bp
     limit(bp)....: 14
-    G.nodes......: 10
+    G.nodes......: 6
     algorithm....: common_sub_strings
-    linear(3)....: -73 -54 -14
-    circular(1)..: o59
-    >>> x.circular
+    >>> x.assemble_circular()
     [Contig(o59)]
-    >>> x.circular_products[0].seq.watson
+    >>> x.assemble_circular()[0].seq.watson
     'acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGt'
 
     '''
