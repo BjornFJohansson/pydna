@@ -87,7 +87,7 @@ def test_reverse_complement(monkeypatch):
     assert x.detailed_fig()==z.detailed_fig()
     
     
-    xfig = '''
+    xfig = '''\
  -|aaa|14
 |      \\/
 |      /\\
@@ -100,12 +100,12 @@ def test_reverse_complement(monkeypatch):
 |                    16-
 |                       |
  -----------------------
-     '''[1:].rstrip()
+     '''.rstrip()
      
      
      
      
-    xdfig= pretty_str('''
+    xdfig= pretty_str('''\
 ||||||||||||||||
 acgatgctatactgtgCCNCCtgtgctgtgctcta
                      TGTGCTGTGCTCTA
@@ -113,14 +113,14 @@ acgatgctatactgtgCCNCCtgtgctgtgctcta
                                           TATTCTGGCTGTATC
                                           tattctggctgtatcGGGGGtacgatgctatactgtg
                                                                ACGATGCTATACTGTG
-    '''[1:].rstrip()+"\n")
+    '''.rstrip()+"\n")
     
     
 
     assert x.figure() == xfig
     assert x.detailed_figure() == xdfig
     
-    yfig = '''
+    yfig = '''\
  -|ccc_rc|15
 |         \\/
 |         /\\
@@ -133,10 +133,10 @@ acgatgctatactgtgCCNCCtgtgctgtgctcta
 |                             16-
 |                                |
  --------------------------------
-     '''[1:].rstrip()
+     '''.rstrip()
      
      
-    ydfig= '''
+    ydfig= '''\
 ||||||||||||||||
 cacagtatagcatcgtaCCCCCgatacagccagaata
                       GATACAGCCAGAATA
@@ -144,7 +144,7 @@ cacagtatagcatcgtaCCCCCgatacagccagaata
                                             TAGAGCACAGCACA
                                             tagagcacagcacaGGNGGcacagtatagcatcgt
                                                                CACAGTATAGCATCGT
-    '''[1:].rstrip()+"\n"
+    '''.rstrip()+"\n"
     
     assert y.figure() == yfig
     assert y.detailed_figure() == ydfig

@@ -12,44 +12,34 @@ Seq and SeqRecord classes, respectively.
 The Dseq and Dseqrecord classes support the notion of circular and linear DNA topology.
 '''
 import copy     as _copy
-import datetime as _datetime
 import operator as _operator
 import os       as _os
 import re       as _re
-import colorsys as _colorsys
-from collections.abc import Iterable as _Iterable
-
-from warnings import warn as _warn
 
 import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
-from prettytable import PrettyTable as _PrettyTable
 from pydna.utils import identifier_from_string as _identifier_from_string
 
-from Bio.Seq                import Seq as _Seq
 from Bio.Seq                import translate as _translate
-from itertools              import tee as _tee
 
 from pydna.seqrecord        import SeqRecord  as _SeqRecord
 from Bio.SeqFeature         import FeatureLocation as _FeatureLocation
 from Bio.SeqFeature         import CompoundLocation as _CompoundLocation
 from pydna.seqfeature       import SeqFeature as _SeqFeature
-from Bio.SeqUtils           import GC as _GC
-from Bio.Data.CodonTable    import TranslationError as _TranslationError
+
 
 from pydna._sequencetrace     import SequenceTraceFactory as _SequenceTraceFactory
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-from pydna.utils  import seguid   as _seg
+
 from pydna.utils  import cseguid  as _cseg
-from pydna.utils  import rc       as _rc
+
 from pydna.utils  import memorize as _memorize
 from pydna.utils  import flatten     as _flatten
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.dseq import Dseq as _Dseq
 
-from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 
 try:

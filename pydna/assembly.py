@@ -74,11 +74,12 @@ class _Fragment(UserString):
     meant to be instantiated directly.
     '''
     def __init__(self, record, *args, nodes=None, **kwargs):
+        self.data   = record.seq.todata.upper()
+        self.original_case = record.seq.todata
+        self.name   = record.name
         self.record = record
         self.nodes  = nodes or []
-        self.data   = self.record.seq.todata.upper()
-        self.original_case = self.record.seq.todata
-        self.name   = record.name
+        #(upper, originalcase, name, record, nodes)
 
     def __add__(self, other):
         return self.data + str(other)
@@ -88,7 +89,23 @@ class _Fragment(UserString):
     
     def __getitem__(self, index): 
         return self.data[index]
+   
+# class _Fragment(str):
+#     '''This class holds information about a DNA fragment in an assembly.
+#     This class is instantiated by the :class:`Assembly` class and is not
+#     meant to be instantiated directly.
+#     '''
+#     def __new__(cls, record, *args, nodes=None, **kwargs):
+#         new = str.__new__(cls, cls.original_case.upper())
+#         new.original_case = record.seq.todata
+#         new.name   = record.name
+#         new.record = record
+#         new.nodes  = nodes or []
+#         return new
     
+#     def __init__(self, value, flags):
+#         # ... and don't even call the str initializer 
+#         self.flags = flags
 
 class _Memoize(type):
     @_memorize("pydna.assembly.Assembly")
@@ -143,8 +160,10 @@ class Assembly(object, metaclass = _Memoize):
     
     def __init__(self, frags=[],  limit = 25, algorithm=common_sub_strings, max_nodes=None, **attr):
         
-        fragments = [_Fragment(f) for f in frags]
-        rcfragments = {f:_Fragment(f.record.rc()) for f in fragments}
+        fragments   = [_Fragment(f) for f in frags]
+        rcfragments = _od( (f, _Fragment(f.record.rc())) for f in fragments)
+        
+        
         nodemap = {"begin":"end","end":"begin"}
         G = _nx.MultiDiGraph()
 
@@ -189,8 +208,8 @@ class Assembly(object, metaclass = _Memoize):
                     secnd.nodes.append( (start_in_secnd, noderc) )
                     nodemap[node]=noderc
 
-        for f in _itertools.chain(fragments, rcfragments.values()):
-            
+
+        for f in _itertools.chain(fragments, rcfragments.values()):            
             f.nodes.sort()
 
             for (s1, n1),(s2, n2) in _itertools.combinations(f.nodes,2):
@@ -357,11 +376,12 @@ class Assembly(object, metaclass = _Memoize):
                 for d in self.G[u][v].values():
                     e2.append((u,v,d))
                 e1.append(e2)
+
             for edges in _itertools.product(*e1):
                 ct = "".join(e[2]["fragment_original_case"] for e in edges)
                 if ct in [str(s.seq) for s in cps.values()]:
                     continue
-                cseguid = _cseguid(ct)                
+                cseguid = _cseguid(ct)                   
                 if cseguid in cps:
                     continue           
                 sg=_nx.DiGraph(self.G.subgraph(cp).copy())
@@ -440,4 +460,4 @@ if __name__=="__main__":
     assert c2.assemble_circular()[1].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
     assert str(c2.assemble_circular()[0].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
     assert str(c2.assemble_circular()[1].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT'
-    
+    print("done")
