@@ -78,9 +78,9 @@ def test_new_assembly(monkeypatch):
     c =                                        Dseqrecord("tattctggctgtatctGGGGGTacgatgctatactgg",name="three")
     c.add_feature(1,36,label="third")
     ln2 = assembly.Assembly((a,b,b2,c), limit=14)
- 
-    assert str(ln2.assemble_linear()[0].seq)=='ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg'
-    assert str(ln2.assemble_linear()[1].seq)=='ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGTacgatgctatactgg'
+    linprods = ln2.assemble_linear() 
+    assert str(linprods[0].seq)=='ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg'
+    assert str(linprods[1].seq)=='ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGTacgatgctatactgg'
     
     
     
@@ -107,8 +107,9 @@ def test_new_assembly(monkeypatch):
                                                                                # acgatgctatactgg 15
                                                                                
     c1 = assembly.Assembly((a,b,c), limit=14)
-    assert c1.assemble_circular()[0].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
-    assert str(c1.assemble_circular()[0].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
+    result = c1.assemble_circular()[0]
+    assert result.cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
+    assert str(result.seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
         
     #assert c1.list_circular() == "0 Contig(o61) t3mIjxv3Q5GK9SWpXD-UfyefANc"
 
@@ -128,10 +129,11 @@ def test_new_assembly(monkeypatch):
                                                                                # acgatgctatactgg 15
                                                                                
     c2 = assembly.Assembly((a,b,b2,c), limit=14)
-    assert c2.assemble_circular()[0].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
-    assert c2.assemble_circular()[1].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
-    assert str(c2.assemble_circular()[0].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
-    assert str(c2.assemble_circular()[1].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT'
+    circprods = c2.assemble_circular()
+    assert circprods[0].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
+    assert circprods[1].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
+    assert str(circprods[0].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
+    assert str(circprods[1].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT'
 
     
     
@@ -491,14 +493,14 @@ def test_MXblaster1(monkeypatch):
 
     #Homologous recombination of the two tp-gene-tp building blocks
 
-    a= assembly.Assembly( ( pCAPs_pSU0_E_Z,
-                  A_AgTEFp_b,
-                  B_hph_c,
-                  C_KlLEU2tt_d), limit=28)
-
-    assert a.assemble_circular()[0].cseguid()=="wM7nM6oJer3bB6RV81IH78e02j4"
-    assert len(a.assemble_circular()[0])==7911
-    YPK0_AgTEFp_hph_KlLEU2tt = a.assemble_circular()[0]
+    a = assembly.Assembly( ( pCAPs_pSU0_E_Z,
+                             A_AgTEFp_b,
+                             B_hph_c,
+                             C_KlLEU2tt_d), limit=28)
+    candidate = a.assemble_circular()[0]
+    assert candidate.cseguid()=="wM7nM6oJer3bB6RV81IH78e02j4"
+    assert len(candidate)==7911
+    YPK0_AgTEFp_hph_KlLEU2tt = candidate
     
     x=YPK0_AgTEFp_hph_KlLEU2tt
 
@@ -512,10 +514,10 @@ def test_MXblaster1(monkeypatch):
                            A_KlLEU2tt_b,
                            B_gal1_ISceI_c,
                            C_AgTEFt_d), limit=25)
-    
-    assert a.assemble_circular()[0].cseguid()=="ZHJqzSnqRxJsdKN5Pu5KP6coR6o"
-    assert len(a.assemble_circular()[0])==8099    
-    YPK0_KlLEU2tt_gal1_ISceI_AgTEFt = a.assemble_circular()[0]
+    candidate = a.assemble_circular()[0]
+    assert candidate.cseguid()=="ZHJqzSnqRxJsdKN5Pu5KP6coR6o"
+    assert len(candidate)==8099    
+    YPK0_KlLEU2tt_gal1_ISceI_AgTEFt = candidate
     
     feats = {}
     
@@ -533,10 +535,10 @@ def test_MXblaster1(monkeypatch):
     a= assembly.Assembly(( AgTEFp_hph_KlLEU2tt_2,
                            KlLEU2tt_gal1_ISceI_AgTEFt_2,
                            pCAPs_pSU0_E_Z), limit=61)
-    
-    assert len(a.assemble_circular()[0])==9772    
-    assert a.assemble_circular()[0].cseguid()=="QnsJ7ATZXSy2QuN4hy51SZw_aU0"   
-    pCAPs_MX4blaster1 = a.assemble_circular()[0]
+    candidate = a.assemble_circular()[0]
+    assert len(candidate)==9772    
+    assert candidate.cseguid()=="QnsJ7ATZXSy2QuN4hy51SZw_aU0"   
+    pCAPs_MX4blaster1 = candidate
 
     pCAPs_MX4blaster1=pCAPs_MX4blaster1.synced("tcgcgcgtttcggtgatgacggtgaaaacc")
 
@@ -576,10 +578,11 @@ def test_MXblaster1(monkeypatch):
     pCAPs_MX4blaster1_AgeI.seq = pCAPs_MX4blaster1_AgeI.seq.fill_in()
 
     a = assembly.Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=30, max_nodes=2)
-    assert len(a.assemble_circular()[0])==10566
-    assert a.assemble_circular()[0].cseguid()=="LK6idufxMXFHL5shXakwO3lciMU"
+    candidate = a.assemble_circular()[0]
+    assert len(candidate)==10566
+    assert candidate.cseguid()=="LK6idufxMXFHL5shXakwO3lciMU"
     
-    pCAPs_MX4blaster2 = a.assemble_circular()[0]
+    pCAPs_MX4blaster2 = candidate
 
     pCAPs_MX4blaster2 = pCAPs_MX4blaster2.synced("tcgcgcgtttcggtgatgacggtgaaaacc")
     
