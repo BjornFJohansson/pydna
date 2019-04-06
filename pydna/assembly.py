@@ -68,44 +68,38 @@ from Bio.SeqFeature import ExactPosition    as _ExactPosition
 from collections import UserString
 
 
-class _Fragment(UserString):
-    '''This class holds information about a DNA fragment in an assembly.
-    This class is instantiated by the :class:`Assembly` class and is not
-    meant to be instantiated directly.
-    '''
-    def __init__(self, record, *args, nodes=None, **kwargs):
-        self.data   = record.seq.todata.upper()
-        self.original_case = record.seq.todata
-        self.name   = record.name
-        self.record = record
-        self.nodes  = nodes or []
-        #(upper, originalcase, name, record, nodes)
-
-    def __add__(self, other):
-        return self.data + str(other)
-    
-    def __radd__(self, other):
-        return str(other) + self.data
-    
-    def __getitem__(self, index): 
-        return self.data[index]
-   
-# class _Fragment(str):
+# class _Fragment(UserString):
 #     '''This class holds information about a DNA fragment in an assembly.
 #     This class is instantiated by the :class:`Assembly` class and is not
 #     meant to be instantiated directly.
 #     '''
-#     def __new__(cls, record, *args, nodes=None, **kwargs):
-#         new = str.__new__(cls, cls.original_case.upper())
-#         new.original_case = record.seq.todata
-#         new.name   = record.name
-#         new.record = record
-#         new.nodes  = nodes or []
-#         return new
+#     def __init__(self, record, *args, nodes=None, **kwargs):
+#         self.data   = record.seq.todata.upper()
+#         self.original_case = record.seq.todata
+#         self.name   = record.name
+#         self.record = record
+#         self.nodes  = nodes or []
+#         #(upper, originalcase, name, record, nodes)
+
+#     def __add__(self, other):
+#         return self.data + str(other)
     
-#     def __init__(self, value, flags):
-#         # ... and don't even call the str initializer 
-#         self.flags = flags
+#     def __radd__(self, other):
+#         return str(other) + self.data
+    
+#     def __getitem__(self, index): 
+#         return self.data[index]
+   
+class _Fragment(str):
+
+    def __new__(cls, record, *args, **kwargs):
+        return super(_Fragment, cls).__new__(cls, record.seq.todata.upper())
+
+    def __init__(self, record, nodes=None):
+        self.original_case = record.seq.todata
+        self.name   = record.name
+        self.record = record
+        self.nodes  = nodes or []
 
 class _Memoize(type):
     @_memorize("pydna.assembly.Assembly")

@@ -19,16 +19,22 @@ import itertools   as _itertools
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 from Bio.SeqUtils.CheckSum  import seguid   as _base64_seguid
-from pydna._pretty  import pretty_str       as _pretty_str
+from pydna._pretty       import pretty_str       as _pretty_str
 from Bio.Seq             import _maketrans
 from Bio.Seq             import reverse_complement as _reverse_complement
 from Bio.Data.IUPACData  import ambiguous_dna_complement as _amb_compl
-from Bio.Seq import reverse_complement as _rc
-
+from Bio.Seq             import reverse_complement as _rc
 
 
 _amb_compl.update({"U":"A"})
 _complement_table = _maketrans(_amb_compl)
+
+
+def rc(sequence):
+    '''returns the reverse complement of sequence (string)
+    accepts mixed DNA/RNA
+    '''
+    return sequence.translate(_complement_table)[::-1]
 
 
 def memorize(filename):
@@ -58,13 +64,6 @@ def memorize(filename):
             return result
         return wrappee
     return decorator        
-
-
-def rc(sequence):
-    '''returns the reverse complement of sequence (string)
-    accepts mixed DNA/RNA
-    '''
-    return sequence.translate(_complement_table)[::-1]
 
 
 def eq(*args,**kwargs):

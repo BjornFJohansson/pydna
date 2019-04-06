@@ -70,7 +70,7 @@ def main():
         del nbval
         args.append("--nbval") 
     
-    mainargs = [".", "-vv", "-s"] + args 
+    mainargs = [".", "-vv", "-s", "--durations=10"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
     result_suite = pytest.cmdline.main(mainargs)
