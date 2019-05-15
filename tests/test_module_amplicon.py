@@ -45,6 +45,19 @@ def test_amplicon():
     
     assert prod.pfu_sso7d_program() == prod.dbd_program()
 
+    from pydna.amplicon import Amplicon
+
+    from Bio.Seq import Seq
+    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+    from pydna.seqrecord import SeqRecord
+    
+    arg = SeqRecord(Seq("aaa", IUPACAmbiguousDNA()))
+    
+    x = Amplicon.from_SeqRecord(arg)
+    
+
+
+
 def test_amplicon_dbd():
     
     from pydna.amplify    import Anneal

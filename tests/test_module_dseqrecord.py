@@ -1170,6 +1170,36 @@ def test_map_no_match():
     t.map_trace_files("*.ab1")
     assert t.map_trace_files("*.ab1") == []
     
+def test_slicing2():
+    from pydna.dseqrecord  import Dseqrecord
+    from Bio.Restriction import BamHI, EcoRI, KpnI    
+    a = Dseqrecord("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
+    assert a.cut( EcoRI, BamHI,  KpnI,)[0].seq == a.cut( BamHI, EcoRI,  KpnI,)[1].seq
+
+def test_rogerstager():
+    from pydna.dseq        import Dseq
+    from pydna.dseqrecord  import Dseqrecord
+    from pydna.utils       import eq
+    from Bio.Seq           import Seq
+    from Bio.Restriction   import BsaI
+
+    answ = []
+    answ.append( Dseq('aaaaaaaaaaaaggtctca', 
+                          'ttttttttccagagttttt'[::-1]) )
+    answ.append( Dseq('aaaaaaaaaggtctca', 
+                          'tttttccagagttttt'[::-1]) )
+
+    tests = [Seq("aaaaaaggtctcaaaaaaa"),
+             Seq("aaaaaaggtctcaaaa")  ]
+    
+    for s in tests:
+        d = Dseqrecord(s).looped()
+        for f in d.cut(BsaI):
+            a = answ.pop(0)
+            assert  f.seq.watson == a.watson 
+            assert  f.seq.crick  == a.crick 
+            assert  f.seq.ovhg == a.ovhg 
+            assert  eq(f.seq, a)
 
 def test___mul__():
     from pydna.dseqrecord  import Dseqrecord

@@ -104,14 +104,12 @@ def parse(data, ds = True):
                     nf.__dict__ =_deepcopy(f.__dict__)
                 parsed.features = nfs
                 if ds and path:
-                    result_list.append( _GenbankFile(parsed, circular=circular, path=path) )
+                    result_list.append( _GenbankFile.from_SeqRecord(parsed, linear=not circular, circular=circular, path=path) )
                 elif ds:
-                    result_list.append(  _Dseqrecord(parsed, circular=circular) )
+                    result_list.append ( _Dseqrecord.from_SeqRecord(parsed, linear=not circular, circular=circular) )
                 else:
                     result_list.append(  parsed )
-            
 
-                
         return result_list
 
     # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.

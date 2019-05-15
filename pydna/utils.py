@@ -21,21 +21,26 @@ _module_logger = _logging.getLogger("pydna."+__name__)
 from Bio.SeqUtils.CheckSum  import seguid   as _base64_seguid
 from pydna._pretty       import pretty_str       as _pretty_str
 from Bio.Seq             import _maketrans
-from Bio.Seq             import reverse_complement as _reverse_complement
-from Bio.Data.IUPACData  import ambiguous_dna_complement as _amb_compl
-from Bio.Seq             import reverse_complement as _rc
+#from Bio.Seq             import reverse_complement as _reverse_complement
+from Bio.Data.IUPACData  import ambiguous_dna_complement as _ambiguous_dna_complement
+#from Bio.Seq             import reverse_complement as _rc
 
 
-_amb_compl.update({"U":"A"})
-_complement_table = _maketrans(_amb_compl)
+_ambiguous_dna_complement.update({"U":"A"})
+_complement_table = _maketrans(_ambiguous_dna_complement)
 
 
-def rc(sequence):
+def rc(sequence:str):
     '''returns the reverse complement of sequence (string)
     accepts mixed DNA/RNA
     '''
     return sequence.translate(_complement_table)[::-1]
 
+def complement(sequence:str):
+    '''returns the complement of sequence (string)
+    accepts mixed DNA/RNA
+    '''
+    return sequence.translate(_complement_table)
 
 def memorize(filename):
     """Decorator for caching fucntions and classes, see pydna.download and pydna.Assembly for use"""
@@ -194,12 +199,12 @@ def eq(*args,**kwargs):
     if topology == "circular":
         # force circular comparison of all given sequences
         for s1, s2 in _itertools.combinations(args_string_list, 2):
-            if not ( s1 in s2+s2 or _reverse_complement(s1) in s2+s2):
+            if not ( s1 in s2+s2 or rc(s1) in s2+s2):
                 same = False
     elif topology == "linear":
         # force linear comparison of all given sequences
         for s1,s2 in _itertools.combinations(args_string_list, 2):
-            if not ( s1==s2 or s1==_reverse_complement(s2) ):
+            if not ( s1==s2 or s1==rc(s2) ):
                 same = False
     return same
 
@@ -263,7 +268,7 @@ def lseguid(seq: str) -> _pretty_str:
     checksum with the '+' and '/' characters of standard Base64 encoding are respectively
     replaced by '-' and '_'.
     '''
-    return seguid( min(seq.upper(), str(_rc(seq)).upper() )).replace("+","-").replace("/","_")
+    return seguid( min(seq.upper(), str(rc(seq)).upper() )).replace("+","-").replace("/","_")
 
 
 def cseguid(seq: str) -> _pretty_str:
@@ -271,7 +276,7 @@ def cseguid(seq: str) -> _pretty_str:
     calculated for the lexicographically minimal string rotation of a DNA sequence.
     Only defined for circular sequences.
     '''
-    return seguid( min( SmallestRotation(seq.upper()), SmallestRotation(str(_rc(seq)).upper())))
+    return seguid( min( SmallestRotation(seq.upper()), SmallestRotation(str(rc(seq)).upper())))
 
 
 def flatten(*args): # flatten

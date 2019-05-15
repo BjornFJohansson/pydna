@@ -59,47 +59,15 @@ from pydna.common_sub_strings import terminal_overlap
 from pydna.contig  import Contig as _Contig
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils   import memorize   as _memorize
-from pydna.utils   import lseguid as _lseguid
-from pydna.utils   import cseguid as _cseguid
+from pydna.utils   import rc as _rc
 
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
 from Bio.SeqFeature import ExactPosition    as _ExactPosition
-from collections import UserString
+from collections    import UserString       as _UserString
 
-
-class _Fragment(UserString):
-    '''This class holds information about a DNA fragment in an assembly.
-    This class is instantiated by the :class:`Assembly` class and is not
-    meant to be instantiated directly.
-    '''
-    def __init__(self, record, *args, nodes=None, **kwargs):
-        self.data   = record.seq.todata.upper()
-        self.original_case = record.seq.todata
-        self.name   = record.name
-        self.record = record
-        self.nodes  = nodes or []
-        #(upper, originalcase, name, record, nodes)
-
-    def __add__(self, other):
-        return self.data + str(other)
-    
-    def __radd__(self, other):
-        return str(other) + self.data
-    
-    def __getitem__(self, index): 
-        return self.data[index]
-   
-# class _Fragment(str):
-
-#     def __new__(cls, record, *args, **kwargs):
-#         return super(_Fragment, cls).__new__(cls, record.seq.todata.upper())
-
-#     def __init__(self, record, nodes=None):
-#         self.original_case = record.seq.todata
-#         self.name   = record.name
-#         self.record = record
-#         self.nodes  = nodes or []
+# TODO use quicker inits for contig
+# TODO remove maxnodes for init
 
 class _Memoize(type):
     @_memorize("pydna.assembly.Assembly")
@@ -152,306 +120,293 @@ class Assembly(object, metaclass = _Memoize):
     '''
     
     
-    def __init__(self, frags=[],  limit = 25, algorithm=common_sub_strings, max_nodes=None, **attr):
+    def __init__(self, frags=None,  limit = 25, algorithm=common_sub_strings, **attr):
         
-        fragments   = [_Fragment(f) for f in frags]
-        rcfragments = _od( (f, _Fragment(f.record.rc())) for f in fragments)
-        
-        
-        nodemap = {"begin":"end","end":"begin"}
-        G = _nx.MultiDiGraph()
+        # Fragments is a string subclass with some extra properties
+        # The order of the fragments has significance
+        fragments=[]
+        for f in frags:
+            fragments.append( { "upper":str(f.seq).upper(), 
+                                "mixed":str(f.seq),
+                                "name" :f.name,
+                                "features": f.features,
+                                "nodes"   : [] } )
 
-        for first, secnd in _itertools.combinations(fragments, 2):
+        # rcfragments is a dict with fragments as keys and the reverse 
+        # complement as value
+        rcfragments = _od( (f["mixed"],{"upper": str(frc.seq).upper(), 
+                                        "mixed": str(frc.seq),
+                                        "name": frc.name,
+                                        "features": frc.features,
+                                        "nodes": [] } ) for f,frc in zip(fragments,(f.rc() for f in frags)))
+        # The nodemap dict holds nodes and their reverse complements
+        nodemap = {"begin":"end",
+                   "end":"begin",
+                   "begin_rc":"end_rc",
+                   "end_rc":"begin_rc"}
+        
+        # all cominations of fragments are compared.
+        # see https://docs.python.org/3.6/library/itertools.html
+        # itertools.combinations('ABCD', 2)-->  AB AC AD BC BD CD
+        for first, secnd in _itertools.combinations(fragments, 2):  
 
-                if first == secnd:
+                if first["upper"] == secnd["upper"]:
                     continue
             
-                firrc = rcfragments[first]
-                secrc = rcfragments[secnd]
+                firrc = rcfragments[first["mixed"]]
+                secrc = rcfragments[secnd["mixed"]]
 
-                matches = algorithm( first,
-                                     secnd,
-                                     limit)
+                # matches is a list of tuples of three integers describing overlapping sequences:
+                # (start position in first, start position in secnd, length)
+                # This comparison is done using uppercase strings, see _Fragment class
+                matches = algorithm( first["upper"], secnd["upper"], limit)
 
                 for start_in_first, start_in_secnd, length in matches:
-                    node    = first[start_in_first:start_in_first+length]
-                    G.add_node(node, length = length)
-                    first.nodes.append((start_in_first, node))
-                    secnd.nodes.append((start_in_secnd, node))
+                    # node is a string and represent the shared sequence in upper case.
+                    node = first["upper"][start_in_first:start_in_first+length]
 
-                    start_in_firrc, start_in_secrc = len(first) - start_in_first - length, len(secnd) - start_in_secnd - length
-                    noderc  = firrc[start_in_firrc:start_in_firrc+length]
-                    G.add_node(noderc, length = length)
-                    firrc.nodes.append((start_in_firrc, noderc) )
-                    secrc.nodes.append((start_in_secrc, noderc) )
+                    first["nodes"].append( (start_in_first, length, node) )
+                    secnd["nodes"].append( (start_in_secnd, length, node) )
+
+                    # The same node exists between the reverse complements of first and secnd
+                    # The new positions are calculated from the length of the fragment and 
+                    # the overlapping sequence
+                    start_in_firrc = len(first["upper"]) - start_in_first - length
+                    start_in_secrc = len(secnd["upper"]) - start_in_secnd - length
+                    # noderc is the reverse complement of node
+                    noderc  = firrc["upper"][start_in_firrc:start_in_firrc+length]
+                    firrc["nodes"].append( (start_in_firrc, length, noderc) )
+                    secrc["nodes"].append( (start_in_secrc, length, noderc) )
                     nodemap[node]=noderc
-                matches = algorithm( first,
-                                     secrc,
-                                     limit)
+
+                # first is also compared to the rc of secnd
+                matches = algorithm( first["upper"], secrc["upper"], limit)
                 
                 for start_in_first, start_in_secrc, length in matches:
-                    node    = first[start_in_first:start_in_first+length]
-                    G.add_node(node, length = length)
-                    first.nodes.append( (start_in_first, node))
-                    secrc.nodes.append( (start_in_secrc, node))
+                    node    = first["upper"][start_in_first:start_in_first+length]
+                    first["nodes"].append( (start_in_first, length, node) )
+                    secrc["nodes"].append( (start_in_secrc, length, node) )
 
-                    start_in_firrc, start_in_secnd = len(first) - start_in_first - length, len(secnd) - start_in_secrc - length
-                    noderc  = firrc[start_in_firrc:start_in_firrc+length]
-                    G.add_node(noderc, length = length)
-                    firrc.nodes.append( (start_in_firrc, noderc) )
-                    secnd.nodes.append( (start_in_secnd, noderc) )
+                    start_in_firrc, start_in_secnd = len(first["upper"]) - start_in_first - length, len(secnd["upper"]) - start_in_secrc - length
+                    noderc  = firrc["upper"][start_in_firrc:start_in_firrc+length]
+                    firrc["nodes"].append( (start_in_firrc, length, noderc) )
+                    secnd["nodes"].append( (start_in_secnd, length, noderc) )
                     nodemap[node]=noderc
 
+        # A directed graph class that can store multiedges.
+        # Multiedges are multiple edges between two nodes. Each edge can hold optional data or attributes.
+        # https://networkx.github.io/documentation/stable/reference/classes/multidigraph.html
+        
+        order=0
+        G = _nx.MultiDiGraph()
+        # loop through all fragments their and reverse complements
+        
+        for f in fragments:
+            f["nodes"] = sorted(set(f["nodes"]))
+            
+        for f in rcfragments.values():
+            f["nodes"] = sorted(set(f["nodes"]))          
+        
+        for f in _itertools.chain(fragments, rcfragments.values()):
 
-        for f in _itertools.chain(fragments, rcfragments.values()):            
-            f.nodes.sort()
+            # nodes are sorted in place in the order of their position
+            # duplicates are removed (same position and sequence)
+            # along the fragment since nodes are a tuple (position(int), sequence(str))
+            
+            before = G.order()
+            G.add_nodes_from( (node,{"order":order+od, "length":length}) for od,(start,length,node) in enumerate(n for n in f["nodes"] if n[2] not in G))
+            order+=G.order()-before
 
-            for (s1, n1),(s2, n2) in _itertools.combinations(f.nodes,2):
-                if n1==n2:
-                    continue
-                if not G.has_edge(n1, n2) or (f[s1:s2].lower() not in (e["fragment_original_case"].lower() for e in G[n1][n2].values())):
+            for (start1,length1,node1),(start2,length2,node2) in _itertools.combinations(f["nodes"],2):
 
-                    feats = [f for f in f.record.features if s1<=int(f.location.start) and s2+G.node[n2]["length"]>=int(f.location.end)]
-                    
-                    for feat in feats:
-                        feat.location+=(-s1)
-                    
-                    G.add_edge(n1, n2,
-                               fragment_original_case=f.original_case[s1:s2],
-                               feats=feats, 
-                               length=s2-s1, 
-                               start=s1, 
-                               end=s2, 
-                               seq=f.original_case,
-                               name=f.name)
-        self.G=G
-        self.nodemap=nodemap
+                feats = [ft for ft in f["features"] if start1 <= ft.location.start and start2+G.node[node2]["length"] >= ft.location.end]
+
+                for feat in feats: feat.location+=(-start1)
+
+                G.add_edge(node1, node2,                         # nodes (strings)
+                           piece     = slice(start1, start2),       # slice
+                           features  = feats,                       # features
+                           seq       = f["mixed"],                  # mixed case string
+                           name      = f["name"])                   # string
+
+        self.G = _nx.create_empty_copy(G)
+        self.G.add_edges_from(sorted(G.edges(data=True), key=lambda t: len(t[2].get('seq', 1)), reverse=True))
+        self.nodemap={**nodemap, **{nodemap[i]:i for i in nodemap}}
         self.limit = limit
         self.fragments = fragments
         self.rcfragments = rcfragments
         self.algorithm = algorithm
-        self.max_nodes = max_nodes or len(self.fragments)
-
-
-    def assemble_linear(self, start=None,end=None, max_nodes=0):
+        self.max_nodes = len(self.fragments)
         
-        self.G.add_node("begin",    length=0)
-        self.G.add_node("begin_rc", length=0)
-        self.G.add_node("end",      length=0)
-        self.G.add_node("end_rc",   length=0)
+
+    def assemble_linear(self, start=None,end=None, max_nodes=None):
         
-        frst = self.fragments[0].original_case
-        frst_name = self.fragments[0].name
-        last = self.fragments[-1].original_case
-        last_name = self.fragments[-1].name
-        frstrc = str(list(self.rcfragments.values())[0].original_case)
-        frstrc_name = list(self.rcfragments.values())[0].name
-        lastrc = str(list(self.rcfragments.values())[-1].original_case)
-        lastrc_name = list(self.rcfragments.values())[-1].name
-        # add edges from "begin" to nodes in the first sequence
-        for start, node in self.fragments[0].nodes:
-            feats = [f for f in self.fragments[0].record.features if start+self.G.node[node]["length"]>=int(f.location.end)]
+        self.G.add_nodes_from(["begin","begin_rc","end","end_rc"], length=0)
+        
+        # add edges from "begin" to nodes in the first sequence in self.fragments
+        firstfragment = self.fragments[0]
+        for start, length, node in firstfragment["nodes"]:
             self.G.add_edge("begin", node, 
-                            fragment_original_case=frst[0:start], 
-                            feats  = feats, 
-                            length = start, 
-                            start  = 0, 
-                            end    = start, 
-                            seq    = frst,
-                            name   = frst_name)
+                            piece  = slice(0, start), 
+                            features  = [f for f in firstfragment["features"] if start+length >= f.location.end],
+                            seq    = firstfragment["mixed"],
+                            name   = firstfragment["name"])
 
-        # add edges from "begin_rc" to nodes in the first reverse complement sequence
-        for start, node_id in list(self.rcfragments.values())[0].nodes:
-            feats = [f for f in list(self.rcfragments.values())[0].record.features if start+self.G.node[node_id]["length"]>=int(f.location.end)]
-            self.G.add_edge("begin_rc", node_id, 
-                            fragment_original_case = frstrc[0:start], 
-                            feats = feats, length =start, 
-                            start = 0, 
-                            end   = start, 
-                            seq   = frstrc,
-                            name  = frstrc_name)
+        # add edges from "begin_rc" to nodes in the reverse complement of the first sequence
+        firstfragmentrc = self.rcfragments[firstfragment["mixed"]]
+        for start, length, node  in firstfragmentrc["nodes"]:
+            self.G.add_edge("begin_rc", node,
+                            piece = slice(0, start), 
+                            features = [f for f in firstfragmentrc["features"] if start+length >= f.location.end], 
+                            seq   = firstfragmentrc["mixed"],
+                            name  = firstfragmentrc["name"])
 
         # add edges from nodes in last sequence to "end"
-        for start_in_last, last_node_id in self.fragments[-1].nodes:
-            feats = [f for f in self.fragments[-1].record.features if start_in_last<=int(f.location.start)]
-            self.G.add_edge(last_node_id, "end", 
-                            fragment_original_case = last[start_in_last:len(self.fragments[-1])],
-                            feats  = feats, 
-                            length = start, 
-                            start  = start_in_last, 
-                            end    = len(self.fragments[-1]), 
-                            seq    = last,
-                            name   = last_name)
+        lastfragment = self.fragments[-1]
+        for start, length, node in lastfragment["nodes"]:
+            self.G.add_edge(node, "end", 
+                            piece = slice(start, len(lastfragment["mixed"])),
+                            features = [f for f in lastfragment["features"] if start <= f.location.end],  
+                            seq   = lastfragment["mixed"],
+                            name  = lastfragment["name"])
 
         # add edges from nodes in last reverse complement sequence to "end_rc"
-        for start_in_last, last_node_id in list(self.rcfragments.values())[-1].nodes:
-            feats = [f for f in list(self.rcfragments.values())[-1].record.features if start_in_last<=int(f.location.start)]
-            self.G.add_edge(last_node_id, "end_rc", 
-                            fragment_original_case = lastrc[start_in_last:len(list(self.rcfragments.values())[-1])],
-                            feats  = feats, 
-                            length = start, 
-                            start  = start_in_last, 
-                            end    = len(self.fragments[-1]), 
-                            seq    = lastrc,
-                            name   = lastrc_name)
+        lastfragmentrc = self.rcfragments[lastfragment["mixed"]]
+        for start, length, node in lastfragmentrc["nodes"]:
+            self.G.add_edge(node, "end_rc", 
+                            piece = slice(start, len(lastfragmentrc["mixed"])),
+                            features  = [f for f in lastfragmentrc["features"] if start <= f.location.end], 
+                            seq   = lastfragmentrc["mixed"],
+                            name  = lastfragmentrc["name"])
         
-        lps={}        #linear assembly
-        lps=_od(lps)  # fix
-        
-        lpths = _itertools.chain( _nx.all_simple_paths(_nx.DiGraph(self.G),"begin",    "end",      cutoff=self.max_nodes),
-                                  _nx.all_simple_paths(_nx.DiGraph(self.G),"begin",    "end_rc",   cutoff=self.max_nodes),
-                                  _nx.all_simple_paths(_nx.DiGraph(self.G),"begin_rc", "end",      cutoff=self.max_nodes),
-                                  _nx.all_simple_paths(_nx.DiGraph(self.G),"begin_rc", "end_rc",   cutoff=self.max_nodes), 
-                                  )
+        max_nodes = max_nodes or len(self.fragments)
+      
+        linearpaths = list(_itertools.chain( _nx.all_simple_paths( _nx.DiGraph(self.G),"begin",    "end",    cutoff=max_nodes ),
+                                        _nx.all_simple_paths( _nx.DiGraph(self.G),"begin",    "end_rc", cutoff=max_nodes ),
+                                        _nx.all_simple_paths( _nx.DiGraph(self.G),"begin_rc", "end",    cutoff=max_nodes ),
+                                        _nx.all_simple_paths( _nx.DiGraph(self.G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
 
-        for lpth in lpths:
-            e1=[]
-            for u,v in zip(lpth,lpth[1:]):
-                e2=[]
+        lps=_od()
+        lpsrc=_od()
+
+        for lp in linearpaths:
+            edgelol=[]
+            for u,v in zip(lp,lp[1:]):
+                e=[]
                 for d in self.G[u][v].values():
-                    e2.append((u,v,d))
-                e1.append(e2)
+                    e.append((u,v,d))
+                edgelol.append(e)
 
-            for edges in _itertools.product(*e1):
-                sg=_nx.DiGraph(self.G.subgraph(lpth).copy())
-                sg.add_edges_from(edges)
-                ct = "".join(e[2]["fragment_original_case"] for e in edges)
-                if ct in lps: 
-                    continue
+            for edges in _itertools.product(*edgelol):
+                ct = "".join(e["seq"][e["piece"]] for u,v,e in edges)
+                key = ct.upper()
+
+                if key in lps or key in lpsrc: continue
+                sg=_nx.DiGraph()
+                sg.add_edges_from(edges)   
+                sg.add_nodes_from((n,d) for n,d in self.G.nodes(data=True) if n in lp)
+                
                 edgefeatures=[]
                 offset=0
-                for e in edges:
-                    feats = _deepcopy(e[2]["feats"])
+                
+                for u,v,e in edges:
+                    feats = _deepcopy(e["features"])                    
                     for f in feats:
                         f.location+=offset
                     edgefeatures.extend(feats)
-                    offset+=e[2]["length"]
-                lps[ct]= _Contig( ct, features=edgefeatures, graph=sg, path=lpth, nodemap=self.nodemap)
+                    offset+=e["piece"].stop-e["piece"].start
+                lps[key] = lpsrc[key] = ct, edgefeatures, sg, {n:self.nodemap[n] for n in lp}
+        
+        return sorted((_Contig.from_string(lp[0], 
+                               features  = lp[1], 
+                               graph     = lp[2],
+                               nodemap   = lp[3],
+                               linear   = True,
+                               circular = False) for lp in lps.values()), key=len, reverse=True)
 
-        return sorted(lps.values(), key=len, reverse=True)
-    
 
     def assemble_circular(self):
-        cps = {} # circular assembly
-        cps = _od(cps)
-        nodes  = list(_itertools.chain.from_iterable([f.nodes for f in self.fragments]))
-        nodes  = list(_od.fromkeys([n[1] for n in nodes]))
-        cpaths = [list(x) for x in _nx.simple_cycles(self.G)]
-        first_cpaths  = []
-        second_cpaths = []
-        
+        cps = _od() # circular assembly
+        cpsrc = _od()
+        cpaths = sorted( _nx.simple_cycles(self.G), key=len)
+        cpaths_sorted=[]
         for cpath in cpaths:
-            for j, node in enumerate(nodes):
-                cp=[]
-                try:
-                    i = cpath.index(node)
-                except ValueError:
-                    pass
-                else:
-                    cp = cpath[i:]+cpath[:i]
-                    first_cpaths.append((j, cp))
-                if cp:
-                    break
-            if not cp:
-                second_cpaths.append(cpath)
+            order, node = min((self.G.node[node]["order"],node) for node in cpath)
+            i=cpath.index(node)
+            cpaths_sorted.append((order, cpath[i:]+cpath[:i]))
+        cpaths_sorted.sort()        
 
-        first_cpaths.sort()
-        first_cpaths = [cp for (j,cp) in first_cpaths]
-
-        cpaths = first_cpaths + second_cpaths
-        cpaths.sort(key=len)
-        
-
-        for cp in cpaths:
-            e1=[]
-            cp+=cp[0:1]
+        for _, cp in cpaths_sorted[::2]:   # cpaths is a list of nodes representing a circular assembly
+            edgelol = []                   # edgelol is a list of lists of all edges along cp
+            cp+= cp[0:1]
             for u,v in zip(cp, cp[1:]):
-                e2=[]
+                e=[]
                 for d in self.G[u][v].values():
-                    e2.append((u,v,d))
-                e1.append(e2)
+                    e.append((u,v,d))
+                edgelol.append(e)
 
-            for edges in _itertools.product(*e1):
-                ct = "".join(e[2]["fragment_original_case"] for e in edges)
-                if ct in [str(s.seq) for s in cps.values()]:
-                    continue
-                cseguid = _cseguid(ct)                   
-                if cseguid in cps:
-                    continue           
-                sg=_nx.DiGraph(self.G.subgraph(cp).copy())
-                sg.add_edges_from(edges)
+            for edges in _itertools.product(*edgelol):
+                ct = "".join(e["seq"][e["piece"]] for u,v,e in edges)
+                key=ct.upper()
+                
+                if key in cps or key in cpsrc: continue  # TODO: cpsrc not needed? 
+                sg=_nx.DiGraph()
+                sg.add_edges_from(edges)   
+                sg.add_nodes_from( (n,d) for n,d in self.G.nodes(data=True) if n in cp )
+                
                 edgefeatures=[]
                 offset=0
-                for e in edges:
-                    feats = _deepcopy(e[2]["feats"])
+
+                for u,v,e in edges:
+                    feats = _deepcopy(e["features"])
                     for feat in feats:
-                        feat.location+=offset                    
+                        feat.location+=offset
                     edgefeatures.extend(feats)
-                    offset+=e[2]["length"]
-                for f in edgefeatures:
-                    if f.location.start>len(ct) and f.location.end>len(ct):                        
-                        f.location+=(-len(ct))                    
-                    elif f.location.end>len(ct):
-                        f.location = _CompoundLocation((_FeatureLocation(f.location.start,_ExactPosition(len(ct))),_FeatureLocation(_ExactPosition(0), f.location.end-len(ct))))
-                cps[cseguid]=_Contig( ct, features = edgefeatures, graph=sg, path=cp,nodemap=self.nodemap,circular=True)
-        return sorted(cps.values(), key=len, reverse=True)
+                    offset+=e["piece"].stop-e["piece"].start
+                    for f in edgefeatures:
+                        if f.location.start>len(ct) and f.location.end>len(ct):                        
+                            f.location+=(-len(ct))
+                        elif f.location.end>len(ct):
+                            f.location = _CompoundLocation((_FeatureLocation(f.location.start,_ExactPosition(len(ct))),_FeatureLocation(_ExactPosition(0), f.location.end-len(ct))))
+
+                cps[key] = cpsrc[_rc(key)] = ct, edgefeatures, sg, {n:self.nodemap[n] for n in cp[:-1]}, cp 
+
+        return sorted((_Contig.from_string(cp[0], 
+                               features = cp[1], 
+                               graph    = cp[2], 
+                               nodemap  = cp[3],
+                               linear=False,
+                               circular=True) for cp in cps.values()), key=len, reverse=True)
 
         
     def __repr__(self):
         # https://pyformat.info
         return _pretty_str( "Assembly (max_nodes={max_nodes})\n"
-                            "fragments....: {sequences}\n"
-                            "limit(bp)....: {limit}\n"
-                            "G.nodes......: {nodes}\n"
-                            "algorithm....: {al}".format(sequences = " ".join("{}bp".format(len(x)) for x in self.fragments),
+                            "fragments..: {sequences}\n"
+                            "limit(bp)..: {limit}\n"
+                            "G.nodes....: {nodes}\n"
+                            "algorithm..: {al}".format(sequences = " ".join("{}bp".format(len(x["mixed"])) for x in self.fragments),
                                                            limit     = self.limit,
                                                            nodes     = self.G.order(),
                                                            max_nodes = self.max_nodes,    
                                                            al        = self.algorithm.__name__))
 
+                                   
+example_fragments = ( _Dseqrecord("acgatCAtgctcc",  name ="a"),
+                             _Dseqrecord("tgctccTAAattctgc", name ="b"),
+                                      _Dseqrecord("attctgcGAGGacgat",name ="c") )
 
-example_fragments = ( _Dseqrecord("acgatgctatactgCCCCCtgtgctgtgctcta",  name ="a"),
-                      _Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatc", name ="b"),
-                      _Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg",name ="c") )
 
 
+example_linear_result =        "acgatCAtgctccTAAattctgcGAGGacgat"
+example_circular_result =      "acgatCAtgctccTAAattctgcGAGG"         
+         
+         
+         
 if __name__=="__main__":
-    # asm = Assembly(example_fragments, limit=14)
-    # lin = asm.assemble_linear()
-    # print( lin )
-    # for l in lin:
-    #    print(l.figure())
- 
-    # crc = asm.assemble_circular()
-    # for c in crc:
-    #     print(c.figure())
-          
-                         
-      
-    # acgatgctatactgCCCCCtgtgctgtgctcta
-    #                    tgtgctgtgctctaTTTTTtattctggctgtatc
-    #                                       tattctggctgtatcGGGGGtacgatgctatactg
-    
-    # acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGtacgatgctatactg
-    
-    
-    # acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGt    
-    
-    a = _Dseqrecord("acgatgctatactggCCCCCtgtgctgtgctctaGG",name="oneC")
-    a.add_feature(1,33,label="first")
-                                       # tgtgctgtgctcta 14 
-    b =                     _Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatct", name="twoA")
-    b.add_feature(1,34,label="scnd")
-    b2=                     _Dseqrecord("tgtgctgtgctctaCCtattctggctgtatct",name="twoB")
-                                                         # tattctggctgtatct 16 
-    c =                                        _Dseqrecord("tattctggctgtatctGGGGGTacgatgctatactgg", name="three")
-    c.add_feature(1,36,label="third")
-                                                          
-                                                                               # acgatgctatactgg 15
-                                                                               
-    c2 = Assembly((a,b,b2,c), limit=14)
-    assert c2.assemble_circular()[0].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
-    assert c2.assemble_circular()[1].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
-    assert str(c2.assemble_circular()[0].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
-    assert str(c2.assemble_circular()[1].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT'
-    print("done")
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached

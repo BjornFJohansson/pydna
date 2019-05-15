@@ -33,7 +33,7 @@ from pydna._sequencetrace     import SequenceTraceFactory as _SequenceTraceFacto
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
 from pydna.utils  import cseguid  as _cseg
-
+from pydna.utils  import rc       as _rc
 from pydna.utils  import memorize as _memorize
 from pydna.utils  import flatten     as _flatten
 
@@ -201,7 +201,38 @@ class Dseqrecord(_SeqRecord):
         self.map_target = None
         
         self.n = n # ammount, set to 5E-14 which is 5 pmols
-        
+
+    @classmethod
+    def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):
+        #def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):
+        obj = cls.__new__(cls)  # Does not call __init__
+        obj._seq = _Dseq.quick(record, _rc(record), ovhg=0, linear=linear,circular=circular)
+        obj.id = _pretty_str("id")
+        obj.name = _pretty_str("name")
+        obj.description = _pretty_str("description")
+        obj.dbxrefs = []
+        obj.annotations = {}
+        obj._per_letter_annotations = {}
+        obj.features = []
+        obj.map_target = None
+        obj.n = n       
+        obj.__dict__.update(kwargs)
+        return obj
+
+    @classmethod
+    def from_SeqRecord(cls, record:_SeqRecord,*args, linear=True, circular=False, n = 5E-14, **kwargs):
+        obj = cls.__new__(cls)  # Does not call __init__
+        obj._seq = _Dseq.quick(str(record.seq), _rc(str(record.seq)), ovhg=0, linear=linear,circular=circular)
+        obj.id = record.id
+        obj.name = record.name
+        obj.description = record.description
+        obj.dbxrefs = record.dbxrefs        
+        obj.annotations = record.annotations
+        obj._per_letter_annotations = record._per_letter_annotations
+        obj.features = record.features
+        obj.map_target = None
+        obj.n = n
+        return obj
         
     @property
     def linear(self):
@@ -365,7 +396,6 @@ class Dseqrecord(_SeqRecord):
         new._seq = self.seq.looped()
         for fn, fo in zip(new.features, self.features):
             fn.qualifiers = fo.qualifiers
-
         return new
 
 
@@ -397,7 +427,7 @@ class Dseqrecord(_SeqRecord):
         new = _copy.copy(self)
         for key, value in list(self.__dict__.items()):
             setattr(new, key, value )
-        new._seq = self.seq.tolinear()
+        #new._seq = self.seq.tolinear()
         for fn, fo in zip(new.features, self.features):
             fn.qualifiers = fo.qualifiers
 

@@ -52,9 +52,8 @@ def test_initialization():
     assert Dseq("gt", linear=True,  circular=False) == l
     assert Dseq("gt", linear=True,  circular=True ) == l
     
-    
-
-    
+    assert Dseq.from_string("A") == Dseq("A") == Dseq("A", linear=True)
+    assert Dseq.from_string("A", linear=False, circular = True) == Dseq("A", circular =True) == Dseq("A", linear=False)    
 
 def test_cut_around_and_religate():
     from pydna.dseq import Dseq
@@ -195,7 +194,7 @@ def test_dseq():
     
     
     obj = Dseq("ccGGATCC", "aaggatcc", -2)    
-    assert obj.todata == "ccGGATCCtt"
+    assert obj._data == "ccGGATCCtt"
     assert str(obj.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
     Dseq(-10)
@@ -249,7 +248,7 @@ def test_dseq():
 
     
     a2 = Dseq("ccGGATCCaa", "ggatcc", -2)
-    assert a2.todata  == "ccGGATCCaa"
+    assert a2._data  == "ccGGATCCaa"
     assert a2._data == "ccGGATCCaa"
     assert str(a2.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -261,7 +260,7 @@ def test_dseq():
     
 
     a3 = Dseq("ccGGATCC", "ggatcc", -2)
-    assert a3.todata == "ccGGATCC"
+    assert a3._data == "ccGGATCC"
     assert a3._data == "ccGGATCC"
     assert str(a3.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -274,7 +273,7 @@ def test_dseq():
     
     
     b = Dseq("GGATCC", "aaggatcccc", 2)
-    assert b.todata == "ggGGATCCtt"
+    assert b._data == "ggGGATCCtt"
     assert b._data == "ggGGATCCtt"
     assert str(b.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -287,7 +286,7 @@ def test_dseq():
     
     
     b2 = Dseq("GGATCCaa", "ggatcccc", 2)
-    assert b2.todata == "ggGGATCCaa"
+    assert b2._data == "ggGGATCCaa"
     assert b2._data == "ggGGATCCaa"
     assert str(b2.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -301,7 +300,7 @@ def test_dseq():
     
     
     b3 = Dseq("GGATCC", "ggatcccc", 2)
-    assert b3.todata == "ggGGATCC"
+    assert b3._data == "ggGGATCC"
     assert b3._data == "ggGGATCC"
     assert str(b3.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -313,7 +312,7 @@ def test_dseq():
     
     
     c = Dseq("GGATCCaaa", "ggatcc", 0)
-    assert c.todata == "GGATCCaaa"
+    assert c._data == "GGATCCaaa"
     assert c._data ==  "GGATCCaaa"
     assert str(c.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -326,7 +325,7 @@ def test_dseq():
     
     
     d = Dseq("GGATCC", "aaaggatcc", 0)
-    assert d.todata == "GGATCCttt"
+    assert d._data == "GGATCCttt"
     assert d._data == "GGATCCttt"
     assert str(d.mung()) == "GGATCC"
     rpr = textwrap.dedent('''
@@ -449,7 +448,6 @@ def test_dseq():
     
 def test_Dseq_slicing():
     from pydna.dseq        import Dseq
-    from pydna.dseqrecord  import Dseqrecord
     from pydna.readers     import read
     from pydna.utils       import eq
     
@@ -469,17 +467,11 @@ def test_Dseq_slicing():
 
 def test_Dseq_slicing2():
     from pydna.dseq        import Dseq
-    from pydna.dseqrecord  import Dseqrecord
     from Bio.Restriction import BamHI, EcoRI, KpnI
 
     a = Dseq("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
 
     assert a.cut(EcoRI, BamHI, KpnI,) == a.cut(BamHI, EcoRI, KpnI,)[::-1]
-
-    a = Dseqrecord("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
-
-    assert a.cut( EcoRI, BamHI,  KpnI,)[0].seq == a.cut( BamHI, EcoRI,  KpnI,)[1].seq
-
 
 def test_Dseq___getitem__():
     from pydna.dseq        import Dseq
@@ -498,31 +490,7 @@ def test_Dseq___getitem__():
     assert t[9:1] == Dseq("")
 
  
-def test_rogerstager():
-    from pydna.dseq        import Dseq
-    from pydna.dseqrecord  import Dseqrecord
-    from pydna.utils       import eq
-    
-    from Bio.Seq           import Seq
-    from Bio.Restriction   import BsaI
 
-    answ = []
-    answ.append( Dseq('aaaaaaaaaaaaggtctca', 
-                          'ttttttttccagagttttt'[::-1]) )
-    answ.append( Dseq('aaaaaaaaaggtctca', 
-                          'tttttccagagttttt'[::-1]) )
-
-    tests = [Seq("aaaaaaggtctcaaaaaaa"),
-             Seq("aaaaaaggtctcaaaa")  ]
-    
-    for s in tests:
-        d = Dseqrecord(s).looped()
-        for f in d.cut(BsaI):
-            a = answ.pop(0)
-            assert  f.seq.watson == a.watson 
-            assert  f.seq.crick  == a.crick 
-            assert  f.seq.ovhg == a.ovhg 
-            assert  eq(f.seq, a)
             
 def test_cut_circular():
 
