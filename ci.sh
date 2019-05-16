@@ -223,8 +223,10 @@ then
         exit 1
     fi
 else
+
     source activate python36
     python run_test.py
     source activate python37
     python run_test.py
+
 fi
