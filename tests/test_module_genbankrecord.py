@@ -31,6 +31,13 @@ def test_genbankfile():
     
     assert gbr_rc.strand==2
     
+    from Bio.Seq import Seq
+    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+    from pydna.seqrecord import SeqRecord
+    
+    arg = SeqRecord(Seq("aaa", IUPACAmbiguousDNA()))
+    
+    genbankrecord.GenbankRecord.from_SeqRecord(arg)
 
 if __name__ == '__main__':
     pytest.main([__file__, "-vv", "-s","--cov=pydna","--cov-report=html"])

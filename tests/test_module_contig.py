@@ -12,7 +12,7 @@ def test_contig(monkeypatch):
     c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg", name="three")
     asm = Assembly((a,b,c), limit=14)
 
-    cnt = asm.circular_products[0]
+    cnt = asm.assemble_circular()[0]
     
     assert repr(cnt) == "Contig(o59)"
     
@@ -40,9 +40,8 @@ def test_contig(monkeypatch):
 |                      14-
 |                         |
  -------------------------"""
-    assert fig == cnt.small_fig()
     
-    cnt2 = asm.linear_products[0]
+    cnt2 = asm.assemble_linear()[0]
 
     
     fig = ('one|14\n'
@@ -53,7 +52,7 @@ def test_contig(monkeypatch):
            '           /\\\n'
            '           15|three')
 
-    assert fig == cnt2.small_fig() == cnt2.figure() == cnt2.small_figure()
+    assert fig == cnt2.figure()
     
     assert repr(cnt2) == 'Contig(-73)'
 
@@ -69,20 +68,37 @@ def test_contig(monkeypatch):
     
     pp.text.assert_called_with('Contig(-73)')
     
+    from Bio.Seq import Seq
+    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+    from pydna.seqrecord import SeqRecord
+    
+    arg = SeqRecord(Seq("aaa", IUPACAmbiguousDNA()))
+    
+    import networkx as nx
+    
+    x = contig.Contig.from_SeqRecord(arg, graph=nx.MultiDiGraph())
+    
 def test_reverse_complement(monkeypatch):
     from pydna._pretty import pretty_str
     from pydna.assembly import Assembly
     from pydna.dseqrecord import Dseqrecord
     a = Dseqrecord("acgatgctatactgtgCCNCCtgtgctgtgctcta")
-    b = Dseqrecord("tgtgctgtgctctaTTTTTTTtattctggctgtatc")
-    c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactgtg")
-    a.name="aaa"
+                                        #12345678901234
+    b =                      Dseqrecord("tgtgctgtgctctaTTTTTTTtattctggctgtatc")
+                                                             #123456789012345
+    c =                                           Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactgtg")
+    a.name="aaa"                                                                  #1234567890123456
     b.name="bbb"
     c.name="ccc"
-    x = Assembly((a,b,c), limit=14)
-    y = x.circular[0]
+    asm = Assembly((a,b,c), limit=14)
+    x = asm.assemble_circular()[0]
+    y = x.rc()
+    z = y.rc()
+    assert x.figure()==z.figure()
+    assert x.detailed_figure()==z.detailed_figure()
     
-    yfig = '''
+    
+    xfig = '''\
  -|aaa|14
 |      \\/
 |      /\\
@@ -95,12 +111,12 @@ def test_reverse_complement(monkeypatch):
 |                    16-
 |                       |
  -----------------------
-     '''[1:].rstrip()
+     '''.rstrip()
      
      
      
      
-    ydfig= pretty_str('''
+    xdfig= pretty_str('''\
 ||||||||||||||||
 acgatgctatactgtgCCNCCtgtgctgtgctcta
                      TGTGCTGTGCTCTA
@@ -108,16 +124,14 @@ acgatgctatactgtgCCNCCtgtgctgtgctcta
                                           TATTCTGGCTGTATC
                                           tattctggctgtatcGGGGGtacgatgctatactgtg
                                                                ACGATGCTATACTGTG
-    '''[1:].rstrip()+"\n")
+    '''.rstrip()+"\n")
     
     
 
-    assert y.figure() == yfig
-    assert y.detailed_figure() == ydfig
+    assert x.figure() == xfig
+    assert x.detailed_figure() == xdfig
     
-    z=y.rc()
-    
-    zfig = '''
+    yfig = '''\
  -|ccc_rc|15
 |         \\/
 |         /\\
@@ -130,10 +144,10 @@ acgatgctatactgtgCCNCCtgtgctgtgctcta
 |                             16-
 |                                |
  --------------------------------
-     '''[1:].rstrip()
+     '''.rstrip()
      
      
-    zdfig= '''
+    ydfig= '''\
 ||||||||||||||||
 cacagtatagcatcgtaCCCCCgatacagccagaata
                       GATACAGCCAGAATA
@@ -141,10 +155,12 @@ cacagtatagcatcgtaCCCCCgatacagccagaata
                                             TAGAGCACAGCACA
                                             tagagcacagcacaGGNGGcacagtatagcatcgt
                                                                CACAGTATAGCATCGT
-    '''[1:].rstrip()+"\n"
+    '''.rstrip()+"\n"
     
-    assert z.figure() == zfig
-    assert z.detailed_figure() == zdfig
+    assert y.figure() == yfig
+    assert y.detailed_figure() == ydfig
+    
+
     
 
 if __name__ == '__main__':

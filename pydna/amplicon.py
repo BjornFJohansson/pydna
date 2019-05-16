@@ -77,6 +77,12 @@ class Amplicon(_Dseqrecord):
         self.rprimerc       = rprimerc
         self.saltc          = saltc
 
+    @classmethod
+    def from_SeqRecord(cls, record, *args, path=None, **kwargs):
+        obj = super().from_SeqRecord(record, *args, **kwargs)
+        obj.path = path
+        return obj
+
     def __getitem__(self, sl):
         answer = _copy.copy(self)
         answer.seq = answer.seq.__getitem__(sl)

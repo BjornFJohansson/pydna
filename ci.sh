@@ -139,8 +139,6 @@ set -x
 
 
 
-
-conda env create -f python35.yml
 conda env create -f python36.yml
 conda env create -f python37.yml
 
@@ -160,14 +158,10 @@ then
     rm -rf dist
     rm -rf build
     rm -rf tests/htmlcov
-    pth1="$(conda build . --output --py 3.5)"
     pth2="$(conda build . --output --py 3.6)"
     pth3="$(conda build . --output --py 3.7)"
-    echo $pth1
     echo $pth2
     echo $pth3
-    source activate python35
-    conda build --python 3.5 --no-include-recipe --dirty .
     source activate python36
     conda build --python 3.6 --no-include-recipe --dirty .
     source activate python37
@@ -175,29 +169,22 @@ then
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
         set +x
-        anaconda -t $ANACONDATOKEN upload $pth1 --label $condalabel --force
         anaconda -t $ANACONDATOKEN upload $pth2 --label $condalabel --force
         anaconda -t $ANACONDATOKEN upload $pth3 --label $condalabel --force
         set -x
     else
-        anaconda upload $pth1 --label $condalabel --force
         anaconda upload $pth2 --label $condalabel --force
         anaconda upload $pth3 --label $condalabel --force
     fi
 
     if [[ $TRAVIS = true ]] # MacOSX on Travis
     then
-        #brew update
-        source activate python35
-        python setup.py build bdist_wheel
         source activate python36
         python setup.py build bdist_wheel
         source activate python37
         python setup.py build bdist_wheel
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]] # Windows on appveyor
     then
-        source activate python35
-        python setup.py build bdist_wheel 
         source activate python36
         python setup.py build bdist_wheel 
         source activate python37
@@ -205,8 +192,6 @@ then
         appveyor PushArtifact dist/*        
     elif [[ $CI_NAME = codeship ]]  # Linux on codeship
     then
-        source activate python35
-        python setup.py build bdist_wheel 
         source activate python36
         python setup.py build bdist_wheel 
         source activate python37
@@ -215,8 +200,6 @@ then
     elif [[ $local_computer = true ]]
     then
         echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
-        source activate python35
-        python setup.py build bdist_wheel 
         source activate python36
         python setup.py build bdist_wheel 
         source activate python37
@@ -231,9 +214,6 @@ then
         exit 1
     fi
 else
-
-    source activate python35
-    python run_test.py
     source activate python36
     python run_test.py
     source activate python37

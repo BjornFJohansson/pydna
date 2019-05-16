@@ -10,7 +10,6 @@ from pydna._pretty import pretty_str as _ps
 
 class GenbankRecord(_Dseqrecord):
 
-
     def __init__(self, record, *args, item="accession", start=None, stop=None, strand=1,**kwargs):
         super().__init__(record, *args, **kwargs)
         self.item = item
@@ -23,7 +22,20 @@ class GenbankRecord(_Dseqrecord):
         self._linktemplate = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{text}</a>"
         self.hyperlink = _ps(self._linktemplate.format(item=self.item, start=self.start or "", stop=self.stop or "", strand=self.strand, text=self._repr))
 
-
+    @classmethod
+    def from_SeqRecord(cls, record, *args, item="accession", start=None, stop=None, strand=1,**kwargs):
+        obj = super().from_SeqRecord(record, *args, **kwargs)
+        obj.item   = item
+        obj.start  = start
+        obj.stop   = stop
+        obj.strand = strand
+        obj._repr = item
+        if obj.start != None and obj.stop != None:
+            obj._repr += " {}-{}".format(obj.start, obj.stop)
+        obj._linktemplate = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{text}</a>"
+        obj.hyperlink = _ps(obj._linktemplate.format(item=obj.item, start=obj.start or "", stop=obj.stop or "", strand=obj.strand, text=obj._repr))
+        return obj
+        
     def __repr__(self):
         '''returns a short string representation of the object'''
         return "Gbank({})({}{})".format(self._repr, {True:"-", False:"o"}[self.linear],len(self))

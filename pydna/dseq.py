@@ -25,6 +25,7 @@ from Bio.Seq                import Seq               as _Seq
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils  import seguid      as _seg
 from pydna.utils  import rc          as _rc
+from pydna.utils  import complement  as _complement
 from pydna.utils  import flatten     as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
@@ -234,7 +235,7 @@ class Dseq(_Seq):
         AAAGCCCTA
 
     The slicing of a linear Dseq object works mostly as it does for a string.
-
+._linear
 
     >>> s="ggatcc"
     >>> s[2:3]
@@ -315,7 +316,7 @@ class Dseq(_Seq):
             if ovhg is None:
                 crick = _rc(watson)
                 ovhg = 0
-                self.todata = watson     
+                self._data = watson     
             else: # ovhg given, but no crick strand
                 raise ValueError("ovhg defined without crick strand!")                
         else: # crick strand given
@@ -336,37 +337,66 @@ class Dseq(_Seq):
                 sns = ((ovhg*" ")  + _pretty_str(watson))
                 asn = ((-ovhg*" ") + _pretty_str(_rc(crick)))
 
-                self.todata = "".join([a.strip() or b.strip() for a,b in _itertools.zip_longest(sns,asn, fillvalue=" ")])
+                self._data = "".join([a.strip() or b.strip() for a,b in _itertools.zip_longest(sns,asn, fillvalue=" ")])
 
             else: # ovhg given             
                 if ovhg==0:                    
                     if len(watson)==len(crick):
-                        self.todata = watson
+                        self._data = watson
                     elif len(watson)>len(crick):
-                        self.todata = watson                    
+                        self._data = watson                    
                     else:
-                        self.todata = watson + _rc(crick[:len(crick)-len(watson)])                   
+                        self._data = watson + _rc(crick[:len(crick)-len(watson)])                   
                 elif ovhg>0:                       
                     if ovhg+len(watson) > len(crick):                            
-                        self.todata = _rc(crick[-ovhg:])+watson                            
+                        self._data = _rc(crick[-ovhg:])+watson                            
                     else:                            
-                        self.todata = _rc(crick[-ovhg:]) + watson + _rc(crick[: len(crick)-ovhg-len(watson)])
+                        self._data = _rc(crick[-ovhg:]) + watson + _rc(crick[: len(crick)-ovhg-len(watson)])
                 else: # ovhg < 0
                     if -ovhg+len(crick) > len(watson):
-                        self.todata = watson+_rc(crick[:-ovhg+len(crick)-len(watson)])                            
+                        self._data = watson+_rc(crick[:-ovhg+len(crick)-len(watson)])                            
                     else:
-                        self.todata = watson
+                        self._data = watson
                         
         self._circular = bool(circular) and bool(linear)^bool(circular) or linear==False and circular is None
         self._linear   = not self._circular
-
         self.watson = _pretty_str(watson)
         self.crick  = _pretty_str(crick)
-        self.length = max(len(watson)+max(0,ovhg), len(crick)+max(0,-ovhg))
+        #self.length = max(len(watson)+max(0,ovhg), len(crick)+max(0,-ovhg))
+        self.length = len(self._data)
         self._ovhg  = ovhg
         self.pos    = pos
-        _Seq.__init__(self, _pretty_str(self.todata), alphabet)
+        self._data  = self._data
+        self.alphabet = alphabet
+        
 
+    @classmethod
+    def quick(cls, watson:str, crick:str, ovhg=0, linear=True, circular=False, pos=0, alphabet=_IUPACAmbiguousDNA()):
+        obj = cls.__new__(cls)  # Does not call __init__
+        obj.watson = _pretty_str(watson)
+        obj.crick  = _pretty_str(crick)
+        obj._ovhg  = ovhg
+        obj._circular = circular
+        obj._linear = linear
+        obj.length  = max(len(watson)+max(0,ovhg), len(crick)+max(0,-ovhg))
+        obj.pos      = pos
+        obj.alphabet = alphabet
+        obj._data  = _rc(crick[-max(0,ovhg) or len(crick):])+watson+_rc(crick[:max(0, len(crick)-ovhg-len(watson))])
+        return obj
+
+    @classmethod
+    def from_string(cls, dna:str,*args, linear=True, circular=False, **kwargs):
+        obj = cls.__new__(cls)  # Does not call __init__
+        obj.watson = _pretty_str(dna)
+        obj.crick  = _pretty_str(_rc(dna))
+        obj._ovhg  = 0
+        obj._circular = circular
+        obj._linear = linear
+        obj.length  = len(dna)
+        obj.pos      = 0
+        obj.alphabet = _IUPACAmbiguousDNA()
+        obj._data  = dna
+        return obj
 
     @property
     def ovhg(self):
@@ -601,7 +631,7 @@ class Dseq(_Seq):
 
        '''
         ovhg = len(self.watson) - len(self.crick) + self._ovhg
-        return Dseq(self.crick, self.watson, ovhg=ovhg, circular = self.circular)
+        return Dseq.quick(self.crick, self.watson, ovhg=ovhg, linear =self.linear, circular = self.circular)
 
 
     rc = reverse_complement # alias for reverse_complement
@@ -661,7 +691,7 @@ class Dseq(_Seq):
         type5, sticky5 = self.five_prime_end()
         type3, sticky3 = self.three_prime_end()
         if type5 == type3 and str(sticky5) == str(_rc(sticky3)):
-            nseq = Dseq(self.watson, self.crick[-self._ovhg:] + self.crick[:-self._ovhg], 0, circular=True)
+            nseq = Dseq.quick(self.watson, self.crick[-self._ovhg:] + self.crick[:-self._ovhg], ovhg=0,linear=False,circular=True)
             assert len(nseq.crick) == len(nseq.watson)
             return nseq
         else:
@@ -838,9 +868,9 @@ class Dseq(_Seq):
         if (self_type == other_type and
             str(self_tail) == str(_rc(other_tail))):
             
-            answer = Dseq(self.watson + other.watson,
-                          other.crick + self.crick,
-                          self._ovhg)
+            answer = Dseq.quick(self.watson + other.watson,
+                                other.crick + self.crick,
+                                self._ovhg)
         elif not self:
             answer = _copy.copy(other)
         elif not other:
@@ -1253,7 +1283,3 @@ if __name__=="__main__":
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"]=cached
-
-
-    
-    

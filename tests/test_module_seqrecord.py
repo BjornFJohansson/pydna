@@ -187,9 +187,6 @@ def test_seqrecord():
     
     obj = seqrecord.SeqRecord(s)
     
-    today = datetime.date.today().strftime("%d-%b-%Y").upper()
-    
-    assert obj.annotations['date'] == today
     assert obj.map_target == None
     
     assert obj.isorf()
@@ -212,8 +209,8 @@ def test_seqrecord():
     
     obj.add_colors_to_features_for_ape()
     
-    assert obj.features[0].qualifiers['ApEinfo_fwdcolor'] == ['#7f3f3f']
-    assert obj.features[0].qualifiers['ApEinfo_revcolor'] == ['#7f3f3f']
+    assert obj.features[0].qualifiers['ApEinfo_fwdcolor'] == ['#66ffa3']
+    assert obj.features[0].qualifiers['ApEinfo_revcolor'] == ['#66ffff']
     
     assert obj.gc() == 6.7
     

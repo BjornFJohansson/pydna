@@ -56,8 +56,8 @@ class SeqRecord(_SeqRecord):
         if self.description =="<unknown description>":
             self.description = "description"
 
-        if not 'date' in self.annotations:
-            self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
+        #if not 'date' in self.annotations:
+        #    self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
         
@@ -166,20 +166,19 @@ class SeqRecord(_SeqRecord):
 
 
     def add_colors_to_features_for_ape(self):
-        '''This method assigns random colors to features compatible with the 
+        '''This method assigns colors to features compatible with the 
         `ApE editor <http://jorgensen.biology.utah.edu/wayned/ape/>`_'''
-
-        def get_N_HexCol(N):
-            HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
-            hex_out = []
-            for rgb in HSV_tuples:
-                rgb = [int(x*255) for x in _colorsys.hsv_to_rgb(*rgb)]
-                hex_out.append("".join([chr(x).encode("utf-8").hex() for x in rgb]))
-            return hex_out
-
-        for i, color in enumerate(get_N_HexCol(len(self.features))):
-            self.features[i].qualifiers['ApEinfo_fwdcolor'] = ["#"+color]
-            self.features[i].qualifiers['ApEinfo_revcolor'] = ["#"+color]
+                 
+        cols = ('#66ffa3', '#84ff66', '#e0ff66', '#ffc166', '#ff6666',
+                '#ff99d6', '#ea99ff', '#ad99ff', '#99c1ff', '#99ffff',
+                '#99ffc1', '#adff99', '#eaff99', '#ffd699', '#ff9999',
+                '#ffccea', '#f4ccff', '#d6ccff', '#cce0ff', '#ccffff',
+                '#ccffe0', '#d6ffcc', '#f4ffcc', '#ffeacc', '#ffcccc',
+                '#ff66c1', '#e066ff', '#8466ff', '#66a3ff', '#66ffff',)
+ 
+        for i,f in enumerate(self.features):
+            f.qualifiers['ApEinfo_fwdcolor'] = [cols[i%len(cols)]]
+            f.qualifiers['ApEinfo_revcolor'] = [cols[::-1][i%len(cols)]]
 
 
     def add_feature(self, x=None, y=None, seq=None, type="misc", strand=1,*args, **kwargs):

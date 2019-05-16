@@ -4,14 +4,20 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-
-from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+from pydna.seqrecord        import SeqRecord  as _SeqRecord
+from pydna.dseqrecord import Dseqrecord       as _Dseqrecord
 
 class GenbankFile(_Dseqrecord):
 
     def __init__(self, record, *args, path=None, **kwargs):
         super().__init__(record, *args, **kwargs)
         self.path=path
+
+    @classmethod
+    def from_SeqRecord(cls, record, *args, path=None, **kwargs):
+        obj = super().from_SeqRecord(record, *args, **kwargs)
+        obj.path = path
+        return obj
 
     def __repr__(self):
         '''returns a short string representation of the object'''

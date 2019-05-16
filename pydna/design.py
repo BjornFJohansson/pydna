@@ -561,20 +561,18 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> from pydna.assembly import Assembly
     >>> assemblyobj = Assembly([fa,fb,fc])
     >>> assemblyobj
-    ## Assembly object ##
+    Assembly (max_nodes=3)
     fragments....: 100bp 101bp 102bp
     limit(bp)....: 25
-    G.nodes......: 10
+    G.nodes......: 6
     algorithm....: common_sub_strings
-    linear(3)....: -231 -166 -36
-    circular(1)..: o195
-    >>> assemblyobj.linear_products
+    >>> assemblyobj.assemble_linear()
     [Contig(-231), Contig(-166), Contig(-36)]
-    >>> assemblyobj.circular_products[0].cseguid()
+    >>> assemblyobj.assemble_circular()[0].cseguid()
     'V3Mi8zilejgyoH833UbjJOtDMbc'
     >>> (a+b+c).looped().cseguid()
     'V3Mi8zilejgyoH833UbjJOtDMbc'
-    >>> print(assemblyobj.circular_products[0].small_fig())
+    >>> print(assemblyobj.assemble_circular()[0].figure())
      -|100bp_PCR_prod|36
     |                 \\/
     |                 /\\
@@ -606,14 +604,14 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     
     if first_fragment_length<=maxlink:
         # first fragment should be removed and added to second fragment (new first fragment) forward primer
-        f[1].forward_primer = f[0].seq.todata + f[1].forward_primer
+        f[1].forward_primer = f[0].seq._data + f[1].forward_primer
         _module_logger.debug("first fragment removed since len(f[0]) = %s", first_fragment_length)
         f=f[1:]
     else:
         _module_logger.debug("first fragment stays since len(f[0]) = %s", first_fragment_length)
 
     if last_fragment_length<=maxlink:
-        f[-2].reverse_primer = f[-1].seq.rc().todata + f[-2].reverse_primer
+        f[-2].reverse_primer = f[-1].seq.rc()._data + f[-2].reverse_primer
         f=f[:-1]  
         _module_logger.debug("last fragment removed since len(f[%s]) = %s", len(f), last_fragment_length)
     else:
@@ -644,23 +642,23 @@ def assembly_fragments(f, overlap=35, maxlink=40):
             if hasattr(f[i], "template") and hasattr(third, "template"):
                 _module_logger.debug("secnd is is flanked by amplicons, so half of secnd should be added each flanking primers")
                 
-                first.reverse_primer = secnd.seq.rc().todata[secnd_len//2:] + first.reverse_primer
-                third.forward_primer =      secnd.seq.todata[secnd_len//2:] + third.forward_primer
+                first.reverse_primer = secnd.seq.rc()._data[secnd_len//2:] + first.reverse_primer
+                third.forward_primer =      secnd.seq._data[secnd_len//2:] + third.forward_primer
                 
-                lnk = (third.seq.rc().todata+secnd.rc().seq.todata[:secnd_len//2])[-tail_length:]
+                lnk = (third.seq.rc()._data+secnd.rc().seq._data[:secnd_len//2])[-tail_length:]
                 _module_logger.debug("1 %s", lnk)
                 first.reverse_primer = lnk + first.reverse_primer
                 
-                lnk =  (first.seq.todata + secnd.seq.todata[:secnd_len//2])[-tail_length:]
+                lnk =  (first.seq._data + secnd.seq._data[:secnd_len//2])[-tail_length:]
                 _module_logger.debug("2 %s", lnk)
                 third.forward_primer = lnk + third.forward_primer                
                 
             elif hasattr(first , "template"):
-                first.reverse_primer = secnd.seq.rc().todata + first.reverse_primer
+                first.reverse_primer = secnd.seq.rc()._data + first.reverse_primer
                 lnk = str(third.seq[:overlap].rc())
                 first.reverse_primer = lnk + first.reverse_primer
             elif hasattr(third , "template"):
-               third.forward_primer = secnd.seq.todata + third.forward_primer
+               third.forward_primer = secnd.seq._data + third.forward_primer
                lnk = str(first.seq[-overlap:])
                third.forward_primer = lnk + third.forward_primer
             secnd=empty
