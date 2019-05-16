@@ -31,7 +31,7 @@ format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-path
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
-[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/py3dev/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
           
 Please reference the above paper when using pydna.
 
@@ -86,9 +86,9 @@ can be easily simulated without any additional information besides the primary s
 Gel electrophoresis of DNA fragments can be simulated using the included gel module 
 by [Bruno Silva](https://github.com/bruno2git):
 
-![alt text](https://raw.githubusercontent.com/bjornFJohansson/pydna/py3dev/docs/pics/gel.png "simulated agarose gel")
+![alt text](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/gel.png "simulated agarose gel")
 
-Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/py3dev/scripts/gel_inline_ex.ipynb).
+Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/release/scripts/gel_inline_ex.ipynb).
 
 Pydna can be very compact. The nine lines of Python below, simulates the construction of a recombinant plasmid. 
 DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
@@ -130,7 +130,7 @@ Feedback is very welcome!
 Documentation is built using [Sphinx](http://www.sphinx-doc.org/) from [docstrings](https://www.python.org/dev/peps/pep-0257/)
 in the code and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
 
-The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/py3dev/doc/HOWTO_DOCUMENT.rst.txt) is used.
+The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
 
 ## Installation using conda on Anaconda
 
@@ -268,9 +268,9 @@ See the [change log](docs/CHANGELOG.md) for recent changes.
 | Documentation                  | [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)                                                    |
 | Issues                         | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                                                   |
 | Code quality                   | [![Code Climate](https://codeclimate.com/github/BjornFJohansson/pydna/badges/gpa.svg)](https://codeclimate.com/github/BjornFJohansson/pydna)                                          |
-| Test coverage                  | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/py3dev/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)                                                  |
+| Test coverage                  | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/release/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)                                                  |
 | Conda package for platorms     | [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/platforms.svg)](https://anaconda.org/bjornfjohansson/pydna)                                               |
-| Conda package built on Linux   | [![Codeship Status for BjornFJohansson/pydna](https://app.codeship.com/projects/de24d6c0-f3a7-0135-0950-76dd9f7b94ca/status?branch=py3dev)](https://app.codeship.com/projects/272770) |
+| Conda package built on Linux   | [![Codeship Status for BjornFJohansson/pydna](https://app.codeship.com/projects/de24d6c0-f3a7-0135-0950-76dd9f7b94ca/status?branch=release)](https://app.codeship.com/projects/272770) |
 | Conda package built on MacOSX  | [![icon1](https://travis-ci.org/BjornFJohansson/pydna.svg)](https://travis-ci.org/BjornFJohansson/pydna)                                                                              |
 | Conda package built on Windows | [![icon2](https://ci.appveyor.com/api/projects/status/qdtk9biw5o0cae7u?svg=true)](https://ci.appveyor.com/project/BjornFJohansson/pydna)                                              |
 | Pypi package                   | [![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)                                                                                                 |

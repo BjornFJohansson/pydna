@@ -241,12 +241,14 @@ class Assembly(object, metaclass = _Memoize):
 
     def assemble_linear(self, start=None,end=None, max_nodes=None):
         
-        self.G.add_nodes_from(["begin","begin_rc","end","end_rc"], length=0)
+        G = _nx.MultiDiGraph(self.G)
+        
+        G.add_nodes_from(["begin","begin_rc","end","end_rc"], length=0)
         
         # add edges from "begin" to nodes in the first sequence in self.fragments
         firstfragment = self.fragments[0]
         for start, length, node in firstfragment["nodes"]:
-            self.G.add_edge("begin", node, 
+            G.add_edge("begin", node, 
                             piece  = slice(0, start), 
                             features  = [f for f in firstfragment["features"] if start+length >= f.location.end],
                             seq    = firstfragment["mixed"],
@@ -255,7 +257,7 @@ class Assembly(object, metaclass = _Memoize):
         # add edges from "begin_rc" to nodes in the reverse complement of the first sequence
         firstfragmentrc = self.rcfragments[firstfragment["mixed"]]
         for start, length, node  in firstfragmentrc["nodes"]:
-            self.G.add_edge("begin_rc", node,
+            G.add_edge("begin_rc", node,
                             piece = slice(0, start), 
                             features = [f for f in firstfragmentrc["features"] if start+length >= f.location.end], 
                             seq   = firstfragmentrc["mixed"],
@@ -264,7 +266,7 @@ class Assembly(object, metaclass = _Memoize):
         # add edges from nodes in last sequence to "end"
         lastfragment = self.fragments[-1]
         for start, length, node in lastfragment["nodes"]:
-            self.G.add_edge(node, "end", 
+            G.add_edge(node, "end", 
                             piece = slice(start, len(lastfragment["mixed"])),
                             features = [f for f in lastfragment["features"] if start <= f.location.end],  
                             seq   = lastfragment["mixed"],
@@ -273,7 +275,7 @@ class Assembly(object, metaclass = _Memoize):
         # add edges from nodes in last reverse complement sequence to "end_rc"
         lastfragmentrc = self.rcfragments[lastfragment["mixed"]]
         for start, length, node in lastfragmentrc["nodes"]:
-            self.G.add_edge(node, "end_rc", 
+            G.add_edge(node, "end_rc", 
                             piece = slice(start, len(lastfragmentrc["mixed"])),
                             features  = [f for f in lastfragmentrc["features"] if start <= f.location.end], 
                             seq   = lastfragmentrc["mixed"],
@@ -281,10 +283,10 @@ class Assembly(object, metaclass = _Memoize):
         
         max_nodes = max_nodes or len(self.fragments)
       
-        linearpaths = list(_itertools.chain( _nx.all_simple_paths( _nx.DiGraph(self.G),"begin",    "end",    cutoff=max_nodes ),
-                                        _nx.all_simple_paths( _nx.DiGraph(self.G),"begin",    "end_rc", cutoff=max_nodes ),
-                                        _nx.all_simple_paths( _nx.DiGraph(self.G),"begin_rc", "end",    cutoff=max_nodes ),
-                                        _nx.all_simple_paths( _nx.DiGraph(self.G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
+        linearpaths = list(_itertools.chain( _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end",    cutoff=max_nodes ),
+                                        _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end_rc", cutoff=max_nodes ),
+                                        _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end",    cutoff=max_nodes ),
+                                        _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
 
         lps=_od()
         lpsrc=_od()
@@ -293,7 +295,7 @@ class Assembly(object, metaclass = _Memoize):
             edgelol=[]
             for u,v in zip(lp,lp[1:]):
                 e=[]
-                for d in self.G[u][v].values():
+                for d in G[u][v].values():
                     e.append((u,v,d))
                 edgelol.append(e)
 
@@ -304,7 +306,7 @@ class Assembly(object, metaclass = _Memoize):
                 if key in lps or key in lpsrc: continue
                 sg=_nx.DiGraph()
                 sg.add_edges_from(edges)   
-                sg.add_nodes_from((n,d) for n,d in self.G.nodes(data=True) if n in lp)
+                sg.add_nodes_from((n,d) for n,d in G.nodes(data=True) if n in lp)
                 
                 edgefeatures=[]
                 offset=0
