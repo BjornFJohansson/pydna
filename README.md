@@ -1,4 +1,4 @@
-# ![icon](https://raw.githubusercontent.com/bjornFJohansson/pydna/py3dev/docs/pics/pydna.resized.png) pydna
+# ![icon](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/pydna.resized.png) pydna
 
 Planning genetic constructs with many parts and assembly steps, such as recombinant
 metabolic pathways are often difficult to properly document.
