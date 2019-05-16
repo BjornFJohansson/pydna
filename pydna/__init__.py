@@ -6,7 +6,7 @@
 # as part of this package.
 
 """
-:copyright: Copyright 2013 - 2018 by Björn Johansson. All rights reserved.
+:copyright: Copyright 2013 - 2019 by Björn Johansson. All rights reserved.
 :license:   This code is part of the pydna package, governed by the
             license in LICENSE.txt that should be included as part of this package.
 
