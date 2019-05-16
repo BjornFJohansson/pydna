@@ -120,7 +120,7 @@ then
         export PATH="$HOME/miniconda/bin:$PATH"
         rm Miniconda_latest.sh
     fi
-    conda config --set always_yes yes --set show_channel_urls yes --set anaconda_upload yes
+    conda config --set always_yes yes --set show_channel_urls yes --set anaconda_upload no
     conda update -yq conda
     conda update -yq pip
     conda config --append channels conda-forge 
@@ -178,10 +178,11 @@ then
     echo "========conda upload(s)======================================="
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
-        echo "========anaconda upload========================================="
+        echo "========anaconda upload using ANACONDATOKEN====================="
         anaconda -t $ANACONDATOKEN upload $pth2 --label $condalabel --force
         anaconda -t $ANACONDATOKEN upload $pth3 --label $condalabel --force
     else
+        echo "========anaconda upload========================================="
         anaconda upload $pth2 --label $condalabel --force
         anaconda upload $pth3 --label $condalabel --force
     fi
