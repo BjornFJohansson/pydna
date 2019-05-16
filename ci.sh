@@ -5,6 +5,11 @@
 condalabel="main"
 
 
+
+
+
+
+
 echo "=============================================================="
 echo "BASH_VERSION" $BASH_VERSION
 echo $(git --version)
@@ -36,7 +41,6 @@ echo "=============================================================="
 if [[ "$com" = "$tag" ]]&&[[ $dirty = $tagname ]]
 then
     echo "Tagged commit: $tagname"
-    PEP440="^([1-9]\d*!)?(0|[1-9]\d*)(\.(0|[1-9]\d*))*((a|b|rc)(0|[1-9]\d*))?(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$"
     PEP440="^([1-9]*!)?(0|[1-9]*)(\.(0|[1-9]*))*((a|b|rc)(0|[1-9]*))?(\.post(0|[1-9]*))?(\.dev(0|[1-9]*))?$"
     if [[ $tagname =~ $PEP440 ]]
     then
@@ -142,13 +146,13 @@ fi
 
 
 echo "====================create conda environments================="
-set -x
-
-
 
 
 conda env create -f python36.yml
 conda env create -f python37.yml
+
+
+
 
 
 
@@ -223,10 +227,9 @@ then
         exit 1
     fi
 else
-
+    echo "====================tests================="
     source activate python36
     python run_test.py
     source activate python37
     python run_test.py
-
 fi
