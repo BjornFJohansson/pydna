@@ -42,6 +42,7 @@ then
         echo "Git tag is a canonical PEP440 release version number"
         echo "deploy a setuptools package to pypi."
         echo "deploy conda packages to anaconda.org under the BjornFJohansson channel"
+        tagged_commit=true
     else
         echo "Git tag is *NOT* a canonical PEP440 release version number"
         echo "git tag ($tagname) was not recognized"
