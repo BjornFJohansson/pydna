@@ -41,9 +41,9 @@ echo "Build information:"
 echo "=============================================================="
 if [[ "$com" = "$tag" ]]&&[[ $dirty = $tagname ]]
 then
-    echo "Tagged commit      : $tagname"
+    echo "Tagged commit: $tagname"
     PEP440="^([1-9]\d*!)?(0|[1-9]\d*)(\.(0|[1-9]\d*))*((a|b|rc)(0|[1-9]\d*))?(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$"
-    if [[ $tagname =~  $PEP440 ]]
+    if [[ $tagname =  $PEP440 ]]
     then
         echo "Git tag is a canonical PEP440 release version number"
         echo "deploy a setuptools package to pypi."
