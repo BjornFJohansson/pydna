@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-export TWINE_REPOSITORY="https://test.pypi.org"
-condalabel="test"
-
-
+#export TWINE_REPOSITORY="https://test.pypi.org"
+#condalabel="test"
+condalabel="main"
 
 echo "=============================================================="
 echo "BASH_VERSION" $BASH_VERSION
@@ -16,7 +15,6 @@ msg=$(git log -1 --pretty=%B)
 echo "=============================================================="
 echo "Establish git variables:"
 echo "=============================================================="
-echo "Current branch      : $branch"
 echo "Current commit hash : $com"
 echo "Dirty tag           : $dirty"
 echo "Commit msg          : $msg"
@@ -38,6 +36,7 @@ if [[ "$com" = "$tag" ]]&&[[ $dirty = $tagname ]]
 then
     echo "Tagged commit: $tagname"
     PEP440="^([1-9]\d*!)?(0|[1-9]\d*)(\.(0|[1-9]\d*))*((a|b|rc)(0|[1-9]\d*))?(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$"
+    PEP440="^([1-9]*!)?(0|[1-9]*)(\.(0|[1-9]*))*((a|b|rc)(0|[1-9]*))?(\.post(0|[1-9]*))?(\.dev(0|[1-9]*))?$"
     if [[ $tagname =~ $PEP440 ]]
     then
         echo "Git tag is a canonical PEP440 release version number"
@@ -75,6 +74,10 @@ fi
 
 
 
+
+
+
+
 if [[ $CI = true ]]||[[ $CI = True ]]
 then
     echo "====================Running on CI server======================"
@@ -83,14 +86,17 @@ then
     [[ ! -z "$ANACONDATOKEN" ]]  && echo "ANACONDATOKEN is set"  || echo "ANACONDATOKEN is empty"
     if [[ $TRAVIS = true ]]
     then
+        branch=$TRAVIS_BRANCH
         echo "Running on TRAVIS, download Miniconda for MacOSX"
         miniconda="wget -q http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O Miniconda_latest.sh"
     elif [[ $APPVEYOR = true ]]||[[ $APPVEYOR = True ]]
     then
+        branch=$APPVEYOR_REPO_BRANCH
         echo "Running on APPVEYOR, use installed Miniconda for Windows"
         miniconda="source appveyor_source_file.sh"
     elif [[ $CIRCLECI = true ]]
     then
+        branch=$CI_BRANCH
         miniconda="wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda_latest.sh"
     elif [[ $CI_NAME = codeship ]]
     then
@@ -121,8 +127,15 @@ then
     conda config --append channels BjornFJohansson
 else
     echo "Not running on CI server, probably running on local computer"
+    branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
     local_computer=true
 fi
+
+
+
+
+
+
 
 
 
@@ -171,7 +184,6 @@ then
         anaconda upload $pth2 --label $condalabel --force
         anaconda upload $pth3 --label $condalabel --force
     fi
-
     if [[ $TRAVIS = true ]] # MacOSX on Travis
     then
         source activate python36
