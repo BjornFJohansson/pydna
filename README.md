@@ -193,10 +193,10 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 
 ## Minimal installation requirements
 
-Pydna is currently developed on and for Python 3.5 or 3.6. Pydna versions before 1.0.0 were compatible with python 2.7 only. 
+Pydna is currently developed on and for Python 3.6 or 3.7. Pydna versions before 1.0.0 were compatible with python 2.7 only. 
 The list below is the minimal requirements for installing pydna. Biopython has c-extensions, but the other modules are pure python. 
 
-- [Python 3.5 or 3.6](http://www.python.org)
+- [Python 3.6 or 3.7](http://www.python.org)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing)
