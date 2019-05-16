@@ -42,7 +42,7 @@ then
     then
         echo "Git tag is a canonical PEP440 release version number"
         echo "deploy a setuptools package to pypi."
-        echo "deploy conda packages to anaconda.org under the BjornFJohansson channel"
+        echo "deploy conda packages to anaconda.org in the BjornFJohansson channel"
         tagged_commit=true
     else
         echo "Git tag is *NOT* a canonical PEP440 release version number"
@@ -85,7 +85,7 @@ then
     echo "====================Running on CI server======================"
     [[ ! -z "$TWINE_USERNAME" ]] && echo "TWINE_USERNAME is set" || echo "TWINE_USERNAME is empty"
     [[ ! -z "$TWINE_PASSWORD" ]] && echo "TWINE_PASSWORD is set" || echo "TWINE_PASSWORD is empty"
-    [[ ! -z "$ANACONDATOKEN" ]]  && echo "ANACONDATOKEN is set"  || echo "ANACONDATOKEN is empty"
+    [[ ! -z "$ANACONDATOKEN"  ]] && echo "ANACONDATOKEN is set"  || echo "ANACONDATOKEN is empty"
     if [[ $TRAVIS = true ]]
     then
         branch=$TRAVIS_BRANCH
@@ -120,9 +120,7 @@ then
         export PATH="$HOME/miniconda/bin:$PATH"
         rm Miniconda_latest.sh
     fi
-    conda config --set always_yes yes --set show_channel_urls yes
-    #conda install conda-verify -yq
-    #conda install jinja2 -yq
+    conda config --set always_yes yes --set show_channel_urls yes --set anaconda_upload yes
     conda update -yq conda
     conda update -yq pip
     conda config --append channels conda-forge 
@@ -170,18 +168,19 @@ then
     rm -rf tests/htmlcov
     pth2="$(conda build . --output --py 3.6)"
     pth3="$(conda build . --output --py 3.7)"
+    echo "========build path(s)========================================="
     echo $pth2
     echo $pth3
     source activate python36
     conda build --python 3.6 --no-include-recipe --dirty .
     source activate python37
     conda build --python 3.7 --no-include-recipe --dirty .
+    echo "========conda upload(s)======================================="
     if [[ $CI = true ]]||[[ $CI = True ]]
     then
-        set +x
+        echo "========anaconda upload========================================="
         anaconda -t $ANACONDATOKEN upload $pth2 --label $condalabel --force
         anaconda -t $ANACONDATOKEN upload $pth3 --label $condalabel --force
-        set -x
     else
         anaconda upload $pth2 --label $condalabel --force
         anaconda upload $pth3 --label $condalabel --force
