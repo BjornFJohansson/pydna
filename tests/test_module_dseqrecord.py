@@ -357,6 +357,7 @@ def test_str():
     s = s.looped()
     assert str(s) == 'Dseqrecord\ncircular: True\nsize: 12\nID: id\nName: name\nDescription: description\nNumber of features: 0\n/date=03-JAN-2018\nDseq(o12)\ntttGGATCCaaa\naaaCCTAGGttt'
 
+
 def test___contains__():
     from pydna.dseqrecord  import Dseqrecord
     s = Dseqrecord("tttGGATCCaaa")
