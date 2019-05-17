@@ -802,7 +802,7 @@ class Dseqrecord(_SeqRecord):
         fragments = self.cut(*enzymes)
         if len(fragments)>1:
             raise TypeError("More than one fragment is formed!")
-        elif fragments[0].circular:
+        elif not fragments:
             raise TypeError("The enzyme(s) do not cut!")
         answer = fragments[0]
         answer.id = "{name}_lin".format(name=self.name)
