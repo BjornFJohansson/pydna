@@ -671,7 +671,7 @@ def test_assemble_pGUP1(monkeypatch):
 
     from Bio.Restriction import SalI
 
-    his3, lin_vect = pGREG505.cut(SalI)
+    lin_vect, his3 = pGREG505.cut(SalI)
 
     ab = assembly.Assembly([insert, lin_vect], limit=28)
     

@@ -588,8 +588,11 @@ def test_shifted():
     b=Dseq("gatc",circular=False)
     with pytest.raises(TypeError):
         b.shifted(1)
+        
 def test_misc():
+
     from pydna.dseq import Dseq
+    
     x=Dseq("ctcgGCGGCCGCcagcggccg", circular=True)
     
     from Bio.Restriction import NotI
@@ -598,7 +601,7 @@ def test_misc():
     
     z=(a+b).looped()
 
-    assert z.shifted(15) == x
+    assert z.shifted(5) == x
 
 if __name__ == '__main__':
     pytest.main([__file__, "-vv", "-s", "--cov=pydna","--cov-report=html"])
