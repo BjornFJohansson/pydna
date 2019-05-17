@@ -1227,8 +1227,8 @@ class Dseq(_Seq):
         else:
             l=len(self)
             for e in enzymes:
-                wpos = [x-len(pad)-1 for x in e.search(_Seq(pad+self.watson + self.watson[:e.size-1])+pad)]
-                cpos = [x-len(pad)-1 for x in e.search(_Seq(pad+self.crick  +  self.crick[:e.size-1])+pad)]
+                wpos = [x-len(pad)-1 for x in e.search(_Seq(pad+self.watson + self.watson[:e.size-1])+pad)][::-1]
+                cpos = [x-len(pad)-1 for x in e.search(_Seq(pad+self.crick  +  self.crick[:e.size-1])+pad)][::-1]
                 for w,c in _itertools.product(wpos, cpos):
                     if w%len(self) == (self.length - c + e.ovhg)%len(self):
                         frags = [ Dseq( self.watson[w%l:] + self.watson[:w%l], 
