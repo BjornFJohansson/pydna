@@ -875,8 +875,8 @@ class Dseqrecord(_SeqRecord):
 
         frags = self.seq.cut(enzymes)
 
-        if frags[0].circular or frags[0]==self.seq: 
-            return (self,)
+        if not frags: 
+            return ()
        
         if self.linear:
             shift=0

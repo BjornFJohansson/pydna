@@ -1212,15 +1212,19 @@ class Dseq(_Seq):
 
         '''
 
-        if len(enzymes)==1 and hasattr(enzymes[0], "intersection"):
+        if len(enzymes)==1 and hasattr(enzymes[0], "intersection"): # RestrictionBatch
             enzymecuts=[]
             for e in enzymes[0]:
                 cuts=e.search(self.mung())
                 enzymecuts.append((cuts, e))
             enzymecuts.sort()
-            enzymes=[e for (c,e) in enzymecuts]
+            enzymes=[e for (c,e) in enzymecuts if c]
+            
         else:        
-            enzymes = list(dict.fromkeys(_flatten(enzymes)))  # flatten
+            enzymes = [e for e in list(dict.fromkeys(_flatten(enzymes))) if e.search(self.mung())]   # flatten
+
+        if not enzymes: return ()
+        
         pad = "n"*50
         if self.linear:
             frags=[self]    
@@ -1229,6 +1233,7 @@ class Dseq(_Seq):
             for e in enzymes:
                 wpos = [x-len(pad)-1 for x in e.search(_Seq(pad+self.watson + self.watson[:e.size-1])+pad)][::-1]
                 cpos = [x-len(pad)-1 for x in e.search(_Seq(pad+self.crick  +  self.crick[:e.size-1])+pad)][::-1]
+
                 for w,c in _itertools.product(wpos, cpos):
                     if w%len(self) == (self.length - c + e.ovhg)%len(self):
                         frags = [ Dseq( self.watson[w%l:] + self.watson[:w%l], 
@@ -1241,7 +1246,9 @@ class Dseq(_Seq):
                 break
             else:
                frags = []
+
         newfrags=[]
+        
         for enz in enzymes:
             for frag in frags:           
                 
@@ -1274,7 +1281,8 @@ class Dseq(_Seq):
 
             frags=newfrags
             newfrags=[]
-        return tuple(frags) if frags else (self,)
+
+        return tuple(frags)
 
 if __name__=="__main__":
     import os as _os
