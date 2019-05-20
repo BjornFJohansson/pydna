@@ -38,6 +38,21 @@ echo "CI_BRANCH            = $CI_BRANCH"
 echo "=============================================================="
 echo "Build information:"
 echo "=============================================================="
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if [[ "$com" = "$tag" ]]&&[[ $dirty = $tagname ]]
 then
     echo "Tagged commit: $tagname"
@@ -146,10 +161,10 @@ fi
 
 
 echo "====================create conda environments================="
-
-
 conda env create -f python36.yml
 conda env create -f python37.yml
+
+
 
 
 
