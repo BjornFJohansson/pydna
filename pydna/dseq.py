@@ -1211,21 +1211,27 @@ class Dseq(_Seq):
         >>>
 
         '''
+        
+        pad = "n"*50
+        
+        if self.linear:
+            dsseq = self.mung()
+        else:
+            dsseq = Dseq.from_string(self._data,linear=True, circular=False)
 
         if len(enzymes)==1 and hasattr(enzymes[0], "intersection"): # RestrictionBatch
             enzymecuts=[]
             for e in enzymes[0]:
-                cuts=e.search(self.mung())
+                #cuts = e.search(dsseq+dsseq[:e.size-1] if self.circular else dsseq)
+                cuts = e.search(_Seq(pad+dsseq.watson+dsseq.watson[:e.size-1]+pad) if self.circular else dsseq)
                 enzymecuts.append((cuts, e))
             enzymecuts.sort()
             enzymes=[e for (c,e) in enzymecuts if c]
-            
-        else:        
-            enzymes = [e for e in list(dict.fromkeys(_flatten(enzymes))) if e.search(self.mung())]   # flatten
-
+        else:
+            enzymes = [e for e in list(dict.fromkeys(_flatten(enzymes))) if e.search(_Seq(pad+dsseq.watson+dsseq.watson[:e.size-1]+pad) if self.circular else dsseq)]   # flatten
         if not enzymes: return ()
+
         
-        pad = "n"*50
         if self.linear:
             frags=[self]    
         else:

@@ -113,7 +113,7 @@ class Assembly(object, metaclass = _Memoize):
     G.nodes......: 6
     algorithm....: common_sub_strings
     >>> x.assemble_circular()
-    [Contig(o59)]
+    [Contig(o59), Contig(o59)]
     >>> x.assemble_circular()[0].seq.watson
     'acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGt'
 
@@ -338,7 +338,7 @@ class Assembly(object, metaclass = _Memoize):
             cpaths_sorted.append((order, cpath[i:]+cpath[:i]))
         cpaths_sorted.sort()        
 
-        for _, cp in cpaths_sorted[::2]:   # cpaths is a list of nodes representing a circular assembly
+        for _, cp in cpaths_sorted:        # cpaths is a list of nodes representing a circular assembly
             edgelol = []                   # edgelol is a list of lists of all edges along cp
             cp+= cp[0:1]
             for u,v in zip(cp, cp[1:]):

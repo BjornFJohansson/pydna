@@ -572,7 +572,7 @@ def test_cut_circular():
         assert c.seq.crick.upper() == "TTTTTGAGACCGGTACCTTTTT"        
         assert c.seq.ovhg == -4
         d = Dseqrecord(nt, circular = True).cut(NotI)
-        assert d == (Dseqrecord(nt, circular = True),)
+        assert d == ()
         
 
 

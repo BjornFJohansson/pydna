@@ -500,7 +500,7 @@ def test_cut_circular():
     test = "aaaaaaGGTACCggtctcaaaa"
 
     for i in range(len(test)):
-
+        
         nt = test[i:]+test[:i]
         
         a = Dseq(nt, circular = True).cut(Acc65I)[0] # G^GTACC
@@ -517,7 +517,7 @@ def test_cut_circular():
         assert c.crick.upper()  == "TTTTTGAGACCGGTACCTTTTT"        
         assert c.ovhg == -4
         d = Dseq(nt, circular = True).cut(NotI)
-        assert d == (Dseq(nt, circular = True),)
+        assert d == ()
 
 def test_repr():
     from pydna.dseq import Dseq

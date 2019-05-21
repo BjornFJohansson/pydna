@@ -183,9 +183,11 @@ def test_new_assembly(monkeypatch):
     c2 = assembly.Assembly((a,b,b2,c), limit=14)
     circprods = c2.assemble_circular()
     assert circprods[0].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
-    assert circprods[1].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
+    assert circprods[1].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
+    assert circprods[2].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
+    assert circprods[3].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
     assert str(circprods[0].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT'
-    assert str(circprods[1].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT'
+    assert str(circprods[2].seq)=='acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT'
 
     
     
@@ -695,6 +697,24 @@ def test_35_36(monkeypatch):
         assert _od==OrderedDict
     else:
         assert _od==dict
+        
+        
+def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
+    
+    from pydna.all import read, Assembly
+    
+    pMEC1142 = read("pYPK0_TDH3_GAL2_PGI1.gb")
+    
+    pYPKp7 = read("pYPKp7.gb")
+    
+    from Bio.Restriction import AatII
+    
+    pYPKp7_AatII = pYPKp7.linearize(AatII)
+    
+    z = Assembly((pYPKp7_AatII, pMEC1142), limit=300)
+    
+    assert z.assemble_circular()[1].cseguid() == "eDYovOVEKFIbc7REPlTsnScycQY"
+
 
     
 if __name__ == '__main__':
