@@ -1229,6 +1229,8 @@ class Dseq(_Seq):
             enzymes=[e for (c,e) in enzymecuts if c]
         else:
             enzymes = [e for e in list(dict.fromkeys(_flatten(enzymes))) if e.search(_Seq(pad+dsseq.watson+dsseq.watson[:e.size-1]+pad) if self.circular else dsseq)]   # flatten
+        
+        
         if not enzymes: return ()
 
         

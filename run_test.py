@@ -68,7 +68,8 @@ def main():
     else:
         print("nbval is installed!")
         del nbval
-        args.append("--nbval") 
+        args.append("--nbval")
+        args.append("--current-env") 
     
     mainargs = [".", "-vv", "-s", "--durations=10"] + args 
     cwd = os.getcwd()

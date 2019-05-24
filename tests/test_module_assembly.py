@@ -3,6 +3,18 @@
 
 import pytest
 
+def test_built(monkeypatch):
+    monkeypatch.setenv("pydna_cached_funcs", "")
+    from importlib      import reload
+    from pydna import assembly    
+    reload(assembly)
+    asm = assembly.Assembly(assembly.example_fragments, limit=5)
+    lin = asm.assemble_linear()
+    crc = asm.assemble_circular()
+
+    assert [l.seq for l in lin] == [l.seq for l in assembly.linear_results ]
+    assert [c.seq for c in crc] == [c.seq for c in assembly.circular_results ]
+
 def test_new_assembly(monkeypatch):
     monkeypatch.setenv("pydna_cached_funcs", "")
     from pydna.dseqrecord import Dseqrecord
@@ -354,7 +366,7 @@ def test_assembly(monkeypatch):
     list_of_formatted_seq_records = parse(text1)
     a=assembly.Assembly(list_of_formatted_seq_records, limit=25)
 
-    assert repr(a) == '''Assembly (max_nodes=3)
+    assert repr(a) == '''Assembly
 fragments..: 631bp 740bp 650bp
 limit(bp)..: 25
 G.nodes....: 6
@@ -631,7 +643,7 @@ def test_MXblaster1(monkeypatch):
 
     pCAPs_MX4blaster1_AgeI.seq = pCAPs_MX4blaster1_AgeI.seq.fill_in()
 
-    a = assembly.Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=30, max_nodes=2)
+    a = assembly.Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=30)
     candidate = a.assemble_circular()[0]
     assert len(candidate)==10566
     assert candidate.cseguid()=="LK6idufxMXFHL5shXakwO3lciMU"

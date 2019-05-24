@@ -107,7 +107,7 @@ class Assembly(object, metaclass = _Memoize):
     >>> c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg")
     >>> x = Assembly((a,b,c), limit=14)
     >>> x
-    Assembly (max_nodes=3)
+    Assembly
     fragments....: 33bp 34bp 35bp
     limit(bp)....: 14
     G.nodes......: 6
@@ -120,7 +120,7 @@ class Assembly(object, metaclass = _Memoize):
     '''
     
     
-    def __init__(self, frags=None,  limit = 25, algorithm=common_sub_strings, **attr):
+    def __init__(self, frags=None,  limit = 25, algorithm=common_sub_strings):
         
         # Fragments is a string subclass with some extra properties
         # The order of the fragments has significance
@@ -236,7 +236,6 @@ class Assembly(object, metaclass = _Memoize):
         self.fragments = fragments
         self.rcfragments = rcfragments
         self.algorithm = algorithm
-        self.max_nodes = len(self.fragments)
         
 
     def assemble_linear(self, start=None,end=None, max_nodes=None):
@@ -247,52 +246,55 @@ class Assembly(object, metaclass = _Memoize):
         
         # add edges from "begin" to nodes in the first sequence in self.fragments
         firstfragment = self.fragments[0]
-        for start, length, node in firstfragment["nodes"]:
+        for start, length, node in firstfragment["nodes"][::-1]:
             G.add_edge("begin", node, 
-                            piece  = slice(0, start), 
-                            features  = [f for f in firstfragment["features"] if start+length >= f.location.end],
-                            seq    = firstfragment["mixed"],
-                            name   = firstfragment["name"])
+                        piece  = slice(0, start), 
+                        features  = [f for f in firstfragment["features"] if start+length >= f.location.end],
+                        seq    = firstfragment["mixed"],
+                        name   = firstfragment["name"])
 
         # add edges from "begin_rc" to nodes in the reverse complement of the first sequence
         firstfragmentrc = self.rcfragments[firstfragment["mixed"]]
-        for start, length, node  in firstfragmentrc["nodes"]:
+        for start, length, node  in firstfragmentrc["nodes"][::-1]:
             G.add_edge("begin_rc", node,
-                            piece = slice(0, start), 
-                            features = [f for f in firstfragmentrc["features"] if start+length >= f.location.end], 
-                            seq   = firstfragmentrc["mixed"],
-                            name  = firstfragmentrc["name"])
+                       piece = slice(0, start), 
+                       features = [f for f in firstfragmentrc["features"] if start+length >= f.location.end], 
+                       seq   = firstfragmentrc["mixed"],
+                       name  = firstfragmentrc["name"])
 
         # add edges from nodes in last sequence to "end"
         lastfragment = self.fragments[-1]
         for start, length, node in lastfragment["nodes"]:
             G.add_edge(node, "end", 
-                            piece = slice(start, len(lastfragment["mixed"])),
-                            features = [f for f in lastfragment["features"] if start <= f.location.end],  
-                            seq   = lastfragment["mixed"],
-                            name  = lastfragment["name"])
+                       piece = slice(start, len(lastfragment["mixed"])),
+                       features = [f for f in lastfragment["features"] if start <= f.location.end],  
+                       seq   = lastfragment["mixed"],
+                       name  = lastfragment["name"])
 
         # add edges from nodes in last reverse complement sequence to "end_rc"
         lastfragmentrc = self.rcfragments[lastfragment["mixed"]]
         for start, length, node in lastfragmentrc["nodes"]:
             G.add_edge(node, "end_rc", 
-                            piece = slice(start, len(lastfragmentrc["mixed"])),
-                            features  = [f for f in lastfragmentrc["features"] if start <= f.location.end], 
-                            seq   = lastfragmentrc["mixed"],
-                            name  = lastfragmentrc["name"])
+                       piece = slice(start, len(lastfragmentrc["mixed"])),
+                       features  = [f for f in lastfragmentrc["features"] if start <= f.location.end], 
+                       seq   = lastfragmentrc["mixed"],
+                       name  = lastfragmentrc["name"])
         
         max_nodes = max_nodes or len(self.fragments)
       
         linearpaths = list(_itertools.chain( _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end",    cutoff=max_nodes ),
-                                        _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end_rc", cutoff=max_nodes ),
-                                        _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end",    cutoff=max_nodes ),
-                                        _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
+                                             _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end_rc", cutoff=max_nodes ),
+                                             _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end",    cutoff=max_nodes ),
+                                             _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
 
         lps=_od()
-        lpsrc=_od()
-
+        #lpsrc=_od()
+        
+        #print(linearpaths)
+ 
         for lp in linearpaths:
             edgelol=[]
+
             for u,v in zip(lp,lp[1:]):
                 e=[]
                 for d in G[u][v].values():
@@ -300,10 +302,14 @@ class Assembly(object, metaclass = _Memoize):
                 edgelol.append(e)
 
             for edges in _itertools.product(*edgelol):
+                # TODO explai
+                if [True for ((u,v,e),(x,y,z)) in zip(edges, edges[1:]) if (e["seq"],e["piece"].stop) == (z["seq"],z["piece"].start)]:
+                    continue
                 ct = "".join(e["seq"][e["piece"]] for u,v,e in edges)
                 key = ct.upper()
 
-                if key in lps or key in lpsrc: continue
+                if key in lps:
+                    continue
                 sg=_nx.DiGraph()
                 sg.add_edges_from(edges)   
                 sg.add_nodes_from((n,d) for n,d in G.nodes(data=True) if n in lp)
@@ -317,14 +323,16 @@ class Assembly(object, metaclass = _Memoize):
                         f.location+=offset
                     edgefeatures.extend(feats)
                     offset+=e["piece"].stop-e["piece"].start
-                lps[key] = lpsrc[key] = ct, edgefeatures, sg, {n:self.nodemap[n] for n in lp}
+                    
+
+                lps[key] = ct, edgefeatures, sg, {n:self.nodemap[n] for n in lp}
         
         return sorted((_Contig.from_string(lp[0], 
                                features  = lp[1], 
                                graph     = lp[2],
                                nodemap   = lp[3],
-                               linear   = True,
-                               circular = False) for lp in lps.values()), key=len, reverse=True)
+                               linear    = True,
+                               circular  = False) for lp in lps.values()), key=len, reverse=True)
 
 
     def assemble_circular(self):
@@ -383,28 +391,31 @@ class Assembly(object, metaclass = _Memoize):
         
     def __repr__(self):
         # https://pyformat.info
-        return _pretty_str( "Assembly (max_nodes={max_nodes})\n"
+        return _pretty_str( "Assembly\n"
                             "fragments..: {sequences}\n"
                             "limit(bp)..: {limit}\n"
                             "G.nodes....: {nodes}\n"
                             "algorithm..: {al}".format(sequences = " ".join("{}bp".format(len(x["mixed"])) for x in self.fragments),
                                                            limit     = self.limit,
-                                                           nodes     = self.G.order(),
-                                                           max_nodes = self.max_nodes,    
+                                                           nodes     = self.G.order(),  
                                                            al        = self.algorithm.__name__))
 
                                    
-example_fragments = ( _Dseqrecord("acgatCAtgctcc",  name ="a"),
-                             _Dseqrecord("tgctccTAAattctgc", name ="b"),
-                                      _Dseqrecord("attctgcGAGGacgat",name ="c") )
+example_fragments = ( _Dseqrecord("AacgatCAtgctcc",  name ="a"),
+                             _Dseqrecord("TtgctccTAAattctgc", name ="b"),
+                                      _Dseqrecord("CattctgcGAGGacgatG",name ="c") )
 
 
+linear_results = ( _Dseqrecord("AacgatCAtgctccTAAattctgcGAGGacgatG", name ="abc"),
+                   _Dseqrecord("ggagcaTGatcgtCCTCgcagaatG", name ="ac_rc"),
+                   _Dseqrecord("AacgatG", name ="ac")                           )  
 
-example_linear_result =        "acgatCAtgctccTAAattctgcGAGGacgat"
-example_circular_result =      "acgatCAtgctccTAAattctgcGAGG"         
+
+circular_results = ( _Dseqrecord("acgatCAtgctccTAAattctgcGAGG", name ="abc", circular=True),
+                     _Dseqrecord("ggagcaTGatcgtCCTCgcagaatTTA", name ="abc_rc", circular=True))
          
-         
-         
+
+
 if __name__=="__main__":
     import os as _os
     cached = _os.getenv("pydna_cached_funcs", "")

@@ -561,7 +561,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> from pydna.assembly import Assembly
     >>> assemblyobj = Assembly([fa,fb,fc])
     >>> assemblyobj
-    Assembly (max_nodes=3)
+    Assembly
     fragments....: 100bp 101bp 102bp
     limit(bp)....: 25
     G.nodes......: 6
