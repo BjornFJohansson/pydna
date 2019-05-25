@@ -37,7 +37,8 @@ __all__=["Anneal",
          "parse_primers", 
          "ape", 
          "primer_design", 
-         "assembly_fragments",  
+         "assembly_fragments",
+         "circular_assembly_fragments",
          "eq",
          "gbtext_clean", 
          "list_primers"]
@@ -58,6 +59,7 @@ from pydna.parsers       import parse_primers
 from pydna.editor        import ape
 from pydna.design        import primer_design
 from pydna.design        import assembly_fragments
+from pydna.design        import circular_assembly_fragments
 from pydna.utils         import eq
 from pydna.genbankfixer  import gbtext_clean
 from pydna.myprimers     import list_primers

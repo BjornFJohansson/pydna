@@ -695,7 +695,7 @@ def circular_assembly_fragments(f, overlap=35, maxlink=40):
     
     if hasattr( fragments[0], "template"):
         fragments[0] = _pcr( (fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0])
-    return fragments
+    return fragments[:-1]
 
 
 if __name__=="__main__":

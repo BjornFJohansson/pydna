@@ -356,6 +356,8 @@ class Assembly(object, metaclass = _Memoize):
                 edgelol.append(e)
 
             for edges in _itertools.product(*edgelol):
+                if [True for ((u,v,e),(x,y,z)) in zip(edges, edges[1:]) if (e["seq"],e["piece"].stop) == (z["seq"],z["piece"].start)]:
+                    continue
                 ct = "".join(e["seq"][e["piece"]] for u,v,e in edges)
                 key=ct.upper()
                 
