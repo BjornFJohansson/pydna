@@ -71,7 +71,7 @@ def main():
         args.append("--nbval")
         args.append("--current-env") 
     
-    mainargs = [".", "-vv", "-s", "--durations=10"] + args 
+    mainargs = [".", "-s", "--durations=10"] + args 
     cwd = os.getcwd()
     os.chdir("tests")
     result_suite = pytest.cmdline.main(mainargs)
@@ -84,7 +84,7 @@ def main():
         pass
 
     asciitext("doc testson python {}".format(platform.python_version()))
-    doctestargs = ["pydna", "--doctest-modules", "-vv", "-s"]
+    doctestargs = ["pydna", "--doctest-modules", "-s"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
     asciitext("done!")

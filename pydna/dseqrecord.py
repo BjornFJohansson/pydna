@@ -1115,7 +1115,7 @@ class Dseqrecord(_SeqRecord):
         else:
             result = newseq.shifted(start)
         _module_logger.info("synced")
-        return result
+        return Dseqrecord(result)
     
 
 if __name__=="__main__":

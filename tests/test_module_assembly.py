@@ -644,8 +644,12 @@ def test_MXblaster1(monkeypatch):
     pCAPs_MX4blaster1_AgeI.seq = pCAPs_MX4blaster1_AgeI.seq.fill_in()
 
     a = assembly.Assembly([GAL_GIN2, pCAPs_MX4blaster1_AgeI], limit=30)
-    candidate = a.assemble_circular()[0]
+    
+    candidates = a.assemble_circular()
+
+    candidate = candidates[1]
     assert len(candidate)==10566
+    
     assert candidate.cseguid()=="LK6idufxMXFHL5shXakwO3lciMU"
     
     pCAPs_MX4blaster2 = candidate
@@ -659,7 +663,6 @@ def test_MXblaster1(monkeypatch):
     assert pCAPs_MX4blaster2_old.seguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
     assert eq(pCAPs_MX4blaster2, pCAPs_MX4blaster2_old)
     assert pCAPs_MX4blaster2.seguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
-
 
 
 
