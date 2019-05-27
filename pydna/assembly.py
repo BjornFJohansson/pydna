@@ -1,231 +1,81 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''This module provides functions for assembly of sequences by homologous recombination and other
-related techniques. Given a list of sequences (Dseqrecords), all sequences will be analyzed for
-overlapping regions of DNA (common substrings).
+# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# This code is part of the Python-dna distribution and governed by its
+# license.  Please see the LICENSE.txt file that should have been included
+# as part of this package.
 
-The assembly algorithm is based on graph theory where each overlapping region forms a node and
+'''This module provides functions for assembly of sequences by homologous 
+recombination and other related techniques. Given a list of sequences 
+(Dseqrecords), all sequences are analyzed for shared homology longer than the 
+set limit.
+
+A graph is constructed where each overlapping region form a node and
 sequences separating the overlapping regions form edges.
 
+::
+           
+                 -- A --
+     catgatctacgtatcgtgt     -- B --
+                 atcgtgtactgtcatattc
+                             catattcaaagttct
+                 
+     Graph:
+                 --x--> A --y--> B --z-->
+                 
+                 Nodes:
+                     
+                 A : atcgtgt
+                 B : catattc
+                 
+                 Edges:
+
+                 x : catgatctacgt
+                 y : actgt
+                 z : aaagttct
+
+The NetworkX package is used to trace linear and circular paths through the
+graph.
+
 '''
+import sys
+    
+if sys.version_info < (3, 6):
+    from collections import OrderedDict as _od
+else:
+    _od = dict
 
-import cPickle
-import shelve
+import logging as _logging
+_module_logger = _logging.getLogger("pydna."+__name__)
 
-import logging
-module_logger = logging.getLogger("pydna."+__name__)
+import itertools as _itertools
+from   copy     import deepcopy as _deepcopy
+import networkx as _nx
 
-import itertools
-import networkx as nx
-import operator
-import random
-import os
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 
-from copy import copy
-from textwrap import dedent
-from collections import defaultdict
-from collections import namedtuple
+from pydna.common_sub_strings import common_sub_strings
+from pydna.common_sub_strings import terminal_overlap
+from pydna.contig  import Contig as _Contig
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.utils   import memorize   as _memorize
+from pydna.utils   import rc as _rc
 
-from Bio.SeqFeature import ExactPosition
-from Bio.SeqFeature import FeatureLocation
-from Bio.SeqFeature import SeqFeature
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
+from Bio.SeqFeature import FeatureLocation  as _FeatureLocation
+from Bio.SeqFeature import ExactPosition    as _ExactPosition
+from collections    import UserString       as _UserString
 
-from pydna.dsdna import Dseq
-from pydna.dsdna import Dseqrecord
-from pydna._simple_paths8 import all_simple_paths_edges, all_circular_paths_edges
-from findsubstrings_suffix_arrays_python import common_sub_strings
-from findsubstrings_suffix_arrays_python import terminal_overlap
+# TODO use quicker inits for contig
+# TODO remove maxnodes for init
 
-from _orderedset  import OrderedSet
-from pydna._pretty import pretty_str
-
-
-
-class Fragment(Dseqrecord):
-    '''This class holds information about a DNA fragment in an assembly.
-    This class is instantiated by the :class:`Assembly` class and is not
-    meant to be instantiated directly.
-
-    '''
-
-    def __init__(self, record, start1    = 0,
-                               end1      = 0,
-                               start2    = 0,
-                               end2      = 0,
-                               alignment = 0,
-                               i         = 0, *args, **kwargs):
-
-        super(Fragment, self).__init__(record, *args, **kwargs)
-
-        self.start1             = start1
-        self.end1               = end1
-        self.left_overlap_size  = end1-start1
-        self.start2             = start2
-        self.end2               = end2
-        self.right_overlap_size = end2-start2
-        self.alignment          = alignment
-        self.i                  = i
-
-    def __str__(self):
-        return ("Fragment alignment {}\n").format(self.alignment)+super(Fragment, self).__str__()
-
-class Contig(Dseqrecord):
-    '''This class holds information about a DNA assembly. This class is instantiated by
-    the :class:`Assembly` class and is not meant to be instantiated directly.
-
-    '''
-
-    def __init__(self,
-                 record,
-                 source_fragments=[],
-                 *args, **kwargs):
-
-        super(Contig, self).__init__(record, *args, **kwargs)
-        self.source_fragments = source_fragments
-        self.number_of_fragments = len(self.source_fragments)
-
-    def __repr__(self):
-        return "Contig({}{})".format({True:"-", False:"o"}[self.linear],len(self))
-
-    def detailed_figure(self):
-        '''Synonym of :func:`detailed_fig`'''
-        return self.detailed_fig()
-
-    def detailed_fig(self):
-        fig=""
-        for s in self.source_fragments:
-            fig +="{}{}\n".format(" "*s.alignment, str(s.seq))
-        return fig
-
-    def figure(self):
-        '''Synonym of :func:`small_fig`'''
-        return self.small_fig()
-
-    def small_figure(self):
-        '''Synonym of :func:`small_fig`'''
-        return self.small_fig()
-
-    def small_fig(self):
-        '''
-        Returns a small ascii representation of the assembled fragments. Each fragment is
-        represented by:
-
-        ::
-
-         Size of common 5' substring|Name and size of DNA fragment| Size of common 5' substring
-
-        Linear:
-
-        ::
-
-          frag20| 6
-                 \\/
-                 /\\
-                  6|frag23| 6
-                           \\/
-                           /\\
-                            6|frag14
+class _Memoize(type):
+    @_memorize("pydna.assembly.Assembly")
+    def __call__(cls, *args, **kwargs):
+        return super().__call__(*args, **kwargs)
 
 
-        Circular:
-
-        ::
-
-          -|2577|61
-         |       \\/
-         |       /\\
-         |       61|5681|98
-         |               \\/
-         |               /\\
-         |               98|2389|557
-         |                       \\/
-         |                       /\\
-         |                       557-
-         |                          |
-          --------------------------
-
-
-        '''
-
-        if self.linear:
-            '''
-            frag20| 6
-                   \/
-                   /\
-                    6|frag23| 6
-                             \/
-                             /\
-                              6|frag14
-            '''
-            f = self.source_fragments[0]
-            space2 = len(f.name)
-
-
-            fig = ("{name}|{o2:>2}\n"
-                   "{space2} \/\n"
-                   "{space2} /\\\n").format(name = f.name,
-                                            o2 = f.right_overlap_size,
-                                            space2 = " "*space2)
-            space = len(f.name)
-
-            for f in self.source_fragments[1:-1]:
-                name= "{o1:>2}|{name}|".format(o1   = f.left_overlap_size,
-                                               name = f.name)
-                space2 = len(name)
-                fig +=("{space} {name}{o2:>2}\n"
-                       "{space} {space2}\/\n"
-                       "{space} {space2}/\\\n").format( name = name,
-                                                        o2 = f.right_overlap_size,
-                                                        space = " "*space,
-                                                        space2 = " "*space2)
-                space +=space2
-            f = self.source_fragments[-1]
-            fig += ("{space} {o1:>2}|{name}").format(name = f.name,
-                                                    o1 = f.left_overlap_size,
-                                                    space = " "*(space))
-
-
-
-        else:
-            '''
-             -|2577|61
-            |       \/
-            |       /\
-            |       61|5681|98
-            |               \/
-            |               /\
-            |               98|2389|557
-            |                       \/
-            |                       /\
-            |                       557-
-            |                          |
-             --------------------------
-            '''
-            f = self.source_fragments[0]
-            space = len(f.name)+3
-            fig =(" -|{name}|{o2:>2}\n"
-                  "|{space}\/\n"
-                  "|{space}/\\\n").format(name = f.name,
-                                           o2 = f.right_overlap_size,
-                                           space = " "*space)
-            for f in self.source_fragments[1:]:
-                name= "{o1:>2}|{name}|".format(o1 = f.left_overlap_size,
-                                                      name = f.name)
-                space2 = len(name)
-                fig +=("|{space}{name}{o2:>2}\n"
-                       "|{space}{space2}\/\n"
-                       "|{space}{space2}/\\\n").format(o2 = f.right_overlap_size,
-                                                       name = name,
-                                                       space = " "*space,
-                                                       space2 = " "*space2)
-                space +=space2
-
-            fig +="|{space}{o1:>2}-\n".format(space=" "*(space), o1=self.source_fragments[0].left_overlap_size)
-            fig +="|{space}   |\n".format(space=" "*(space))
-            fig +=" {space}".format(space="-"*(space+3))
-        return pretty_str(dedent(fig))
-
-class Assembly(object):
+class Assembly(object, metaclass = _Memoize):
     '''Assembly of a list of linear DNA fragments into linear or circular constructs.
     The Assembly is meant to replace the Assembly method as it is easier to use.
     Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.
@@ -235,333 +85,343 @@ class Assembly(object):
     Parameters
     ----------
 
-    dsrecs : list
+    fragments : list
         a list of Dseqrecord objects.
+    limit : int, optional
+        The shortest shared homology to be considered
+    algorithm : function, optional
+        The algorithm used to determine the shared sequences.
+    max_nodes : int
+          The maximum number of nodes in the graph. This can be tweaked to manage 
+        sequences with a high number of shared sub sequences.
+    
+    
 
     Examples
     --------
 
-    >>> from pydna import Assembly, Dseqrecord
+    >>> from pydna.assembly import Assembly
+    >>> from pydna.dseqrecord import Dseqrecord
     >>> a = Dseqrecord("acgatgctatactgCCCCCtgtgctgtgctcta")
     >>> b = Dseqrecord("tgtgctgtgctctaTTTTTtattctggctgtatc")
     >>> c = Dseqrecord("tattctggctgtatcGGGGGtacgatgctatactg")
     >>> x = Assembly((a,b,c), limit=14)
     >>> x
-    Assembly:
-    Sequences........................: [33] [34] [35]
-    Sequences with shared homologies.: [33] [34] [35]
-    Homology limit (bp)..............: 14
-    Number of overlaps...............: 3
-    Nodes in graph(incl. 5' & 3')....: 5
-    Only terminal overlaps...........: No
-    Circular products................: [59]
-    Linear products..................: [74] [73] [73] [54] [54] [53] [15] [14] [14]
-    >>> x.circular_products
-    [Contig(o59)]
-    >>> x.circular_products[0].seq.watson
-    'CCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGtacgatgctatactg'
+    Assembly
+    fragments....: 33bp 34bp 35bp
+    limit(bp)....: 14
+    G.nodes......: 6
+    algorithm....: common_sub_strings
+    >>> x.assemble_circular()
+    [Contig(o59), Contig(o59)]
+    >>> x.assemble_circular()[0].seq.watson
+    'acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGt'
 
     '''
-
-    def __init__(self, dsrecs, limit = 25, only_terminal_overlaps=False, max_nodes=None):
-
-        refresh = False
-        cached  = None
-
-        key = "|".join(sorted([str(r.seguid()) for r in dsrecs]))+str(limit)+str(only_terminal_overlaps)+str(max_nodes)
-
-        if os.environ["pydna_cache"] in ("compare", "cached"):
-
-            module_logger.info( 'open shelf file {}'.format(os.path.join(os.environ["pydna_data_dir"],"assembly")))
-
-            cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
-
-            module_logger.info( 'created key = {}'.format(key))
-            module_logger.info( "pydna_cache = {}".format(os.environ["pydna_cache"]) )
-
-            try:
-                cached = cache[key]
-            except:
-                if os.environ["pydna_cache"] == "compare":
-                    raise Exception("no result for this key!")
-                else:
-                    refresh = True
-
-            cache.close()
-
-        if refresh or os.environ["pydna_cache"] in ("compare", "refresh", "nocache"):
-            self.dsrecs    = dsrecs
-            ''' Sequences fed to this class is stored in this property'''
-            self.only_terminal_overlaps = only_terminal_overlaps
-            ''' Consider only terminal overlaps?'''
-            self.limit     = limit
-            ''' The shortest common sub strings to be considered '''
-            self.max_nodes = max_nodes or len(self.dsrecs)
-            ''' The max number of nodes allowed. This can be reset to some other value'''
-            self.key = key
-            self.only_terminal_overlaps = only_terminal_overlaps
-            self._assemble()
-
-        if os.environ["pydna_cache"] == "compare":
-            self._compare(cached)
-
-        if refresh or os.environ["pydna_cache"] == "refresh":
-            self._save()
-
-        elif cached and os.environ["pydna_cache"] not in ("nocache", "refresh"):
-            for key, value in cached.__dict__.items():
-                setattr(self, key, value )
-            cache.close()
-
-    def _compare(self, cached):
-        if str(self) != str(cached):
-            module_logger.warning('Assembly error')
-
-    def _save(self):
-        cache = shelve.open(os.path.join(os.environ["pydna_data_dir"], "assembly"), protocol=cPickle.HIGHEST_PROTOCOL, writeback=False)
-        cache[self.key] = self
-        cache.close()
-
-    def _assemble(self):
-
-        for dr in self.dsrecs:
-            if dr.name in ("",".", "<unknown name>", None):
-                dr.name = "frag{}".format(len(dr))
-
-        if self.only_terminal_overlaps:
-            algorithm = terminal_overlap
-        else:
-            algorithm = common_sub_strings
-
-        # analyze_overlaps
-        cols = {}
-        for dsrec in self.dsrecs:
-            dsrec.features = [f for f in dsrec.features if f.type!="overlap"]
-            dsrec.seq = Dseq(dsrec.seq.todata)
-        rcs = {dsrec:dsrec.rc() for dsrec in self.dsrecs}
-        matches=[]
-        dsset=OrderedSet()
-
-        for a, b in itertools.combinations(self.dsrecs, 2):
-            match = algorithm( str(a.seq).upper(),
-                               str(b.seq).upper(),
-                               self.limit)
-            if match:
-                matches.append((a, b, match))
-                dsset.add(a)
-                dsset.add(b)
-            match = algorithm( str(a.seq).upper(),
-                               str(rcs[b].seq).upper(),
-                               self.limit)
-            if match:
-                matches.append((a, rcs[b], match))
-                dsset.add(a)
-                dsset.add(rcs[b])
-                matches.append((rcs[a], b, [(len(a)-sa-le,len(b)-sb-le,le) for sa,sb,le in match]))
-                dsset.add(b)
-                dsset.add(rcs[a])
-
-        self.no_of_olaps=0
-
-        for a, b, match in matches:
-            for start_in_a, start_in_b, length in match:
-                self.no_of_olaps+=1
-                chksum = a[start_in_a:start_in_a+length].seguid()
-                #assert chksum == b[start_in_b:start_in_b+length].seguid()
-
-                try:
-                    fcol, revcol = cols[chksum]
-                except KeyError:
-                    fcol = '#%02X%02X%02X' % (random.randint(175,255),random.randint(175,255),random.randint(175,255))
-                    rcol = '#%02X%02X%02X' % (random.randint(175,255),random.randint(175,255),random.randint(175,255))
-                    cols[chksum] = fcol,rcol
-
-                qual      = {"note"             : ["olp_{}".format(chksum)],
-                             "chksum"           : [chksum],
-                             "ApEinfo_fwdcolor" : [fcol],
-                             "ApEinfo_revcolor" : [rcol]}
-
-                if not chksum in [f.qualifiers["chksum"][0] for f in a.features if f.type == "overlap"]:
-                    a.features.append( SeqFeature( FeatureLocation(start_in_a,
-                                                                   start_in_a + length),
-                                                                   type = "overlap",
-                                                                   qualifiers = qual))
-                if not chksum in [f.qualifiers["chksum"][0] for f in b.features if f.type == "overlap"]:
-                    b.features.append( SeqFeature( FeatureLocation(start_in_b,
-                                                                   start_in_b + length),
-                                                                   type = "overlap",
-                                                                   qualifiers = qual))
-        for ds in dsset:
-            ds.features = sorted([f for f in ds.features], key = operator.attrgetter("location.start"))
-
-        self.analyzed_dsrecs = list(dsset)
-
-
-        # Create graph
-
-        self.G=nx.MultiDiGraph(multiedges=True, name ="original graph" , selfloops=False)
-        self.G.add_node( '5' )
-        self.G.add_node( '3' )
-
-        for i, dsrec in enumerate(self.analyzed_dsrecs):
-
-            overlaps = sorted( {f.qualifiers['chksum'][0]:f for f in dsrec.features
-                                if f.type=='overlap'}.values(),
-                               key = operator.attrgetter('location.start'))
-
-            if overlaps:
-                overlaps = ([SeqFeature(FeatureLocation(0, 0),
-                             type = 'overlap',
-                             qualifiers = {'chksum':['5']})]+
-                             overlaps+
-                            [SeqFeature(FeatureLocation(len(dsrec),len(dsrec)),
-                                        type = 'overlap',
-                                        qualifiers = {'chksum':['3']})])
-
-                for olp1, olp2 in itertools.combinations(overlaps, 2):
-
-                    n1 = olp1.qualifiers['chksum'][0]
-                    n2 = olp2.qualifiers['chksum'][0]
-
-                    if n1 == '5' and n2=='3':
-                        continue
-
-                    s1,e1,s2,e2 = (olp1.location.start.position,
-                                   olp1.location.end.position,
-                                   olp2.location.start.position,
-                                   olp2.location.end.position,)
-
-                    source_fragment = Fragment(dsrec,s1,e1,s2,e2,i)
-
-                    self.G.add_edge( n1, n2,
-                                     frag=source_fragment,
-                                     weight = s1-e1,
-                                     i = i)
-
-        #linear assembly
-
-        linear_products=defaultdict(list)
-
-        for path in all_simple_paths_edges(self.G, '5', '3', data=True, cutoff=self.max_nodes):
-
-            pred_frag = copy(path[0][2].values().pop()['frag'])
-            source_fragments = [pred_frag, ]
-
-            if pred_frag.start2<pred_frag.end1:
-                result=pred_frag[pred_frag.start2+(pred_frag.end1-pred_frag.start2):pred_frag.end2]
-            else:
-                result=pred_frag[pred_frag.end1:pred_frag.end2]
-
-            for first_node, second_node, edgedict in path[1:]:
-
-                edgedict = edgedict.values().pop()
-
-                f  = copy(edgedict['frag'])
-
-                f.alignment =  pred_frag.alignment + pred_frag.start2- f.start1
-                source_fragments.append(f)
-
-                if f.start2>f.end1:
-                    result+=f[f.end1:f.end2]
-                else:
-                    result+=f[f.start2+(f.end1-f.start2):f.end2]
-
-                pred_frag = f
-
-            add=True
-            for lp in linear_products[len(result)]:
-                if (str(result.seq).lower() == str(lp.seq).lower()
-                    or
-                    str(result.seq).lower() == str(lp.seq.reverse_complement()).lower()):
-                    add=False
-            for dsrec in self.dsrecs:
-                if (str(result.seq).lower() == str(dsrec.seq).lower()
-                    or
-                    str(result.seq).lower() == str(dsrec.seq.reverse_complement()).lower()):
-                    add=False
-            if add:
-                linear_products[len(result)].append(Contig( result, source_fragments))
-
-        self.linear_products = list(itertools.chain.from_iterable(linear_products[size] for size in sorted(linear_products, reverse=True)))
-
-
-        # circular assembly
-
-        self.cG = self.G.copy()
-        self.cG.remove_nodes_from(('5','3'))
-        #circular_products=defaultdict(list)
-        circular_products={}
-
-        for pth in all_circular_paths_edges(self.cG):
-
-            ns = min(enumerate(pth), key = lambda x:x[1][2]['i'])[0]
-
-            path = pth[ns:]+pth[:ns]
-
-            pred_frag = copy(path[0][2]['frag'])
-
-            source_fragments = [pred_frag, ]
-
-            if pred_frag.start2<pred_frag.end1:
-                result=pred_frag[pred_frag.start2+(pred_frag.end1-pred_frag.start2):pred_frag.end2]
-            else:
-                result=pred_frag[pred_frag.end1:pred_frag.end2]
-
-            result.seq = Dseq(str(result.seq))
-
-            for first_node, second_node, edgedict in path[1:]:
-
-                f  = copy(edgedict['frag'])
-
-                f.alignment =  pred_frag.alignment + pred_frag.start2- f.start1
-                source_fragments.append(f)
-
-                if f.start2>f.end1:
-                    nxt = f[f.end1:f.end2]
-                else:
-                    nxt =f[f.start2+(f.end1-f.start2):f.end2]
-                nxt.seq = Dseq(str(nxt.seq))
-                result+=nxt
-
-                pred_frag = f
-
-            #add=True
-            #for cp in circular_products[len(result)]:
-            #    if (str(result.seq).lower() in str(cp.seq).lower()*2
-            #        or
-            #        str(result.seq).lower() == str(cp.seq.reverse_complement()).lower()*2):
-            #        pass
-            #        add=False
-            #        print "##--"
-            #if add:
-            #    circular_products[len(result)].append( Contig( Dseqrecord(result, circular=True), source_fragments))
-
-            r = Dseqrecord(result, circular=True)
-            circular_products[r.cseguid()] = Contig(r, source_fragments )
-
-
-        #self.circular_products = list(itertools.chain.from_iterable(circular_products[size] for size in sorted(circular_products, reverse=True)))
-        self.circular_products = sorted(circular_products.values(), key=len, reverse=True)
-
-
+    
+    
+    def __init__(self, frags=None,  limit = 25, algorithm=common_sub_strings):
+        
+        # Fragments is a string subclass with some extra properties
+        # The order of the fragments has significance
+        fragments=[]
+        for f in frags:
+            fragments.append( { "upper":str(f.seq).upper(), 
+                                "mixed":str(f.seq),
+                                "name" :f.name,
+                                "features": f.features,
+                                "nodes"   : [] } )
+
+        # rcfragments is a dict with fragments as keys and the reverse 
+        # complement as value
+        rcfragments = _od( (f["mixed"],{"upper": str(frc.seq).upper(), 
+                                        "mixed": str(frc.seq),
+                                        "name": frc.name,
+                                        "features": frc.features,
+                                        "nodes": [] } ) for f,frc in zip(fragments,(f.rc() for f in frags)))
+        # The nodemap dict holds nodes and their reverse complements
+        nodemap = {"begin":"end",
+                   "end":"begin",
+                   "begin_rc":"end_rc",
+                   "end_rc":"begin_rc"}
+        
+        # all cominations of fragments are compared.
+        # see https://docs.python.org/3.6/library/itertools.html
+        # itertools.combinations('ABCD', 2)-->  AB AC AD BC BD CD
+        for first, secnd in _itertools.combinations(fragments, 2):  
+
+                if first["upper"] == secnd["upper"]:
+                    continue
+            
+                firrc = rcfragments[first["mixed"]]
+                secrc = rcfragments[secnd["mixed"]]
+
+                # matches is a list of tuples of three integers describing overlapping sequences:
+                # (start position in first, start position in secnd, length)
+                # This comparison is done using uppercase strings, see _Fragment class
+                matches = algorithm( first["upper"], secnd["upper"], limit)
+
+                for start_in_first, start_in_secnd, length in matches:
+                    # node is a string and represent the shared sequence in upper case.
+                    node = first["upper"][start_in_first:start_in_first+length]
+
+                    first["nodes"].append( (start_in_first, length, node) )
+                    secnd["nodes"].append( (start_in_secnd, length, node) )
+
+                    # The same node exists between the reverse complements of first and secnd
+                    # The new positions are calculated from the length of the fragment and 
+                    # the overlapping sequence
+                    start_in_firrc = len(first["upper"]) - start_in_first - length
+                    start_in_secrc = len(secnd["upper"]) - start_in_secnd - length
+                    # noderc is the reverse complement of node
+                    noderc  = firrc["upper"][start_in_firrc:start_in_firrc+length]
+                    firrc["nodes"].append( (start_in_firrc, length, noderc) )
+                    secrc["nodes"].append( (start_in_secrc, length, noderc) )
+                    nodemap[node]=noderc
+
+                # first is also compared to the rc of secnd
+                matches = algorithm( first["upper"], secrc["upper"], limit)
+                
+                for start_in_first, start_in_secrc, length in matches:
+                    node    = first["upper"][start_in_first:start_in_first+length]
+                    first["nodes"].append( (start_in_first, length, node) )
+                    secrc["nodes"].append( (start_in_secrc, length, node) )
+
+                    start_in_firrc, start_in_secnd = len(first["upper"]) - start_in_first - length, len(secnd["upper"]) - start_in_secrc - length
+                    noderc  = firrc["upper"][start_in_firrc:start_in_firrc+length]
+                    firrc["nodes"].append( (start_in_firrc, length, noderc) )
+                    secnd["nodes"].append( (start_in_secnd, length, noderc) )
+                    nodemap[node]=noderc
+
+        # A directed graph class that can store multiedges.
+        # Multiedges are multiple edges between two nodes. Each edge can hold optional data or attributes.
+        # https://networkx.github.io/documentation/stable/reference/classes/multidigraph.html
+        
+        order=0
+        G = _nx.MultiDiGraph()
+        # loop through all fragments their and reverse complements
+        
+        for f in fragments:
+            f["nodes"] = sorted(set(f["nodes"]))
+            
+        for f in rcfragments.values():
+            f["nodes"] = sorted(set(f["nodes"]))          
+        
+        for f in _itertools.chain(fragments, rcfragments.values()):
+
+            # nodes are sorted in place in the order of their position
+            # duplicates are removed (same position and sequence)
+            # along the fragment since nodes are a tuple (position(int), sequence(str))
+            
+            before = G.order()
+            G.add_nodes_from( (node,{"order":order+od, "length":length}) for od,(start,length,node) in enumerate(n for n in f["nodes"] if n[2] not in G))
+            order+=G.order()-before
+
+            for (start1,length1,node1),(start2,length2,node2) in _itertools.combinations(f["nodes"],2):
+
+                feats = [ft for ft in f["features"] if start1 <= ft.location.start and start2+G.node[node2]["length"] >= ft.location.end]
+
+                for feat in feats: feat.location+=(-start1)
+
+                G.add_edge(node1, node2,                         # nodes (strings)
+                           piece     = slice(start1, start2),       # slice
+                           features  = feats,                       # features
+                           seq       = f["mixed"],                  # mixed case string
+                           name      = f["name"])                   # string
+
+        self.G = _nx.create_empty_copy(G)
+        self.G.add_edges_from(sorted(G.edges(data=True), key=lambda t: len(t[2].get('seq', 1)), reverse=True))
+        self.nodemap={**nodemap, **{nodemap[i]:i for i in nodemap}}
+        self.limit = limit
+        self.fragments = fragments
+        self.rcfragments = rcfragments
+        self.algorithm = algorithm
+        
+
+    def assemble_linear(self, start=None,end=None, max_nodes=None):
+        
+        G = _nx.MultiDiGraph(self.G)
+        
+        G.add_nodes_from(["begin","begin_rc","end","end_rc"], length=0)
+        
+        # add edges from "begin" to nodes in the first sequence in self.fragments
+        firstfragment = self.fragments[0]
+        for start, length, node in firstfragment["nodes"][::-1]:
+            G.add_edge("begin", node, 
+                        piece  = slice(0, start), 
+                        features  = [f for f in firstfragment["features"] if start+length >= f.location.end],
+                        seq    = firstfragment["mixed"],
+                        name   = firstfragment["name"])
+
+        # add edges from "begin_rc" to nodes in the reverse complement of the first sequence
+        firstfragmentrc = self.rcfragments[firstfragment["mixed"]]
+        for start, length, node  in firstfragmentrc["nodes"][::-1]:
+            G.add_edge("begin_rc", node,
+                       piece = slice(0, start), 
+                       features = [f for f in firstfragmentrc["features"] if start+length >= f.location.end], 
+                       seq   = firstfragmentrc["mixed"],
+                       name  = firstfragmentrc["name"])
+
+        # add edges from nodes in last sequence to "end"
+        lastfragment = self.fragments[-1]
+        for start, length, node in lastfragment["nodes"]:
+            G.add_edge(node, "end", 
+                       piece = slice(start, len(lastfragment["mixed"])),
+                       features = [f for f in lastfragment["features"] if start <= f.location.end],  
+                       seq   = lastfragment["mixed"],
+                       name  = lastfragment["name"])
+
+        # add edges from nodes in last reverse complement sequence to "end_rc"
+        lastfragmentrc = self.rcfragments[lastfragment["mixed"]]
+        for start, length, node in lastfragmentrc["nodes"]:
+            G.add_edge(node, "end_rc", 
+                       piece = slice(start, len(lastfragmentrc["mixed"])),
+                       features  = [f for f in lastfragmentrc["features"] if start <= f.location.end], 
+                       seq   = lastfragmentrc["mixed"],
+                       name  = lastfragmentrc["name"])
+        
+        max_nodes = max_nodes or len(self.fragments)
+      
+        linearpaths = list(_itertools.chain( _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end",    cutoff=max_nodes ),
+                                             _nx.all_simple_paths( _nx.DiGraph(G),"begin",    "end_rc", cutoff=max_nodes ),
+                                             _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end",    cutoff=max_nodes ),
+                                             _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
+
+        lps=_od()
+        #lpsrc=_od()
+        
+        #print(linearpaths)
+ 
+        for lp in linearpaths:
+            edgelol=[]
+
+            for u,v in zip(lp,lp[1:]):
+                e=[]
+                for d in G[u][v].values():
+                    e.append((u,v,d))
+                edgelol.append(e)
+
+            for edges in _itertools.product(*edgelol):
+                # TODO explai
+                if [True for ((u,v,e),(x,y,z)) in zip(edges, edges[1:]) if (e["seq"],e["piece"].stop) == (z["seq"],z["piece"].start)]:
+                    continue
+                ct = "".join(e["seq"][e["piece"]] for u,v,e in edges)
+                key = ct.upper()
+
+                if key in lps:
+                    continue
+                sg=_nx.DiGraph()
+                sg.add_edges_from(edges)   
+                sg.add_nodes_from((n,d) for n,d in G.nodes(data=True) if n in lp)
+                
+                edgefeatures=[]
+                offset=0
+                
+                for u,v,e in edges:
+                    feats = _deepcopy(e["features"])                    
+                    for f in feats:
+                        f.location+=offset
+                    edgefeatures.extend(feats)
+                    offset+=e["piece"].stop-e["piece"].start
+                    
+
+                lps[key] = ct, edgefeatures, sg, {n:self.nodemap[n] for n in lp}
+        
+        return sorted((_Contig.from_string(lp[0], 
+                               features  = lp[1], 
+                               graph     = lp[2],
+                               nodemap   = lp[3],
+                               linear    = True,
+                               circular  = False) for lp in lps.values()), key=len, reverse=True)
+
+
+    def assemble_circular(self):
+        cps = _od() # circular assembly
+        cpsrc = _od()
+        cpaths = sorted( _nx.simple_cycles(self.G), key=len)
+        cpaths_sorted=[]
+        for cpath in cpaths:
+            order, node = min((self.G.node[node]["order"],node) for node in cpath)
+            i=cpath.index(node)
+            cpaths_sorted.append((order, cpath[i:]+cpath[:i]))
+        cpaths_sorted.sort()        
+
+        for _, cp in cpaths_sorted:        # cpaths is a list of nodes representing a circular assembly
+            edgelol = []                   # edgelol is a list of lists of all edges along cp
+            cp+= cp[0:1]
+            for u,v in zip(cp, cp[1:]):
+                e=[]
+                for d in self.G[u][v].values():
+                    e.append((u,v,d))
+                edgelol.append(e)
+
+            for edges in _itertools.product(*edgelol):
+                if [True for ((u,v,e),(x,y,z)) in zip(edges, edges[1:]) if (e["seq"],e["piece"].stop) == (z["seq"],z["piece"].start)]:
+                    continue
+                ct = "".join(e["seq"][e["piece"]] for u,v,e in edges)
+                key=ct.upper()
+                
+                if key in cps or key in cpsrc: continue  # TODO: cpsrc not needed? 
+                sg=_nx.DiGraph()
+                sg.add_edges_from(edges)   
+                sg.add_nodes_from( (n,d) for n,d in self.G.nodes(data=True) if n in cp )
+                
+                edgefeatures=[]
+                offset=0
+
+                for u,v,e in edges:
+                    feats = _deepcopy(e["features"])
+                    for feat in feats:
+                        feat.location+=offset
+                    edgefeatures.extend(feats)
+                    offset+=e["piece"].stop-e["piece"].start
+                    for f in edgefeatures:
+                        if f.location.start>len(ct) and f.location.end>len(ct):                        
+                            f.location+=(-len(ct))
+                        elif f.location.end>len(ct):
+                            f.location = _CompoundLocation((_FeatureLocation(f.location.start,_ExactPosition(len(ct))),_FeatureLocation(_ExactPosition(0), f.location.end-len(ct))))
+
+                cps[key] = cpsrc[_rc(key)] = ct, edgefeatures, sg, {n:self.nodemap[n] for n in cp[:-1]}, cp 
+
+        return sorted((_Contig.from_string(cp[0], 
+                               features = cp[1], 
+                               graph    = cp[2], 
+                               nodemap  = cp[3],
+                               linear=False,
+                               circular=True) for cp in cps.values()), key=len, reverse=True)
+
+        
     def __repr__(self):
-        return   ( "Assembly:\n"
-                   "Sequences........................: {sequences}\n"
-                   "Sequences with shared homologies.: {analyzed_dsrecs}\n"
-                   "Homology limit (bp)..............: {limit}\n"
-                   "Number of overlaps...............: {no_of_olaps}\n"
-                   "Nodes in graph(incl. 5' & 3')....: {nodes}\n"
-                   "Only terminal overlaps...........: {pr}\n"
-                   "Circular products................: {cp}\n"
-                   "Linear products..................: {lp}"    ).format(sequences       = " ".join("[{}]".format(len(x)) for x in self.dsrecs),
-                                                                         analyzed_dsrecs = " ".join("[{}]".format(len(x)) for x in self.analyzed_dsrecs),
-                                                                         limit           = self.limit,
-                                                                         no_of_olaps     = self.no_of_olaps,
-                                                                         nodes           = self.G.order(),
-                                                                         pr              = {True:"Yes",False:"No"}[self.only_terminal_overlaps],
-                                                                         cp              = " ".join("[{}]".format(len(x)) for x in self.circular_products),
-                                                                         lp              = " ".join("[{}]".format(len(x)) for x in self.linear_products))
+        # https://pyformat.info
+        return _pretty_str( "Assembly\n"
+                            "fragments..: {sequences}\n"
+                            "limit(bp)..: {limit}\n"
+                            "G.nodes....: {nodes}\n"
+                            "algorithm..: {al}".format(sequences = " ".join("{}bp".format(len(x["mixed"])) for x in self.fragments),
+                                                           limit     = self.limit,
+                                                           nodes     = self.G.order(),  
+                                                           al        = self.algorithm.__name__))
+
+                                   
+example_fragments = ( _Dseqrecord("AacgatCAtgctcc",  name ="a"),
+                             _Dseqrecord("TtgctccTAAattctgc", name ="b"),
+                                      _Dseqrecord("CattctgcGAGGacgatG",name ="c") )
+
+
+linear_results = ( _Dseqrecord("AacgatCAtgctccTAAattctgcGAGGacgatG", name ="abc"),
+                   _Dseqrecord("ggagcaTGatcgtCCTCgcagaatG", name ="ac_rc"),
+                   _Dseqrecord("AacgatG", name ="ac")                           )  
+
+
+circular_results = ( _Dseqrecord("acgatCAtgctccTAAattctgcGAGG", name ="abc", circular=True),
+                     _Dseqrecord("ggagcaTGatcgtCCTCgcagaatTTA", name ="abc_rc", circular=True))
+         
+
 
 if __name__=="__main__":
+    import os as _os
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"]=""
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"]=cached

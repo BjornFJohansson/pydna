@@ -1,0 +1,957 @@
+LOCUS       .                      19114 bp    DNA     circular UNK 05-MAR-2015
+DEFINITION  .
+ACCESSION   <unknown id>
+VERSION     <unknown id>
+DBLINK      BioProject:PRJNA43747
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     overlap         363..524
+                     /note="olp_TMr1vCYKndLNHy6HjaT2Gz37tVU"
+                     /ApEinfo_fwdcolor="#E5F2FD"
+                     /chksum="TMr1vCYKndLNHy6HjaT2Gz37tVU"
+                     /ApEinfo_revcolor="#CEE4F4"
+     misc            531..557
+                     /label="549_ScPGI1tpf"
+     primer_bind     537..557
+                     /note="549_ScPGI1tpf"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     gene            807..911
+                     /locus_tag="YBR196C-B"
+     mRNA            807..911
+                     /locus_tag="YBR196C-B"
+                     /product="hypothetical protein"
+     CDS             807..911
+                     /product="hypothetical protein"
+                     /GO_component="GO:0005575 - cellular_component [Evidence
+                     ND]"
+                     /GO_function="GO:0003674 - molecular_function [Evidence
+                     ND]"
+                     /codon_start=1
+                     /locus_tag="YBR196C-B"
+                     /note="hypothetical protein; identified by expression
+                     profiling and mass spectrometry"
+                     /db_xref="SGD:S000028816"
+                     /GO_process="GO:0008150 - biological_process [Evidence ND]"
+                     /translation="MWVVLSKEKILLKKAYYAKTILFSALVLRGVRGE"
+                     /protein_id="DAA07312.1"
+     gene            1264..1413
+                     /locus_tag="YBR196C-A"
+     mRNA            1264..1413
+                     /locus_tag="YBR196C-A"
+                     /product="hypothetical protein"
+     CDS             1264..1413
+                     /product="hypothetical protein"
+                     /GO_component="GO:0005575 - cellular_component [Evidence
+                     ND]"
+                     /GO_component="GO:0016021 - integral to membrane [Evidence
+                     IEA]"
+                     /GO_component="GO:0016020 - membrane [Evidence IEA,IEA]"
+                     /GO_function="GO:0003674 - molecular_function [Evidence
+                     ND]"
+                     /codon_start=1
+                     /locus_tag="YBR196C-A"
+                     /note="hypothetical protein; identified by fungal homology
+                     and RT-PCR"
+                     /db_xref="SGD:S000028534"
+                     /GO_process="GO:0008150 - biological_process [Evidence ND]"
+                     /translation="MSRVYIYPLTVFYFFAIEMSVFCYYNWFYRRNFPYLFRPIFPFLI
+                     VLIS"
+                     /protein_id="DAA07311.1"
+     primer_bind     complement(1516..1536)
+                     /note="622_ScPGI1tpr_PacI"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     misc            complement(1516..1543)
+                     /label="622_ScPGI1tpr_PacI"
+     gene            1584..3386
+                     /locus_tag="YGR194C"
+                     /gene="XKS1"
+     mRNA            1584..3386
+                     /locus_tag="YGR194C"
+                     /gene="XKS1"
+                     /product="Xks1p"
+     CDS             1584..3386
+                     /locus_tag="YGR194C"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence IEA,IEA]"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence IDA] [PMID
+                     14562095]"
+                     /GO_function="GO:0005524 - ATP binding [Evidence IEA]"
+                     /GO_function="GO:0016301 - kinase activity [Evidence IEA]"
+                     /GO_function="GO:0000166 - nucleotide binding [Evidence
+                     IEA]"
+                     /GO_function="GO:0016773 - phosphotransferase activity,
+                     alcohol group as acceptor [Evidence IEA]"
+                     /GO_function="GO:0016740 - transferase activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0004856 - xylulokinase activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0004856 - xylulokinase activity [Evidence
+                     IMP,ISS] [PMID 9595677]"
+                     /codon_start=1
+                     /EC_number="2.7.1.17"
+                     /note="Xylulokinase, converts D-xylulose and ATP to
+                     xylulose 5-phosphate and ADP; rate limiting step in
+                     fermentation of xylulose; required for xylose fermentation
+                     by recombinant S. cerevisiae strains"
+                     /db_xref="SGD:S000003426"
+                     /GO_process="GO:0042732 - D-xylose metabolic process
+                     [Evidence IEA]"
+                     /GO_process="GO:0005975 - carbohydrate metabolic process
+                     [Evidence IEA,IEA]"
+                     /GO_process="GO:0016310 - phosphorylation [Evidence IEA]"
+                     /GO_process="GO:0005998 - xylulose catabolic process
+                     [Evidence IDA] [PMID 10981687]"
+                     /ApEinfo_revcolor="#c7ddd2"
+                     /translation="MLCSVIQRQTREVSNTMSLDSYYLGFDLSTQQLKCLAINQDLKIV
+                     HSETVEFEKDLPHYHTKKGVYIHGDTIECPVAMWLEALDLVLSKYREAKFPLNKVMAVS
+                     GSCQQHGSVYWSSQAESLLEQLNKKPEKDLLHYVSSVAFARQTAPNWQDHSTAKQCQEF
+                     EECIGGPEKMAQLTGSRAHFRFTGPQILKIAQLEPEAYEKTKTISLVSNFLTSILVGHL
+                     VELEEADACGMNLYDIRERKFSDELLHLIDSSSKDKTIRQKLMRAPMKNLIAGTICKYF
+                     IEKYGFNTNCKVSPMTGDNLATICSLPLRKNDVLVSLGTSTTVLLVTDKYHPSPNYHLF
+                     IHPTLPNHYMGMICYCNGSLARERIRDELNKERENNYEKTNDWTLFNQAVLDDSESSEN
+                     ELGVYFPLGEIVPSVKAINKRVIFNPKTGMIEREVAKFKDKRHDAKNIVESQALSCRVR
+                     ISPLLSDSNASSQQRLNEDTIVKFDYDESPLRDYLNKRPERTFFVGGASKNDAIVKKFA
+                     QVIGATKGNFRLETPNSCALGGCYKAMWSLLYDSNKIAVPFDKFLNDNFPWHVMESISD
+                     VDNENWDRYNSKIVPLSELEKTLI"
+                     /gene="XKS1"
+                     /product="Xks1p"
+                     /protein_id="DAA08287.1"
+                     /ApEinfo_fwdcolor="#c7ddd2"
+     primer_bind     1584..1606
+                     /note="XX_YPK_rec_fwd"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(3363..3386)
+                     /note="XK_YPK_rec_rev"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(3363..3424)
+                     /label="XK_YPK_rec_rev"
+     overlap         3419..4062
+                     /note="olp_AL4vcr5ryHKKJfiy301ZtmImO0U"
+                     /ApEinfo_fwdcolor="#B7C7C9"
+                     /chksum="AL4vcr5ryHKKJfiy301ZtmImO0U"
+                     /ApEinfo_revcolor="#D7AFDC"
+     primer_bind     3426..3455
+                     /note="409_ScFBA1tpf"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(4034..4055)
+                     /note="624_ScFBA1tpr_PacI"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(4034..4062)
+                     /label="624_ScFBA1tpr_PacI"
+     gene            4103..5110
+                     /locus_tag="YLR354C"
+                     /gene="TAL1"
+     mRNA            4103..5110
+                     /locus_tag="YLR354C"
+                     /gene="TAL1"
+                     /product="Tal1p"
+     CDS             4103..5110
+                     /locus_tag="YLR354C"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence IEA]"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence ISS] [PMID
+                     2843500]"
+                     /GO_component="GO:0005634 - nucleus [Evidence IDA] [PMID
+                     17397208]"
+                     /GO_function="GO:0003824 - catalytic activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0004801 -
+                     sedoheptulose-7-phosphate:D-glyceraldehyde-3-phosphate
+                     glyceronetransferase activity [Evidence IEA,IEA]"
+                     /GO_function="GO:0004801 -
+                     sedoheptulose-7-phosphate:D-glyceraldehyde-3-phosphate
+                     glyceronetransferase activity [Evidence IDA] [PMID
+                     2185015]"
+                     /GO_function="GO:0016740 - transferase activity [Evidence
+                     IEA]"
+                     /codon_start=1
+                     /EC_number="2.2.1.2"
+                     /note="Transaldolase, enzyme in the non-oxidative pentose
+                     phosphate pathway; converts sedoheptulose 7-phosphate and
+                     glyceraldehyde 3-phosphate to erythrose 4-phosphate and
+                     fructose 6-phosphate"
+                     /db_xref="SGD:S000004346"
+                     /GO_process="GO:0005975 - carbohydrate metabolic process
+                     [Evidence IEA]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IEA,IEA,IEA]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IMP] [PMID 8299150]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     TAS] [PMID 8534086]"
+                     /ApEinfo_revcolor="#ba9df2"
+                     /translation="MSEPAQKKQKVANNSLEQLKASGTVVVADTGDFGSIAKFQPQDST
+                     TNPSLILAAAKQPTYAKLIDVAVEYGKKHGKTTEEQVENAVDRLLVEFGKEILKIVPGR
+                     VSTEVDARLSFDTQATIEKARHIIKLFEQEGVSKERVLIKIASTWEGIQAAKELEEKDG
+                     IHCNLTLLFSFVQAVACAEAQVTLISPFVGRILDWYKSSTGKDYKGEADPGVISVKKIY
+                     NYYKKYGYKTIVMGASFRSTDEIKNLAGVDYLTISPALLDKLMNSTEPFPRVLDPVSAK
+                     KEAGDKISYISDESKFRFDLNEDAMATEKLSEGIRKFSADIVTLFDLIEKKVTA"
+                     /gene="TAL1"
+                     /product="Tal1p"
+                     /protein_id="DAA09658.1"
+                     /ApEinfo_fwdcolor="#ba9df2"
+     primer_bind     4103..4125
+                     /note="TAL1_YPK_rec_fwd"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(5085..5110)
+                     /note="TAL1_YPK_rec_rev"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(5085..5148)
+                     /label="TAL1_YPK_rec_rev"
+     overlap         5143..6111
+                     /note="olp_ig+LXpH9WTOdIQm7JwHl8QA25Os"
+                     /ApEinfo_fwdcolor="#E2D6D9"
+                     /chksum="ig+LXpH9WTOdIQm7JwHl8QA25Os"
+                     /ApEinfo_revcolor="#B3D4BF"
+     promoter        5150..6104
+                     /note="tp YLR045C YLR044C"
+                     /ApEinfo_fwdcolor="#b1e6cc"
+                     /ApEinfo_revcolor="#b1e681"
+     primer_bind     5150..5166
+                     /note="413_ScPDC1tpf"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     primer_bind     complement(6078..6104)
+                     /note="625_ScPDC1tpr_PacI"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     misc            complement(6078..6111)
+                     /label="625_ScPDC1tpr_PacI"
+     gene            6152..8194
+                     /locus_tag="YPR074C"
+                     /gene="TKL1"
+     mRNA            6152..8194
+                     /locus_tag="YPR074C"
+                     /gene="TKL1"
+                     /product="Tkl1p"
+     CDS             6152..8194
+                     /locus_tag="YPR074C"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence ISS] [PMID
+                     2843500]"
+                     /GO_function="GO:0003824 - catalytic activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0046872 - metal ion binding [Evidence
+                     IEA]"
+                     /GO_function="GO:0016740 - transferase activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0004802 - transketolase activity [Evidence
+                     IEA,IEA]"
+                     /GO_function="GO:0004802 - transketolase activity [Evidence
+                     IMP,ISS] [PMID 8226984]"
+                     /codon_start=1
+                     /EC_number="2.2.1.1"
+                     /note="Transketolase; catalyzes conversion of
+                     xylulose-5-phosphate and ribose-5-phosphate to
+                     sedoheptulose-7-phosphate and glyceraldehyde-3-phosphate in
+                     the pentose phosphate pathway; needed for synthesis of
+                     aromatic amino acids; TKL1 has a paralog, TKL2, that arose
+                     from the whole genome duplication"
+                     /db_xref="SGD:S000006278"
+                     /GO_process="GO:0008152 - metabolic process [Evidence IEA]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IMP] [PMID 8299150]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     TAS] [PMID 8534086]"
+                     /ApEinfo_revcolor="#caa7d7"
+                     /translation="MTQFTDIDKLAVSTIRILAVDTVSKANSGHPGAPLGMAPAAHVLW
+                     SQMRMNPTNPDWINRDRFVLSNGHAVALLYSMLHLTGYDLSIEDLKQFRQLGSRTPGHP
+                     EFELPGVEVTTGPLGQGISNAVGMAMAQANLAATYNKPGFTLSDNYTYVFLGDGCLQEG
+                     ISSEASSLAGHLKLGNLIAIYDDNKITIDGATSISFDEDVAKRYEAYGWEVLYVENGNE
+                     DLAGIAKAIAQAKLSKDKPTLIKMTTTIGYGSLHAGSHSVHGAPLKADDVKQLKSKFGF
+                     NPDKSFVVPQEVYDHYQKTILKPGVEANNKWNKLFSEYQKKFPELGAELARRLSGQLPA
+                     NWESKLPTYTAKDSAVATRKLSETVLEDVYNQLPELIGGSADLTPSNLTRWKEALDFQP
+                     PSSGSGNYSGRYIRYGIREHAMGAIMNGISAFGANYKPYGGTFLNFVSYAAGAVRLSAL
+                     SGHPVIWVATHDSIGVGEDGPTHQPIETLAHFRSLPNIQVWRPADGNEVSAAYKNSLES
+                     KHTPSIIALSRQNLPQLEGSSIESASKGGYVLQDVANPDIILVATGSEVSLSVEAAKTL
+                     AAKNIKARVVSLPDFFTFDKQPLEYRLSVLPDNVPIMSVEVLATTCWGKYAHQSFGIDR
+                     FGASGKAPEVFKFFGFTPEGVAERAQKTIAFYKGDKLISPLKKAF"
+                     /gene="TKL1"
+                     /product="Tkl1p"
+                     /protein_id="DAA11494.1"
+                     /ApEinfo_fwdcolor="#caa7d7"
+     primer_bind     6152..6178
+                     /note="TKL_YPK_rec_fwd"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     primer_bind     complement(8166..8194)
+                     /note="TKL_YPK_rec_rev"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     misc            8227..8252
+                     /label="536_ScRPS19btpr_FspA"
+     promoter        8233..8858
+                     /note="tp YNL301C YNL302C"
+                     /ApEinfo_revcolor="#b1e681"
+                     /ApEinfo_fwdcolor="#b1e6cc"
+     primer_bind     8233..8252
+                     /note="536_ScRPS19btpr_FspA"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(8838..8858)
+                     /note="537_ScRPS19btpf"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(8838..8864)
+                     /label="537_ScRPS19btpf"
+     primer_bind     complement(8892..8912)
+                     /note="567_pCAPsAjiIF"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(8892..8914)
+                     /label="567_pCAPsAjiIF"
+     primer_bind     complement(8892..8914)
+                     /note="567_pCAPsAjiIF"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(8892..8914)
+                     /label="567_pCAPsAjiIF"
+     misc            8915..8943
+                     /label="557_RPE1_YPK_fwd"
+     gene            8924..9640
+                     /locus_tag="YJL121C"
+                     /gene="RPE1"
+                     /gene_synonym="EPI1"
+                     /gene_synonym="POS18"
+     mRNA            8924..9640
+                     /product="ribulose-phosphate 3-epimerase RPE1"
+                     /gene="RPE1"
+                     /locus_tag="YJL121C"
+                     /gene_synonym="EPI1"
+                     /gene_synonym="POS18"
+     CDS             8924..9640
+                     /locus_tag="YJL121C"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence IEA,IEA]"
+                     /GO_component="GO:0005829 - cytosol [Evidence TAS] [PMID
+                     11298766]"
+                     /GO_function="GO:0003824 - catalytic activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0016853 - isomerase activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0046872 - metal ion binding [Evidence
+                     IEA]"
+                     /GO_function="GO:0016857 - racemase and epimerase activity,
+                     acting on carbohydrates and derivatives [Evidence IEA]"
+                     /GO_function="GO:0004750 - ribulose-phosphate 3-epimerase
+                     activity [Evidence IEA,IEA]"
+                     /GO_function="GO:0004750 - ribulose-phosphate 3-epimerase
+                     activity [Evidence IDA,IMP,ISS] [PMID 8929392]"
+                     /codon_start=1
+                     /EC_number="5.1.3.1"
+                     /gene_synonym="EPI1"
+                     /gene_synonym="POS18"
+                     /note="D-ribulose-5-phosphate 3-epimerase, catalyzes a
+                     reaction in the non-oxidative part of the pentose-phosphate
+                     pathway; mutants are sensitive to oxidative stress"
+                     /db_xref="SGD:S000003657"
+                     /GO_process="GO:0005975 - carbohydrate metabolic process
+                     [Evidence IEA,IEA]"
+                     /GO_process="GO:0008152 - metabolic process [Evidence IEA]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IEA,IEA]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IMP] [PMID 8929392]"
+                     /ApEinfo_revcolor="#c196bf"
+                     /translation="MVKPIIAPSILASDFANLGCECHKVINAGADWLHIDVMDGHFVPN
+                     ITLGQPIVTSLRRSVPRPGDASNTEKKPTAFFDCHMMVENPEKWVDDFAKCGADQFTFH
+                     YEATQDPLHLVKLIKSKGIKAACAIKPGTSVDVLFELAPHLDMALVMTVEPGFGGQKFM
+                     EDMMPKVETLRAKFPHLNIQVDGGLGKETIPKAAKAGANVIVAGTSVFTAADPHDVISF
+                     MKEEVSKELRSRDLLD"
+                     /gene="RPE1"
+                     /product="ribulose-phosphate 3-epimerase RPE1"
+                     /protein_id="DAA08681.1"
+                     /ApEinfo_fwdcolor="#c196bf"
+     primer_bind     8924..8943
+                     /note="557_RPE1_YPK_fwd"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     primer_bind     complement(9621..9640)
+                     /note="556_RPE1_YPK_rev"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     misc            complement(9621..9642)
+                     /label="556_RPE1_YPK_rev"
+     misc            9643..9664
+                     /label="568_pCAPsAjiIR"
+     primer_bind     9645..9664
+                     /note="568_pCAPsAjiIR"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(9649..9673)
+                     /note="467_pCAPs_release_re"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            9674..9699
+                     /label="538_ScRPS19atpr_FspA"
+     promoter        9680..10223
+                     /note="tp YOL120C YOL121C"
+                     /ApEinfo_revcolor="#b1e681"
+                     /ApEinfo_fwdcolor="#b1e6cc"
+     primer_bind     9680..9699
+                     /note="538_ScRPS19atpr_FspA"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(10204..10223)
+                     /note="539_ScRPS19atpf"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(10204..10229)
+                     /label="539_ScRPS19atpf"
+     primer_bind     complement(10257..10277)
+                     /note="567_pCAPsAjiIF"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(10257..10279)
+                     /label="567_pCAPsAjiIF"
+     primer_bind     complement(10257..10279)
+                     /note="567_pCAPsAjiIF"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(10257..10279)
+                     /label="567_pCAPsAjiIF"
+     misc            10280..10308
+                     /label="555_RKI1_YPK_fwd"
+     gene            10289..11065
+                     /locus_tag="YOR095C"
+                     /gene="RKI1"
+     mRNA            10289..11065
+                     /locus_tag="YOR095C"
+                     /gene="RKI1"
+                     /product="ribose-5-phosphate isomerase RKI1"
+     CDS             10289..11065
+                     /locus_tag="YOR095C"
+                     /GO_component="GO:0005737 - cytoplasm [Evidence IDA] [PMID
+                     14562095]"
+                     /GO_component="GO:0005634 - nucleus [Evidence IDA] [PMID
+                     14562095]"
+                     /GO_function="GO:0016853 - isomerase activity [Evidence
+                     IEA]"
+                     /GO_function="GO:0004751 - ribose-5-phosphate isomerase
+                     activity [Evidence IEA,IEA]"
+                     /GO_function="GO:0004751 - ribose-5-phosphate isomerase
+                     activity [Evidence IMP,ISS] [PMID 8929392]"
+                     /codon_start=1
+                     /EC_number="5.3.1.6"
+                     /note="Ribose-5-phosphate ketol-isomerase, catalyzes the
+                     interconversion of ribose 5-phosphate and ribulose
+                     5-phosphate in the pentose phosphate pathway; participates
+                     in pyridoxine biosynthesis"
+                     /db_xref="SGD:S000005621"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IEA]"
+                     /GO_process="GO:0006098 - pentose-phosphate shunt [Evidence
+                     IGI] [PMID 8929392]"
+                     /GO_process="GO:0009052 - pentose-phosphate shunt,
+                     non-oxidative branch [Evidence IEA]"
+                     /GO_process="GO:0008615 - pyridoxine biosynthetic process
+                     [Evidence IMP] [PMID 14690456]"
+                     /ApEinfo_revcolor="#f2a9cc"
+                     /translation="MAAGVPKIDALESLGNPLEDAKRAAAYRAVDENLKFDDHKIIGIG
+                     SGSTVVYVAERIGQYLHDPKFYEVASKFICIPTGFQSRNLILDNKLQLGSIEQYPRIDI
+                     AFDGADEVDENLQLIKGGGACLFQEKLVSTSAKTFIVVADSRKKSPKHLGKNWRQGVPI
+                     EIVPSSYVRVKNDLLEQLHAEKVDIRQGGSAKAGPVVTDNNNFIIDADFGEISDPRKLH
+                     REIKLLVGVVETGLFIDNASKAYFGNSDGSVEVTEK"
+                     /gene="RKI1"
+                     /product="ribose-5-phosphate isomerase RKI1"
+                     /protein_id="DAA10872.1"
+                     /ApEinfo_fwdcolor="#f2a9cc"
+     primer_bind     10289..10308
+                     /note="555_RKI1_YPK_fwd"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     primer_bind     complement(11042..11065)
+                     /note="554_RKI1_YPK_rev"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     misc            complement(11042..11067)
+                     /label="554_RKI1_YPK_rev"
+     misc            11068..11089
+                     /label="568_pCAPsAjiIR"
+     primer_bind     11070..11089
+                     /note="568_pCAPsAjiIR"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(11074..11098)
+                     /note="467_pCAPs_release_re"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(11074..11104)
+                     /label="467_pCAPs_release_re"
+     promoter        11105..11687
+                     /note="tp YDR051C YDR050C"
+                     /ApEinfo_revcolor="#b1e681"
+                     /ApEinfo_fwdcolor="#b1e6cc"
+     primer_bind     11105..11130
+                     /note="419_ScTPI1tpf"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(11660..11687)
+                     /note="621_ScTPI1tpr_PacI"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(11660..11694)
+                     /label="621_ScTPI1tpr_PacI"
+     primer_bind     complement(11722..11742)
+                     /note="567_pCAPsAjiIF"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(11722..11744)
+                     /label="567_pCAPsAjiIF"
+     primer_bind     complement(11722..11744)
+                     /note="567_pCAPsAjiIF"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(11722..11744)
+                     /label="567_pCAPsAjiIF"
+     misc            11745..11773
+                     /label="553_GXF1_YPK_fwd"
+     primer_bind     11752..11773
+                     /note="553_GXF1_YPK_fwd"
+     source          11754..13397
+                     /strain="PYCC 4715"
+                     /mol_type="genomic DNA"
+                     /organism="Candida intermedia"
+                     /db_xref="taxon:45354"
+     gene            11754..13397
+                     /gene="gxf1"
+     CDS             11754..13397
+                     /function="sugar transporter"
+                     /product="glucose/xylose facilitator 1"
+                     /codon_start=1
+                     /db_xref="GI:85361410"
+                     /db_xref="GOA:Q2MDH1"
+                     /db_xref="InterPro:IPR003663"
+                     /db_xref="InterPro:IPR005828"
+                     /db_xref="InterPro:IPR005829"
+                     /db_xref="InterPro:IPR016196"
+                     /db_xref="InterPro:IPR020846"
+                     /db_xref="UniProtKB/TrEMBL:Q2MDH1"
+                     /experiment="experimental evidence, no additional details
+                     recorded"
+                     /translation="MSQDSHSSGAATPVNGSILEKEKEDSPVLQVDAPQKGFKDYIVIS
+                     IFCFMVAFGGFVFGFDTGTISGFVNMSDFKDRFGQHHADGTPYLSDVRVGLMISIFNVG
+                     CAVGGIFLCKVADVWGRRIGLMFSMAVYVVGIIIQISSSTKWYQFFIGRLIAGLAVGTV
+                     SVVSPLFISEVSPKQIRGTLVCCFQLCITLGIFLGYCTTYGTKTYTDSRQWRIPLGLCF
+                     AWAILLVVGMLNMPESPRYLVEKHRIDEAKRSIARSNKIPEEDPFVYTEVQLIQAGIER
+                     EALAGQASWKELITGKPKIFRRVIMGIMLQSLQQLTGDNYFFYYGTTIFQAVGLKDSFQ
+                     TSIILGIVNFASTFVGIYVIERLGRRLCLLTGSAAMFICFIIYSLIGTQHLYKQGYSNE
+                     TSNTYKASGNAMIFITCLYIFFFASTWAGGVYCIISESYPLRIRSKAMSIATAANWLWG
+                     FLISFFTPFITSAIHFYYGFVFTGCLAFSFFYVYFFVYETKGLSLEEVDEMYASGVLPL
+                     KSASWVPPNLEHMAHSAGYAGADKATDEQV"
+                     /gene="gxf1"
+                     /protein_id="CAI77652.1"
+     primer_bind     complement(13378..13397)
+                     /note="552_GXF1_YPK_rev"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(13378..13399)
+                     /label="552_GXF1_YPK_rev"
+     misc            13400..13421
+                     /label="568_pCAPsAjiIR"
+     primer_bind     13402..13421
+                     /note="568_pCAPsAjiIR"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     primer_bind     complement(13406..13430)
+                     /note="467_pCAPs_release_re"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(13406..13436)
+                     /label="467_pCAPs_release_re"
+     primer_bind     13437..13453
+                     /note="411_ScENO2tpf"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     gene            complement(13445..13783)
+                     /locus_tag="YHR173C"
+     mRNA            complement(13445..13783)
+                     /locus_tag="YHR173C"
+                     /product="hypothetical protein"
+     CDS             complement(13445..13783)
+                     /product="hypothetical protein"
+                     /GO_component="GO:0005575 - cellular_component [Evidence
+                     ND]"
+                     /GO_function="GO:0003674 - molecular_function [Evidence
+                     ND]"
+                     /codon_start=1
+                     /locus_tag="YHR173C"
+                     /note="hypothetical protein; expressed at both mRNA and
+                     protein levels"
+                     /db_xref="SGD:S000001216"
+                     /GO_process="GO:0008150 - biological_process [Evidence ND]"
+                     /translation="MLFFFIYAWCHLSHTILQPSTKIQMIVRSKPESNGEKKLMNHDEP
+                     NDQYNQRNYPSEVYADLVSHFMNFAYGKVHESGLQKKGVRCVDVSISGCQFWNGIPLSA
+                     SWCTSLVT"
+                     /protein_id="DAA35091.1"
+     primer_bind     complement(13925..13956)
+                     /note="452_ScENO2tpr_FspAI"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     misc            complement(13925..13963)
+                     /label="452_ScENO2tpr_FspAI"
+     primer_bind     complement(14001..14024)
+                     /note="166_pCAPSrv"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(14001..14024)
+                     /label="166_pCAPSrv"
+     primer_bind     complement(14001..14024)
+                     /note="166_pCAPSrv"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(14001..14024)
+                     /label="166_pCAPSrv"
+     rep_origin      14665
+                     /direction=BOTH
+     misc            15409..16212
+                     /label="URA3"
+     misc            15997..16046
+                     /label="469_pSU0r-dEcoRV"
+     primer_bind     16022..16046
+                     /note="469_pSU0r-dEcoRV"
+                     /ApEinfo_revcolor="red"
+                     /ApEinfo_fwdcolor="green"
+     gene            complement(18058..18918)
+                     /gene="Amp"
+     CDS             complement(18058..18918)
+                     /product="ampicillin resistant protein"
+                     /codon_start=1
+                     /transl_table=11
+                     /db_xref="GI:84570489"
+                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYI
+                     ELDLNSGKILESFRPEERFPMMSTFKVLLCDTLLSRIDAGQEQLGRRIHYSQNDLVEYS
+                     PVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRW
+                     EPELNEAIPNDESDTTMPVAMPTTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSA
+                     LPAGWFIADKSGAGERGSRGIIAALGPDGKRSRIVVIYTTGSQATMDERNRQIAEIGAS
+                     LIKHW"
+                     /gene="Amp"
+                     /protein_id="BAE72674.1"
+ORIGIN
+        1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+       61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+      121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+      181 accatagatc ctgaggatcg gggtgataaa tcagtctgcg ccacatcggg ggaaacaaaa
+      241 tggcgcgaga tctaaaaaaa aaggctccaa aaggagcctt tcgcgctacc aggtaacgcg
+      301 ccactccgac gggattaacg agtgccgtaa acgacgatgg ttttaccgtg tgcggagatc
+      361 aggttctgat cctcgagcat cttaagaatt cgtcccacgg tttgtctaga gcagccgaca
+      421 atctggccaa tttcctgacg ggtaattttg atttgcatgc cgtccgggtg agtcatagcg
+      481 tctggttgtt ttgccagatt cagcagagtc tgtgcaatgc ggccgctgac ttaaataatt
+      541 cagttttctg actgagttaa aaactaatgt agcgacacca cttccattgg tgcctccgtt
+      601 attttttttt tgtatgttaa tgctaaataa tacaccgcta tgtatttcag ggcactactt
+      661 ctacacatca acggtactaa acatttcgct caagatcggt ccgctttcac gtatttggat
+      721 gctatgcaat gttgactatt cttagtggat aacatgcggc atttcctggc ggctatttgc
+      781 atcgctatgt aagtggcaat gttcggatgt gggtagtact ttcaaaagaa aaaatattac
+      841 tgaagaaggc atactacgcc aagactattt tattctcagc acttgtccta cgtggggtta
+      901 gaggcgagta agactttggc cccgctgcgg aagcaaagag aattttgcca tcggacatgc
+      961 taccttacgc ttatatctct cattggaata tcgttttctg attaaaacac ggaagtaaga
+     1021 acttaattcg tttttcgttg aactatgttg tgccagcgta acattaaaaa agagtgtaca
+     1081 aggccacgtt ctgtcaccgt cagaaaaata tgtcaatgag gcaagaaccg ggatggtaac
+     1141 aaaaatcacg atctgggtgg gtgtgggtgt attggattat aggaagccac gcgctcaacc
+     1201 tggaattaca ggaagctggt aattttttgg gtttgcaatc atcaccatct gcacgttgtt
+     1261 ataatgtccc gtgtctatat atatccattg acggtattct atttttttgc tattgaaatg
+     1321 agcgtttttt gttactacaa ttggttttac agacggaatt ttccctattt gtttcgtccc
+     1381 atttttcctt ttctcattgt tctcatatct taaaaaggtc ctttcttcat aatcaatgct
+     1441 ttcttttact taatatttta cttgcattca gtgaatttta atacatattc ctctagtctt
+     1501 gcaaaatcga tttagaatca agataccagc ctaaaattaa ttagtcgagg aacgccaggt
+     1561 tgcccacttt ctcactagtg aaaatgttgt gttcagtaat tcagagacag acaagagagg
+     1621 tttccaacac aatgtcttta gactcatact atcttgggtt tgatctttcg acccaacaac
+     1681 tgaaatgtct cgccattaac caggacctaa aaattgtcca ttcagaaaca gtggaatttg
+     1741 aaaaggatct tccgcattat cacacaaaga agggtgtcta tatacacggc gacactatcg
+     1801 aatgtcccgt agccatgtgg ttagaggctc tagatctggt tctctcgaaa tatcgcgagg
+     1861 ctaaatttcc attgaacaaa gttatggccg tctcagggtc ctgccagcag cacgggtctg
+     1921 tctactggtc ctcccaagcc gaatctctgt tagagcaatt gaataagaaa ccggaaaaag
+     1981 atttattgca ctacgtgagc tctgtagcat ttgcaaggca aaccgccccc aattggcaag
+     2041 accacagtac tgcaaagcaa tgtcaagagt ttgaagagtg cataggtggg cctgaaaaaa
+     2101 tggctcaatt aacagggtcc agagcccatt ttagatttac tggtcctcaa attctgaaaa
+     2161 ttgcacaatt agaaccagaa gcttacgaaa aaacaaagac catttcttta gtgtctaatt
+     2221 ttttgacttc tatcttagtg ggccatcttg ttgaattaga ggaggcagat gcctgtggta
+     2281 tgaaccttta tgatatacgt gaaagaaaat tcagtgatga gctactacat ctaattgata
+     2341 gttcttctaa ggataaaact atcagacaaa aattaatgag agcacccatg aaaaatttga
+     2401 tagcgggtac catctgtaaa tattttattg agaagtacgg tttcaataca aactgcaagg
+     2461 tctctcccat gactggggat aatttagcca ctatatgttc tttacccctg cggaagaatg
+     2521 acgttctcgt ttccctagga acaagtacta cagttcttct ggtcaccgat aagtatcacc
+     2581 cctctccgaa ctatcatctt ttcattcatc caactctgcc aaaccattat atgggtatga
+     2641 tttgttattg taatggttct ttggcaaggg agaggataag agacgagtta aacaaagaac
+     2701 gggaaaataa ttatgagaag actaacgatt ggactctttt taatcaagct gtgctagatg
+     2761 actcagaaag tagtgaaaat gaattaggtg tatattttcc tctgggggag atcgttccta
+     2821 gcgtaaaagc cataaacaaa agggttatct tcaatccaaa aacgggtatg attgaaagag
+     2881 aggtggccaa gttcaaagac aagaggcacg atgccaaaaa tattgtagaa tcacaggctt
+     2941 taagttgcag ggtaagaata tctcccctgc tttcggattc aaacgcaagc tcacaacaga
+     3001 gactgaacga agatacaatc gtgaagtttg attacgatga atctccgctg cgggactacc
+     3061 taaataaaag gccagaaagg actttttttg taggtggggc ttctaaaaac gatgctattg
+     3121 tgaagaagtt tgctcaagtc attggtgcta caaagggtaa ttttaggcta gaaacaccaa
+     3181 actcatgtgc ccttggtggt tgttataagg ccatgtggtc attgttatat gactctaata
+     3241 aaattgcagt tccttttgat aaatttctga atgacaattt tccatggcat gtaatggaaa
+     3301 gcatatccga tgtggataat gaaaattggg atcgctataa ttccaagatt gtccccttaa
+     3361 gcgaactgga aaagactctc atctaacgcg ccatctgtgc agacaaacgc atcaggattt
+     3421 aaataataac aatactgaca gtactaaata attgcctact tggcttcaca tacgttgcat
+     3481 acgtcgatat agataataat gataatgaca gcaggattat cgtaatacgt aatagttgaa
+     3541 aatctcaaaa atgtgtgggt cattacgtaa ataatgatag gaatgggatt cttctatttt
+     3601 tcctttttcc attctagcag ccgtcgggaa aacgtggcat cctctctttc gggctcaatt
+     3661 ggagtcacgc tgccgtgagc atcctctctt tccatatcta acaactgagc acgtaaccaa
+     3721 tggaaaagca tgagcttagc gttgctccaa aaaagtattg gatggttaat accatttgtc
+     3781 tgttctcttc tgactttgac tcctcaaaaa aaaaaaatct acaatcaaca gatcgcttca
+     3841 attacgccct cacaaaaact tttttccttc ttcttcgccc acgttaaatt ttatccctca
+     3901 tgttgtctaa cggatttctg cacttgattt attataaaaa gacaaagaca taatacttct
+     3961 ctatcaattt cagttattgt tcttccttgc gttattcttc tgttcttctt tttcttttgt
+     4021 catatataac cataaccaag taatacatat tcaaattaat tagtcgagga acgccaggtt
+     4081 gcccactttc tcactagtga aaatgtctga accagctcaa aagaaacaaa aggttgctaa
+     4141 caactctcta gaacaattga aagcctccgg cactgtcgtt gttgccgaca ctggtgattt
+     4201 cggctctatt gccaagtttc aacctcaaga ctccacaact aacccatcat tgatcttggc
+     4261 tgctgccaag caaccaactt acgccaagtt gatcgatgtt gccgtggaat acggtaagaa
+     4321 gcatggtaag accaccgaag aacaagtcga aaatgctgtg gacagattgt tagtcgaatt
+     4381 cggtaaggag atcttaaaga ttgttccagg cagagtctcc accgaagttg atgctagatt
+     4441 gtcttttgac actcaagcta ccattgaaaa ggctagacat atcattaaat tgtttgaaca
+     4501 agaaggtgtc tccaaggaaa gagtccttat taaaattgct tccacttggg aaggtattca
+     4561 agctgccaaa gaattggaag aaaaggacgg tatccactgt aatttgactc tattattctc
+     4621 cttcgttcaa gcagttgcct gtgccgaggc ccaagttact ttgatttccc catttgttgg
+     4681 tagaattcta gactggtaca aatccagcac tggtaaagat tacaagggtg aagccgaccc
+     4741 aggtgttatt tccgtcaaga aaatctacaa ctactacaag aagtacggtt acaagactat
+     4801 tgttatgggt gcttctttca gaagcactga cgaaatcaaa aacttggctg gtgttgacta
+     4861 tctaacaatt tctccagctt tattggacaa gttgatgaac agtactgaac ctttcccaag
+     4921 agttttggac cctgtctccg ctaagaagga agccggcgac aagatttctt acatcagcga
+     4981 cgaatctaaa ttcagattcg acttgaatga agacgctatg gccactgaaa aattgtccga
+     5041 aggtatcaga aaattctctg ccgatattgt tactctattc gacttgattg aaaagaaagt
+     5101 taccgcttaa cgcgccatct gtgcagacaa acgcatcagg atttaaataa gggtagcctc
+     5161 cccataacat aaactcaata aaatatatag tcttcaactt gaaaaaggaa caagctcatg
+     5221 caaagaggtg gtacccgcac gccgaaatgc atgcaagtaa cctattcaaa gtaatatctc
+     5281 atacatgttt catgagggta acaacatgcg actgggtgag catatgttcc gctgatgtga
+     5341 tgtgcaagat aaacaagcaa ggcagaaact aacttcttct tcatgtaata aacacacccc
+     5401 gcgtttattt acctatctct aaacttcaac accttatatc ataactaata tttcttgaga
+     5461 taagcacact gcacccatac cttccttaaa aacgtagctt ccagtttttg gtggttccgg
+     5521 cttccttccc gattccgccc gctaaacgca tatttttgtt gcctggtggc atttgcaaaa
+     5581 tgcataacct atgcatttaa aagattatgt atgctcttct gacttttcgt gtgatgaggc
+     5641 tcgtggaaaa aatgaataat ttatgaattt gagaacaatt ttgtgttgtt acggtatttt
+     5701 actatggaat aatcaatcaa ttgaggattt tatgcaaata tcgtttgaat atttttccga
+     5761 ccctttgagt acttttcttc ataattgcat aatattgtcc gctgcccctt tttctgttag
+     5821 acggtgtctt gatctacttg ctatcgttca acaccacctt attttctaac tatttttttt
+     5881 ttagctcatt tgaatcagct tatggtgatg gcacattttt gcataaacct agctgtcctc
+     5941 gttgaacata ggaaaaaaaa atatataaac aaggctcttt cactctcctt gcaatcagat
+     6001 ttgggtttgt tccctttatt ttcatatttc ttgtcatatt cctttctcaa ttattatttt
+     6061 ctactcataa cctcacgcaa aataacacag tcaaatcaat caaattaatt agtcgaggaa
+     6121 cgccaggttg cccactttct cactagtgaa aatgactcaa ttcactgaca ttgataagct
+     6181 agccgtctcc accataagaa ttttggctgt ggacaccgta tccaaggcca actcaggtca
+     6241 cccaggtgct ccattgggta tggcaccagc tgcacacgtt ctatggagtc aaatgcgcat
+     6301 gaacccaacc aacccagact ggatcaacag agatagattt gtcttgtcta acggtcacgc
+     6361 ggtcgctttg ttgtattcta tgctacattt gactggttac gatctgtcta ttgaagactt
+     6421 gaaacagttc agacagttgg gttccagaac accaggtcat cctgaatttg agttgccagg
+     6481 tgttgaagtt actaccggtc cattaggtca aggtatctcc aacgctgttg gtatggccat
+     6541 ggctcaagct aacctggctg ccacttacaa caagccgggc tttaccttgt ctgacaacta
+     6601 cacctatgtt ttcttgggtg acggttgttt gcaagaaggt atttcttcag aagcttcctc
+     6661 cttggctggt catttgaaat tgggtaactt gattgccatc tacgatgaca acaagatcac
+     6721 tatcgatggt gctaccagta tctcattcga tgaagatgtt gctaagagat acgaagccta
+     6781 cggttgggaa gttttgtacg tagaaaatgg taacgaagat ctagccggta ttgccaaggc
+     6841 tattgctcaa gctaagttat ccaaggacaa accaactttg atcaaaatga ccacaaccat
+     6901 tggttacggt tccttgcatg ccggctctca ctctgtgcac ggtgccccat tgaaagcaga
+     6961 tgatgttaaa caactaaaga gcaaattcgg tttcaaccca gacaagtcct ttgttgttcc
+     7021 acaagaagtt tacgaccact accaaaagac aattttaaag ccaggtgtcg aagccaacaa
+     7081 caagtggaac aagttgttca gcgaatacca aaagaaattc ccagaattag gtgctgaatt
+     7141 ggctagaaga ttgagcggcc aactacccgc aaattgggaa tctaagttgc caacttacac
+     7201 cgccaaggac tctgccgtgg ccactagaaa attatcagaa actgttcttg aggatgttta
+     7261 caatcaattg ccagagttga ttggtggttc tgccgattta acaccttcta acttgaccag
+     7321 atggaaggaa gcccttgact tccaacctcc ttcttccggt tcaggtaact actctggtag
+     7381 atacattagg tacggtatta gagaacacgc tatgggtgcc ataatgaacg gtatttcagc
+     7441 tttcggtgcc aactacaaac catacggtgg tactttcttg aacttcgttt cttatgctgc
+     7501 tggtgccgtt agattgtccg ctttgtctgg ccacccagtt atttgggttg ctacacatga
+     7561 ctctatcggt gtcggtgaag atggtccaac acatcaacct attgaaactt tagcacactt
+     7621 cagatcccta ccaaacattc aagtttggag accagctgat ggtaacgaag tttctgccgc
+     7681 ctacaagaac tctttagaat ccaagcatac tccaagtatc attgctttgt ccagacaaaa
+     7741 cttgccacaa ttggaaggta gctctattga aagcgcttct aagggtggtt acgtactaca
+     7801 agatgttgct aacccagata ttattttagt ggctactggt tccgaagtgt ctttgagtgt
+     7861 tgaagctgct aagactttgg ccgcaaagaa catcaaggct cgtgttgttt ctctaccaga
+     7921 tttcttcact tttgacaaac aacccctaga atacagacta tcagtcttac cagacaacgt
+     7981 tccaatcatg tctgttgaag ttttggctac cacatgttgg ggcaaatacg ctcatcaatc
+     8041 cttcggtatt gacagatttg gtgcctccgg taaggcacca gaagtcttca agttcttcgg
+     8101 tttcacccca gaaggtgttg ctgaaagagc tcaaaagacc attgcattct ataagggtga
+     8161 caagctaatt tctcctttga aaaaagcttt ctaacgcgcc atctgtgcag acaaacgcat
+     8221 caggatgcgc attctagtat ggtttgaaac cttacaattt ttcttctttg ttcctttttc
+     8281 cttgtttcag tgtatattag gttgggaaag agggattttt ccataccata tgactgacta
+     8341 caatatatac atgtataata acttcataat ctaaacctat cagttcagta tcaagtcagc
+     8401 tattccgccc tatgcataaa cctacaaact atcattcaca cacttttccc attttttttc
+     8461 aatactactt tacatccgaa cattttagca acccacacca tatacctttg gtgcactatt
+     8521 gattttcttc ctgatgtcag ctttttgtgc tttgacaaaa aaatcgcgtc tacgtccgtc
+     8581 cgttctccct gaataaatta ggcgcgtttg agcccagcag gacggagctc tagtgacaag
+     8641 ccctggtgtt tggtgaggtt ttgcacattg ctgttctttc tactgtattg agatctccag
+     8701 tttacggctc cctgggagcc acccgtaacg cggttggtgt gcccatttca ataagcgaac
+     8761 attagtgaag atacaatcgt taaaatggac taatgaaatt ttaaagtggg atttttgtga
+     8821 atattgacaa caaaggtata gaaccaaaga taataaagat ttaagtcgag gaacgccagg
+     8881 ttgcccactt tctcactagt gacctgcagc cgaccgcgcc aaaatggtca aaccaattat
+     8941 agctcccagt atccttgctt ctgacttcgc caacttgggt tgcgaatgtc ataaggtcat
+     9001 caacgccggc gcagattggt tacatatcga tgtcatggac ggccattttg ttccaaacat
+     9061 tactctgggc caaccaattg ttacctccct acgtcgttct gtgccacgcc ctggcgatgc
+     9121 tagcaacaca gaaaagaagc ccactgcgtt cttcgattgt cacatgatgg ttgaaaatcc
+     9181 tgaaaaatgg gtcgacgatt ttgctaaatg tggtgctgac caatttacgt tccactacga
+     9241 ggccacacaa gaccctttgc atttagttaa gttgattaag tctaagggca tcaaagctgc
+     9301 atgcgccatc aaacctggta cttctgttga cgttttattt gaactagctc ctcatttgga
+     9361 tatggctctt gttatgactg tggaacctgg gtttggaggc caaaaattca tggaagacat
+     9421 gatgccaaaa gtggaaactt tgagagccaa gttcccccat ttgaatatcc aagtcgatgg
+     9481 tggtttgggc aaggagacca tcccgaaagc cgccaaagcc ggtgccaacg ttattgtcgc
+     9541 tggtaccagt gttttcactg cagctgaccc gcacgatgtt atctccttca tgaaagaaga
+     9601 agtctcgaag gaattgcgtt ctagagattt gctagattag ccgtgccatc tgtgcagaca
+     9661 aacgcatcag gatgcgcatg ttaactgaaa tgaaaatttc atatttactt ttttattgtt
+     9721 actcatttgt aattcataaa ctacatacac tttcaatcgt ttctttcaaa ctacataatt
+     9781 tttactggcg atcaataacg catttagttc ataaagtgag tcaaagttaa cactagaata
+     9841 tttgctacac catcaatagg ctagaccata gttgaaaact ttcataataa attcttccgt
+     9901 tttcaatctt catatactgt gtctctaacc atgataccgt gacacaacta catccgtaca
+     9961 catgtgacgt tcgttcaacc cgtacattta tataaaaccg ttctggcggc cttttatttt
+    10021 tttacatttc ttatgatcgg gattgcagaa cgccgtgaaa tttttcaatg tgaggttcgg
+    10081 ccttgtttgc aaaagcccta ttgagatacc ggaaagatat aggtgaaatg aagaaaacta
+    10141 tgggttgtat atctaatacc ccggtgcgtt tattaatatt ttagcttgaa agcgaagtga
+    10201 tacgatcgac aaatagagta aaaatttaag tcgaggaacg ccaggttgcc cactttctca
+    10261 ctagtgacct gcagccgacc gcgccaaaat ggctgccggt gtcccaaaaa ttgatgcgtt
+    10321 agaatctttg ggcaatcctt tggaggatgc caagagagct gcagcataca gagcagttga
+    10381 tgaaaattta aaatttgatg atcacaaaat tattggaatt ggtagtggta gcacagtggt
+    10441 ttatgttgcc gaaagaattg gacaatattt gcatgaccct aaattttatg aagtagcgtc
+    10501 taaattcatt tgcattccaa caggattcca atcaagaaac ttgattttgg ataacaagtt
+    10561 gcaattaggc tccattgaac agtatcctcg cattgatata gcgtttgacg gtgctgatga
+    10621 agtggatgag aatttacaat taattaaagg tggtggtgct tgtctatttc aagaaaaatt
+    10681 ggttagtact agtgctaaaa ccttcattgt cgttgctgat tcaagaaaaa agtcaccaaa
+    10741 acatttaggt aagaactgga ggcaaggtgt tcccattgaa attgtacctt cctcatacgt
+    10801 gagggtcaag aatgatctat tagaacaatt gcatgctgaa aaagttgaca tcagacaagg
+    10861 aggttctgct aaagcaggtc ctgttgtaac tgacaataat aacttcatta tcgatgcgga
+    10921 tttcggtgaa atttccgatc caagaaaatt gcatagagaa atcaaactgt tagtgggcgt
+    10981 ggtggaaaca ggtttattca tcgacaacgc ttcaaaagcc tacttcggta attctgacgg
+    11041 tagtgttgaa gttaccgaaa agtgaccgtg ccatctgtgc agacaaacgc atcaggattt
+    11101 aaattgttta aagattacgg atatttaact tacttagaat aatgccattt ttttgagtta
+    11161 taataatcct acgttagtgt gagcgggatt taaactgtga ggaccttaat acattcagac
+    11221 acttctgcgg tatcacccta cttattccct tcgagattat atctaggaac ccatcaggtt
+    11281 ggtggaagat tacccgttct aagacttttc agcttcctct attgatgtta cacctggaca
+    11341 ccccttttct ggcatccagt ttttaatctt cagtggcatg tgagattctc cgaaattaat
+    11401 taaagcaatc acacaattct ctcggatacc acctcggttg aaactgacag gtggtttgtt
+    11461 acgcatgcta atgcaaagga gcctatatac ctttggctcg gctgctgtaa cagggaatat
+    11521 aaagggcagc ataatttagg agtttagtga acttgcaaca tttactattt tcccttctta
+    11581 cgtaaatatt tttcttttta attctaaatc aatctttttc aattttttgt ttgtattctt
+    11641 ttcttgctta aatctataac tacaaaaaac acatacataa actaaaatta attagtcgag
+    11701 gaacgccagg ttgcccactt tctcactagt gacctgcagc cgaccgcgcc aaaatgtcac
+    11761 aagattcgca ttcttctggt gccgctacac cagtcaatgg ttccatcctt gaaaaggaaa
+    11821 aagaagactc tccagttctt caagttgatg ccccacaaaa gggtttcaag gactacattg
+    11881 tcatttctat cttctgtttt atggttgcct tcggtggttt cgtcttcggt ttcgacactg
+    11941 gtaccatttc cggtttcgtg aacatgtctg actttaaaga cagattcggt caacaccacg
+    12001 ctgatggtac tccttacttg tccgacgtta gagttggttt gatgatttct attttcaacg
+    12061 ttggttgcgc tgtcggtggt attttcctct gcaaggtcgc tgatgtctgg ggtagaagaa
+    12121 ttggtcttat gttctccatg gctgtctacg ttgttggtat tattattcag atctcttcat
+    12181 ccaccaagtg gtaccagttc ttcattggtc gtcttattgc tggtttggct gttggtaccg
+    12241 tttctgtcgt ttccccactt ttcatctctg aggtttctcc aaagcaaatt agaggtactt
+    12301 tagtgtgctg cttccagttg tgtatcacct tgggtatctt cttgggttac tgtactactt
+    12361 acggtactaa gacctacact gactctagac agtggagaat tcctttgggt ttgtgtttcg
+    12421 cttgggctat cttgttggtt gtcggtatgt tgaacatgcc agagtctcca agatacttgg
+    12481 ttgagaagca cagaattgat gaggccaaga gatccattgc cagatccaac aagatccctg
+    12541 aggaggaccc attcgtctac actgaggttc agcttattca ggccggtatt gagagagaag
+    12601 ctttggctgg tcaggcatct tggaaggagt tgatcactgg taagccaaag atcttcagaa
+    12661 gagttatcat gggtattatg cttcagtcct tgcaacagtt gaccggtgac aactacttct
+    12721 tctactacgg tactaccatt ttccaggctg tcggtttgaa ggattctttc cagacttcta
+    12781 tcattttggg tattgtcaac tttgcttcca ccttcgttgg tatctatgtc attgagagat
+    12841 tgggtagaag attgtgtctt ttgaccggtt ccgctgctat gttcatctgt ttcatcatct
+    12901 actctttgat tggtactcag cacttgtaca agcaaggtta ctccaacgag acctccaaca
+    12961 cttacaaggc ttctggtaac gctatgatct tcatcacttg tctttacatt ttcttctttg
+    13021 cttctacctg ggctggtggt gtttactgta tcatttccga gtcctaccca ttgagaatta
+    13081 gatccaaggc catgtctatt gctaccgctg ctaactggtt gtggggtttc ttgatttcct
+    13141 tcttcactcc attcatcacc agtgccatcc acttctacta cggtttcgtt ttcactggtt
+    13201 gtttggcttt ctctttcttc tacgtctact tcttcgtcta cgaaaccaag ggtctttctt
+    13261 tggaggaggt tgatgagatg tacgcttccg gtgttcttcc actcaagtct gccagctggg
+    13321 ttccaccaaa tcttgagcac atggctcact ctgccggtta cgctggtgct gacaaggcca
+    13381 ccgacgaaca ggtttaaccg tgccatctgt gcagacaaac gcatcaggat ttaaatacgc
+    13441 ggcgttatgt cactaacgac gtgcaccaac ttgcggaaag tggaatcccg ttccaaaact
+    13501 ggcatccact aattgataca tctacacacc gcacgccttt tttctgaagc ccactttcgt
+    13561 ggactttgcc atatgcaaaa ttcatgaagt gtgataccaa gtcagcatac acctcactag
+    13621 ggtagtttct ttggttgtat tgatcatttg gttcatcgtg gttcattaat tttttttctc
+    13681 cattgctttc tggctttgat cttactatca tttggatttt tgtcgaaggt tgtagaattg
+    13741 tatgtgacaa gtggcaccaa gcatatataa aaaaaaaaag cattatcttc ctaccagagt
+    13801 tgattgttaa aaacgtattt atagcaaacg caattgtaat taattcttat tttgtatctt
+    13861 ttcttccctt gtctcaatct tttattttta ttttattttt cttttcttag tttctttcat
+    13921 aacaccaagc aactaatact ataacataca ataataaatg cgcatccgga tttacctgaa
+    13981 tcaattggcg aaattttttg tacgaaattt cagccacttc acaggcggtt ttcgcacgta
+    14041 cccatgcgct acgttcctgg ccctcttcaa acaggcccag ttcgccaata aaatcaccct
+    14101 gattcagata ggagaggatc atttctttac cctcttcgtc tttgatcagc actgccacag
+    14161 agcctttaac gatgtagtac agcgtttccg ctttttcacc ctggtgaata agcgtgctct
+    14221 tggatgggta cttatgaatg tggcaatgag acaagaacca ttcgagagta ggatccgttt
+    14281 gaggtttacc aagtaccata agatccttaa atttttatta tctagctaga tgataatatt
+    14341 atatcaagaa ttgtacctga aagcaaataa attttttatc tggcttaact atgcggcatc
+    14401 agagcagatt gtactgagag tgcaccatat gcggtgtgaa ataccgcaca gatgcgtaag
+    14461 gagaaaatac cgcatcaggc gctcttccgc ttcctcgctc actgactcgc tgcgctcggt
+    14521 cgttcggctg cggcgagcgg tatcagctca ctcaaaggcg gtaatacggt tatccacaga
+    14581 atcaggggat aacgcaggaa agaacatgtg agcaaaaggc cagcaaaagg ccaggaaccg
+    14641 taaaaaggcc gcgttgctgg cgtttttcca taggctccgc ccccctgacg agcatcacaa
+    14701 aaatcgacgc tcaagtcaga ggtggcgaaa cccgacagga ctataaagat accaggcgtt
+    14761 tccccctgga agctccctcg tgcgctctcc tgttccgacc ctgccgctta ccggatacct
+    14821 gtccgccttt ctcccttcgg gaagcgtggc gctttctcat agctcacgct gtaggtatct
+    14881 cagttcggtg taggtcgttc gctccaagct gggctgtgtg cacgaacccc ccgttcagcc
+    14941 cgaccgctgc gccttatccg gtaactatcg tcttgagtcc aacccggtaa gacacgactt
+    15001 atcgccactg gcagcagcca ctggtaacag gattagcaga gcgaggtatg taggcggtgc
+    15061 tacagagttc ttgaagtggt ggcctaacta cggctacact agaaggacag tatttggtat
+    15121 ctgcgctctg ctgaagccag ttaccttcgg aaaaagagtt ggtagctctt gatccggcaa
+    15181 acaaaccacc gctggtagcg gtggtttttt tgtttgcaag cagcagatta cgcgcagaaa
+    15241 aaaaggatct caagaagatc ctttgatctt ttctacgggg tctgacgctc agtggaacga
+    15301 aaactcacgt taagggattt tggtcatgag gggtaataac tgatataatt aaattgaagc
+    15361 tctaatttgt gagtttagta tacatgcatt tacttataat acagtttttt agttttgctg
+    15421 gccgcatctt ctcaaatatg cttcccagcc tgcttttctg taacgttcac cctctacctt
+    15481 agcatccctt ccctttgcaa atagtcctct tccaacaata ataatgtcag atcctgtaga
+    15541 gaccacatca tccacggttc tatactgttg acccaatgcg tctcccttgt catctaaacc
+    15601 cacaccgggt gtcataatca accaatcgta accttcatct cttccaccca tgtctctttg
+    15661 agcaataaag ccgataacaa aatctttgtc gctcttcgca atgtcaacag tacccttagt
+    15721 atattctcca gtagataggg agcccttgca tgacaattct gctaacatca aaaggcctct
+    15781 aggttccttt gttacttctt ctgccgcctg cttcaaaccg ctaacaatac ctgggcccac
+    15841 cacaccgtgt gcattcgtaa tgtctgccca ttctgctatt ctgtatacac ccgcagagta
+    15901 ctgcaatttg actgtattac caatgtcagc aaattttctg tcttcgaaga gtaaaaaatt
+    15961 gtacttggcg gataatgcct ttagcggctt aactgtgccc tccatggaaa aatcagtcaa
+    16021 aatatccaca tgtgttttta gtaaacaaat tttgggacct aatgcttcaa ctaactccag
+    16081 taattccttg gtggtacgaa catccaatga agcacacaag tttgtttgct tttcgtgcat
+    16141 gatattaaat agcttggcag caacaggact aggatgagta gcagcacgtt ccttatatgt
+    16201 agctttcgac atgatttatc ttcgtttcct gcaggttttt gttctgtgca gttgggttaa
+    16261 gaatactggg caatttcatg tttcttcaac actacatatg cgtatatata ccaatctaag
+    16321 tctgtgctcc ttccttcgtt cttccttctg ttcggagatt accgaatcaa aaaaatttca
+    16381 aagaaaccga aatcaaaaaa aagaataaaa aaaaaatgat gaattgaatt gaaaagctag
+    16441 cttatcgatg ataagctgtc aaagatgaga attaattcca cggactatag actatactag
+    16501 atactccgtc tactgtacga tacacttccg ctcaggtcct tgtcctttaa cgaggcctta
+    16561 ccactctttt gttactctat tgatccagct cagcaaaggc agtgtgatct aagattctat
+    16621 cttcgcgatg tagtaaaact agctagaccg agaaagagac tagaaatgca aaaggcactt
+    16681 ctacaatggc tgccatcatt attatccgat gtgacgctgc agcttctcaa tgatattcga
+    16741 atacgctttg aggagataca gcctaatatc cgacaaactg ttttacagat ttacgatcgt
+    16801 acttgttacc catcattgaa ttttgaacat ccgaacctgg gagttttccc tgaaacagat
+    16861 agtatatttg aacctgtata ataatatata gtctagcgct ttacggaaga caatgtatgt
+    16921 atttcggttc ctggagaaac tattgcatct attgcatagg taatcttgca cgtcgcatcc
+    16981 ccggttcatt ttctgcgttt ccatcttgca cttcaatagc atatctttgt taacgaagca
+    17041 tctgtgcttc attttgtaga acaaaaatgc aacgcgagag cgctaatttt tcaaacaaag
+    17101 aatctgagct gcatttttac agaacagaaa tgcaacgcga aagcgctatt ttaccaacga
+    17161 agaatctgtg cttcattttt gtaaaacaaa aatgcaacgc gacgagagcg ctaatttttc
+    17221 aaacaaagaa tctgagctgc atttttacag aacagaaatg caacgcgaga gcgctatttt
+    17281 accaacaaag aatctatact tcttttttgt tctacaaaaa tgcatcccga gagcgctatt
+    17341 tttctaacaa agcatcttag attacttttt ttctcctttg tgcgctctat aatgcagtct
+    17401 cttgataact ttttgcactg taggtccgtt aaggttagaa gaaggctact ttggtgtcta
+    17461 ttttctcttc cataaaaaaa gcctgactcc acttcccgcg tttactgatt actagcgaag
+    17521 ctgcgggtgc attttttcaa gataaaggca tccccgatta tattctatac cgatgtggat
+    17581 tgcgcatact ttgtgaacag aaagtgatag cgttgatgat tcttcattgg tcagaaaatt
+    17641 atgaacggtt tcttctattt tgtctctata tactacgtat aggaaatgtt tacattttcg
+    17701 tattgttttc gattcactct atgaatagtt cttactacaa tttttttgtc taaagagtaa
+    17761 tactagagat aaacataaaa aatgtagagg tcgagtttag atgcaagttc aaggagcgaa
+    17821 aggtggatgg gtaggttata tagggatata gcacagagat atatagcaaa gagatacttt
+    17881 tgagcaatgt ttgtggaagc ggtattcgca atgggaagct ccaccccggt tgataatcag
+    17941 aaaagcccca aaaacaggaa gattattatc aaaaaggatc ttcacctaga tccttttaaa
+    18001 ttaaaaatga agttttaaat caatctaaag tatatatgag taaacttggt ctgacagtta
+    18061 ccaatgctta atcagtgagg cacctatctc agcgatctgt ctatttcgtt catccatagt
+    18121 tgcctgactc cccgtcgtgt agataactac gatacgggag cgcttaccat ctggccccag
+    18181 tgctgcaatg ataccgcgag acccacgctc accggctcca gatttatcag caataaacca
+    18241 gccagccgga agggccgagc gcagaagtgg tcctgcaact ttatccgcct ccatccagtc
+    18301 tattaattgt tgccgggaag ctagagtaag tagttcgcca gttaatagtt tgcgcaacgt
+    18361 tgttggcatt gctacaggca tcgtggtgtc actctcgtcg tttggtatgg cttcattcag
+    18421 ctccggttcc caacgatcaa ggcgagttac atgatccccc atgttgtgca aaaaagcggt
+    18481 tagctccttc ggtcctccga tcgttgtcag aagtaagttg gccgcagtgt tatcactcat
+    18541 ggttatggca gcactgcata attctcttac tgtcatgcca tccgtaagat gcttttctgt
+    18601 gactggtgag tactcaacca agtcattctg agaatagtgt atgcggcgac cgagttgctc
+    18661 ttgcccggcg tcaatacggg ataatagtgt atcacatagc agaactttaa aagtgctcat
+    18721 cattggaaaa cgttcttcgg ggcgaaaact ctcaaggatc ttaccgctgt tgagatccag
+    18781 ttcgatgtaa cccactcgtg cacccaactg atcttcagca tcttttactt tcaccagcgt
+    18841 ttctgggtga gcaaaaacag gaaggcaaaa tgccgcaaaa aagggaataa gggcgacacg
+    18901 gaaatgttga atactcatac tcttcctttt tcaatattat tgaagcattt atcagggtta
+    18961 ttgtctcatg agcggataca tatttgaatg tatttagaaa aataaacaaa taggggttcc
+    19021 gcgcacattt ccccgaaaag tgccacctgc taagaaacca ttattatcat gacattaacc
+    19081 tataaaaata ggcgtatcac gaggcccttt cgtc
+//

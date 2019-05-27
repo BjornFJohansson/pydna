@@ -1,0 +1,14 @@
+LOCUS       myseq                     33 bp    DNA              UNK 01-JAN-1980
+DEFINITION  ..
+ACCESSION   myseq
+VERSION     myseq
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     misc            join(11..20,26..29)
+                     /note="MyFeature"
+ORIGIN
+        1 gagtgtgaag acacaaccgg caagtgacga cgg
+//

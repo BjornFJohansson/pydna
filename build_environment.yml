@@ -1,0 +1,26 @@
+name: pydnacondabuild
+channels:
+- conda-forge
+- BjornFJohansson
+dependencies:
+- python=3.7
+- pytest
+- coverage
+- appdirs
+- biopython
+- networkx
+- ordered-set
+- pyparsing
+- pint
+- prettytable
+- python-coveralls
+- mpldatacursor
+- matplotlib
+- ipython
+- jupyter
+- numpy
+- scipy
+- anaconda-client
+- pypandoc
+- pandoc
+- nbval

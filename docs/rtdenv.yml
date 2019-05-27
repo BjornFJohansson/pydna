@@ -1,0 +1,15 @@
+name: readthedocsenv
+channels:
+- conda-forge
+- BjornFJohansson
+dependencies:
+- python=3.6
+- numpy
+- matplotlib
+- pint
+- numpydoc>=0.6.0
+- ipython>=5.1.0
+- jupyter
+- scipy
+- mpldatacursor
+- pint

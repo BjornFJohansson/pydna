@@ -2,40 +2,35 @@
 # -*- coding: utf-8 -*-
 
 import versioneer
-#versioneer.VCS = 'git'
-#versioneer.versionfile_source = 'pydna/_version.py'
-#versioneer.versionfile_build = 'pydna/_version.py'
-#versioneer.tag_prefix = '' # tags are like 1.2.0
-#versioneer.parentdir_prefix = '' # dirname like 'myproject-1.2.0'
 
-# Read author etc..
-for line in open('pydna/__init__.py'):
-    if line.startswith('__') and not line.startswith('__version') and not line.startswith('__long'):
+# Read author etc. from __init__.py
+for line in open('pydna/__init__.py', encoding="utf-8"):
+    if line.startswith('__') and not line.startswith(('__version', '__long')):
         exec(line.strip())
 
 from setuptools import setup
-import textwrap, sys
+
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(  name            = 'pydna',
-        version=versioneer.get_version()[:5],
+        version=versioneer.get_version().split("+", 1)[0],
+        product_version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
         author          = __author__,
         author_email    = __email__,
-        packages=['pydna',
-                  'pydna.py_rstr_max',],
+        zip_safe = False,
+        packages=['pydna'],
         url='http://pypi.python.org/pypi/pydna/',
         license='LICENSE.txt',
         description='''Contains classes and code for representing double
                      stranded DNA and functions for simulating homologous
                      recombination between DNA molecules.''',
-        long_description=open('README.rst').read(),
-        install_requires =[
-        "biopython",
-        "networkx",
-        "appdirs",
-        "prettytable"],
-        test_suite="run_tests.load_my_tests",
-        zip_safe = False,
+        long_description=long_description,
+        long_description_content_type='text/markdown',
+        install_requires = ["appdirs", "biopython", "networkx", "prettytable", "pyparsing", "requests"],
         keywords = "bioinformatics",
         classifiers = ['Development Status :: 4 - Beta',
                        'Environment :: Console',
@@ -43,7 +38,8 @@ setup(  name            = 'pydna',
                        'Intended Audience :: Developers',
                        'Intended Audience :: Science/Research',
                        'License :: OSI Approved :: BSD License',
-                       'Programming Language :: Python :: 2.7',
+                       'Operating System :: OS Independent',
+                       'Programming Language :: Python :: 3.6',
+                       'Programming Language :: Python :: 3.7',
                        'Topic :: Education',
                        'Topic :: Scientific/Engineering :: Bio-Informatics',])
-

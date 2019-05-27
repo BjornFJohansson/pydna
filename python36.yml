@@ -1,0 +1,37 @@
+name: python36
+channels:
+- defaults
+- conda-forge
+- BjornFJohansson
+dependencies:
+- python=3.6
+- appdirs
+- biopython
+- prettytable
+- networkx
+- ordered-set
+- pyparsing
+
+- anaconda-client
+- requests
+
+- ipython
+- jupyter
+- numpy
+- scipy
+- matplotlib
+- mpldatacursor
+- pint
+
+- pytest
+- pytest-cov
+- pytest-mock
+- pytest-runner
+- coverage
+- coveralls
+- nbval
+
+- setuptools
+- requests-mock
+
+- pyfiglet

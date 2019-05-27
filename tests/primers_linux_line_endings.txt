@@ -1,0 +1,8 @@
+>primer1
+aaaaaaaa
+>primer2
+cccccccc
+>primer3
+gggggggg
+>primer4
+tttttttt 

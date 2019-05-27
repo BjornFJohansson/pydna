@@ -1,0 +1,13 @@
++--------------------+--------------------------+
+| Variable           | Value                    |
++--------------------+--------------------------+
+| pydna_ape          | put/path/to/ape/here     |
+| pydna_cached_funcs | Genbank_nucleotide       |
+| pydna_config_dir   | /tmp/pydna_test          |
+| pydna_data_dir     | /tmp/pydna_test          |
+| pydna_email        | someone@example.com      |
+| pydna_enzymes      | put/path/to/enzymes/here |
+| pydna_log_dir      | /tmp/pydna_test          |
+| pydna_loglevel     | 30                       |
+| pydna_primers      | put/path/to/primers/here |
++--------------------+--------------------------+
