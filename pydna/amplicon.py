@@ -294,7 +294,7 @@ class Amplicon(_Dseqrecord):
         length_of_r = len(self.reverse_primer.footprint)
 
         if (length_of_f>20 and length_of_r>20 and tmf_dbd>=69.0 and tmr_dbd>=69.0) or (tmf_dbd>=72.0 and tmr_dbd>=72.0):
-            f=_textwrap.dedent( r'''
+            f=_textwrap.dedent(    r'''
                                     Pfu-Sso7d (rate {rate}s/kb)
                                     Two-step|    30 cycles |      |{size}bp
                                     98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
@@ -303,7 +303,7 @@ class Amplicon(_Dseqrecord):
                                             |      \ 72.0°C|72.0°C|Primer2C {reverse_primer_concentration:3}µM
                                             |       \______|______|GC {GC_prod}%
                                             |      {0:2}min{1:2}s|10min |4-12°C
-                                 '''.format(rate = PfuSso7d_extension_rate,
+                                    '''[1:-1].format(rate = PfuSso7d_extension_rate,
                                             forward_primer_concentration = self.fprimerc/1000,
                                             reverse_primer_concentration = self.rprimerc/1000,
                                             saltc = self.saltc,
@@ -317,7 +317,7 @@ class Amplicon(_Dseqrecord):
             else:
                 ta = min(tmf_dbd,tmr_dbd)
 
-            f=_textwrap.dedent( r'''
+            f=_textwrap.dedent(     '''\
                                     Pfu-Sso7d (rate {rate}s/kb)                 |{size}bp
                                     Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
                                     98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
@@ -325,7 +325,7 @@ class Amplicon(_Dseqrecord):
                                     00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
                                               |      \______/{0:2}min{1:2}s|10min |GC {GC_prod}%
                                               |        10s           |      |4-12°C
-                                 '''.format(rate = PfuSso7d_extension_rate,
+                                    '''.format(rate = PfuSso7d_extension_rate,
                                             size= len(self.seq),
                                             ta   = round(ta),
                                             forward_primer_concentration   = self.fprimerc/1000,
