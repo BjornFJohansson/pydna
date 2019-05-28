@@ -5,6 +5,8 @@ omit =
     */tests/*
     */_version.py
     */_sequencetrace.py
+    */gel.py
+    */gel2.py
 
 [report]
 exclude_lines =
