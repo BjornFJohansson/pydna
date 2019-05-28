@@ -7,6 +7,7 @@ def test_amplicon():
     from pydna.amplify    import Anneal
     from pydna.dseqrecord import Dseqrecord
     from pydna.primer     import Primer
+
     
     template = Dseqrecord("AAAtacactcaccgtctatcattatctactatcgactgtatcatctgatagcacTTT")
     
@@ -63,6 +64,7 @@ def test_amplicon_dbd():
     from pydna.amplify    import Anneal
     from pydna.dseqrecord import Dseqrecord
     from pydna.primer     import Primer
+    from textwrap         import dedent
     
     template = Dseqrecord("GCGTCCAGCGGCTGCCCGAGGCGCCAAGTGCCCGGGCCGAGCCCGCATCTGAGGCCGCCGCGGGC")
     
@@ -75,15 +77,17 @@ def test_amplicon_dbd():
     
     assert repr(prod) == 'Amplicon(65)'
 
-    fig =('\nPfu-Sso7d (rate 15s/kb)\n'
-            'Two-step|    30 cycles |      |65bp\n'
-            '98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc\n'
-            '_____ __|_____         |      |SaltC 50mM\n'
-            '00min30s|10s  \        |      |Primer1C 1.0µM\n'
-            '        |      \ 72.0°C|72.0°C|Primer2C 1.0µM\n'
-            '        |       \______|______|GC 81%\n'
-            '        |       0min 0s|10min |4-12°C\n')
-     
+    fig =(   r'''
+              Pfu-Sso7d (rate 15s/kb)
+              Two-step|    30 cycles |      |65bp
+              98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
+              _____ __|_____         |      |SaltC 50mM
+              00min30s|10s  \        |      |Primer1C 1.0µM
+                      |      \ 72.0°C|72.0°C|Primer2C 1.0µM
+                      |       \______|______|GC 81%
+                      |       0min 0s|10min |4-12°C
+              '''[1:])
+    fig = dedent(fig)
     assert str(prod.pfu_sso7d_program()) == fig
     
 def test_amplicon_dbd_low_gc():
@@ -91,6 +95,7 @@ def test_amplicon_dbd_low_gc():
     from pydna.amplify    import Anneal
     from pydna.dseqrecord import Dseqrecord
     from pydna.primer     import Primer
+    from textwrap         import dedent
     
     template = Dseqrecord("AAAATATTTTTATACATAATACAATTGTATATTCTTAAATAAAAAATACGTCATC")
     
@@ -103,16 +108,18 @@ def test_amplicon_dbd_low_gc():
     
     assert repr(prod) == 'Amplicon(55)'
 
-    fig =('\nPfu-Sso7d (rate 15s/kb)\n'
-            'Two-step|    30 cycles |      |65bp\n'
-            '98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc\n'
-            '_____ __|_____         |      |SaltC 50mM\n'
-            '00min30s|10s  \        |      |Primer1C 1.0µM\n'
-            '        |      \ 72.0°C|72.0°C|Primer2C 1.0µM\n'
-            '        |       \______|______|GC 81%\n'
-            '        |       0min 0s|10min |4-12°C\n')
-     
-    assert str(prod.pfu_sso7d_program())
+    fig =( r'''
+            Pfu-Sso7d (rate 15s/kb)                 |55bp
+            Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
+            98.0°C    |98.0°C                |      |SaltC 50mM
+            __________|_____          72.0°C |72.0°C|Primer1C 1.0µM
+            00min30s  |10s  \ 39.0°C ________|______|Primer2C 1.0µM
+                      |      \______/ 0min 0s|10min |GC 14%
+                      |        10s           |      |4-12°C
+            '''[1:])
+    fig = dedent(fig)
+
+    assert str(prod.pfu_sso7d_program()) == fig
 
 if __name__ == '__main__':
-    pytest.main([__file__, "-v", "-s","--cov=pydna","--cov-report=html"])
+    pytest.main([__file__, "-vv", "-s","--cov=pydna","--cov-report=html"])
