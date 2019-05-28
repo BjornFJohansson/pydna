@@ -140,7 +140,7 @@ free [Anaconda](https://store.continuum.io/cshop/anaconda) or [Miniconda](http:/
 Anaconda is a large download (about 400 Mb) while Miniconda is about 40-50 Mb. 
 
 Once Anaconda (or Miniconda) is installed, the conda package manager can be used to install pydna.
-Pydna and its dependencies are available from the [BjornFJohansson](https://anaconda.org/bjornfjohansson) package channel ast 
+Pydna and its dependencies are available from the [BjornFJohansson](https://anaconda.org/bjornfjohansson) package channel at 
 [Anaconda.org](https://anaconda.org).
 
 The first step is to add the channel by typing the command below followed by return:
@@ -169,14 +169,14 @@ This will probably not work directly on windows, as biopython is not directly in
 
 ### Windows:
 
-Installing biopython on Windows can be tricky. The biopython site 
-has [executable installers](http://biopython.org/wiki/Download). Read [here](http://biopython.org/DIST/docs/install/Installation.html) on 
-how to install biopython requirements such as Numpy. Christoph Gohlke at University of California, Irvine has compiled 
-many [binary installers](http://www.lfd.uci.edu/~gohlke/pythonlibs/) for Windows wich include most requirements.
-
-When the requrements are installed you can pip install pydna from the Windows terminal:
+You should be able to pip install pydna from the Windows terminal as biopython now can be installed with pip as well.
 
     C:\> pip install pydna
+
+By default python and pip are not on the PATH. You can re-install Python and select this option, or give 
+the full path for pip. Try something like this, depending on where your copy of Python is installed:
+
+    C:\Python37\Scripts\pip install pydna
 
 ## Installation from Source
 
@@ -188,8 +188,8 @@ terminal and type:
     python setup.py install
 
 ## Source Code
-Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 
+Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 
 ## Minimal installation requirements
 
@@ -202,7 +202,6 @@ The list below is the minimal requirements for installing pydna. Biopython has c
 - [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdirs)
 - [prettytable>=0.7.2](https://pypi.python.org/pypi/PrettyTable)
-- [ordered_set>=2.0.1](https://pypi.python.org/pypi/ordered-set)
 
 ## Optional Requirements
 Pydna has been designed to be used from the Jupyter notebook. If [IPython](https://ipython.org/) 
