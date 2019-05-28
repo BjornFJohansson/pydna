@@ -27,7 +27,7 @@ Pydna can formalize planning and sharing of cloning strategies and is especially
 DNA molecule constructions.
 
 Look at some assembly strategies made in the Jupyter notebook
-format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/master/index.ipynb).
+format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/release/index.ipynb).
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
