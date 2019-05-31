@@ -40,10 +40,10 @@ graph.
 '''
 import sys
     
-if sys.version_info < (3, 6):
-    from collections import OrderedDict as _od
-else:
-    _od = dict
+# if sys.version_info < (3, 6):
+#     from collections import OrderedDict as _od
+# else:
+#     _od = dict
 
 import logging as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
@@ -134,7 +134,7 @@ class Assembly(object, metaclass = _Memoize):
 
         # rcfragments is a dict with fragments as keys and the reverse 
         # complement as value
-        rcfragments = _od( (f["mixed"],{"upper": str(frc.seq).upper(), 
+        rcfragments = dict( (f["mixed"],{"upper": str(frc.seq).upper(), 
                                         "mixed": str(frc.seq),
                                         "name": frc.name,
                                         "features": frc.features,
@@ -287,10 +287,7 @@ class Assembly(object, metaclass = _Memoize):
                                              _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end",    cutoff=max_nodes ),
                                              _nx.all_simple_paths( _nx.DiGraph(G),"begin_rc", "end_rc", cutoff=max_nodes ) ))
 
-        lps=_od()
-        #lpsrc=_od()
-        
-        #print(linearpaths)
+        lps={}
  
         for lp in linearpaths:
             edgelol=[]
@@ -336,8 +333,8 @@ class Assembly(object, metaclass = _Memoize):
 
 
     def assemble_circular(self):
-        cps = _od() # circular assembly
-        cpsrc = _od()
+        cps = {} # circular assembly
+        cpsrc = {}
         cpaths = sorted( _nx.simple_cycles(self.G), key=len)
         cpaths_sorted=[]
         for cpath in cpaths:
