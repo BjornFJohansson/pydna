@@ -285,7 +285,7 @@ def flatten(*args): # flatten
     args=list(args)
     while args:
         top = args.pop()
-        if isinstance(top, _collections.Iterable) and not isinstance(top, (str, bytes, bytearray)) and not hasattr(top, "features"):
+        if isinstance(top, _collections.abc.Iterable) and not isinstance(top, (str, bytes, bytearray)) and not hasattr(top, "features"):
             args.extend(top)
         else:
             output.append(top)

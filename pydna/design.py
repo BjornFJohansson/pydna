@@ -168,7 +168,7 @@ def primer_design( template,
         fp  = _Anneal((fp,), template).forward_primers.pop()
         target_tm = formula( str(fp.footprint), primerc=fprimerc, saltc=saltc)
         _module_logger.debug("forward primer given, design reverse primer:")
-        rp = _Primer(design(target_tm, template.rc()))
+        rp = _Primer(design(target_tm, template.reverse_complement()))
     elif not fp and rp:
         rp =  _Anneal([rp], template).reverse_primers.pop()
         target_tm = formula( str(rp.footprint), primerc=rprimerc, saltc=saltc)
@@ -179,7 +179,7 @@ def primer_design( template,
         fp = _Primer((design(target_tm, template)))
         target_tm = formula( str(fp.seq), primerc=fprimerc, saltc=saltc)
         _module_logger.debug("no primer given, design reverse primer:")
-        rp = _Primer(design(target_tm, template.rc()))
+        rp = _Primer(design(target_tm, template.reverse_complement()))
     else:
         raise ValueError("Specify maximum one of the two primers.")
 
@@ -611,7 +611,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
         _module_logger.debug("first fragment stays since len(f[0]) = %s", first_fragment_length)
 
     if last_fragment_length<=maxlink:
-        f[-2].reverse_primer = f[-1].seq.rc()._data + f[-2].reverse_primer
+        f[-2].reverse_primer = f[-1].seq.reverse_complement()._data + f[-2].reverse_primer
         f=f[:-1]  
         _module_logger.debug("last fragment removed since len(f[%s]) = %s", len(f), last_fragment_length)
     else:
@@ -642,10 +642,10 @@ def assembly_fragments(f, overlap=35, maxlink=40):
             if hasattr(f[i], "template") and hasattr(third, "template"):
                 _module_logger.debug("secnd is is flanked by amplicons, so half of secnd should be added each flanking primers")
                 
-                first.reverse_primer = secnd.seq.rc()._data[secnd_len//2:] + first.reverse_primer
+                first.reverse_primer = secnd.seq.reverse_complement()._data[secnd_len//2:] + first.reverse_primer
                 third.forward_primer =      secnd.seq._data[secnd_len//2:] + third.forward_primer
                 
-                lnk = (third.seq.rc()._data+secnd.rc().seq._data[:secnd_len//2])[-tail_length:]
+                lnk = (third.seq.reverse_complement()._data+secnd.reverse_complement().seq._data[:secnd_len//2])[-tail_length:]
                 _module_logger.debug("1 %s", lnk)
                 first.reverse_primer = lnk + first.reverse_primer
                 
@@ -654,8 +654,8 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                 third.forward_primer = lnk + third.forward_primer                
                 
             elif hasattr(first , "template"):
-                first.reverse_primer = secnd.seq.rc()._data + first.reverse_primer
-                lnk = str(third.seq[:overlap].rc())
+                first.reverse_primer = secnd.seq.reverse_complement()._data + first.reverse_primer
+                lnk = str(third.seq[:overlap].reverse_complement())
                 first.reverse_primer = lnk + first.reverse_primer
             elif hasattr(third , "template"):
                third.forward_primer = secnd.seq._data + third.forward_primer
@@ -668,11 +668,11 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                 lnk = str(first.seq[-tail_length:])
                 #_module_logger.debug("4 %s", lnk)
                 secnd.forward_primer = lnk + secnd.forward_primer
-                lnk = str(secnd.seq[:tail_length].rc())
+                lnk = str(secnd.seq[:tail_length].reverse_complement())
                 #_module_logger.debug("5 %s", lnk)
                 first.reverse_primer = lnk + first.reverse_primer            
             elif hasattr(first , "template"):
-                lnk = str(secnd.seq[:overlap].rc())
+                lnk = str(secnd.seq[:overlap].reverse_complement())
                 #_module_logger.debug("6 %s", lnk)
                 first.reverse_primer = lnk + first.reverse_primer                
             elif hasattr(secnd , "template"):

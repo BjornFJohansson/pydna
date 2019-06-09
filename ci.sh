@@ -224,7 +224,7 @@ then
         python setup.py build bdist_wheel 
         source activate python37
         python setup.py build bdist_wheel 
-        twine upload dist/pydna* --skip-existing
+        twine upload dist/*.whl --skip-existing
     elif [[ $local_computer = true ]]
     then
         echo "Local linux: python setup.py sdist --formats=zip bdist_wheel"
@@ -232,7 +232,7 @@ then
         python setup.py build bdist_wheel 
         source activate python37
         python setup.py build bdist_wheel 
-        twine upload dist/pydna* --skip-existing
+        twine upload dist/*.whl --skip-existing
     else
         echo "Running on CI server but none of the expected environment variables are set to true"
         echo "CI       = $CI"

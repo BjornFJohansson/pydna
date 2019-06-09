@@ -23,7 +23,7 @@ setup(  name            = 'pydna',
         author_email    = __email__,
         zip_safe = False,
         packages=['pydna'],
-        url='http://pypi.python.org/pypi/pydna/',
+        url='https://github.com/BjornFJohansson/pydna',
         license='LICENSE.txt',
         description='''Contains classes and code for representing double
                      stranded DNA and functions for simulating homologous

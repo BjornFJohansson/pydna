@@ -14,8 +14,6 @@ requirements:
     build:
         - python {{ python }}
         - setuptools
-        - pypandoc
-        - pandoc
     run:
         - python {{ python }}
         - appdirs
@@ -30,7 +28,6 @@ requirements:
         - matplotlib
         - mpldatacursor
         - pint
-
 test:
   requires:
     - pytest
