@@ -1,7 +1,0 @@
-{
-  "test_module_dseq.py::test_Dseq___getitem__": true,
-  "test_module_dseq.py::test_Dseq_slicing2": true,
-  "test_module_dseq.py::test_cut_circular": true,
-  "test_module_dseq.py::test_dseq": true,
-  "test_module_dseq.py::test_initialization": true
-}
