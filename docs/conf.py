@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Pydna'
-copyright = '2015, Björn Johansson'
+copyright = '2013-2019, Björn Johansson'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -269,10 +269,10 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'pydna', 'Pydna Documentation',
-     ['Björn Johansson'], 1)
-]
+#man_pages = [
+#    ('index', 'pydna', 'Pydna Documentation',
+#     ['Björn Johansson'], 1)
+#]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False

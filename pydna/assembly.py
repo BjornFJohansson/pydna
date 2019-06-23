@@ -13,30 +13,33 @@ set limit.
 A graph is constructed where each overlapping region form a node and
 sequences separating the overlapping regions form edges.
 
+
 ::
-           
-                 -- A --
-     catgatctacgtatcgtgt     -- B --
-                 atcgtgtactgtcatattc
-                             catattcaaagttct
-                 
-     Graph:
-                 --x--> A --y--> B --z-->
-                 
-                 Nodes:
-                     
-                 A : atcgtgt
-                 B : catattc
-                 
-                 Edges:
+          
+     
+                -- A --
+    catgatctacgtatcgtgt     -- B --
+                atcgtgtactgtcatattc
+                            catattcaaagttct
 
-                 x : catgatctacgt
-                 y : actgt
-                 z : aaagttct
+     
+     
+    --x--> A --y--> B --z-->   (Graph)
+     
+    Nodes:
 
+    A : atcgtgt
+    B : catattc
+ 
+    Edges:
+
+    x : catgatctacgt
+    y : actgt
+    z : aaagttct
+    
+    
 The NetworkX package is used to trace linear and circular paths through the
 graph.
-
 '''
 import sys
     
@@ -116,6 +119,7 @@ class Assembly(object, metaclass = _Memoize):
     [Contig(o59), Contig(o59)]
     >>> x.assemble_circular()[0].seq.watson
     'acgatgctatactgCCCCCtgtgctgtgctctaTTTTTtattctggctgtatcGGGGGt'
+
 
     '''
     

@@ -60,6 +60,7 @@ class Dseq(_Seq):
     alphabet : Bio.Alphabet, optional
         Bio.Alphabet.IUPAC.IUPACAmbiguousDNA from the Biopython package is set as default.
 
+
     Examples
     --------
 
@@ -206,7 +207,6 @@ class Dseq(_Seq):
     ccccaaa
     >>> a.ovhg
     4
-    >>>   
     
     >>> b=Dseq("ccccttt","ccccaaa")
     >>> b
@@ -235,7 +235,6 @@ class Dseq(_Seq):
         AAAGCCCTA
 
     The slicing of a linear Dseq object works mostly as it does for a string.
-._linear
 
     >>> s="ggatcc"
     >>> s[2:3]

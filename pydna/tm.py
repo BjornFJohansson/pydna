@@ -9,7 +9,7 @@ import math as _math
 def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
     the nearest neighbour algorithm. Formula and thermodynamic data
-    is taken from SantaLucia 1998 [#]_. This implementation gives the same
+    is taken from SantaLucia 1998 [1]_. This implementation gives the same
     answer as the one provided by Biopython (See Examples).
 
     Thermodynamic data used:
@@ -41,7 +41,7 @@ def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
 
     References
     ----------
-    .. [#] SantaLucia J Jr. A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics. Proc Natl Acad Sci U S A 1998;95:1460–5.
+    .. [1] SantaLucia J Jr. A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics. Proc Natl Acad Sci U S A 1998;95:1460–5.
 
     Examples
     --------
@@ -105,7 +105,7 @@ def tmbreslauer86(primer, *args, dnac=500.0, saltc=50, thermodynamics=False, **k
     These data are no longer widely used.
 
 
-    Breslauer 1986, table 2 [#]_
+    Breslauer 1986, table 2 [2]_
 
     =====  ===== ====   ===
     pair   dH    dS     dG
@@ -134,7 +134,7 @@ def tmbreslauer86(primer, *args, dnac=500.0, saltc=50, thermodynamics=False, **k
 
     References
     ----------
-    .. [#] K.J. Breslauer et al., “Predicting DNA Duplex Stability from the Base Sequence,” Proceedings of the National Academy of Sciences 83, no. 11 (1986): 3746.
+    .. [2] K.J. Breslauer et al., “Predicting DNA Duplex Stability from the Base Sequence,” Proceedings of the National Academy of Sciences 83, no. 11 (1986): 3746.
 
 
     Examples

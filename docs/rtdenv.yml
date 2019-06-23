@@ -3,7 +3,7 @@ channels:
 - conda-forge
 - BjornFJohansson
 dependencies:
-- python=3.6
+- python=3.7
 - numpy
 - matplotlib
 - pint

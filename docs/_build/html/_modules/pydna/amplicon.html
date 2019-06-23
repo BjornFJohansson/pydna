@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>pydna.amplicon &#8212; Pydna 3.0.1+2.g47ae1f65a3.dirty documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pydna 3.0.1+2.g47ae1f65a3.dirty documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../pydna.html" accesskey="U">pydna</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydna.amplicon</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2013-2018 by Björn Johansson.  All rights reserved.</span>
+<span class="c1"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c1"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c1"># as part of this package.</span>
+<span class="c1"># doctest: +NORMALIZE_WHITESPACE </span>
+<span class="c1"># doctest: +SKIP</span>
+<span class="sd">&quot;&quot;&quot;This module provides the :class:`Amplicon` class for PCR simulation. This class is not meant to be use directly</span>
+<span class="sd">but is used by the :mod:`amplify` module&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>       <span class="k">as</span> <span class="nn">_math</span>
+<span class="kn">import</span> <span class="nn">itertools</span>  <span class="k">as</span> <span class="nn">_itertools</span>
+<span class="kn">import</span> <span class="nn">re</span>         <span class="k">as</span> <span class="nn">_re</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>   <span class="k">as</span> <span class="nn">_textwrap</span>
+<span class="kn">import</span> <span class="nn">copy</span>       <span class="k">as</span> <span class="nn">_copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>    <span class="k">as</span> <span class="nn">_logging</span>
+<span class="n">_module_logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pydna.&quot;</span><span class="o">+</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">Bio.SeqRecord</span>                  <span class="k">import</span> <span class="n">SeqRecord</span>      <span class="k">as</span> <span class="n">_SeqRecord</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils</span>                   <span class="k">import</span> <span class="n">GC</span>             <span class="k">as</span> <span class="n">_GC</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils.MeltingTemp</span>       <span class="k">import</span> <span class="n">Tm_NN</span>          <span class="k">as</span> <span class="n">_Tm_NN</span>
+<span class="kn">from</span> <span class="nn">pydna.utils</span>                         <span class="k">import</span> <span class="n">rc</span>             <span class="k">as</span> <span class="n">_rc</span>
+<span class="kn">from</span> <span class="nn">pydna.dseqrecord</span>                    <span class="k">import</span> <span class="n">Dseqrecord</span>     <span class="k">as</span> <span class="n">_Dseqrecord</span>
+<span class="kn">from</span> <span class="nn">pydna._pretty</span>                       <span class="k">import</span> <span class="n">pretty_str</span>     <span class="k">as</span> <span class="n">_pretty_str</span>
+<span class="kn">from</span> <span class="nn">pydna.tm</span>                            <span class="k">import</span> <span class="n">tmbresluc</span>      <span class="k">as</span> <span class="n">_tmbresluc</span>
+
+
+<div class="viewcode-block" id="Amplicon"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon">[docs]</a><span class="k">class</span> <span class="nc">Amplicon</span><span class="p">(</span><span class="n">_Dseqrecord</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;The Amplicon class holds information about a PCR reaction involving two</span>
+<span class="sd">    primers and one template. This class is used by the Anneal class and is not</span>
+<span class="sd">    meant to be instantiated directly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    forward_primer : SeqRecord(Biopython)</span>
+<span class="sd">        SeqRecord object holding the forward (sense) primer</span>
+
+<span class="sd">    reverse_primer : SeqRecord(Biopython)</span>
+<span class="sd">        SeqRecord object holding the reverse (antisense) primer</span>
+
+<span class="sd">    template : Dseqrecord</span>
+<span class="sd">        Dseqrecord object holding the template (circular or linear)</span>
+
+<span class="sd">    saltc : float, optional</span>
+<span class="sd">        saltc = monovalent cations (mM) (Na,K..)</span>
+<span class="sd">        default value is 50mM</span>
+<span class="sd">        This is used for Tm calculations.</span>
+
+<span class="sd">    forward_primer_concentration : float, optional</span>
+<span class="sd">        primer concentration (nM)</span>
+<span class="sd">        default set to 1000nM = 1µM</span>
+<span class="sd">        This is used for Tm calculations.</span>
+
+<span class="sd">    rc : float, optional</span>
+<span class="sd">        primer concentration (nM)</span>
+<span class="sd">        default set to 1000nM = 1µM</span>
+<span class="sd">        This is used for Tm calculations.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>    <span class="bp">self</span><span class="p">,</span>
+                     <span class="n">record</span><span class="p">,</span>
+                     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                     <span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">forward_primer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">reverse_primer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">saltc</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
+                     <span class="n">fprimerc</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+                     <span class="n">rprimerc</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span>       <span class="o">=</span> <span class="n">template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span> <span class="o">=</span> <span class="n">forward_primer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span> <span class="o">=</span> <span class="n">reverse_primer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span>       <span class="o">=</span> <span class="n">fprimerc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span>       <span class="o">=</span> <span class="n">rprimerc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saltc</span>          <span class="o">=</span> <span class="n">saltc</span>
+
+<div class="viewcode-block" id="Amplicon.from_SeqRecord"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.from_SeqRecord">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_SeqRecord</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_SeqRecord</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sl</span><span class="p">):</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="n">answer</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">_SeqRecord</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">sr</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">_SeqRecord</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">sr</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span><span class="o">.</span><span class="n">features</span>
+        <span class="k">return</span> <span class="n">answer</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;returns a short string representation of the object&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="s2">&quot;Amplicon(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__len__</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_repr_pretty_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Amplicon(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()))</span>
+            
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Amplicon(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__len__</span><span class="p">())</span>
+
+<div class="viewcode-block" id="Amplicon.reverse_complement"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.reverse_complement">[docs]</a>    <span class="k">def</span> <span class="nf">reverse_complement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">())</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">template</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">rc</span><span class="p">()</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">forward_primer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">reverse_primer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">fprimerc</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">rprimerc</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">saltc</span>          <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saltc</span>
+        <span class="k">return</span> <span class="n">answer</span></div>
+    
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">reverse_complement</span>
+
+<div class="viewcode-block" id="Amplicon.figure"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.figure">[docs]</a>    <span class="k">def</span> <span class="nf">figure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method returns a simple figure of the two primers binding to a part</span>
+<span class="sd">        of the template.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">         5gctactacacacgtactgactg3</span>
+<span class="sd">          |||||||||||||||||||||| tm 52.6 (dbd) 58.3</span>
+<span class="sd">         5gctactacacacgtactgactg...caagatagagtcagtaaccaca3</span>
+<span class="sd">         3cgatgatgtgtgcatgactgac...gttctatctcagtcattggtgt5</span>
+<span class="sd">                                   |||||||||||||||||||||| tm 49.1 (dbd) 57.7</span>
+<span class="sd">                                  3gttctatctcagtcattggtgt5</span>
+
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        figure:string</span>
+<span class="sd">             A string containing a text representation of the primers</span>
+<span class="sd">             annealing on the template (see example above).</span>
+
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        tm in the figure above is the melting temperature (tm) for each primer calculated according to</span>
+<span class="sd">        SantaLucia 1998 [#]_.</span>
+
+<span class="sd">        dbd is the tm calculation for enzymes with dsDNA binding domains like Pfu-Sso7d [#]_. See [#]_</span>
+<span class="sd">        for more information.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        .. [#] J. SantaLucia, “A Unified View of Polymer, Dumbbell, and Oligonucleotide DNA Nearest-neighbor Thermodynamics,” Proceedings of the National Academy of Sciences 95, no. 4 (1998): 1460.</span>
+<span class="sd">        .. [#] M. Nørholm, “A Mutant Pfu DNA Polymerprimerase Designed for Advanced Uracil-excision DNA Engineering,” BMC Biotechnology 10, no. 1 (2010): 21, doi:10.1186/1472-6750-10-21.</span>
+<span class="sd">        .. [#] http://www.thermoscientificbio.com/webtools/tmc/</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">tmf</span> <span class="o">=</span> <span class="n">_Tm_NN</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+                    <span class="n">dnac1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="p">,</span>
+                    <span class="n">Na</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">)</span>
+        <span class="n">tmr</span> <span class="o">=</span> <span class="n">_Tm_NN</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+                    <span class="n">dnac1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="p">,</span>
+                    <span class="n">Na</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">)</span>
+
+        <span class="n">tmf_dbd</span> <span class="o">=</span> <span class="n">_tmbresluc</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span> <span class="n">primerc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="p">)</span>
+        <span class="n">tmr_dbd</span> <span class="o">=</span> <span class="n">_tmbresluc</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span> <span class="n">primerc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span>   <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            </span><span class="si">{sp1}</span><span class="s1">5</span><span class="si">{faz}</span><span class="s1">...</span><span class="si">{raz}</span><span class="s1">3</span>
+<span class="s1">             </span><span class="si">{sp3}{rap}</span><span class="s1"> tm </span><span class="si">{tmr}</span><span class="s1"> (dbd) </span><span class="si">{tmr_dbd}</span><span class="s1"></span>
+<span class="s1">            </span><span class="si">{sp3}</span><span class="s1">3</span><span class="si">{rp}</span><span class="s1">5</span>
+<span class="s1">            5</span><span class="si">{fp}</span><span class="s1">3</span>
+<span class="s1">             {fap:&gt;</span><span class="si">{fplength}</span><span class="s1">} tm </span><span class="si">{tmf}</span><span class="s1"> (dbd) </span><span class="si">{tmf_dbd}</span><span class="s1"></span>
+<span class="s1">            </span><span class="si">{sp2}</span><span class="s1">3</span><span class="si">{fzc}</span><span class="s1">...</span><span class="si">{rzc}</span><span class="s1">5</span>
+<span class="s1">            &#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">fp</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span>
+                        <span class="n">fap</span>      <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+                        <span class="n">fplength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                        <span class="n">tmf</span>      <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tmf</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">tmr</span>      <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tmr</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">tmf_dbd</span>  <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tmf_dbd</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">tmr_dbd</span>  <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tmr_dbd</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">rp</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">rap</span>      <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+                        <span class="n">rplength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                        <span class="n">faz</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">,</span>
+                        <span class="n">raz</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">(),</span>
+                        <span class="n">fzc</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="o">.</span><span class="n">complement</span><span class="p">(),</span>
+                        <span class="n">rzc</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">sp1</span>      <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">)),</span>
+                        <span class="n">sp2</span>      <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">)),</span>
+                        <span class="n">sp3</span>      <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">*</span><span class="p">(</span><span class="mi">3</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span>
+                       <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Amplicon.program"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.program">[docs]</a>    <span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Returns a string containing a text representation of a proposed</span>
+<span class="sd">       PCR program using Taq or similar polymerase.</span>
+
+<span class="sd">       ::</span>
+
+<span class="sd">        Taq (rate 30 nt/s)</span>
+<span class="sd">        Three-step|         30 cycles     |      |Tm formula: Biopython Tm_NN</span>
+<span class="sd">        94.0°C    |94.0°C                 |      |SaltC 50mM</span>
+<span class="sd">        __________|_____          72.0°C  |72.0°C|</span>
+<span class="sd">        04min00s  |30s  \         ________|______|</span>
+<span class="sd">                  |      \ 46.0°C/ 0min 1s|10min |</span>
+<span class="sd">                  |       \_____/         |      |</span>
+<span class="sd">                  |         30s           |      |4-8°C</span>
+
+<span class="sd">       &#39;&#39;&#39;</span>
+
+
+        <span class="c1"># Primer melting temperatures are calculated with the Tm_NN formula from</span>
+        <span class="c1"># biopython</span>
+        <span class="c1"># simple salt concentration correction is used and the template concentration</span>
+        <span class="c1"># is ignored. dnac1 = primer concentration</span>
+        
+        <span class="n">tmf</span> <span class="o">=</span> <span class="n">_Tm_NN</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+                    <span class="n">dnac1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="p">,</span>
+                    <span class="n">Na</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">)</span>
+        <span class="n">tmr</span> <span class="o">=</span> <span class="n">_Tm_NN</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+                    <span class="n">dnac1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="p">,</span>
+                    <span class="n">Na</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">)</span>
+
+        <span class="c1"># Ta calculation according to</span>
+        <span class="c1"># Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal</span>
+        <span class="c1"># ing temperature for DNA amplification in vitro</span>
+        <span class="c1"># http://www.ncbi.nlm.nih.gov/pubmed/2243783</span>
+        <span class="c1"># The formula described uses the length and GC content of the product and</span>
+        <span class="c1"># salt concentration (monovalent cations).</span>
+
+        <span class="c1">#GC_prod=GC(str(self.seq))</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="mf">81.5</span> <span class="o">+</span> <span class="mf">0.41</span><span class="o">*</span><span class="n">_GC</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span> <span class="o">+</span> <span class="mf">16.6</span><span class="o">*</span><span class="n">_math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">675</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">tml</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tmf</span><span class="p">,</span><span class="n">tmr</span><span class="p">)</span>
+        <span class="n">ta</span> <span class="o">=</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">tml</span><span class="o">+</span><span class="mf">0.7</span><span class="o">*</span><span class="n">tmp</span><span class="o">-</span><span class="mf">14.9</span>
+
+        <span class="c1"># Taq polymerase extension rate is set to 30 nt/s</span>
+        <span class="c1"># see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html</span>
+        <span class="n">taq_extension_rate</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># seconds/kB PCR product length</span>
+        <span class="n">extension_time_taq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">taq_extension_rate</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span> <span class="c1"># seconds</span>
+        <span class="n">f</span>  <span class="o">=</span> <span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">                                 Taq (rate </span><span class="si">{rate}</span><span class="s1"> nt/s) 35 cycles             |</span><span class="si">{size}</span><span class="s1">bp</span>
+<span class="s1">                                 95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN</span>
+<span class="s1">                                 |_________|_____          72.0°C  |72.0°C|SaltC </span><span class="si">{saltc:2}</span><span class="s1">mM</span>
+<span class="s1">                                 | 03min00s|30s  \         ________|______|Primer1C </span><span class="si">{forward_primer_concentration:3}</span><span class="s1">µM</span>
+<span class="s1">                                 |         |      \ </span><span class="si">{ta}</span><span class="s1">°C/</span><span class="si">{0:2}</span><span class="s1">min</span><span class="si">{1:2}</span><span class="s1">s| 5min |Primer2C </span><span class="si">{reverse_primer_concentration:3}</span><span class="s1">µM</span>
+<span class="s1">                                 |         |       \_____/         |      |GC </span><span class="si">{GC_prod}</span><span class="s1">%</span>
+<span class="s1">                                 |         |         30s           |      |4-12°C&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">taq_extension_rate</span><span class="p">,</span>
+                                                                                            <span class="n">forward_primer_concentration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>
+                                                                                            <span class="n">reverse_primer_concentration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>
+                                                                                            <span class="n">ta</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">ta</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                                                                                            <span class="n">saltc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">,</span>
+                                                                                            <span class="o">*</span><span class="nb">divmod</span><span class="p">(</span><span class="n">extension_time_taq</span><span class="p">,</span><span class="mi">60</span><span class="p">),</span>
+                                                                                            <span class="n">size</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                                                                                            <span class="n">GC_prod</span><span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="p">())</span> <span class="p">))</span>
+        <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Amplicon.taq_program"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.taq_program">[docs]</a>    <span class="k">def</span> <span class="nf">taq_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">program</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Amplicon.dbd_program"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.dbd_program">[docs]</a>    <span class="k">def</span> <span class="nf">dbd_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Returns a string containing a text representation of a proposed</span>
+<span class="sd">       PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.</span>
+
+<span class="sd">       ::</span>
+
+<span class="sd">        Pfu-Sso7d (rate 15s/kb)             |{size}bp</span>
+<span class="sd">        Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc</span>
+<span class="sd">        98.0°C    |98.0°C                |      |SaltC 50mM</span>
+<span class="sd">        __________|_____          72.0°C |72.0°C|Primer1C   1µM</span>
+<span class="sd">        00min30s  |10s  \ 61.0°C ________|______|Primer2C   1µM</span>
+<span class="sd">                  |      \______/ 0min 0s|10min |</span>
+<span class="sd">                  |        10s           |      |4-12°C</span>
+
+<span class="sd">       &#39;&#39;&#39;</span>
+        <span class="n">PfuSso7d_extension_rate</span> <span class="o">=</span> <span class="mi">15</span>                <span class="c1">#seconds/kB PCR product</span>
+        <span class="n">extension_time_PfuSso7d</span> <span class="o">=</span> <span class="n">PfuSso7d_extension_rate</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>  <span class="c1"># seconds</span>
+
+        <span class="c1"># The program returned is eaither a two step or three step progrem</span>
+        <span class="c1"># This depends on the tm and length of the primers in the</span>
+        <span class="c1"># original instructions from finnzyme. These do not seem to be</span>
+
+        <span class="n">tmf_dbd</span> <span class="o">=</span> <span class="n">_tmbresluc</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span> <span class="n">primerc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="p">)</span>
+        <span class="n">tmr_dbd</span> <span class="o">=</span> <span class="n">_tmbresluc</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span> <span class="n">primerc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span><span class="p">)</span>
+
+        <span class="c1"># Ta calculation for enzymes with dsDNA binding domains like Pfu-Sso7d</span>
+        <span class="c1"># https://www.finnzymes.fi/tm_determination.html</span>
+
+        <span class="n">length_of_f</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">)</span>
+        <span class="n">length_of_r</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">length_of_f</span><span class="o">&gt;</span><span class="mi">20</span> <span class="ow">and</span> <span class="n">length_of_r</span><span class="o">&gt;</span><span class="mi">20</span> <span class="ow">and</span> <span class="n">tmf_dbd</span><span class="o">&gt;=</span><span class="mf">69.0</span> <span class="ow">and</span> <span class="n">tmr_dbd</span><span class="o">&gt;=</span><span class="mf">69.0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">tmf_dbd</span><span class="o">&gt;=</span><span class="mf">72.0</span> <span class="ow">and</span> <span class="n">tmr_dbd</span><span class="o">&gt;=</span><span class="mf">72.0</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">=</span><span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>    <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">                                    Pfu-Sso7d (rate </span><span class="si">{rate}</span><span class="s1">s/kb)</span>
+<span class="s1">                                    Two-step|    30 cycles |      |</span><span class="si">{size}</span><span class="s1">bp</span>
+<span class="s1">                                    98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc</span>
+<span class="s1">                                    _____ __|_____         |      |SaltC </span><span class="si">{saltc:2}</span><span class="s1">mM</span>
+<span class="s1">                                    00min30s|10s  \        |      |Primer1C </span><span class="si">{forward_primer_concentration:3}</span><span class="s1">µM</span>
+<span class="s1">                                            |      \ 72.0°C|72.0°C|Primer2C </span><span class="si">{reverse_primer_concentration:3}</span><span class="s1">µM</span>
+<span class="s1">                                            |       \______|______|GC </span><span class="si">{GC_prod}</span><span class="s1">%</span>
+<span class="s1">                                            |      </span><span class="si">{0:2}</span><span class="s1">min</span><span class="si">{1:2}</span><span class="s1">s|10min |4-12°C</span>
+<span class="s1">                                    &#39;&#39;&#39;</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rate</span> <span class="o">=</span> <span class="n">PfuSso7d_extension_rate</span><span class="p">,</span>
+                                            <span class="n">forward_primer_concentration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>
+                                            <span class="n">reverse_primer_concentration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>
+                                            <span class="n">saltc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">,</span>
+                                            <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="nb">divmod</span><span class="p">(</span><span class="n">extension_time_PfuSso7d</span><span class="p">,</span><span class="mi">60</span><span class="p">)),</span>
+                                            <span class="n">GC_prod</span><span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="p">()),</span>
+                                            <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">length_of_f</span><span class="o">&gt;</span><span class="mi">20</span> <span class="ow">and</span> <span class="n">length_of_r</span><span class="o">&gt;</span><span class="mi">20</span><span class="p">):</span>
+                <span class="n">ta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tmf_dbd</span><span class="p">,</span><span class="n">tmr_dbd</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tmf_dbd</span><span class="p">,</span><span class="n">tmr_dbd</span><span class="p">)</span>
+
+            <span class="n">f</span><span class="o">=</span><span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>     <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">                                    Pfu-Sso7d (rate </span><span class="si">{rate}</span><span class="s1">s/kb)                 |</span><span class="si">{size}</span><span class="s1">bp</span>
+<span class="s1">                                    Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc</span>
+<span class="s1">                                    98.0°C    |98.0°C                |      |SaltC </span><span class="si">{saltc:2}</span><span class="s1">mM</span>
+<span class="s1">                                    __________|_____          72.0°C |72.0°C|Primer1C </span><span class="si">{forward_primer_concentration:3}</span><span class="s1">µM</span>
+<span class="s1">                                    00min30s  |10s  \ </span><span class="si">{ta:.1f}</span><span class="s1">°C ________|______|Primer2C </span><span class="si">{reverse_primer_concentration:3}</span><span class="s1">µM</span>
+<span class="s1">                                              |      \______/</span><span class="si">{0:2}</span><span class="s1">min</span><span class="si">{1:2}</span><span class="s1">s|10min |GC </span><span class="si">{GC_prod}</span><span class="s1">%</span>
+<span class="s1">                                              |        10s           |      |4-12°C</span>
+<span class="s1">                                    &#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rate</span> <span class="o">=</span> <span class="n">PfuSso7d_extension_rate</span><span class="p">,</span>
+                                            <span class="n">size</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                                            <span class="n">ta</span>   <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">ta</span><span class="p">),</span>
+                                            <span class="n">forward_primer_concentration</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fprimerc</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>
+                                            <span class="n">reverse_primer_concentration</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rprimerc</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>
+                                            <span class="n">saltc</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saltc</span><span class="p">,</span>
+                                            <span class="n">GC_prod</span><span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="p">()),</span>
+                                            <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">extension_time_PfuSso7d</span><span class="p">,</span><span class="mi">60</span><span class="p">))</span> <span class="p">))</span>
+        <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Amplicon.pfu_sso7d_program"><a class="viewcode-back" href="../../index.html#pydna.amplicon.Amplicon.pfu_sso7d_program">[docs]</a>    <span class="k">def</span> <span class="nf">pfu_sso7d_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbd_program</span><span class="p">()</span></div></div>
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">cached</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pydna 3.0.1+2.g47ae1f65a3.dirty documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../pydna.html" >pydna</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2019, Björn Johansson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

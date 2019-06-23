@@ -1,0 +1,6 @@
+appdirs
+biopython
+networkx
+prettytable
+pyparsing
+requests

@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>pydna &#8212; Pydna 3.0.1+2.g47ae1f65a3.dirty documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Pydna 3.0.1+2.g47ae1f65a3.dirty documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydna</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2013-2018 by Björn Johansson.  All rights reserved.</span>
+<span class="c1"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c1"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c1"># as part of this package.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:copyright: Copyright 2013 - 2019 by Björn Johansson. All rights reserved.</span>
+<span class="sd">:license:   This code is part of the pydna package, governed by the</span>
+<span class="sd">            license in LICENSE.txt that should be included as part of this package.</span>
+
+<span class="sd">pydna</span>
+<span class="sd">=====</span>
+<span class="sd">Pydna is a python package providing code for simulation of the creation of recombinant DNA molecules </span>
+<span class="sd">using `molecular biology &lt;https://en.wikipedia.org/wiki/Molecular_biology&gt;`_ techniques.</span>
+
+<span class="sd">Provided:</span>
+<span class="sd">  1. PCR simulation</span>
+<span class="sd">  2. Assembly simulation based on shared identical sequences</span>
+<span class="sd">  3. Primer design for amplification of a given sequence </span>
+<span class="sd">  4. Automatic design of primer tails for Gibson assembly or homologous recombination.</span>
+<span class="sd">  5. Restriction digestion and cut&amp;paste cloning</span>
+<span class="sd">  6. Agarose gel simulation</span>
+<span class="sd">  7. Download sequences from Genbank</span>
+<span class="sd">  8. Parsing various sequence formats including the capacity to handle broken Genbank format</span>
+
+<span class="sd">pydna package layout</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">The most important modules and how to import functions or classes from them are listed below.</span>
+<span class="sd">Class names starts with a capital letter, functions with a lowercase letter:</span>
+<span class="sd">    </span>
+<span class="sd">::</span>
+<span class="sd">    </span>
+<span class="sd">      from pydna.module import function</span>
+<span class="sd">      from pydna.module import Class</span>
+<span class="sd">            </span>
+<span class="sd">      Example: from pydna.gel import Gel</span>
+
+<span class="sd">      pydna</span>
+<span class="sd">         ├── amplify</span>
+<span class="sd">         │         ├── Anneal</span>
+<span class="sd">         │         └── pcr</span>
+<span class="sd">         ├── assembly</span>
+<span class="sd">         │          └── Assembly</span>
+<span class="sd">         ├── design</span>
+<span class="sd">         │        ├── assembly_fragments</span>
+<span class="sd">         │        └── primer_design</span>
+<span class="sd">         ├── download</span>
+<span class="sd">         │          └── download_text</span>
+<span class="sd">         ├── dseqrecord</span>
+<span class="sd">         │            └── Dseqrecord</span>
+<span class="sd">         ├── gel</span>
+<span class="sd">         │     └── Gel</span>
+<span class="sd">         ├── genbank</span>
+<span class="sd">         │         ├── genbank</span>
+<span class="sd">         │         └── Genbank</span>
+<span class="sd">         ├── parsers</span>
+<span class="sd">         │         ├── parse</span>
+<span class="sd">         │         └── parse_primers</span>
+<span class="sd">         └── readers</span>
+<span class="sd">                   ├── read</span>
+<span class="sd">                   └── read_primers</span>
+
+
+
+<span class="sd">How to use the documentation</span>
+<span class="sd">----------------------------</span>
+<span class="sd">Documentation is available as docstrings provided in the source code for each module.</span>
+<span class="sd">These docstrings can be inspected by reading the source code directly. </span>
+<span class="sd">See further below on how to obtain the code for pydna.</span>
+
+<span class="sd">In the python shell, use the built-in ``help`` function to view a function&#39;s docstring::</span>
+
+<span class="sd">  &gt;&gt;&gt; from pydna import readers</span>
+<span class="sd">  &gt;&gt;&gt; help(readers.read)</span>
+<span class="sd">  ... # doctest: +SKIP</span>
+
+<span class="sd">The doctrings are also used to provide an automaticly generated reference manual available online at</span>
+<span class="sd">`read the docs &lt;https://pydna.readthedocs.io&gt;`_.</span>
+
+<span class="sd">Docstrings can be explored using `IPython &lt;http://ipython.org/&gt;`_, an advanced Python shell with</span>
+<span class="sd">TAB-completion and introspection capabilities. To see which functions are available in `pydna`, </span>
+<span class="sd">type `pydna.&lt;TAB&gt;` (where `&lt;TAB&gt;` refers to the TAB key).</span>
+<span class="sd">Use `pydna.open_config_folder?&lt;ENTER&gt;`to view the docstring or `pydna.open_config_folder??&lt;ENTER&gt;` to view the source code.</span>
+
+<span class="sd">In the `Spyder IDE &lt;https://github.com/spyder-ide/spyder&gt;`_ it is possible to place the cursor immediately before </span>
+<span class="sd">the name of a module,class or function and press ctrl+i to bring up docstrings in a separate window in Spyder</span>
+
+<span class="sd">Code snippets are indicated by three greater-than signs::</span>
+
+<span class="sd">    &gt;&gt;&gt; x=41</span>
+<span class="sd">    &gt;&gt;&gt; x=x+1</span>
+<span class="sd">    &gt;&gt;&gt; x</span>
+<span class="sd">    42</span>
+
+<span class="sd">pydna source code</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">The pydna source code is `available on Github &lt;https://github.com/BjornFJohansson/pydna&gt;`_.</span>
+
+<span class="sd">How to get more help</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">Please join the `Google grooup &lt;https://groups.google.com/forum/#!forum/pydna&gt;`_ for pydna, this is the preferred </span>
+<span class="sd">location for help. If you find bugs in pydna itself, open an issue at the `Github repository &lt;https://github.com/BjornFJohansson/pydna/issues&gt;`_.</span>
+
+<span class="sd">Examples of pydna in use</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">See this repository for a collection of `examples &lt;https://github.com/BjornFJohansson/pydna-examples&gt;`_.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">os</span>               <span class="k">as</span> <span class="nn">_os</span>
+<span class="kn">import</span> <span class="nn">sys</span>              <span class="k">as</span> <span class="nn">_sys</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>       <span class="k">as</span> <span class="nn">_subprocess</span>
+<span class="kn">import</span> <span class="nn">logging</span>          <span class="k">as</span> <span class="nn">_logging</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span> <span class="k">as</span> <span class="nn">_handlers</span>
+<span class="kn">import</span> <span class="nn">appdirs</span>          <span class="k">as</span> <span class="nn">_appdirs</span>
+<span class="kn">import</span> <span class="nn">configparser</span>     <span class="k">as</span> <span class="nn">_configparser</span>
+<span class="kn">import</span> <span class="nn">prettytable</span>      <span class="k">as</span> <span class="nn">_prettytable</span>
+
+
+
+<span class="n">__author__</span>       <span class="o">=</span> <span class="s2">&quot;Björn Johansson&quot;</span>
+<span class="n">__copyright__</span>    <span class="o">=</span> <span class="s2">&quot;Copyright 2013 - 2018 Björn Johansson&quot;</span>
+<span class="n">__credits__</span>      <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Björn Johansson&quot;</span><span class="p">,</span> <span class="s2">&quot;Mark Budde&quot;</span><span class="p">]</span>
+<span class="n">__license__</span>      <span class="o">=</span> <span class="s2">&quot;BSD&quot;</span>
+<span class="n">__maintainer__</span>   <span class="o">=</span> <span class="s2">&quot;Björn Johansson&quot;</span>
+<span class="n">__email__</span>        <span class="o">=</span> <span class="s2">&quot;bjorn_johansson@bio.uminho.pt&quot;</span>
+<span class="n">__status__</span>       <span class="o">=</span> <span class="s2">&quot;Development&quot;</span> <span class="c1"># &quot;Production&quot; #&quot;Prototype&quot;</span>
+
+
+<span class="c1"># create config directory</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_config_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_config_dir&quot;</span><span class="p">,</span> <span class="n">_appdirs</span><span class="o">.</span><span class="n">user_config_dir</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_config_dir&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_config_dir&quot;</span><span class="p">]</span> <span class="p">):</span>
+        <span class="k">raise</span>
+
+<span class="c1"># set path for the pydna.ini file</span>
+<span class="n">_ini_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_config_dir&quot;</span><span class="p">],</span> <span class="s2">&quot;pydna.ini&quot;</span> <span class="p">)</span>
+
+<span class="c1"># initiate a config parser instance</span>
+<span class="n">_parser</span> <span class="o">=</span> <span class="n">_configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+
+<span class="c1"># if a pydna.ini exists, it is read</span>
+<span class="k">if</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">_ini_path</span><span class="p">):</span>
+    <span class="n">_parser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">_ini_path</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise it is created with default settings</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">_ini_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>    <span class="c1"># TODO needs encoding?</span>
+        <span class="n">_parser</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;loglevel&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">_logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">),</span>
+                            <span class="s1">&#39;email&#39;</span>   <span class="p">:</span> <span class="s2">&quot;someone@example.com&quot;</span><span class="p">,</span>
+                            <span class="s1">&#39;data_dir&#39;</span><span class="p">:</span> <span class="n">_appdirs</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">),</span>
+                            <span class="s1">&#39;log_dir&#39;</span> <span class="p">:</span> <span class="n">_appdirs</span><span class="o">.</span><span class="n">user_log_dir</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">),</span>
+                            <span class="s1">&#39;cached_funcs&#39;</span><span class="p">:</span><span class="s1">&#39;pydna.genbank.genbank.nucleotide&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;ape&#39;</span>     <span class="p">:</span> <span class="s1">&#39;put/path/to/ape/here&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;primers&#39;</span> <span class="p">:</span> <span class="s1">&#39;put/path/to/primers/here&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;enzymes&#39;</span> <span class="p">:</span> <span class="s1">&#39;put/path/to/enzymes/here&#39;</span><span class="p">}</span>
+        <span class="n">_parser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># pydna related environmental variables are set from pydna.ini if they are not set already</span>
+<span class="n">_mainsection</span> <span class="o">=</span> <span class="n">_parser</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">]</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_ape&quot;</span><span class="p">]</span>      <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_ape&quot;</span><span class="p">,</span>      <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ape&quot;</span><span class="p">,</span><span class="s1">&#39;put/path/to/ape/here&#39;</span><span class="p">))</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cached_funcs&quot;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">))</span>
+
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_data_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_data_dir&quot;</span><span class="p">,</span> <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_dir&quot;</span><span class="p">,</span><span class="n">_appdirs</span><span class="o">.</span><span class="n">user_data_dir</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">)))</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_email&quot;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_email&quot;</span><span class="p">,</span>    <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">,</span><span class="s2">&quot;someone@example.com&quot;</span><span class="p">))</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_enzymes&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_enzymes&quot;</span><span class="p">,</span>  <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enzymes&quot;</span><span class="p">,</span> <span class="s1">&#39;put/path/to/enzymes/here&#39;</span><span class="p">))</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">,</span>  <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log_dir&quot;</span><span class="p">,</span><span class="n">_appdirs</span><span class="o">.</span><span class="n">user_log_dir</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">)))</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_loglevel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_loglevel&quot;</span><span class="p">,</span> <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;loglevel&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)))</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_primers&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_primers&quot;</span><span class="p">,</span>  <span class="n">_mainsection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;primers&quot;</span><span class="p">,</span> <span class="s1">&#39;put/path/to/primers/here&#39;</span><span class="p">))</span>
+
+
+<span class="c1"># create log directory if not present</span>
+<span class="n">_os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>                     <span class="c1">#### changes to file system ####</span>
+<span class="n">_logmsg</span> <span class="o">=</span> <span class="s2">&quot;Log directory </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">])</span>
+
+<span class="c1"># create logger</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span> <span class="nb">int</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_loglevel&quot;</span><span class="p">])</span> <span class="p">)</span>
+<span class="n">_hdlr</span> <span class="o">=</span> <span class="n">_handlers</span><span class="o">.</span><span class="n">RotatingFileHandler</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;pydna.log&#39;</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">maxBytes</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span> <span class="n">backupCount</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="n">_formatter</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(funcName)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">_hdlr</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">_formatter</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">_hdlr</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_logmsg</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_ape          = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_ape&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_cached_funcs = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_data_dir     = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_data_dir&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_email        = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_email&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_log_dir      = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_loglevel     = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_loglevel&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environmental variable pydna_primers      = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_primers&quot;</span><span class="p">]</span> <span class="p">)</span>
+<span class="c1"># create cache directory if not present</span>
+
+<span class="n">_os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_data_dir&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>                              <span class="c1">#### changes to file system ####</span>
+
+<span class="c1"># find out if optional dependecies for gel module are in place</span>
+
+
+<span class="k">def</span> <span class="nf">_missing_modules_for_gel</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">importlib</span>
+    <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">util</span>
+    <span class="n">_missing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_optm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;scipy&quot;</span><span class="p">,</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;matplotlib&quot;</span><span class="p">,</span> <span class="s2">&quot;mpldatacursor&quot;</span><span class="p">,</span> <span class="s2">&quot;pint&quot;</span><span class="p">]:</span>        
+        <span class="n">_missing</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="p">[</span><span class="n">_optm</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">_optm</span><span class="p">)</span> <span class="k">else</span> <span class="p">[])</span>
+    <span class="k">del</span> <span class="n">importlib</span>
+    <span class="k">del</span> <span class="n">util</span>
+    <span class="k">return</span> <span class="n">_missing</span>
+
+<span class="n">_missing</span> <span class="o">=</span> <span class="n">_missing_modules_for_gel</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">_missing</span><span class="p">:</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;gel simulation will NOT be available. Missing modules: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_missing</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;gel simulation is available, optional dependencies were found.&quot;</span><span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">pydna</span> <span class="k">import</span> <span class="n">_version</span>
+<span class="n">__long_version__</span> <span class="o">=</span> <span class="n">_version</span><span class="o">.</span><span class="n">get_versions</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="n">__version__</span>      <span class="o">=</span> <span class="n">__long_version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">_version</span>
+<span class="n">_sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pydna._version&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;__version__ = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;__long_version__ = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__long_version__</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PydnaWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pydna warning.</span>
+
+<span class="sd">    Pydna uses this warning (or subclasses of it), to make it easy to</span>
+<span class="sd">    silence all warning messages:</span>
+
+<span class="sd">    &gt;&gt;&gt; import warnings</span>
+<span class="sd">    &gt;&gt;&gt; from pydna import _PydnaWarning</span>
+<span class="sd">    &gt;&gt;&gt; warnings.simplefilter(&#39;ignore&#39;, _PydnaWarning)</span>
+
+<span class="sd">    Consult the warnings module documentation for more details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">_PydnaDeprecationWarning</span><span class="p">(</span><span class="n">_PydnaWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;pydna deprecation warning.</span>
+
+<span class="sd">    Pydna uses this warning instead of the built in DeprecationWarning</span>
+<span class="sd">    since those are ignored by default since Python 2.7.</span>
+
+<span class="sd">    To silence all our deprecation warning messages, use:</span>
+
+<span class="sd">    &gt;&gt;&gt; import warnings</span>
+<span class="sd">    &gt;&gt;&gt; from pydna import _PydnaDeprecationWarning</span>
+<span class="sd">    &gt;&gt;&gt; warnings.simplefilter(&#39;ignore&#39;, _PydnaDeprecationWarning)</span>
+
+<span class="sd">    Code marked as deprecated will be removed in a future version</span>
+<span class="sd">    of Pydna. This can be discussed in the Pydna google group:</span>
+<span class="sd">    https://groups.google.com/forum/#!forum/pydna    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="open_current_folder"><a class="viewcode-back" href="../index.html#pydna.open_current_folder">[docs]</a><span class="k">def</span> <span class="nf">open_current_folder</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Calling this function opens the current working directory</span>
+<span class="sd">    in the default file manager. The location for this folder is </span>
+<span class="sd">    given by the :func:`os.getcwd` function&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_open_folder</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="p">)</span></div>
+
+
+<span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Current working directory = os.getcwd() = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">_os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="open_cache_folder"><a class="viewcode-back" href="../index.html#pydna.open_cache_folder">[docs]</a><span class="k">def</span> <span class="nf">open_cache_folder</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Calling this function opens the pydna cache folder in </span>
+<span class="sd">    the default file manager. The location for this folder is stored</span>
+<span class="sd">    in the *pydna_data_dir* environmental variable.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_open_folder</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_data_dir&quot;</span><span class="p">]</span> <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="open_config_folder"><a class="viewcode-back" href="../index.html#pydna.open_config_folder">[docs]</a><span class="k">def</span> <span class="nf">open_config_folder</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Calling this function opens the pydna configuration folder in </span>
+<span class="sd">    the default file manager. The location for this folder is stored</span>
+<span class="sd">    in the *pydna_config_dir* environmental variable.</span>
+<span class="sd">    </span>
+<span class="sd">    The `pydna.ini` file can be edited to make pydna quicker to use.</span>
+<span class="sd">    See the documentation of the :class:configparser.ConfigParser´ class.</span>
+
+<span class="sd">    Below is the content of a typical `pydna.ini` file on a Linux </span>
+<span class="sd">    system.</span>
+<span class="sd">    </span>
+<span class="sd">    ::</span>
+<span class="sd">    </span>
+<span class="sd">        [main]</span>
+<span class="sd">        loglevel=30</span>
+<span class="sd">        email=myemail@example.org</span>
+<span class="sd">        data_dir=/home/bjorn/.local/share/pydna</span>
+<span class="sd">        log_dir=/home/bjorn/.cache/pydna/log</span>
+<span class="sd">        ape=tclsh /home/bjorn/.ApE/apeextractor/ApE.vfs/lib/app-AppMain/AppMain.tcl</span>
+<span class="sd">        cached_funcs=Genbank_nucleotide</span>
+<span class="sd">        primers=/home/bjorn/Dropbox/wikidata/PRIMERS.txt</span>
+<span class="sd">        enzymes=/home/bjorn/Dropbox/wikidata/RestrictionEnzymes.txt</span>
+
+<span class="sd">    The email address is set to someone@example.com by default. If you change this </span>
+<span class="sd">    to you own address, the :func:`pydna.genbank.genbank` function can be used </span>
+<span class="sd">    to download sequences from Genbank directly without having to explicitly add </span>
+<span class="sd">    the email address.</span>
+
+<span class="sd">    Pydna can cache results from the following functions or methods:</span>
+
+<span class="sd">    - :func:`pydna.genbank.Genbank.nucleotide`   Genbank_nucleotide </span>
+<span class="sd">    - :func:`pydna.amplify.Anneal`               amplify_Anneal</span>
+<span class="sd">    - :func:`pydna.assembly.Assembly`            assembly_Assembly</span>
+<span class="sd">    - :func:`pydna.download.download_text`       download.download_text</span>
+<span class="sd">    - :func:`pydna.dseqrecord.Dseqrecord.synced` Dseqrecord_synced</span>
+<span class="sd">   </span>
+<span class="sd">    These can be added separated by a comma to the cached_funcs entry in **pydna.ini**</span>
+<span class="sd">    file or the pydna_cached_funcs environment variable.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_open_folder</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_config_dir&quot;</span><span class="p">]</span> <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="open_log_folder"><a class="viewcode-back" href="../index.html#pydna.open_log_folder">[docs]</a><span class="k">def</span> <span class="nf">open_log_folder</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_open_folder</span><span class="p">(</span> <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_log_dir&quot;</span><span class="p">]</span> <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_open_folder</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_sys</span><span class="o">.</span><span class="n">platform</span><span class="o">==</span><span class="s1">&#39;win32&#39;</span><span class="p">:</span>
+        <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">pth</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">_sys</span><span class="o">.</span><span class="n">platform</span><span class="o">==</span><span class="s1">&#39;darwin&#39;</span><span class="p">:</span>
+        <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="n">pth</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;xdg-open&#39;</span><span class="p">,</span> <span class="n">pth</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;no cache to open.&quot;</span>
+
+
+<div class="viewcode-block" id="get_env"><a class="viewcode-back" href="../index.html#pydna.get_env">[docs]</a><span class="k">def</span> <span class="nf">get_env</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Calling this function prints a an ascii table containing all environmental</span>
+<span class="sd">    variables set by `pydna` and their values. Pydna related variables have names</span>
+<span class="sd">    that starts with `pydna_`</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pydna._pretty</span> <span class="k">import</span> <span class="n">pretty_str</span>  <span class="k">as</span> <span class="n">_pretty_str</span>
+    <span class="n">_table</span> <span class="o">=</span> <span class="n">_prettytable</span><span class="o">.</span><span class="n">PrettyTable</span><span class="p">([</span><span class="s2">&quot;Variable&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+    <span class="n">_table</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="n">_prettytable</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">)</span>
+    <span class="n">_table</span><span class="o">.</span><span class="n">align</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;l&quot;</span> <span class="c1"># Left align</span>
+    <span class="n">_table</span><span class="o">.</span><span class="n">align</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;l&quot;</span> <span class="c1"># Left align</span>
+    <span class="n">_table</span><span class="o">.</span><span class="n">padding_width</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># One space between column edges and contents</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pydna&quot;</span><span class="p">):</span>
+            <span class="n">_table</span><span class="o">.</span><span class="n">add_row</span><span class="p">([</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">_table</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logo"><a class="viewcode-back" href="../index.html#pydna.logo">[docs]</a><span class="k">def</span> <span class="nf">logo</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; This function returns the ascii-art logotype of pydna.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import pydna</span>
+<span class="sd">    &gt;&gt;&gt; print(pydna.logo())</span>
+<span class="sd">                     _             </span>
+<span class="sd">                    | |            </span>
+<span class="sd">     ____  _   _  __| |___   __ ___</span>
+<span class="sd">    |  _ \| | | |/ _  |  _ \(____ |</span>
+<span class="sd">    | |_| | |_| ( (_| | | | / ___ |</span>
+<span class="sd">    |  __/ \__  |\____|_| |_\_____|</span>
+<span class="sd">    |_|   (____/</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pydna._pretty</span> <span class="k">import</span> <span class="n">pretty_str</span>  <span class="k">as</span> <span class="n">_pretty_str</span>
+    <span class="kn">import</span> <span class="nn">textwrap</span>
+    <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                     _             </span>
+<span class="s2">                    | |            </span>
+<span class="s2">     ____  _   _  __| |___   __ ___</span>
+<span class="s2">    |  _ \| | | |/ _  |  _ \(____ |</span>
+<span class="s2">    | |_| | |_| ( (_| | | | / ___ |</span>
+<span class="s2">    |  __/ \__  |\____|_| |_\_____|</span>
+<span class="s2">    |_|   (____/</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">cached</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Pydna 3.0.1+2.g47ae1f65a3.dirty documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2019, Björn Johansson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>
