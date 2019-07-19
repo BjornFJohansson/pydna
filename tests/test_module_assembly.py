@@ -704,14 +704,14 @@ def test_assemble_pGUP1(monkeypatch):
     assert pGUP1_correct.seguid() == "42wIByERn2kSe_Exn405RYwhffU"       
     assert pGUP1.seguid() == "42wIByERn2kSe_Exn405RYwhffU"
 
-def test_35_36(monkeypatch):
-    import sys
-    from pydna.assembly import _od
-    if sys.version_info < (3, 6):
-        from collections import OrderedDict
-        assert _od==OrderedDict
-    else:
-        assert _od==dict
+#def test_35_36(monkeypatch):
+#    import sys
+#    from pydna.assembly import _od
+#    if sys.version_info < (3, 6):
+#        from collections import OrderedDict
+#        assert _od==OrderedDict
+#    else:
+#        assert _od==dict
         
         
 def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):

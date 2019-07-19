@@ -435,6 +435,22 @@ class Dseq(_Seq):
                     [329.2 for n in nts if n=="g"] +
                     [308.9 for n in nts if n=="n"]) + 79
 
+    def upper(self):
+        """Return an upper case copy of the sequence.
+
+        >>> from Bio.Alphabet import HasStopCodon, generic_protein
+        >>> from Bio.Seq import Seq
+        >>> my_seq = Seq("VHLTPeeK*", HasStopCodon(generic_protein))
+        >>> my_seq
+        Seq('VHLTPeeK*', HasStopCodon(ProteinAlphabet(), '*'))
+        >>> my_seq.lower()
+        Seq('vhltpeek*', HasStopCodon(ProteinAlphabet(), '*'))
+        >>> my_seq.upper()
+        Seq('VHLTPEEK*', HasStopCodon(ProteinAlphabet(), '*'))
+
+        This will adjust the alphabet if required. See also the lower method.
+        """
+        return self.quick(self.watson.upper(), self.crick.upper(), )
 
     def find(self, sub, start=0, end=_sys.maxsize):
         """This method behaves like the python string method of the same name.
