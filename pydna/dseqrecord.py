@@ -248,6 +248,56 @@ class Dseqrecord(_SeqRecord):
         return self.seq.circular
 
 
+    def upper(self):
+
+        '''Returns an uppercase copy. 
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> my_seq = Dseqrecord("aAa")
+        >>> my_seq.seq
+        Dseq(-3)
+        aAa
+        tTt
+        >>> upper = my_seq.upper()
+        >>> upper.seq
+        Dseq(-3)
+        AAA
+        TTT
+        >>>'''
+
+        upper = _copy.deepcopy(self)
+        upper.seq = upper.seq.upper()
+        return upper
+
+
+    def lower(self):
+        '''>>> from pydna.dseqrecord import Dseqrecord
+        >>> my_seq = Dseqrecord("aAa")
+        >>> my_seq.seq
+        Dseq(-3)
+        aAa
+        tTt
+        >>> upper = my_seq.upper()
+        >>> upper.seq
+        Dseq(-3)
+        AAA
+        TTT
+        >>> lower = my_seq.lower()
+        >>> lower
+        Dseqrecord(-3)
+        >>>
+
+        Returns
+        -------
+        lower : TYPE
+            DESCRIPTION.
+        
+        '''
+
+        lower = _copy.deepcopy(self)
+        lower.seq = lower.seq.lower()
+        return lower
+
+
     def m(self):
         """This method returns the mass of the DNA molecule in grams. This is
         calculated as the product between the molecular weight of the Dseq object

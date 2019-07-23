@@ -438,19 +438,41 @@ class Dseq(_Seq):
     def upper(self):
         """Return an upper case copy of the sequence.
 
-        >>> from Bio.Alphabet import HasStopCodon, generic_protein
-        >>> from Bio.Seq import Seq
-        >>> my_seq = Seq("VHLTPeeK*", HasStopCodon(generic_protein))
+        >>> from pydna.dseq import Dseq
+        >>> my_seq = Dseq("aAa")
         >>> my_seq
-        Seq('VHLTPeeK*', HasStopCodon(ProteinAlphabet(), '*'))
-        >>> my_seq.lower()
-        Seq('vhltpeek*', HasStopCodon(ProteinAlphabet(), '*'))
+        Dseq(-3)
+        aAa
+        tTt
         >>> my_seq.upper()
-        Seq('VHLTPEEK*', HasStopCodon(ProteinAlphabet(), '*'))
+        Dseq(-3)
+        AAA
+        TTT
 
-        This will adjust the alphabet if required. See also the lower method.
+
+        See also the lower method.
         """
-        return self.quick(self.watson.upper(), self.crick.upper(), )
+        return self.quick(self.watson.upper(), self.crick.upper(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos, alphabet=self.alphabet)
+
+    def lower(self):
+        """Return a lower case copy of the sequence.
+
+        >>> from pydna.dseq import Dseq
+        >>> my_seq = Dseq("aAa")
+        >>> my_seq
+        Dseq(-3)
+        aAa
+        tTt
+        >>> my_seq.lower()
+        Dseq(-3)
+        aaa
+        ttt
+   
+
+        See also the upper method.
+        """
+        return self.quick(self.watson.lower(), self.crick.lower(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos, alphabet=self.alphabet)
+
 
     def find(self, sub, start=0, end=_sys.maxsize):
         """This method behaves like the python string method of the same name.
@@ -503,11 +525,16 @@ class Dseq(_Seq):
         '''Returns a subsequence. This method is used by the slice notation'''
 
         if self.linear:
-            sns = (self._ovhg*" " + self.watson)[sl]
-            asn = (-self._ovhg*" " + self.crick[::-1])[sl]
-            ovhg = max((len(sns) - len(sns.lstrip()),
+
+            x = len(self.crick) - self._ovhg - len(self.watson)
+
+            sns = ( self._ovhg*" " + self.watson      +  x*" ")[sl]
+            asn = (-self._ovhg*" " + self.crick[::-1] + -x*" ")[sl]
+
+            ovhg = max(( len(sns) - len(sns.lstrip()),
                         -len(asn) + len(asn.lstrip())),
                         key=abs)
+
             return Dseq(sns.strip(), asn[::-1].strip(), ovhg=ovhg, linear=True)
         else:
             sl = slice(sl.start or 0,

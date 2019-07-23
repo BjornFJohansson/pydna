@@ -462,7 +462,8 @@ def test_Dseq_slicing():
     b,c = a.cut(BamHI)
     d = b[1:5]
     e = d.rc()
-    assert  d+e == Dseq("gatc","gatc",0)
+    #assert  d+e == Dseq("gatc","gatc",0)
+    assert  e+d == Dseq("gatc","gatc",0)
 
 
 def test_Dseq_slicing2():
