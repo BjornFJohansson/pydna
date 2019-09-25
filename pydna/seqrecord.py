@@ -319,9 +319,60 @@ class SeqRecord(_SeqRecord):
         SeqRecord(seq=Seq('gt', IUPACAmbiguousDNA()), id='ft2', name='ft2', description='description', dbxrefs=[])
         '''
         return self.features[n].extract(self)
-   
- 
+
+
     def stamp(self):
+        '''Adds a SEGUID or cSEGUID checksum to the description property.
+        This will show in the genbank format. 
+        
+        For linear sequences:
+
+        ``SEGUID_<seguid>``
+
+        For circular sequences:
+
+        ``cSEGUID_<seguid>``
+
+
+
+        Examples
+        --------
+
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("aaa")
+        >>> a.stamp()
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+        >>> a.description
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+
+
+        '''
+        
+        try: 
+            linear = self.seq.linear
+        except AttributeError:
+            linear = True
+        alg = {True:"SEGUID", False:"cSEGUID"}[linear]        
+        chksum = getattr(self, alg.lower())()        
+        pattern = r"(SEGUID|cSEGUID)_\s*(\S{27})"
+        oldstamp = _re.search(pattern, self.description)
+        
+        if oldstamp:
+            old_alg, old_chksum = oldstamp.groups()
+            if alg==old_alg and chksum==old_chksum:
+                return _pretty_str("{}_{}".format(alg,chksum))
+            else:
+                raise ValueError("Stamp is wrong!")
+        else:
+            newstamp = "{}_{}".format(alg, chksum)
+            if not self.description or self.description=="description":
+                self.description = newstamp
+            else:
+                self.description += " "+newstamp
+        return _pretty_str("{}_{}".format(alg, chksum))
+
+
+    def oldstamp(self):
         '''Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
         This will show in the genbank format. 
         

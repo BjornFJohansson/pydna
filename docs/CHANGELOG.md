@@ -2,6 +2,12 @@
 version   date       comment
 =======   ========== ==========================================================================================
 
+3.0.2a1   2019-07-23 .upper() and .lower() methods for Dseq and Dseqrecord classes. Improved slicing of 
+
+3.0.1     2019-05-28 Many changes and improvements, especially for the Assembly class.
+
+3.0.0     2019-05-17 ---
+
 2.0.3     2017-12-14 ---
 
 2.0.3a1   2017-12-14 pcr function now takes an amplicon. This way an amplicon can easily be rerun after 

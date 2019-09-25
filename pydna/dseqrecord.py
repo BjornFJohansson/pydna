@@ -262,7 +262,18 @@ class Dseqrecord(_SeqRecord):
         Dseq(-3)
         AAA
         TTT
-        >>>'''
+        >>>
+        
+        
+        Returns
+        -------
+        Dseqrecord
+            Dseqrecord object in uppercase
+           
+            
+        See also
+        --------
+        pydna.dseqrecord.Dseqrecord.lower'''
 
         upper = _copy.deepcopy(self)
         upper.seq = upper.seq.upper()
@@ -288,8 +299,12 @@ class Dseqrecord(_SeqRecord):
 
         Returns
         -------
-        lower : TYPE
-            DESCRIPTION.
+        Dseqrecord
+            Dseqrecord object in lowercase
+            
+        See also
+        --------
+        pydna.dseqrecord.Dseqrecord.upper
         
         '''
 

@@ -449,8 +449,15 @@ class Dseq(_Seq):
         AAA
         TTT
 
-
-        See also the lower method.
+        Returns
+        -------
+        Dseq
+            Dseq object in uppercase
+            
+        See also
+        --------
+        pydna.dseq.Dseq.lower
+        
         """
         return self.quick(self.watson.upper(), self.crick.upper(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos, alphabet=self.alphabet)
 
@@ -468,8 +475,14 @@ class Dseq(_Seq):
         aaa
         ttt
    
-
-        See also the upper method.
+        Returns
+        -------
+        Dseq
+            Dseq object in lowercase
+            
+        See also
+        --------
+        pydna.dseq.Dseq.upper
         """
         return self.quick(self.watson.lower(), self.crick.lower(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos, alphabet=self.alphabet)
 
