@@ -223,7 +223,7 @@ class Assembly(object, metaclass = _Memoize):
 
             for (start1,length1,node1),(start2,length2,node2) in _itertools.combinations(f["nodes"],2):
 
-                feats = [ft for ft in f["features"] if start1 <= ft.location.start and start2+G.node[node2]["length"] >= ft.location.end]
+                feats = [ft for ft in f["features"] if start1 <= ft.location.start and start2+G.nodes[node2]["length"] >= ft.location.end]
 
                 for feat in feats: feat.location+=(-start1)
 
@@ -342,7 +342,7 @@ class Assembly(object, metaclass = _Memoize):
         cpaths = sorted( _nx.simple_cycles(self.G), key=len)
         cpaths_sorted=[]
         for cpath in cpaths:
-            order, node = min((self.G.node[node]["order"],node) for node in cpath)
+            order, node = min((self.G.nodes[node]["order"],node) for node in cpath)
             i=cpath.index(node)
             cpaths_sorted.append((order, cpath[i:]+cpath[:i]))
         cpaths_sorted.sort()        

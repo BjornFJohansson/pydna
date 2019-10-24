@@ -53,7 +53,7 @@ class Contig(_Dseqrecord):
             ed["seq"]  = _rc(ed["seq"])
             ln = len(ed["seq"])
             start, stop = ed["piece"].start, ed["piece"].stop
-            ed["piece"] = slice(ln-stop-g.node[u]["length"], ln-start -g.node[v]["length"])
+            ed["piece"] = slice(ln-stop-g.nodes[u]["length"], ln-start -g.nodes[v]["length"])
             ed["features"] = [f._flip(ln) for f in ed["features"]]
         answer.graph = g
         answer.nodemap = {v: k for k, v in self.nodemap.items()}
