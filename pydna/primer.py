@@ -22,7 +22,7 @@ class Primer(_SeqRecord):
                  template  = None,
                  position  = None, 
                  footprint = 0,
-                 concentration = 1000.0,   # nM (= 1µM)
+                 concentration = 1000.0,   # nM (= 1 µM)
                  **kwargs):
         if hasattr(record, "features"):
             for key, value in record.__dict__.items():

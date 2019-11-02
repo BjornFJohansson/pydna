@@ -64,6 +64,8 @@ class SeqRecord(_SeqRecord):
         if not hasattr(self.seq, "alphabet"):
             self.seq = _Seq(self.seq, _IUPACAmbiguousDNA())
             
+        self.seq._data = "".join(self.seq._data.split()) # remove whitespaces
+            
         self.id          = _pretty_str(self.id)
         self.name        = _pretty_str(self.name)
         self.description = _pretty_str(self.description)
