@@ -459,7 +459,23 @@ class Dseqrecord(_SeqRecord):
         for key, value in list(self.__dict__.items()):
             setattr(new, key, value )
         new._seq = self.seq.looped()
+        five_prime = self.seq.five_prime_end()
         for fn, fo in zip(new.features, self.features):
+            if five_prime[0] == "5'":
+                fn.location = fn.location + self.seq.ovhg
+            elif five_prime[0] == "3'":
+                fn.location = fn.location + (-self.seq.ovhg)
+
+            if fn.location.start < 0:
+                loc1 = _FeatureLocation(len(new) + fn.location.start, len(new), strand=fn.strand)
+                loc2 = _FeatureLocation(0, fn.location.end, strand=fn.strand)
+                fn.location = _CompoundLocation([loc1, loc2])
+
+            if fn.location.end > len(new):
+                loc1 = _FeatureLocation(fn.location.start, len(new), strand=fn.strand)
+                loc2 = _FeatureLocation(0, fn.location.end - len(new), strand=fn.strand)
+                fn.location = _CompoundLocation([loc1, loc2])
+
             fn.qualifiers = fo.qualifiers
         return new
 
@@ -790,7 +806,16 @@ class Dseqrecord(_SeqRecord):
     def __add__(self, other):
         if hasattr(other, "seq") and hasattr(other.seq, "watson"):
             other = _copy.deepcopy(other)
-            for f in other.features: f.location=f.location+other.seq.ovhg
+            other_five_prime = other.seq.five_prime_end()
+            if other_five_prime[0] == "5'":
+                # add other.seq.ovhg
+                for f in other.features:
+                    f.location = f.location + other.seq.ovhg
+            elif other_five_prime[0] == "3'":
+                # subtract other.seq.ovhg (sign change)
+                for f in other.features:
+                    f.location = f.location + (-other.seq.ovhg)
+
             answer = Dseqrecord(_SeqRecord.__add__(self, other))
             answer.n = min(self.n, other.n)
         else:
