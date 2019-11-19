@@ -69,8 +69,9 @@ def parse(data, ds = True):
         result_list = []
 
         rawseqs = _re.findall(pattern, _textwrap.dedent(raw + "\n\n"), flags=_re.MULTILINE)
-        
+               
         for rawseq in rawseqs:
+            format_ = None
             handle = _io.StringIO(rawseq)
             if "circular" in rawseq.splitlines()[0]:
                 circular = True
@@ -95,6 +96,9 @@ def parse(data, ds = True):
                         parsed = _SeqIO.read(handle, "fasta", alphabet=_IUPACAmbiguousDNA())
                     except ValueError:
                         parsed = ""
+                    else: format_= "fasta"
+                else: format_= "genbank"
+            else: format_ = "embl"
             handle.close()
             if parsed:
                 from copy import deepcopy as _deepcopy  ## TODO: clean up !
