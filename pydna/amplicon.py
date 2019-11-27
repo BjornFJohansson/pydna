@@ -217,11 +217,11 @@ class Amplicon(_Dseqrecord):
         # is ignored. dnac1 = primer concentration
         
         tmf = _Tm_NN(str(self.forward_primer.footprint),
-                    dnac1=self.fprimerc,
-                    Na=self.saltc)
+                     dnac1=self.fprimerc,
+                     Na=self.saltc)
         tmr = _Tm_NN(str(self.reverse_primer.footprint),
-                    dnac1=self.fprimerc,
-                    Na=self.saltc)
+                     dnac1=self.fprimerc,
+                     Na=self.saltc)
 
         # Ta calculation according to
         # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
@@ -241,20 +241,20 @@ class Amplicon(_Dseqrecord):
         taq_extension_rate = 30  # seconds/kB PCR product length
         extension_time_taq = int(round(taq_extension_rate * len(self) / 1000)) # seconds
         f  = _textwrap.dedent(r'''
-                                 Taq (rate {rate} nt/s) 35 cycles             |{size}bp
-                                 95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
-                                 |_________|_____          72.0°C  |72.0°C|SaltC {saltc:2}mM
-                                 | 03min00s|30s  \         ________|______|Primer1C {forward_primer_concentration:3}µM
-                                 |         |      \ {ta}°C/{0:2}min{1:2}s| 5min |Primer2C {reverse_primer_concentration:3}µM
-                                 |         |       \_____/         |      |GC {GC_prod}%
-                                 |         |         30s           |      |4-12°C'''.format(rate=taq_extension_rate,
-                                                                                            forward_primer_concentration=self.fprimerc/1000,
-                                                                                            reverse_primer_concentration=self.rprimerc/1000,
-                                                                                            ta=round(ta,1),
-                                                                                            saltc=self.saltc,
-                                                                                            *divmod(extension_time_taq,60),
-                                                                                            size= len(self.seq),
-                                                                                            GC_prod= int(self.gc()) ))
+                              Taq ({rate} nt/s) 35 cycles             
+                              |  95.0°C |95.0°C                 |      |tm:
+                              |_________|_____          72.0°C  |72.0°C|Salt {saltc:2} mM
+                              | 03min00s|30s  \         ________|______|fp {forward_primer_concentration:3} µM
+                              |         |      \ {ta}°C/{0:2}min{1:2}s| 5min |rp {reverse_primer_concentration:3} µM
+                              |         |       \_____/         |      |GC {GC_prod}%
+                              |         |         30s           |      |{size} bp'''[1:].format(rate=taq_extension_rate,
+                                                                                             forward_primer_concentration=self.fprimerc/1000,
+                                                                                             reverse_primer_concentration=self.rprimerc/1000,
+                                                                                             ta=round(ta,1),
+                                                                                             saltc=self.saltc,
+                                                                                             *divmod(extension_time_taq,60),
+                                                                                             size= len(self.seq),
+                                                                                             GC_prod= int(self.gc()) ))
         return _pretty_str(f)
 
 
@@ -325,7 +325,7 @@ class Amplicon(_Dseqrecord):
                                     00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
                                               |      \______/{0:2}min{1:2}s|10min |GC {GC_prod}%
                                               |        10s           |      |4-12°C
-                                    '''.format(rate = PfuSso7d_extension_rate,
+                                    '''[1:-1].format(rate = PfuSso7d_extension_rate,
                                             size= len(self.seq),
                                             ta   = round(ta),
                                             forward_primer_concentration   = self.fprimerc/1000,
