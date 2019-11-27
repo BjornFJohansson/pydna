@@ -26,7 +26,7 @@ from prettytable import PrettyTable as _PrettyTable
 
 from Bio.Seq                import Seq as _Seq
 from Bio.SeqFeature         import FeatureLocation as _FeatureLocation
-from Bio.SeqRecord import SeqRecord as _SeqRecord
+from Bio.SeqRecord          import SeqRecord as _SeqRecord
 from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
 from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA as _IUPACAmbiguousDNA

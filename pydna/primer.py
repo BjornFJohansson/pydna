@@ -9,7 +9,6 @@
 
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
-#from Bio.SeqRecord import SeqRecord               as _SeqRecord
 from pydna.seqrecord import SeqRecord             as _SeqRecord
 from pydna.tm import tmbresluc                    as _tmbresluc
 
@@ -66,8 +65,12 @@ class Primer(_SeqRecord):
         return result
     
 
-    def tm(self, saltc=50.0, formula=_tmbresluc):
+    def tm(self, saltc=50.0, formula = _tmbresluc):
         return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
+
+
+    def footprint_tm(self, saltc=50.0, formula = _tmbresluc):
+        return formula( str(self.seq[-self._fp:]).upper(), primerc=self.concentration, saltc=saltc )    
 
 
 if __name__=="__main__":
