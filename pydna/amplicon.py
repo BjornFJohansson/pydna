@@ -10,20 +10,17 @@
 but is used by the :mod:`amplify` module"""
 
 import math       as _math
-import itertools  as _itertools
-import re         as _re
 import textwrap   as _textwrap
 import copy       as _copy
 import logging    as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 
-from Bio.SeqRecord                  import SeqRecord      as _SeqRecord
-from Bio.SeqUtils                   import GC             as _GC
-from Bio.SeqUtils.MeltingTemp       import Tm_NN          as _Tm_NN
-from pydna.utils                         import rc             as _rc
-from pydna.dseqrecord                    import Dseqrecord     as _Dseqrecord
-from pydna._pretty                       import pretty_str     as _pretty_str
-from pydna.tm                            import tmbresluc      as _tmbresluc
+from Bio.SeqRecord             import SeqRecord   as _SeqRecord
+from Bio.SeqUtils              import GC          as _GC
+from pydna.dseqrecord          import Dseqrecord  as _Dseqrecord
+from pydna._pretty             import pretty_str  as _pretty_str
+from pydna.tm                  import tmbresluc   as _tmbresluc
+from pydna.tm                  import default_tm  as _default_tm
 
 
 class Amplicon(_Dseqrecord):
@@ -64,24 +61,20 @@ class Amplicon(_Dseqrecord):
                      template=None,
                      forward_primer=None,
                      reverse_primer=None,
-                     saltc=50.0,
-                     fprimerc=1000.0,
-                     rprimerc=1000.0,
                      **kwargs):
 
         super().__init__(record, *args, **kwargs)
-        self.template       = template
-        self.forward_primer = forward_primer
-        self.reverse_primer = reverse_primer
-        self.fprimerc       = fprimerc
-        self.rprimerc       = rprimerc
-        self.saltc          = saltc
+        self.template            = template
+        self.forward_primer      = forward_primer
+        self.reverse_primer      = reverse_primer
+
 
     @classmethod
     def from_SeqRecord(cls, record, *args, path=None, **kwargs):
         obj = super().from_SeqRecord(record, *args, **kwargs)
         obj.path = path
         return obj
+
 
     def __getitem__(self, sl):
         answer = _copy.copy(self)
@@ -92,27 +85,45 @@ class Amplicon(_Dseqrecord):
         answer.features = _SeqRecord.__getitem__(sr, sl).features
         return answer
 
+
     def __repr__(self):
         '''returns a short string representation of the object'''
         return "Amplicon({})".format(self.__len__())
 
+
     def _repr_pretty_(self, p, cycle):
         p.text("Amplicon({})".format(self.__len__()))
-            
+ 
+           
     def _repr_html_(self):
         return "Amplicon({})".format(self.__len__())
+
 
     def reverse_complement(self):
         answer = type(self)(super().reverse_complement())
         answer.template       = self.template.rc()
         answer.forward_primer = self.reverse_primer
         answer.reverse_primer = self.forward_primer
-        answer.fprimerc       = self.rprimerc
-        answer.rprimerc       = self.fprimerc
-        answer.saltc          = self.saltc
         return answer
+
     
     rc = reverse_complement
+
+
+    def ta(self, Na=40, Tris=75):
+        # Ta calculation according to
+        # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+        # ing temperature for DNA amplification in vitro
+        # http://www.ncbi.nlm.nih.gov/pubmed/2243783
+        # The formula described uses the length and GC content of the product and
+        # salt concentration (monovalent cations)
+        salt = Na + Tris/2       
+        tmp = 81.5 + 0.41*_GC(str(self.seq)) + 16.6*_math.log10(salt/1000.0) - 675/len(self)
+        tml = min(self.forward_primer.tm, self.reverse_primer.tm)
+        return 0.3*tml+0.7*tmp-14.9
+    
+    
+
 
     def figure(self):
         '''
@@ -154,15 +165,19 @@ class Amplicon(_Dseqrecord):
 
         '''
 
-        tmf = _Tm_NN(str(self.forward_primer.footprint),
-                    dnac1=self.fprimerc,
-                    Na=self.saltc)
-        tmr = _Tm_NN(str(self.reverse_primer.footprint),
-                    dnac1=self.fprimerc,
-                    Na=self.saltc)
+        # tmf = _Tm_NN(str(self.forward_primer.footprint),
+        #             dnac1=self.forward_primer.concentration/2,
+        #             dnac2=self.forward_primer.concentration/2,
+        #             Na=self.saltc)
+        
+        
+        # tmr = _Tm_NN(str(self.reverse_primer.footprint),
+        #             dnac1=self.reverse_primer.concentration/2,
+        #             dnac2=self.reverse_primer.concentration/2,
+        #             Na=self.saltc)
 
-        tmf_dbd = _tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
-        tmr_dbd = _tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
+        # tmf_dbd = _tmbresluc(str(self.forward_primer.footprint), primerc=self.forward_primer.concentration)
+        # tmr_dbd = _tmbresluc(str(self.reverse_primer.footprint), primerc=self.reverse_primer.concentration)
 
         f =   '''
             {sp1}5{faz}...{raz}3
@@ -174,10 +189,10 @@ class Amplicon(_Dseqrecord):
             '''.format( fp       = self.forward_primer.seq,
                         fap      = "|"*len(self.forward_primer.footprint),
                         fplength = len(self.forward_primer.seq),
-                        tmf      = round(tmf,1),
-                        tmr      = round(tmr,1),
-                        tmf_dbd  = round(tmf_dbd,1),
-                        tmr_dbd  = round(tmr_dbd,1),
+                        tmf      = round(self.forward_primer.tm_footprint_std,1),
+                        tmr      = round(self.reverse_primer.tm_footprint_std,1),
+                        tmf_dbd  = round(self.forward_primer.tm_footprint_dbd,1),
+                        tmr_dbd  = round(self.reverse_primer.tm_footprint_dbd,1),
                         rp       = self.reverse_primer.seq[::-1],
                         rap      = "|"*len(self.reverse_primer.footprint),
                         rplength = len(self.reverse_primer.seq),
@@ -211,31 +226,6 @@ class Amplicon(_Dseqrecord):
        '''
 
 
-        # Primer melting temperatures are calculated with the Tm_NN formula from
-        # biopython
-        # simple salt concentration correction is used and the template concentration
-        # is ignored. dnac1 = primer concentration
-        
-        tmf = _Tm_NN(str(self.forward_primer.footprint),
-                     dnac1=self.fprimerc,
-                     Na=self.saltc)
-        tmr = _Tm_NN(str(self.reverse_primer.footprint),
-                     dnac1=self.fprimerc,
-                     Na=self.saltc)
-
-        # Ta calculation according to
-        # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
-        # ing temperature for DNA amplification in vitro
-        # http://www.ncbi.nlm.nih.gov/pubmed/2243783
-        # The formula described uses the length and GC content of the product and
-        # salt concentration (monovalent cations).
-
-        #GC_prod=GC(str(self.seq))
-
-        tmp = 81.5 + 0.41*_GC(str(self.seq)) + 16.6*_math.log10(self.saltc/1000.0) - 675/len(self)
-        tml = min(tmf,tmr)
-        ta = 0.3*tml+0.7*tmp-14.9
-
         # Taq polymerase extension rate is set to 30 nt/s
         # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
         taq_extension_rate = 30  # seconds/kB PCR product length
@@ -243,23 +233,21 @@ class Amplicon(_Dseqrecord):
         f  = _textwrap.dedent(r'''
                               Taq ({rate} nt/s) 35 cycles             
                               |  95.0°C |95.0°C                 |      |tm:
-                              |_________|_____          72.0°C  |72.0°C|Salt {saltc:2} mM
+                              |_________|_____          72.0°C  |72.0°C|
                               | 03min00s|30s  \         ________|______|fp {forward_primer_concentration:3} µM
                               |         |      \ {ta}°C/{0:2}min{1:2}s| 5min |rp {reverse_primer_concentration:3} µM
                               |         |       \_____/         |      |GC {GC_prod}%
                               |         |         30s           |      |{size} bp'''[1:].format(rate=taq_extension_rate,
-                                                                                             forward_primer_concentration=self.fprimerc/1000,
-                                                                                             reverse_primer_concentration=self.rprimerc/1000,
-                                                                                             ta=round(ta,1),
-                                                                                             saltc=self.saltc,
+                                                                                             forward_primer_concentration=self.forward_primer.concentration/1000,
+                                                                                             reverse_primer_concentration=self.reverse_primer.concentration/1000,
+                                                                                             ta=round(self.ta,1),
                                                                                              *divmod(extension_time_taq,60),
-                                                                                             size= len(self.seq),
+                                                                                             size=len(self.seq),
                                                                                              GC_prod= int(self.gc()) ))
         return _pretty_str(f)
 
 
-    def taq_program(self):
-        return self.program()
+    taq_program = program
 
 
     def dbd_program(self):
@@ -270,22 +258,22 @@ class Amplicon(_Dseqrecord):
 
         Pfu-Sso7d (rate 15s/kb)             |{size}bp
         Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
-        98.0°C    |98.0°C                |      |SaltC 50mM
+        98.0°C    |98.0°C                |      |
         __________|_____          72.0°C |72.0°C|Primer1C   1µM
         00min30s  |10s  \ 61.0°C ________|______|Primer2C   1µM
                   |      \______/ 0min 0s|10min |
                   |        10s           |      |4-12°C
 
        '''
-        PfuSso7d_extension_rate = 15                #seconds/kB PCR product
+        PfuSso7d_extension_rate = 15                                          # seconds/kB PCR product
         extension_time_PfuSso7d = PfuSso7d_extension_rate * len(self) / 1000  # seconds
 
         # The program returned is eaither a two step or three step progrem
         # This depends on the tm and length of the primers in the
-        # original instructions from finnzyme. These do not seem to be
+        # original instructions from finnzyme.
 
-        tmf_dbd = _tmbresluc(str(self.forward_primer.footprint), primerc=self.fprimerc)
-        tmr_dbd = _tmbresluc(str(self.reverse_primer.footprint), primerc=self.rprimerc)
+        tmf_dbd = self.forward_primer.tm_dbd()
+        tmr_dbd = self.reverse_primer.tm_dbd()
 
         # Ta calculation for enzymes with dsDNA binding domains like Pfu-Sso7d
         # https://www.finnzymes.fi/tm_determination.html
@@ -297,16 +285,15 @@ class Amplicon(_Dseqrecord):
             f=_textwrap.dedent(    r'''
                                     Pfu-Sso7d (rate {rate}s/kb)
                                     Two-step|    30 cycles |      |{size}bp
-                                    98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
-                                    _____ __|_____         |      |SaltC {saltc:2}mM
-                                    00min30s|10s  \        |      |Primer1C {forward_primer_concentration:3}µM
-                                            |      \ 72.0°C|72.0°C|Primer2C {reverse_primer_concentration:3}µM
+                                    98.0°C  |98.0C         |      |Tm formula: pydna.tm.tmbresluc
+                                    _____ __|_____         |      |
+                                    00min30s|10s  \        |      |fp{forward_primer_concentration:3}µM
+                                            |      \ 72.0°C|72.0°C|rp{reverse_primer_concentration:3}µM
                                             |       \______|______|GC {GC_prod}%
-                                            |      {0:2}min{1:2}s|10min |4-12°C
+                                            |      {0:2}min{1:2}s|10min |
                                     '''[1:-1].format(rate = PfuSso7d_extension_rate,
                                             forward_primer_concentration = self.fprimerc/1000,
                                             reverse_primer_concentration = self.rprimerc/1000,
-                                            saltc = self.saltc,
                                             *map(int,divmod(extension_time_PfuSso7d,60)),
                                             GC_prod= int(self.gc()),
                                             size = len(self.seq) ))
@@ -319,27 +306,23 @@ class Amplicon(_Dseqrecord):
 
             f=_textwrap.dedent(     '''\
                                     Pfu-Sso7d (rate {rate}s/kb)                 |{size}bp
-                                    Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
-                                    98.0°C    |98.0°C                |      |SaltC {saltc:2}mM
-                                    __________|_____          72.0°C |72.0°C|Primer1C {forward_primer_concentration:3}µM
-                                    00min30s  |10s  \ {ta:.1f}°C ________|______|Primer2C {reverse_primer_concentration:3}µM
+                                    Three-step|          30 cycles   |      |Tm formula: pydna.tm.tmbresluc
+                                    98.0°C    |98.0°C                |      |
+                                    __________|_____          72.0°C |72.0°C|fp{forward_primer_concentration:3}µM
+                                    00min30s  |10s  \ {ta:.1f}°C ________|______|rp{reverse_primer_concentration:3}µM
                                               |      \______/{0:2}min{1:2}s|10min |GC {GC_prod}%
-                                              |        10s           |      |4-12°C
+                                              |        10s           |      |
                                     '''[1:-1].format(rate = PfuSso7d_extension_rate,
                                             size= len(self.seq),
                                             ta   = round(ta),
                                             forward_primer_concentration   = self.fprimerc/1000,
                                             reverse_primer_concentration   = self.rprimerc/1000,
-                                            saltc= self.saltc,
                                             GC_prod= int(self.gc()),
                                             *map(int, divmod(extension_time_PfuSso7d,60)) ))
         return _pretty_str(f)
 
 
-    def pfu_sso7d_program(self):
-        return self.dbd_program()
-
-
+    pfu_sso7d_program = dbd_program
 
 
 if __name__=="__main__":

@@ -11,7 +11,9 @@ print("unique primers", len( set(str(p.seq).lower() for p in list_primers) ))
 print("no seq (n)", len([ p for p in list_primers if set(p.seq.lower())==set("n")]))
 
 for i, p in enumerate(list_primers):
-    assert p.name.startswith(str(i))
+    if not p.name.startswith(str(i)):
+        print(i, p.format("tab"))
+    
 print("names checked for primer number for ", i+1, "primers")
 
 duplicates = []

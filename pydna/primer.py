@@ -5,11 +5,12 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''This module contain provide the Primer class that is a subclass of the biopython SeqRecord.'''
+'''This module provide the Primer class that is a subclass of the biopython SeqRecord.'''
 
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq import Seq                           as _Seq
 from pydna.seqrecord import SeqRecord             as _SeqRecord
+from pydna.tm import default_tm                   as _default_tm
 from pydna.tm import tmbresluc                    as _tmbresluc
 
 class Primer(_SeqRecord):
@@ -21,7 +22,7 @@ class Primer(_SeqRecord):
                  template  = None,
                  position  = None, 
                  footprint = 0,
-                 concentration = 1000.0,   # nM (= 1 µM)
+                 concentration = 500.0,   # nM (= 0.5 µM)   
                  **kwargs):
         if hasattr(record, "features"):
             for key, value in record.__dict__.items():
@@ -46,6 +47,14 @@ class Primer(_SeqRecord):
         return self.seq[:-self._fp] if self._fp else ""
 
 
+    def tm(self):
+        return _default_tm(self.footprint.upper()) 
+
+
+    def tm_dbd(self):
+        return _tmbresluc(self.footprint.upper())
+    
+    
     def __repr__(self):
         s = min( (self.seq,"{}..{}".format(self.seq[:15], self.seq[-3:])), key=len)
         return "{id} {len}-mer:5'-{seq}-3'".format(id=self.id,len=len(self),seq=s)
@@ -63,14 +72,6 @@ class Primer(_SeqRecord):
             j1,j2,j3 = slice(-(self._fp or 0), None).indices(len(self))
             result._fp = self._fp - (i1-j1>0)*abs(i1-j1)
         return result
-    
-
-    def tm(self, saltc=50.0, formula = _tmbresluc):
-        return formula( str(self.seq).upper(), primerc=self.concentration, saltc=saltc )
-
-
-    def footprint_tm(self, saltc=50.0, formula = _tmbresluc):
-        return formula( str(self.seq[-self._fp:]).upper(), primerc=self.concentration, saltc=saltc )    
 
 
 if __name__=="__main__":

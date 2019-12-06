@@ -4,9 +4,74 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-import math as _math
 
-def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
+'''This module provide functions for melting temperature calculations.'''
+
+
+import math as _math
+from Bio.SeqUtils import MeltingTemp as _mt
+
+
+def default_tm(primer:str, *args,**kwargs):
+    return _mt.Tm_NN(primer.footprint.upper(),              
+                     nn_table=_mt.DNA_NN4,
+                     Na=40,
+                     Tris=75.0,
+                     Mg=1.5,
+                     dnac1=500/2,
+                     dnac2=500/2,
+                     dNTPs=0.8,
+                     saltcorr=7)
+
+
+def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
+    '''Returns the tm for a primer using a formula adapted to polymerases
+    with a DNA binding domain, such as the Phusion polymerase.
+
+    Parameters
+    ----------
+
+    primer : string
+        primer sequence 5'-3'
+
+    primerc : float
+       primer concentration in nM), set to 500.0 nm by default.
+
+    saltc : float, optional
+       Monovalent cation concentration in mM, set to 50.0 mM by default.
+
+    thermodynamics : bool, optional
+        prints details of the thermodynamic data to stdout. For
+        debugging only.
+
+    Returns
+    -------
+    tm : float
+        the tm of the primer
+        
+    '''
+
+    from . import _thermodynamic_data
+
+    saltc = float(saltc)/1000
+    pri  = primerc/10E7
+    dS = -12.4
+    dH = -3400
+
+    STR = primer.lower();
+
+    for i in range(len(STR)-1):
+        n1=ord(STR[i])
+        n2=ord(STR[i+1])
+        dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
+        dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
+
+    tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
+
+    return tm    
+
+
+def tmstaluc98(primer:str,*args, dnac=50, saltc=50, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
     the nearest neighbour algorithm. Formula and thermodynamic data
     is taken from SantaLucia 1998 [1]_. This implementation gives the same
@@ -97,10 +162,13 @@ def tmstaluc98(primer,*args, dnac=50, saltc=50, **kwargs):
     tm = ((1000* (-dH))/(-dS+(R * (_math.log(k)))))-273.15
     return tm
 
-def tmbreslauer86(primer, *args, dnac=500.0, saltc=50, thermodynamics=False, **kwargs):
+
+def tmbreslauer86(primer:str, *args, dnac=500.0, saltc=50, thermodynamics=False, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
-    the nearest neighbour algorithm. Formula and thermodynamic data
-    is taken from Breslauer 1986.
+    the nearest neighbour algorithm. 
+    
+    Formula and thermodynamic data is taken from Breslauer 1986.
+    SantaLucia salt correction formula is used.
 
     These data are no longer widely used.
 
@@ -190,59 +258,9 @@ def tmbreslauer86(primer, *args, dnac=500.0, saltc=50, thermodynamics=False, **k
         return tm
 
 
-def tmbresluc(primer, *args, primerc=500.0, saltc=50, thermodynamics=False, **kwargs):
-    '''Returns the tm for a primer using a formula adapted to polymerases
-    with a DNA binding domain, such as the Phusion polymerase.
 
-    Parameters
-    ----------
 
-    primer : string
-        primer sequence 5'-3'
-
-    primerc : float
-       primer concentration in nM), set to 500.0 nm by default.
-
-    saltc : float, optional
-       Monovalent cation concentration in mM, set to 50.0 mM by default.
-
-    thermodynamics : bool, optional
-        prints details of the thermodynamic data to stdout. For
-        debugging only.
-
-    Returns
-    -------
-    tm : float
-        the tm of the primer
-
-    tm,dH,dS : tuple
-        tm and dH and dS used for the calculation
-
-    '''
-
-    from . import _thermodynamic_data
-
-    saltc = float(saltc)/1000
-    pri  = primerc/10E7
-    dS = -12.4
-    dH = -3400
-
-    STR = primer.lower();
-
-    for i in range(len(STR)-1):
-        n1=ord(STR[i])
-        n2=ord(STR[i+1])
-        dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
-        dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
-
-    tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
-
-    if thermodynamics:
-        return tm,dH,dS
-    else:
-        return tm
-
-def basictm(primer, *args, **kwargs):
+def basictm(primer:str, *args, **kwargs):
     '''Returns the melting temperature (Tm) of the primer using
     the basic formula. This function returns the same value as
     the Biopython Bio.SeqUtils.MeltingTemp.Tm_Wallace
@@ -271,19 +289,20 @@ def basictm(primer, *args, **kwargs):
     >>>
 
     '''
-    primer = str(primer).lower()
+    primer = primer.lower()
     return (primer.count("a") + primer.count("t"))*2 + (primer.count("g") + primer.count("c"))*4
 
 # http://www.promega.com/techserv/tools/biomath/calc11.htm#melt_results        
         
 
-def Q5(*args,**kwargs):
+def Q5(primer:str,*args,**kwargs):
     '''For Q5 Ta they take the lower of the two Tms and add 1C 
     (up to 72C). For Phusion they take the lower of the two 
     and add 3C (up to 72C). 
     '''
     raise NotImplementedError
 
+ 
 
 if __name__=="__main__":
     import os as _os

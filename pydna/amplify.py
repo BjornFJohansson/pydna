@@ -36,6 +36,26 @@ from pydna.utils                         import memorize         as _memorize
 from pydna.utils                         import flatten          as _flatten
 from pydna._pretty                       import pretty_str       as _pretty_str
 
+
+
+class pcr_setup(object):
+
+    def __init__( Amplicon_s,
+                  Number_of_reactions=1,
+                  Polymerase="Taq",
+                  Polymerase_rate=15,
+                  ReactionVolume=20,
+                  #nn_table=_mt.DNA_NN4,
+                  Na=40,
+                  Tris=75.0,
+                  Mg=1.5,
+                  dnac1=500/2,
+                  dnac2=500/2,
+                  dNTPs=0.8,
+                  saltcorr=7 ):
+        pass       
+          
+
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
     primer anneals perfectly with at least limit nucleotides in the 3' part.
@@ -128,10 +148,6 @@ class Anneal(object, metaclass = _Memoize):
         Description of `reverse_primers`.
     template : Dseqrecord
         A copy of the template argument. Primers annealing sites has been added as features that can be visualized in a seqence editor such as ApE.
-    primerc : float
-        Primer concentration, affects some algorithms for primer Tm calculation. Both primers are expected to be present at the same concentration.
-    saltc   : int
-        Salt concentration, affects some algorithms for primer Tm calculation. 
     limit : int, optional
         The limit of PCR primer annealing, default is 13 bp."""
 
@@ -139,8 +155,6 @@ class Anneal(object, metaclass = _Memoize):
                   primers,
                   template,
                   limit=13,
-                  primerc=1000.0, # nM
-                  saltc=50,       # mM
                   **kwargs):      
         r'''The Anneal class has to be initiated with at least an iterable of primers and a template.
 
@@ -156,15 +170,6 @@ class Anneal(object, metaclass = _Memoize):
 
         limit : int, optional
             limit length of the annealing part of the primers.
-
-        fprimerc : float, optional
-            Concentration of forward primer in nM, set to 1000.0 nM by default
-
-        rprimerc : float, optional
-            Concentration of reverse primer in nM, set to 1000.0 nM by default
-
-        saltc  : float, optional
-            Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
 
         Attributes
         ----------
@@ -217,7 +222,7 @@ class Anneal(object, metaclass = _Memoize):
         <BLANKLINE>
         Taq (rate 30 nt/s) 35 cycles             |51bp
         95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
-        |_________|_____          72.0°C  |72.0°C|SaltC 50mM
+        |_________|_____          72.0°C  |72.0°C|SaltC 50 mM
         | 03min00s|30s  \         ________|______|Primer1C 1.0µM
         |         |      \ 45.4°C/ 0min 2s| 5min |Primer2C 1.0µM
         |         |       \_____/         |      |GC 39%
@@ -227,8 +232,6 @@ class Anneal(object, metaclass = _Memoize):
 
         '''
         self.primers=primers
-        self.primerc=primerc
-        self.saltc = saltc
         self.template = _copy.deepcopy(template)
 
         self.limit = limit
@@ -355,9 +358,6 @@ class Anneal(object, metaclass = _Memoize):
                                                  template=self.template,
                                                  forward_primer=fp,
                                                  reverse_primer=rp,
-                                                 saltc=self.saltc,
-                                                 fprimerc=self.primerc,
-                                                 rprimerc=self.primerc,
                                                  **self.kwargs))
 
         return self._products
