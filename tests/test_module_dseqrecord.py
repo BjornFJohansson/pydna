@@ -956,10 +956,10 @@ def test_features_on_slice():
 
     dseq_record =Dseqrecord(Dseq('ACTCTTTCTCTCTCT', circular=True))
     dseq_record.features = [SeqFeature(_FeatureLocation(start=2,end=4))]
-    assert len(dseq_record[6:1].features)==0)
-    assert len(dseq_record[6:3].features)==0)
-    assert len(dseq_record[6:4].features)==1)
-    assert len(dseq_record[6:5].features)==1)
+    assert len(dseq_record[6:1].features)==0
+    assert len(dseq_record[6:3].features)==0
+    assert len(dseq_record[6:4].features)==1
+    assert len(dseq_record[6:5].features)==1
 
 def test_features_change_ori():
     from pydna.dseq        import Dseq
