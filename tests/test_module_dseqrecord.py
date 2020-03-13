@@ -955,7 +955,7 @@ def test_features_on_slice():
     from Bio.SeqFeature    import FeatureLocation
 
     dseq_record =Dseqrecord(Dseq('ACTCTTTCTCTCTCT', circular=True))
-    dseq_record.features = [SeqFeature(_FeatureLocation(start=2,end=4))]
+    dseq_record.features = [SeqFeature(FeatureLocation(start=2,end=4))]
     assert len(dseq_record[6:1].features)==0
     assert len(dseq_record[6:3].features)==0
     assert len(dseq_record[6:4].features)==1
