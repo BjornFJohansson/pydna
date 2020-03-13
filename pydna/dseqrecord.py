@@ -823,6 +823,10 @@ class Dseqrecord(_SeqRecord):
 
         if self.linear or sl_start<sl_stop:
             answer.features = super().__getitem__(sl).features
+        elif self.circular and sl_start>sl_stop:
+            answer.features = self.shifted(sl_start).features
+            answer.features = [f for f in answer.features if 
+                f.location.parts[-1].end.position <= answer.seq.length]
         else:
             answer.features = self.shifted(sl_stop).features
             answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
