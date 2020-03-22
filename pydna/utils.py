@@ -16,6 +16,13 @@ import hashlib     as _hashlib
 import keyword     as _keyword
 import collections as _collections
 import itertools   as _itertools
+
+import re
+import textwrap
+import itertools
+import math
+import random
+
 _module_logger = _logging.getLogger("pydna."+__name__)
 
 from Bio.SeqUtils.CheckSum  import seguid   as _base64_seguid
@@ -28,6 +35,16 @@ from Bio.Data.IUPACData  import ambiguous_dna_complement as _ambiguous_dna_compl
 
 _ambiguous_dna_complement.update({"U":"A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
+
+
+# Zhang, S. P., Zubay, G., & Goldman, E. (1991). Low-usage codons in Escherichia
+# coli, yeast, fruit fly and primates. Gene, 105(1), 61–72.
+# https://www.embl.de/pepcore/pepcore_services/cloning/choice_expression_systems/codons8
+
+rare_codons = { "E. coli":         ["AGG","AGA","ATA","CTA","CGA","CGG","CCC","TCG"],
+                "S. cerevisiae":   ["AGG","CGA","CGG","CGC","CCG","CTC","GCG","ACG"],
+                "D. melanogaster": ["AGA","ATA","CGA","CGG","TTA","GGG","AGT","TGT"],
+                "Primates":        ["CGA","CGG","TCG","CGC","CCG","GCG","ACG","CGT"], }
 
 
 def rc(sequence:str):
@@ -408,6 +425,157 @@ def guess_alphabet(sequence:str):
         else:
             alphabet = ProteinAlphabet()
     return alphabet
+
+
+def parse_text_table(rawtable, tabs=4):
+
+    table = textwrap.dedent(rawtable.expandtabs(tabs)).strip()
+    max_row_length = max([len(row.strip()) for row in table.splitlines()])
+    rows = [row.ljust(max_row_length) for row in table.splitlines()]
+    table = "\n".join(rows)
+    empty_column_regex = r"(?:\n?\s{%s}\n)+" % len(rows)
+    transposed_table = "\n".join(["".join(c) for c in zip(*rows)])
+    cols = re.split(empty_column_regex, transposed_table)    
+    list_of_lists_cr = []
+
+    for col in cols:
+        columnlist = ["".join(c).strip() for c in zip(*[a for a in col.splitlines() if a])]
+        maxlen = max([len(c) for c in columnlist])
+        columnlist = [c.ljust(maxlen) for c in columnlist]
+        list_of_lists_cr.append(columnlist)
+    
+    list_of_lists_rc = [list(i) for i in zip(*list_of_lists_cr)]
+
+    formatted = "\n".join(" ".join(cell) for cell in list_of_lists_rc)
+    
+    columnsplit = "\n|||\n".join(["\n".join(["".join(c) for c in zip(*col.strip("\n").splitlines())]) for col in cols])
+
+    rowsplit =  "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
+
+    return formatted,columnsplit,rowsplit,list_of_lists_rc,list_of_lists_cr
+
+
+def join_list_to_table(rawlist):
+
+    if "|||\n" in rawlist:
+        raw_columns=rawlist.split("|||\n")
+        cols = [col.splitlines() for col in raw_columns]
+        if "" in [item for sublist in cols for item in sublist]:
+            cols = [col.split("\n\n") for col in raw_columns]
+    elif "---\n" in rawlist:
+        rawrows=rawlist.split("---\n")
+        rows = [row.splitlines() for row in rawrows]
+        cols = list(itertools.zip_longest(*rows,fillvalue=''))
+    else:
+        return
+
+    number_of_rows = max([len(col) for col in cols])
+    formatted_cols = []
+
+    for col in cols:
+        #print col
+        rows = [row.strip() for row in col]
+        width = max([len(row) for row in rows])
+
+        rows = [row.ljust(width) for row in rows]
+        rows+= [' '*width]*(number_of_rows-len(rows))
+        formatted_cols.append(rows)
+
+    rows=list(zip(*formatted_cols))
+
+    combinedlist = []
+
+    for row in rows:
+        combinedlist.append(" ".join(row))
+
+    new_text='\n'.join(combinedlist)
+
+    return new_text
+
+def expandtolist(content):
+
+    resultlist=[]
+    for line in re.finditer("(?P<item>[^\(\)]*?)(?P<brack>\[.*?\])", content):
+        text2rep = line.group("item")
+        bracket =  line.group("brack")
+        padding = max([len(str(x).strip()) for x in re.split("\.\.|,", bracket.strip("[ ]"))])
+        inbracket = [item.strip("[ ]") for item in bracket.split(",")]        
+        expanded = []
+        
+        for item in inbracket:
+            if re.match("(\d+\.\.\d+)|([a-z]+\.\.[a-z]+)|([A-Z]+\.\.[A-Z]+)",item):
+                low, high = item.split("..",)
+                if low.isdigit() and high.isdigit():
+                    r = ['{:{}d}'.format(x,padding) for x in range (int(low), 1+int(high))]
+                if (low.islower() and high.islower()) or (low.isupper() and high.isupper()):
+                    r = [chr(a) for a in range(ord(low),1+ord(high))]
+                expanded.extend(r)
+            else:
+                expanded.append(item.strip())
+
+        resultlist.append([text2rep+x for x in expanded])
+
+    ml = max([len(x) for x in resultlist])
+    
+    norm = []
+    for r in resultlist:
+        mp = int(math.ceil(float(ml)/float(len(r))))
+        norm.append(list(itertools.chain.from_iterable(list(zip(*(r,)*mp)))))
+
+    rt=""
+    for a in range(ml):
+        rt +="".join([b[a] for b in norm])+"\n"
+    return rt
+
+
+
+
+
+def randomRNA(length,maxlength=None):
+    if maxlength and maxlength>length:
+        length = int(round(random.triangular(length,maxlength)))
+    return ''.join([random.choice('GAUC') for x in range(length)])
+
+def randomDNA(length,maxlength=None):
+    ''' string! '''
+    if maxlength and maxlength>length:
+        length = int(round(random.triangular(length,maxlength)))
+    return ''.join([random.choice('GATC') for x in range(length)])
+
+def randomORF(length,maxlength=None):
+    
+    if maxlength and maxlength>length:
+        length = int(round(random.triangular(length,maxlength)))
+    
+    cdns = ("TTT", "TTC", "TTA", "TTG",
+            "TCT", "TCC", "TCA", "TCG",
+            "TAT", "TAC", 
+            "TGT", "TGC", "TGG",
+            "CTT", "CTC", "CTA", "CTG",
+            "CCT", "CCC", "CCA", "CCG",
+            "CAT", "CAC", "CAA", "CAG",
+            "CGT", "CGC", "CGA", "CGG",
+            "ATT", "ATC", "ATA", "ATG",
+            "ACT", "ACC", "ACA", "ACG",
+            "AAT", "AAC", "AAA", "AAG",
+            "AGT", "AGC", "AGA", "AGG",
+            "GTT", "GTC", "GTA", "GTG",
+            "GCT", "GCC", "GCA", "GCG",
+            "GAT", "GAC", "GAA", "GAG",
+            "GGT", "GGC", "GGA", "GGG",)
+    
+    starts = ("ATG",)
+    stops =  ("TAA", "TAG", "TGA")
+    
+    return random.choice(starts) + ''.join([random.choice(cdns) for x in range(int((length-6)/3))])+ random.choice(stops)
+    
+    
+
+
+def randomprot(length,maxlength=None):
+    if maxlength and maxlength>length:
+        length = int(round(random.triangular(length,maxlength)))
+    return ''.join([random.choice('ACDEFGHIKLMNPQRSTVWY') for x in range(length)])
 
 
 

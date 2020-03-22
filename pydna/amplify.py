@@ -36,25 +36,12 @@ from pydna.utils                         import memorize         as _memorize
 from pydna.utils                         import flatten          as _flatten
 from pydna._pretty                       import pretty_str       as _pretty_str
 
+from pydna.tm                  import tm_default   as _tm_default
+from pydna.tm                  import tm_dbd       as _tm_dbd
+from pydna.tm                  import ta_default   as _ta_default
+from pydna.tm                  import ta_dbd       as _ta_dbd
 
 
-class pcr_setup(object):
-
-    def __init__( Amplicon_s,
-                  Number_of_reactions=1,
-                  Polymerase="Taq",
-                  Polymerase_rate=15,
-                  ReactionVolume=20,
-                  #nn_table=_mt.DNA_NN4,
-                  Na=40,
-                  Tris=75.0,
-                  Mg=1.5,
-                  dnac1=500/2,
-                  dnac2=500/2,
-                  dNTPs=0.8,
-                  saltcorr=7 ):
-        pass       
-          
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -155,7 +142,11 @@ class Anneal(object, metaclass = _Memoize):
                   primers,
                   template,
                   limit=13,
-                  **kwargs):      
+                  tm_func =_tm_default,
+                  tm_func_dbd =_tm_dbd,
+                  ta_func =_ta_default,
+                  ta_func_dbd =_ta_dbd,
+                  **kwargs):
         r'''The Anneal class has to be initiated with at least an iterable of primers and a template.
 
 
@@ -245,6 +236,11 @@ class Anneal(object, metaclass = _Memoize):
         twl = len(self.template.seq.watson)
         tcl = len(self.template.seq.crick)
 
+        self.tm_func       = tm_func
+        self.tm_func_dbd   = tm_func_dbd 
+        self.ta_func       = ta_func 
+        self.ta_func_dbd   = ta_func_dbd  
+
         if self.template.linear:
             tw = self.template.seq.watson
             tc = self.template.seq.crick
@@ -254,20 +250,30 @@ class Anneal(object, metaclass = _Memoize):
 
         for p in self.primers:
             self.forward_primers.extend((_Primer(p,
+                                       #          template = self.template,
                                                  position  = tcl-pos - min(self.template.seq.ovhg, 0),
-                                                 footprint = fp)
+                                                 footprint = fp,
+                                                 tm_func = self.tm_func,
+                                                 tm_func_dbd = self.tm_func_dbd,
+                                                 )
                                          for pos, fp in _annealing_positions( str(p.seq),
                                                                               tc,
                                                                               self.limit) if pos<tcl))
             self.reverse_primers.extend((_Primer(p,
+                                       #          template = self.template,
                                                  position  = pos + max(0, self.template.seq.ovhg),
-                                                 footprint = fp)
+                                                 footprint = fp,
+                                                 tm_func = self.tm_func,
+                                                 tm_func_dbd = self.tm_func_dbd,
+                                                 )
                                          for pos, fp in _annealing_positions(str(p.seq),
                                                                              tw,
                                                                              self.limit) if pos<twl))
 
+
         self.forward_primers.sort(key = _operator.attrgetter('position'))
         self.reverse_primers.sort(key = _operator.attrgetter('position'), reverse=True)
+
 
         for fp in self.forward_primers:
             if fp.position-fp._fp>=0:
@@ -290,6 +296,8 @@ class Anneal(object, metaclass = _Memoize):
                                                                  "ApEinfo_fwdcolor":["#baffa3"],
                                                                  "ApEinfo_revcolor":["#ffbaba"]})
                 self.template.features.append(sf)
+                
+                
         for rp in self.reverse_primers:
             if rp.position+rp._fp<=len(self.template):
                 start = rp.position
@@ -354,11 +362,18 @@ class Anneal(object, metaclass = _Memoize):
                 prd.description = self.kwargs["description"] or"pcr product_{}_{}".format( fp.description,
                                                                                            rp.description)
                 
-                self._products.append( _Amplicon(prd,
-                                                 template=self.template,
-                                                 forward_primer=fp,
-                                                 reverse_primer=rp,
-                                                 **self.kwargs))
+                amplicon = _Amplicon(prd,
+                           template=self.template,
+                           forward_primer=fp,
+                           reverse_primer=rp,
+                           ta_func     = self.ta_func,
+                           ta_func_dbd = self.ta_func_dbd,  
+                           **self.kwargs)
+                
+                amplicon.forward_primer.amplicon = amplicon
+                amplicon.reverse_primer.amplicon = amplicon
+                
+                self._products.append(amplicon)
 
         return self._products
 
@@ -436,10 +451,11 @@ def pcr(*args,  **kwargs):
     >>> from pydna.dseqrecord import Dseqrecord
     >>> from pydna.readers import read
     >>> from pydna.amplify import pcr
+    >>> from pydna.primer import Primer
     >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
     >>> from Bio.SeqRecord import SeqRecord
-    >>> p1 = read(">p1\\ntacactcaccgtctatcattatc", ds = False)
-    >>> p2 = read(">p2\\ncgactgtatcatctgatagcac", ds = False).reverse_complement()
+    >>> p1 = Primer("tacactcaccgtctatcattatc")
+    >>> p2 = Primer("cgactgtatcatctgatagcac").reverse_complement()
     >>> pcr(p1, p2, template)
     Amplicon(51)
     >>> pcr([p1, p2], template)

@@ -12,16 +12,137 @@ import math as _math
 from Bio.SeqUtils import MeltingTemp as _mt
 
 
-def default_tm(primer:str, *args,**kwargs):
-    return _mt.Tm_NN(primer.footprint.upper(),              
-                     nn_table=_mt.DNA_NN4,
-                     Na=40,
-                     Tris=75.0,
-                     Mg=1.5,
-                     dnac1=500/2,
-                     dnac2=500/2,
-                     dNTPs=0.8,
-                     saltcorr=7)
+def tm_default( seq,
+                check=True,
+                strict=True,
+                c_seq=None,
+                shift=0,
+                nn_table=_mt.DNA_NN4,
+                tmm_table=None,
+                imm_table=None,
+                de_table=None,
+                dnac1=250,
+                dnac2=250,
+                selfcomp=False,
+                Na=40,
+                K=0,
+                Tris=75.0,
+                Mg=1.5,
+                dNTPs=0.8,
+                saltcorr=7,
+                func = _mt.Tm_NN):
+    return func(seq,
+                check=check,
+                strict=strict,
+                c_seq=c_seq,
+                shift=shift,
+                nn_table=nn_table,
+                tmm_table=tmm_table,
+                imm_table=imm_table,
+                de_table=de_table,
+                dnac1=dnac1,
+                dnac2=dnac2,
+                selfcomp=selfcomp,
+                Na=Na,
+                K=K,
+                Tris=Tris,
+                Mg=Mg,
+                dNTPs=dNTPs,
+                saltcorr=saltcorr)
+
+
+def tm_dbd( seq,
+            check=True,
+            strict=True,
+            c_seq=None,
+            shift=0,
+            nn_table=_mt.DNA_NN3,
+            tmm_table=None,
+            imm_table=None,
+            de_table=None,
+            dnac1=250,
+            dnac2=250,
+            selfcomp=False,
+            Na=50,
+            K=0,
+            Tris=0,
+            Mg=1.5,
+            dNTPs=0.8,
+            saltcorr=1,
+            func = _mt.Tm_NN):
+    return func(seq,
+                check=check,
+                strict=strict,
+                c_seq=c_seq,
+                shift=shift,
+                nn_table=nn_table,
+                tmm_table=tmm_table,
+                imm_table=imm_table,
+                de_table=de_table,
+                dnac1=dnac1,
+                dnac2=dnac2,
+                selfcomp=selfcomp,
+                Na=Na,
+                K=K,
+                Tris=Tris,
+                Mg=Mg,
+                dNTPs=dNTPs,
+                saltcorr=saltcorr)
+
+
+def tm_product( seq,
+                check=True,
+                strict=True,
+                valueset=7,
+                userset=None,
+                Na=50,
+                K=0,
+                Tris=0,
+                Mg=0,
+                dNTPs=0,
+                saltcorr=0,
+                mismatch=True,
+                func=_mt.Tm_GC):
+    return func(seq,
+                check=check,
+                strict=strict,
+                valueset=valueset,
+                userset=userset,
+                Na=Na,
+                K=K,
+                Tris=Tris,
+                Mg=Mg,
+                dNTPs=dNTPs,
+                saltcorr=saltcorr,
+                mismatch=mismatch)
+
+
+def ta_default(fp, rp, seq, tm=tm_default, tm_product=tm_product):
+    # Ta calculation according to
+    # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+    # ing temperature for DNA amplification in vitro
+    # http://www.ncbi.nlm.nih.gov/pubmed/2243783
+    # The formula described uses the length and GC content of the product and
+    # salt concentration (monovalent cations)
+    return 0.3*min((tm(fp),tm(rp)))+0.7*tm_product(seq)-14.9
+
+
+def ta_dbd(fp, rp, seq, tm=tm_dbd, tm_product=None):
+    # Ta calculation according to
+    # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+    # ing temperature for DNA amplification in vitro
+    # http://www.ncbi.nlm.nih.gov/pubmed/2243783
+    # The formula described uses the length and GC content of the product and
+    # salt concentration (monovalent cations)
+    return min((tm(fp),tm(rp)))+3
+
+
+def Q5(primer:str,*args,**kwargs):
+    '''For Q5 Ta they take the lower of the two Tms and add 1C 
+    (up to 72C). For Phusion they take the lower of the two 
+    and add 3C (up to 72C). 
+    '''
+    raise NotImplementedError
 
 
 def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
@@ -54,7 +175,7 @@ def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
     from . import _thermodynamic_data
 
     saltc = float(saltc)/1000
-    pri  = primerc/10E7
+    pri  = primerc/1E9
     dS = -12.4
     dH = -3400
 
@@ -68,240 +189,7 @@ def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
 
     tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
 
-    return tm    
-
-
-def tmstaluc98(primer:str,*args, dnac=50, saltc=50, **kwargs):
-    '''Returns the melting temperature (Tm) of the primer using
-    the nearest neighbour algorithm. Formula and thermodynamic data
-    is taken from SantaLucia 1998 [1]_. This implementation gives the same
-    answer as the one provided by Biopython (See Examples).
-
-    Thermodynamic data used:
-
-    =====  ====  ====
-    pair   dH    dS
-    =====  ====  ====
-    AA/TT  7.9   22.2
-    AT/TA  7.2   20.4
-    TA/AT  7.2   21.3
-    CA/GT  8.5   22.7
-    GT/CA  8.4   22.4
-    CT/GA  7.8   21.0
-    GA/CT  8.2   22.2
-    CG/GC  10.6  27.2
-    GC/CG  9.8   24.4
-    GG/CC  8.0   19.9
-    =====  ====  ====
-
-    Parameters
-    ----------
-    primer : string
-        Primer sequence 5'-3'
-
-    Returns
-    -------
-    tm : float
-        tm of the primer
-
-    References
-    ----------
-    .. [1] SantaLucia J Jr. A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics. Proc Natl Acad Sci U S A 1998;95:1460–5.
-
-    Examples
-    --------
-
-    >>> from pydna.tm import tmstaluc98
-    >>> from Bio.SeqUtils.MeltingTemp import Tm_NN
-    >>> tmstaluc98("ACGTCATCGACACTATCATCGAC")
-    54.55597724052518
-    >>> Tm_NN("ACGTCATCGACACTATCATCGAC")
-    54.55597724052518
-
-
-    '''
-
-    nntermsl={  "AA": (7.9  , 22.2),
-                "TT": (7.9  , 22.2),
-                "AT": (7.2  , 20.4),
-                "TA": (7.2  , 21.3),
-                "CA": (8.5  , 22.7),
-                "TG": (8.5  , 22.7),
-                "GT": (8.4  , 22.4),
-                "AC": (8.4  , 22.4),
-                "CT": (7.8  , 21.0),
-                "AG": (7.8  , 21.0),
-                "GA": (8.2  , 22.2),
-                "TC": (8.2  , 22.2),
-                "CG": (10.6 , 27.2),
-                "GC": (9.8  , 24.4),
-                "GG": (8    , 19.9),
-                "CC": (8    , 19.9),
-                "A" : (0    , 0   ),
-                "C" : (0    , 0   ),
-                "G" : (0    , 0   ),
-                "T" : (0    , 0   )  }
-
-    helixinit = {   "G": (-0.1 ,2.8),
-                    "C": (-0.1 ,2.8),
-                    "A": (-2.3, -4.1),
-                    "T": (-2.3, -4.1) }
-    primer = primer.upper()
-    dH, dS = helixinit[primer[0]]
-    H ,  S = helixinit[primer[-1]]
-    dH = dH+H
-    dS = dS+S
-    for p in range(len(primer)):
-        dn = primer[p:p+2]
-        H,S = nntermsl[dn]
-        dH+=H
-        dS+=S
-    R = 1.987 # universal gas constant in Cal/degrees C*Mol
-    k = (dnac/4.0)*1e-9
-    dS = dS-0.368*(len(primer)-1)*_math.log(float(saltc)/1e3)
-    tm = ((1000* (-dH))/(-dS+(R * (_math.log(k)))))-273.15
-    return tm
-
-
-def tmbreslauer86(primer:str, *args, dnac=500.0, saltc=50, thermodynamics=False, **kwargs):
-    '''Returns the melting temperature (Tm) of the primer using
-    the nearest neighbour algorithm. 
-    
-    Formula and thermodynamic data is taken from Breslauer 1986.
-    SantaLucia salt correction formula is used.
-
-    These data are no longer widely used.
-
-
-    Breslauer 1986, table 2 [2]_
-
-    =====  ===== ====   ===
-    pair   dH    dS     dG
-    =====  ===== ====   ===
-    AA/TT  9.1   24.0   1.9
-    AT/TA  8.6   23.9   1.5
-    TA/AT  6.0   16.9   0.9
-    CA/GT  5.8   12.9   1.9
-    GT/CA  6.5   17.3   1.3
-    CT/GA  7.8   20.8   1.6
-    GA/CT  5.6   13.5   1.6
-    CG/GC  11.9  27.8   3.6
-    GC/CG  11.1  26.7   3.1
-    GG/CC  11.0  26.6   3.1
-    =====  ===== ====   ===
-
-    Parameters
-    ----------
-    primer : string
-        Primer sequence 5'-3'
-
-    Returns
-    -------
-    tm : float
-
-
-    References
-    ----------
-    .. [2] K.J. Breslauer et al., “Predicting DNA Duplex Stability from the Base Sequence,” Proceedings of the National Academy of Sciences 83, no. 11 (1986): 3746.
-
-
-    Examples
-    ---------
-
-    >>> from pydna.tm import tmbreslauer86
-    >>> tmbreslauer86("ACGTCATCGACACTATCATCGAC")
-    64.28863985851899
-
-
-    '''
-
-    nntermbr={  "AA": (9.1   ,24.0   ,1.9),
-                "TT": (9.1   ,24.0   ,1.9),
-                "AT": (8.6   ,23.9   ,1.5),
-                "TA": (6.0   ,16.9   ,0.9),
-                "CA": (5.8   ,12.9   ,1.9),
-                "TG": (5.8   ,12.9   ,1.9),
-                "GT": (6.5   ,17.3   ,1.3),
-                "AC": (6.5   ,17.3   ,1.3),
-                "CT": (7.8   ,20.8   ,1.6),
-                "AG": (7.8   ,20.8   ,1.6),
-                "GA": (5.6   ,13.5   ,1.6),
-                "TC": (5.6   ,13.5   ,1.6),
-                "CG": (11.9  ,27.8   ,3.6),
-                "GC": (11.1  ,26.7   ,3.1),
-                "GG": (11.0  ,26.6   ,3.1),
-                "CC": (11.0  ,26.6   ,3.1),
-                "A" : (0     , 0     ,0),
-                "C" : (0     , 0     ,0),
-                "G" : (0     , 0     ,0),
-                "T" : (0     , 0     ,0),     }
-    dH=3.4
-    dS=12.4
-    dG=0
-    primer = primer.upper()
-    for p in range(len(primer)):
-        dn = primer[p:p+2]
-        H,S,G = nntermbr[dn]
-        dG+=G
-        dH+=H
-        dS+=S
-
-    R = 1.9872          # universal gas constant in Cal/degrees C*Mol
-    k = dnac*1E-9/2.0
-    dH = dH - 5
-    dS = dS-0.368*(len(primer)-1)*_math.log(float(saltc)/1E3) # SantaLucia salt correction formula
-    tm = 1000 * -dH /(-dS + R * _math.log(k) )  - 273.15 # degrees Celsius
-
-    if thermodynamics:
-        return tm,dH,dS
-    else:
-        return tm
-
-
-
-
-def basictm(primer:str, *args, **kwargs):
-    '''Returns the melting temperature (Tm) of the primer using
-    the basic formula. This function returns the same value as
-    the Biopython Bio.SeqUtils.MeltingTemp.Tm_Wallace
-
-    | Tm = (wA+xT)*2 + (yG+zC)*4 assumed 50mM monovalent cations
-    |
-    | w = number of A in primer
-    | x = number of T in primer
-    | y = number of G in primer
-    | z = number of C in primer
-
-    Parameters
-    ----------
-    primer : string
-        Primer sequence 5'-3'
-
-    Returns
-    -------
-    tm : int
-
-    Examples
-    --------
-    >>> from pydna.tm import basictm
-    >>> basictm("ggatcc")
-    20
-    >>>
-
-    '''
-    primer = primer.lower()
-    return (primer.count("a") + primer.count("t"))*2 + (primer.count("g") + primer.count("c"))*4
-
-# http://www.promega.com/techserv/tools/biomath/calc11.htm#melt_results        
-        
-
-def Q5(primer:str,*args,**kwargs):
-    '''For Q5 Ta they take the lower of the two Tms and add 1C 
-    (up to 72C). For Phusion they take the lower of the two 
-    and add 3C (up to 72C). 
-    '''
-    raise NotImplementedError
-
+    return tm 
  
 
 if __name__=="__main__":

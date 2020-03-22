@@ -8,10 +8,10 @@
 '''This module provide the Primer class that is a subclass of the biopython SeqRecord.'''
 
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
-from Bio.Seq import Seq                           as _Seq
-from pydna.seqrecord import SeqRecord             as _SeqRecord
-from pydna.tm import default_tm                   as _default_tm
-from pydna.tm import tmbresluc                    as _tmbresluc
+from Bio.Seq            import Seq                as _Seq
+from pydna.seqrecord    import SeqRecord          as _SeqRecord
+from pydna.tm                  import tm_default   as _tm_default
+from pydna.tm                  import tm_dbd       as _tm_dbd
 
 class Primer(_SeqRecord):
     '''This class can hold information about a primer and its position on a template 
@@ -19,11 +19,13 @@ class Primer(_SeqRecord):
 
     def __init__(self, record, 
                  *args,
-                 template  = None,
+                 amplicon  = None,
                  position  = None, 
                  footprint = 0,
-                 concentration = 500.0,   # nM (= 0.5 µM)   
+                 tm_func =_tm_default,
+                 tm_func_dbd =_tm_dbd,
                  **kwargs):
+        
         if hasattr(record, "features"):
             for key, value in record.__dict__.items():
                 setattr(self, key, value )
@@ -31,12 +33,12 @@ class Primer(_SeqRecord):
             super().__init__(record, *args, **kwargs)            
         else:        
             super().__init__(_Seq(record, _IUPACAmbiguousDNA()), *args, **kwargs)
-        self.concentration = concentration           
+          
         self.position      = position
-        self._fp           = footprint
-        self.template      = template
-    
-
+        self._fp           = footprint or len(record)
+        self.tm_func       = tm_func
+        self.tm_func_dbd   = tm_func_dbd 
+        
     @property
     def footprint(self):
         return self.seq[-self._fp:] if self._fp else ""
@@ -45,14 +47,6 @@ class Primer(_SeqRecord):
     @property
     def tail(self):
         return self.seq[:-self._fp] if self._fp else ""
-
-
-    def tm(self):
-        return _default_tm(self.footprint.upper()) 
-
-
-    def tm_dbd(self):
-        return _tmbresluc(self.footprint.upper())
     
     
     def __repr__(self):
@@ -62,7 +56,7 @@ class Primer(_SeqRecord):
 
     def __radd__(self, other):
         new = super().__radd__(other)
-        return Primer(new, template = self.template, position=self.position, footprint=self._fp)
+        return Primer(new, amplicon = self.amplicon, position=self.position, footprint=self._fp)
     
 
     def __getitem__(self, index):
@@ -74,6 +68,14 @@ class Primer(_SeqRecord):
         return result
 
 
+    def tm(self):
+        return self.tm_func(self.footprint)
+
+
+    def tm_dbd(self):
+        return self.tm_func_dbd(self.footprint)
+
+
 if __name__=="__main__":
     import os as _os
     cached = _os.getenv("pydna_cached_funcs", "")
@@ -81,7 +83,3 @@ if __name__=="__main__":
     import doctest
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"]=cached
-    
-    
-    
-    

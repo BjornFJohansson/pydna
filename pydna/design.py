@@ -28,19 +28,21 @@ from pydna.tm import tmbresluc                    as _tmbresluc
 from pydna.dseqrecord import Dseqrecord           as _Dseqrecord
 #from pydna._pretty import pretty_str              as _pretty_str
 from pydna.primer    import Primer                as _Primer
-
+from Bio.SeqUtils import MeltingTemp as _mt
+from functools import partial 
 import logging    as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
+
+from pydna.tm                  import tm_default   as _tm_default
+
 
 def primer_design( template,
                    fp=None,
                    rp=None,
-                   target_tm=55.0,
-                   fprimerc=1000.0,  # nM
-                   rprimerc=1000.0,  # nM
-                   saltc=50.0,
                    limit=13,
-                   formula = _tmbresluc):
+                   target_tm=55.0,
+                   tm_func=_tm_default,                 
+                   **kwargs):
 
     '''This function designs a forward primer and a reverse primer for PCR amplification 
     of a given template sequence.
@@ -53,11 +55,8 @@ def primer_design( template,
     If one of the primers is given, the other primer is designed to match in terms of Tm.
     If both primers are designed, they will be designed to target_tm
     
-    fprimerc, rprimerc and saltc are formward and reverse primer concentration (nM). Saltc is the salt concentration. 
-    These arguments might affect how Tm is calculated.
-    
-    formula is a function that can take at least three arguments f( str, primerc=float, saltc=float).
-    There are several of these in the pydna.tm module.
+    tm_func is a function that takes an ascii string representing an oligonuceotide as argument and returns a float.
+    Some useful functions can be found in the :mod:`pydna.tm` module, but can be substituted for a custom made function.
     
     The function returns a pydna.amplicon.Amplicon class instance. This object has 
     the object.forward_primer and object.reverse_primer properties which contain the designed primers.
@@ -75,27 +74,11 @@ def primer_design( template,
     target_tm : float, optional
         target tm for the primers, set to 55°C by default.
 
-    fprimerc : float, optional
-        Concentration of forward primer in nM, set to 1000.0 nM by default.
-
-    rprimerc : float, optional
-        Concentration of reverse primer in nM, set to 1000.0 nM by default.
-
-    saltc  : float, optional
-        Salt concentration (monovalet cations) :mod:`tmbresluc` set to 50.0 mM by default
-
-    formula : function
-        formula used for tm calculation
-        this is the name of a function.
-        built in options are:
-
-        1. :func:`pydna.amplify.tmbresluc` (default)
-        2. :func:`pydna.amplify.basictm`
-        3. :func:`pydna.amplify.tmstaluc98`
-        4. :func:`pydna.amplify.tmbreslauer86`
-
-        These functions are imported from the :mod:`pydna.amplify` module, but can be
-        substituted for some other custom made function.
+    tm_func : function
+        Function used for tm calculation. This function takes an ascii string
+        representing an oligonuceotide as argument and returns a float.
+        Some useful functions can be found in the :mod:`pydna.tm` module, but can be
+        substituted for a custom made function.
 
     Returns
     -------
@@ -150,6 +133,7 @@ def primer_design( template,
 
     '''
     
+    
     def design(target_tm, template):
         ''' returns a string '''
         tmp=0
@@ -158,33 +142,31 @@ def primer_design( template,
         while tmp<target_tm:
             length+=1
             p = str(template.seq[:length])
-            tmp = formula(p.upper())
+            tmp = tm_func(p)
         ps = p[:-1]
-        tmps = formula(str(ps).upper())
+        tmps = tm_func(str(ps))
         _module_logger.debug(((p,   tmp),(ps, tmps)))
         return min( ( abs(target_tm-tmp), p), (abs(target_tm-tmps), ps) )[1]
     
     if fp and not rp:
         fp  = _Anneal((fp,), template).forward_primers.pop()
-        target_tm = formula( str(fp.footprint), primerc=fprimerc, saltc=saltc)
+        target_tm = tm_func(fp.footprint)
         _module_logger.debug("forward primer given, design reverse primer:")
         rp = _Primer(design(target_tm, template.reverse_complement()))
     elif not fp and rp:
         rp =  _Anneal([rp], template).reverse_primers.pop()
-        target_tm = formula( str(rp.footprint), primerc=rprimerc, saltc=saltc)
+        target_tm = tm_func(rp.footprint)
         _module_logger.debug("reverse primer given, design forward primer:")
         fp = _Primer(design(target_tm, template))
     elif not fp and not rp:
         _module_logger.debug("no primer given, design forward primer:")
         fp = _Primer((design(target_tm, template)))
-        target_tm = formula( str(fp.seq), primerc=fprimerc, saltc=saltc)
+        target_tm = tm_func(str(fp.seq))
         _module_logger.debug("no primer given, design reverse primer:")
         rp = _Primer(design(target_tm, template.reverse_complement()))
     else:
         raise ValueError("Specify maximum one of the two primers.")
 
-    fp.concentration = fprimerc
-    rp.concentration = rprimerc
 
     if fp.id == "id": #<unknown id>
         fp.id = "f{}".format(len(template))
