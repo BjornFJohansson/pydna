@@ -36,12 +36,6 @@ from pydna.utils                         import memorize         as _memorize
 from pydna.utils                         import flatten          as _flatten
 from pydna._pretty                       import pretty_str       as _pretty_str
 
-from pydna.tm                  import tm_default   as _tm_default
-from pydna.tm                  import tm_dbd       as _tm_dbd
-from pydna.tm                  import ta_default   as _ta_default
-from pydna.tm                  import ta_dbd       as _ta_dbd
-
-
 
 def _annealing_positions(primer, template, limit=15):
     '''Finds the annealing position(s) for a primer on a template where the
@@ -142,10 +136,6 @@ class Anneal(object, metaclass = _Memoize):
                   primers,
                   template,
                   limit=13,
-                  tm_func =_tm_default,
-                  tm_func_dbd =_tm_dbd,
-                  ta_func =_ta_default,
-                  ta_func_dbd =_ta_dbd,
                   **kwargs):
         r'''The Anneal class has to be initiated with at least an iterable of primers and a template.
 
@@ -235,11 +225,7 @@ class Anneal(object, metaclass = _Memoize):
 
         twl = len(self.template.seq.watson)
         tcl = len(self.template.seq.crick)
-
-        self.tm_func       = tm_func
-        self.tm_func_dbd   = tm_func_dbd 
-        self.ta_func       = ta_func 
-        self.ta_func_dbd   = ta_func_dbd  
+ 
 
         if self.template.linear:
             tw = self.template.seq.watson
@@ -253,8 +239,6 @@ class Anneal(object, metaclass = _Memoize):
                                        #          template = self.template,
                                                  position  = tcl-pos - min(self.template.seq.ovhg, 0),
                                                  footprint = fp,
-                                                 tm_func = self.tm_func,
-                                                 tm_func_dbd = self.tm_func_dbd,
                                                  )
                                          for pos, fp in _annealing_positions( str(p.seq),
                                                                               tc,
@@ -263,8 +247,6 @@ class Anneal(object, metaclass = _Memoize):
                                        #          template = self.template,
                                                  position  = pos + max(0, self.template.seq.ovhg),
                                                  footprint = fp,
-                                                 tm_func = self.tm_func,
-                                                 tm_func_dbd = self.tm_func_dbd,
                                                  )
                                          for pos, fp in _annealing_positions(str(p.seq),
                                                                              tw,
@@ -365,9 +347,7 @@ class Anneal(object, metaclass = _Memoize):
                 amplicon = _Amplicon(prd,
                            template=self.template,
                            forward_primer=fp,
-                           reverse_primer=rp,
-                           ta_func     = self.ta_func,
-                           ta_func_dbd = self.ta_func_dbd,  
+                           reverse_primer=rp, 
                            **self.kwargs)
                 
                 amplicon.forward_primer.amplicon = amplicon

@@ -11,6 +11,9 @@
 import math as _math
 from Bio.SeqUtils import MeltingTemp as _mt
 
+import textwrap   as _textwrap
+from pydna._pretty   import pretty_str       as _pretty_str
+
 
 def tm_default( seq,
                 check=True,
@@ -128,13 +131,122 @@ def ta_default(fp, rp, seq, tm=tm_default, tm_product=tm_product):
 
 
 def ta_dbd(fp, rp, seq, tm=tm_dbd, tm_product=None):
-    # Ta calculation according to
-    # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
-    # ing temperature for DNA amplification in vitro
-    # http://www.ncbi.nlm.nih.gov/pubmed/2243783
-    # The formula described uses the length and GC content of the product and
-    # salt concentration (monovalent cations)
     return min((tm(fp),tm(rp)))+3
+
+
+def program(amplicon, tm = tm_default, ta = ta_default):
+
+    r'''Returns a string containing a text representation of a suggested
+   PCR program using Taq or similar polymerase.
+
+   ::
+
+    |95°C|95°C               |    |tmf:59.5
+    |____|_____          72°C|72°C|tmr:59.7
+    |5min|30s  \ 59.1°C _____|____|30s/kb
+    |    |      \______/ 0:32|5min|GC 51%
+    |    |       30s         |    |1051bp
+
+   '''
+
+
+    # Taq polymerase extension rate is set to 30 nt/s
+    # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
+    taq_extension_rate = 30  # seconds/kB PCR product length
+    extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000) # seconds
+
+    f=_textwrap.dedent(    r'''
+                            |95°C|95°C               |    |tmf:{tmf:.1f}
+                            |____|_____          72°C|72°C|tmr:{tmr:.1f}
+                            |5min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
+                            |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
+                            |    |       30s         |    |{size}bp
+                            '''[1:-1].format(rate = taq_extension_rate,
+                                    size= len(amplicon.seq),
+                                    ta=round(ta(amplicon.forward_primer.footprint,amplicon.reverse_primer.footprint,amplicon.seq),1),
+                                    tmf=tm(amplicon.forward_primer.footprint),
+                                    tmr=tm(amplicon.reverse_primer.footprint),
+                                    GC_prod= int(amplicon.gc()),
+                                    *map(int,divmod(extension_time_taq,60)))) 
+                                                                                            
+                                                                                      
+    return _pretty_str(f)
+
+
+taq_program = program
+
+
+def dbd_program(amplicon, tm = tm_dbd, ta = ta_dbd):
+    r'''Returns a string containing a text representation of a suggested
+   PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.
+
+   ::
+
+    |98°C|98°C               |    |tmf:53.8
+    |____|_____          72°C|72°C|tmr:54.8
+    |30s |10s  \ 57.0°C _____|____|15s/kb
+    |    |      \______/ 0:15|5min|GC 51%
+    |    |       10s         |    |1051bp
+    
+    
+    |98°C|98°C      |    |tmf:82.5
+    |____|____      |    |tmr:84.4
+    |30s |10s \ 72°C|72°C|15s/kb
+    |    |     \____|____|GC 52%
+    |    |      3:45|5min|15058bp   
+
+   '''
+    PfuSso7d_extension_rate = 15                #seconds/kB PCR product
+    extension_time_PfuSso7d = int(PfuSso7d_extension_rate * len(amplicon) / 1000)  # seconds
+
+
+    # The program returned is eaither a two step or three step progrem
+    # This depends on the tm and length of the primers in the
+    # original instructions from finnzyme. These do not seem to be
+
+    # Ta calculation for enzymes with dsDNA binding domains like phusion or Pfu-Sso7d
+    # https://www.finnzymes.fi/tm_determination.html
+    
+
+    tmf=tm(amplicon.forward_primer.footprint)
+    tmr=tm(amplicon.reverse_primer.footprint)
+
+    if (tmf>=69.0 and tmr>=69.0):
+        
+        f=_textwrap.dedent(    r'''
+                                |98°C|98°C      |    |tmf:{tmf:.1f}
+                                |____|____      |    |tmr:{tmr:.1f}
+                                |30s |10s \ 72°C|72°C|{rate}s/kb
+                                |    |     \____|____|GC {GC_prod}%
+                                |    |     {0:2}:{1:2}|5min|{size}bp
+                                '''[1:-1].format(rate=PfuSso7d_extension_rate,
+                                                 tmf=tmf,
+                                                 tmr=tmr,
+                                                 GC_prod=int(amplicon.gc()),
+                                                 size=len(amplicon.seq),
+                                                 *map(int,divmod(extension_time_PfuSso7d,60)),))   
+    else:
+        f=_textwrap.dedent(    r'''
+                                |98°C|98°C               |    |tmf:{tmf:.1f}
+                                |____|_____          72°C|72°C|tmr:{tmr:.1f}
+                                |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb
+                                |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
+                                |    |       10s         |    |{size}bp
+                                '''[1:-1].format(rate = PfuSso7d_extension_rate,
+                                                  size= len(amplicon.seq),
+                                                  ta=round(ta(amplicon.forward_primer.footprint,amplicon.reverse_primer.footprint,amplicon.seq),1),
+                                                  tmf=tmf,
+                                                  tmr=tmr,
+                                                  GC_prod=int(amplicon.gc()),
+                                                  *map(int,divmod(extension_time_PfuSso7d,60)),))  
+
+
+
+    
+    return _pretty_str(f)
+
+
+pfu_sso7d_program = dbd_program
 
 
 def Q5(primer:str,*args,**kwargs):

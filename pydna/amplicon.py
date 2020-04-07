@@ -20,8 +20,9 @@ _module_logger = _logging.getLogger("pydna."+__name__)
 from Bio.SeqRecord             import SeqRecord   as _SeqRecord
 from pydna.dseqrecord          import Dseqrecord  as _Dseqrecord
 from pydna._pretty             import pretty_str  as _pretty_str
-from pydna.tm                  import ta_default   as _ta_default
-from pydna.tm                  import ta_dbd       as _ta_dbd
+from pydna.primer              import Primer      as _Primer
+from pydna.tm                  import program     as _program
+from pydna.tm                  import dbd_program as _dbd_program
 
 
 class Amplicon(_Dseqrecord):
@@ -50,17 +51,13 @@ class Amplicon(_Dseqrecord):
                      template=None,
                      forward_primer=None,
                      reverse_primer=None,
-                     ta_func =_ta_default,
-                     ta_func_dbd =_ta_dbd,
                      **kwargs):
         
 
         super().__init__(record, *args)
         self.template            = template
         self.forward_primer      = forward_primer
-        self.reverse_primer      = reverse_primer
-        self.ta_func             = ta_func 
-        self.ta_func_dbd         = ta_func_dbd  
+        self.reverse_primer      = reverse_primer 
         self.__dict__.update(kwargs)
         
         # https://medium.com/@chipiga86/circular-references-without-memory-leaks-and-destruction-of-objects-in-python-43da57915b8d
@@ -105,14 +102,6 @@ class Amplicon(_Dseqrecord):
 
     
     rc = reverse_complement
-
-    
-    def ta(self):
-        return self.ta_func(self.forward_primer.footprint, self.reverse_primer.footprint, str(self.seq))
-    
-    
-    def ta_dbd(self):
-        return self.ta_func_dbd(self.forward_primer.footprint, self.reverse_primer.footprint, str(self.seq))
 
 
     def figure(self):
@@ -180,115 +169,20 @@ class Amplicon(_Dseqrecord):
         return _pretty_str(_textwrap.dedent(f).strip("\n"))
 
 
+    def set_forward_primer_footprint(self, length):
+        self.forward_primer = _Primer(self.forward_primer.tail + self.seq[:length], footprint=length)
+        
+        
+    def set_reverse_primer_footprint(self, length):
+        self.reverse_primer = _Primer(self.reverse_primer.tail + self.seq[:length], footprint=length)       
+
+
     def program(self):
-
-        r'''Returns a string containing a text representation of a suggested
-       PCR program using Taq or similar polymerase.
-
-       ::
-
-        |95°C|95°C               |    |tmf:59.5
-        |____|_____          72°C|72°C|tmr:59.7
-        |5min|30s  \ 59.1°C _____|____|30s/kb
-        |    |      \______/ 0:32|5min|GC 51%
-        |    |       30s         |    |1051bp
-
-       '''
-
-
-        # Taq polymerase extension rate is set to 30 nt/s
-        # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
-        taq_extension_rate = 30  # seconds/kB PCR product length
-        extension_time_taq = int(round(taq_extension_rate * len(self) / 1000)) # seconds
-
-        f=_textwrap.dedent(    r'''
-                                |95°C|95°C               |    |tmf:{tmf:.1f}
-                                |____|_____          72°C|72°C|tmr:{tmr:.1f}
-                                |5min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                                |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
-                                |    |       30s         |    |{size}bp
-                                '''[1:-1].format(rate = taq_extension_rate,
-                                        size= len(self.seq),
-                                        ta=round(self.ta(),1),
-                                        tmf=self.forward_primer.tm(),
-                                        tmr=self.reverse_primer.tm(),
-                                        GC_prod= int(self.gc()),
-                                        *map(int,divmod(extension_time_taq,60)))) 
-                                                                                                
-                                                                                          
-        return _pretty_str(f)
-
-
-    taq_program = program
-
+        return _program(self)
+        
 
     def dbd_program(self):
-        r'''Returns a string containing a text representation of a suggested
-       PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.
-
-       ::
-
-        |98°C|98°C               |    |tmf:53.8
-        |____|_____          72°C|72°C|tmr:54.8
-        |30s |10s  \ 57.0°C _____|____|15s/kb
-        |    |      \______/ 0:15|5min|GC 51%
-        |    |       10s         |    |1051bp
-        
-        
-        |98°C|98°C      |    |tmf:82.5
-        |____|____      |    |tmr:84.4
-        |30s |10s \ 72°C|72°C|15s/kb
-        |    |     \____|____|GC 52%
-        |    |      3:45|5min|15058bp   
-
-       '''
-        PfuSso7d_extension_rate = 15                #seconds/kB PCR product
-        extension_time_PfuSso7d = PfuSso7d_extension_rate * len(self) / 1000  # seconds
-
-
-        # The program returned is eaither a two step or three step progrem
-        # This depends on the tm and length of the primers in the
-        # original instructions from finnzyme. These do not seem to be
-
-        # Ta calculation for enzymes with dsDNA binding domains like phusion or Pfu-Sso7d
-        # https://www.finnzymes.fi/tm_determination.html
-        
-        
-        tmf = self.forward_primer.tm_dbd()
-        tmr = self.reverse_primer.tm_dbd()
-
-
-        if (tmf>=69.0 and tmr>=69.0):
-            f=_textwrap.dedent(    r'''
-                                    |98°C|98°C      |    |tmf:{tmf:.1f}
-                                    |____|____      |    |tmr:{tmr:.1f}
-                                    |30s |10s \ 72°C|72°C|{rate}s/kb
-                                    |    |     \____|____|GC {GC_prod}%
-                                    |    |     {0:2}:{1:2}|5min|{size}bp
-                                    '''[1:-1].format(rate=PfuSso7d_extension_rate,
-                                                     tmf=tmf,
-                                                     tmr=tmr,
-                                                     GC_prod=int(self.gc()),
-                                                     size=len(self.seq),
-                                                     *map(int,divmod(extension_time_PfuSso7d,60)),))   
-        else:
-            f=_textwrap.dedent(    r'''
-                                    |98°C|98°C               |    |tmf:{tmf:.1f}
-                                    |____|_____          72°C|72°C|tmr:{tmr:.1f}
-                                    |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                                    |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
-                                    |    |       10s         |    |{size}bp
-                                    '''[1:-1].format(rate = PfuSso7d_extension_rate,
-                                            size= len(self.seq),
-                                            ta   = round(self.ta_dbd()),
-                                            tmf=tmf,
-                                            tmr=tmr,
-                                            GC_prod= int(self.gc()),
-                                            *map(int,divmod(extension_time_PfuSso7d,60))) )      
-        return _pretty_str(f)
-
-
-    pfu_sso7d_program = dbd_program
+        return _dbd_program(self)
 
 
 if __name__=="__main__":

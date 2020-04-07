@@ -24,12 +24,8 @@ import copy                                       as _copy
 #from Bio.Seq import Seq                           as _Seq
 from pydna.amplify import Anneal                  as _Anneal
 from pydna.amplify import pcr                     as _pcr
-from pydna.tm import tmbresluc                    as _tmbresluc
 from pydna.dseqrecord import Dseqrecord           as _Dseqrecord
-#from pydna._pretty import pretty_str              as _pretty_str
 from pydna.primer    import Primer                as _Primer
-from Bio.SeqUtils import MeltingTemp as _mt
-from functools import partial 
 import logging    as _logging
 _module_logger = _logging.getLogger("pydna."+__name__)
 

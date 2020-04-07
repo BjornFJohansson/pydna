@@ -10,8 +10,7 @@
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.Seq            import Seq                as _Seq
 from pydna.seqrecord    import SeqRecord          as _SeqRecord
-from pydna.tm                  import tm_default   as _tm_default
-from pydna.tm                  import tm_dbd       as _tm_dbd
+
 
 class Primer(_SeqRecord):
     '''This class can hold information about a primer and its position on a template 
@@ -22,8 +21,6 @@ class Primer(_SeqRecord):
                  amplicon  = None,
                  position  = None, 
                  footprint = 0,
-                 tm_func =_tm_default,
-                 tm_func_dbd =_tm_dbd,
                  **kwargs):
         
         if hasattr(record, "features"):
@@ -36,8 +33,7 @@ class Primer(_SeqRecord):
           
         self.position      = position
         self._fp           = footprint or len(record)
-        self.tm_func       = tm_func
-        self.tm_func_dbd   = tm_func_dbd 
+        
         
     @property
     def footprint(self):
@@ -66,14 +62,6 @@ class Primer(_SeqRecord):
             j1,j2,j3 = slice(-(self._fp or 0), None).indices(len(self))
             result._fp = self._fp - (i1-j1>0)*abs(i1-j1)
         return result
-
-
-    def tm(self):
-        return self.tm_func(self.footprint)
-
-
-    def tm_dbd(self):
-        return self.tm_func_dbd(self.footprint)
 
 
 if __name__=="__main__":

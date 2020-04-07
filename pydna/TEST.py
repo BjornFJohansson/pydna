@@ -1,20 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Created on Sun Feb  9 07:31:39 2020 @author: bjorn
+# Created on Wed Mar  4 11:51:12 2020 @author: bjorn
 
+from pydna.readers import read
+from pydna.amplify import Anneal
 from pydna.dseqrecord import Dseqrecord
 
-from pydna.amplify import pcr
-from pydna.primer import Primer
-template  = Dseqrecord("ATGGCAGTTGAGAAGActaTCTTCTCAACTGCCAT")
+dna = "TGATACATGCGACAGGGGTAAGACCATCAGTAGTAGGGATAGTGCCAAAGCTCACTCACCACTGCCTATAAGGGGTGCTTACCTCTAGAATAAGTGTCAGCCAGTATAACCCCATGAGGAACCGAAAAGGCGAACCGGGCCAGACAATCCGGAGGCACCGGGCTCAAAGCCGCGACACGACGGCTCACAGCCGGTAAGAGTAACCCCGGAGTGAACACCTATGGGGCTGGATAAAACTGCCCTGGTGACCGCCATCAACAACCCGAATACGTGGCATTTCAGGAGGCGGCCGGAGGGGGGATGTTTTCTACTATTCGAGGCCGTTCGTTATAACTTGTTGCGTTCCTAGCCGCTATATTTGTCTCTTTGCCGACTAATGAGAACAACCACACCATAGCGATTTGACGCAGCGCCTCGGAATACCGTATCAGCAGGCGCCTCGTAAGGCCATTGCGAATACCAGGTATCGTGTAAGTAGCGTAGGCCCGTACGCGAGATAAACTGCTAGGGAACCGCGTCTCTACGACCGGTGCTCGATTTAATTTCGCCGACGTGATGACATTCCAGGCAGTGCCTCTGCCGCCGGGCCCCTCTCGTGATTGGGTAGTTGGACATGCCCTTGAAAGATATAGCAAGAGCCTGCCTGTCTATTGATGTCACGGCGAAAGTCGGGGAGACAGCAGCGGCTGCAGACATTATACCGGAACAACACTAAGGTGAGATAACTCCGTAACTGACTACGCCTTCCTCTAGACCTTACTTGACCAGATACAGTGTCTTTGACACGTTTATGGATTACAGCAATCACATCCAAGACTGGCTATGCACGAAGCAACTCTTGAGTGTTAAAATGTTGACCCCTGTATTTGGGATGCGGGTAGTAGATGACTGCAGGGACTCCGACGTCAAGTACATTACCCTCTCATAGGCGGCGTTCTAGATCACGTTACCGCCATATCATCCGAGCATGACATCATCTCCGCTGTGCCCATCCTAGTAG"
 
-p1 = Primer("ATGGCAGTTGAGAAGA")
-#p2 = Primer("cgactgtatcatctgatagcac").reverse_complement()
+template = Dseqrecord("tacactcaccgtctatcattatcta"+dna+"ctatcgactgtatcatctgatagcac")
+from Bio.SeqRecord import SeqRecord
+p1 = read(">p1\ntacactcaccgtctatcattatc", ds = False)
+p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
+ann = Anneal((p1, p2), template)
+#print(ann.report())
 
-x = pcr(p1, template)
+p = ann.products[0]
 
-print(x.forward_primer.tm())
+print(p.figure())
 
-print(x.forward_primer.concentration)
-print(x.concentration)
-print(x.program())
+from pydna.tm import program, dbd_program
+
+print(program(p))
+
+print(dbd_program(p))
+
+template = Dseqrecord("cgcggcggcgcggggggggaatgcgcg"+dna*15+"ggggcccgcggatcgcgcggcggaaggccgc")
+
+p1 = read(">p1\ncgcggcggcgcggggggggaatgcgcg", ds = False)
+p2 = read(">p2\ngcggccttccgccgcgcgatccgcgggcccc", ds = False)
+
+ann = Anneal((p1, p2), template)
+p = ann.products[0]
+print(dbd_program(p))
+
+
+from pydna.design import primer_design
+
+x = primer_design(template)
+
+print(program(x))
+print(dbd_program(x))
