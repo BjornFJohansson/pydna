@@ -32,19 +32,19 @@ def test_amplicon():
     
     
     fig='''    5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
-                               |||||||||||||||||||||| tm 55.9 (dbd) 60.5
+                               ||||||||||||||||||||||
                               3gctgacatagtagactatcgtgGGG5
  5CCCtacactcaccgtctatcattatc3
-     ||||||||||||||||||||||| tm 54.6 (dbd) 58.8
+     |||||||||||||||||||||||
     3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5'''
     
     import textwrap
     
     assert prod.figure() == textwrap.dedent(fig)
     
-    assert prod.program() == prod.taq_program()
+    #assert prod.program() == prod.taq_program()
     
-    assert prod.pfu_sso7d_program() == prod.dbd_program()
+    #assert prod.pfu_sso7d_program() == prod.dbd_program()
 
     from pydna.amplicon import Amplicon
 
@@ -87,8 +87,16 @@ def test_amplicon_dbd():
                       |       \______|______|GC 81%
                       |       0min 0s|10min |4-12°C
               '''[1:])
+    fig =( r'''
+            |98°C|98°C      |    |tmf:71.6
+            |____|____      |    |tmr:75.3
+            |30s |10s \ 72°C|72°C|15s/kb
+            |    |     \____|____|GC 81%
+            |    |      0: 0|5min|65bp
+            '''[1:])
+              
     fig = dedent(fig)
-    assert str(prod.pfu_sso7d_program()) == fig
+    assert str(prod.dbd_program()) == fig
     
 def test_amplicon_dbd_low_gc():
     
@@ -117,9 +125,17 @@ def test_amplicon_dbd_low_gc():
                       |      \______/ 0min 0s|10min |GC 14%
                       |        10s           |      |4-12°C
             '''[1:])
+            
+    fig =(   r'''
+              |98°C|98°C               |    |tmf:32.6
+              |____|_____          72°C|72°C|tmr:39.6
+              |30s |10s  \ 35.6°C _____|____|15s/kb
+              |    |      \______/ 0: 0|5min|GC 14%
+              |    |       10s         |    |55bp
+              '''[1:])
     fig = dedent(fig)
 
-    assert str(prod.pfu_sso7d_program()) == fig
+    assert str(prod.dbd_program()) == fig
 
 if __name__ == '__main__':
     pytest.main([__file__, "-vv", "-s","--cov=pydna","--cov-report=html"])

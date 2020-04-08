@@ -181,19 +181,16 @@ class Anneal(object, metaclass = _Memoize):
         Amplicon(51)
         >>> print(amplicon.figure())
         5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
-                                   |||||||||||||||||||||| tm 55.9 (dbd) 60.5
+                                   ||||||||||||||||||||||
                                   3gctgacatagtagactatcgtg5
         5tacactcaccgtctatcattatc3
-         ||||||||||||||||||||||| tm 54.6 (dbd) 58.8
+         |||||||||||||||||||||||
         3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5
         >>> amplicon.annotations['date'] = '02-FEB-2013'   # Set the date for this example to pass the doctest
         >>> print(amplicon)
         Dseqrecord
         circular: False
         size: 51
-        ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
-        Name: 51bp_PCR_prod
-        Description: pcr product_p1_p2
         Number of features: 2
         /date=02-FEB-2013
         Dseq(-51)
@@ -201,14 +198,11 @@ class Anneal(object, metaclass = _Memoize):
         atgt..cgtg
         >>> print(amplicon.program())
         <BLANKLINE>
-        Taq (rate 30 nt/s) 35 cycles             |51bp
-        95.0°C    |95.0°C                 |      |Tm formula: Biopython Tm_NN
-        |_________|_____          72.0°C  |72.0°C|SaltC 50 mM
-        | 03min00s|30s  \         ________|______|Primer1C 1.0µM
-        |         |      \ 45.4°C/ 0min 2s| 5min |Primer2C 1.0µM
-        |         |       \_____/         |      |GC 39%
-        |         |         30s           |      |4-12°C
-
+        |95°C|95°C               |    |tmf:59.5
+        |____|_____          72°C|72°C|tmr:59.7
+        |5min|30s  \ 47.7°C _____|____|30s/kb
+        |    |      \______/ 0: 1|5min|GC 39%
+        |    |       30s         |    |51bp
         >>>
 
         '''

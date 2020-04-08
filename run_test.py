@@ -62,7 +62,7 @@ def main():
         del coveralls
         args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]    
     try:
-        import nbval
+        import nbval # adds functionality to py.test to recognise and collect Jupyter notebooks
     except ImportError:
         print("nbval NOT installed!")
     else:

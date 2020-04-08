@@ -221,7 +221,7 @@ def test_primer_Design_given_fw_primer():
 def test_primer_Design_given_rv_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     a = primer_design(b, rp=Primer("tagatcagtacagtca"))
-    assert str(a.forward_primer.seq) == 'agctactgactattagg'
+    assert str(a.forward_primer.seq) == 'agctactgactattag' #g
 
 def test_primer_Design_given_both_primers():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")

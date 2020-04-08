@@ -52,7 +52,7 @@ class Primer(_SeqRecord):
 
     def __radd__(self, other):
         new = super().__radd__(other)
-        return Primer(new, amplicon = self.amplicon, position=self.position, footprint=self._fp)
+        return Primer(new, position=self.position, footprint=self._fp)
     
 
     def __getitem__(self, index):

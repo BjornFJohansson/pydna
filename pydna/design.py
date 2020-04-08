@@ -92,31 +92,31 @@ def primer_design( template,
     >>> ampl
     Amplicon(64)
     >>> ampl.forward_primer
-    f64 18-mer:5'-atgactgctaacccttcc-3'
+    f64 17-mer:5'-atgactgctaacccttc-3'
     >>> ampl.reverse_primer
     r64 19-mer:5'-catcgtaagtttcgaacga-3'
     >>> print(ampl.figure())
-    5atgactgctaacccttcc...tcgttcgaaacttacgatg3
-                          ||||||||||||||||||| tm 53.8 (dbd) 60.6
-                         3agcaagctttgaatgctac5
-    5atgactgctaacccttcc3
-     |||||||||||||||||| tm 54.4 (dbd) 58.4
-    3tactgacgattgggaagg...agcaagctttgaatgctac5
+    5atgactgctaacccttc...tcgttcgaaacttacgatg3
+                         |||||||||||||||||||
+                        3agcaagctttgaatgctac5
+    5atgactgctaacccttc3
+     |||||||||||||||||
+    3tactgacgattgggaag...agcaagctttgaatgctac5
     >>> pf = "GGATCC" + ampl.forward_primer
     >>> pr = "GGATCC" + ampl.reverse_primer  
     >>> pf
-    f64 24-mer:5'-GGATCCatgactgct..tcc-3'
+    f64 23-mer:5'-GGATCCatgactgct..ttc-3'
     >>> pr
     r64 25-mer:5'-GGATCCcatcgtaag..cga-3'
     >>> from pydna.amplify import pcr
     >>> pcr_prod = pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
-          5atgactgctaacccttcc...tcgttcgaaacttacgatg3
-                                ||||||||||||||||||| tm 53.8 (dbd) 60.6
-                               3agcaagctttgaatgctacCCTAGG5
-    5GGATCCatgactgctaacccttcc3
-           |||||||||||||||||| tm 54.4 (dbd) 58.4
-          3tactgacgattgggaagg...agcaagctttgaatgctac5
+          5atgactgctaacccttc...tcgttcgaaacttacgatg3
+                               |||||||||||||||||||
+                              3agcaagctttgaatgctacCCTAGG5
+    5GGATCCatgactgctaacccttc3
+           |||||||||||||||||
+          3tactgacgattgggaag...agcaagctttgaatgctac5
     >>> print(pcr_prod.seq)
     GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGGATCC
     >>> from pydna.primer import Primer
@@ -125,8 +125,7 @@ def primer_design( template,
     >>> ampl.forward_primer
     myprimer 27-mer:5'-atgactgctaaccct..ttg-3'
     >>> ampl.reverse_primer
-    r64 28-mer:5'-catcgtaagtttcga..gtc-3'
-
+    r64 37-mer:5'-catcgtaagtttcga..gtt-3'
     '''
     
     
@@ -536,6 +535,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> fa = pcr(fa2.forward_primer, fa1.reverse_primer, a)
     >>> [fa,fb,fc]
     [Amplicon(100), Amplicon(101), Amplicon(102)]
+    >>> fa.name, fb.name, fc.name = "fa fb fc".split()
     >>> from pydna.assembly import Assembly
     >>> assemblyobj = Assembly([fa,fb,fc])
     >>> assemblyobj
@@ -551,18 +551,18 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> (a+b+c).looped().cseguid()
     'V3Mi8zilejgyoH833UbjJOtDMbc'
     >>> print(assemblyobj.assemble_circular()[0].figure())
-     -|100bp_PCR_prod|36
+     -|fa|36
+    |     \\/
+    |     /\\
+    |     36|fb|36
+    |           \\/
+    |           /\\
+    |           36|fc|36
     |                 \\/
     |                 /\\
-    |                 36|101bp_PCR_prod|36
-    |                                   \\/
-    |                                   /\\
-    |                                   36|102bp_PCR_prod|36
-    |                                                     \\/
-    |                                                     /\\
-    |                                                     36-
-    |                                                        |
-     --------------------------------------------------------
+    |                 36-
+    |                    |
+     --------------------    
     >>>
 
     '''
