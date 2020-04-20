@@ -15,7 +15,8 @@ def test_pydna_gbtext_clean():
                  ("P30350%20(2013-10-11%2013_49_14).dna.txt", "_aEPoGLctHcOZdQdZIh-KyBt5WY"),
                  ("ApE_example.gb", "c47i2ifiNZVvvnLQbX5anTVVoPE"),
                  ("VectorNTI_example.gb", "bDPbx5P4yigGWh1zK7FiG_SF8qQ"),
-                 ("hej.txt", "lbnQtxi5LyDONRswRdG88-l8NF0"), ]
+                 ("hej.txt", "lbnQtxi5LyDONRswRdG88-l8NF0"),
+                 ("fakeGenBankFile.gb",'ATrCXrjheFhltm8HhLJuFNtWXGw')]
 
     for file_, seg in files:             
         with open("broken_genbank_files/"+file_, "r") as f:

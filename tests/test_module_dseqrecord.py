@@ -948,6 +948,19 @@ ORIGIN
     e = b+c+d+f
     assert  str(a.seq)==str(e.seq)
 
+def test_features_on_slice():
+    from pydna.dseq        import Dseq
+    from pydna.dseqrecord  import Dseqrecord
+    from pydna.seqfeature  import SeqFeature
+    from Bio.SeqFeature    import FeatureLocation
+
+    dseq_record =Dseqrecord(Dseq('ACTCTTTCTCTCTCT', circular=True))
+    dseq_record.features = [SeqFeature(FeatureLocation(start=2,end=4))]
+    assert len(dseq_record[6:1].features)==0
+    assert len(dseq_record[6:3].features)==0
+    assert len(dseq_record[6:4].features)==1
+    assert len(dseq_record[6:5].features)==1
+
 def test_features_change_ori():
     from pydna.dseq        import Dseq
     from pydna.dseqrecord  import Dseqrecord

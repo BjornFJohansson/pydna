@@ -363,7 +363,7 @@ def toGB(jseq):
     divcode  = jseq["divcode"] or "   "
     date = jseq["date"] or "19-MAR-1970"
 
-    locusstr = "LOCUS       {name:<24}{size:>4} bp {prefix}{seqtype:<4}    {topology:<8} {divcode} {date}\n".format(name=name, 
+    locusstr = "LOCUS       {name:<24} {size:>4} bp {prefix}{seqtype:<4}    {topology:<8} {divcode} {date}\n".format(name=name,
                                                                                                                     size=size,
                                                                                                                     prefix=prefix,
                                                                                                                     seqtype=seqtype, 
