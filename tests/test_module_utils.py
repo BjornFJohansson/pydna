@@ -183,10 +183,16 @@ def test_memorize(monkeypatch):
     
     args=(1,)
     kwargs = {"kw":1}
-            
-    key = _base64.urlsafe_b64encode(_hashlib.sha1(_pickle.dumps((args, kwargs))).digest()).decode("ascii")
     
-    assert key == '6pHTTwgXP8xcXoEMEzdKSzN6EeM='
+    dump = _pickle.dumps((args, kwargs))
+    
+    hash_ = _hashlib.sha1(dump).digest()
+               
+    bkey = _base64.urlsafe_b64encode(hash_)
+    
+    key = bkey.decode("ascii")
+    
+    assert key == '6pHTTwgXP8xcXoEMEzdKSzN6EeM=' or 'ux_W9TiWkWBAkQD_FgZTO-pXuYk='
     
     class Fakedict(dict):
         

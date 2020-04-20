@@ -818,14 +818,15 @@ class Dseqrecord(_SeqRecord):
         answer.seq = self.seq.__getitem__(sl)
         answer.seq.alphabet = self.seq.alphabet
 
-        sl_start = sl.start or 0
-        sl_stop = sl.stop or len(answer.seq)
+        sl_start = sl.start or 0               # 6
+        sl_stop = sl.stop or len(answer.seq)   # 1
 
         if self.linear or sl_start<sl_stop:
             answer.features = super().__getitem__(sl).features
         else:
-            answer.features = self.shifted(sl_stop).features
-            answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
+            x = len(answer.seq)
+            answer.features = self.shifted(sl_start)[:x].features 
+            #answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
         identifier= "part_{id}".format(id=self.id)
         if answer.features:
             sf = max(answer.features, key=len) # default
