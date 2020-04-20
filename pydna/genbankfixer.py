@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
-# This code is part of the Python-dna distribution and governed by its
+# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# This code is part of the pydna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
 # doctest: +IGNORE_EXCEPTION_DETAIL
-'''This module provides the :func:`gbtext_clean` function which can clean up broken Genbank files enough to 
-pass the BioPython Genbank parser 
+'''This module provides the :func:`gbtext_clean` function which can clean up broken Genbank files enough to
+pass the BioPython Genbank parser
 
 Almost all of this code was lifted from BioJSON (https://github.com/levskaya/BioJSON) by Anselm Levskaya.
 The original code was not accompanied by any software licence. This parser is based on pyparsing.
 
 There are some modifications to deal with fringe cases.
 
-The parser first produces JSON as an intermediate format which is then formatted back into a 
+The parser first produces JSON as an intermediate format which is then formatted back into a
 string in Genbank format.
 
-The parser is not complete, so some fields do not survive the roundtrip (see below). 
-This should not be a difficult fix. The returned result has two properties,  
-.jseq which is the intermediate JSON produced by the parser and .gbtext 
+The parser is not complete, so some fields do not survive the roundtrip (see below).
+This should not be a difficult fix. The returned result has two properties,
+.jseq which is the intermediate JSON produced by the parser and .gbtext
 which is the formatted genbank string.'''
 
 
@@ -94,7 +94,7 @@ GenericEntry =  _pp.Group(CapWord + _pp.Combine(_pp.CharsNotIn("\n") + _pp.LineE
 # slice is N1..N2  w. N1<N2
 # i.e.
 # 23..88  --> seq[23:89] in python syntax (genbank uses inclusive slicing)
-# 234..555 
+# 234..555
 # complement(234..434) --> rc(seq[234:435])
 # join(23..343,454..666,777..999) --> seq[23:344]+seq[454:667]+seq[777:1000]
 # complement(join(23..343,454..666,777..999))
@@ -118,14 +118,14 @@ SimpleSlice=_pp.Group(gbIndex + SEP + gbIndex) | _pp.Group(gbIndex).setParseActi
 
 #recursive def for nested function syntax:  f( g(), g() )
 complexSlice = _pp.Forward()
-complexSlice << (_pp.Literal("complement") | _pp.Literal("join")) + LPAREN + ( _pp.delimitedList(complexSlice) | _pp.delimitedList(SimpleSlice) ) + RPAREN 
+complexSlice << (_pp.Literal("complement") | _pp.Literal("join")) + LPAREN + ( _pp.delimitedList(complexSlice) | _pp.delimitedList(SimpleSlice) ) + RPAREN
 featLocation = _pp.Group( SimpleSlice | complexSlice)
 
 def parseGBLoc(s,l,t):
     """retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences """
     strand = 1
     locationlist=[]
-    
+
     #see if there are any complement operators
     for entry in t[0]:
         if entry=="complement": strand=-1
@@ -133,7 +133,7 @@ def parseGBLoc(s,l,t):
     for entry in t[0]:
         if type(entry)!=type("string"):
             locationlist.append([entry[0],entry[1]])
-            
+
     #return locationlist and strand spec
     return [ ['location', locationlist ], ['strand',strand] ]
 
@@ -219,24 +219,24 @@ def concat_dict(dlist):
     return newdict
 
 def toJSON(gbkstring):
-    
+
     parsed = multipleGB.parseString(gbkstring)
-    
+
     jseqlist=[]
 
     for seq in parsed:
-        
+
         #for item in seq.asList():
         #    print(item)
-        
-        
-        #import sys;sys.exit(42) 
-        
+
+
+        #import sys;sys.exit(42)
+
         #Print to STDOUT some details (useful for long multi-record parses)
         #print(seq['name'], ":  length:", len(seq['sequence']) , " #features:" , len(seq['features'].asList()))
-        
+
         #build JSON object
-        
+
         nl=[]
         if 'features' in seq:
             for a in list(map(dict, seq['features'].asList())):
@@ -248,9 +248,9 @@ def toJSON(gbkstring):
                     if isinstance(val, str):
                         dct[key]=a[key].strip()
                 nl.append(dct)
-            
-        #import sys;sys.exit(42)    
-        
+
+        #import sys;sys.exit(42)
+
         #print(list(map(dict, hej))[2]["codon_start"])
 
         jseq = { "__format__" : "jseq v0.1",
@@ -284,7 +284,7 @@ def wrapstring(str_, rowstart, rowend, padfirst=True):
             return leftpad*" "+str_+"\n"
         else:
             return str_+"\n"
-        
+
     #multiple lines so wrap:
     for linenum in range(1+int(len(str_)/rowlen)):
         if linenum==0 and not padfirst:
@@ -327,14 +327,14 @@ def originstr(sequence):
 
 def toGB(jseq):
     "parses json jseq data and prints out ApE compatible genbank"
-    
+
     #construct the LOCUS header string
-    #  LOCUS format: 
+    #  LOCUS format:
     #    Positions  Contents
     #    ---------  --------
     #    00:06      LOCUS
     #    06:12      spaces
-    #    12:??      Locus name   
+    #    12:??      Locus name
     #    ??:??      space
     #    ??:40      Length of sequence, right-justified
     #    40:44      space, bp, space
@@ -347,18 +347,18 @@ def toGB(jseq):
     #    67:68      space
     #    68:79      Date, in the form dd-MMM-yyyy (e.g., 15-MAR-1991)
 
-              
+
     name    = jseq["name"] or "default"
     size    = jseq["size"] or "100"
     seqtype = jseq["seqtype"] or "DNA"
     prefix = ""
     for p in ["ds-", "ss-", "ms-"]:
         a, *b = seqtype.split(p)
-        if b: 
+        if b:
             prefix=p
             seqtype=b.pop()
             break
-    prefix  = prefix or "ds-"    
+    prefix  = prefix or "ds-"
     topology = jseq["topology"] or "linear"
     divcode  = jseq["divcode"] or "   "
     date = jseq["date"] or "19-MAR-1970"
@@ -366,11 +366,11 @@ def toGB(jseq):
     locusstr = "LOCUS       {name:<24} {size:>4} bp {prefix}{seqtype:<4}    {topology:<8} {divcode} {date}\n".format(name=name,
                                                                                                                     size=size,
                                                                                                                     prefix=prefix,
-                                                                                                                    seqtype=seqtype, 
+                                                                                                                    seqtype=seqtype,
                                                                                                                     topology=topology,
                                                                                                                     divcode=divcode,
                                                                                                                     date=date)
-                                        
+
     # All these fields are left empty
     gbprops="DEFINITION  .\n"+\
               "ACCESSION   \n"+\
@@ -402,28 +402,28 @@ def toGB(jseq):
     gborigin="ORIGIN\n"+\
               originstr(jseq["sequence"])+\
               "//\n"
-    
+
     return locusstr+gbprops+featuresstr+gborigin
-            
+
 def gbtext_clean(gbtext):
     """This function takes a string containing **one** genbank sequence
     in Genbank format and returns a named tuple containing two fields,
     the gbtext containing a string with the corrected genbank sequence and
     jseq which contains the JSON intermediate.
-    
+
     Examples
     --------
-    
+
     >>> s = '''LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013
     ... DEFINITION  .
-    ... ACCESSION   
-    ... VERSION     
+    ... ACCESSION
+    ... VERSION
     ... SOURCE      .
     ...   ORGANISM  .
-    ... COMMENT     
+    ... COMMENT
     ... COMMENT     ApEinfo:methylated:1
     ... ORIGIN
-    ...         1 aaa     
+    ...         1 aaa
     ... //'''
     >>> from pydna.readers import read
     >>> read(s)  # doctest: +SKIP
@@ -449,15 +449,15 @@ def gbtext_clean(gbtext):
     >>> print(s2)
     LOCUS       New_DNA                    3 bp ds-DNA     circular SYN 19-JUN-2013
     DEFINITION  .
-    ACCESSION   
-    VERSION     
+    ACCESSION
+    VERSION
     SOURCE      .
     ORGANISM  .
-    COMMENT     
+    COMMENT
     COMMENT     ApEinfo:methylated:1
     FEATURES             Location/Qualifiers
     ORIGIN
-            1 aaa     
+            1 aaa
     //
     <BLANKLINE>
     >>> s3 = read(s2)
@@ -469,17 +469,17 @@ def gbtext_clean(gbtext):
     ACCESSION   New_DNA
     VERSION     New_DNA
     KEYWORDS    .
-    SOURCE      
+    SOURCE
       ORGANISM  .
                 .
-    COMMENT     
+    COMMENT
                 ApEinfo:methylated:1
     FEATURES             Location/Qualifiers
     ORIGIN
             1 aaa
     //
 """
-    
+
 
     jseqlist=toJSON(gbtext)
     jseq = jseqlist.pop()
@@ -493,8 +493,8 @@ def gbtext_clean(gbtext):
 #    result.jseq   = jseq
 #    result.gbtext = toGB(jseq)
     return result
-        
-        
+
+
 if __name__=="__main__":
     import os as _os
     cached = _os.getenv("pydna_cached_funcs", "")
