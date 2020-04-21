@@ -86,7 +86,6 @@ def parse(data, ds = True):
                     handle.seek(0)
                     parser = _RecordParser()
                     residue_type = parser.parse(handle).residue_type
-                    print(residue_type,  parsed.annotations["topology"])
                     if "circular" in residue_type :
                         circular = True
                     else:
