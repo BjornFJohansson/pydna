@@ -464,7 +464,7 @@ def gbtext_clean(gbtext):
     >>> s3
     Dseqrecord(o3)
     >>> print(s3.format())
-    LOCUS       New_DNA                    3 bp    ds-DNA  circular SYN 19-JUN-2013
+    LOCUS       New_DNA                    3 bp    DNA     circular SYN 19-JUN-2013
     DEFINITION  .
     ACCESSION   New_DNA
     VERSION     New_DNA
