@@ -1,6 +1,4 @@
 # coding: utf-8
-from Bio import SeqIO
-from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from pydna import parse, eq
 
 new_primer = parse("/home/bjorn/Dropbox/wikidata/PrimersToBuy.wiki", ds=False)

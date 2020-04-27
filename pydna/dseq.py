@@ -19,9 +19,8 @@ import itertools            as _itertools
 import sys                  as _sys
 import math                 as _math
 
-from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 from Bio.Seq                import Seq               as _Seq
-
+from Bio.Alphabet           import generic_dna       as _generic_dna
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils  import seguid      as _seg
 from pydna.utils  import rc          as _rc
@@ -56,9 +55,6 @@ class Dseq(_Seq):
 
     circular : bool, optional
         True indicates that sequence is circular, False that it is linear.
-
-    alphabet : Bio.Alphabet, optional
-        Bio.Alphabet.IUPAC.IUPACAmbiguousDNA from the Biopython package is set as default.
 
 
     Examples
@@ -163,8 +159,6 @@ class Dseq(_Seq):
         else:
     ValueError: ovhg defined without crick strand!
 
-
-    The default alphabet is set to Biopython IUPACAmbiguousDNA
 
     The shape of the fragment is set by either:
 
@@ -308,8 +302,7 @@ class Dseq(_Seq):
                   ovhg          = None,
                   linear        = None,
                   circular      = None,
-                  pos           = 0,
-                  alphabet      = _IUPACAmbiguousDNA() ):
+                  pos           = 0):
 
         if crick is None:
             if ovhg is None:
@@ -366,11 +359,10 @@ class Dseq(_Seq):
         self._ovhg  = ovhg
         self.pos    = pos
         self._data  = self._data
-        self.alphabet = alphabet
-        
+        self.alphabet = _generic_dna
 
     @classmethod
-    def quick(cls, watson:str, crick:str, ovhg=0, linear=True, circular=False, pos=0, alphabet=_IUPACAmbiguousDNA()):
+    def quick(cls, watson:str, crick:str, ovhg=0, linear=True, circular=False, pos=0):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(watson)
         obj.crick  = _pretty_str(crick)
@@ -379,8 +371,8 @@ class Dseq(_Seq):
         obj._linear = linear
         obj.length  = max(len(watson)+max(0,ovhg), len(crick)+max(0,-ovhg))
         obj.pos      = pos
-        obj.alphabet = alphabet
         obj._data  = _rc(crick[-max(0,ovhg) or len(crick):])+watson+_rc(crick[:max(0, len(crick)-ovhg-len(watson))])
+        obj.alphabet = _generic_dna
         return obj
 
     @classmethod
@@ -393,8 +385,8 @@ class Dseq(_Seq):
         obj._linear = linear
         obj.length  = len(dna)
         obj.pos      = 0
-        obj.alphabet = _IUPACAmbiguousDNA()
         obj._data  = dna
+        obj.alphabet = _generic_dna
         return obj
 
     @property
@@ -459,7 +451,7 @@ class Dseq(_Seq):
         pydna.dseq.Dseq.lower
         
         """
-        return self.quick(self.watson.upper(), self.crick.upper(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos, alphabet=self.alphabet)
+        return self.quick(self.watson.upper(), self.crick.upper(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos)
 
     def lower(self):
         """Return a lower case copy of the sequence.
@@ -484,7 +476,7 @@ class Dseq(_Seq):
         --------
         pydna.dseq.Dseq.upper
         """
-        return self.quick(self.watson.lower(), self.crick.lower(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos, alphabet=self.alphabet)
+        return self.quick(self.watson.lower(), self.crick.lower(), ovhg=self.ovhg, linear=self.linear, circular=self.circular, pos=self.pos)
 
 
     def find(self, sub, start=0, end=_sys.maxsize):
@@ -1028,7 +1020,7 @@ class Dseq(_Seq):
 
         '''
         if not nucleotides:
-            nucleotides = self.alphabet.letters
+            nucleotides = 'GATCRYWSMKHBVDN'
         nucleotides = set(nucleotides.lower()+nucleotides.upper())
         crick, ovhg = self._fill_in_five_prime(nucleotides)
         watson = self._fill_in_three_prime(nucleotides)
@@ -1122,7 +1114,7 @@ class Dseq(_Seq):
        '''
 
         if not nucleotides: 
-            nucleotides = self.alphabet.letters
+            nucleotides = 'GATCRYWSMKHBVDN'
         nucleotides = set(nucleotides.lower() + nucleotides.upper())
         type, se = self.five_prime_end()        
         if type == "5'":

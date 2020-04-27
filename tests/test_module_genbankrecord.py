@@ -32,10 +32,9 @@ def test_genbankfile():
     assert gbr_rc.strand==2
     
     from Bio.Seq import Seq
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
     from pydna.seqrecord import SeqRecord
     
-    arg = SeqRecord(Seq("aaa", IUPACAmbiguousDNA()))
+    arg = SeqRecord(Seq("aaa"))
     
     genbankrecord.GenbankRecord.from_SeqRecord(arg)
 

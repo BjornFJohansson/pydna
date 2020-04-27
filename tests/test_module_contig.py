@@ -69,10 +69,10 @@ def test_contig(monkeypatch):
     pp.text.assert_called_with('Contig(-73)')
     
     from Bio.Seq import Seq
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+
     from pydna.seqrecord import SeqRecord
     
-    arg = SeqRecord(Seq("aaa", IUPACAmbiguousDNA()))
+    arg = SeqRecord(Seq("aaa"))
     
     import networkx as nx
     

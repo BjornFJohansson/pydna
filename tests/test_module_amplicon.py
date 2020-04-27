@@ -49,10 +49,10 @@ def test_amplicon():
     from pydna.amplicon import Amplicon
 
     from Bio.Seq import Seq
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+
     from pydna.seqrecord import SeqRecord
     
-    arg = SeqRecord(Seq("aaa", IUPACAmbiguousDNA()))
+    arg = SeqRecord(Seq("aaa"))
     
     x = Amplicon.from_SeqRecord(arg)
     

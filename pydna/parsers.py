@@ -14,11 +14,11 @@ import textwrap  as _textwrap
 import glob      as _glob
 
 from Bio                    import SeqIO              as _SeqIO
-from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
 from Bio.GenBank            import RecordParser       as _RecordParser
-from pydna.genbankfile           import GenbankFile        as _GenbankFile
-from pydna.dseqrecord            import Dseqrecord         as _Dseqrecord
-from pydna.primer                import Primer             as _Primer
+from Bio.Alphabet           import generic_dna        as _generic_dna
+from pydna.genbankfile      import GenbankFile        as _GenbankFile
+from pydna.dseqrecord       import Dseqrecord         as _Dseqrecord
+from pydna.primer           import Primer             as _Primer
 
 def parse(data, ds = True):
     '''This function returns *all* DNA sequences found in data. If no
@@ -73,16 +73,13 @@ def parse(data, ds = True):
         for rawseq in rawseqs:
             format_ = None
             handle = _io.StringIO(rawseq)
-            if "circular" in rawseq.splitlines()[0]:
-                circular = True
-            else:
-                circular = False
+            circular = False              
             try:
-                parsed = _SeqIO.read(handle, "embl", alphabet=_IUPACAmbiguousDNA())
+                parsed = _SeqIO.read(handle, "embl" )
             except ValueError:
                 handle.seek(0)
                 try:
-                    parsed = _SeqIO.read(handle, "genbank", alphabet=_IUPACAmbiguousDNA())
+                    parsed = _SeqIO.read(handle, "genbank" )
                     handle.seek(0)
                     parser = _RecordParser()
                     residue_type = parser.parse(handle).residue_type
@@ -99,13 +96,12 @@ def parse(data, ds = True):
                 except ValueError:
                     handle.seek(0)
                     try:
-                        parsed = _SeqIO.read(handle, "fasta", alphabet=_IUPACAmbiguousDNA())
+                        parsed = _SeqIO.read(handle, "fasta", alphabet=_generic_dna)
                     except ValueError:
                         parsed = ""
-                    else: format_= "fasta"
-                else: format_= "genbank"
-            else: format_ = "embl"
             handle.close()
+            if "circular" in rawseq.splitlines()[0].lower().split():  # Robust hack to pick up topology from malformed files
+                circular = True  
             if parsed:
                 from copy import deepcopy as _deepcopy  ## TODO: clean up !
                 from pydna.seqfeature import SeqFeature as _SeqFeature

@@ -127,7 +127,7 @@ def test_parse1():
 
 
 def test_parse2():
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+
     from pydna.parsers import parse
     from pydna.readers import read
     seqs = parse('RefDataBjorn.fas')
@@ -143,7 +143,6 @@ def test_parse2():
         s.description = ""
         if b[3]=="Zenion hololepis":
             s.id = b[3].replace(" ","_")+"_"+str(i)
-        s.seq.alphabet = IUPACAmbiguousDNA()
 
 def test_parse_primers():
     from pydna.parsers import parse_primers

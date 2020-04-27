@@ -1183,7 +1183,7 @@ class Gel:
         DNAspace_mu0 = self.DNAspace_for_mu0
         DNAspace_vWBRfit = self.DNAspace_for_vWBRfit
         if self.Tvals_for_mu0 == []:
-            self.Tvals_for_mu0 = Q_(_np.unique(dataset['T']),
+            self.Tvals_for_mu0 = Q_(dataset['T'],
                                     dataset['T'].units).to('(g/(100 mL))*100')
         else:
             self.Tvals_for_mu0 = to_units(self.Tvals_for_mu0,
@@ -1192,10 +1192,10 @@ class Gel:
         nlanes = len(lanes)
         exposure = 0 if exposure < 0 else 1 if exposure > 1 else exposure  # ##
         if not hasattr(wellx.magnitude, '__iter__'):
-            wellx = _np.repeat(wellx, nlanes)
+            wellx =  wellx * nlanes
         wellx = wellx.to('cm')
         if not hasattr(welly.magnitude, '__iter__'):
-            welly = _np.repeat(welly, nlanes)
+            welly =  welly * nlanes
         welly = welly.to('cm')
         wellsep = wellsep.to('cm')
         till_len = abs(till_len) if till_len is not None else 1

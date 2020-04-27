@@ -29,7 +29,7 @@ from Bio.SeqFeature         import FeatureLocation as _FeatureLocation
 from Bio.SeqRecord          import SeqRecord as _SeqRecord
 from Bio.SeqUtils           import GC as _GC
 from Bio.Data.CodonTable    import TranslationError as _TranslationError
-from Bio.Alphabet.IUPAC     import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
+from Bio.Alphabet       import generic_dna        as _generic_dna
 
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.utils  import seguid  as _seg
@@ -60,17 +60,17 @@ class SeqRecord(_SeqRecord):
         #    self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
 
         self.map_target = None
-        
-        if not hasattr(self.seq, "alphabet"):
-            self.seq = _Seq(self.seq, _IUPACAmbiguousDNA())
+
+        if not hasattr(self.seq, "transcribe"):
+            self.seq = _Seq(self.seq)
             
         self.seq._data = "".join(self.seq._data.split()) # remove whitespaces
-            
+        self.seq.alphabet= _generic_dna  
         self.id          = _pretty_str(self.id)
         self.name        = _pretty_str(self.name)
         self.description = _pretty_str(self.description)
         self.annotations = {_pretty_str(k):_pretty_str(v) for k,v in self.annotations.items()} 
-        
+
 
     @property
     def locus(self):
@@ -259,10 +259,9 @@ class SeqRecord(_SeqRecord):
 
         Examples
         --------
-        >>> from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
         >>> from Bio.Seq import Seq
         >>> from pydna.seqrecord import SeqRecord
-        >>> a=SeqRecord(Seq("atgtaa",IUPACAmbiguousDNA()))
+        >>> a=SeqRecord(Seq("atgtaa"))
         >>> a.add_feature(2,4)
         >>> print(a.list_features())
         +-----+---------------+-----+-----+-----+-----+------+------+
@@ -318,7 +317,7 @@ class SeqRecord(_SeqRecord):
         >>> a.add_feature(2,4)
         >>> b=a.extract_feature(0)
         >>> b
-        SeqRecord(seq=Seq('gt', IUPACAmbiguousDNA()), id='ft2', name='ft2', description='description', dbxrefs=[])
+        SeqRecord(seq=Seq('gt', DNAAlphabet()), id='ft2', name='ft2', description='description', dbxrefs=[])
         '''
         return self.features[n].extract(self)
 

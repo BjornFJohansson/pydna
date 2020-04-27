@@ -25,7 +25,6 @@ from Bio.Seq                        import Seq               as _Seq
 from Bio.SeqFeature                 import CompoundLocation  as _CompoundLocation
 from Bio.SeqFeature                 import FeatureLocation   as _FeatureLocation
 from pydna.seqfeature               import SeqFeature        as _SeqFeature
-from Bio.Alphabet.IUPAC             import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 
 from pydna.dseqrecord                    import Dseqrecord       as _Dseqrecord
 from pydna.seqrecord                     import SeqRecord        as _SeqRecord
@@ -444,11 +443,11 @@ def pcr(*args,  **kwargs):
     new=[]
     for s in output:
         if hasattr(s, "watson"):
-            s = _SeqRecord(_Seq(s.watson , _IUPACAmbiguousDNA()))      
-        elif hasattr(s, "alphabet"):
+            s = _SeqRecord(_Seq(s.watson ))      
+        elif hasattr(s, "transcribe"):
             s = _SeqRecord(s)
         elif isinstance(s, str):
-            s = _SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
+            s = _SeqRecord(_Seq(s ))
         elif hasattr(s, "features"):
             pass
         else:

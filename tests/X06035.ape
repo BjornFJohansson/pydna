@@ -1,0 +1,48 @@
+LOCUS       X06035                   319 bp    DNA     linear   SYN 26-JUL-2016
+DEFINITION  Synthetic lacI gene 5'fragment.
+ACCESSION   X06035
+VERSION     X06035.1
+KEYWORDS    artificial gene; repressor.
+SOURCE      synthetic construct
+  ORGANISM  synthetic construct
+            other sequences; artificial sequences.
+REFERENCE   1  (bases 1 to 319)
+  AUTHORS   Lehming,N., Sartorius,J., Niemoller,M., Genenger,G., v
+            Wilcken-Bergmann,B. and Muller-Hill,B.
+  TITLE     The interaction of the recognition helix of lac repressor with lac
+            operator
+  JOURNAL   EMBO J. 6 (10), 3145-3153 (1987)
+   PUBMED   2826131
+COMMENT     Data kindly reviewed (12-Arp-1988) by Mueller-Hill B.
+FEATURES             Location/Qualifiers
+     source          1..319
+                     /organism="synthetic construct"
+                     /mol_type="other DNA"
+                     /db_xref="taxon:32630"
+                     /clone="pWB100"
+     regulatory      27..32
+                     /regulatory_class="promoter"
+                     /note="-35 region"
+     regulatory      50..55
+                     /regulatory_class="promoter"
+                     /note="-10 region"
+     precursor_RNA   62..>319
+                     /note="primary transcript"
+     regulatory      94..98
+                     /regulatory_class="ribosome_binding_site"
+                     /note="pot. ribosome binding site"
+     CDS             107..>319
+                     /note="unnamed protein product; lacI gene product (71 AA)"
+                     /codon_start=1
+                     /transl_table=11
+                     /protein_id="CAA29430.1"
+                     /translation="MKPVTLYDVAEYAGVSYQTVSRVVNQASHVSAKTREKVEAAMAE
+                     LNYIPNRVAQQLAGKQSLLIGVATSSL"
+ORIGIN      
+        1 ggtaccaatc gagataaaaa atttatttgc tttcaggtac aattcttgat ataatattat
+       61 catctaggga actagctttc cggggaattc ataaaggaga tatcatatga aaccggtaac
+      121 gttatacgac gtcgctgaat acgccggcgt ttcttaccag accgtttcta gagtggttaa
+      181 ccaggcttca catgttagcg ctaaaacccg ggaaaaagtt gaagctgcca tggctgagct
+      241 caactacatc ccgaaccgtg ttgcgcagca gctggctggt aaacaaagct tgctgatcgg
+      301 tgtcgcgacc tcgagcttg
+//

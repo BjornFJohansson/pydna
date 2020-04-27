@@ -587,7 +587,7 @@ def test_cut_add():
 
     from Bio.Seq import Seq
     from Bio.Restriction import BamHI,EcoRI, PstI, EcoRV, SmaI
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+
     from Bio.SeqUtils.CheckSum import seguid
 
     a = Dseqrecord('GGATCCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGGATCC').seq

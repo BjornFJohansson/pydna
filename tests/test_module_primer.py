@@ -25,17 +25,9 @@ def test_primer():
     
     from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
     
     arg = "AAA"
     
-    a = primer.Primer(arg)
-    b = primer.Primer(Seq(arg, IUPACAmbiguousDNA))
-    c = primer.Primer(SeqRecord(Seq(arg, IUPACAmbiguousDNA)))
-    
-    assert str(a.seq) == str(b.seq) == str(c.seq)
-    
-    assert type(a)==type(b)==type(c)
     
     
     

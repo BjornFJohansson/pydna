@@ -33,14 +33,13 @@ def test_add_feature():
     s = SeqRecord("tttATGaaaTAAggg")
     s.add_feature(3,12)
     assert s.features[0].qualifiers["label"] == ['orf9']
-    
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA 
+
     
     from Bio.Seq import Seq 
     
     from pydna.seqrecord import SeqRecord 
     
-    a=SeqRecord(Seq("atgtaa",IUPACAmbiguousDNA())) 
+    a=SeqRecord(Seq("atgtaa")) 
     
     a.add_feature(2,4) 
     
@@ -102,10 +101,10 @@ def test_stamp():
 def test___hash__():
     from Bio.Seq import Seq
     from pydna.seqrecord  import SeqRecord
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-    s = SeqRecord(Seq("GGATCC",alphabet=IUPACAmbiguousDNA()))
-    t = SeqRecord(Seq("GGATCC",alphabet=IUPACAmbiguousDNA()))
-    u = SeqRecord(Seq("GGATCc",alphabet=IUPACAmbiguousDNA()))
+
+    s = SeqRecord(Seq("GGATCC"))
+    t = SeqRecord(Seq("GGATCC"))
+    u = SeqRecord(Seq("GGATCc"))
     assert hash(s) == hash(t) != hash(u)
     
     assert s==t
@@ -129,12 +128,12 @@ def test_olaps():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from pydna.seqrecord  import SeqRecord
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-    s = SeqRecord(Seq("GGATCC",alphabet=IUPACAmbiguousDNA()))
+
+    s = SeqRecord(Seq("GGATCC"))
     assert "GGATCC" == str(s.olaps("GGATCC", limit = 4)[0].seq)
-    assert "GGATCC" == str(s.olaps(Seq("GGATCC",alphabet=IUPACAmbiguousDNA()), limit = 4)[0].seq)
-    assert "GGATCC" == str(s.olaps(BSeqRecord(Seq("GGATCC",alphabet=IUPACAmbiguousDNA())), limit = 4)[0].seq)
-    assert "GGATCC" == str(s.olaps(Dseq("GGATCC",alphabet=IUPACAmbiguousDNA()), limit = 4)[0].seq)
+    assert "GGATCC" == str(s.olaps(Seq("GGATCC"), limit = 4)[0].seq)
+    assert "GGATCC" == str(s.olaps(BSeqRecord(Seq("GGATCC")), limit = 4)[0].seq)
+    assert "GGATCC" == str(s.olaps(Dseq("GGATCC"), limit = 4)[0].seq)
     assert "GGATCC" == str(s.olaps(Dseqrecord(Dseq("GGATCC")), limit = 4)[0].seq)
     assert "GGATCC" == str(s.olaps(Dseqrecord("GGATCC"), limit = 4)[0].seq)
 
@@ -147,8 +146,8 @@ def test_olaps():
 def test_format():
     from Bio.Seq import Seq
     from pydna.seqrecord  import SeqRecord
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-    s = SeqRecord(Seq("GGATCC",alphabet=IUPACAmbiguousDNA()))
+
+    s = SeqRecord(Seq("GGATCC"))
     s.format("gb")
     s.format("genbank")
     s.format("fasta")   
@@ -159,9 +158,9 @@ def test_seqrecord():
     import pydna
     from pydna import seqrecord, _PydnaWarning
     from Bio.Seq import Seq
-    from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
+
     
-    s = Seq("ATGAAATAA", IUPACAmbiguousDNA())
+    s = Seq("ATGAAATAA")
     
     obj = seqrecord.SeqRecord(s, name = "1234567890123456")
     
@@ -191,13 +190,13 @@ def test_seqrecord():
     
     assert obj.isorf()
     
-    not_orf = Seq("TGAAATAAA", IUPACAmbiguousDNA())
+    not_orf = Seq("TGAAATAAA")
     
     obj = seqrecord.SeqRecord(not_orf)
     
     assert not obj.isorf()
     
-    s3 = Seq("aaaATGAAATAAttt", IUPACAmbiguousDNA())
+    s3 = Seq("aaaATGAAATAAttt")
     
     from Bio.SeqFeature import SeqFeature, FeatureLocation
     
@@ -214,7 +213,7 @@ def test_seqrecord():
     
     assert obj.gc() == 6.7
     
-    repr(obj) == "SeqRecord(seq=Seq('aaaATGAAATAAttt', IUPACAmbiguousDNA()), id='id', name='name', description='description', dbxrefs=[])"
+    repr(obj) == "SeqRecord(seq=Seq('aaaATGAAATAAttt'), id='id', name='name', description='description', dbxrefs=[])"
     
     obj.annotations = {'date': '24-DEC-1970'}
     
@@ -223,7 +222,7 @@ def test_seqrecord():
               "Description: description\n"
               "Number of features: 1\n"
               "/date=24-DEC-1970\n"
-              "Seq('aaaATGAAATAAttt', IUPACAmbiguousDNA())")
+              "Seq('aaaATGAAATAAttt', DNAAlphabet())")
     
     assert str(obj) == st
     
