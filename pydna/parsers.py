@@ -11,10 +11,9 @@ import os        as _os
 import re        as _re
 import io        as _io
 import textwrap  as _textwrap
-import glob      as _glob
+#import glob      as _glob
 
 from Bio                    import SeqIO              as _SeqIO
-from Bio.GenBank            import RecordParser       as _RecordParser
 from Bio.Alphabet           import generic_dna        as _generic_dna
 from pydna.genbankfile      import GenbankFile        as _GenbankFile
 from pydna.dseqrecord       import Dseqrecord         as _Dseqrecord
@@ -71,7 +70,6 @@ def parse(data, ds = True):
         rawseqs = _re.findall(pattern, _textwrap.dedent(raw + "\n\n"), flags=_re.MULTILINE)
                
         for rawseq in rawseqs:
-            format_ = None
             handle = _io.StringIO(rawseq)
             circular = False              
             try:
@@ -80,19 +78,8 @@ def parse(data, ds = True):
                 handle.seek(0)
                 try:
                     parsed = _SeqIO.read(handle, "genbank" )
-                    handle.seek(0)
-                    parser = _RecordParser()
-                    residue_type = parser.parse(handle).residue_type
-                    if "circular" in residue_type :
+                    if "circular" in str(parsed.annotations.get("topology")).lower():
                         circular = True
-                    else:
-                        try:
-                            if parsed.annotations["topology"] == "circular":
-                                circular = True
-                            else:
-                                circular = False
-                        except KeyError:
-                            circular = False
                 except ValueError:
                     handle.seek(0)
                     try:
@@ -100,7 +87,7 @@ def parse(data, ds = True):
                     except ValueError:
                         parsed = ""
             handle.close()
-            if "circular" in rawseq.splitlines()[0].lower().split():  # Robust hack to pick up topology from malformed files
+            if "circular" in rawseq.splitlines()[0].lower().split():  # hack to pick up topology from malformed files
                 circular = True  
             if parsed:
                 from copy import deepcopy as _deepcopy  ## TODO: clean up !

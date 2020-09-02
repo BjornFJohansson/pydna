@@ -129,9 +129,9 @@ class Dseqrecord(_SeqRecord):
 
     def __init__(self, record,
                        *args,
-                       linear                 = None,
-                       circular               = None,
-                       n                      = 5E-14, # mol ( = 0.05 pmol)
+                       linear        = None,
+                       circular      = None,
+                       n             = 5E-14, # mol ( = 0.05 pmol)
                        **kwargs):
         
         _module_logger.info("### Dseqrecord initialized ###")
@@ -190,10 +190,9 @@ class Dseqrecord(_SeqRecord):
         else:
             raise ValueError("don't know what to do with {}".format(record))
 
-        self.map_target = None
-        
-        self.n = n # ammount, set to 5E-14 which is 5 pmols
-
+        self.map_target = None        
+        self.n = n # amount, set to 5E-14 which is 5 pmols
+            
     @classmethod
     def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):
         #def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):

@@ -1,4 +1,4 @@
-LOCUS       name                    9981 bp    DNA     circular UNK 28-DEC-2018
+LOCUS       name                    9981 bp    DNA     circular UNK 01-JAN-1980
 DEFINITION  description.
 ACCESSION   id
 VERSION     id
@@ -13,7 +13,7 @@ FEATURES             Location/Qualifiers
                      /ApEinfo_revcolor="green"
                      /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
                      width 5 offset 0"
-     CDS             561..2243
+     CDS             558..2240
                      /note="unnamed protein product; ORF YGL084c"
                      /codon_start=1
                      /protein_id="CAA96789.1"
@@ -31,12 +31,12 @@ FEATURES             Location/Qualifiers
                      NYSSLAFWRAWHRSYNKWVVRYIYIPLGGSKNRVLTSLAVFSFVAIWHDIELKLLLWGW
                      LIVLFLLPEIFATQIFSHYTDAVWYRHVCAVGAVFNIWVMMIANLFGFCLGSDGTKKLL
                      SDMFCTVSGFKFVILASVSLFIAVQIMFEIREEEKRHGIYLKC"
-     primer_bind     561..582
-                     /label="GUP1rec2AS"
+     primer_bind     558..580
+                     /label="GUP1rec1sens"
                      /ApEinfo_fwdcolor="#baffa3"
                      /ApEinfo_revcolor="#ffbaba"
-     primer_bind     2221..2243
-                     /label="GUP1rec1sens"
+     primer_bind     complement(2219..2240)
+                     /label="GUP1rec2AS"
                      /ApEinfo_fwdcolor="#baffa3"
                      /ApEinfo_revcolor="#ffbaba"
      misc_recomb     2513..2546

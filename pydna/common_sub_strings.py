@@ -5,16 +5,16 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''This module is based on the Py-rstr-max package that was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
-(https://brixtel.users.greyc.fr/) and is available from https://code.google.com/p/py-rstr-max/
+'''This module is based on the Py-rstr-max package that 
+was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
+(https://brixtel.users.greyc.fr) and is available from 
+https://code.google.com/p/py-rstr-max
 the original code was covered by an MIT licence.'''
 
 from array import array                 as _array
-from collections import defaultdict     as _defaultdict
+#from collections import defaultdict     as _defaultdict
 import itertools                        as _itertools
 from operator import itemgetter         as _itemgetter
-
-
 
 
 def radixpass(a, b, r, s, n, k) :
@@ -295,7 +295,7 @@ def common_sub_strings(stringx:str, stringy:str, limit=25):
     rstr = Rstr_max()
     rstr.add_str(stringx+"&"+stringy)
     r = rstr.go()
-    match=_defaultdict(int)
+    match={} # _defaultdict(int)
     for (offset_end, nb), (l, start_plage) in r.items():
         startsx=[]
         startsy=[]
@@ -309,7 +309,7 @@ def common_sub_strings(stringx:str, stringy:str, limit=25):
                 startsx.append(offset)
 
         for a,b in _itertools.product(startsx, startsy):
-            match[(a,b)] = max(match[(a,b)], l)
+            match[(a,b)] = max( match.get((a,b)) or 0, l)
 
 
     match = [ (key[0], key[1] ,val) for key, val in list(match.items())]

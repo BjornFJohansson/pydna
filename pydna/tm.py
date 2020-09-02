@@ -294,8 +294,8 @@ def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
     STR = primer.lower();
 
     for i in range(len(STR)-1):
-        n1=ord(STR[i])
-        n2=ord(STR[i+1])
+        n1 = ord(STR[i])
+        n2 = ord(STR[i+1])
         dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
         dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
 
