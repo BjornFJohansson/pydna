@@ -7,7 +7,6 @@ test parse
 import pytest
 from pydna.dseqrecord import Dseqrecord
 from pydna.parsers    import parse, parse_primers
-from pydna.readers    import read
 from pydna.amplify    import pcr, Anneal
 from Bio.SeqUtils.CheckSum import seguid
 
@@ -235,9 +234,8 @@ def test_too_short_primers():
     ann = Anneal((f,r), t, limit=22)
     
     assert ann.report()== ("Template name 48 nt linear:\n"
-                           "Primer ForwardPrimer anneals forward at position 22\n"
-                           "\n"
-                           "Primer ReversePrimer anneals reverse at position 26")
+                           "ForwardPrimer anneals forward (--->) at 22\n"
+                           "ReversePrimer anneals reverse (<---) at 26")
     
     assert repr(ann)=="Reaction(products = 1)"
     
@@ -251,7 +249,6 @@ def test_too_short_primers():
     
     assert ann.report()== ("Template name 48 nt linear:\n"
                            "No forward primers anneal...\n"
-                           "\n"
                            "No reverse primers anneal...")
     assert repr(ann)=="Reaction(products = 0)"
 

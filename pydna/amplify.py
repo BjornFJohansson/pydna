@@ -12,7 +12,6 @@ if more flexibility is required.
 
 Primers with 5' tails as well as inverse PCR on circular templates are handled correctly.'''
 
-from collections import defaultdict
 import itertools as _itertools
 import re        as _re
 import copy      as _copy
@@ -25,7 +24,6 @@ from Bio.Seq                        import Seq               as _Seq
 from Bio.SeqFeature                 import CompoundLocation  as _CompoundLocation
 from Bio.SeqFeature                 import FeatureLocation   as _FeatureLocation
 from pydna.seqfeature               import SeqFeature        as _SeqFeature
-from Bio.Alphabet.IUPAC             import IUPACAmbiguousDNA as _IUPACAmbiguousDNA
 
 from pydna.dseqrecord                    import Dseqrecord       as _Dseqrecord
 from pydna.seqrecord                     import SeqRecord        as _SeqRecord
@@ -170,9 +168,8 @@ class Anneal(object, metaclass = _Memoize):
         >>> ann = Anneal((p1, p2), template)
         >>> print(ann.report())
         Template name 51 nt linear:
-        Primer p1 anneals forward at position 23
-        <BLANKLINE>
-        Primer p2 anneals reverse at position 29
+        p1 anneals forward (--->) at 23
+        p2 anneals reverse (<---) at 29
         >>> ann.products
         [Amplicon(51)]
         >>> amplicon_list = ann.products
@@ -186,13 +183,14 @@ class Anneal(object, metaclass = _Memoize):
         5tacactcaccgtctatcattatc3
          |||||||||||||||||||||||
         3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5
-        >>> amplicon.annotations['date'] = '02-FEB-2013'   # Set the date for this example to pass the doctest
         >>> print(amplicon)
         Dseqrecord
         circular: False
         size: 51
+        ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
+        Name: 51bp_PCR_prod
+        Description: pcr product_p1_p2
         Number of features: 2
-        /date=02-FEB-2013
         Dseq(-51)
         taca..gcac
         atgt..cgtg
@@ -210,7 +208,7 @@ class Anneal(object, metaclass = _Memoize):
         self.template = _copy.deepcopy(template)
 
         self.limit = limit
-        self.kwargs=defaultdict(str, kwargs)
+        self.kwargs= kwargs
 
         self._products = None
 
@@ -333,19 +331,19 @@ class Anneal(object, metaclass = _Memoize):
                         new_identifier = " ".join(ft.qualifiers["note"])
                         
                 from pydna.utils import identifier_from_string as _identifier_from_string # TODO:  clean this up
-                prd.name = _identifier_from_string(new_identifier)[:16] or self.kwargs["name"] or "{}bp_PCR_prod".format(len(prd))[:16]
-                prd.id   = _identifier_from_string(new_identifier)[:16] or self.kwargs["id"]   or "{}bp {}".format( str(len(prd))[:14], prd.seguid() )
-                prd.description = self.kwargs["description"] or"pcr product_{}_{}".format( fp.description,
+                prd.name = _identifier_from_string(new_identifier)[:16] or self.kwargs.get("name") or "{}bp_PCR_prod".format(len(prd))[:16]
+                prd.id   = _identifier_from_string(new_identifier)[:16] or self.kwargs.get("id")   or "{}bp {}".format( str(len(prd))[:14], prd.seguid() )
+                prd.description = self.kwargs.get("description") or"pcr product_{}_{}".format( fp.description,
                                                                                            rp.description)
-                
+                 
                 amplicon = _Amplicon(prd,
-                           template=self.template,
-                           forward_primer=fp,
-                           reverse_primer=rp, 
-                           **self.kwargs)
+                                     template=self.template,
+                                     forward_primer=fp,
+                                     reverse_primer=rp, 
+                                     **self.kwargs)
                 
-                amplicon.forward_primer.amplicon = amplicon
-                amplicon.reverse_primer.amplicon = amplicon
+                #amplicon.forward_primer.amplicon = amplicon
+                #amplicon.reverse_primer.amplicon = amplicon
                 
                 self._products.append(amplicon)
 
@@ -367,13 +365,13 @@ class Anneal(object, metaclass = _Memoize):
                                                                     )
         if self.forward_primers:
             for p in self.forward_primers:
-                mystring += "Primer {name} anneals forward at position {pos}\n".format(name=p.name, pos=p.position)
+                mystring += "{name} anneals forward (--->) at {pos}\n".format(name=p.name, pos=p.position)
         else:
             mystring += "No forward primers anneal...\n"
-        mystring +="\n"
+        #mystring +="\n"
         if self.reverse_primers:
             for p in self.reverse_primers:
-                mystring += "Primer {name} anneals reverse at position {pos}\n".format(name=p.name, pos=p.position)
+                mystring += "{name} anneals reverse (<---) at {pos}\n".format(name=p.name, pos=p.position)
         else:
              mystring += "No reverse primers anneal...\n"
         return _pretty_str(mystring.strip())
@@ -444,11 +442,11 @@ def pcr(*args,  **kwargs):
     new=[]
     for s in output:
         if hasattr(s, "watson"):
-            s = _SeqRecord(_Seq(s.watson , _IUPACAmbiguousDNA()))      
-        elif hasattr(s, "alphabet"):
+            s = _SeqRecord(_Seq(s.watson ))      
+        elif hasattr(s, "transcribe"):
             s = _SeqRecord(s)
         elif isinstance(s, str):
-            s = _SeqRecord(_Seq(s, _IUPACAmbiguousDNA()))
+            s = _SeqRecord(_Seq(s ))
         elif hasattr(s, "features"):
             pass
         else:

@@ -459,7 +459,6 @@ def gbtext_clean(gbtext):
     ORIGIN
             1 aaa
     //
-    <BLANKLINE>
     >>> s3 = read(s2)
     >>> s3
     Dseqrecord(o3)
@@ -483,18 +482,13 @@ def gbtext_clean(gbtext):
 
     jseqlist=toJSON(gbtext)
     jseq = jseqlist.pop()
-#    class Result(object):
-#        pass
-#    result=Result()
     from collections import namedtuple as _namedtuple
     from pydna._pretty import pretty_str as _pretty_str
     Result = _namedtuple("Result", "gbtext jseq")
-    result=Result(_pretty_str(toGB(jseq)), jseq)
-#    result.jseq   = jseq
-#    result.gbtext = toGB(jseq)
+    result = Result(_pretty_str(toGB(jseq).strip()), jseq)
     return result
 
-
+    
 if __name__=="__main__":
     import os as _os
     cached = _os.getenv("pydna_cached_funcs", "")

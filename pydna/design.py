@@ -13,15 +13,11 @@
 - :func:circular_assembly_fragments Adds tails to primers for a circular assembly through homologous recombination or Gibson assembly.
 
 '''
-#import warnings
 
 import math                                       as _math
-#from operator import itemgetter                   as _itemgetter
 import os                                         as _os
 import copy                                       as _copy
-#from Bio.Alphabet import Alphabet                 as _Alphabet
-#from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA  as _IUPACAmbiguousDNA
-#from Bio.Seq import Seq                           as _Seq
+
 from pydna.amplify import Anneal                  as _Anneal
 from pydna.amplify import pcr                     as _pcr
 from pydna.dseqrecord import Dseqrecord           as _Dseqrecord

@@ -22,7 +22,6 @@ _module_logger = _logging.getLogger("pydna."+__name__)
 from pydna.utils import identifier_from_string as _identifier_from_string
 
 from Bio.Seq                import translate as _translate
-
 from pydna.seqrecord        import SeqRecord  as _SeqRecord
 from Bio.SeqFeature         import FeatureLocation as _FeatureLocation
 from Bio.SeqFeature         import CompoundLocation as _CompoundLocation
@@ -120,13 +119,6 @@ class Dseqrecord(_SeqRecord):
     Dseq(-3)
     aaa
     ttt
-    >>> a.seq.alphabet
-    IUPACAmbiguousDNA()
-    >>> b.seq.alphabet
-    IUPACAmbiguousDNA()
-    >>> c.seq.alphabet
-    IUPACAmbiguousDNA()
-    >>>
 
     References
     ----------
@@ -137,9 +129,9 @@ class Dseqrecord(_SeqRecord):
 
     def __init__(self, record,
                        *args,
-                       linear                 = None,
-                       circular               = None,
-                       n                      = 5E-14, # mol ( = 0.05 pmol)
+                       linear        = None,
+                       circular      = None,
+                       n             = 5E-14, # mol ( = 0.05 pmol)
                        **kwargs):
         
         _module_logger.info("### Dseqrecord initialized ###")
@@ -169,7 +161,7 @@ class Dseqrecord(_SeqRecord):
             _module_logger.info("record is a Dseq object")
             super().__init__(record, *args, **kwargs)
         # record is a Bio.Seq object ?
-        elif hasattr(record, "alphabet"):
+        elif hasattr(record, "transcribe"):
             _module_logger.info("record is a Seq object")
             super().__init__(_Dseq(str(record),
                                    linear=linear,
@@ -198,10 +190,9 @@ class Dseqrecord(_SeqRecord):
         else:
             raise ValueError("don't know what to do with {}".format(record))
 
-        self.map_target = None
-        
-        self.n = n # ammount, set to 5E-14 which is 5 pmols
-
+        self.map_target = None        
+        self.n = n # amount, set to 5E-14 which is 5 pmols
+            
     @classmethod
     def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):
         #def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):

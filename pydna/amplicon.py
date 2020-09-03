@@ -53,15 +53,13 @@ class Amplicon(_Dseqrecord):
                      reverse_primer=None,
                      **kwargs):
         
-
         super().__init__(record, *args)
         self.template            = template
         self.forward_primer      = forward_primer
-        self.reverse_primer      = reverse_primer 
+        self.reverse_primer      = reverse_primer
         self.__dict__.update(kwargs)
         
         # https://medium.com/@chipiga86/circular-references-without-memory-leaks-and-destruction-of-objects-in-python-43da57915b8d
-
 
     @classmethod
     def from_SeqRecord(cls, record, *args, path=None, **kwargs):
