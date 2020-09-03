@@ -1,19 +1,17 @@
-name: python37
+name: pydna_test_environment
 channels:
-- defaults
 - conda-forge
-- BjornFJohansson
+- defaults
 dependencies:
-- python=3.7
+
 - appdirs
 - biopython
 - prettytable
 - networkx
-- ordered-set
 - pyparsing
 
-- anaconda-client
 - requests
+- requests-mock
 
 - ipython
 - jupyter
@@ -27,6 +25,7 @@ dependencies:
 - pytest-cov
 - pytest-mock
 - pytest-runner
+- pytest-doctestplus
 - coverage
 - coveralls
 - nbval
@@ -34,5 +33,5 @@ dependencies:
 - setuptools
 - requests-mock
 
-#- pyfiglet
+- pyfiglet
 - twine

@@ -79,7 +79,7 @@ then
 else
     echo "'skip' not found in commit msg: '$msg'"
     echo "but commit not tagged or tag dirty"
-    echo "test suit will be run."
+    echo "Therefore test suit will be run, but no package will be built."
     tagged_commit=false
 
 unset VIRTUAL_ENV
