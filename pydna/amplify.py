@@ -6,11 +6,12 @@
 # as part of this package.
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
-"""This module provide the :class:`Anneal` class and the :func:`pcr` function for PCR simulation. 
-The pcr function is simpler to use, but expects only one PCR product. The Anneal class should be used 
-if more flexibility is required.
+"""This module provide the :class:`Anneal` class and the :func:`pcr` function
+for PCR simulation. The pcr function is simpler to use, but expects only one
+PCR product. The Anneal class should be used if more flexibility is required.
 
-Primers with 5' tails as well as inverse PCR on circular templates are handled correctly."""
+Primers with 5' tails as well as inverse PCR on circular templates are handled
+correctly."""
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
@@ -108,7 +109,6 @@ def _annealing_positions(primer, template, limit=15):
         results = []
         for match_start in positions:
             tm = template[match_start + limit: match_start + limit + length]
-            # footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
             footprint = len(
                 list(
                     _itertools.takewhile(
@@ -137,19 +137,22 @@ class Anneal(object, metaclass=_Memoize):
     reverse_primers : list
         Description of `reverse_primers`.
     template : Dseqrecord
-        A copy of the template argument. Primers annealing sites has been added as features that can be visualized in a seqence editor such as ApE.
+        A copy of the template argument. Primers annealing sites has been
+        added as features that can be visualized in a seqence editor such as
+        ApE.
     limit : int, optional
         The limit of PCR primer annealing, default is 13 bp."""
 
     def __init__(self, primers, template, limit=13, **kwargs):
-        r"""The Anneal class has to be initiated with at least an iterable of primers and a template.
+        r"""The Anneal class has to be initiated with at least an iterable of
+        primers and a template.
 
 
 
         Parameters
         ----------
-        primers : iterable of :class:`Primer` or Biopython SeqRecord like objects
-            Primer sequences 5'-3'.
+        primers : iterable of :class:`Primer` or Biopython SeqRecord like
+                  objects Primer sequences 5'-3'.
 
         template : Dseqrecord
             The template sequence 5'-3'.
@@ -160,7 +163,8 @@ class Anneal(object, metaclass=_Memoize):
         Attributes
         ----------
         products: list
-            A list of Amplicon objects, one for each primer pair that may form a PCR product.
+            A list of Amplicon objects, one for each primer pair that may
+            form a PCR product.
 
 
         Examples
@@ -241,7 +245,8 @@ class Anneal(object, metaclass=_Memoize):
                         position=tcl - pos - min(self.template.seq.ovhg, 0),
                         footprint=fp,
                     )
-                    for pos, fp in _annealing_positions(str(p.seq), tc, self.limit)
+                    for pos, fp in _annealing_positions(str(p.seq),
+                                                        tc, self.limit)
                     if pos < tcl
                 )
             )
@@ -253,7 +258,9 @@ class Anneal(object, metaclass=_Memoize):
                         position=pos + max(0, self.template.seq.ovhg),
                         footprint=fp,
                     )
-                    for pos, fp in _annealing_positions(str(p.seq), tw, self.limit)
+                    for pos, fp in _annealing_positions(str(p.seq),
+                                                        tw,
+                                                        self.limit)
                     if pos < twl
                 )
             )
@@ -347,7 +354,8 @@ class Anneal(object, metaclass=_Memoize):
                     tmpl = self.template.shifted(fp.position - fp._fp)
                     tmpl = tmpl[:] * 2
                     for f in tmpl.features:
-                        for x, y in zip(f.location.parts, f.location.parts[1:]):
+                        for x, y in zip(f.location.parts,
+                                        f.location.parts[1:]):
                             if x.end == y.start + len(self.template):
                                 f.location = _FeatureLocation(
                                     x.start,
@@ -458,12 +466,12 @@ class Anneal(object, metaclass=_Memoize):
 
 
 def pcr(*args, **kwargs):
-    """pcr is a convenience function for the Anneal class to simplify its usage,
-    especially from the command line. If more than one or no PCR product is
-    formed, a ValueError is raised.
+    """pcr is a convenience function for the Anneal class to simplify its
+    usage, especially from the command line. If more than one or no PCR
+    product is formed, a ValueError is raised.
 
-    args is any iterable of Dseqrecords or an iterable of iterables of Dseqrecords.
-    args will be greedily flattened.
+    args is any iterable of Dseqrecords or an iterable of iterables of
+    Dseqrecords. args will be greedily flattened.
 
     Parameters
     ----------
@@ -493,8 +501,9 @@ def pcr(*args, **kwargs):
     -------
 
     product : Amplicon
-        An :class:`pydna.amplicon.Amplicon` object representing the PCR product.
-        The direction of the PCR product will be the same as for the template sequence.
+        An :class:`pydna.amplicon.Amplicon` object representing the PCR
+        product. The direction of the PCR product will be the same as for
+        the template sequence.
 
     Examples
     --------
@@ -503,7 +512,8 @@ def pcr(*args, **kwargs):
     >>> from pydna.readers import read
     >>> from pydna.amplify import pcr
     >>> from pydna.primer import Primer
-    >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+    >>> template = Dseqrecord("tacactcaccgtctatcattatctac"
+                              "tatcgactgtatcatctgatagcac")
     >>> from Bio.SeqRecord import SeqRecord
     >>> p1 = Primer("tacactcaccgtctatcattatc")
     >>> p2 = Primer("cgactgtatcatctgatagcac").reverse_complement()
@@ -530,7 +540,8 @@ def pcr(*args, **kwargs):
             pass
         else:
             raise TypeError(
-                "arguments need to be a string, Bio.Seq, SeqRecord, Primer, Dseqrecord or Amplicon object"
+                "arguments need to be a string, Bio.Seq, SeqRecord"
+                ", Primer, Dseqrecord or Amplicon object"
             )
         new.append(s)
 
@@ -551,7 +562,6 @@ def pcr(*args, **kwargs):
 
 
 if __name__ == "__main__":
-    import os as _os
 
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
