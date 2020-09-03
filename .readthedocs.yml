@@ -1,8 +1,16 @@
+version: 2
+
+build:
+  image: latest
+
+python:
+  version: 3.8
+
 formats:
     - none
+
 conda:
     file: docs/rtdenv.yml
 
 python:
     setup_py_install: true
-

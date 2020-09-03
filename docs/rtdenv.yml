@@ -3,13 +3,12 @@ channels:
 - conda-forge
 - BjornFJohansson
 dependencies:
-- python=3.7
+- python=3.8
 - numpy
 - matplotlib
 - pint
-- numpydoc>=0.6.0
-- ipython>=5.1.0
+- numpydoc
+- ipython
 - jupyter
 - scipy
 - mpldatacursor
-- pint
