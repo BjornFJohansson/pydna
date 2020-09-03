@@ -9,20 +9,18 @@
 """This module provides the :class:`Amplicon` class for PCR simulation. This class is not meant to be use directly
 but is used by the :mod:`amplify` module"""
 
+from pydna.tm import dbd_program as _dbd_program
+from pydna.tm import program as _program
+from pydna.primer import Primer as _Primer
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+from Bio.SeqRecord import SeqRecord as _SeqRecord
 import textwrap as _textwrap
 import copy as _copy
 import logging as _logging
 
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-
-from Bio.SeqRecord import SeqRecord as _SeqRecord
-from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from pydna._pretty import pretty_str as _pretty_str
-from pydna.primer import Primer as _Primer
-from pydna.tm import program as _program
-from pydna.tm import dbd_program as _dbd_program
 
 
 class Amplicon(_Dseqrecord):

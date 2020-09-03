@@ -87,7 +87,8 @@ def parse(data, ds=True):
                 except ValueError:
                     handle.seek(0)
                     try:
-                        parsed = _SeqIO.read(handle, "fasta", alphabet=_generic_dna)
+                        parsed = _SeqIO.read(
+                            handle, "fasta", alphabet=_generic_dna)
                     except ValueError:
                         parsed = ""
             handle.close()
@@ -96,7 +97,7 @@ def parse(data, ds=True):
             ):  # hack to pick up topology from malformed files
                 circular = True
             if parsed:
-                from copy import deepcopy as _deepcopy  ## TODO: clean up !
+                from copy import deepcopy as _deepcopy  # TODO: clean up !
                 from pydna.seqfeature import SeqFeature as _SeqFeature
 
                 nfs = [_SeqFeature() for f in parsed.features]

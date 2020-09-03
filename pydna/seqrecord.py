@@ -10,6 +10,17 @@ the :class:`pydna._pretty_str.pretty_str` class instread of str for a
 nicer output in the IPython shell."""
 
 
+from pydna.seqfeature import SeqFeature as _SeqFeature
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.utils import seguid as _seg
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
+from Bio.Alphabet import generic_dna as _generic_dna
+from Bio.Data.CodonTable import TranslationError as _TranslationError
+from Bio.SeqUtils import GC as _GC
+from Bio.SeqRecord import SeqRecord as _SeqRecord
+from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.Seq import Seq as _Seq
+from prettytable import PrettyTable as _PrettyTable
 import datetime as _datetime
 import os as _os
 import re as _re
@@ -21,20 +32,6 @@ from warnings import warn as _warn
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-from prettytable import PrettyTable as _PrettyTable
-
-from Bio.Seq import Seq as _Seq
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
-from Bio.SeqRecord import SeqRecord as _SeqRecord
-from Bio.SeqUtils import GC as _GC
-from Bio.Data.CodonTable import TranslationError as _TranslationError
-from Bio.Alphabet import generic_dna as _generic_dna
-
-from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-from pydna.utils import seguid as _seg
-from pydna._pretty import pretty_str as _pretty_str
-from pydna.seqfeature import SeqFeature as _SeqFeature
 
 
 class SeqRecord(_SeqRecord):
@@ -89,7 +86,8 @@ class SeqRecord(_SeqRecord):
         if len(value) > 16:
             shortvalue = value[:16]
             _warn(
-                "locus property {} truncated to 16 chars {}".format(value, shortvalue),
+                "locus property {} truncated to 16 chars {}".format(
+                    value, shortvalue),
                 _PydnaWarning,
                 stacklevel=2,
             )
@@ -223,7 +221,6 @@ class SeqRecord(_SeqRecord):
         #         sub_features=None,
         #         ref=None,
         #         ref_db=None
-
         """Adds a feature of type misc to the feature list of the sequence.
 
         Parameters
@@ -492,7 +489,7 @@ class SeqRecord(_SeqRecord):
         else:
             r = str(other.lower())
         olaps = _common_sub_strings(str(self.seq).lower(), r, **kwargs)
-        return [self[olap[0] : olap[0] + olap[2]] for olap in olaps]
+        return [self[olap[0]: olap[0] + olap[2]] for olap in olaps]
 
     def gc(self):
         """Returns GC content"""
@@ -545,7 +542,7 @@ class SeqRecord(_SeqRecord):
     def __getitem__(self, index):
         from pydna.utils import (
             identifier_from_string as _identifier_from_string,
-        )  ## TODO: clean this up
+        )  # TODO: clean this up
 
         answer = super().__getitem__(index)
         if len(answer) < 2:

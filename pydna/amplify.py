@@ -12,6 +12,18 @@ if more flexibility is required.
 
 Primers with 5' tails as well as inverse PCR on circular templates are handled correctly."""
 
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.utils import flatten as _flatten
+from pydna.utils import memorize as _memorize
+from pydna.utils import rc as _rc
+from pydna.amplicon import Amplicon as _Amplicon
+from pydna.primer import Primer as _Primer
+from pydna.seqrecord import SeqRecord as _SeqRecord
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+from pydna.seqfeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
+from Bio.Seq import Seq as _Seq
 import itertools as _itertools
 import re as _re
 import copy as _copy
@@ -20,20 +32,6 @@ import os as _os
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-from Bio.Seq import Seq as _Seq
-from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
-from pydna.seqfeature import SeqFeature as _SeqFeature
-
-from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from pydna.seqrecord import SeqRecord as _SeqRecord
-from pydna.primer import Primer as _Primer
-from pydna.amplicon import Amplicon as _Amplicon
-from pydna.utils import rc as _rc
-from pydna.utils import memorize as _memorize
-from pydna.utils import flatten as _flatten
-from pydna._pretty import pretty_str as _pretty_str
 
 
 def _annealing_positions(primer, template, limit=15):
@@ -109,7 +107,7 @@ def _annealing_positions(primer, template, limit=15):
         length = len(tail)
         results = []
         for match_start in positions:
-            tm = template[match_start + limit : match_start + limit + length]
+            tm = template[match_start + limit: match_start + limit + length]
             # footprint = _rc(template[match_start:match_start+limit]+"".join([b for a,b in _itertools.takewhile(lambda x: x[0].lower()==x[1].lower(), list(zip(tail, tm)))]))
             footprint = len(
                 list(
@@ -261,7 +259,8 @@ class Anneal(object, metaclass=_Memoize):
             )
 
         self.forward_primers.sort(key=_operator.attrgetter("position"))
-        self.reverse_primers.sort(key=_operator.attrgetter("position"), reverse=True)
+        self.reverse_primers.sort(
+            key=_operator.attrgetter("position"), reverse=True)
 
         for fp in self.forward_primers:
             if fp.position - fp._fp >= 0:
@@ -364,9 +363,11 @@ class Anneal(object, metaclass=_Memoize):
                             + fp._fp
                         ]
                     else:
-                        tmpl = tmpl[: rp.position + rp._fp - (fp.position - fp._fp)]
+                        tmpl = tmpl[: rp.position +
+                                    rp._fp - (fp.position - fp._fp)]
                 else:
-                    tmpl = self.template[fp.position - fp._fp : rp.position + rp._fp]
+                    tmpl = self.template[fp.position -
+                                         fp._fp: rp.position + rp._fp]
 
                 prd = (
                     _Dseqrecord(fp.tail)
@@ -533,7 +534,8 @@ def pcr(*args, **kwargs):
             )
         new.append(s)
 
-    if len(new) == 1 and hasattr(new[0], "forward_primer"):  # A single Amplicon object
+    # A single Amplicon object
+    if len(new) == 1 and hasattr(new[0], "forward_primer"):
         new = [new[0].forward_primer, new[0].reverse_primer, new[0]]
 
     if not hasattr(new[-1].seq, "watson"):

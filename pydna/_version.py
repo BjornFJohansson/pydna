@@ -120,7 +120,7 @@ def versions_from_parentdir(parentdir_prefix, root, verbose):
         dirname = os.path.basename(root)
         if dirname.startswith(parentdir_prefix):
             return {
-                "version": dirname[len(parentdir_prefix) :],
+                "version": dirname[len(parentdir_prefix):],
                 "full-revisionid": None,
                 "dirty": False,
                 "error": None,
@@ -190,7 +190,7 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
     # starting in git-1.8.3, tags are listed as "tag: foo-1.0" instead of
     # just "foo-1.0". If we see a "tag: " prefix, prefer those.
     TAG = "tag: "
-    tags = set([r[len(TAG) :] for r in refs if r.startswith(TAG)])
+    tags = set([r[len(TAG):] for r in refs if r.startswith(TAG)])
     if not tags:
         # Either we're using git < 1.8.3, or there really are no tags. We use
         # a heuristic: assume all version tags have a digit. The old git %d
@@ -207,7 +207,7 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
     for ref in sorted(tags):
         # sorting will prefer e.g. "2.0" over "2.0rc1"
         if ref.startswith(tag_prefix):
-            r = ref[len(tag_prefix) :]
+            r = ref[len(tag_prefix):]
             if verbose:
                 print("picking %s" % r)
             return {
@@ -241,7 +241,8 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
     if sys.platform == "win32":
         GITS = ["git.cmd", "git.exe"]
 
-    out, rc = run_command(GITS, ["rev-parse", "--git-dir"], cwd=root, hide_stderr=True)
+    out, rc = run_command(
+        GITS, ["rev-parse", "--git-dir"], cwd=root, hide_stderr=True)
     if rc != 0:
         if verbose:
             print("Directory %s not under git control" % root)
@@ -307,7 +308,7 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
                 tag_prefix,
             )
             return pieces
-        pieces["closest-tag"] = full_tag[len(tag_prefix) :]
+        pieces["closest-tag"] = full_tag[len(tag_prefix):]
 
         # distance: number of commits since tag
         pieces["distance"] = int(mo.group(2))
@@ -318,7 +319,8 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
     else:
         # HEX: no tags
         pieces["closest-tag"] = None
-        count_out, rc = run_command(GITS, ["rev-list", "HEAD", "--count"], cwd=root)
+        count_out, rc = run_command(
+            GITS, ["rev-list", "HEAD", "--count"], cwd=root)
         pieces["distance"] = int(count_out)  # total number of commits
 
     # commit date: see ISO-8601 comment in git_versions_from_keywords()

@@ -380,52 +380,95 @@ qeff = e / Q_(7, "bp")  # effective charge per dsDNA base pair (A.s/bp)
 constants = {"kB": kB, "lp": lp, "l": l, "b": b, "qeff": qeff}
 
 # mobility = distance/(time*field)
-runtime = lambda distance, mobility, field: distance / (mobility * field)
 
-rundistance = lambda time, mobility, field: time * mobility * field
+
+def runtime(distance, mobility, field): return distance / (mobility * field)
+
+
+def rundistance(time, mobility, field): return time * mobility * field
 
 # Intrinsic band broadening as function of the diffusion coefficient and time
-bandbroadening = lambda D, time: _np.sqrt(2 * D * time)
 
-pore_size = lambda gamma, muL, mu0, lp, b: (gamma * muL * lp * b / mu0) ** (1 / 2)
 
-pore_size_fit = lambda C: 143 * ureg("nm*g**0.59/mL**0.59") * C ** (-0.59)
+def bandbroadening(D, time): return _np.sqrt(2 * D * time)
 
-radius_gyration = lambda L, lp: (
+
+def pore_size(gamma, muL, mu0, lp, b): return (
+    gamma * muL * lp * b / mu0) ** (1 / 2)
+
+
+def pore_size_fit(C): return 143 * ureg("nm*g**0.59/mL**0.59") * C ** (-0.59)
+
+
+def radius_gyration(L, lp): return (
     lp * L / 3 * (1 - lp / L + lp / L * _np.exp(-L / lp))
 ) ** (1 / 2)
 
+
 H2Oviscosity = (
-    lambda T: 2.414e-5 * ureg("kg/m/s") * 10 ** (247.8 * ureg.K / (T - 140 * ureg.K))
+    lambda T: 2.414e-5 * ureg("kg/m/s") *
+    10 ** (247.8 * ureg.K / (T - 140 * ureg.K))
 )  # (Pa.s)=(kg/(m.s)) accurate to within 2.5% from 0 °C to 370 °C
 
-contour_length = lambda Nbp, b: Nbp * b
 
-reduced_field = lambda eta, a, mu0, E, kB, T: eta * a ** 2 * mu0 * E / (kB * T)
+def contour_length(Nbp, b): return Nbp * b
 
-reduced_field_Kuhn = lambda eta, l, mu0, E, kB, T: eta * l ** 2 * mu0 * E / (kB * T)
+
+def reduced_field(eta, a, mu0, E, kB, T): return eta * \
+    a ** 2 * mu0 * E / (kB * T)
+
+
+def reduced_field_Kuhn(eta, l, mu0, E, kB, T): return eta * \
+    l ** 2 * mu0 * E / (kB * T)
 
 # Diffusion coefficient of a blob
-Dblob = lambda kB, T, eta, a: kB * T / (eta * a)
+
+
+def Dblob(kB, T, eta, a): return kB * T / (eta * a)
 
 # Diffusion coefficient of a Kuhn segment
-DKuhn = lambda kB, T, eta, l: kB * T / (eta * l)
+
+
+def DKuhn(kB, T, eta, l): return kB * T / (eta * l)
 
 # Relations between basepairs (Nbp), Kuhn segments (NKuhn) and blobs (N)
-Nbp_to_NKuhn = lambda Nbp, b, l: Nbp * b / l  # number of Kuhn segments (~= Nbp/300)
-NKuhn_to_Nbp = lambda NKuhn, b, l: NKuhn * l / b  # number of base pairs (bp)
-NKuhn_to_N = lambda NKuhn, l, a: NKuhn * (l / a) ** 2  # number of occupied pores
-N_to_NKuhn = lambda N, a, l: N * (a / l) ** 2  # number of Kuhn segments
-N_to_Nbp = lambda N, a, b, l: N * (l / b) * (a / l) ** 2  # number of base pairs (bp)
-Nbp_to_N = lambda Nbp, a, b, l: Nbp * (b / l) * (l / a) ** 2  # number of occupied pores
+
+
+# number of Kuhn segments (~= Nbp/300)
+def Nbp_to_NKuhn(Nbp, b, l): return Nbp * b / l
+
+
+def NKuhn_to_Nbp(NKuhn, b, l): return NKuhn * \
+    l / b  # number of base pairs (bp)
+def NKuhn_to_N(NKuhn, l, a): return NKuhn * \
+    (l / a) ** 2  # number of occupied pores
+
+
+def N_to_NKuhn(N, a, l): return N * (a / l) ** 2  # number of Kuhn segments
+
+
+def N_to_Nbp(N, a, b, l): return N * (l / b) * \
+    (a / l) ** 2  # number of base pairs (bp)
+def Nbp_to_N(Nbp, a, b, l): return Nbp * (b / l) * \
+    (l / a) ** 2  # number of occupied pores
 
 # Individual diffusion regimes
-reptation_equilibrium = lambda Dblob, N: Dblob / N ** 2
-reptation_accelerated = lambda Dblob, epsilon, N: Dblob * epsilon * N ** (-1 / 2)
-reptation_plateau = lambda Dblob, epsilon: Dblob * epsilon ** (3 / 2)
-free_solution = lambda kB, T, eta, Rh: kB * T / (6 * _np.pi * eta * Rh)
-Zimm_g = lambda Nbp, DRouse, qeff, mu0, kB, T: DRouse * Nbp * qeff / (mu0 * kB * T)
-Ogston_Zimm = lambda D0, g: D0 * g
+
+
+def reptation_equilibrium(Dblob, N): return Dblob / N ** 2
+def reptation_accelerated(
+    Dblob, epsilon, N): return Dblob * epsilon * N ** (-1 / 2)
+
+
+def reptation_plateau(Dblob, epsilon): return Dblob * epsilon ** (3 / 2)
+def free_solution(kB, T, eta, Rh): return kB * T / (6 * _np.pi * eta * Rh)
+def Zimm_g(Nbp, DRouse, qeff, mu0, kB, T): return DRouse * \
+    Nbp * qeff / (mu0 * kB * T)
+
+
+def Ogston_Zimm(D0, g): return D0 * g
+
+
 Ogston_Rouse = (
     lambda Nbp, kB, T, a, eta, b, l: kB
     * T
@@ -434,11 +477,14 @@ Ogston_Rouse = (
 )
 
 # Diffusion regime frontiers (in number of occupied pores)
-Zimm_Rouse = lambda x0, args: (
-    Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0] * ureg.bp, args[5], args[6], args[7])
+
+
+def Zimm_Rouse(x0, args): return (
+    Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[
+             0] * ureg.bp, args[5], args[6], args[7])
 )
-equil_accel = lambda epsilon: epsilon ** (-2 / 3)
-accel_plateau = lambda epsilon: epsilon ** (-1)
+def equil_accel(epsilon): return epsilon ** (-2 / 3)
+def accel_plateau(epsilon): return epsilon ** (-1)
 
 
 def diff_Zimm_Rouse(Nbp, args):
@@ -622,11 +668,17 @@ def flatten(List):
 
 
 # Gaussian function
-Gaussian = lambda x, hgt, ctr, dev: hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
-Gauss_hgt = lambda auc, dev: auc / (dev * _np.sqrt(2 * _np.pi))
-Gauss_dev = lambda FWHM: FWHM / (2 * _np.sqrt(2 * _np.log(2)))
+def Gaussian(x, hgt, ctr, dev): return hgt * \
+    _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
+
+
+def Gauss_hgt(auc, dev): return auc / (dev * _np.sqrt(2 * _np.pi))
+def Gauss_dev(FWHM): return FWHM / (2 * _np.sqrt(2 * _np.log(2)))
 # Gauss_dev = lambda FWTM: FWTM/(2*_np.sqrt(2*_np.log(10)))
-Gauss_FWHM = lambda FWTM: FWTM * _np.sqrt(2 * _np.log(2)) / _np.sqrt(2 * _np.log(10))
+
+
+def Gauss_FWHM(FWTM): return FWTM * _np.sqrt(2 *
+                                             _np.log(2)) / _np.sqrt(2 * _np.log(10))
 
 
 def _to_units(quantity, units, var_name=None):
@@ -740,7 +792,8 @@ def size_to_mobility(
     replNANs=True,
 ):
     mobility = _griddata(
-        (dataset["E"], dataset["T"]), mu_func(dna_len), (field, percentage), method
+        (dataset["E"], dataset["T"]), mu_func(
+            dna_len), (field, percentage), method
     )
     if replNANs and _np.isnan(mobility):
         # Replace NANs by 'nearest' interpolation
@@ -802,12 +855,14 @@ def vWBRfit(
             color="red",
         )
         ax.set_xlim(DNAmin - 0.1 * DNAmin, DNAmax + 0.1 * DNAmax)
-        ax.set_ylim((min(mu) - 0.1 * min(mu)) * 1e4, (max(mu) + 0.1 * max(mu)) * 1e4)
+        ax.set_ylim((min(mu) - 0.1 * min(mu)) * 1e4,
+                    (max(mu) + 0.1 * max(mu)) * 1e4)
         ax.set_xscale("log")
         ax.xaxis.set_major_formatter(_mtick.FormatStrFormatter("%d"))
         ax.tick_params(which="both", top="off", right="off")
         ax.set_xlabel(r"$\mathrm{DNA\,length\,(bp)}$", fontsize=14)
-        ax.set_ylabel(r"$\mu\times{10^{8}}\,(\mathrm{m^{2}/V\cdot s})$", fontsize=14)
+        ax.set_ylabel(
+            r"$\mu\times{10^{8}}\,(\mathrm{m^{2}/V\cdot s})$", fontsize=14)
         ax.set_title(
             r"$\mu_S=%.2e,\,\mu_L=%.2e\,\mathrm{cm^2/(V.s)},\,"
             r"\gamma=%d \mathrm{bp}$" % (muS, muL, gamma)
@@ -840,7 +895,8 @@ def ferguson_to_mu0(
     for Lj in DNAvals:
         ln_mu_T = []
         for Ti in Tvals:
-            mu = size_to_mobility(Lj, field, Ti, mu_func, dataset, adjmethod, replNANs)
+            mu = size_to_mobility(Lj, field, Ti, mu_func,
+                                  dataset, adjmethod, replNANs)
             ln_mu_T.append(_np.log(mu))
         ln_mu_LxT.append(ln_mu_T)
     ln_mu_LxT = _np.array(ln_mu_LxT)
@@ -854,7 +910,8 @@ def ferguson_to_mu0(
             gradient, intercept, r_value, p_value, std_err = _stats.linregress(
                 Tvals[not_nan], ln_mu_LxT[l][not_nan]
             )
-            lregr_stats.append((gradient, intercept, r_value, p_value, std_err))
+            lregr_stats.append(
+                (gradient, intercept, r_value, p_value, std_err))
             exclude.append(False)
         else:
             exclude.append(True)
@@ -863,13 +920,14 @@ def ferguson_to_mu0(
     ln_mu_LxT = ln_mu_LxT[~exclude]
     if len(lregr_stats) > 0:
         # Free solution mobility determination
-        ln_mu0 = _np.mean([row[1] for row in lregr_stats])  # mean of intercepts
+        ln_mu0 = _np.mean([row[1] for row in lregr_stats]
+                          )  # mean of intercepts
         mu0 = _np.exp(ln_mu0)  # cm^2/(V.seg)
     else:
         mu0 = None
     if plot and len(ln_mu_LxT) > 0:
         # Ferguson Plot (ln(mu) vs. %T) --> mu0
-        regline = lambda m, b, x: m * x + b  # Line function (for the plot)
+        def regline(m, b, x): return m * x + b  # Line function (for the plot)
         colors = _cm.rainbow(_np.linspace(0, 1, len(DNAvals)))
         Tvals0 = _np.concatenate([[0], Tvals])
         fig = _plt.figure()
@@ -878,10 +936,12 @@ def ferguson_to_mu0(
             ax.scatter(Tvals, ln_mu_LxT[l], label=DNAvals[l], color=colors[l])
             m = lregr_stats[l][0]
             b = lregr_stats[l][1]
-            ax.plot(Tvals0, [regline(m, b, t) for t in Tvals0], color=colors[l])
+            ax.plot(Tvals0, [regline(m, b, t)
+                             for t in Tvals0], color=colors[l])
         ax.set_xlim(0)
         # ax.set_ylim(-10, -7.5)
-        ax.legend(title=r"$\mathrm{DNA size (bp)}$", prop={"size": 10}).draggable()
+        ax.legend(title=r"$\mathrm{DNA size (bp)}$",
+                  prop={"size": 10}).draggable()
         ax.tick_params(which="both", top="off", right="off")
         ax.set_xlabel(r"$\%\,agarose$", fontsize=14)
         ax.set_ylabel(r"$\mathrm{ln(mobility\,[cm^{2}/V sec])}$", fontsize=14)
@@ -974,7 +1034,8 @@ def gelplot_imshow(
     if noise is None or noise <= 0:
         rgb_arr += back_col
     else:
-        bckg = _np.random.normal(back_col, noise, (len(rgb_arr), len(rgb_arr[0])))
+        bckg = _np.random.normal(
+            back_col, noise, (len(rgb_arr), len(rgb_arr[0])))
         rgb_arr += bckg[:, :, _np.newaxis]
     # Saturation
     rgb_arr[rgb_arr > 1] = 1
@@ -1191,7 +1252,8 @@ class Gel:
         self.wellsep = to_units(wellsep, "mm", "wellsep")
         # Quantities
         # defaulQty = Q_(150,'ng')
-        quantities = [[Q_(dna.m(), "g") for dna in sampl] for sampl in self.samples]
+        quantities = [[Q_(dna.m(), "g") for dna in sampl]
+                      for sampl in self.samples]
         self.quantities = to_units(quantities, "ng", "quantities")
         self.quantities
         self.runtime = _np.nan  # ##########
@@ -1467,7 +1529,8 @@ class Gel:
         self.runtime = time
 
         # Distances
-        distances = [rundistance(time, lane_mobs, field) for lane_mobs in mobilities]
+        distances = [rundistance(time, lane_mobs, field)
+                     for lane_mobs in mobilities]
         self.distances = distances
 
         # Free solution mobility estimate
@@ -1480,7 +1543,8 @@ class Gel:
         # Initial bandwidths
         dist0 = welly
         time0 = dist0 / (mu0 * field)
-        bandwidths0 = [mobs * time0[l] * field for l, mobs in enumerate(mobilities)]
+        bandwidths0 = [mobs * time0[l] * field for l,
+                       mobs in enumerate(mobilities)]
         self.bandwidths0 = bandwidths0
 
         # Intrinsic diffusional bandwidths
@@ -1528,7 +1592,8 @@ class Gel:
                     L = contour_length(Nbp, b)  # (m)
                     Rg = radius_gyration(L, lp)  # (m)
                     D0 = free_solution(kB, temperature, eta, Rg)  # (m^2/s)
-                    DRouse = Ogston_Rouse(Nbp, kB, temperature, a, eta, b, l)  # (m^2/s)
+                    DRouse = Ogston_Rouse(
+                        Nbp, kB, temperature, a, eta, b, l)  # (m^2/s)
                     g = Zimm_g(Nbp, DRouse, qeff, mu0, kB, temperature)  # base
                     D = Ogston_Zimm(D0, g)  # unit
                 elif N < N_lim2:
@@ -1547,7 +1612,8 @@ class Gel:
 
         # Total bandwidths
         bandwidths = [
-            [bandwidths0[i][j] + bandwidthsI[i][j] for j in range(len(lanes[i]))]
+            [bandwidths0[i][j] + bandwidthsI[i][j]
+                for j in range(len(lanes[i]))]
             for i in range(nlanes)
         ]
         self.bandwidths = bandwidths
@@ -1840,7 +1906,8 @@ if __name__ == "__main__":
             assert len(sizes) == len(fracs), (
                 "ladder: %s, len(sizes)" " != len(percent)" % k
             )
-            assert round(sum(fracs), 5) == 1, "ladder: %s, sum(percent)" " != 1" % k
+            assert round(
+                sum(fracs), 5) == 1, "ladder: %s, sum(percent)" " != 1" % k
             print("\n", k, "\n", "-" * 80)
             print("size \t\t mass/%s \t fraction \t n/pmol" % total)
             print("-" * 80)

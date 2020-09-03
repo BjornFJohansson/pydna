@@ -345,7 +345,8 @@ class Dseq(_Seq):
                     elif len(watson) > len(crick):
                         self._data = watson
                     else:
-                        self._data = watson + _rc(crick[: len(crick) - len(watson)])
+                        self._data = watson + \
+                            _rc(crick[: len(crick) - len(watson)])
                 elif ovhg > 0:
                     if ovhg + len(watson) > len(crick):
                         self._data = _rc(crick[-ovhg:]) + watson
@@ -387,10 +388,11 @@ class Dseq(_Seq):
         obj._ovhg = ovhg
         obj._circular = circular
         obj._linear = linear
-        obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
+        obj.length = max(len(watson) + max(0, ovhg),
+                         len(crick) + max(0, -ovhg))
         obj.pos = pos
         obj._data = (
-            _rc(crick[-max(0, ovhg) or len(crick) :])
+            _rc(crick[-max(0, ovhg) or len(crick):])
             + watson
             + _rc(crick[: max(0, len(crick) - ovhg - len(watson))])
         )
@@ -594,12 +596,12 @@ class Dseq(_Seq):
                 stop = sl.stop
 
                 w = (
-                    self.watson[(start or len(self)) :: stp]
-                    + self.watson[: (stop or 0) : stp]
+                    self.watson[(start or len(self)):: stp]
+                    + self.watson[: (stop or 0): stp]
                 )
                 c = (
-                    self.crick[len(self) - stop :: stp]
-                    + self.crick[: len(self) - start : stp]
+                    self.crick[len(self) - stop:: stp]
+                    + self.crick[: len(self) - start: stp]
                 )
 
                 return Dseq(w, c, ovhg=0, linear=True)
@@ -629,7 +631,7 @@ class Dseq(_Seq):
         if len(self) > 30:
 
             if self._ovhg > 0:
-                d = self.crick[-self._ovhg :][::-1]
+                d = self.crick[-self._ovhg:][::-1]
                 hej = len(d)
                 if len(d) > 10:
                     d = "{}..{}".format(d[:4], d[-4:])
@@ -649,7 +651,7 @@ class Dseq(_Seq):
             x = self._ovhg + len(self.watson) - len(self.crick)
 
             if x > 0:
-                c = self.watson[len(self.crick) - self._ovhg :]
+                c = self.watson[len(self.crick) - self._ovhg:]
                 y = len(c)
                 if len(c) > 10:
                     c = "{}..{}".format(c[:4], c[-4:])
@@ -789,7 +791,7 @@ class Dseq(_Seq):
         if type5 == type3 and str(sticky5) == str(_rc(sticky3)):
             nseq = Dseq.quick(
                 self.watson,
-                self.crick[-self._ovhg :] + self.crick[: -self._ovhg],
+                self.crick[-self._ovhg:] + self.crick[: -self._ovhg],
                 ovhg=0,
                 linear=False,
                 circular=True,
@@ -883,7 +885,7 @@ class Dseq(_Seq):
             sticky = self.watson[: -self._ovhg].lower()
             type_ = "5'"
         elif self._ovhg > 0:
-            sticky = self.crick[-self._ovhg :].lower()
+            sticky = self.crick[-self._ovhg:].lower()
             type_ = "3'"
         else:
             sticky = ""
@@ -1123,7 +1125,7 @@ class Dseq(_Seq):
         """
         return Dseq(
             self.watson[
-                max(0, -self.ovhg) : min(len(self.watson), len(self.crick) - self.ovhg)
+                max(0, -self.ovhg): min(len(self.watson), len(self.crick) - self.ovhg)
             ]
         )
 
@@ -1212,7 +1214,8 @@ class Dseq(_Seq):
         """Returns the enzymes in a RestrictionBatch that do **not**
         cut the sequence."""
         ana = batch.search(self)
-        ncut = {enz: sitelist for (enz, sitelist) in ana.items() if not sitelist}
+        ncut = {enz: sitelist for (enz, sitelist)
+                in ana.items() if not sitelist}
         return _RestrictionBatch(ncut)
 
     def unique_cutters(self, batch=CommOnly):
@@ -1231,7 +1234,8 @@ class Dseq(_Seq):
         """Returns the enzymes in a RestrictionBatch that cut the sequence
         n times."""
         ana = batch.search(self)
-        ncut = {enz: sitelist for (enz, sitelist) in ana.items() if len(sitelist) == n}
+        ncut = {enz: sitelist for (enz, sitelist)
+                in ana.items() if len(sitelist) == n}
         return _RestrictionBatch(ncut)
 
     def cutters(self, batch=CommOnly):
@@ -1349,7 +1353,8 @@ class Dseq(_Seq):
                 wpos = [
                     x - len(pad) - 1
                     for x in e.search(
-                        _Seq(pad + self.watson + self.watson[: e.size - 1]) + pad
+                        _Seq(pad + self.watson +
+                             self.watson[: e.size - 1]) + pad
                     )
                 ][::-1]
                 cpos = [
@@ -1363,8 +1368,8 @@ class Dseq(_Seq):
                     if w % len(self) == (self.length - c + e.ovhg) % len(self):
                         frags = [
                             Dseq(
-                                self.watson[w % l :] + self.watson[: w % l],
-                                self.crick[c % l :] + self.crick[: c % l],
+                                self.watson[w % l:] + self.watson[: w % l],
+                                self.crick[c % l:] + self.crick[: c % l],
                                 ovhg=e.ovhg,
                                 pos=w,
                             )

@@ -41,6 +41,20 @@ sequences separating the overlapping regions form edges.
 The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
+from collections import UserString as _UserString
+from Bio.SeqFeature import ExactPosition as _ExactPosition
+from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
+from pydna.utils import rc as _rc
+from pydna.utils import memorize as _memorize
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.contig import Contig as _Contig
+from pydna.common_sub_strings import terminal_overlap
+from pydna.common_sub_strings import common_sub_strings
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+import networkx as _nx
+from copy import deepcopy as _deepcopy
+import itertools as _itertools
 import sys
 
 # if sys.version_info < (3, 6):
@@ -52,23 +66,6 @@ import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
-import itertools as _itertools
-from copy import deepcopy as _deepcopy
-import networkx as _nx
-
-from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-
-from pydna.common_sub_strings import common_sub_strings
-from pydna.common_sub_strings import terminal_overlap
-from pydna.contig import Contig as _Contig
-from pydna._pretty import pretty_str as _pretty_str
-from pydna.utils import memorize as _memorize
-from pydna.utils import rc as _rc
-
-from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
-from Bio.SeqFeature import ExactPosition as _ExactPosition
-from collections import UserString as _UserString
 
 # TODO use quicker inits for contig
 # TODO remove maxnodes for init
@@ -182,7 +179,7 @@ class Assembly(object, metaclass=_Memoize):
 
             for start_in_first, start_in_secnd, length in matches:
                 # node is a string and represent the shared sequence in upper case.
-                node = first["upper"][start_in_first : start_in_first + length]
+                node = first["upper"][start_in_first: start_in_first + length]
 
                 first["nodes"].append((start_in_first, length, node))
                 secnd["nodes"].append((start_in_secnd, length, node))
@@ -193,7 +190,7 @@ class Assembly(object, metaclass=_Memoize):
                 start_in_firrc = len(first["upper"]) - start_in_first - length
                 start_in_secrc = len(secnd["upper"]) - start_in_secnd - length
                 # noderc is the reverse complement of node
-                noderc = firrc["upper"][start_in_firrc : start_in_firrc + length]
+                noderc = firrc["upper"][start_in_firrc: start_in_firrc + length]
                 firrc["nodes"].append((start_in_firrc, length, noderc))
                 secrc["nodes"].append((start_in_secrc, length, noderc))
                 nodemap[node] = noderc
@@ -202,7 +199,7 @@ class Assembly(object, metaclass=_Memoize):
             matches = algorithm(first["upper"], secrc["upper"], limit)
 
             for start_in_first, start_in_secrc, length in matches:
-                node = first["upper"][start_in_first : start_in_first + length]
+                node = first["upper"][start_in_first: start_in_first + length]
                 first["nodes"].append((start_in_first, length, node))
                 secrc["nodes"].append((start_in_secrc, length, node))
 
@@ -210,7 +207,7 @@ class Assembly(object, metaclass=_Memoize):
                     len(first["upper"]) - start_in_first - length,
                     len(secnd["upper"]) - start_in_secrc - length,
                 )
-                noderc = firrc["upper"][start_in_firrc : start_in_firrc + length]
+                noderc = firrc["upper"][start_in_firrc: start_in_firrc + length]
                 firrc["nodes"].append((start_in_firrc, length, noderc))
                 secnd["nodes"].append((start_in_secnd, length, noderc))
                 nodemap[node] = noderc
@@ -351,7 +348,8 @@ class Assembly(object, metaclass=_Memoize):
 
         linearpaths = list(
             _itertools.chain(
-                _nx.all_simple_paths(_nx.DiGraph(G), "begin", "end", cutoff=max_nodes),
+                _nx.all_simple_paths(_nx.DiGraph(
+                    G), "begin", "end", cutoff=max_nodes),
                 _nx.all_simple_paths(
                     _nx.DiGraph(G), "begin", "end_rc", cutoff=max_nodes
                 ),
@@ -390,7 +388,8 @@ class Assembly(object, metaclass=_Memoize):
                     continue
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
-                sg.add_nodes_from((n, d) for n, d in G.nodes(data=True) if n in lp)
+                sg.add_nodes_from((n, d)
+                                  for n, d in G.nodes(data=True) if n in lp)
 
                 edgefeatures = []
                 offset = 0
@@ -402,7 +401,8 @@ class Assembly(object, metaclass=_Memoize):
                     edgefeatures.extend(feats)
                     offset += e["piece"].stop - e["piece"].start
 
-                lps[key] = ct, edgefeatures, sg, {n: self.nodemap[n] for n in lp}
+                lps[key] = ct, edgefeatures, sg, {
+                    n: self.nodemap[n] for n in lp}
 
         return sorted(
             (
@@ -426,7 +426,8 @@ class Assembly(object, metaclass=_Memoize):
         cpaths = sorted(_nx.simple_cycles(self.G), key=len)
         cpaths_sorted = []
         for cpath in cpaths:
-            order, node = min((self.G.nodes[node]["order"], node) for node in cpath)
+            order, node = min(
+                (self.G.nodes[node]["order"], node) for node in cpath)
             i = cpath.index(node)
             cpaths_sorted.append((order, cpath[i:] + cpath[:i]))
         cpaths_sorted.sort()
@@ -459,7 +460,8 @@ class Assembly(object, metaclass=_Memoize):
                     continue  # TODO: cpsrc not needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
-                sg.add_nodes_from((n, d) for n, d in self.G.nodes(data=True) if n in cp)
+                sg.add_nodes_from((n, d)
+                                  for n, d in self.G.nodes(data=True) if n in cp)
 
                 edgefeatures = []
                 offset = 0
@@ -477,10 +479,12 @@ class Assembly(object, metaclass=_Memoize):
                             f.location = _CompoundLocation(
                                 (
                                     _FeatureLocation(
-                                        f.location.start, _ExactPosition(len(ct))
+                                        f.location.start, _ExactPosition(
+                                            len(ct))
                                     ),
                                     _FeatureLocation(
-                                        _ExactPosition(0), f.location.end - len(ct)
+                                        _ExactPosition(
+                                            0), f.location.end - len(ct)
                                     ),
                                 )
                             )

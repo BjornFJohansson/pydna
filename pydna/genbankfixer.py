@@ -36,7 +36,8 @@ GoodLocus = (
     + (_pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular")).setResultsName(
         "topology"
     )
-    + _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode")
+    + _pp.Optional(_pp.Word(_pp.alphas),
+                   default="   ").setResultsName("divcode")
     + _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date")
 )
 
@@ -49,7 +50,8 @@ BrokenLocus1 = (
     + (_pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular")).setResultsName(
         "topology"
     )
-    + _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode")
+    + _pp.Optional(_pp.Word(_pp.alphas),
+                   default="   ").setResultsName("divcode")
     + _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date")
 )
 
@@ -64,7 +66,8 @@ BrokenLocus2 = (
         _pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular"),
         default="linear",
     ).setResultsName("topology")
-    + _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode")
+    + _pp.Optional(_pp.Word(_pp.alphas),
+                   default="   ").setResultsName("divcode")
     + _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date")
 )
 
@@ -102,7 +105,8 @@ SpacedLine = _pp.White(min=1) + _pp.CharsNotIn("\n") + _pp.LineEnd()
 # HeaderLine = CapWord + CharsNotIn("\n") + LineEnd()
 GenericEntry = _pp.Group(
     CapWord
-    + _pp.Combine(_pp.CharsNotIn("\n") + _pp.LineEnd() + _pp.ZeroOrMore(SpacedLine))
+    + _pp.Combine(_pp.CharsNotIn("\n") + _pp.LineEnd() +
+                  _pp.ZeroOrMore(SpacedLine))
 ).setResultsName("generics", listAllMatches=True)
 
 
@@ -176,6 +180,8 @@ def parseGBLoc(s, l, t):
 featLocation.setParseAction(parseGBLoc)
 
 # ==== Genbank Feature Key-Value Pairs
+
+
 def strip_multiline(s, l, t):
     whitespace = _re.compile("[\n]{1}[ ]+")
     return whitespace.sub(" ", t[0])
@@ -263,7 +269,8 @@ SequenceEntry = _pp.Suppress(_pp.Literal("ORIGIN")) + Sequence.setParseAction(
 GBEnd = _pp.Literal("//")
 
 # Begin w. LOCUS, slurp all entries, then stop at the end!
-GB = LocusEntry + _pp.OneOrMore(FeaturesEntry | SequenceEntry | GenericEntry) + GBEnd
+GB = LocusEntry + _pp.OneOrMore(FeaturesEntry |
+                                SequenceEntry | GenericEntry) + GBEnd
 
 # NCBI often returns sets of GB files
 multipleGB = _pp.OneOrMore(_pp.Group(GB))
@@ -366,10 +373,11 @@ def wrapstring(str_, rowstart, rowend, padfirst=True):
     # multiple lines so wrap:
     for linenum in range(1 + int(len(str_) / rowlen)):
         if linenum == 0 and not padfirst:
-            wrappedstr += str_[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
+            wrappedstr += str_[linenum * rowlen: (linenum + 1) * rowlen] + "\n"
         else:
             wrappedstr += (
-                " " * leftpad + str_[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
+                " " * leftpad + str_[linenum *
+                                     rowlen: (linenum + 1) * rowlen] + "\n"
             )
     #    if str_.startswith("/translation="):
     #        print(str_)
@@ -401,17 +409,17 @@ def originstr(sequence):
         outstr += (
             (" " * 9 + str(pos + 1))[-9:]
             + " "
-            + sequence[pos : pos + 10]
+            + sequence[pos: pos + 10]
             + " "
-            + sequence[pos + 10 : pos + 20]
+            + sequence[pos + 10: pos + 20]
             + " "
-            + sequence[pos + 20 : pos + 30]
+            + sequence[pos + 20: pos + 30]
             + " "
-            + sequence[pos + 30 : pos + 40]
+            + sequence[pos + 30: pos + 40]
             + " "
-            + sequence[pos + 40 : pos + 50]
+            + sequence[pos + 40: pos + 50]
             + " "
-            + sequence[pos + 50 : pos + 60]
+            + sequence[pos + 50: pos + 60]
             + "\n"
         )
     return outstr
@@ -484,7 +492,8 @@ def toGB(jseq):
                 " " * 5
                 + feat["type"]
                 + " " * (16 - len(feat["type"]))
-                + wrapstring(locstr(feat["location"], feat["strand"]), 21, 80, False)
+                + wrapstring(locstr(feat["location"],
+                                    feat["strand"]), 21, 80, False)
             )
             for k in feat.keys():
                 if k not in ["type", "location", "strand"]:
@@ -495,11 +504,13 @@ def toGB(jseq):
                         "ApEinfo_revcolor",
                         "label",
                     ]:
-                        fstr += wrapstring("/" + str(k) + "=" + str(feat[k]), 21, 80)
+                        fstr += wrapstring("/" + str(k) +
+                                           "=" + str(feat[k]), 21, 80)
                     # standard: wrap val in quotes
                     else:
                         fstr += wrapstring(
-                            "/" + str(k) + "=" + '"' + str(feat[k]) + '"', 21, 80
+                            "/" + str(k) + "=" + '"' +
+                            str(feat[k]) + '"', 21, 80
                         )
             featuresstr += fstr
 

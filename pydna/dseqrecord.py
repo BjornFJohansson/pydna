@@ -11,6 +11,21 @@ Seq and SeqRecord classes, respectively.
 
 The Dseq and Dseqrecord classes support the notion of circular and linear DNA topology.
 """
+from Bio.Restriction import CommOnly
+from pydna.dseq import Dseq as _Dseq
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.utils import flatten as _flatten
+from pydna.utils import memorize as _memorize
+from pydna.utils import rc as _rc
+from pydna.utils import cseguid as _cseg
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
+from pydna._sequencetrace import SequenceTraceFactory as _SequenceTraceFactory
+from pydna.seqfeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
+from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from pydna.seqrecord import SeqRecord as _SeqRecord
+from Bio.Seq import translate as _translate
+from pydna.utils import identifier_from_string as _identifier_from_string
 import copy as _copy
 import operator as _operator
 import os as _os
@@ -20,27 +35,6 @@ import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
-from pydna.utils import identifier_from_string as _identifier_from_string
-
-from Bio.Seq import translate as _translate
-from pydna.seqrecord import SeqRecord as _SeqRecord
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
-from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from pydna.seqfeature import SeqFeature as _SeqFeature
-
-
-from pydna._sequencetrace import SequenceTraceFactory as _SequenceTraceFactory
-from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-
-from pydna.utils import cseguid as _cseg
-from pydna.utils import rc as _rc
-from pydna.utils import memorize as _memorize
-from pydna.utils import flatten as _flatten
-
-from pydna._pretty import pretty_str as _pretty_str
-from pydna.dseq import Dseq as _Dseq
-
-from Bio.Restriction import CommOnly
 
 try:
     from IPython.display import display as _display
@@ -182,7 +176,8 @@ class Dseqrecord(_SeqRecord):
             )
         # record is a Bio.SeqRecord or Dseqrecord object ?
         elif hasattr(record, "features"):
-            _module_logger.info("record is a Bio.SeqRecord or Dseqrecord object")
+            _module_logger.info(
+                "record is a Bio.SeqRecord or Dseqrecord object")
             for key, value in list(record.__dict__.items()):
                 setattr(self, key, value)
             record.letter_annotations = {}
@@ -196,7 +191,8 @@ class Dseqrecord(_SeqRecord):
                 self.seq = new_seq
             # record.seq is Bio.SeqRecord object ?
             else:
-                self.seq = _Dseq(str(self.seq), linear=linear, circular=circular)
+                self.seq = _Dseq(str(self.seq), linear=linear,
+                                 circular=circular)
         else:
             raise ValueError("don't know what to do with {}".format(record))
 
@@ -260,7 +256,6 @@ class Dseqrecord(_SeqRecord):
         return self.seq.circular
 
     def upper(self):
-
         """Returns an uppercase copy.
         >>> from pydna.dseqrecord import Dseqrecord
         >>> my_seq = Dseqrecord("aAa")
@@ -478,8 +473,10 @@ class Dseqrecord(_SeqRecord):
                 fn.location = _CompoundLocation([loc1, loc2])
 
             if fn.location.end > len(new):
-                loc1 = _FeatureLocation(fn.location.start, len(new), strand=fn.strand)
-                loc2 = _FeatureLocation(0, fn.location.end - len(new), strand=fn.strand)
+                loc1 = _FeatureLocation(
+                    fn.location.start, len(new), strand=fn.strand)
+                loc2 = _FeatureLocation(
+                    0, fn.location.end - len(new), strand=fn.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             fn.qualifiers = fo.qualifiers
@@ -596,7 +593,8 @@ class Dseqrecord(_SeqRecord):
             filename = "{name}.{type}".format(name=self.locus, type=f)
             # generate a name if no name was given
         if not isinstance(filename, str):  # is filename a string???
-            raise ValueError("filename has to be a string, got", type(filename))
+            raise ValueError(
+                "filename has to be a string, got", type(filename))
         name, ext = _os.path.splitext(filename)
         msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(
             filename=filename
@@ -685,7 +683,7 @@ class Dseqrecord(_SeqRecord):
             spc = 3 - ln % 3 if ln % 3 else 0
             s = "n" * spc + s + "nnn"
             for frame in range(3):
-                if other.lower() in _translate(s[frame : frame + spc + ln]).lower():
+                if other.lower() in _translate(s[frame: frame + spc + ln]).lower():
                     return True
         return False
 
@@ -727,7 +725,8 @@ class Dseqrecord(_SeqRecord):
         start = None
         for frame in range(3):
             try:
-                start = _translate(s[frame : frame + ln + spc]).lower().index(other)
+                start = _translate(
+                    s[frame: frame + ln + spc]).lower().index(other)
                 break
             except ValueError:
                 pass
@@ -756,7 +755,8 @@ class Dseqrecord(_SeqRecord):
         if hasattr(self.map_target, "step"):
             area = self.map_target
         elif hasattr(self.map_target, "extract"):
-            area = slice(self.map_target.location.start, self.map_target.location.end)
+            area = slice(self.map_target.location.start,
+                         self.map_target.location.end)
         else:
             area = None  # TODO allow other objects as well and do some checks on map target
 
@@ -798,7 +798,7 @@ class Dseqrecord(_SeqRecord):
                     g, f, h = matches[i]
                     if g + h < x[0] and f + h < x[1]:
                         newmatches.append(x)
-            else:  #  len(matches)==1
+            else:  # len(matches)==1
                 newmatches = matches
 
             matching_reads.append(read_)
@@ -827,7 +827,8 @@ class Dseqrecord(_SeqRecord):
 
     def _repr_pretty_(self, p, cycle):
         p.text(
-            "Dseqrecord({}{})".format({True: "-", False: "o"}[self.linear], len(self))
+            "Dseqrecord({}{})".format(
+                {True: "-", False: "o"}[self.linear], len(self))
         )
 
     def __add__(self, other):

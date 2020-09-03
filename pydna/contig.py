@@ -35,7 +35,8 @@ class Contig(_Dseqrecord):
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
-        p.text("Contig({}{})".format({True: "-", False: "o"}[self.linear], len(self)))
+        p.text("Contig({}{})".format(
+            {True: "-", False: "o"}[self.linear], len(self)))
 
     def _repr_html_(self):
         return "<pre>" + self.figure() + "</pre>"
@@ -45,9 +46,11 @@ class Contig(_Dseqrecord):
         g = _nx.DiGraph()
         nm = self.nodemap
         g.add_edges_from(
-            [(nm[v], nm[u], d) for u, v, d in list(self.graph.edges(data=True))[::-1]]
+            [(nm[v], nm[u], d)
+             for u, v, d in list(self.graph.edges(data=True))[::-1]]
         )
-        g.add_nodes_from((nm[n], d) for n, d in list(self.graph.nodes(data=True))[::-1])
+        g.add_nodes_from((nm[n], d)
+                         for n, d in list(self.graph.nodes(data=True))[::-1])
         for u, v, ed in g.edges(data=True):
             ed["name"] = (
                 ed["name"][:-3]
@@ -58,7 +61,8 @@ class Contig(_Dseqrecord):
             ln = len(ed["seq"])
             start, stop = ed["piece"].start, ed["piece"].stop
             ed["piece"] = slice(
-                ln - stop - g.nodes[u]["length"], ln - start - g.nodes[v]["length"]
+                ln - stop - g.nodes[u]["length"], ln -
+                start - g.nodes[v]["length"]
             )
             ed["features"] = [f._flip(ln) for f in ed["features"]]
         answer.graph = g
@@ -205,7 +209,8 @@ class Contig(_Dseqrecord):
 
             f = edges[-1]
             fig += ("{space} {o1:>2}|{name}").format(
-                name=f[2]["name"], o1=nodes[-2][1]["length"], space=" " * (space)
+                name=f[2]["name"], o1=nodes[-2][1]["length"], space=" " *
+                (space)
             )
 
         else:  # circular

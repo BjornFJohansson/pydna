@@ -362,7 +362,8 @@ class ZTRSequenceTrace(SequenceTrace):
                 self.basepos = list()
                 # skip 4 leading null bytes
                 for cnt in range(4, len(chunk[2]), 4):
-                    self.basepos.append(_unpack(">I", chunk[2][cnt : cnt + 4])[0])
+                    self.basepos.append(
+                        _unpack(">I", chunk[2][cnt: cnt + 4])[0])
             elif chunk[0] == "CNF4":
                 # confidence scores; this is required to come after a BASE chunk
                 self.bcconf = list()
@@ -387,7 +388,7 @@ class ZTRSequenceTrace(SequenceTrace):
             thisbase = list()
             start = basenum * tracelen + offset
             for cnt in range(0, tracelen, 2):
-                val = _unpack(">H", chunkdata[start + cnt : start + cnt + 2])[0]
+                val = _unpack(">H", chunkdata[start + cnt: start + cnt + 2])[0]
                 thisbase.append(val)
 
             tmpmax = max(thisbase)
@@ -486,7 +487,7 @@ class ZTRSequenceTrace(SequenceTrace):
             elif val == -128:
                 # print _unpack('b', cdata[cnt+1])[0]
                 # print _unpack('b', cdata[cnt+2])[0]
-                udata.extend(cdata[cnt + 1 : cnt + 3])
+                udata.extend(cdata[cnt + 1: cnt + 3])
                 cnt += 3
             else:
                 raise ZTRError(
@@ -506,7 +507,7 @@ class ZTRSequenceTrace(SequenceTrace):
             elif val == -128:
                 # print _unpack('b', cdata[cnt+1])[0]
                 # print _unpack('b', cdata[cnt+2])[0]
-                udata.extend(cdata[cnt + 1 : cnt + 5])
+                udata.extend(cdata[cnt + 1: cnt + 5])
                 cnt += 5
             else:
                 raise ZTRError(
@@ -550,7 +551,7 @@ class ZTRSequenceTrace(SequenceTrace):
         # first, _unpack the 2-byte values
         udata = list()
         for cnt in range(1, len(cdata), 2):
-            val = _unpack(">H", cdata[cnt : cnt + 2])[0]
+            val = _unpack(">H", cdata[cnt: cnt + 2])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
@@ -578,7 +579,7 @@ class ZTRSequenceTrace(SequenceTrace):
         # first, _unpack the 4-byte values (skipping the 2 padding bytes)
         udata = list()
         for cnt in range(3, len(cdata), 4):
-            val = _unpack(">I", cdata[cnt : cnt + 4])[0]
+            val = _unpack(">I", cdata[cnt: cnt + 4])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
@@ -780,15 +781,18 @@ class ABISequenceTrace(SequenceTrace):
         for cnt in range(self.num_index_entries):
             try:
                 self.abiindex.append(
-                    dict(did=0, idv=0, dformat=0, fsize=0, dcnt=0, dlen=0, offset=0)
+                    dict(did=0, idv=0, dformat=0, fsize=0,
+                         dcnt=0, dlen=0, offset=0)
                 )
                 self.abiindex[cnt]["did"] = self.tf.read(4).decode("utf-8")
                 self.abiindex[cnt]["idv"] = _unpack(">I", self.tf.read(4))[0]
-                self.abiindex[cnt]["dformat"] = _unpack(">H", self.tf.read(2))[0]
+                self.abiindex[cnt]["dformat"] = _unpack(
+                    ">H", self.tf.read(2))[0]
                 self.abiindex[cnt]["fsize"] = _unpack(">H", self.tf.read(2))[0]
                 self.abiindex[cnt]["dcnt"] = _unpack(">I", self.tf.read(4))[0]
                 self.abiindex[cnt]["dlen"] = _unpack(">I", self.tf.read(4))[0]
-                self.abiindex[cnt]["offset"] = _unpack(">I", self.tf.read(4))[0]
+                self.abiindex[cnt]["offset"] = _unpack(
+                    ">I", self.tf.read(4))[0]
                 # skip 4 bytes (the unused "data handle" field)
                 self.tf.read(4)
             except struct.error:
@@ -1046,7 +1050,7 @@ class ABISequenceTrace(SequenceTrace):
             # would only return positive values).
             data = _pack(">I", indexrow["offset"])
             for cnt in range(0, indexrow["dcnt"]):
-                val = _unpack(formatstr, data[cnt : cnt + 1])[0]
+                val = _unpack(formatstr, data[cnt: cnt + 1])[0]
                 lst.append(val)
         else:
             # get the data from the file
@@ -1085,7 +1089,7 @@ class ABISequenceTrace(SequenceTrace):
             # would only return positive values).
             data = _pack(">I", indexrow["offset"])
             for cnt in range(0, indexrow["dcnt"]):
-                val = _unpack(formatstr, data[cnt * 2 : cnt * 2 + 2])[0]
+                val = _unpack(formatstr, data[cnt * 2: cnt * 2 + 2])[0]
                 lst.append(val)
         else:
             # get the data from the file
@@ -1221,7 +1225,8 @@ class ABISequenceTrace(SequenceTrace):
                 "Found multiple filter wheel order index entries in ABI file."
             )
         if rows[0]["dlen"] != 4:
-            raise ABIError("Incorrect data length for filter wheel order index entry.")
+            raise ABIError(
+                "Incorrect data length for filter wheel order index entry.")
 
         # the data length is only 4 bytes, so the actual data is stored in the offset
         val = rows[0]["offset"]
@@ -1416,7 +1421,8 @@ class SCFSequenceTrace(SequenceTrace):
                     val = _unpack(formatstr, self.tf.read(sampsize))[0]
                     samps.append(val)
             except struct.error:
-                raise SCFDataError((numsamps * sampsize), (len(samps) * sampsize))
+                raise SCFDataError((numsamps * sampsize),
+                                   (len(samps) * sampsize))
 
             # sample values are double-delta encoded (i.e., two successive rounds of differences)
             if sampsize == 1:

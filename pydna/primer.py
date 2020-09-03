@@ -33,14 +33,15 @@ class Primer(_SeqRecord):
 
     @property
     def footprint(self):
-        return self.seq[-self._fp :] if self._fp else ""
+        return self.seq[-self._fp:] if self._fp else ""
 
     @property
     def tail(self):
         return self.seq[: -self._fp] if self._fp else ""
 
     def __repr__(self):
-        s = min((self.seq, "{}..{}".format(self.seq[:15], self.seq[-3:])), key=len)
+        s = min((self.seq, "{}..{}".format(
+            self.seq[:15], self.seq[-3:])), key=len)
         return "{id} {len}-mer:5'-{seq}-3'".format(id=self.id, len=len(self), seq=s)
 
     def __radd__(self, other):

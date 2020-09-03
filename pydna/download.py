@@ -6,15 +6,14 @@
 # as part of this package.
 """Provides a function for downloading online text files"""
 
+import textwrap as _textwrap
+import requests as _requests
+import os as _os
+from pydna._pretty import pretty_str as _pretty_str
+from pydna.utils import memorize as _memorize
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-from pydna.utils import memorize as _memorize
-from pydna._pretty import pretty_str as _pretty_str
-import os as _os
-import requests as _requests
-import textwrap as _textwrap
 
 
 @_memorize("pydna.download.download_text")

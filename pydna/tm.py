@@ -147,7 +147,6 @@ def ta_dbd(fp, rp, seq, tm=tm_dbd, tm_product=None):
 
 
 def program(amplicon, tm=tm_default, ta=ta_default):
-
     r"""Returns a string containing a text representation of a suggested
     PCR program using Taq or similar polymerase.
 
@@ -164,7 +163,8 @@ def program(amplicon, tm=tm_default, ta=ta_default):
     # Taq polymerase extension rate is set to 30 nt/s
     # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
     taq_extension_rate = 30  # seconds/kB PCR product length
-    extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000)  # seconds
+    extension_time_taq = int(taq_extension_rate *
+                             len(amplicon) / 1000)  # seconds
 
     f = _textwrap.dedent(
         r"""

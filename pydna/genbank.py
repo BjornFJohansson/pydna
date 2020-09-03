@@ -11,16 +11,16 @@ The function can be used if the environmental variable **pydna_email** has
 been set to a valid email address. The easiest way to do this permanantly is to edit the 
 `pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`"""
 
+from pydna.utils import memorize as _memorize
+from pydna.genbankrecord import GenbankRecord as _GenbankRecord
+from pydna.readers import read as _read
+from Bio import Entrez as _Entrez
 import re as _re
 import os as _os
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
-from Bio import Entrez as _Entrez
-from pydna.readers import read as _read
-from pydna.genbankrecord import GenbankRecord as _GenbankRecord
-from pydna.utils import memorize as _memorize
 
 # TODO http://httpbin.org/ use for testing?
 
@@ -50,7 +50,8 @@ class Genbank(object):
         if not _re.match(
             r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}", users_email, _re.IGNORECASE
         ):
-            raise ValueError("email address {} is not valid.".format(users_email))
+            raise ValueError(
+                "email address {} is not valid.".format(users_email))
 
         _module_logger.info("#### Genbank ititiation ####")
         _module_logger.info("Genbank initiated with email: %s", users_email)

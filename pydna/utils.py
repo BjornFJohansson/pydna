@@ -6,6 +6,10 @@
 # as part of this package.
 """This module provides miscellaneous functions."""
 
+from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
+from Bio.Seq import _maketrans
+from pydna._pretty import pretty_str as _pretty_str
+from Bio.SeqUtils.CheckSum import seguid as _base64_seguid
 import shelve as _shelve
 import os as _os
 import re as _re
@@ -25,12 +29,8 @@ import random
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
-from Bio.SeqUtils.CheckSum import seguid as _base64_seguid
-from pydna._pretty import pretty_str as _pretty_str
-from Bio.Seq import _maketrans
 
 # from Bio.Seq             import reverse_complement as _reverse_complement
-from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
 
 # from Bio.Seq             import reverse_complement as _rc
 
@@ -71,7 +71,8 @@ def memorize(filename):
     def decorator(f):
         def wrappee(*args, **kwargs):
             _module_logger.info("#### memorizer ####")
-            _module_logger.info("cache filename                   = %s", filename)
+            _module_logger.info(
+                "cache filename                   = %s", filename)
             _module_logger.info(
                 "os.environ['pydna_cached_funcs'] = %s",
                 _os.environ["pydna_cached_funcs"],
@@ -87,7 +88,8 @@ def memorize(filename):
             _module_logger.info("key = %s", key)
             cache = _shelve.open(
                 _os.path.join(
-                    _os.environ["pydna_data_dir"], identifier_from_string(filename)
+                    _os.environ["pydna_data_dir"], identifier_from_string(
+                        filename)
                 ),
                 writeback=False,
             )
@@ -218,7 +220,8 @@ def eq(*args, **kwargs):
         # topology keyword not set, look for topology associated to each sequence
         # otherwise raise exception
         topology = set(
-            [arg.circular if hasattr(arg, "circular") else None for arg in args]
+            [arg.circular if hasattr(arg, "circular")
+             else None for arg in args]
         )
 
         if len(topology) != 1:
@@ -401,7 +404,7 @@ def seq31(seq):
     }
 
     nr_of_codons = int(len(seq) / 3)
-    sequence = [seq[i * 3 : i * 3 + 3].title() for i in range(nr_of_codons)]
+    sequence = [seq[i * 3: i * 3 + 3].title() for i in range(nr_of_codons)]
     padding = " " * 2
     return padding.join([threecode.get(aa, "X") for aa in sequence])
 
@@ -502,7 +505,7 @@ def guess_alphabet(sequence: str):
         ]
         tc = set(threecode)
         three_letter_alphabet = set(
-            [sequence[i : i + 3] for i in range(0, len(sequence), 3)]
+            [sequence[i: i + 3] for i in range(0, len(sequence), 3)]
         )
         if not three_letter_alphabet - tc:
             alphabet = "three letter code"
@@ -545,7 +548,8 @@ def parse_text_table(rawtable, tabs=4):
         ]
     )
 
-    rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
+    rowsplit = "\n---\n".join(["\n".join(a).strip()
+                               for a in zip(*list_of_lists_cr)])
 
     return formatted, columnsplit, rowsplit, list_of_lists_rc, list_of_lists_cr
 
@@ -595,7 +599,8 @@ def expandtolist(content):
         text2rep = line.group("item")
         bracket = line.group("brack")
         padding = max(
-            [len(str(x).strip()) for x in re.split("\.\.|,", bracket.strip("[ ]"))]
+            [len(str(x).strip())
+             for x in re.split("\.\.|,", bracket.strip("[ ]"))]
         )
         inbracket = [item.strip("[ ]") for item in bracket.split(",")]
         expanded = []
