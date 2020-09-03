@@ -2,36 +2,41 @@
 # -*- coding: utf-8 -*-
 
 
-#import pydna
-#template = pydna.read(">t\ntacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
-#p1 = pydna.read(">p1\ntacactcaccgtctatcattatc", ds = False)
-#p2 = pydna.read(">p2\ngtgctatcagatgatacagtcg", ds = False)
-#ann = pydna.Anneal((p1, p2), template)
-    
+# import pydna
+# template = pydna.read(">t\ntacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+# p1 = pydna.read(">p1\ntacactcaccgtctatcattatc", ds = False)
+# p2 = pydna.read(">p2\ngtgctatcagatgatacagtcg", ds = False)
+# ann = pydna.Anneal((p1, p2), template)
+
 import pydna
-a=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
-b=pydna.Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
-c=pydna.Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
-primer_pairs = pydna.assembly_primers([a,b,c], circular = True)
-p=[]
-for t, (f,r) in zip([a,b,c], primer_pairs): 
-    p.append(pydna.pcr(f,r,t))
+
+a = pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
+b = pydna.Dseqrecord(
+    "ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc"
+)
+c = pydna.Dseqrecord(
+    "tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt"
+)
+primer_pairs = pydna.assembly_primers([a, b, c], circular=True)
+p = []
+for t, (f, r) in zip([a, b, c], primer_pairs):
+    p.append(pydna.pcr(f, r, t))
 obj = pydna.Assembly(p)
-#print(assemblyobj)
-    
-#@memorize("function")      
-#def times_two(n):
+# print(assemblyobj)
+
+# @memorize("function")
+# def times_two(n):
 #    return n*2
 #
-#@memorize("method")     
-#class Doubler(object):    
+# @memorize("method")
+# class Doubler(object):
 #    def __init__(self, n):
 #        self.n=n
 #        self.key=str(n)
 #    def result(self):
 #        return self.n*2
 #
-#def peek(fn):    
+# def peek(fn):
 #    import shelve
 #    ca = shelve.open("/home/bjorn/.local/share/pydna/{}".format(fn))
 #    for key in ca.keys():
@@ -40,48 +45,48 @@ obj = pydna.Assembly(p)
 #        print()
 #    ca.close()
 
-#if __name__=="__main__":
+# if __name__=="__main__":
 #    print(_os.environ["pydna_cache"])
-#    
-#    print("times_two(2) = ",times_two(2))    
+#
+#    print("times_two(2) = ",times_two(2))
 #    peek("function")
-#    
-#    x=Doubler(3)    
-#    print( "x.result() = ", x.result() )    
-#    peek("method")        
-     
+#
+#    x=Doubler(3)
+#    print( "x.result() = ", x.result() )
+#    peek("method")
+
 #    import pydna
 #    a=pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
 #    b=pydna.Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
 #    c=pydna.Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
 #    primer_pairs = pydna.assembly_primers([a,b,c], circular = True)
 #    p=[]
-#    for t, (f,r) in zip([a,b,c], primer_pairs): 
+#    for t, (f,r) in zip([a,b,c], primer_pairs):
 #        p.append(pydna.pcr(f,r,t))
 #    obj = pydna.Assembly(p)
-    #print(assemblyobj)
-    
-    
-#from mementos import MementoMetaclass
-#    
+# print(assemblyobj)
+
+
+# from mementos import MementoMetaclass
+#
 ## use the whatever memoize implementation you like
-# 
-#class Memoize(type):
+#
+# class Memoize(type):
 #    @memorize("hej")
 #    def __call__(cls, *args, **kwargs):
 #        return super().__call__(*args)
-#    
-#class Mather(object, metaclass = Memoize):
+#
+# class Mather(object, metaclass = Memoize):
 #    def __init__(self, *args, **kwargs):
 #        self.values = args
 #    def sum(self):
 #        return sum(self.values)
 #
 #
-#o1 = Mather(1,2,3, type="float")
+# o1 = Mather(1,2,3, type="float")
 
 
-#class MyMetaClass(type):
+# class MyMetaClass(type):
 #    @classmethod
 #    def __prepare__(metacls, name, bases, fn="", **kargs):
 #        print(name, bases, kargs)
@@ -96,10 +101,10 @@ obj = pydna.Assembly(p)
 #        print(cls)
 #        return super().__call__(*args)
 #
-#class Mather2(object, metaclass=MyMetaClass, fn="hejhej"):
+# class Mather2(object, metaclass=MyMetaClass, fn="hejhej"):
 #    def __init__(self, *args, **kwargs):
 #        self.values = args
 #    def sum(self):
 #        return sum(self.values)
-#        
-#x=Mather2(1,2,3, type="float")
+#
+# x=Mather2(1,2,3, type="float")

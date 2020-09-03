@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 test parse
-'''
+"""
 
 import pytest
 
@@ -10,9 +10,10 @@ import pytest
 def test_parse1():
     from pydna.parsers import parse
     from pydna.readers import read
-    ''' test parsing fasta sequences from a text'''
 
-    text   =  '''
+    """ test parsing fasta sequences from a text"""
+
+    text = """
             points....: 1
 
             The sequence seq below represents a double stranded linear DNA molecule.
@@ -34,18 +35,19 @@ def test_parse1():
             *********** Question 4 ***********
 
             QuestionID:
-            '''
+            """
     result = parse(text)
 
-    correct = ['CTCCCCTATCACCAGGGTACCGATAGCCACGAATCT',
-               'CTCCCCTATCACCAGG',
-               'GTACCGATAGCCACGAATCT']
+    correct = [
+        "CTCCCCTATCACCAGGGTACCGATAGCCACGAATCT",
+        "CTCCCCTATCACCAGG",
+        "GTACCGATAGCCACGAATCT",
+    ]
 
     assert [str(s.seq) for s in result] == correct
-    assert [s.linear for s in result] == [True,True,True]
+    assert [s.linear for s in result] == [True, True, True]
 
-
-    input =   '''
+    input = """
             LOCUS       ScCYC1                   330 bp    DNA              UNK 01-JAN-1980
             DEFINITION  ScCYC1
             ACCESSION   ScCYC1
@@ -63,43 +65,43 @@ def test_parse1():
                   241 ATTCCTGGTA CCAAGATGGC CTTTGGTGGG TTGAAGAAGG AAAAAGACAG AAACGACTTA
                   301 ATTACCTACT TGAAAAAAGC CTGTGAGTAA
             //
-            '''
+            """
     result = parse(input).pop()
 
     assert str(result.seq) == str(read(input).seq)
-    correct = '''ATGACTGAATTCAAGGCCGGTTCTGCTAAGAAAGGTGCTACACTTTTCAAGACTAGATGTCTACAATGCCACACCGTGGAAAAGGGTGGCCCACATAAGGTTGGTCCAAACTTGCATGGTATCTTTGGCAGACACTCTGGTCAAGCTGAAGGGTATTCGTACACAGATGCCAATATCAAGAAAAACGTGTTGTGGGACGAAAATAACATGTCAGAGTACTTGACTAACCCAAAGAAATATATTCCTGGTACCAAGATGGCCTTTGGTGGGTTGAAGAAGGAAAAAGACAGAAACGACTTAATTACCTACTTGAAAAAAGCCTGTGAGTAA'''
+    correct = """ATGACTGAATTCAAGGCCGGTTCTGCTAAGAAAGGTGCTACACTTTTCAAGACTAGATGTCTACAATGCCACACCGTGGAAAAGGGTGGCCCACATAAGGTTGGTCCAAACTTGCATGGTATCTTTGGCAGACACTCTGGTCAAGCTGAAGGGTATTCGTACACAGATGCCAATATCAAGAAAAACGTGTTGTGGGACGAAAATAACATGTCAGAGTACTTGACTAACCCAAAGAAATATATTCCTGGTACCAAGATGGCCTTTGGTGGGTTGAAGAAGGAAAAAGACAGAAACGACTTAATTACCTACTTGAAAAAAGCCTGTGAGTAA"""
 
     assert str(result.seq) == correct
-    assert result.linear   == True 
-    assert result.circular == False 
+    assert result.linear == True
+    assert result.circular == False
 
-    seqs = parse('RefDataBjorn.fas')
+    seqs = parse("RefDataBjorn.fas")
 
-    assert len(seqs) == 771    
-    assert list(set([len (a) for a in seqs])) == [901]
+    assert len(seqs) == 771
+    assert list(set([len(a) for a in seqs])) == [901]
     pAG25 = read("pAG25.gb")
 
-    assert pAG25.circular == True 
-    assert pAG25.linear   == False
+    assert pAG25.circular == True
+    assert pAG25.linear == False
 
     pCAPs = read("pCAPs.gb")
 
-    assert pCAPs.circular == True 
-    assert pCAPs.linear   == False
+    assert pCAPs.circular == True
+    assert pCAPs.linear == False
 
     pUC19 = read("pUC19.gb")
 
-    assert pUC19.circular == True 
-    assert pUC19.linear   == False
-    
-    input = '''
+    assert pUC19.circular == True
+    assert pUC19.linear == False
+
+    input = """
     ID   example    standard; DNA; UNC; 3 BP.
     SQ   Sequence 3 BP;
          aaa                                                                       3
     //
-    '''
+    """
     result = parse(input).pop()
-    input = '''
+    input = """
     ID   name?      standard; circular DNA; UNK; 100 BP.
     XX
     DT   25-DEC-2017
@@ -121,62 +123,62 @@ def test_parse1():
          aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa        60
          aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa                             100
     //
-    '''
+    """
     result = parse(input).pop()
-
 
 
 def test_parse2():
 
     from pydna.parsers import parse
     from pydna.readers import read
-    seqs = parse('RefDataBjorn.fas')
+
+    seqs = parse("RefDataBjorn.fas")
 
     assert len(seqs) == 771
-    assert list(set([len (a) for a in seqs])) == [901]
+    assert list(set([len(a) for a in seqs])) == [901]
 
-    for i,s in enumerate(seqs):
+    for i, s in enumerate(seqs):
         a = s.description
         b = a.split()
-        c =  "|".join([b[0],b[1],b[3]])
-        s.id = b[2].replace(" ","_")+"_"+str(i)
+        c = "|".join([b[0], b[1], b[3]])
+        s.id = b[2].replace(" ", "_") + "_" + str(i)
         s.description = ""
-        if b[3]=="Zenion hololepis":
-            s.id = b[3].replace(" ","_")+"_"+str(i)
+        if b[3] == "Zenion hololepis":
+            s.id = b[3].replace(" ", "_") + "_" + str(i)
+
 
 def test_parse_primers():
     from pydna.parsers import parse_primers
-    data = str( ">1\n"
-                "aaaa\n"
-                ">2\n"
-                "cccc\n")
+
+    data = str(">1\n" "aaaa\n" ">2\n" "cccc\n")
     parse_primers(data)
+
 
 def test_parse_error():
     from pydna.parsers import parse
-    data = '''
+
+    data = """
 LOCUS
 DATA_IS_NOT_A_SEQUENCE
-//'''
+//"""
     parse(data)
     assert parse(data) == []
- 
+
+
 def test_parse_list():
     from pydna.parsers import parse_primers
-    data = str( ">1\n"
-                "aaaa\n"
-                ">2\n"
-                "cccc\n")
-    
-    parse_primers([data,data])
+
+    data = str(">1\n" "aaaa\n" ">2\n" "cccc\n")
+
+    parse_primers([data, data])
 
 
 def test_misc_parse():
     from pydna.parsers import parse
-    
+
     from Bio.SeqIO import read as BPread
     from Bio.SeqIO import parse as BPparse
-    
+
     q = BPread("read1.gb", "gb")
     w = BPread("read2.gb", "gb")
     e = BPread("read3.fasta", "fasta")
@@ -184,17 +186,22 @@ def test_misc_parse():
 
     with open("pth1.txt", "r", encoding="utf-8") as f:
         a, b = BPparse(f, "gb")
-    
-    print("|"+a.features[13].qualifiers['label'][0]+"|")
-    print("|"+a.format("gb")[3314:3324]+"|")
-    
-    assert a.features[13].qualifiers['label'][0] == '2micron 2µ'
-    assert a.format("gb")[3268:3278] == '2micron 2µ'
-    
-    x, y = parse("pth1.txt")
-    
-    assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
-    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(y.format("gb").splitlines()[4:])
 
-if __name__ == '__main__':
-    pytest.main([__file__, "-v", "-s", "--cov=pydna","--cov-report=html"])
+    print("|" + a.features[13].qualifiers["label"][0] + "|")
+    print("|" + a.format("gb")[3314:3324] + "|")
+
+    assert a.features[13].qualifiers["label"][0] == "2micron 2µ"
+    assert a.format("gb")[3268:3278] == "2micron 2µ"
+
+    x, y = parse("pth1.txt")
+
+    assert "".join(a.format("gb").splitlines()[1:]) == "".join(
+        x.format("gb").splitlines()[1:]
+    )
+    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(
+        y.format("gb").splitlines()[4:]
+    )
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "-s", "--cov=pydna", "--cov-report=html"])

@@ -4,32 +4,37 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-'''Provides a function for downloading online text files'''
+"""Provides a function for downloading online text files"""
 
 import logging as _logging
-_module_logger = _logging.getLogger("pydna."+__name__)
 
-from pydna.utils  import memorize as _memorize
+_module_logger = _logging.getLogger("pydna." + __name__)
+
+from pydna.utils import memorize as _memorize
 from pydna._pretty import pretty_str as _pretty_str
-import os        as _os
-import requests  as _requests
-import textwrap  as _textwrap           
+import os as _os
+import requests as _requests
+import textwrap as _textwrap
+
 
 @_memorize("pydna.download.download_text")
 def download_text(url):
     _module_logger.info("#### DOWNLOAD TEXT ####")
     _module_logger.info("url = %s", url)
-    req=_requests.get(url)
+    req = _requests.get(url)
     _module_logger.info("url = %s", str(req))
-    result = _textwrap.dedent( req.text ).strip()
-    result = result.replace('\r\n', '\n').replace('\r', '\n')
+    result = _textwrap.dedent(req.text).strip()
+    result = result.replace("\r\n", "\n").replace("\r", "\n")
     _module_logger.info("result[:160] = %s", result[:160])
     return _pretty_str(result)
-    
-if __name__=="__main__":
+
+
+if __name__ == "__main__":
     import os as _os
+
     cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"]=""
+    _os.environ["pydna_cached_funcs"] = ""
     import doctest
+
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"]=cached
+    _os.environ["pydna_cached_funcs"] = cached

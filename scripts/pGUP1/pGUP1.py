@@ -7,7 +7,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.SeqUtils.CheckSum import seguid
 
 
-info = '''
+info = """
 pGUP1
 =====
 This script carries out the cloning project described in the second
@@ -57,7 +57,7 @@ http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1474799/
 2) Jansen G, Wu C, Schade B, Thomas DY, Whiteway M. 2005. Drag&Drop
 cloning in yeast. Gene, 344: 43–51.
 http://www.ncbi.nlm.nih.gov/pubmed/15656971
-'''
+"""
 
 print info
 
@@ -65,7 +65,7 @@ raw_input("Press any key and wait for the script to finish!")
 
 # Establish the two primers. These sequences can be found in (1)
 GUP1rec1sens = SeqRecord(Seq("gaattcgatatcaagcttatcgataccgatgtcgctgatcagcatcctgtctcc"))
-GUP1rec2AS =   SeqRecord(Seq("gacataactaattacatgactcgaggtcgactcagcattttaggtaaattccg"))
+GUP1rec2AS = SeqRecord(Seq("gacataactaattacatgactcgaggtcgactcagcattttaggtaaattccg"))
 
 # Read the GUP1 locus sequence into a Dseqrecord object
 # This sequence was taken from the Saccharomyces genome Database:
@@ -91,7 +91,9 @@ linear_vector, his3 = pGREG505.cut(SalI)
 # Circular recombination products are formed
 # limit is the length of the necessary regions of
 # homology between the seqences
-formatted_sequences, circular_recombination_products = circular_assembly((insert, linear_vector), limit=28)
+formatted_sequences, circular_recombination_products = circular_assembly(
+    (insert, linear_vector), limit=28
+)
 
 # The circular recombination products are returned
 # by order of size. In this case, the largest one is the

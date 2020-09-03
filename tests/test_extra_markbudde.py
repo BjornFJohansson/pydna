@@ -6,12 +6,13 @@ import sys
 
 from pydna.readers import read
 
+
 def test_mark_budde():
-    ''' test mark budde'''
-    a = read('pGREG505.gb')
+    """ test mark budde"""
+    a = read("pGREG505.gb")
     assert a.name == "pGREG505"
     assert a.looped().name == "pGREG505"
-    #assert a.annotations == "pGREG505"
+    # assert a.annotations == "pGREG505"
     assert a.id == "pGREG505"
     assert a.looped().id == "pGREG505"
 
@@ -30,5 +31,6 @@ def test_mark_budde():
     >>> 
     """
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     pytest.cmdline.main([__file__, "-v", "-s"])

@@ -16,11 +16,11 @@ text = u""
 for i in range(0, pdf.getNumPages()):
     print str(i)
     extractedText = pdf.getPage(i).extractText()
-    text +=  extractedText
+    text += extractedText
 
 print text
 
-'''
+"""
 
 first primer after
 
@@ -43,12 +43,7 @@ PicCht3.FWD
 cggctGAATTCATTAATGCT
 AGAAGTAAC (29)
 
-'''
-
-
-
-
-
+"""
 
 
 sys.exit(42)
@@ -56,14 +51,14 @@ sys.exit(42)
 if __name__ is "__main__":
     pass
 
-    #Number 65027
-    #Name Bárbara Filipa Cerqueira Bernardino
-    #Email A65027@alunos.uminho.pt
-    #Course Engenharia Biológica
-    #Enrolled SAUM No
+    # Number 65027
+    # Name Bárbara Filipa Cerqueira Bernardino
+    # Email A65027@alunos.uminho.pt
+    # Course Engenharia Biológica
+    # Enrolled SAUM No
 
-    #regex = u"Number(.+?)Name(.+?)Email(.+?)Course(.+?)Enrolled SAUM(Yes|No)"
-    #regex = u"Número(.+?)Nome(.+?)Email(.+?)Curso(.+?)Inscrito SAUM(Sim|Não)"
+    # regex = u"Number(.+?)Name(.+?)Email(.+?)Course(.+?)Enrolled SAUM(Yes|No)"
+    # regex = u"Número(.+?)Nome(.+?)Email(.+?)Curso(.+?)Inscrito SAUM(Sim|Não)"
 
     match = re.findall(regex, text)
 
@@ -71,35 +66,27 @@ if __name__ is "__main__":
         for m in match:
             f.write(u"{}   {}\n".format(m[0], m[1]).encode("utf8"))
 
-
-
-
-
-
-
     from pyparsing import Word, Literal, printables, LineStart, SkipTo, Combine
 
-    name        =  Word(printables).setResultsName("name")
-    seq_start   =  Literal("5'").suppress()
-    seq_stop    =  Literal("3'").suppress()
-    sequence    =  Combine(seq_start + SkipTo(seq_stop)).setResultsName("seq")
-    mwg_primer  =  LineStart() + name + SkipTo(LineStart()) + sequence
+    name = Word(printables).setResultsName("name")
+    seq_start = Literal("5'").suppress()
+    seq_stop = Literal("3'").suppress()
+    sequence = Combine(seq_start + SkipTo(seq_stop)).setResultsName("seq")
+    mwg_primer = LineStart() + name + SkipTo(LineStart()) + sequence
 
     result = mwg_primer.scanString(raw_string)
 
-    seqlist = [data for data,dataStart,dataEnd in result]
+    seqlist = [data for data, dataStart, dataEnd in result]
 
-    number+=len(seqlist)
+    number += len(seqlist)
 
-    fasta_string = ''
+    fasta_string = ""
 
     for data in seqlist:
-        number-=1
-        s=data.seq.strip("-").replace("\n","").replace(" ","")
-        fasta_string+=">{number}_{name} ({length}-mer)\n{seq}\n\n".format(number=number,name=data.name,length=len(s),seq=s)
+        number -= 1
+        s = data.seq.strip("-").replace("\n", "").replace(" ", "")
+        fasta_string += ">{number}_{name} ({length}-mer)\n{seq}\n\n".format(
+            number=number, name=data.name, length=len(s), seq=s
+        )
 
     fasta_string
-
-
-
-

@@ -1,13 +1,15 @@
 import time, pickle, tempfile, os
+
+
 class AutoPickleMeta(type):
     def __call__(cls, *args):
         t = (int(time.time()) // 10000) * 10000
         h = hash(args)
-        fn = '%s/%s-%i-%i.pickle' % (tempfile.gettempdir(), cls.__name__, t, h)
+        fn = "%s/%s-%i-%i.pickle" % (tempfile.gettempdir(), cls.__name__, t, h)
 
         if os.path.exists(fn):
             # File exists, so load the cPickle and return
-            with open(fn, 'rb') as f:
+            with open(fn, "rb") as f:
 
                 try:
                     return pickle.load(f)
@@ -23,13 +25,13 @@ class AutoPickleMeta(type):
                     f.close()
                     return cls._do_pickle(fn, args)
         else:
-            return cls._do_pickle(fn, args)        
+            return cls._do_pickle(fn, args)
 
     def _do_pickle(cls, fn, args):
         # Create object, and return
         o = object.__new__(cls, *args)
         o.__init__(*args)
-        with open(fn, 'wb') as f:
+        with open(fn, "wb") as f:
             try:
                 pickle.dump(o, f, pickle.HIGHEST_PROTOCOL)
 
@@ -41,9 +43,6 @@ class AutoPickleMeta(type):
                 raise
         return o
 
+
 class AutoPickle(object):
     __metaclass__ = AutoPickleMeta
-    
-    
-    
-    

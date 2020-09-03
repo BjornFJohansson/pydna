@@ -17,7 +17,7 @@
 
 
 from struct import unpack as _unpack
-from struct import pack   as _pack
+from struct import pack as _pack
 import struct
 import zlib as _zlib
 from os.path import basename as _basename
@@ -27,9 +27,10 @@ from datetime import datetime as _datetime
 class TraceFileError(Exception):
     pass
 
+
 class UnknownFileTypeError(TraceFileError):
     def __str__(self):
-        return 'The file format was not recognized.  Please convert the file to a supported format and try again.'
+        return "The file format was not recognized.  Please convert the file to a supported format and try again."
 
 
 # constants for sequence trace file types
@@ -38,24 +39,25 @@ ST_ZTR = 1
 ST_ABI = 2
 ST_SCF = 3
 
+
 class SequenceTraceFactory:
     @staticmethod
     def getTraceFileType(filename):
         try:
-            tf = open(filename, 'rb')
+            tf = open(filename, "rb")
         except IOError:
             raise
 
         # read the "magic number" from the file
         magicval = tf.read(8)
         tf.close()
-        #print magicval
+        # print magicval
 
-        if magicval[0:4] == b'ABIF':
+        if magicval[0:4] == b"ABIF":
             return ST_ABI
-        elif magicval == b'\256ZTR\r\n\032\n':
+        elif magicval == b"\256ZTR\r\n\032\n":
             return ST_ZTR
-        elif magicval[0:4] == b'.scf':
+        elif magicval[0:4] == b".scf":
             return ST_SCF
         else:
             return ST_UNKNOWN
@@ -83,12 +85,38 @@ class SequenceTraceFactory:
 
 # Define the reverse complement lookup table.
 rclookup = {
-    'a': 't', 't': 'a', 'g': 'c', 'c': 'g',
-    'w': 'w', 's': 's', 'm': 'k', 'k': 'm', 'r': 'y', 'y': 'r',
-    'b': 'v', 'd': 'h', 'h': 'd', 'v': 'b', 'n': 'n',
-    'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G',
-    'W': 'W', 'S': 'S', 'M': 'K', 'K': 'M', 'R': 'Y', 'Y': 'R',
-    'B': 'V', 'D': 'H', 'H': 'D', 'V': 'B', 'N': 'N'}
+    "a": "t",
+    "t": "a",
+    "g": "c",
+    "c": "g",
+    "w": "w",
+    "s": "s",
+    "m": "k",
+    "k": "m",
+    "r": "y",
+    "y": "r",
+    "b": "v",
+    "d": "h",
+    "h": "d",
+    "v": "b",
+    "n": "n",
+    "A": "T",
+    "T": "A",
+    "G": "C",
+    "C": "G",
+    "W": "W",
+    "S": "S",
+    "M": "K",
+    "K": "M",
+    "R": "Y",
+    "Y": "R",
+    "B": "V",
+    "D": "H",
+    "H": "D",
+    "V": "B",
+    "N": "N",
+}
+
 
 def reverseCompSequence(sequence):
     """
@@ -100,8 +128,7 @@ def reverseCompSequence(sequence):
     for cnt in reversed(list(range(len(sequence)))):
         tmp.append(rclookup[sequence[cnt]])
 
-    return ''.join(tmp)
-
+    return "".join(tmp)
 
 
 class SequenceTrace:
@@ -109,9 +136,10 @@ class SequenceTrace:
     Parent for all format-specific sequence trace classes.  This class defines
     the methods that are common to all sequence traces.
     """
+
     def __init__(self):
         self.isreverse_comped = False
-        self.fname = ''
+        self.fname = ""
         self.tracesamps = {}
         self.max_traceval = -1
         self.comments = {}
@@ -136,23 +164,23 @@ class SequenceTrace:
         # reverse and transpose the trace samples
         for base in self.tracesamps:
             self.tracesamps[base].reverse()
-        tmp = self.tracesamps['A']
-        self.tracesamps['A'] = self.tracesamps['T']
-        self.tracesamps['T'] = tmp
-        tmp = self.tracesamps['G']
-        self.tracesamps['G'] = self.tracesamps['C']
-        self.tracesamps['C'] = tmp
+        tmp = self.tracesamps["A"]
+        self.tracesamps["A"] = self.tracesamps["T"]
+        self.tracesamps["T"] = tmp
+        tmp = self.tracesamps["G"]
+        self.tracesamps["G"] = self.tracesamps["C"]
+        self.tracesamps["C"] = tmp
 
         # reverse the confidence scores
         self.bcconf.reverse()
 
         # reverse and shift the base call positions
         self.basepos.reverse()
-        endsamp = len(self.tracesamps['A']) - 1
+        endsamp = len(self.tracesamps["A"]) - 1
         for cnt in range(len(self.basepos)):
             self.basepos[cnt] = endsamp - self.basepos[cnt]
 
-        self.isreverse_comped = not(self.isreverse_comped)
+        self.isreverse_comped = not (self.isreverse_comped)
 
     def isReverseComplemented(self):
         return self.isreverse_comped
@@ -171,7 +199,7 @@ class SequenceTrace:
         return self.tracesamps[base.upper()][index]
 
     def getTraceLength(self):
-        return len(self.tracesamps['A'])
+        return len(self.tracesamps["A"])
 
     def getBaseCalls(self):
         return self.basecalls
@@ -196,8 +224,8 @@ class SequenceTrace:
         maxv = len(self.basepos) - 1
 
         while maxv > (minv + 1):
-            test = (maxv-minv)/2 + minv
-            #print 'minv, maxv, test:', minv, maxv, test
+            test = (maxv - minv) / 2 + minv
+            # print 'minv, maxv, test:', minv, maxv, test
             if self.basepos[test] == sampnum:
                 return test
             elif self.basepos[test] > sampnum:
@@ -217,9 +245,9 @@ class SequenceTrace:
         minv = 0
         maxv = len(self.basepos) - 1
 
-        while maxv > (minv+1):
-            test = (maxv-minv)/2 + minv
-            #print 'minv, maxv, test:', minv, maxv, test
+        while maxv > (minv + 1):
+            test = (maxv - minv) / 2 + minv
+            # print 'minv, maxv, test:', minv, maxv, test
             if self.basepos[test] == sampnum:
                 return test
             elif self.basepos[test] > sampnum:
@@ -245,20 +273,33 @@ class SequenceTrace:
 class ZTRError(TraceFileError):
     pass
 
+
 class ZTRVersionError(ZTRError):
     def __init__(self, ver_major, ver_minor):
         self.ver_major = ver_major
         self.ver_minor = ver_minor
 
     def __str__(self):
-        return 'This file uses version ' + str(self.ver_major) + '.' + str(self.ver_minor) + ' of the ZTR format.  This software only supports version 1.2 of the format.'
+        return (
+            "This file uses version "
+            + str(self.ver_major)
+            + "."
+            + str(self.ver_minor)
+            + " of the ZTR format.  This software only supports version 1.2 of the format."
+        )
+
 
 class ZTRDataFormatError(ZTRError):
     def __init__(self, format_id):
         self.format_id = format_id
 
     def __str__(self):
-        return 'The ZTR data format ID ' + str(self.format_id) + ' is invalid or not supported.'
+        return (
+            "The ZTR data format ID "
+            + str(self.format_id)
+            + " is invalid or not supported."
+        )
+
 
 class ZTRMissingDataError(ZTRError):
     def __init__(self, expectedlen, actuallen):
@@ -266,7 +307,13 @@ class ZTRMissingDataError(ZTRError):
         self.actuallen = actuallen
 
     def __str__(self):
-        return 'Error reading ZTR data chunk.  Expected ' + str(self.expectedlen) + ' bytes but only got ' + str(self.actuallen) + ' bytes.  The file appears to be damaged.'
+        return (
+            "Error reading ZTR data chunk.  Expected "
+            + str(self.expectedlen)
+            + " bytes but only got "
+            + str(self.actuallen)
+            + " bytes.  The file appears to be damaged."
+        )
 
 
 class ZTRSequenceTrace(SequenceTrace):
@@ -274,22 +321,26 @@ class ZTRSequenceTrace(SequenceTrace):
         self.fname = filename
 
         try:
-            tf = open(filename, 'rb')
+            tf = open(filename, "rb")
         except IOError:
             raise
 
         # read the header
         self.magicnum = tf.read(8)
-        if self.magicnum != '\256ZTR\r\n\032\n':
-            raise ZTRError('The ZTR file header is invalid.  The file appears to be damaged.')
+        if self.magicnum != "\256ZTR\r\n\032\n":
+            raise ZTRError(
+                "The ZTR file header is invalid.  The file appears to be damaged."
+            )
 
         try:
-            self.ver_major = _unpack('b', tf.read(1))[0]
-            self.ver_minor = _unpack('b', tf.read(1))[0]
-            #print 'major version number:', ver_major
-            #print 'minor version number:', ver_minor
+            self.ver_major = _unpack("b", tf.read(1))[0]
+            self.ver_minor = _unpack("b", tf.read(1))[0]
+            # print 'major version number:', ver_major
+            # print 'minor version number:', ver_minor
         except struct.error:
-            raise ZTRError('The ZTR file header is invalid.  The file appears to be damaged.')
+            raise ZTRError(
+                "The ZTR file header is invalid.  The file appears to be damaged."
+            )
 
         if (self.ver_major != 1) or (self.ver_minor != 2):
             raise ZTRVersionError(self.ver_major, self.ver_minor)
@@ -297,32 +348,32 @@ class ZTRSequenceTrace(SequenceTrace):
         # read and process the data chunks
         chunk = self.readChunk(tf)
         while chunk != False:
-            #print 'chunk type:', chunk[0]
-            #print 'compressed data length:', chunk[1]
-            #print 'uncompressed data length:', len(chunk[2])
-            if chunk[0] == 'SMP4':
+            # print 'chunk type:', chunk[0]
+            # print 'compressed data length:', chunk[1]
+            # print 'uncompressed data length:', len(chunk[2])
+            if chunk[0] == "SMP4":
                 # trace sample data
                 self.readTraceSamples(chunk[2])
-            elif chunk[0] == 'BASE':
+            elif chunk[0] == "BASE":
                 # base calls
                 self.basecalls = chunk[2][1:].upper()
-            elif chunk[0] == 'BPOS':
+            elif chunk[0] == "BPOS":
                 # positions of base calls relative to trace samples
                 self.basepos = list()
                 # skip 4 leading null bytes
                 for cnt in range(4, len(chunk[2]), 4):
-                    self.basepos.append(_unpack('>I', chunk[2][cnt:cnt+4])[0])
-            elif chunk[0] == 'CNF4':
+                    self.basepos.append(_unpack(">I", chunk[2][cnt : cnt + 4])[0])
+            elif chunk[0] == "CNF4":
                 # confidence scores; this is required to come after a BASE chunk
                 self.bcconf = list()
-                for cnt in range(1, self.getNumBaseCalls()+1):
-                    self.bcconf.append(_unpack('b', chunk[2][cnt])[0])
-            elif chunk[0] == 'TEXT':
+                for cnt in range(1, self.getNumBaseCalls() + 1):
+                    self.bcconf.append(_unpack("b", chunk[2][cnt])[0])
+            elif chunk[0] == "TEXT":
                 # get the comment key/value strings, ignoring leading/trailing null characters
-                keyvals = chunk[2][1:-2].split('\0')
+                keyvals = chunk[2][1:-2].split("\0")
                 for cnt in range(0, len(keyvals), 2):
-                    #print keyvals[cnt] + ': ' + keyvals[cnt+1]
-                    self.comments[keyvals[cnt]] = keyvals[cnt+1]
+                    # print keyvals[cnt] + ': ' + keyvals[cnt+1]
+                    self.comments[keyvals[cnt]] = keyvals[cnt + 1]
 
             chunk = self.readChunk(tf)
 
@@ -332,11 +383,11 @@ class ZTRSequenceTrace(SequenceTrace):
 
         offset = 2
         basenum = 0
-        for base in ['A','C','G','T']:
+        for base in ["A", "C", "G", "T"]:
             thisbase = list()
-            start = basenum*tracelen + offset
+            start = basenum * tracelen + offset
             for cnt in range(0, tracelen, 2):
-                val = _unpack('>H', chunkdata[start+cnt:start+cnt+2])[0]
+                val = _unpack(">H", chunkdata[start + cnt : start + cnt + 2])[0]
                 thisbase.append(val)
 
             tmpmax = max(thisbase)
@@ -350,14 +401,16 @@ class ZTRSequenceTrace(SequenceTrace):
         # guaranteed to be in big-endian byte order.  Might this be a bug in the Staden code?  For this reason,
         # native byte order is used here (in fact, using big-endian order will cause this to fail on an
         # x86 machine).
-        udatalen = _unpack('I', cdata[:4])[0]
+        udatalen = _unpack("I", cdata[:4])[0]
 
         udata = _zlib.decompress(cdata[4:])
 
-        #print 'expected uncompressed data length:', udatalen
-        #print 'actual uncompressed data length:', len(udata)
+        # print 'expected uncompressed data length:', udatalen
+        # print 'actual uncompressed data length:', len(udata)
         if udatalen != len(udata):
-            raise ZTRError('Zlib decompression failed.  The expected data length did not match the actual data length.')
+            raise ZTRError(
+                "Zlib decompression failed.  The expected data length did not match the actual data length."
+            )
 
         return udata
 
@@ -366,104 +419,110 @@ class ZTRSequenceTrace(SequenceTrace):
         # guaranteed to be in big-endian byte order.  Might this be a bug in the Staden code?  For this reason,
         # native byte order is used here (in fact, using big-endian order will cause this to fail on an
         # x86 machine).
-        udatalen = _unpack('I', cdata[:4])[0]
+        udatalen = _unpack("I", cdata[:4])[0]
         guard = cdata[4]
-        #print _unpack_from('=bIb', data[:6])
-        #print 'guard byte:', guard
+        # print _unpack_from('=bIb', data[:6])
+        # print 'guard byte:', guard
 
         cnt = 5
         udata = list()
         while cnt < len(cdata):
             if cdata[cnt] == guard:
-                runlen = _unpack('B', cdata[cnt+1])[0]
-                #print 'run length:', runlen
+                runlen = _unpack("B", cdata[cnt + 1])[0]
+                # print 'run length:', runlen
                 if runlen == 0:
                     udata.append(guard)
                     cnt += 2
                 else:
-                    runchar = cdata[cnt+2]
-                    udata.extend(runlen*list(runchar))
+                    runchar = cdata[cnt + 2]
+                    udata.extend(runlen * list(runchar))
                     cnt += 3
             else:
                 udata.append(cdata[cnt])
                 cnt += 1
 
-        #print 'expected uncompressed data length:', udatalen
-        #print 'actual uncompressed data length:', len(udata)
+        # print 'expected uncompressed data length:', udatalen
+        # print 'actual uncompressed data length:', len(udata)
         if udatalen != len(udata):
-            raise ZTRError('RLE decompression failed.  The expected data length did not match the actual data length.')
+            raise ZTRError(
+                "RLE decompression failed.  The expected data length did not match the actual data length."
+            )
 
-        return ''.join(udata)
+        return "".join(udata)
 
     def followDecode(self, cdata):
         # read the decode table
-        table = _unpack('256B', cdata[:256])
-        #print table
+        table = _unpack("256B", cdata[:256])
+        # print table
 
         udata = list()
-        prev = _unpack('B', cdata[256])[0]
+        prev = _unpack("B", cdata[256])[0]
         udata.append(cdata[256])
         for cnt in range(257, len(cdata)):
-            diff = _unpack('b', cdata[cnt])[0]
+            diff = _unpack("b", cdata[cnt])[0]
             actual = table[prev] - diff
 
             # simulate 1-byte unsigned overflow/underflow, if needed
             if actual < 0:
                 actual += 256
             elif actual > 255:
-                #print actual,(actual-256), table[prev], diff
+                # print actual,(actual-256), table[prev], diff
                 actual -= 256
 
             prev = actual
-            #print actual
-            udata.append(_pack('B', actual))
+            # print actual
+            udata.append(_pack("B", actual))
 
-        return ''.join(udata)
+        return "".join(udata)
 
     def decode16To8(self, cdata):
         cnt = 0
         udata = list()
         while cnt < len(cdata):
-            val = _unpack('b', cdata[cnt])[0]
+            val = _unpack("b", cdata[cnt])[0]
             if (val > -128) and (val < 128):
-                udata.append(_pack('>h', val))
+                udata.append(_pack(">h", val))
                 cnt += 1
             elif val == -128:
-                #print _unpack('b', cdata[cnt+1])[0]
-                #print _unpack('b', cdata[cnt+2])[0]
-                udata.extend(cdata[cnt+1:cnt+3])
+                # print _unpack('b', cdata[cnt+1])[0]
+                # print _unpack('b', cdata[cnt+2])[0]
+                udata.extend(cdata[cnt + 1 : cnt + 3])
                 cnt += 3
             else:
-                raise ZTRError('Invalid value encountered while attempting to read 16- to 8-bit encoded ZTR data.')
+                raise ZTRError(
+                    "Invalid value encountered while attempting to read 16- to 8-bit encoded ZTR data."
+                )
 
-        return ''.join(udata)
+        return "".join(udata)
 
     def decode32To8(self, cdata):
         cnt = 0
         udata = list()
         while cnt < len(cdata):
-            val = _unpack('b', cdata[cnt])[0]
+            val = _unpack("b", cdata[cnt])[0]
             if (val > -128) and (val < 128):
-                udata.append(_pack('>i', val))
+                udata.append(_pack(">i", val))
                 cnt += 1
             elif val == -128:
-                #print _unpack('b', cdata[cnt+1])[0]
-                #print _unpack('b', cdata[cnt+2])[0]
-                udata.extend(cdata[cnt+1:cnt+5])
+                # print _unpack('b', cdata[cnt+1])[0]
+                # print _unpack('b', cdata[cnt+2])[0]
+                udata.extend(cdata[cnt + 1 : cnt + 5])
                 cnt += 5
             else:
-                raise ZTRError('Invalid value encountered while attempting to read 32- to 8-bit encoded ZTR data.')
+                raise ZTRError(
+                    "Invalid value encountered while attempting to read 32- to 8-bit encoded ZTR data."
+                )
 
-        return ''.join(udata)
+        return "".join(udata)
 
     def decode8BitDelta(self, cdata):
-        levels = _unpack('b', cdata[0])[0]
-        #print 'levels:', levels
+        levels = _unpack("b", cdata[0])[0]
+        # print 'levels:', levels
 
         # first, _unpack the 1-byte values
         udata = list()
         for cnt in range(1, len(cdata)):
-            val = _unpack('B', cdata[cnt])[0]
+            val = _unpack("B", cdata[cnt])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
@@ -480,18 +539,18 @@ class ZTRSequenceTrace(SequenceTrace):
         # repack the data
         tmpdata = list()
         for val in udata:
-            tmpdata.append(_pack('B', val))
+            tmpdata.append(_pack("B", val))
 
-        return ''.join(tmpdata)
+        return "".join(tmpdata)
 
     def decode16BitDelta(self, cdata):
-        levels = _unpack('b', cdata[0])[0]
-        #print 'levels:', levels
+        levels = _unpack("b", cdata[0])[0]
+        # print 'levels:', levels
 
         # first, _unpack the 2-byte values
         udata = list()
         for cnt in range(1, len(cdata), 2):
-            val = _unpack('>H', cdata[cnt:cnt+2])[0]
+            val = _unpack(">H", cdata[cnt : cnt + 2])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
@@ -508,18 +567,18 @@ class ZTRSequenceTrace(SequenceTrace):
         # repack the data
         tmpdata = list()
         for val in udata:
-            tmpdata.append(_pack('>H', val))
+            tmpdata.append(_pack(">H", val))
 
-        return ''.join(tmpdata)
+        return "".join(tmpdata)
 
     def decode32BitDelta(self, cdata):
-        levels = _unpack('b', cdata[0])[0]
-        #print 'levels:', levels
+        levels = _unpack("b", cdata[0])[0]
+        # print 'levels:', levels
 
         # first, _unpack the 4-byte values (skipping the 2 padding bytes)
         udata = list()
         for cnt in range(3, len(cdata), 4):
-            val = _unpack('>I', cdata[cnt:cnt+4])[0]
+            val = _unpack(">I", cdata[cnt : cnt + 4])[0]
             udata.append(val)
 
         # now apply the reverse delta filtering
@@ -536,34 +595,37 @@ class ZTRSequenceTrace(SequenceTrace):
         # repack the data
         tmpdata = list()
         for val in udata:
-            tmpdata.append(_pack('>I', val))
+            tmpdata.append(_pack(">I", val))
 
-        return ''.join(tmpdata)
-
+        return "".join(tmpdata)
 
     def readChunk(self, fp):
         # get the chunk descriptor
         chtype = fp.read(4)
-        #print 'chunk type:', chtype
+        # print 'chunk type:', chtype
 
         # check for EOF
         if len(chtype) == 0:
             return False
         elif len(chtype) != 4:
-            raise ZTRError('The ZTR data chunk type could not be read.  The file appears to be damaged.')
+            raise ZTRError(
+                "The ZTR data chunk type could not be read.  The file appears to be damaged."
+            )
 
         try:
-            mdlen = _unpack('>I', fp.read(4))[0]
-            #print 'metadata length:', mdlen
+            mdlen = _unpack(">I", fp.read(4))[0]
+            # print 'metadata length:', mdlen
 
             # skip over the metadata
             fp.read(mdlen)
 
             # get the size of the data
-            datalen = _unpack('>I', fp.read(4))[0]
-            #print 'data length:', datalen
+            datalen = _unpack(">I", fp.read(4))[0]
+            # print 'data length:', datalen
         except struct.error:
-            raise ZTRError('The ZTR data chunk header could not be read.  The file appears to be damaged.')
+            raise ZTRError(
+                "The ZTR data chunk header could not be read.  The file appears to be damaged."
+            )
 
         # read the chunk data from the file
         data = fp.read(datalen)
@@ -572,9 +634,9 @@ class ZTRSequenceTrace(SequenceTrace):
 
         # iteratively process the chunk data until we get the "raw",
         # uncompressed data
-        dataformat = _unpack('b', data[0])[0]
+        dataformat = _unpack("b", data[0])[0]
         while dataformat != 0:
-            #print 'data format:', dataformat
+            # print 'data format:', dataformat
             if dataformat == 1:
                 # run-length encoding
                 data = self.RLEUncompress(data[1:])
@@ -603,7 +665,7 @@ class ZTRSequenceTrace(SequenceTrace):
                 # invalid/unsupported data format
                 raise ZTRDataFormatError(dataformat)
 
-            dataformat = _unpack('b', data[0])[0]
+            dataformat = _unpack("b", data[0])[0]
 
         return (chtype, datalen, data)
 
@@ -611,13 +673,21 @@ class ZTRSequenceTrace(SequenceTrace):
 class ABIError(TraceFileError):
     pass
 
+
 class ABIVersionError(ABIError):
     def __init__(self, ver_major, ver_minor):
         self.ver_major = ver_major
         self.ver_minor = ver_minor
 
     def __str__(self):
-        return 'This file uses version ' + str(self.ver_major) + '.' + str(self.ver_minor) + ' of the ABI format.  This software only supports version 1.x of the format.'
+        return (
+            "This file uses version "
+            + str(self.ver_major)
+            + "."
+            + str(self.ver_minor)
+            + " of the ABI format.  This software only supports version 1.x of the format."
+        )
+
 
 class ABIIndexError(ABIError):
     def __init__(self, indexnum, indextotal):
@@ -625,7 +695,14 @@ class ABIIndexError(ABIError):
         self.indextotal = indextotal
 
     def __str__(self):
-        return 'Error reading ABI file index entry ' + str(self.indexnum) + ' of ' + str(self.indextotal) + ' expected entries.  The file might be damaged.'
+        return (
+            "Error reading ABI file index entry "
+            + str(self.indexnum)
+            + " of "
+            + str(self.indextotal)
+            + " expected entries.  The file might be damaged."
+        )
+
 
 class ABIDataError(ABIError):
     def __init__(self, expectedlen, actuallen):
@@ -633,7 +710,13 @@ class ABIDataError(ABIError):
         self.actuallen = actuallen
 
     def __str__(self):
-        return 'Error reading ABI file data.  Expected ' + str(self.expectedlen) + ' bytes but only got ' + str(self.actuallen) + ' bytes.  The file appears to be damaged.'
+        return (
+            "Error reading ABI file data.  Expected "
+            + str(self.expectedlen)
+            + " bytes but only got "
+            + str(self.actuallen)
+            + " bytes.  The file appears to be damaged."
+        )
 
 
 class ABISequenceTrace(SequenceTrace):
@@ -641,7 +724,7 @@ class ABISequenceTrace(SequenceTrace):
         self.fname = filename
 
         try:
-            self.tf = open(filename, 'rb')
+            self.tf = open(filename, "rb")
         except IOError:
             raise
 
@@ -649,16 +732,20 @@ class ABISequenceTrace(SequenceTrace):
 
         # read the ABI magic number
         abinum = self.tf.read(4)
-        #print abinum
-        if abinum != b'ABIF':
-            raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
+        # print abinum
+        if abinum != b"ABIF":
+            raise ABIError(
+                "The ABI file header is invalid.  The file appears to be damaged."
+            )
 
         # check the major version number
         try:
-            version = _unpack('>H', self.tf.read(2))[0]
+            version = _unpack(">H", self.tf.read(2))[0]
         except struct.error:
-            raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
-        #print version
+            raise ABIError(
+                "The ABI file header is invalid.  The file appears to be damaged."
+            )
+        # print version
         if (version // 100) != 1:
             raise ABIVersionError(version / 100, version % 100)
 
@@ -667,14 +754,16 @@ class ABISequenceTrace(SequenceTrace):
 
         # get the file index information
         try:
-            index_entry_len = _unpack('>h', self.tf.read(2))[0]
-            self.num_index_entries = _unpack('>i', self.tf.read(4))[0]
-            total_index_size = _unpack('>i', self.tf.read(4))[0]
-            self.index_offset = _unpack ('>i', self.tf.read(4))[0]
+            index_entry_len = _unpack(">h", self.tf.read(2))[0]
+            self.num_index_entries = _unpack(">i", self.tf.read(4))[0]
+            total_index_size = _unpack(">i", self.tf.read(4))[0]
+            self.index_offset = _unpack(">i", self.tf.read(4))[0]
         except struct.error:
-            raise ABIError('The ABI file header is invalid.  The file appears to be damaged.')
+            raise ABIError(
+                "The ABI file header is invalid.  The file appears to be damaged."
+            )
 
-        #print index_entry_len, self.num_index_entries, total_index_size, self.index_offset
+        # print index_entry_len, self.num_index_entries, total_index_size, self.index_offset
 
         self.readABIIndex()
 
@@ -690,35 +779,37 @@ class ABISequenceTrace(SequenceTrace):
 
         for cnt in range(self.num_index_entries):
             try:
-                self.abiindex.append(dict(did=0, idv=0, dformat=0, fsize=0, dcnt=0, dlen=0, offset=0))
-                self.abiindex[cnt]['did'] = self.tf.read(4).decode('utf-8')
-                self.abiindex[cnt]['idv'] = _unpack('>I', self.tf.read(4))[0]
-                self.abiindex[cnt]['dformat'] = _unpack('>H', self.tf.read(2))[0]
-                self.abiindex[cnt]['fsize'] = _unpack('>H', self.tf.read(2))[0]
-                self.abiindex[cnt]['dcnt'] = _unpack('>I', self.tf.read(4))[0]
-                self.abiindex[cnt]['dlen'] = _unpack('>I', self.tf.read(4))[0]
-                self.abiindex[cnt]['offset'] = _unpack('>I', self.tf.read(4))[0]
+                self.abiindex.append(
+                    dict(did=0, idv=0, dformat=0, fsize=0, dcnt=0, dlen=0, offset=0)
+                )
+                self.abiindex[cnt]["did"] = self.tf.read(4).decode("utf-8")
+                self.abiindex[cnt]["idv"] = _unpack(">I", self.tf.read(4))[0]
+                self.abiindex[cnt]["dformat"] = _unpack(">H", self.tf.read(2))[0]
+                self.abiindex[cnt]["fsize"] = _unpack(">H", self.tf.read(2))[0]
+                self.abiindex[cnt]["dcnt"] = _unpack(">I", self.tf.read(4))[0]
+                self.abiindex[cnt]["dlen"] = _unpack(">I", self.tf.read(4))[0]
+                self.abiindex[cnt]["offset"] = _unpack(">I", self.tf.read(4))[0]
                 # skip 4 bytes (the unused "data handle" field)
                 self.tf.read(4)
             except struct.error:
                 raise ABIIndexError(cnt, self.num_index_entries)
 
-        #self.printABIIndex('CMNT')
+        # self.printABIIndex('CMNT')
 
     def printABIIndex(self, data_id):
         for entry in self.abiindex:
-            if entry['did'] == data_id:
-                print('entry ID:', entry['did'])
-                print('idv:', entry['idv'])
-                print('data format:', entry['dformat'])
-                print('format size:', entry['fsize'])
-                print('data count:', entry['dcnt'])
-                print('total data length:', entry['dlen'])
-                print('data offset:', entry['offset'])
+            if entry["did"] == data_id:
+                print("entry ID:", entry["did"])
+                print("idv:", entry["idv"])
+                print("data format:", entry["dformat"])
+                print("format size:", entry["fsize"])
+                print("data count:", entry["dcnt"])
+                print("total data length:", entry["dlen"])
+                print("data offset:", entry["offset"])
 
     def getIndexEntry(self, data_id, number):
         for row in self.abiindex:
-            if (row['did'] == data_id) and (row['idv'] == number):
+            if (row["did"] == data_id) and (row["idv"] == number):
                 return row
 
         return None
@@ -727,7 +818,7 @@ class ABISequenceTrace(SequenceTrace):
         entries = list()
 
         for row in self.abiindex:
-            if row['did'] == data_id:
+            if row["did"] == data_id:
                 entries.append(row)
 
         return entries
@@ -738,22 +829,22 @@ class ABISequenceTrace(SequenceTrace):
     # Staden package.  To avoid confusion, these additional comment values are not given 4-letter keys.
     def readComments(self):
         # get the sample name
-        entry = self.getIndexEntry('SMPL', 1)
+        entry = self.getIndexEntry("SMPL", 1)
         if entry:
-            self.comments['NAME'] = self.readString(entry)
+            self.comments["NAME"] = self.readString(entry)
 
         # get the run name
-        entry = self.getIndexEntry('RunN', 1)
+        entry = self.getIndexEntry("RunN", 1)
         if entry:
-            self.comments['Run name'] = self.readString(entry)
+            self.comments["Run name"] = self.readString(entry)
 
         # get the lane number
-        entry = self.getIndexEntry('LANE', 1)
+        entry = self.getIndexEntry("LANE", 1)
         if entry:
-            self.comments['LANE'] = str(self.read2ByteInts(entry)[0])
+            self.comments["LANE"] = str(self.read2ByteInts(entry)[0])
 
         # get the signal strengths for each dye
-        entry = self.getIndexEntry('S/N%', 1)
+        entry = self.getIndexEntry("S/N%", 1)
         if entry:
             stvals = self.read2ByteInts(entry)
 
@@ -763,86 +854,110 @@ class ABISequenceTrace(SequenceTrace):
             for cnt in range(0, len(order)):
                 sigst[order[cnt]] = stvals[cnt]
 
-            self.comments['SIGN'] = 'A={0},C={1},G={2},T={3}'.format(sigst['A'], sigst['C'], sigst['G'], sigst['T'])
+            self.comments["SIGN"] = "A={0},C={1},G={2},T={3}".format(
+                sigst["A"], sigst["C"], sigst["G"], sigst["T"]
+            )
 
         # get the average peak spacing
-        entry = self.getIndexEntry('SPAC', 1)
+        entry = self.getIndexEntry("SPAC", 1)
         if entry:
             spacing = self.read4ByteFloats(entry)[0]
             # if spacing is invalid, estimate it ourselves (the Staden code [seqIOABI.c] indicates this is a possibility)
             if spacing < 0:
-                spacing = float(self.basepos[-1] - self.basepos[0]) / (len(self.basepos) - 1)
-            self.comments['SPAC'] = '{0:.2f}'.format(spacing)
+                spacing = float(self.basepos[-1] - self.basepos[0]) / (
+                    len(self.basepos) - 1
+                )
+            self.comments["SPAC"] = "{0:.2f}".format(spacing)
 
         # get the run dates and times
-        d_entries = self.getIndexEntriesById('RUND')
-        t_entries = self.getIndexEntriesById('RUNT')
+        d_entries = self.getIndexEntriesById("RUND")
+        t_entries = self.getIndexEntriesById("RUNT")
         if (len(d_entries) > 1) and (len(t_entries) > 1):
-            sdate = self.readDateTime(self.getIndexEntry('RUND', 1), self.getIndexEntry('RUNT', 1))
-            edate = self.readDateTime(self.getIndexEntry('RUND', 2), self.getIndexEntry('RUNT', 2))
-            #print sdate, edate
-            self.comments['RUND'] = sdate.strftime('%Y%m%d.%H%M%S') + ' - ' + edate.strftime('%Y%m%d.%H%M%S')
-            self.comments['DATE'] = sdate.strftime('%a %d %b %H:%M:%S %Y') + ' to ' + edate.strftime('%a %d %b %H:%M:%S %Y')
+            sdate = self.readDateTime(
+                self.getIndexEntry("RUND", 1), self.getIndexEntry("RUNT", 1)
+            )
+            edate = self.readDateTime(
+                self.getIndexEntry("RUND", 2), self.getIndexEntry("RUNT", 2)
+            )
+            # print sdate, edate
+            self.comments["RUND"] = (
+                sdate.strftime("%Y%m%d.%H%M%S")
+                + " - "
+                + edate.strftime("%Y%m%d.%H%M%S")
+            )
+            self.comments["DATE"] = (
+                sdate.strftime("%a %d %b %H:%M:%S %Y")
+                + " to "
+                + edate.strftime("%a %d %b %H:%M:%S %Y")
+            )
 
         # get the data collection dates and times
         if (len(d_entries) == 4) and (len(t_entries) == 4):
-            sdate = self.readDateTime(self.getIndexEntry('RUND', 3), self.getIndexEntry('RUNT', 3))
-            edate = self.readDateTime(self.getIndexEntry('RUND', 4), self.getIndexEntry('RUNT', 4))
-            #print sdate, edate
-            self.comments['Data coll. dates/times'] = sdate.strftime('%a %d %b %H:%M:%S %Y') + ' to ' + edate.strftime('%a %d %b %H:%M:%S %Y')
+            sdate = self.readDateTime(
+                self.getIndexEntry("RUND", 3), self.getIndexEntry("RUNT", 3)
+            )
+            edate = self.readDateTime(
+                self.getIndexEntry("RUND", 4), self.getIndexEntry("RUNT", 4)
+            )
+            # print sdate, edate
+            self.comments["Data coll. dates/times"] = (
+                sdate.strftime("%a %d %b %H:%M:%S %Y")
+                + " to "
+                + edate.strftime("%a %d %b %H:%M:%S %Y")
+            )
 
         # get the dye set/primer (mobility) file
-        entry = self.getIndexEntry('PDMF', 1)
+        entry = self.getIndexEntry("PDMF", 1)
         if entry:
-            self.comments['DYEP'] = self.readString(entry)
+            self.comments["DYEP"] = self.readString(entry)
 
         # get the sequencing machine name and serial number
-        entry = self.getIndexEntry('MCHN', 1)
+        entry = self.getIndexEntry("MCHN", 1)
         if entry:
-            self.comments['MACH'] = self.readString(entry)
+            self.comments["MACH"] = self.readString(entry)
 
         # get the sequencing machine model
-        entry = self.getIndexEntry('MODL', 1)
+        entry = self.getIndexEntry("MODL", 1)
         if entry:
-            self.comments['MODL'] = self.readString(entry)
+            self.comments["MODL"] = self.readString(entry)
 
         # get the basecaller name
-        entry = self.getIndexEntry('SPAC', 2)
+        entry = self.getIndexEntry("SPAC", 2)
         if entry:
-            self.comments['BCAL'] = self.readString(entry)
+            self.comments["BCAL"] = self.readString(entry)
 
         # get the data collection software version
-        entry = self.getIndexEntry('SVER', 1)
+        entry = self.getIndexEntry("SVER", 1)
         if entry:
-            self.comments['VER1'] = self.readString(entry)
+            self.comments["VER1"] = self.readString(entry)
 
         # get the basecaller version
-        entry = self.getIndexEntry('SVER', 2)
+        entry = self.getIndexEntry("SVER", 2)
         if entry:
-            self.comments['VER2'] = self.readString(entry)
+            self.comments["VER2"] = self.readString(entry)
 
         # get the plate size
-        entry = self.getIndexEntry('PSZE', 1)
+        entry = self.getIndexEntry("PSZE", 1)
         if entry:
-            self.comments['Plate size'] = str(self.read4ByteInts(entry)[0])
+            self.comments["Plate size"] = str(self.read4ByteInts(entry)[0])
 
         # get the gel name
         # This is included here because it is read by the Staden package, but it does not appear to be
         # included in the modern ABIF documentation.
-        entry = self.getIndexEntry('GELN', 1)
+        entry = self.getIndexEntry("GELN", 1)
         if entry:
-            self.comments['GELN'] = self.readString(entry)
+            self.comments["GELN"] = self.readString(entry)
 
         # get the instrument (matrix) file
         # This is included here because it is read by the Staden package, but it does not appear to be
         # included in the modern ABIF documentation.
-        entry = self.getIndexEntry('MTXF', 1)
+        entry = self.getIndexEntry("MTXF", 1)
         if entry:
-            self.comments['MTXF'] = self.readString(entry)
+            self.comments["MTXF"] = self.readString(entry)
 
         # 'APrX' points to a long XML string with detailed information about the analysis protocol used
-        #entry = self.getIndexEntry('APrX', 1)
-        #if entry:
+        # entry = self.getIndexEntry('APrX', 1)
+        # if entry:
         #    self.readString(entry)
 
     def readDateTime(self, dateindexrow, timeindexrow):
@@ -856,161 +971,187 @@ class ABISequenceTrace(SequenceTrace):
         #   bits 15-8: seconds
         datenum = self.read4ByteInts(dateindexrow)[0]
         timenum = self.read4ByteInts(timeindexrow)[0]
-        dateobj = _datetime(year=(datenum >> 16), month=((datenum >> 8) & 0xff), day=(datenum & 0xff),
-                hour=(timenum >> 24), minute=((timenum >> 16) & 0xff), second=((timenum >> 8) & 0xff))
+        dateobj = _datetime(
+            year=(datenum >> 16),
+            month=((datenum >> 8) & 0xFF),
+            day=(datenum & 0xFF),
+            hour=(timenum >> 24),
+            minute=((timenum >> 16) & 0xFF),
+            second=((timenum >> 8) & 0xFF),
+        )
 
         return dateobj
 
     def readString(self, indexrow):
-        if indexrow['fsize'] != 1:
-            raise ABIError('Index entry contains an invalid format size for string data.')
-        if indexrow['dformat'] not in (2, 18, 19):
-            raise ABIError('Index entry contains an invalid data type for character data.')
+        if indexrow["fsize"] != 1:
+            raise ABIError(
+                "Index entry contains an invalid format size for string data."
+            )
+        if indexrow["dformat"] not in (2, 18, 19):
+            raise ABIError(
+                "Index entry contains an invalid data type for character data."
+            )
 
-        if indexrow['dlen'] <= 4:
+        if indexrow["dlen"] <= 4:
             # The actual data are stored in the offset field of the index entry.  Because the offset
             # was read as an unsigned, big-endian integer, the bytes should be in the correct order for
             # the following bit shift operations.
             lst = list()
-            for cnt in range(0, indexrow['dcnt']):
-                val = (indexrow['offset'] >> ((3 - cnt) * 8)) & 0xff
+            for cnt in range(0, indexrow["dcnt"]):
+                val = (indexrow["offset"] >> ((3 - cnt) * 8)) & 0xFF
                 lst.append(chr(val))
 
-            strval = ''.join(lst)
+            strval = "".join(lst)
         else:
             # get the data from the file
-            self.tf.seek(indexrow['offset'], 0)
-            strval = self.tf.read(indexrow['dcnt']).decode('utf-8')
+            self.tf.seek(indexrow["offset"], 0)
+            strval = self.tf.read(indexrow["dcnt"]).decode("utf-8")
 
-        if indexrow['dlen'] != len(strval):
-            raise ABIDataError(indexrow['dlen'], len(strval))
+        if indexrow["dlen"] != len(strval):
+            raise ABIDataError(indexrow["dlen"], len(strval))
 
         # If this is a Pascal-style string (format 18), then remove the first character (which specifies
         # the string length).  If this is a C-style string (format 19), then remove the trailing
         # null character.
-        if indexrow['dformat'] == 18:
+        if indexrow["dformat"] == 18:
             strval = strval[1:]
-        elif indexrow['dformat'] == 19:
+        elif indexrow["dformat"] == 19:
             strval = strval[:-1]
 
         return strval
 
     def read1ByteInts(self, indexrow):
-        if indexrow['fsize'] != 1:
-            raise ABIError('Index entry contains an invalid format size for 1-byte integers.')
+        if indexrow["fsize"] != 1:
+            raise ABIError(
+                "Index entry contains an invalid format size for 1-byte integers."
+            )
 
         # see if the data format is signed or unsigned
-        if indexrow['dformat'] == 1:
-            formatstr = 'B'
-        elif indexrow['dformat'] == 2:
-            formatstr = 'b'
+        if indexrow["dformat"] == 1:
+            formatstr = "B"
+        elif indexrow["dformat"] == 2:
+            formatstr = "b"
         else:
-            raise ABIError('Index entry contains an invalid data type ID for 1-byte integers.')
+            raise ABIError(
+                "Index entry contains an invalid data type ID for 1-byte integers."
+            )
 
         lst = list()
 
-        if indexrow['dlen'] <= 4:
+        if indexrow["dlen"] <= 4:
             # The actual data are stored in the offset field of the index entry.  Because the offset
             # was read as an unsigned, big-endian integer, the bytes should be in the correct order for
             # the following bit shift operations.
             # First, repack the integer to deal with the possibility of signed integers (shift operations
             # would only return positive values).
-            data = _pack('>I', indexrow['offset'])
-            for cnt in range(0, indexrow['dcnt']):
-                val = _unpack(formatstr, data[cnt:cnt+1])[0]
+            data = _pack(">I", indexrow["offset"])
+            for cnt in range(0, indexrow["dcnt"]):
+                val = _unpack(formatstr, data[cnt : cnt + 1])[0]
                 lst.append(val)
         else:
             # get the data from the file
-            self.tf.seek(indexrow['offset'], 0)
-            for cnt in range(0, indexrow['dcnt']):
+            self.tf.seek(indexrow["offset"], 0)
+            for cnt in range(0, indexrow["dcnt"]):
                 lst.append(_unpack(formatstr, self.tf.read(1))[0])
 
-        if indexrow['dlen'] != len(lst):
-            raise ABIDataError(indexrow['dlen'], len(lst))
+        if indexrow["dlen"] != len(lst):
+            raise ABIDataError(indexrow["dlen"], len(lst))
 
         return lst
 
     def read2ByteInts(self, indexrow):
-        if indexrow['fsize'] != 2:
-            raise ABIError('Index entry contains an invalid format size for 2-byte integers.')
+        if indexrow["fsize"] != 2:
+            raise ABIError(
+                "Index entry contains an invalid format size for 2-byte integers."
+            )
 
         # see if the data format is signed or unsigned
-        if indexrow['dformat'] == 3:
-            formatstr = '>H'
-        elif indexrow['dformat'] == 4:
-            formatstr = '>h'
+        if indexrow["dformat"] == 3:
+            formatstr = ">H"
+        elif indexrow["dformat"] == 4:
+            formatstr = ">h"
         else:
-            raise ABIError('Index entry contains an invalid data type ID for 2-byte integers.')
+            raise ABIError(
+                "Index entry contains an invalid data type ID for 2-byte integers."
+            )
 
         lst = list()
 
-        if indexrow['dlen'] <= 4:
+        if indexrow["dlen"] <= 4:
             # The actual data are stored in the offset field of the index entry.  Because the offset
             # was read as an unsigned, big-endian integer, the bytes should be in the correct order for
             # the following operations.
             # First, repack the integer to deal with the possibility of signed integers (shift operations
             # would only return positive values).
-            data = _pack('>I', indexrow['offset'])
-            for cnt in range(0, indexrow['dcnt']):
-                val = _unpack(formatstr, data[cnt*2:cnt*2+2])[0]
+            data = _pack(">I", indexrow["offset"])
+            for cnt in range(0, indexrow["dcnt"]):
+                val = _unpack(formatstr, data[cnt * 2 : cnt * 2 + 2])[0]
                 lst.append(val)
         else:
             # get the data from the file
-            self.tf.seek(indexrow['offset'], 0)
-            for cnt in range(0, indexrow['dcnt']):
+            self.tf.seek(indexrow["offset"], 0)
+            for cnt in range(0, indexrow["dcnt"]):
                 lst.append(_unpack(formatstr, self.tf.read(2))[0])
 
-        if indexrow['dlen'] != (len(lst) * 2):
-            raise ABIDataError(indexrow['dlen'], (len(lst) * 2))
+        if indexrow["dlen"] != (len(lst) * 2):
+            raise ABIDataError(indexrow["dlen"], (len(lst) * 2))
 
         return lst
 
     def read4ByteInts(self, indexrow):
-        if indexrow['fsize'] != 4:
-            raise ABIError('Index entry contains an invalid format size for 4-byte integers.')
-        if indexrow['dformat'] not in (5, 10, 11):
-            raise ABIError('Index entry contains an invalid data type ID for 4-byte integers.')
+        if indexrow["fsize"] != 4:
+            raise ABIError(
+                "Index entry contains an invalid format size for 4-byte integers."
+            )
+        if indexrow["dformat"] not in (5, 10, 11):
+            raise ABIError(
+                "Index entry contains an invalid data type ID for 4-byte integers."
+            )
 
         lst = list()
 
-        if indexrow['dlen'] == 4:
+        if indexrow["dlen"] == 4:
             # The actual data are stored in the offset field of the index entry.  In the case of 4-byte
             # ints, the offset value is the data value.  It must be repacked, though, to reinterpret it
             # as a signed integer.
-            data = _pack('>I', indexrow['offset'])
-            val = _unpack('>i', data)[0]
+            data = _pack(">I", indexrow["offset"])
+            val = _unpack(">i", data)[0]
             lst.append(val)
         else:
             # get the data from the file
-            self.tf.seek(indexrow['offset'], 0)
-            for cnt in range(0, indexrow['dcnt']):
-                lst.append(_unpack('>i', self.tf.read(4))[0])
+            self.tf.seek(indexrow["offset"], 0)
+            for cnt in range(0, indexrow["dcnt"]):
+                lst.append(_unpack(">i", self.tf.read(4))[0])
 
-        if indexrow['dlen'] != (len(lst) * 4):
-            raise ABIDataError(indexrow['dlen'], (len(lst) * 4))
+        if indexrow["dlen"] != (len(lst) * 4):
+            raise ABIDataError(indexrow["dlen"], (len(lst) * 4))
 
         return lst
 
     def read4ByteFloats(self, indexrow):
-        if indexrow['fsize'] != 4:
-            raise ABIError('Index entry contains an invalid format size for 4-byte floating point numbers.')
-        if indexrow['dformat'] != 7:
-            raise ABIError('Index entry contains an invalid data type ID for 4-byte floating point numbers.')
+        if indexrow["fsize"] != 4:
+            raise ABIError(
+                "Index entry contains an invalid format size for 4-byte floating point numbers."
+            )
+        if indexrow["dformat"] != 7:
+            raise ABIError(
+                "Index entry contains an invalid data type ID for 4-byte floating point numbers."
+            )
 
         lst = list()
 
-        if indexrow['dlen'] <= 4:
+        if indexrow["dlen"] <= 4:
             # The actual data are stored in the offset field of the index entry.
-            data = _pack('>I', indexrow['offset'])
-            lst.append(_unpack('>f', data)[0])
+            data = _pack(">I", indexrow["offset"])
+            lst.append(_unpack(">f", data)[0])
         else:
             # get the data from the file
-            self.tf.seek(indexrow['offset'], 0)
-            for cnt in range(0, indexrow['dcnt']):
-                lst.append(_unpack('>f', self.tf.read(4))[0])
+            self.tf.seek(indexrow["offset"], 0)
+            for cnt in range(0, indexrow["dcnt"]):
+                lst.append(_unpack(">f", self.tf.read(4))[0])
 
-        if indexrow['dlen'] != (len(lst) * 4):
-            raise ABIDataError(indexrow['dlen'], (len(lst) * 4))
+        if indexrow["dlen"] != (len(lst) * 4):
+            raise ABIDataError(indexrow["dlen"], (len(lst) * 4))
 
         return lst
 
@@ -1021,9 +1162,11 @@ class ABISequenceTrace(SequenceTrace):
     # convention used by the Staden package (see seqIOABI.c), which is to only look at entry 1 (the
     # user-edited sequence) and ignore entry 2.
     def readBaseCalls(self):
-        row = self.getIndexEntry('PBAS', 1)
+        row = self.getIndexEntry("PBAS", 1)
         if row is None:
-            raise ABIError('No base call data were found in the ABI file.  The file might be damaged.')
+            raise ABIError(
+                "No base call data were found in the ABI file.  The file might be damaged."
+            )
 
         # read the base calls from the file
         self.basecalls = self.readString(row).upper()
@@ -1041,9 +1184,11 @@ class ABISequenceTrace(SequenceTrace):
     # contain identical values.  This method follows the same convention used by the Staden package
     # (see seqIOABI.c), which is to only look at entry 1 (the user-edited QVs) and ignore entry 2.
     def readConfScores(self):
-        row = self.getIndexEntry('PCON', 1)
+        row = self.getIndexEntry("PCON", 1)
         if row is None:
-            raise ABIError('No confidence score data were found in the ABI file.  SeqTrace requires confidence scores for all base calls.')
+            raise ABIError(
+                "No confidence score data were found in the ABI file.  SeqTrace requires confidence scores for all base calls."
+            )
 
         # read the base call confidence scores from the file
         self.bcconf = self.read1ByteInts(row)
@@ -1056,9 +1201,11 @@ class ABISequenceTrace(SequenceTrace):
     # contain identical information.  This method follows the same convention used by the Staden package
     # (see seqIOABI.c), which is to only look at entry 1 (the user-edited PLs) and ignore entry 2.
     def readBaseLocations(self):
-        row = self.getIndexEntry('PLOC', 1)
+        row = self.getIndexEntry("PLOC", 1)
         if row is None:
-            raise ABIError('No base location data were found in the ABI file.  The file might be damaged.')
+            raise ABIError(
+                "No base location data were found in the ABI file.  The file might be damaged."
+            )
 
         # read the base call locations from the file
         self.basepos = self.read2ByteInts(row)
@@ -1067,22 +1214,24 @@ class ABISequenceTrace(SequenceTrace):
 
     def getBaseDataOrder(self):
         # retrieve the "filter wheel order" row from the file index
-        rows = self.getIndexEntriesById('FWO_')
+        rows = self.getIndexEntriesById("FWO_")
 
         if len(rows) > 1:
-            raise ABIError('Found multiple filter wheel order index entries in ABI file.')
-        if rows[0]['dlen'] != 4:
-            raise ABIError('Incorrect data length for filter wheel order index entry.')
+            raise ABIError(
+                "Found multiple filter wheel order index entries in ABI file."
+            )
+        if rows[0]["dlen"] != 4:
+            raise ABIError("Incorrect data length for filter wheel order index entry.")
 
         # the data length is only 4 bytes, so the actual data is stored in the offset
-        val = rows[0]['offset']
+        val = rows[0]["offset"]
 
         base_order = list()
 
-        base_order.append(chr((val >> 24) & 0xff))
-        base_order.append(chr((val >> 16) & 0xff))
-        base_order.append(chr((val >> 8) & 0xff))
-        base_order.append(chr(val & 0xff))
+        base_order.append(chr((val >> 24) & 0xFF))
+        base_order.append(chr((val >> 16) & 0xFF))
+        base_order.append(chr((val >> 8) & 0xFF))
+        base_order.append(chr(val & 0xFF))
 
         return base_order
 
@@ -1098,9 +1247,11 @@ class ABISequenceTrace(SequenceTrace):
         start_id = 9
 
         for cnt in range(0, 4):
-            row = self.getIndexEntry('DATA', start_id + cnt)
+            row = self.getIndexEntry("DATA", start_id + cnt)
             if row == None:
-                raise ABIError('Could not find trace data index entries for all bases.  The file might be damaged.')
+                raise ABIError(
+                    "Could not find trace data index entries for all bases.  The file might be damaged."
+                )
 
             # read the trace data from the file
             lst = self.read2ByteInts(row)
@@ -1115,13 +1266,21 @@ class ABISequenceTrace(SequenceTrace):
 class SCFError(TraceFileError):
     pass
 
+
 class SCFVersionError(SCFError):
     def __init__(self, version, revision):
         self.version = version
         self.revision = revision
 
     def __str__(self):
-        return 'This file uses version ' + self.version + '.' + self.revision + ' of the SCF format.  This software only supports version 3.00 of the format.'
+        return (
+            "This file uses version "
+            + self.version
+            + "."
+            + self.revision
+            + " of the SCF format.  This software only supports version 3.00 of the format."
+        )
+
 
 class SCFDataError(SCFError):
     def __init__(self, expectedlen, actuallen):
@@ -1129,7 +1288,13 @@ class SCFDataError(SCFError):
         self.actuallen = actuallen
 
     def __str__(self):
-        return 'Error reading SCF file data.  Expected ' + str(self.expectedlen) + ' bytes but only got ' + str(self.actuallen) + ' bytes.  The file appears to be damaged.'
+        return (
+            "Error reading SCF file data.  Expected "
+            + str(self.expectedlen)
+            + " bytes but only got "
+            + str(self.actuallen)
+            + " bytes.  The file appears to be damaged."
+        )
 
 
 class SCFSequenceTrace(SequenceTrace):
@@ -1137,47 +1302,59 @@ class SCFSequenceTrace(SequenceTrace):
         self.fname = filename
 
         try:
-            self.tf = open(filename, 'rb')
+            self.tf = open(filename, "rb")
         except IOError:
             raise
 
         magicnum = self.tf.read(4)
-        #print magicnum
-        if magicnum != '.scf':
-            raise SCFError('The SCF file header is invalid.  The file appears to be damaged.')
+        # print magicnum
+        if magicnum != ".scf":
+            raise SCFError(
+                "The SCF file header is invalid.  The file appears to be damaged."
+            )
 
         try:
-            numsamps = _unpack('>I', self.tf.read(4))[0]
-            sampstart = _unpack('>I', self.tf.read(4))[0]
-            #print numsamps, sampstart
+            numsamps = _unpack(">I", self.tf.read(4))[0]
+            sampstart = _unpack(">I", self.tf.read(4))[0]
+            # print numsamps, sampstart
 
-            numbases = _unpack('>I', self.tf.read(4))[0]
+            numbases = _unpack(">I", self.tf.read(4))[0]
             # skip 8 bytes
             self.tf.read(8)
-            basesstart = _unpack('>I', self.tf.read(4))[0]
-            #print numbases, basesstart
+            basesstart = _unpack(">I", self.tf.read(4))[0]
+            # print numbases, basesstart
 
-            commentslen = _unpack('>I', self.tf.read(4))[0]
-            commentsstart = _unpack('>I', self.tf.read(4))[0]
-            #print commentslen, commentsstart
+            commentslen = _unpack(">I", self.tf.read(4))[0]
+            commentsstart = _unpack(">I", self.tf.read(4))[0]
+            # print commentslen, commentsstart
 
             version = self.tf.read(4)
-            #print version
+            # print version
 
-            samplesize = _unpack('>I', self.tf.read(4))[0]
-            codeset = _unpack('>I', self.tf.read(4))[0]
-            #print samplesize, codeset
+            samplesize = _unpack(">I", self.tf.read(4))[0]
+            codeset = _unpack(">I", self.tf.read(4))[0]
+            # print samplesize, codeset
         except struct.error:
-            raise SCFError('The SCF file header is invalid.  The file appears to be damaged.')
+            raise SCFError(
+                "The SCF file header is invalid.  The file appears to be damaged."
+            )
 
-        if version != '3.00':
+        if version != "3.00":
             raise SCFVersionError(version[0], version[2:])
 
         if samplesize not in (1, 2):
-            raise SCFError('Invalid sample size value in SCF header.  The size specified was ' + str(samplesize) + ', but must be either 1 or 2.')
+            raise SCFError(
+                "Invalid sample size value in SCF header.  The size specified was "
+                + str(samplesize)
+                + ", but must be either 1 or 2."
+            )
 
         if codeset != 0:
-            raise SCFError('Invalid code set specified in SCF header.  This file uses code set ' + str(codeset) + ', but this software only supports code set 0.')
+            raise SCFError(
+                "Invalid code set specified in SCF header.  This file uses code set "
+                + str(codeset)
+                + ", but this software only supports code set 0."
+            )
 
         self.readBasesData(numbases, basesstart)
         self.readTraceData(numsamps, sampstart, samplesize)
@@ -1185,7 +1362,7 @@ class SCFSequenceTrace(SequenceTrace):
 
     def readBasesData(self, numbases, basesstart):
         self.basepos = list()
-        probs = {'A': list(), 'C': list(), 'G': list(), 'T': list()}
+        probs = {"A": list(), "C": list(), "G": list(), "T": list()}
         self.bcconf = list()
 
         self.tf.seek(basesstart, 0)
@@ -1193,21 +1370,23 @@ class SCFSequenceTrace(SequenceTrace):
         try:
             # get the base locations
             for cnt in range(0, numbases):
-                index = _unpack('>I', self.tf.read(4))[0]
+                index = _unpack(">I", self.tf.read(4))[0]
                 self.basepos.append(index)
-            #print self.basepos
+            # print self.basepos
 
             # get the base call probabilities for all bases
-            for base in ('A', 'C', 'G', 'T'):
+            for base in ("A", "C", "G", "T"):
                 for cnt in range(0, numbases):
-                    prob = _unpack('B', self.tf.read(1))[0]
+                    prob = _unpack("B", self.tf.read(1))[0]
                     probs[base].append(prob)
         except struct.error:
-            raise SCFError('Error while reading base call locations and probabilities from the SCF file.  The file appears to be damaged.')
+            raise SCFError(
+                "Error while reading base call locations and probabilities from the SCF file.  The file appears to be damaged."
+            )
 
         # get the base calls
         self.basecalls = self.tf.read(numbases).upper()
-        #print self.basecalls
+        # print self.basecalls
         if numbases != len(self.basecalls):
             raise SCFDataError(numbases, len(self.basecalls))
 
@@ -1216,19 +1395,19 @@ class SCFSequenceTrace(SequenceTrace):
             base = self.basecalls[cnt]
             self.bcconf.append(probs[base][cnt])
 
-        #print self.bcconf
+        # print self.bcconf
 
     def readTraceData(self, numsamps, sampstart, sampsize):
         if sampsize == 1:
-            formatstr = 'B'
+            formatstr = "B"
         else:
-            formatstr = '>H'
+            formatstr = ">H"
 
         self.tf.seek(sampstart, 0)
 
         maxval = 0
 
-        for base in ('A', 'C', 'G', 'T'):
+        for base in ("A", "C", "G", "T"):
             samps = list()
 
             try:
@@ -1251,7 +1430,7 @@ class SCFSequenceTrace(SequenceTrace):
                 maxval = tmpmax
 
         self.max_traceval = maxval
-        #print self.tracesamps['A']
+        # print self.tracesamps['A']
 
     def decode8BitDoubleDelta(self, data):
         for clev in range(0, 2):
@@ -1287,37 +1466,43 @@ class SCFSequenceTrace(SequenceTrace):
             line = self.tf.readline()
             total += len(line)
 
-            if line == '':
-                raise SCFError('Unable to read the comments section of the SCF file.  The file appears to be damaged.')
+            if line == "":
+                raise SCFError(
+                    "Unable to read the comments section of the SCF file.  The file appears to be damaged."
+                )
 
             # get rid of the trailing '\n'
             line = line[:-1]
 
-            key, sep, value = line.partition('=')
-            #print key + ': ' + value
+            key, sep, value = line.partition("=")
+            # print key + ': ' + value
             self.comments[key] = value
 
         # make sure the next character is the null-terminator for the comments list
-        if self.tf.read(1) != '\0':
-            raise SCFError('Missing null character at end of comments section.  The file appears to be damaged.')
+        if self.tf.read(1) != "\0":
+            raise SCFError(
+                "Missing null character at end of comments section.  The file appears to be damaged."
+            )
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import os as _os
+
     cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"]=""
+    _os.environ["pydna_cached_funcs"] = ""
     import doctest
+
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"]=cached
+    _os.environ["pydna_cached_funcs"] = cached
 
+    # st = SCFSequenceTrace()
+    # st.loadFile('forward.scf')
 
-    #st = SCFSequenceTrace()
-    #st.loadFile('forward.scf')
+    # st = ZTRSequenceTrace()
+    # st.loadFile('forward.ztr')
 
-    #st = ZTRSequenceTrace()
-    #st.loadFile('forward.ztr')
+    # st = ABISequenceTrace()
+    # st.loadFile('forward.ab1')
 
-    #st = ABISequenceTrace()
-    #st.loadFile('forward.ab1')
-
-    #for key, value in sorted(st.getComments().iteritems()):
+    # for key, value in sorted(st.getComments().iteritems()):
     #    print key + ': ' + value

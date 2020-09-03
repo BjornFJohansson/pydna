@@ -7,7 +7,7 @@
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
 # doctest: +IGNORE_EXCEPTION_DETAIL
-'''This module provides the :func:`gbtext_clean` function which can clean up broken Genbank files enough to
+"""This module provides the :func:`gbtext_clean` function which can clean up broken Genbank files enough to
 pass the BioPython Genbank parser
 
 Almost all of this code was lifted from BioJSON (https://github.com/levskaya/BioJSON) by Anselm Levskaya.
@@ -21,48 +21,73 @@ string in Genbank format.
 The parser is not complete, so some fields do not survive the roundtrip (see below).
 This should not be a difficult fix. The returned result has two properties,
 .jseq which is the intermediate JSON produced by the parser and .gbtext
-which is the formatted genbank string.'''
+which is the formatted genbank string."""
 
 
-import re        as _re
+import re as _re
 import pyparsing as _pp
 
-GoodLocus =  ( _pp.Literal("LOCUS") +
-               _pp.Word(_pp.alphas+_pp.nums+'-_().'+'\\').setResultsName("name") +
-               _pp.Word(_pp.nums).setResultsName("size")+_pp.Suppress(_pp.CaselessLiteral('bp')) +
-               _pp.Word(_pp.alphas+'-').setResultsName("seqtype") +
-               (_pp.CaselessLiteral("linear")|_pp.CaselessLiteral("circular")).setResultsName("topology") +
-               _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode") +
-               _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date") )
+GoodLocus = (
+    _pp.Literal("LOCUS")
+    + _pp.Word(_pp.alphas + _pp.nums + "-_()." + "\\").setResultsName("name")
+    + _pp.Word(_pp.nums).setResultsName("size")
+    + _pp.Suppress(_pp.CaselessLiteral("bp"))
+    + _pp.Word(_pp.alphas + "-").setResultsName("seqtype")
+    + (_pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular")).setResultsName(
+        "topology"
+    )
+    + _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode")
+    + _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date")
+)
 
 # Older versions of ApE don't include a LOCUS name! Need separate def for this case:
-BrokenLocus1 =( _pp.Literal("LOCUS").setResultsName("name") +
-                _pp.Word(_pp.nums).setResultsName("size")+_pp.Suppress(_pp.CaselessLiteral('bp')) +
-                _pp.Word(_pp.alphas+'-').setResultsName("seqtype") +
-                (_pp.CaselessLiteral("linear")|_pp.CaselessLiteral("circular")).setResultsName("topology") +
-                _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode") +
-                _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date") )
+BrokenLocus1 = (
+    _pp.Literal("LOCUS").setResultsName("name")
+    + _pp.Word(_pp.nums).setResultsName("size")
+    + _pp.Suppress(_pp.CaselessLiteral("bp"))
+    + _pp.Word(_pp.alphas + "-").setResultsName("seqtype")
+    + (_pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular")).setResultsName(
+        "topology"
+    )
+    + _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode")
+    + _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date")
+)
 
 # LOCUS       YEplac181	5741 bp 	DNA	SYN
-BrokenLocus2 =( _pp.Literal("LOCUS") +
-                _pp.Word(_pp.alphas+_pp.nums+'-_().'+'\\').setResultsName("name") +
-                _pp.Word(_pp.nums).setResultsName("size")+_pp.Suppress(_pp.CaselessLiteral('bp')) +
-                _pp.Word(_pp.alphas+'-').setResultsName("seqtype") +
-                _pp.Optional(_pp.CaselessLiteral("linear")|_pp.CaselessLiteral("circular"), default="linear").setResultsName("topology") +
-                _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode") +
-                _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date") )
+BrokenLocus2 = (
+    _pp.Literal("LOCUS")
+    + _pp.Word(_pp.alphas + _pp.nums + "-_()." + "\\").setResultsName("name")
+    + _pp.Word(_pp.nums).setResultsName("size")
+    + _pp.Suppress(_pp.CaselessLiteral("bp"))
+    + _pp.Word(_pp.alphas + "-").setResultsName("seqtype")
+    + _pp.Optional(
+        _pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular"),
+        default="linear",
+    ).setResultsName("topology")
+    + _pp.Optional(_pp.Word(_pp.alphas), default="   ").setResultsName("divcode")
+    + _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date")
+)
 
-BrokenLocus3 =( _pp.Literal("LOCUS") +
-                _pp.Word(_pp.alphas+_pp.nums+'-_().'+'\\').setResultsName("name") +
-                _pp.Word(_pp.nums).setResultsName("size")+_pp.Suppress(_pp.CaselessLiteral('bp')) +
-                _pp.Word(_pp.alphas+'-').setResultsName("seqtype") +
-                _pp.Optional(_pp.CaselessLiteral("linear")|_pp.CaselessLiteral("circular"), default="linear").setResultsName("topology") +
-                _pp.Word(_pp.alphas).setResultsName("divcode") +
-                _pp.Optional(_pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date"), default="19-MAR-1970").setResultsName("date") )
+BrokenLocus3 = (
+    _pp.Literal("LOCUS")
+    + _pp.Word(_pp.alphas + _pp.nums + "-_()." + "\\").setResultsName("name")
+    + _pp.Word(_pp.nums).setResultsName("size")
+    + _pp.Suppress(_pp.CaselessLiteral("bp"))
+    + _pp.Word(_pp.alphas + "-").setResultsName("seqtype")
+    + _pp.Optional(
+        _pp.CaselessLiteral("linear") | _pp.CaselessLiteral("circular"),
+        default="linear",
+    ).setResultsName("topology")
+    + _pp.Word(_pp.alphas).setResultsName("divcode")
+    + _pp.Optional(
+        _pp.Regex(r"(\d{2})-(\S{3})-(\d{4})").setResultsName("date"),
+        default="19-MAR-1970",
+    ).setResultsName("date")
+)
 
-LocusEntry = (GoodLocus|BrokenLocus1|BrokenLocus2|BrokenLocus3)
+LocusEntry = GoodLocus | BrokenLocus1 | BrokenLocus2 | BrokenLocus3
 
-#===============================================================================
+# ===============================================================================
 # Generic Entry
 
 # this catches everything but the FEATURES and SEQUENCE entries, really should add parsing code for
@@ -73,21 +98,23 @@ LocusEntry = (GoodLocus|BrokenLocus1|BrokenLocus2|BrokenLocus3)
 CapWord = _pp.Word("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 # after titled line, all subsequent lines have to have at least one space in front of them
 # this is how we split up the genbank record
-SpacedLine =  _pp.White(min=1) + _pp.CharsNotIn("\n") + _pp.LineEnd()
-#HeaderLine = CapWord + CharsNotIn("\n") + LineEnd()
-GenericEntry =  _pp.Group(CapWord + _pp.Combine(_pp.CharsNotIn("\n") + _pp.LineEnd() +\
-                             _pp.ZeroOrMore(SpacedLine ))).setResultsName("generics",listAllMatches=True)
+SpacedLine = _pp.White(min=1) + _pp.CharsNotIn("\n") + _pp.LineEnd()
+# HeaderLine = CapWord + CharsNotIn("\n") + LineEnd()
+GenericEntry = _pp.Group(
+    CapWord
+    + _pp.Combine(_pp.CharsNotIn("\n") + _pp.LineEnd() + _pp.ZeroOrMore(SpacedLine))
+).setResultsName("generics", listAllMatches=True)
 
 
-#===============================================================================
+# ===============================================================================
 # Definition Entry
-#SuppressedSpacedLine =  Suppress(White(min=1)) + CharsNotIn("\n") + LineEnd()
-#DefinitionEntry =  Suppress(Literal("DEFINITION")) + Combine(CharsNotIn("\n") + LineEnd() + ZeroOrMore( SuppressedSpacedLine ))
+# SuppressedSpacedLine =  Suppress(White(min=1)) + CharsNotIn("\n") + LineEnd()
+# DefinitionEntry =  Suppress(Literal("DEFINITION")) + Combine(CharsNotIn("\n") + LineEnd() + ZeroOrMore( SuppressedSpacedLine ))
 
-#===============================================================================
+# ===============================================================================
 # GenBank Feature Table Parser
 
-#==== Genbank Location String Parser
+# ==== Genbank Location String Parser
 #
 # a string of slices w. functional modifiers that go at most two levels deep
 # single position is just a number i.e. 23423
@@ -112,161 +139,212 @@ LPAREN = _pp.Suppress("(")
 RPAREN = _pp.Suppress(")")
 SEP = _pp.Suppress(_pp.Literal(".."))
 
-#recognize numbers w. < & > uncertainty specs, then strip the <> chars to make it fixed
-gbIndex = _pp.Word(_pp.nums+"<>").setParseAction(lambda s,l,t: int(t[0].replace("<","").replace(">","")) )
-SimpleSlice=_pp.Group(gbIndex + SEP + gbIndex) | _pp.Group(gbIndex).setParseAction(lambda s,l,t: [[t[0][0],t[0][0]]])
+# recognize numbers w. < & > uncertainty specs, then strip the <> chars to make it fixed
+gbIndex = _pp.Word(_pp.nums + "<>").setParseAction(
+    lambda s, l, t: int(t[0].replace("<", "").replace(">", ""))
+)
+SimpleSlice = _pp.Group(gbIndex + SEP + gbIndex) | _pp.Group(gbIndex).setParseAction(
+    lambda s, l, t: [[t[0][0], t[0][0]]]
+)
 
-#recursive def for nested function syntax:  f( g(), g() )
+# recursive def for nested function syntax:  f( g(), g() )
 complexSlice = _pp.Forward()
-complexSlice << (_pp.Literal("complement") | _pp.Literal("join")) + LPAREN + ( _pp.delimitedList(complexSlice) | _pp.delimitedList(SimpleSlice) ) + RPAREN
-featLocation = _pp.Group( SimpleSlice | complexSlice)
+complexSlice << (_pp.Literal("complement") | _pp.Literal("join")) + LPAREN + (
+    _pp.delimitedList(complexSlice) | _pp.delimitedList(SimpleSlice)
+) + RPAREN
+featLocation = _pp.Group(SimpleSlice | complexSlice)
 
-def parseGBLoc(s,l,t):
+
+def parseGBLoc(s, l, t):
     """retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences """
     strand = 1
-    locationlist=[]
+    locationlist = []
 
-    #see if there are any complement operators
+    # see if there are any complement operators
     for entry in t[0]:
-        if entry=="complement": strand=-1
+        if entry == "complement":
+            strand = -1
 
     for entry in t[0]:
-        if type(entry)!=type("string"):
-            locationlist.append([entry[0],entry[1]])
+        if type(entry) != type("string"):
+            locationlist.append([entry[0], entry[1]])
 
-    #return locationlist and strand spec
-    return [ ['location', locationlist ], ['strand',strand] ]
+    # return locationlist and strand spec
+    return [["location", locationlist], ["strand", strand]]
+
 
 featLocation.setParseAction(parseGBLoc)
 
-#==== Genbank Feature Key-Value Pairs
-def strip_multiline(s,l,t):
-    whitespace=_re.compile("[\n]{1}[ ]+")
-    return whitespace.sub(" ",t[0])
-def toInt(s,l,t):
+# ==== Genbank Feature Key-Value Pairs
+def strip_multiline(s, l, t):
+    whitespace = _re.compile("[\n]{1}[ ]+")
+    return whitespace.sub(" ", t[0])
+
+
+def toInt(s, l, t):
     return int(t[0])
 
+
 # Quoted KeyVal:   /key="value"
-QuoteFeaturekeyval = _pp.Group(_pp.Suppress('/') + _pp.Word(_pp.alphas+_pp.nums+"_-") + _pp.Suppress('=') + _pp.QuotedString('"',multiline=True).setParseAction( strip_multiline ) )
+QuoteFeaturekeyval = _pp.Group(
+    _pp.Suppress("/")
+    + _pp.Word(_pp.alphas + _pp.nums + "_-")
+    + _pp.Suppress("=")
+    + _pp.QuotedString('"', multiline=True).setParseAction(strip_multiline)
+)
 
 # UnQuoted KeyVal: /key=value  (I'm assuming it doesn't do multilines this way? wrong! ApE does store long labels this way! sigh.)
-#NoQuoteFeaturekeyval = Group(Suppress('/') + Word(alphas+nums+"_-") + Suppress('=') + OneOrMore(CharsNotIn("\n")) )
-keyvalspacedline = _pp.White(exact=21)+_pp.CharsNotIn("/")+_pp.OneOrMore(_pp.CharsNotIn("\n"))+_pp.LineEnd()
-NoQuoteFeaturekeyval = _pp.Group(_pp.Suppress('/') + _pp.Word(_pp.alphas+_pp.nums+"_-") + _pp.Suppress('=') + _pp.Combine(_pp.CharsNotIn("\n") + _pp.LineEnd() + _pp.ZeroOrMore( keyvalspacedline )))
+# NoQuoteFeaturekeyval = Group(Suppress('/') + Word(alphas+nums+"_-") + Suppress('=') + OneOrMore(CharsNotIn("\n")) )
+keyvalspacedline = (
+    _pp.White(exact=21)
+    + _pp.CharsNotIn("/")
+    + _pp.OneOrMore(_pp.CharsNotIn("\n"))
+    + _pp.LineEnd()
+)
+NoQuoteFeaturekeyval = _pp.Group(
+    _pp.Suppress("/")
+    + _pp.Word(_pp.alphas + _pp.nums + "_-")
+    + _pp.Suppress("=")
+    + _pp.Combine(
+        _pp.CharsNotIn("\n") + _pp.LineEnd() + _pp.ZeroOrMore(keyvalspacedline)
+    )
+)
 
 # Special Case for Numerical Vals:  /bases=12  OR  /bases="12"
-NumFeaturekeyval = _pp.Group( _pp.Suppress('/') + _pp.Word(_pp.alphas+_pp.nums+"_-") + _pp.Suppress('=') +\
-                         (_pp.Suppress("\"") + _pp.Word(_pp.nums).setParseAction(toInt) + _pp.Suppress("\"") ) | \
-                         (_pp.Word(_pp.nums).setParseAction(toInt) ) \
-                         )
+NumFeaturekeyval = _pp.Group(
+    _pp.Suppress("/")
+    + _pp.Word(_pp.alphas + _pp.nums + "_-")
+    + _pp.Suppress("=")
+    + (_pp.Suppress('"') + _pp.Word(_pp.nums).setParseAction(toInt) + _pp.Suppress('"'))
+    | (_pp.Word(_pp.nums).setParseAction(toInt))
+)
 
 # Key Only KeyVal: /pseudo
 # post-parse convert it into a pair to resemble the structure of the first three cases i.e. [pseudo, True]
-FlagFeaturekeyval = _pp.Group(_pp.Suppress('/') + _pp.Word(_pp.alphas+_pp.nums+"_-")).setParseAction(lambda s,l,t: [[t[0][0],True]] )
+FlagFeaturekeyval = _pp.Group(
+    _pp.Suppress("/") + _pp.Word(_pp.alphas + _pp.nums + "_-")
+).setParseAction(lambda s, l, t: [[t[0][0], True]])
 
-Feature = _pp.Group( _pp.Word(_pp.alphas+_pp.nums+"_-").setParseAction(lambda s,l,t: [ ["type", t[0]] ] ) +\
-                 featLocation.setResultsName("location") +\
-                 _pp.OneOrMore( NumFeaturekeyval | QuoteFeaturekeyval | NoQuoteFeaturekeyval | FlagFeaturekeyval ) \
-                 )
+Feature = _pp.Group(
+    _pp.Word(_pp.alphas + _pp.nums + "_-").setParseAction(
+        lambda s, l, t: [["type", t[0]]]
+    )
+    + featLocation.setResultsName("location")
+    + _pp.OneOrMore(
+        NumFeaturekeyval | QuoteFeaturekeyval | NoQuoteFeaturekeyval | FlagFeaturekeyval
+    )
+)
 
-FeaturesEntry = _pp.Literal("FEATURES") + _pp.Literal("Location/Qualifiers") + _pp.Group(_pp.OneOrMore(Feature)).setResultsName("features")
+FeaturesEntry = (
+    _pp.Literal("FEATURES")
+    + _pp.Literal("Location/Qualifiers")
+    + _pp.Group(_pp.OneOrMore(Feature)).setResultsName("features")
+)
 
-#===============================================================================
+# ===============================================================================
 # GenBank Sequence Parser
 
 # sequence is just a column-spaced big table of dna nucleotides
 # should it recognize full IUPAC alphabet?  NCBI uses n for unknown region
-Sequence = _pp.OneOrMore(_pp.Suppress(_pp.Word(_pp.nums)) + _pp.OneOrMore(_pp.Word("ACGTacgtNn")))
+Sequence = _pp.OneOrMore(
+    _pp.Suppress(_pp.Word(_pp.nums)) + _pp.OneOrMore(_pp.Word("ACGTacgtNn"))
+)
 
 # Group(  ) hides the setResultsName names def'd inside, such that one needs to first access this group and then access the dict of contents inside
-SequenceEntry = _pp.Suppress(_pp.Literal("ORIGIN")) + Sequence.setParseAction(lambda s,l,t: "".join(t) ).setResultsName("sequence")
+SequenceEntry = _pp.Suppress(_pp.Literal("ORIGIN")) + Sequence.setParseAction(
+    lambda s, l, t: "".join(t)
+).setResultsName("sequence")
 
 
-#===============================================================================
+# ===============================================================================
 # Final GenBank Parser
 
-#GB files with multiple records split by "//" sequence at beginning of line
+# GB files with multiple records split by "//" sequence at beginning of line
 GBEnd = _pp.Literal("//")
 
-#Begin w. LOCUS, slurp all entries, then stop at the end!
+# Begin w. LOCUS, slurp all entries, then stop at the end!
 GB = LocusEntry + _pp.OneOrMore(FeaturesEntry | SequenceEntry | GenericEntry) + GBEnd
 
-#NCBI often returns sets of GB files
+# NCBI often returns sets of GB files
 multipleGB = _pp.OneOrMore(_pp.Group(GB))
 
-#===============================================================================
+# ===============================================================================
 # End Genbank Parser
-#===============================================================================
+# ===============================================================================
 
 
-#===============================================================================
+# ===============================================================================
 # Main JSON Conversion Routine
 
+
 def strip_indent(str):
-    whitespace=_re.compile("[\n]{1}(COMMENT){0,1}[ ]+")
-    return whitespace.sub("\n",str)
+    whitespace = _re.compile("[\n]{1}(COMMENT){0,1}[ ]+")
+    return whitespace.sub("\n", str)
+
 
 def concat_dict(dlist):
     """more or less dict(list of string pairs) but merges
     vals with the same keys so no duplicates occur
     """
-    newdict={}
+    newdict = {}
     for e in dlist:
         if e[0] in newdict.keys():
-            newdict[e[0]]=(newdict[e[0]]+strip_indent(e[1]))
+            newdict[e[0]] = newdict[e[0]] + strip_indent(e[1])
         else:
-            newdict[e[0]]=strip_indent(e[1])
+            newdict[e[0]] = strip_indent(e[1])
     return newdict
+
 
 def toJSON(gbkstring):
 
     parsed = multipleGB.parseString(gbkstring)
 
-    jseqlist=[]
+    jseqlist = []
 
     for seq in parsed:
 
-        #for item in seq.asList():
+        # for item in seq.asList():
         #    print(item)
 
+        # import sys;sys.exit(42)
 
-        #import sys;sys.exit(42)
+        # Print to STDOUT some details (useful for long multi-record parses)
+        # print(seq['name'], ":  length:", len(seq['sequence']) , " #features:" , len(seq['features'].asList()))
 
-        #Print to STDOUT some details (useful for long multi-record parses)
-        #print(seq['name'], ":  length:", len(seq['sequence']) , " #features:" , len(seq['features'].asList()))
+        # build JSON object
 
-        #build JSON object
-
-        nl=[]
-        if 'features' in seq:
-            for a in list(map(dict, seq['features'].asList())):
-                dct={}
+        nl = []
+        if "features" in seq:
+            for a in list(map(dict, seq["features"].asList())):
+                dct = {}
                 for key in a:
-                    val=a[key]
-                    #print(key, a[key])
-                    dct[key]=a[key]
+                    val = a[key]
+                    # print(key, a[key])
+                    dct[key] = a[key]
                     if isinstance(val, str):
-                        dct[key]=a[key].strip()
+                        dct[key] = a[key].strip()
                 nl.append(dct)
 
-        #import sys;sys.exit(42)
+        # import sys;sys.exit(42)
 
-        #print(list(map(dict, hej))[2]["codon_start"])
+        # print(list(map(dict, hej))[2]["codon_start"])
 
-        jseq = { "__format__" : "jseq v0.1",
-                 "name"       : seq["name"],
-                 "size"       : seq["size"],
-                 "seqtype"    : seq["seqtype"],
-                 "divcode"    : seq["divcode"],
-                 "date"       : seq["date"],
-                 "topology"   : seq["topology"],
-                 "sequence"   : seq["sequence"],
-                 "features"   : nl,
-                 "annotations" : concat_dict(seq['generics'])
-                 }
+        jseq = {
+            "__format__": "jseq v0.1",
+            "name": seq["name"],
+            "size": seq["size"],
+            "seqtype": seq["seqtype"],
+            "divcode": seq["divcode"],
+            "date": seq["date"],
+            "topology": seq["topology"],
+            "sequence": seq["sequence"],
+            "features": nl,
+            "annotations": concat_dict(seq["generics"]),
+        }
         jseqlist.append(jseq)
 
     return jseqlist
+
 
 def wrapstring(str_, rowstart, rowend, padfirst=True):
     """
@@ -274,61 +352,75 @@ def wrapstring(str_, rowstart, rowend, padfirst=True):
     and padded on the left by rowstart.
     -> if padfirst is false the first line is not padded
     """
-    rowlen  = rowend-rowstart
+    rowlen = rowend - rowstart
     leftpad = rowstart
-    wrappedstr=""
+    wrappedstr = ""
 
-    #no wrapping needed, single line
-    if len(str_)/rowlen < 1:
+    # no wrapping needed, single line
+    if len(str_) / rowlen < 1:
         if padfirst:
-            return leftpad*" "+str_+"\n"
+            return leftpad * " " + str_ + "\n"
         else:
-            return str_+"\n"
+            return str_ + "\n"
 
-    #multiple lines so wrap:
-    for linenum in range(1+int(len(str_)/rowlen)):
-        if linenum==0 and not padfirst:
-            wrappedstr+= str_[linenum*rowlen:(linenum+1)*rowlen]+"\n"
+    # multiple lines so wrap:
+    for linenum in range(1 + int(len(str_) / rowlen)):
+        if linenum == 0 and not padfirst:
+            wrappedstr += str_[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
         else:
-            wrappedstr+=" "*leftpad + str_[linenum*rowlen:(linenum+1)*rowlen]+"\n"
-#    if str_.startswith("/translation="):
-#        print(str_)
-#        print(wrappedstr)
-#        print(".................................")
+            wrappedstr += (
+                " " * leftpad + str_[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
+            )
+    #    if str_.startswith("/translation="):
+    #        print(str_)
+    #        print(wrappedstr)
+    #        print(".................................")
     return wrappedstr
 
-def locstr(locs,strand):
+
+def locstr(locs, strand):
     "genbank formatted location string, assumes no join'd combo of rev and fwd seqs"
     # slice format is like: 1..10,20..30,101..200
-    locstr=",".join(map((lambda x: str(x[0])+".."+str(x[1])), locs))
-    if len(locs)>1:
-        locstr=("join("+locstr+")")
-    if int(strand)==-1:
-        locstr=("complement("+locstr+")")
+    locstr = ",".join(map((lambda x: str(x[0]) + ".." + str(x[1])), locs))
+    if len(locs) > 1:
+        locstr = "join(" + locstr + ")"
+    if int(strand) == -1:
+        locstr = "complement(" + locstr + ")"
     return locstr
+
 
 def originstr(sequence):
     "formats dna sequence as broken, numbered lines ala genbank"
-    wordlen=10
-    cols=6
-    rowlen=wordlen*cols
-    outstr=""
-    for linenum in range( int(len(sequence)/rowlen)+1):
-        pos=linenum*rowlen
-        #position of string for this row, then six blocks of dna
-        outstr+=(" "*9+str(pos+1))[-9:] + " " + \
-           sequence[pos:pos+10]+" "+\
-           sequence[pos+10:pos+20]+" "+\
-           sequence[pos+20:pos+30]+" "+\
-           sequence[pos+30:pos+40]+" "+\
-           sequence[pos+40:pos+50]+" "+\
-           sequence[pos+50:pos+60]+"\n"
+    wordlen = 10
+    cols = 6
+    rowlen = wordlen * cols
+    outstr = ""
+    for linenum in range(int(len(sequence) / rowlen) + 1):
+        pos = linenum * rowlen
+        # position of string for this row, then six blocks of dna
+        outstr += (
+            (" " * 9 + str(pos + 1))[-9:]
+            + " "
+            + sequence[pos : pos + 10]
+            + " "
+            + sequence[pos + 10 : pos + 20]
+            + " "
+            + sequence[pos + 20 : pos + 30]
+            + " "
+            + sequence[pos + 30 : pos + 40]
+            + " "
+            + sequence[pos + 40 : pos + 50]
+            + " "
+            + sequence[pos + 50 : pos + 60]
+            + "\n"
+        )
     return outstr
+
 
 def toGB(jseq):
     "parses json jseq data and prints out ApE compatible genbank"
 
-    #construct the LOCUS header string
+    # construct the LOCUS header string
     #  LOCUS format:
     #    Positions  Contents
     #    ---------  --------
@@ -347,63 +439,75 @@ def toGB(jseq):
     #    67:68      space
     #    68:79      Date, in the form dd-MMM-yyyy (e.g., 15-MAR-1991)
 
-
-    name    = jseq["name"] or "default"
-    size    = jseq["size"] or "100"
+    name = jseq["name"] or "default"
+    size = jseq["size"] or "100"
     seqtype = jseq["seqtype"] or "DNA"
     prefix = ""
     for p in ["ds-", "ss-", "ms-"]:
         a, *b = seqtype.split(p)
         if b:
-            prefix=p
-            seqtype=b.pop()
+            prefix = p
+            seqtype = b.pop()
             break
-    prefix  = prefix or "ds-"
+    prefix = prefix or "ds-"
     topology = jseq["topology"] or "linear"
-    divcode  = jseq["divcode"] or "   "
+    divcode = jseq["divcode"] or "   "
     date = jseq["date"] or "19-MAR-1970"
 
-    locusstr = "LOCUS       {name:<24} {size:>4} bp {prefix}{seqtype:<4}    {topology:<8} {divcode} {date}\n".format(name=name,
-                                                                                                                    size=size,
-                                                                                                                    prefix=prefix,
-                                                                                                                    seqtype=seqtype,
-                                                                                                                    topology=topology,
-                                                                                                                    divcode=divcode,
-                                                                                                                    date=date)
+    locusstr = "LOCUS       {name:<24} {size:>4} bp {prefix}{seqtype:<4}    {topology:<8} {divcode} {date}\n".format(
+        name=name,
+        size=size,
+        prefix=prefix,
+        seqtype=seqtype,
+        topology=topology,
+        divcode=divcode,
+        date=date,
+    )
 
     # All these fields are left empty
-    gbprops="DEFINITION  .\n"+\
-              "ACCESSION   \n"+\
-              "VERSION     \n"+\
-              "SOURCE      .\n"+\
-              "ORGANISM  .\n"+\
-              "COMMENT     \n"+\
-              "COMMENT     ApEinfo:methylated:1\n"+\
-              "FEATURES             Location/Qualifiers\n"
+    gbprops = (
+        "DEFINITION  .\n"
+        + "ACCESSION   \n"
+        + "VERSION     \n"
+        + "SOURCE      .\n"
+        + "ORGANISM  .\n"
+        + "COMMENT     \n"
+        + "COMMENT     ApEinfo:methylated:1\n"
+        + "FEATURES             Location/Qualifiers\n"
+    )
 
-    #build the feature table
-    featuresstr=""
+    # build the feature table
+    featuresstr = ""
     if "features" in jseq:
         for feat in jseq["features"]:
-            fstr= " "*5 + feat["type"] +\
-                  " "*(16-len(feat["type"])) + \
-                  wrapstring(locstr(feat["location"],feat["strand"]),21,80,False)
+            fstr = (
+                " " * 5
+                + feat["type"]
+                + " " * (16 - len(feat["type"]))
+                + wrapstring(locstr(feat["location"], feat["strand"]), 21, 80, False)
+            )
             for k in feat.keys():
-                if k not in ["type","location","strand"]:
-                    #ApE idiosyncrasy: don't wrap val in quotation marks
-                    if k in ["ApEinfo_label","ApEinfo_fwdcolor","ApEinfo_revcolor","label"]:
-                        fstr+=wrapstring("/"+str(k)+"="+str(feat[k]),21,80)
-                    #standard: wrap val in quotes
+                if k not in ["type", "location", "strand"]:
+                    # ApE idiosyncrasy: don't wrap val in quotation marks
+                    if k in [
+                        "ApEinfo_label",
+                        "ApEinfo_fwdcolor",
+                        "ApEinfo_revcolor",
+                        "label",
+                    ]:
+                        fstr += wrapstring("/" + str(k) + "=" + str(feat[k]), 21, 80)
+                    # standard: wrap val in quotes
                     else:
-                        fstr+=wrapstring("/"+str(k)+"="+"\""+str(feat[k])+"\"",21,80)
-            featuresstr+=fstr
+                        fstr += wrapstring(
+                            "/" + str(k) + "=" + '"' + str(feat[k]) + '"', 21, 80
+                        )
+            featuresstr += fstr
 
-    #the spaced, numbered sequence
-    gborigin="ORIGIN\n"+\
-              originstr(jseq["sequence"])+\
-              "//\n"
+    # the spaced, numbered sequence
+    gborigin = "ORIGIN\n" + originstr(jseq["sequence"]) + "//\n"
 
-    return locusstr+gbprops+featuresstr+gborigin
+    return locusstr + gbprops + featuresstr + gborigin
+
 
 def gbtext_clean(gbtext):
     """This function takes a string containing **one** genbank sequence
@@ -476,24 +580,24 @@ def gbtext_clean(gbtext):
     FEATURES             Location/Qualifiers
     ORIGIN
             1 aaa
-    //
-"""
+    //"""
 
-
-    jseqlist=toJSON(gbtext)
+    jseqlist = toJSON(gbtext)
     jseq = jseqlist.pop()
     from collections import namedtuple as _namedtuple
     from pydna._pretty import pretty_str as _pretty_str
+
     Result = _namedtuple("Result", "gbtext jseq")
     result = Result(_pretty_str(toGB(jseq).strip()), jseq)
     return result
 
-    
-if __name__=="__main__":
-    import os as _os
-    cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"]=""
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"]=cached
 
+if __name__ == "__main__":
+    import os as _os
+
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"] = ""
+    import doctest
+
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"] = cached

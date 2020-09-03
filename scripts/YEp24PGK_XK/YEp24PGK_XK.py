@@ -3,7 +3,7 @@
 from pydna import read, parse, pcr, sync, Genbank
 from Bio.Restriction import BglII, BamHI
 
-print '''
+print """
 YEp24PGK
 ========
 
@@ -24,39 +24,39 @@ Xylitol Dehydrogenase and Its Effect on Fermentation of Xylose and
 Lignocellulosic Hydrolysate, Applied and Environmental Microbiology
 67 4249–4255.
 
-'''
+"""
 
 raw_input("press return!\n")
 
 
-gb=Genbank("me@home.org")
+gb = Genbank("me@home.org")
 
 if gb.test():
     xks1_gene = gb.nucleotide("Z72979")
     print "Genbank record Z72979 downloaded from NCBI"
-    YEp24PGK =  gb.nucleotide("KC562906")
+    YEp24PGK = gb.nucleotide("KC562906")
     print "Genbank record KC562906 downloaded from NCBI\n"
 else:
     xks1_gene = read("Z72979.gb")
     print "A local copy of Genbank record Z72979 is used"
-    YEp24PGK  = read("KC562906.gb")
+    YEp24PGK = read("KC562906.gb")
     print "A local copy of Genbank record KC562906 is used\n"
 
 raw_input("press return!\n")
 
-primers='''
+primers = """
 >primer1
 GCGGATCCTCTAGAATGGTTTGTTCAGTAATTCAG
 >primer3
 AGATCTGGATCCTTAGATGAGAGTCTTTTCCAG
-'''
+"""
 primer1, primer2 = parse(primers, ds=False)
 xks1_pcr_product = pcr(primer1, primer2, xks1_gene)
 
 YEp24PGK_bgl = YEp24PGK.cut(BglII).pop()
 stuffer1, xks1_bam, stuffer2 = xks1_pcr_product.cut(BamHI)
 
-YEp24PGK_XK = (YEp24PGK_bgl+xks1_bam.rc()).looped()
+YEp24PGK_XK = (YEp24PGK_bgl + xks1_bam.rc()).looped()
 
 YEp24PGK_XK = YEp24PGK_XK.synced(YEp24PGK)
 
@@ -66,7 +66,7 @@ print "Seguid of YEp24PGK_XK is correct", YEp24PGK_XK.seguid() == "HRVpCEKWcFsKh
 
 YEp24PGK_XK.write("YEp24PGK_XK.gb")
 
-print '''
+print """
 done! The file YEp24PGK_XK.gb was written to the current
 working directory
-'''
+"""

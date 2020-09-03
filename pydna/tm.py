@@ -5,119 +5,131 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-'''This module provide functions for melting temperature calculations.'''
+"""This module provide functions for melting temperature calculations."""
 
 
 import math as _math
 from Bio.SeqUtils import MeltingTemp as _mt
 
-import textwrap   as _textwrap
-from pydna._pretty   import pretty_str       as _pretty_str
+import textwrap as _textwrap
+from pydna._pretty import pretty_str as _pretty_str
 
 
-def tm_default( seq,
-                check=True,
-                strict=True,
-                c_seq=None,
-                shift=0,
-                nn_table=_mt.DNA_NN4,
-                tmm_table=None,
-                imm_table=None,
-                de_table=None,
-                dnac1=250,
-                dnac2=250,
-                selfcomp=False,
-                Na=40,
-                K=0,
-                Tris=75.0,
-                Mg=1.5,
-                dNTPs=0.8,
-                saltcorr=7,
-                func = _mt.Tm_NN):
-    return func(seq,
-                check=check,
-                strict=strict,
-                c_seq=c_seq,
-                shift=shift,
-                nn_table=nn_table,
-                tmm_table=tmm_table,
-                imm_table=imm_table,
-                de_table=de_table,
-                dnac1=dnac1,
-                dnac2=dnac2,
-                selfcomp=selfcomp,
-                Na=Na,
-                K=K,
-                Tris=Tris,
-                Mg=Mg,
-                dNTPs=dNTPs,
-                saltcorr=saltcorr)
+def tm_default(
+    seq,
+    check=True,
+    strict=True,
+    c_seq=None,
+    shift=0,
+    nn_table=_mt.DNA_NN4,
+    tmm_table=None,
+    imm_table=None,
+    de_table=None,
+    dnac1=250,
+    dnac2=250,
+    selfcomp=False,
+    Na=40,
+    K=0,
+    Tris=75.0,
+    Mg=1.5,
+    dNTPs=0.8,
+    saltcorr=7,
+    func=_mt.Tm_NN,
+):
+    return func(
+        seq,
+        check=check,
+        strict=strict,
+        c_seq=c_seq,
+        shift=shift,
+        nn_table=nn_table,
+        tmm_table=tmm_table,
+        imm_table=imm_table,
+        de_table=de_table,
+        dnac1=dnac1,
+        dnac2=dnac2,
+        selfcomp=selfcomp,
+        Na=Na,
+        K=K,
+        Tris=Tris,
+        Mg=Mg,
+        dNTPs=dNTPs,
+        saltcorr=saltcorr,
+    )
 
 
-def tm_dbd( seq,
-            check=True,
-            strict=True,
-            c_seq=None,
-            shift=0,
-            nn_table=_mt.DNA_NN3,
-            tmm_table=None,
-            imm_table=None,
-            de_table=None,
-            dnac1=250,
-            dnac2=250,
-            selfcomp=False,
-            Na=50,
-            K=0,
-            Tris=0,
-            Mg=1.5,
-            dNTPs=0.8,
-            saltcorr=1,
-            func = _mt.Tm_NN):
-    return func(seq,
-                check=check,
-                strict=strict,
-                c_seq=c_seq,
-                shift=shift,
-                nn_table=nn_table,
-                tmm_table=tmm_table,
-                imm_table=imm_table,
-                de_table=de_table,
-                dnac1=dnac1,
-                dnac2=dnac2,
-                selfcomp=selfcomp,
-                Na=Na,
-                K=K,
-                Tris=Tris,
-                Mg=Mg,
-                dNTPs=dNTPs,
-                saltcorr=saltcorr)
+def tm_dbd(
+    seq,
+    check=True,
+    strict=True,
+    c_seq=None,
+    shift=0,
+    nn_table=_mt.DNA_NN3,
+    tmm_table=None,
+    imm_table=None,
+    de_table=None,
+    dnac1=250,
+    dnac2=250,
+    selfcomp=False,
+    Na=50,
+    K=0,
+    Tris=0,
+    Mg=1.5,
+    dNTPs=0.8,
+    saltcorr=1,
+    func=_mt.Tm_NN,
+):
+    return func(
+        seq,
+        check=check,
+        strict=strict,
+        c_seq=c_seq,
+        shift=shift,
+        nn_table=nn_table,
+        tmm_table=tmm_table,
+        imm_table=imm_table,
+        de_table=de_table,
+        dnac1=dnac1,
+        dnac2=dnac2,
+        selfcomp=selfcomp,
+        Na=Na,
+        K=K,
+        Tris=Tris,
+        Mg=Mg,
+        dNTPs=dNTPs,
+        saltcorr=saltcorr,
+    )
 
 
-def tm_product( seq,
-                check=True,
-                strict=True,
-                valueset=7,
-                userset=None,
-                Na=50,
-                K=0,
-                Tris=0,
-                Mg=0,
-                dNTPs=0,
-                saltcorr=0,
-                mismatch=True,
-                func=_mt.Tm_GC):
-    return func(seq,
-                check=check,
-                strict=strict,
-                valueset=valueset,
-                userset=userset,
-                Na=Na,
-                K=K,
-                Tris=Tris,
-                Mg=Mg,
-                dNTPs=dNTPs,
-                saltcorr=saltcorr,
-                mismatch=mismatch)
+def tm_product(
+    seq,
+    check=True,
+    strict=True,
+    valueset=7,
+    userset=None,
+    Na=50,
+    K=0,
+    Tris=0,
+    Mg=0,
+    dNTPs=0,
+    saltcorr=0,
+    mismatch=True,
+    func=_mt.Tm_GC,
+):
+    return func(
+        seq,
+        check=check,
+        strict=strict,
+        valueset=valueset,
+        userset=userset,
+        Na=Na,
+        K=K,
+        Tris=Tris,
+        Mg=Mg,
+        dNTPs=dNTPs,
+        saltcorr=saltcorr,
+        mismatch=mismatch,
+    )
 
 
 def ta_default(fp, rp, seq, tm=tm_default, tm_product=tm_product):
@@ -127,78 +139,90 @@ def ta_default(fp, rp, seq, tm=tm_default, tm_product=tm_product):
     # http://www.ncbi.nlm.nih.gov/pubmed/2243783
     # The formula described uses the length and GC content of the product and
     # salt concentration (monovalent cations)
-    return 0.3*min((tm(fp),tm(rp)))+0.7*tm_product(seq)-14.9
+    return 0.3 * min((tm(fp), tm(rp))) + 0.7 * tm_product(seq) - 14.9
 
 
 def ta_dbd(fp, rp, seq, tm=tm_dbd, tm_product=None):
-    return min((tm(fp),tm(rp)))+3
+    return min((tm(fp), tm(rp))) + 3
 
 
-def program(amplicon, tm = tm_default, ta = ta_default):
+def program(amplicon, tm=tm_default, ta=ta_default):
 
-    r'''Returns a string containing a text representation of a suggested
-   PCR program using Taq or similar polymerase.
+    r"""Returns a string containing a text representation of a suggested
+    PCR program using Taq or similar polymerase.
 
-   ::
+    ::
 
-    |95°C|95°C               |    |tmf:59.5
-    |____|_____          72°C|72°C|tmr:59.7
-    |5min|30s  \ 59.1°C _____|____|30s/kb
-    |    |      \______/ 0:32|5min|GC 51%
-    |    |       30s         |    |1051bp
+     |95°C|95°C               |    |tmf:59.5
+     |____|_____          72°C|72°C|tmr:59.7
+     |5min|30s  \ 59.1°C _____|____|30s/kb
+     |    |      \______/ 0:32|5min|GC 51%
+     |    |       30s         |    |1051bp
 
-   '''
-
+    """
 
     # Taq polymerase extension rate is set to 30 nt/s
     # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
     taq_extension_rate = 30  # seconds/kB PCR product length
-    extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000) # seconds
+    extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000)  # seconds
 
-    f=_textwrap.dedent(    r'''
+    f = _textwrap.dedent(
+        r"""
                             |95°C|95°C               |    |tmf:{tmf:.1f}
                             |____|_____          72°C|72°C|tmr:{tmr:.1f}
                             |5min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
                             |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
                             |    |       30s         |    |{size}bp
-                            '''[1:-1].format(rate = taq_extension_rate,
-                                    size= len(amplicon.seq),
-                                    ta=round(ta(amplicon.forward_primer.footprint,amplicon.reverse_primer.footprint,amplicon.seq),1),
-                                    tmf=tm(amplicon.forward_primer.footprint),
-                                    tmr=tm(amplicon.reverse_primer.footprint),
-                                    GC_prod= int(amplicon.gc()),
-                                    *map(int,divmod(extension_time_taq,60)))) 
-                                                                                            
-                                                                                      
+                            """[
+            1:-1
+        ].format(
+            rate=taq_extension_rate,
+            size=len(amplicon.seq),
+            ta=round(
+                ta(
+                    amplicon.forward_primer.footprint,
+                    amplicon.reverse_primer.footprint,
+                    amplicon.seq,
+                ),
+                1,
+            ),
+            tmf=tm(amplicon.forward_primer.footprint),
+            tmr=tm(amplicon.reverse_primer.footprint),
+            GC_prod=int(amplicon.gc()),
+            *map(int, divmod(extension_time_taq, 60)),
+        )
+    )
+
     return _pretty_str(f)
 
 
 taq_program = program
 
 
-def dbd_program(amplicon, tm = tm_dbd, ta = ta_dbd):
-    r'''Returns a string containing a text representation of a suggested
-   PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.
+def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
+    r"""Returns a string containing a text representation of a suggested
+    PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.
 
-   ::
+    ::
 
-    |98°C|98°C               |    |tmf:53.8
-    |____|_____          72°C|72°C|tmr:54.8
-    |30s |10s  \ 57.0°C _____|____|15s/kb
-    |    |      \______/ 0:15|5min|GC 51%
-    |    |       10s         |    |1051bp
-    
-    
-    |98°C|98°C      |    |tmf:82.5
-    |____|____      |    |tmr:84.4
-    |30s |10s \ 72°C|72°C|15s/kb
-    |    |     \____|____|GC 52%
-    |    |      3:45|5min|15058bp   
+     |98°C|98°C               |    |tmf:53.8
+     |____|_____          72°C|72°C|tmr:54.8
+     |30s |10s  \ 57.0°C _____|____|15s/kb
+     |    |      \______/ 0:15|5min|GC 51%
+     |    |       10s         |    |1051bp
 
-   '''
-    PfuSso7d_extension_rate = 15                #seconds/kB PCR product
-    extension_time_PfuSso7d = int(PfuSso7d_extension_rate * len(amplicon) / 1000)  # seconds
 
+     |98°C|98°C      |    |tmf:82.5
+     |____|____      |    |tmr:84.4
+     |30s |10s \ 72°C|72°C|15s/kb
+     |    |     \____|____|GC 52%
+     |    |      3:45|5min|15058bp
+
+    """
+    PfuSso7d_extension_rate = 15  # seconds/kB PCR product
+    extension_time_PfuSso7d = int(
+        PfuSso7d_extension_rate * len(amplicon) / 1000
+    )  # seconds
 
     # The program returned is eaither a two step or three step progrem
     # This depends on the tm and length of the primers in the
@@ -206,59 +230,74 @@ def dbd_program(amplicon, tm = tm_dbd, ta = ta_dbd):
 
     # Ta calculation for enzymes with dsDNA binding domains like phusion or Pfu-Sso7d
     # https://www.finnzymes.fi/tm_determination.html
-    
 
-    tmf=tm(amplicon.forward_primer.footprint)
-    tmr=tm(amplicon.reverse_primer.footprint)
+    tmf = tm(amplicon.forward_primer.footprint)
+    tmr = tm(amplicon.reverse_primer.footprint)
 
-    if (tmf>=69.0 and tmr>=69.0):
-        
-        f=_textwrap.dedent(    r'''
+    if tmf >= 69.0 and tmr >= 69.0:
+
+        f = _textwrap.dedent(
+            r"""
                                 |98°C|98°C      |    |tmf:{tmf:.1f}
                                 |____|____      |    |tmr:{tmr:.1f}
                                 |30s |10s \ 72°C|72°C|{rate}s/kb
                                 |    |     \____|____|GC {GC_prod}%
                                 |    |     {0:2}:{1:2}|5min|{size}bp
-                                '''[1:-1].format(rate=PfuSso7d_extension_rate,
-                                                 tmf=tmf,
-                                                 tmr=tmr,
-                                                 GC_prod=int(amplicon.gc()),
-                                                 size=len(amplicon.seq),
-                                                 *map(int,divmod(extension_time_PfuSso7d,60)),))   
+                                """[
+                1:-1
+            ].format(
+                rate=PfuSso7d_extension_rate,
+                tmf=tmf,
+                tmr=tmr,
+                GC_prod=int(amplicon.gc()),
+                size=len(amplicon.seq),
+                *map(int, divmod(extension_time_PfuSso7d, 60)),
+            )
+        )
     else:
-        f=_textwrap.dedent(    r'''
+        f = _textwrap.dedent(
+            r"""
                                 |98°C|98°C               |    |tmf:{tmf:.1f}
                                 |____|_____          72°C|72°C|tmr:{tmr:.1f}
                                 |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb
                                 |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
                                 |    |       10s         |    |{size}bp
-                                '''[1:-1].format(rate = PfuSso7d_extension_rate,
-                                                  size= len(amplicon.seq),
-                                                  ta=round(ta(amplicon.forward_primer.footprint,amplicon.reverse_primer.footprint,amplicon.seq),1),
-                                                  tmf=tmf,
-                                                  tmr=tmr,
-                                                  GC_prod=int(amplicon.gc()),
-                                                  *map(int,divmod(extension_time_PfuSso7d,60)),))  
+                                """[
+                1:-1
+            ].format(
+                rate=PfuSso7d_extension_rate,
+                size=len(amplicon.seq),
+                ta=round(
+                    ta(
+                        amplicon.forward_primer.footprint,
+                        amplicon.reverse_primer.footprint,
+                        amplicon.seq,
+                    ),
+                    1,
+                ),
+                tmf=tmf,
+                tmr=tmr,
+                GC_prod=int(amplicon.gc()),
+                *map(int, divmod(extension_time_PfuSso7d, 60)),
+            )
+        )
 
-
-
-    
     return _pretty_str(f)
 
 
 pfu_sso7d_program = dbd_program
 
 
-def Q5(primer:str,*args,**kwargs):
-    '''For Q5 Ta they take the lower of the two Tms and add 1C 
-    (up to 72C). For Phusion they take the lower of the two 
-    and add 3C (up to 72C). 
-    '''
+def Q5(primer: str, *args, **kwargs):
+    """For Q5 Ta they take the lower of the two Tms and add 1C
+    (up to 72C). For Phusion they take the lower of the two
+    and add 3C (up to 72C).
+    """
     raise NotImplementedError
 
 
-def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
-    '''Returns the tm for a primer using a formula adapted to polymerases
+def tmbresluc(primer: str, *args, primerc=500.0, saltc=50, **kwargs):
+    """Returns the tm for a primer using a formula adapted to polymerases
     with a DNA binding domain, such as the Phusion polymerase.
 
     Parameters
@@ -281,33 +320,38 @@ def tmbresluc(primer:str, *args, primerc=500.0, saltc=50, **kwargs):
     -------
     tm : float
         the tm of the primer
-        
-    '''
+
+    """
 
     from . import _thermodynamic_data
 
-    saltc = float(saltc)/1000
-    pri  = primerc/1E9
+    saltc = float(saltc) / 1000
+    pri = primerc / 1e9
     dS = -12.4
     dH = -3400
 
-    STR = primer.lower();
+    STR = primer.lower()
 
-    for i in range(len(STR)-1):
+    for i in range(len(STR) - 1):
         n1 = ord(STR[i])
-        n2 = ord(STR[i+1])
+        n2 = ord(STR[i + 1])
         dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
         dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
 
-    tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
+    tm = (
+        dH / (1.9872 * _math.log(pri / 1600) + dS)
+        + (16.6 * _math.log(saltc)) / _math.log(10)
+    ) - 273.15
 
-    return tm 
- 
+    return tm
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import os as _os
+
     cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"]=""
+    _os.environ["pydna_cached_funcs"] = ""
     import doctest
+
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"]=cached
+    _os.environ["pydna_cached_funcs"] = cached

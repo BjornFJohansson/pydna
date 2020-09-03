@@ -4,70 +4,73 @@
 import pytest
 from unittest import mock
 
+
 def test_eq():
 
-    from pydna.dseqrecord import Dseqrecord    
-    
+    from pydna.dseqrecord import Dseqrecord
+
     from pydna.utils import eq
     from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord
 
-    assert   eq( "AAA" ,"TTT", linear   = True )
-    assert  eq( "AAA" ,"TTT", linear   = False)
+    assert eq("AAA", "TTT", linear=True)
+    assert eq("AAA", "TTT", linear=False)
 
-    assert  eq( "aAA" ,"TtT", linear   = True )
-    assert  eq( "AAa" ,"TtT", linear   = False)
+    assert eq("aAA", "TtT", linear=True)
+    assert eq("AAa", "TtT", linear=False)
 
+    assert eq("ATA", "AAT", circular=True)
+    assert not eq("ATA", "AAT", circular=False)
+    assert eq("AAA", "AAA", linear=True)
+    assert eq("AAA", "AAA", linear=False)
 
-    assert  eq( "ATA" ,"AAT", circular = True )
-    assert not eq( "ATA" ,"AAT", circular = False)
-    assert  eq( "AAA" ,"AAA", linear   = True ) 
-    assert  eq( "AAA" ,"AAA", linear   = False) 
+    assert eq("ATA", Seq("AAT"), circular=True)
+    assert not eq("ATA", Seq("AAT"), circular=False)
+    assert eq("AAA", Seq("AAA"), linear=True)
+    assert eq("AAA", Seq("AAA"), linear=False)
 
-    assert  eq( "ATA" ,Seq("AAT"), circular = True ) 
-    assert not eq( "ATA" ,Seq("AAT"), circular = False) 
-    assert  eq( "AAA" ,Seq("AAA"), linear   = True ) 
-    assert  eq( "AAA" ,Seq("AAA"), linear   = False) 
+    assert eq("ATA", SeqRecord("AAT"), circular=True)
+    assert not eq("ATA", SeqRecord("AAT"), circular=False)
+    assert eq("AAA", SeqRecord("AAA"), linear=True)
+    assert eq("AAA", SeqRecord("AAA"), linear=False)
 
-    assert  eq( "ATA" ,SeqRecord("AAT"), circular = True ) 
-    assert not eq( "ATA" ,SeqRecord("AAT"), circular = False)
-    assert  eq( "AAA" ,SeqRecord("AAA"), linear   = True ) 
-    assert  eq( "AAA" ,SeqRecord("AAA"), linear   = False) 
+    assert eq("ATA", Dseqrecord("AAT"), circular=True)
+    assert not eq("ATA", Dseqrecord("AAT"), circular=False)
+    assert eq("AAA", Dseqrecord("AAA"), linear=True)
+    assert eq("AAA", Dseqrecord("AAA"), linear=False)
 
-    assert  eq( "ATA" ,Dseqrecord("AAT"), circular = True ) 
-    assert not eq( "ATA" ,Dseqrecord("AAT"), circular = False) 
-    assert  eq( "AAA" ,Dseqrecord("AAA"), linear   = True ) 
-    assert  eq( "AAA" ,Dseqrecord("AAA"), linear   = False) 
+    assert eq(Seq("ATA"), SeqRecord("AAT"), circular=True)
+    assert not eq(Seq("ATA"), SeqRecord("AAT"), circular=False)
+    assert eq(Seq("AAA"), SeqRecord("AAA"), linear=True)
+    assert eq(Seq("AAA"), SeqRecord("AAA"), linear=False)
 
-    assert  eq( Seq("ATA") ,SeqRecord("AAT"), circular = True )
-    assert not eq( Seq("ATA") ,SeqRecord("AAT"), circular = False)
-    assert  eq( Seq("AAA") ,SeqRecord("AAA"), linear   = True )
-    assert  eq( Seq("AAA") ,SeqRecord("AAA"), linear   = False)
+    assert eq(Seq("ATA"), Dseqrecord("AAT"), circular=True)
+    assert not eq(Seq("ATA"), Dseqrecord("AAT"), circular=False)
+    assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=True)
+    assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=False)
 
-    assert  eq( Seq("ATA") ,Dseqrecord("AAT"), circular = True )
-    assert not eq( Seq("ATA") ,Dseqrecord("AAT"), circular = False)
-    assert  eq( Seq("AAA") ,Dseqrecord("AAA"), linear   = True ) 
-    assert  eq( Seq("AAA") ,Dseqrecord("AAA"), linear   = False) 
+    assert eq(Dseqrecord("AAA", circular=False), Dseqrecord("AAA", circular=False))
+    assert eq(Dseqrecord("AAA", circular=True), Dseqrecord("AAA", circular=True))
+    assert not eq(Dseqrecord("ATA", circular=False), Dseqrecord("AAT", circular=False))
+    assert eq(Dseqrecord("ATA", circular=True), Dseqrecord("AAT", circular=True))
 
-    assert  eq( Dseqrecord("AAA",circular=False) ,Dseqrecord("AAA",circular=False)) 
-    assert  eq( Dseqrecord("AAA",circular=True)  ,Dseqrecord("AAA",circular=True))   
-    assert not eq( Dseqrecord("ATA",circular=False) ,Dseqrecord("AAT",circular=False)) 
-    assert  eq( Dseqrecord("ATA",circular=True)  ,Dseqrecord("AAT",circular=True)) 
-    
     with pytest.raises(ValueError):
-        eq(Dseqrecord("ATA",circular=True), Dseqrecord("ATA",circular=False))
-    
-    assert not eq(Dseqrecord("ATA",circular=True), Dseqrecord("ATAA",circular=True))
-                      
-    assert eq(Dseqrecord("ATA"), Dseqrecord("ATA"), circular=True)    
-    assert not eq(Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True) 
-    assert not eq(Dseqrecord("ATA"), Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True) 
+        eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATA", circular=False))
 
-#def test_shift_origin():
+    assert not eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATAA", circular=True))
+
+    assert eq(Dseqrecord("ATA"), Dseqrecord("ATA"), circular=True)
+    assert not eq(Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True)
+    assert not eq(
+        Dseqrecord("ATA"), Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True
+    )
+
+
+# def test_shift_origin():
 #    from pydna.readers import read
 #    from pydna.dseqrecord import Dseqrecord
-#    
-#    
+#
+#
 #    from pydna.utils import shift_origin, eq
 #    from Bio.Seq import Seq
 #    from Bio.SeqRecord import SeqRecord
@@ -85,8 +88,8 @@ def test_eq():
 #    #    pCAPs_b = shift_origin(pCAPs, 20000)
 
 
-#def test_copy_features():
-#    from pydna.readers import read    
+# def test_copy_features():
+#    from pydna.readers import read
 #    from pydna.utils import seguid, copy_features
 #
 #    a=read("pCAPs.gb")
@@ -106,8 +109,8 @@ def test_eq():
 #    for sh in [1,2,3,3127,3128,3129]:
 #        newb = b[sh:]+b[:sh]
 #        copy_features(a, newb)
-#        
-#        
+#
+#
 #        x = sorted([str(f.extract(a).seq).lower() for f in a.features if len(f)>10],key=len)
 #        y = sorted([str(f.extract(newb).seq).lower() for f in newb.features],key=len)
 #        assert x==y
@@ -158,12 +161,20 @@ def test_eq():
 
 def test_cseguid():
     from pydna.utils import cseguid
-    x="tcgcgcgtttcggtgatgacggtgaaaacctctgacacatgcagctcccggagacggtcacagcttgtctgtaagcggatgccgggagcagacaagcccgtcagggcgcgtcagcgggtgttggcgggtgtcggggctggcttaactatgcggcatcagagcagattgtactgagagtgcaccatatgcggtgtgaaataccgcacagatgcgtaaggagaaaataccgcatcaggcgccattcgccattcaggctgcgcaactgttgggaagggcgatcggtgcgggcctcttcgctattacgccagctggcgaaagggggatgtgctgcaaggcgattaagttgggtaacgccagggttttcccagtcacgacgttgtaaaacgacggccagtgaattcgagctcggtacccgggGATCTATGAATATGGATCCGACTTACTGCAGGAATTCAAGCTACTGTTAGAgatcctctagagtcgacctgcaggcatgcaagcttggcgtaatcatggtcatagctgtttcctgtgtgaaattgttatccgctcacaattccacacaacatacgagccggaagcataaagtgtaaagcctggggtgcctaatgagtgagctaactcacattaattgcgttgcgctcactgcccgctttccagtcgggaaacctgtcgtgccagctgcattaatgaatcggccaacgcgcggggagaggcggtttgcgtattgggcgctcttccgcttcctcgctcactgactcgctgcgctcggtcgttcggctgcggcgagcggtatcagctcactcaaaggcggtaatacggttatccacagaatcaggggataacgcaggaaagaacatgtgagcaaaaggccagcaaaaggccaggaaccgtaaaaaggccgcgttgctggcgtttttccataggctccgcccccctgacgagcatcacaaaaatcgacgctcaagtcagaggtggcgaaacccgacaggactataaagataccaggcgtttccccctggaagctccctcgtgcgctctcctgttccgaccctgccgcttaccggatacctgtccgcctttctcccttcgggaagcgtggcgctttctcatagctcacgctgtaggtatctcagttcggtgtaggtcgttcgctccaagctgggctgtgtgcacgaaccccccgttcagcccgaccgctgcgccttatccggtaactatcgtcttgagtccaacccggtaagacacgacttatcgccactggcagcagccactggtaacaggattagcagagcgaggtatgtaggcggtgctacagagttcttgaagtggtggcctaactacggctacactagaagaacagtatttggtatctgcgctctgctgaagccagttaccttcggaaaaagagttggtagctcttgatccggcaaacaaaccaccgctggtagcggtggtttttttgtttgcaagcagcagattacgcgcagaaaaaaaggatctcaagaagatcctttgatcttttctacggggtctgacgctcagtggaacgaaaactcacgttaagggattttggtcatgagattatcaaaaaggatcttcacctagatccttttaaattaaaaatgaagttttaaatcaatctaaagtatatatgagtaaacttggtctgacagttaccaatgcttaatcagtgaggcacctatctcagcgatctgtctatttcgttcatccatagttgcctgactccccgtcgtgtagataactacgatacgggagggcttaccatctggccccagtgctgcaatgataccgcgagacccacgctcaccggctccagatttatcagcaataaaccagccagccggaagggccgagcgcagaagtggtcctgcaactttatccgcctccatccagtctattaattgttgccgggaagctagagtaagtagttcgccagttaatagtttgcgcaacgttgttgccattgctacaggcatcgtggtgtcacgctcgtcgtttggtatggcttcattcagctccggttcccaacgatcaaggcgagttacatgatcccccatgttgtgcaaaaaagcggttagctccttcggtcctccgatcgttgtcagaagtaagttggccgcagtgttatcactcatggttatggcagcactgcataattctcttactgtcatgccatccgtaagatgcttttctgtgactggtgagtactcaaccaagtcattctgagaatagtgtatgcggcgaccgagttgctcttgcccggcgtcaatacgggataataccgcgccacatagcagaactttaaaagtgctcatcattggaaaacgttcttcggggcgaaaactctcaaggatcttaccgctgttgagatccagttcgatgtaacccactcgtgcacccaactgatcttcagcatcttttactttcaccagcgtttctgggtgagcaaaaacaggaaggcaaaatgccgcaaaaaagggaataagggcgacacggaaatgttgaatactcatactcttcctttttcaatattattgaagcatttatcagggttattgtctcatgagcggatacatatttgaatgtatttagaaaaataaacaaataggggttccgcgcacatttccccgaaaagtgccacctgacgtctaagaaaccattattatcatgacattaacctataaaaataggcgtatcacgaggccctttcgtc"
-    assert cseguid(x) == cseguid(x.upper()) == cseguid(x.lower()) == 'JgiKgBksd2v3q99NStKLepoQCm8'
-    from Bio.SeqUtils.CheckSum  import seguid as base64_seguid
+
+    x = "tcgcgcgtttcggtgatgacggtgaaaacctctgacacatgcagctcccggagacggtcacagcttgtctgtaagcggatgccgggagcagacaagcccgtcagggcgcgtcagcgggtgttggcgggtgtcggggctggcttaactatgcggcatcagagcagattgtactgagagtgcaccatatgcggtgtgaaataccgcacagatgcgtaaggagaaaataccgcatcaggcgccattcgccattcaggctgcgcaactgttgggaagggcgatcggtgcgggcctcttcgctattacgccagctggcgaaagggggatgtgctgcaaggcgattaagttgggtaacgccagggttttcccagtcacgacgttgtaaaacgacggccagtgaattcgagctcggtacccgggGATCTATGAATATGGATCCGACTTACTGCAGGAATTCAAGCTACTGTTAGAgatcctctagagtcgacctgcaggcatgcaagcttggcgtaatcatggtcatagctgtttcctgtgtgaaattgttatccgctcacaattccacacaacatacgagccggaagcataaagtgtaaagcctggggtgcctaatgagtgagctaactcacattaattgcgttgcgctcactgcccgctttccagtcgggaaacctgtcgtgccagctgcattaatgaatcggccaacgcgcggggagaggcggtttgcgtattgggcgctcttccgcttcctcgctcactgactcgctgcgctcggtcgttcggctgcggcgagcggtatcagctcactcaaaggcggtaatacggttatccacagaatcaggggataacgcaggaaagaacatgtgagcaaaaggccagcaaaaggccaggaaccgtaaaaaggccgcgttgctggcgtttttccataggctccgcccccctgacgagcatcacaaaaatcgacgctcaagtcagaggtggcgaaacccgacaggactataaagataccaggcgtttccccctggaagctccctcgtgcgctctcctgttccgaccctgccgcttaccggatacctgtccgcctttctcccttcgggaagcgtggcgctttctcatagctcacgctgtaggtatctcagttcggtgtaggtcgttcgctccaagctgggctgtgtgcacgaaccccccgttcagcccgaccgctgcgccttatccggtaactatcgtcttgagtccaacccggtaagacacgacttatcgccactggcagcagccactggtaacaggattagcagagcgaggtatgtaggcggtgctacagagttcttgaagtggtggcctaactacggctacactagaagaacagtatttggtatctgcgctctgctgaagccagttaccttcggaaaaagagttggtagctcttgatccggcaaacaaaccaccgctggtagcggtggtttttttgtttgcaagcagcagattacgcgcagaaaaaaaggatctcaagaagatcctttgatcttttctacggggtctgacgctcagtggaacgaaaactcacgttaagggattttggtcatgagattatcaaaaaggatcttcacctagatccttttaaattaaaaatgaagttttaaatcaatctaaagtatatatgagtaaacttggtctgacagttaccaatgcttaatcagtgaggcacctatctcagcgatctgtctatttcgttcatccatagttgcctgactccccgtcgtgtagataactacgatacgggagggcttaccatctggccccagtgctgcaatgataccgcgagacccacgctcaccggctccagatttatcagcaataaaccagccagccggaagggccgagcgcagaagtggtcctgcaactttatccgcctccatccagtctattaattgttgccgggaagctagagtaagtagttcgccagttaatagtttgcgcaacgttgttgccattgctacaggcatcgtggtgtcacgctcgtcgtttggtatggcttcattcagctccggttcccaacgatcaaggcgagttacatgatcccccatgttgtgcaaaaaagcggttagctccttcggtcctccgatcgttgtcagaagtaagttggccgcagtgttatcactcatggttatggcagcactgcataattctcttactgtcatgccatccgtaagatgcttttctgtgactggtgagtactcaaccaagtcattctgagaatagtgtatgcggcgaccgagttgctcttgcccggcgtcaatacgggataataccgcgccacatagcagaactttaaaagtgctcatcattggaaaacgttcttcggggcgaaaactctcaaggatcttaccgctgttgagatccagttcgatgtaacccactcgtgcacccaactgatcttcagcatcttttactttcaccagcgtttctgggtgagcaaaaacaggaaggcaaaatgccgcaaaaaagggaataagggcgacacggaaatgttgaatactcatactcttcctttttcaatattattgaagcatttatcagggttattgtctcatgagcggatacatatttgaatgtatttagaaaaataaacaaataggggttccgcgcacatttccccgaaaagtgccacctgacgtctaagaaaccattattatcatgacattaacctataaaaataggcgtatcacgaggccctttcgtc"
+    assert (
+        cseguid(x)
+        == cseguid(x.upper())
+        == cseguid(x.lower())
+        == "JgiKgBksd2v3q99NStKLepoQCm8"
+    )
+    from Bio.SeqUtils.CheckSum import seguid as base64_seguid
+
 
 def test_smallest_rotation():
     from pydna.utils import SmallestRotation as sr
+
     assert sr("tttaaa") == "aaattt"
 
 
@@ -171,59 +182,58 @@ def test_memorize(monkeypatch):
     import pytest
     from unittest import mock
 
-    from pydna.utils  import memorize as _memorize
-    
+    from pydna.utils import memorize as _memorize
+
     @_memorize("mf")
-    def mf(*args, **kwargs): 
+    def mf(*args, **kwargs):
         return args, kwargs
 
-    import base64    as _base64
-    import pickle    as _pickle
-    import hashlib   as _hashlib
-    
-    args=(1,)
-    kwargs = {"kw":1}
-    
+    import base64 as _base64
+    import pickle as _pickle
+    import hashlib as _hashlib
+
+    args = (1,)
+    kwargs = {"kw": 1}
+
     dump = _pickle.dumps((args, kwargs))
-    
+
     hash_ = _hashlib.sha1(dump).digest()
-               
+
     bkey = _base64.urlsafe_b64encode(hash_)
-    
+
     key = bkey.decode("ascii")
-    
-    assert key == '6pHTTwgXP8xcXoEMEzdKSzN6EeM=' or 'ux_W9TiWkWBAkQD_FgZTO-pXuYk='
-    
+
+    assert key == "6pHTTwgXP8xcXoEMEzdKSzN6EeM=" or "ux_W9TiWkWBAkQD_FgZTO-pXuYk="
+
     class Fakedict(dict):
-        
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-        
+
         def close(self):
             pass
-    
+
     cache = Fakedict()
     cache[key] = "saved!"
     mockshelve_open = mock.MagicMock()
     mockshelve_open.return_value = cache
 
-    monkeypatch.setenv("pydna_cached_funcs", "mf")     
-    monkeypatch.setattr("pydna.utils._shelve.open", mockshelve_open)
-    
     monkeypatch.setenv("pydna_cached_funcs", "mf")
-    
-    assert mf(1, kw=1) == "saved!"
-    
-    cache[key] = ((1,), {'kw': 1})
-    
-    assert mf(1, kw=1) == ((1,), {'kw': 1})
-    
-    assert mf(2, kw=2) == ((2,), {'kw': 2})
-    
-    monkeypatch.setenv("pydna_cached_funcs", "")
-    
-    assert mf(1, kw=1) == ((1,), {'kw': 1})
-    
+    monkeypatch.setattr("pydna.utils._shelve.open", mockshelve_open)
 
-if __name__ == '__main__':
-    pytest.main([__file__, "-vv", "-s", "--cov=pydna","--cov-report=html"])
+    monkeypatch.setenv("pydna_cached_funcs", "mf")
+
+    assert mf(1, kw=1) == "saved!"
+
+    cache[key] = ((1,), {"kw": 1})
+
+    assert mf(1, kw=1) == ((1,), {"kw": 1})
+
+    assert mf(2, kw=2) == ((2,), {"kw": 2})
+
+    monkeypatch.setenv("pydna_cached_funcs", "")
+
+    assert mf(1, kw=1) == ((1,), {"kw": 1})
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])

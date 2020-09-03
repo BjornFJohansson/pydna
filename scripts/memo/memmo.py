@@ -1,24 +1,30 @@
 def deco(func):
     def __init__(self, bird):
         self.bird = bird
+
     def inner(*args):
-        print('DECORATED: args={}'.format(args))
+        print("DECORATED: args={}".format(args))
         func(*args)
+
     return inner
+
 
 class Class:
     def __init__(self):
-        pass    
+        pass
+
     @deco("and")
-    def method(self, param): 
-        print('PARAM is {}'.format(param))
+    def method(self, param):
+        print("PARAM is {}".format(param))
+
 
 @deco("anka")
-def funk(a, b, c): 
-    print('{} {} {}'.format(a, b, c))
+def funk(a, b, c):
+    print("{} {} {}".format(a, b, c))
 
-x=Class()
 
-x.method('X')
+x = Class()
+
+x.method("X")
 
 funk(1, 2, 3)

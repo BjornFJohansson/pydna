@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
+"""
 test cut
-'''
+"""
 import pytest
 
+
 def test_cut_feat():
-    from pydna.readers       import read
-    from pydna.amplify       import pcr
-    
-    from pydna.design        import primer_design
-    from pydna.dseqrecord    import Dseqrecord
-    
+    from pydna.readers import read
+    from pydna.amplify import pcr
+
+    from pydna.design import primer_design
+    from pydna.dseqrecord import Dseqrecord
+
     from Bio.Restriction import EcoRI
-    
-    puc19 = read('pUC19_MarkBudde.gb')
+
+    puc19 = read("pUC19_MarkBudde.gb")
     assert len(puc19.features) == 19
     puc_lin = puc19[:]
     assert len(puc_lin.features) == 19
@@ -32,5 +33,6 @@ def test_cut_feat():
     pcrProdDseqrecord = amplicon_to_dseqrecord(pcrProd)
     assert len(pcrProdDseqrecord.cut(EcoRI)[1].features) == 16
 
-if __name__ == '__main__':
-    pytest.cmdline.main([__file__, "-v", "-s"]) 
+
+if __name__ == "__main__":
+    pytest.cmdline.main([__file__, "-v", "-s"])

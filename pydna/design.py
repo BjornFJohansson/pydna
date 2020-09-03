@@ -4,7 +4,7 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-'''This module contain functions for primer design for various purposes. 
+"""This module contain functions for primer design for various purposes. 
 
 - :func:primer_design for designing primers for a sequence or a matching primer for an existing primer. Returns an :class:`Amplicon` object (same as the :mod:`amplify` module returns).
 
@@ -12,48 +12,45 @@
 
 - :func:circular_assembly_fragments Adds tails to primers for a circular assembly through homologous recombination or Gibson assembly.
 
-'''
+"""
 
-import math                                       as _math
-import os                                         as _os
-import copy                                       as _copy
+import math as _math
+import os as _os
+import copy as _copy
 
-from pydna.amplify import Anneal                  as _Anneal
-from pydna.amplify import pcr                     as _pcr
-from pydna.dseqrecord import Dseqrecord           as _Dseqrecord
-from pydna.primer    import Primer                as _Primer
-import logging    as _logging
-_module_logger = _logging.getLogger("pydna."+__name__)
+from pydna.amplify import Anneal as _Anneal
+from pydna.amplify import pcr as _pcr
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+from pydna.primer import Primer as _Primer
+import logging as _logging
 
-from pydna.tm                  import tm_default   as _tm_default
+_module_logger = _logging.getLogger("pydna." + __name__)
+
+from pydna.tm import tm_default as _tm_default
 
 
-def primer_design( template,
-                   fp=None,
-                   rp=None,
-                   limit=13,
-                   target_tm=55.0,
-                   tm_func=_tm_default,                 
-                   **kwargs):
+def primer_design(
+    template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=_tm_default, **kwargs
+):
 
-    '''This function designs a forward primer and a reverse primer for PCR amplification 
+    """This function designs a forward primer and a reverse primer for PCR amplification
     of a given template sequence.
-    
+
     The template argument is a Dseqrecord object or equivalent containing the template sequence.
-    
+
     The optional fp and rp arguments can contain an existing primer for the sequence (either the forward or reverse primer).
     One or the other primers can be specified, not both (since then there is nothing to design!, use the pydna.amplify.pcr function instead).
-    
+
     If one of the primers is given, the other primer is designed to match in terms of Tm.
     If both primers are designed, they will be designed to target_tm
-    
+
     tm_func is a function that takes an ascii string representing an oligonuceotide as argument and returns a float.
     Some useful functions can be found in the :mod:`pydna.tm` module, but can be substituted for a custom made function.
-    
-    The function returns a pydna.amplicon.Amplicon class instance. This object has 
+
+    The function returns a pydna.amplicon.Amplicon class instance. This object has
     the object.forward_primer and object.reverse_primer properties which contain the designed primers.
-    
-    
+
+
     Parameters
     ----------
 
@@ -99,7 +96,7 @@ def primer_design( template,
      |||||||||||||||||
     3tactgacgattgggaag...agcaagctttgaatgctac5
     >>> pf = "GGATCC" + ampl.forward_primer
-    >>> pr = "GGATCC" + ampl.reverse_primer  
+    >>> pr = "GGATCC" + ampl.reverse_primer
     >>> pf
     f64 23-mer:5'-GGATCCatgactgct..ttc-3'
     >>> pr
@@ -122,30 +119,29 @@ def primer_design( template,
     myprimer 27-mer:5'-atgactgctaaccct..ttg-3'
     >>> ampl.reverse_primer
     r64 37-mer:5'-catcgtaagtttcga..gtt-3'
-    '''
-    
-    
+    """
+
     def design(target_tm, template):
-        ''' returns a string '''
-        tmp=0
-        length=limit
+        """ returns a string """
+        tmp = 0
+        length = limit
         p = str(template.seq[:length])
-        while tmp<target_tm:
-            length+=1
+        while tmp < target_tm:
+            length += 1
             p = str(template.seq[:length])
             tmp = tm_func(p)
         ps = p[:-1]
         tmps = tm_func(str(ps))
-        _module_logger.debug(((p,   tmp),(ps, tmps)))
-        return min( ( abs(target_tm-tmp), p), (abs(target_tm-tmps), ps) )[1]
-    
+        _module_logger.debug(((p, tmp), (ps, tmps)))
+        return min((abs(target_tm - tmp), p), (abs(target_tm - tmps), ps))[1]
+
     if fp and not rp:
-        fp  = _Anneal((fp,), template).forward_primers.pop()
+        fp = _Anneal((fp,), template).forward_primers.pop()
         target_tm = tm_func(fp.footprint)
         _module_logger.debug("forward primer given, design reverse primer:")
         rp = _Primer(design(target_tm, template.reverse_complement()))
     elif not fp and rp:
-        rp =  _Anneal([rp], template).reverse_primers.pop()
+        rp = _Anneal([rp], template).reverse_primers.pop()
         target_tm = tm_func(rp.footprint)
         _module_logger.debug("reverse primer given, design forward primer:")
         fp = _Primer(design(target_tm, template))
@@ -158,37 +154,38 @@ def primer_design( template,
     else:
         raise ValueError("Specify maximum one of the two primers.")
 
-
-    if fp.id == "id": #<unknown id>
+    if fp.id == "id":  # <unknown id>
         fp.id = "f{}".format(len(template))
-        
+
     if rp.id == "id":
         rp.id = "r{}".format(len(template))
 
     if fp.name == "name":
         fp.name = "f{}".format(len(template))
-        
+
     if rp.name == "name":
         rp.name = "r{}".format(len(template))
 
-    fp.description = fp.id+' '+template.accession
-    rp.description = rp.id+' '+template.accession
-    
-    ampl = _Anneal( (fp, rp), template, limit=limit)
-    
+    fp.description = fp.id + " " + template.accession
+    rp.description = rp.id + " " + template.accession
+
+    ampl = _Anneal((fp, rp), template, limit=limit)
+
     prod = ampl.products[0]
-    
-    if len(ampl.products)>1:
+
+    if len(ampl.products) > 1:
         import warnings as _warnings
         from pydna import _PydnaWarning
-        _warnings.warn("designed primers do not yield a unique PCR product",
-                       _PydnaWarning)
+
+        _warnings.warn(
+            "designed primers do not yield a unique PCR product", _PydnaWarning
+        )
 
     return prod
 
 
-def assembly_fragments(f, overlap=35, maxlink=40):    
-    '''This function return a list of :mod:`pydna.amplicon.Amplicon` objects where 
+def assembly_fragments(f, overlap=35, maxlink=40):
+    """This function return a list of :mod:`pydna.amplicon.Amplicon` objects where 
     primers have been modified with tails so that the fragments can be fused in 
     the order they appear in the list by for example Gibson assembly or homologous 
     recombination.
@@ -561,121 +558,160 @@ def assembly_fragments(f, overlap=35, maxlink=40):
      --------------------    
     >>>
 
-    '''
+    """
     # sanity check for arguments
-    nf = [item for item in f if len(item)>maxlink]
-    if not all(hasattr(i[0],"template") or hasattr(i[1],"template") for i in zip(nf,nf[1:])):
-        raise ValueError("Every second fragment larger than maxlink has to be an Amplicon object")
-    
+    nf = [item for item in f if len(item) > maxlink]
+    if not all(
+        hasattr(i[0], "template") or hasattr(i[1], "template") for i in zip(nf, nf[1:])
+    ):
+        raise ValueError(
+            "Every second fragment larger than maxlink has to be an Amplicon object"
+        )
+
     _module_logger.debug("### assembly fragments ###")
     _module_logger.debug("overlap     = %s", overlap)
     _module_logger.debug("max_link    = %s", maxlink)
-    
+
     f = [_copy.copy(f) for f in f]
-    
+
     first_fragment_length = len(f[0])
-    last_fragment_length  = len(f[-1])
-    
-    if first_fragment_length<=maxlink:
+    last_fragment_length = len(f[-1])
+
+    if first_fragment_length <= maxlink:
         # first fragment should be removed and added to second fragment (new first fragment) forward primer
         f[1].forward_primer = f[0].seq._data + f[1].forward_primer
-        _module_logger.debug("first fragment removed since len(f[0]) = %s", first_fragment_length)
-        f=f[1:]
+        _module_logger.debug(
+            "first fragment removed since len(f[0]) = %s", first_fragment_length
+        )
+        f = f[1:]
     else:
-        _module_logger.debug("first fragment stays since len(f[0]) = %s", first_fragment_length)
+        _module_logger.debug(
+            "first fragment stays since len(f[0]) = %s", first_fragment_length
+        )
 
-    if last_fragment_length<=maxlink:
-        f[-2].reverse_primer = f[-1].seq.reverse_complement()._data + f[-2].reverse_primer
-        f=f[:-1]  
-        _module_logger.debug("last fragment removed since len(f[%s]) = %s", len(f), last_fragment_length)
+    if last_fragment_length <= maxlink:
+        f[-2].reverse_primer = (
+            f[-1].seq.reverse_complement()._data + f[-2].reverse_primer
+        )
+        f = f[:-1]
+        _module_logger.debug(
+            "last fragment removed since len(f[%s]) = %s", len(f), last_fragment_length
+        )
     else:
-        _module_logger.debug("last fragment stays since len(f[%s]) = %s", len(f),last_fragment_length)
-        
-    empty = _Dseqrecord("")    
-    
+        _module_logger.debug(
+            "last fragment stays since len(f[%s]) = %s", len(f), last_fragment_length
+        )
+
+    empty = _Dseqrecord("")
+
     _module_logger.debug(f)
-    
-    _module_logger.debug("loop through fragments in groups of three:")
-    
-    tail_length = _math.ceil(overlap/2)
-    
-    for i in range(len(f)-1):
 
-        first  = f[i] 
-        secnd  = f[i+1]
+    _module_logger.debug("loop through fragments in groups of three:")
+
+    tail_length = _math.ceil(overlap / 2)
+
+    for i in range(len(f) - 1):
+
+        first = f[i]
+        secnd = f[i + 1]
 
         secnd_len = len(secnd)
-     
-        _module_logger.debug( "first = %s", str(first.seq))
-        _module_logger.debug( "secnd = %s", str(secnd.seq))
-        
-        if secnd_len <= maxlink:  
-            _module_logger.debug("secnd is smaller or equal to maxlink; should be added to primer(s)")
-            third  = f[i+2]
-            _module_logger.debug( "third = %s", str(third.seq))
+
+        _module_logger.debug("first = %s", str(first.seq))
+        _module_logger.debug("secnd = %s", str(secnd.seq))
+
+        if secnd_len <= maxlink:
+            _module_logger.debug(
+                "secnd is smaller or equal to maxlink; should be added to primer(s)"
+            )
+            third = f[i + 2]
+            _module_logger.debug("third = %s", str(third.seq))
             if hasattr(f[i], "template") and hasattr(third, "template"):
-                _module_logger.debug("secnd is is flanked by amplicons, so half of secnd should be added each flanking primers")
-                
-                first.reverse_primer = secnd.seq.reverse_complement()._data[secnd_len//2:] + first.reverse_primer
-                third.forward_primer =      secnd.seq._data[secnd_len//2:] + third.forward_primer
-                
-                lnk = (third.seq.reverse_complement()._data+secnd.reverse_complement().seq._data[:secnd_len//2])[-tail_length:]
+                _module_logger.debug(
+                    "secnd is is flanked by amplicons, so half of secnd should be added each flanking primers"
+                )
+
+                first.reverse_primer = (
+                    secnd.seq.reverse_complement()._data[secnd_len // 2 :]
+                    + first.reverse_primer
+                )
+                third.forward_primer = (
+                    secnd.seq._data[secnd_len // 2 :] + third.forward_primer
+                )
+
+                lnk = (
+                    third.seq.reverse_complement()._data
+                    + secnd.reverse_complement().seq._data[: secnd_len // 2]
+                )[-tail_length:]
                 _module_logger.debug("1 %s", lnk)
                 first.reverse_primer = lnk + first.reverse_primer
-                
-                lnk =  (first.seq._data + secnd.seq._data[:secnd_len//2])[-tail_length:]
+
+                lnk = (first.seq._data + secnd.seq._data[: secnd_len // 2])[
+                    -tail_length:
+                ]
                 _module_logger.debug("2 %s", lnk)
-                third.forward_primer = lnk + third.forward_primer                
-                
-            elif hasattr(first , "template"):
-                first.reverse_primer = secnd.seq.reverse_complement()._data + first.reverse_primer
+                third.forward_primer = lnk + third.forward_primer
+
+            elif hasattr(first, "template"):
+                first.reverse_primer = (
+                    secnd.seq.reverse_complement()._data + first.reverse_primer
+                )
                 lnk = str(third.seq[:overlap].reverse_complement())
                 first.reverse_primer = lnk + first.reverse_primer
-            elif hasattr(third , "template"):
-               third.forward_primer = secnd.seq._data + third.forward_primer
-               lnk = str(first.seq[-overlap:])
-               third.forward_primer = lnk + third.forward_primer
-            secnd=empty
-            f[i+2] = third
-        else:                    # secnd is larger than maxlink
+            elif hasattr(third, "template"):
+                third.forward_primer = secnd.seq._data + third.forward_primer
+                lnk = str(first.seq[-overlap:])
+                third.forward_primer = lnk + third.forward_primer
+            secnd = empty
+            f[i + 2] = third
+        else:  # secnd is larger than maxlink
             if hasattr(first, "template") and hasattr(secnd, "template"):
                 lnk = str(first.seq[-tail_length:])
-                #_module_logger.debug("4 %s", lnk)
+                # _module_logger.debug("4 %s", lnk)
                 secnd.forward_primer = lnk + secnd.forward_primer
                 lnk = str(secnd.seq[:tail_length].reverse_complement())
-                #_module_logger.debug("5 %s", lnk)
-                first.reverse_primer = lnk + first.reverse_primer            
-            elif hasattr(first , "template"):
+                # _module_logger.debug("5 %s", lnk)
+                first.reverse_primer = lnk + first.reverse_primer
+            elif hasattr(first, "template"):
                 lnk = str(secnd.seq[:overlap].reverse_complement())
-                #_module_logger.debug("6 %s", lnk)
-                first.reverse_primer = lnk + first.reverse_primer                
-            elif hasattr(secnd , "template"):
+                # _module_logger.debug("6 %s", lnk)
+                first.reverse_primer = lnk + first.reverse_primer
+            elif hasattr(secnd, "template"):
                 lnk = str(first.seq[-overlap:])
-                #_module_logger.debug("7 %s", lnk)
+                # _module_logger.debug("7 %s", lnk)
                 secnd.forward_primer = lnk + secnd.forward_primer
-        f[i]   = first
-        f[i+1] = secnd
+        f[i] = first
+        f[i + 1] = secnd
 
-        
     _module_logger.debug("loop ended")
-    
+
     f = [item for item in f if len(item)]
-    
-    return [_pcr(p.forward_primer, p.reverse_primer, p.template) if hasattr(p, "template") else p for p in f]
+
+    return [
+        _pcr(p.forward_primer, p.reverse_primer, p.template)
+        if hasattr(p, "template")
+        else p
+        for p in f
+    ]
+
 
 def circular_assembly_fragments(f, overlap=35, maxlink=40):
-    
-    fragments = assembly_fragments( f+f[0:1], overlap=overlap, maxlink=maxlink)
-    
-    if hasattr( fragments[0], "template"):
-        fragments[0] = _pcr( (fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0])
+
+    fragments = assembly_fragments(f + f[0:1], overlap=overlap, maxlink=maxlink)
+
+    if hasattr(fragments[0], "template"):
+        fragments[0] = _pcr(
+            (fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0]
+        )
     return fragments[:-1]
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     import os as _os
+
     cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"]=""
+    _os.environ["pydna_cached_funcs"] = ""
     import doctest
+
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"]=cach
+    _os.environ["pydna_cached_funcs"] = cach
