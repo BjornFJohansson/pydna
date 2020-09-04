@@ -8,7 +8,7 @@
 """This module provide the Primer class that is a subclass of the biopython SeqRecord."""
 
 from Bio.Seq import Seq as _Seq
-from Bio.Alphabet import generic_dna as _generic_dna
+#from Bio.Alphabet import generic_dna as _generic_dna
 from pydna.seqrecord import SeqRecord as _SeqRecord
 
 
@@ -26,7 +26,7 @@ class Primer(_SeqRecord):
         elif hasattr(record, "transcribe"):
             super().__init__(record, *args, **kwargs)
         else:
-            super().__init__(_Seq(record, alphabet=_generic_dna), *args, **kwargs)
+            super().__init__(_Seq(record), *args, **kwargs)
 
         self.position = position
         self._fp = footprint or len(record)

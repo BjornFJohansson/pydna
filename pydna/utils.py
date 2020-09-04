@@ -409,113 +409,113 @@ def seq31(seq):
     return padding.join([threecode.get(aa, "X") for aa in sequence])
 
 
-def guess_alphabet(sequence: str):
-    """
-    This function guesses the alphabet of a string representing a
-    biological sequence.
+# def guess_alphabet(sequence: str):
+#     """
+#     This function guesses the alphabet of a string representing a
+#     biological sequence.
 
-    """
+#     """
 
-    import string
+#     import string
 
-    from Bio.Alphabet import SingleLetterAlphabet
-    from Bio.Alphabet import NucleotideAlphabet
-    from Bio.Alphabet import ProteinAlphabet
-    from Bio.Alphabet.IUPAC import extended_protein
-    from Bio.Alphabet.IUPAC import protein
-    from Bio.Alphabet.IUPAC import ambiguous_dna
-    from Bio.Alphabet.IUPAC import unambiguous_dna
-    from Bio.Alphabet.IUPAC import extended_dna
-    from Bio.Alphabet.IUPAC import ambiguous_rna
-    from Bio.Alphabet.IUPAC import unambiguous_rna
+#     from Bio.Alphabet import SingleLetterAlphabet
+#     from Bio.Alphabet import NucleotideAlphabet
+#     from Bio.Alphabet import ProteinAlphabet
+#     from Bio.Alphabet.IUPAC import extended_protein
+#     from Bio.Alphabet.IUPAC import protein
+#     from Bio.Alphabet.IUPAC import ambiguous_dna
+#     from Bio.Alphabet.IUPAC import unambiguous_dna
+#     from Bio.Alphabet.IUPAC import extended_dna
+#     from Bio.Alphabet.IUPAC import ambiguous_rna
+#     from Bio.Alphabet.IUPAC import unambiguous_rna
 
-    if len(sequence) < 1:
-        return SingleLetterAlphabet()
+#     if len(sequence) < 1:
+#         return SingleLetterAlphabet()
 
-    for c in sequence:
-        if c not in string.printable:
-            return SingleLetterAlphabet()
+#     for c in sequence:
+#         if c not in string.printable:
+#             return SingleLetterAlphabet()
 
-    xp = set(extended_protein.letters)
-    pr = set(protein.letters)
+#     xp = set(extended_protein.letters)
+#     pr = set(protein.letters)
 
-    ad = set(ambiguous_dna.letters)
-    ud = set(unambiguous_dna.letters)
-    ed = set(extended_dna.letters)
+#     ad = set(ambiguous_dna.letters)
+#     ud = set(unambiguous_dna.letters)
+#     ed = set(extended_dna.letters)
 
-    ar = set(ambiguous_rna.letters)
-    ur = set(unambiguous_rna.letters)
+#     ar = set(ambiguous_rna.letters)
+#     ur = set(unambiguous_rna.letters)
 
-    all = xp | pr | ad | ud | ed | ar | ur
+#     all = xp | pr | ad | ud | ed | ar | ur
 
-    sequence_chars = set(sequence.upper())
+#     sequence_chars = set(sequence.upper())
 
-    if sequence_chars - all - set(string.punctuation + string.whitespace):
-        return SingleLetterAlphabet()
+#     if sequence_chars - all - set(string.punctuation + string.whitespace):
+#         return SingleLetterAlphabet()
 
-    nucleic_count = 0
+#     nucleic_count = 0
 
-    for letter in "GATCUNgatcun":
-        nucleic_count += sequence.count(letter)
+#     for letter in "GATCUNgatcun":
+#         nucleic_count += sequence.count(letter)
 
-    if float(nucleic_count) / float(len(sequence)) >= 0.9:  # DNA or RNA
-        if "T" in sequence_chars and "U" in sequence_chars:
-            alphabet = NucleotideAlphabet()
-        elif not sequence_chars - ud:
-            alphabet = unambiguous_dna
-        elif not sequence_chars - ad:
-            alphabet = ambiguous_dna
-        elif not sequence_chars - ed:
-            alphabet = extended_dna
-        elif not sequence_chars - ur:
-            alphabet = unambiguous_rna
-        elif not sequence_chars - ar:
-            alphabet = ambiguous_rna
-        else:
-            alphabet = NucleotideAlphabet()
-    else:
-        threecode = [
-            "ALA",
-            "ASX",
-            "CYS",
-            "ASP",
-            "GLU",
-            "PHE",
-            "GLY",
-            "HIS",
-            "ILE",
-            "LYS",
-            "LEU",
-            "MET",
-            "ASN",
-            "PRO",
-            "GLN",
-            "ARG",
-            "SER",
-            "THR",
-            "VAL",
-            "TRP",
-            "TYR",
-            "GLX",
-            "XAA",
-            "TER",
-            "SEL",
-            "PYL",
-            "XLE",
-        ]
-        tc = set(threecode)
-        three_letter_alphabet = set(
-            [sequence[i: i + 3] for i in range(0, len(sequence), 3)]
-        )
-        if not three_letter_alphabet - tc:
-            alphabet = "three letter code"
-        elif sequence_chars - pr:
-            alphabet = protein
-        elif sequence_chars - xp:
-            alphabet = extended_protein
-        else:
-            alphabet = ProteinAlphabet()
-    return alphabet
+#     if float(nucleic_count) / float(len(sequence)) >= 0.9:  # DNA or RNA
+#         if "T" in sequence_chars and "U" in sequence_chars:
+#             alphabet = NucleotideAlphabet()
+#         elif not sequence_chars - ud:
+#             alphabet = unambiguous_dna
+#         elif not sequence_chars - ad:
+#             alphabet = ambiguous_dna
+#         elif not sequence_chars - ed:
+#             alphabet = extended_dna
+#         elif not sequence_chars - ur:
+#             alphabet = unambiguous_rna
+#         elif not sequence_chars - ar:
+#             alphabet = ambiguous_rna
+#         else:
+#             alphabet = NucleotideAlphabet()
+#     else:
+#         threecode = [
+#             "ALA",
+#             "ASX",
+#             "CYS",
+#             "ASP",
+#             "GLU",
+#             "PHE",
+#             "GLY",
+#             "HIS",
+#             "ILE",
+#             "LYS",
+#             "LEU",
+#             "MET",
+#             "ASN",
+#             "PRO",
+#             "GLN",
+#             "ARG",
+#             "SER",
+#             "THR",
+#             "VAL",
+#             "TRP",
+#             "TYR",
+#             "GLX",
+#             "XAA",
+#             "TER",
+#             "SEL",
+#             "PYL",
+#             "XLE",
+#         ]
+#         tc = set(threecode)
+#         three_letter_alphabet = set(
+#             [sequence[i: i + 3] for i in range(0, len(sequence), 3)]
+#         )
+#         if not three_letter_alphabet - tc:
+#             alphabet = "three letter code"
+#         elif sequence_chars - pr:
+#             alphabet = protein
+#         elif sequence_chars - xp:
+#             alphabet = extended_protein
+#         else:
+#             alphabet = ProteinAlphabet()
+#     return alphabet
 
 
 def parse_text_table(rawtable, tabs=4):

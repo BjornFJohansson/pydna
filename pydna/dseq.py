@@ -4,7 +4,7 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-"""Provides the Dseq class for handling double stranded DNA sequences. 
+"""Provides the Dseq class for handling double stranded DNA sequences.
 Dseq is a subclass of :class:`Bio.Seq.Seq`. The Dseq class
 is mostly useful as a part of the :class:`pydna.dseqrecord.Dseqrecord` class which
 can hold more meta data.
@@ -20,7 +20,7 @@ import sys as _sys
 import math as _math
 
 from Bio.Seq import Seq as _Seq
-from Bio.Alphabet import generic_dna as _generic_dna
+#from Bio.Alphabet import generic_dna as _generic_dna
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.utils import rc as _rc
@@ -378,7 +378,7 @@ class Dseq(_Seq):
         self._ovhg = ovhg
         self.pos = pos
         self._data = self._data
-        self.alphabet = _generic_dna
+        #self.alphabet = _generic_dna
 
     @classmethod
     def quick(cls, watson: str, crick: str, ovhg=0, linear=True, circular=False, pos=0):
@@ -396,7 +396,7 @@ class Dseq(_Seq):
             + watson
             + _rc(crick[: max(0, len(crick) - ovhg - len(watson))])
         )
-        obj.alphabet = _generic_dna
+        #obj.alphabet = _generic_dna
         return obj
 
     @classmethod
@@ -410,7 +410,7 @@ class Dseq(_Seq):
         obj.length = len(dna)
         obj.pos = 0
         obj._data = dna
-        obj.alphabet = _generic_dna
+        #obj.alphabet = _generic_dna
         return obj
 
     @property
@@ -560,9 +560,7 @@ class Dseq(_Seq):
         if self.linear:
             return _Seq.find(self, sub, start, end)
 
-        sub_str = self._get_seq_str_and_check_alphabet(sub)
-
-        return (_pretty_str(self) + _pretty_str(self)).find(sub_str, start, end)
+        return (_pretty_str(self) + _pretty_str(self)).find(sub, start, end)
 
     def __getitem__(self, sl):
         """Returns a subsequence. This method is used by the slice notation"""

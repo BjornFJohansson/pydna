@@ -15,7 +15,7 @@ import textwrap as _textwrap
 # import glob      as _glob
 
 from Bio import SeqIO as _SeqIO
-from Bio.Alphabet import generic_dna as _generic_dna
+#from Bio.Alphabet import generic_dna as _generic_dna
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer
@@ -88,7 +88,7 @@ def parse(data, ds=True):
                     handle.seek(0)
                     try:
                         parsed = _SeqIO.read(
-                            handle, "fasta", alphabet=_generic_dna)
+                            handle, "fasta")
                     except ValueError:
                         parsed = ""
             handle.close()
@@ -107,7 +107,10 @@ def parse(data, ds=True):
                 if ds and path:
                     result_list.append(
                         _GenbankFile.from_SeqRecord(
-                            parsed, linear=not circular, circular=circular, path=path
+                            parsed,
+                            linear=not circular,
+                            circular=circular,
+                            path=path
                         )
                     )
                 elif ds:
@@ -121,7 +124,8 @@ def parse(data, ds=True):
 
         return result_list
 
-    # a string is an iterable datatype but on Python2.x it doesn't have an __iter__ method.
+    # a string is an iterable datatype but on Python2.x
+    # it doesn't have an __iter__ method.
     if not hasattr(data, "__iter__") or isinstance(data, (str, bytes)):
         data = (data,)
 

@@ -224,7 +224,7 @@ def test_seqrecord():
         "Description: description\n"
         "Number of features: 1\n"
         "/date=24-DEC-1970\n"
-        "Seq('aaaATGAAATAAttt', DNAAlphabet())"
+        "Seq('aaaATGAAATAAttt')"
     )
 
     assert str(obj) == st

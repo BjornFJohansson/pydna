@@ -7,7 +7,7 @@
 """This module provides the :class:`Dseqrecord` class, for handling double stranded
 DNA sequences. The Dseqrecord holds sequence information in the form of a :class:`pydna.dseq.Dseq`
 object. The Dseq and Dseqrecord classes are subclasses of Biopythons
-Seq and SeqRecord classes, respectively. 
+Seq and SeqRecord classes, respectively.
 
 The Dseq and Dseqrecord classes support the notion of circular and linear DNA topology.
 """
@@ -168,6 +168,7 @@ class Dseqrecord(_SeqRecord):
                 record = record.looped()
             _module_logger.info("record is a Dseq object")
             super().__init__(record, *args, **kwargs)
+
         # record is a Bio.Seq object ?
         elif hasattr(record, "transcribe"):
             _module_logger.info("record is a Seq object")
@@ -198,6 +199,7 @@ class Dseqrecord(_SeqRecord):
 
         self.map_target = None
         self.n = n  # amount, set to 5E-14 which is 5 pmols
+
 
     @classmethod
     def from_string(
@@ -236,7 +238,8 @@ class Dseqrecord(_SeqRecord):
         obj.name = record.name
         obj.description = record.description
         obj.dbxrefs = record.dbxrefs
-        obj.annotations = record.annotations
+        obj.annotations = {"molecule_type": "DNA"}
+        obj.annotations.update(record.annotations)
         obj._per_letter_annotations = record._per_letter_annotations
         obj.features = record.features
         obj.map_target = None
@@ -692,13 +695,13 @@ class Dseqrecord(_SeqRecord):
         >>> from pydna.dseqrecord import Dseqrecord
         >>> s=Dseqrecord("atgtacgatcgtatgctggttatattttag")
         >>> s.seq.translate()
-        Seq('MYDRMLVIF*', HasStopCodon(ExtendedIUPACProtein(), '*'))
+        Seq('MYDRMLVIF*')
         >>> "RML" in s
         True
         >>> "MMM" in s
         False
         >>> s.seq.rc().translate()
-        Seq('LKYNQHTIVH', ExtendedIUPACProtein())
+        Seq('LKYNQHTIVH')
         >>> "QHT" in s.rc()
         True
         >>> "QHT" in s
@@ -714,7 +717,7 @@ class Dseqrecord(_SeqRecord):
         cgtatgctg
         gcatacgac
         >>> code.translate()
-        Seq('RML', ExtendedIUPACProtein())
+        Seq('RML')
         """
         other = str(other).lower()
         assert self.seq.watson == "".join(self.seq.watson.split())
@@ -871,7 +874,7 @@ class Dseqrecord(_SeqRecord):
     def __getitem__(self, sl):
         answer = Dseqrecord(_copy.copy(self))
         answer.seq = self.seq.__getitem__(sl)
-        answer.seq.alphabet = self.seq.alphabet
+        #answer.seq.alphabet = self.seq.alphabet
 
         sl_start = sl.start or 0  # 6
         sl_stop = sl.stop or len(answer.seq)  # 1

@@ -5,8 +5,8 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 """This module provide a subclass of the Biopython SeqRecord class.
-It has a number of extra methods and uses 
-the :class:`pydna._pretty_str.pretty_str` class instread of str for a 
+It has a number of extra methods and uses
+the :class:`pydna._pretty_str.pretty_str` class instread of str for a
 nicer output in the IPython shell."""
 
 
@@ -14,7 +14,7 @@ from pydna.seqfeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-from Bio.Alphabet import generic_dna as _generic_dna
+#from Bio.Alphabet import generic_dna as _generic_dna
 from Bio.Data.CodonTable import TranslationError as _TranslationError
 from Bio.SeqUtils import GC as _GC
 from Bio.SeqRecord import SeqRecord as _SeqRecord
@@ -36,8 +36,10 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 
 class SeqRecord(_SeqRecord):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args,
+                         **kwargs)
 
+        self.annotations.update({"molecule_type": "DNA"})
         if len(self.name) > 16:
             short_name = self.name[:16]
             _warn(
@@ -67,7 +69,7 @@ class SeqRecord(_SeqRecord):
             self.seq = _Seq(self.seq)
 
         self.seq._data = "".join(self.seq._data.split())  # remove whitespaces
-        self.seq.alphabet = _generic_dna
+        #self.seq.alphabet = _generic_dna
         self.id = _pretty_str(self.id)
         self.name = _pretty_str(self.name)
         self.description = _pretty_str(self.description)
@@ -352,7 +354,7 @@ class SeqRecord(_SeqRecord):
         >>> a.add_feature(2,4)
         >>> b=a.extract_feature(0)
         >>> b
-        SeqRecord(seq=Seq('gt', DNAAlphabet()), id='ft2', name='ft2', description='description', dbxrefs=[])
+        SeqRecord(seq=Seq('gt'), id='ft2', name='ft2', description='description', dbxrefs=[])
         """
         return self.features[n].extract(self)
 

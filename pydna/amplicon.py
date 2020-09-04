@@ -71,7 +71,7 @@ class Amplicon(_Dseqrecord):
     def __getitem__(self, sl):
         answer = _copy.copy(self)
         answer.seq = answer.seq.__getitem__(sl)
-        answer.seq.alphabet = self.seq.alphabet
+        #answer.seq.alphabet = self.seq.alphabet
         sr = _SeqRecord("n" * len(self))
         sr.features = self.features
         answer.features = _SeqRecord.__getitem__(sr, sl).features
