@@ -48,7 +48,7 @@ AGAAGTAAC (29)
 
 sys.exit(42)
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     pass
 
     # Number 65027
