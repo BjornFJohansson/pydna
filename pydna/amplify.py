@@ -172,7 +172,8 @@ class Anneal(object, metaclass=_Memoize):
         >>> from pydna.readers import read
         >>> from pydna.amplify import Anneal
         >>> from pydna.dseqrecord import Dseqrecord as Ds
-        >>> t = Ds("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+        >>> t = Ds("tacactcaccgtctatcattatcta"
+        ...        "ctatcgactgtatcatctgatagcac")
         >>> from Bio.SeqRecord import SeqRecord
         >>> p1 = read(">p1\ntacactcaccgtctatcattatc", ds = False)
         >>> p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
