@@ -171,12 +171,12 @@ class Anneal(object, metaclass=_Memoize):
         --------
         >>> from pydna.readers import read
         >>> from pydna.amplify import Anneal
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> template = Dseqrecord("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
+        >>> from pydna.dseqrecord import Dseqrecord as Ds
+        >>> t = Ds("tacactcaccgtctatcattatctactatcgactgtatcatctgatagcac")
         >>> from Bio.SeqRecord import SeqRecord
         >>> p1 = read(">p1\ntacactcaccgtctatcattatc", ds = False)
         >>> p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
-        >>> ann = Anneal((p1, p2), template)
+        >>> ann = Anneal((p1, p2), t)
         >>> print(ann.report())
         Template name 51 nt linear:
         p1 anneals forward (--->) at 23
@@ -512,8 +512,8 @@ def pcr(*args, **kwargs):
     >>> from pydna.readers import read
     >>> from pydna.amplify import pcr
     >>> from pydna.primer import Primer
-    >>> template = Dseqrecord("tacactcaccgtctatcattatctac"
-                              "tatcgactgtatcatctgatagcac")
+    >>> template = Dseqrecord("tacactcaccgtctatcattatctac\
+tatcgactgtatcatctgatagcac")
     >>> from Bio.SeqRecord import SeqRecord
     >>> p1 = Primer("tacactcaccgtctatcattatc")
     >>> p2 = Primer("cgactgtatcatctgatagcac").reverse_complement()

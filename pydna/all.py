@@ -18,7 +18,10 @@ ttt
 Dseqrecord(-3)
 >>> from pydna.all import __all__
 >>> __all__
-['Anneal', 'pcr', 'Assembly', 'genbank', 'Genbank', 'download_text', 'Dseqrecord', 'Dseq', 'read', 'read_primer', 'parse', 'parse_primers', 'ape', 'primer_design', 'assembly_fragments', 'circular_assembly_fragments', 'eq', 'gbtext_clean', 'list_primers']
+['Anneal', 'pcr', 'Assembly', 'genbank', 'Genbank', 'download_text\
+', 'Dseqrecord', 'Dseq', 'read', 'read_primer', 'parse', 'parse_primers\
+', 'ape', 'primer_design', 'assembly_fragments', 'circular_assembly_fragments\
+', 'eq', 'gbtext_clean', 'list_primers']
 >>>
 """
 

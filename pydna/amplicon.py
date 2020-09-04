@@ -6,8 +6,9 @@
 # as part of this package.
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
-"""This module provides the :class:`Amplicon` class for PCR simulation. This class is not meant to be use directly
-but is used by the :mod:`amplify` module"""
+"""This module provides the :class:`Amplicon` class for PCR simulation.
+This class is not meant to be use directly but is
+used by the :mod:`amplify` module"""
 
 from pydna.tm import dbd_program as _dbd_program
 from pydna.tm import program as _program
@@ -58,7 +59,8 @@ class Amplicon(_Dseqrecord):
         self.reverse_primer = reverse_primer
         self.__dict__.update(kwargs)
 
-        # https://medium.com/@chipiga86/circular-references-without-memory-leaks-and-destruction-of-objects-in-python-43da57915b8d
+        # https://medium.com/@chipiga86/circular-references-without-memory-
+        # leaks-and-destruction-of-objects-in-python-43da57915b8d
 
     @classmethod
     def from_SeqRecord(cls, record, *args, path=None, **kwargs):
@@ -96,8 +98,8 @@ class Amplicon(_Dseqrecord):
 
     def figure(self):
         """
-        This method returns a simple figure of the two primers binding to a part
-        of the template.
+        This method returns a simple figure of the two primers binding
+        to a part of the template.
 
         ::
 
@@ -119,18 +121,23 @@ class Amplicon(_Dseqrecord):
 
         Notes
         -----
-        tm in the figure above is the melting temperature (tm) for each primer calculated according to
-        SantaLucia 1998 [#]_.
+        tm in the figure above is the melting temperature (tm) for each primer
+        calculated according to SantaLucia 1998 [#]_.
 
-        dbd is the tm calculation for enzymes with dsDNA binding domains like Pfu-Sso7d [#]_. See [#]_
-        for more information.
+        dbd is the tm calculation for enzymes with dsDNA binding domains
+        like Pfu-Sso7d [#]_. See [#]_ for more information.
 
         References
         ----------
 
-        .. [#] J. SantaLucia, “A Unified View of Polymer, Dumbbell, and Oligonucleotide DNA Nearest-neighbor Thermodynamics,” Proceedings of the National Academy of Sciences 95, no. 4 (1998): 1460.
-        .. [#] M. Nørholm, “A Mutant Pfu DNA Polymerprimerase Designed for Advanced Uracil-excision DNA Engineering,” BMC Biotechnology 10, no. 1 (2010): 21, doi:10.1186/1472-6750-10-21.
-        .. [#] http://www.thermoscientificbio.com/webtools/tmc/
+        .. [#] J. SantaLucia, “A Unified View of Polymer, Dumbbell, and
+               Oligonucleotide DNA Nearest-neighbor Thermodynamics",
+               Proceedings of the National Academy of Sciences 95,
+               no. 4 (1998): 1460.
+        .. [#] M. Nørholm, “A Mutant Pfu DNA Polymerprimerase Designed for
+               Advanced Uracil-excision DNA Engineering,” BMC Biotechnology 10,
+               no. 1 (2010): 21, doi:10.1186/1472-6750-10-21.
+        .. [#] http://www.thermoscientificbio.com/webtools/tmc
 
         """
 
@@ -147,15 +154,16 @@ class Amplicon(_Dseqrecord):
             fplength=len(self.forward_primer.seq),
             rp=self.reverse_primer.seq[::-1],
             rap="|" * len(self.reverse_primer.footprint),
-            rplength=len(self.reverse_primer.seq),
             faz=self.forward_primer.footprint,
             raz=self.reverse_primer.footprint.reverse_complement(),
             fzc=self.forward_primer.footprint.complement(),
             rzc=self.reverse_primer.footprint[::-1],
             sp1=" "
-            * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
+            * (len(self.forward_primer.seq)
+               - len(self.forward_primer.footprint)),
             sp2=" "
-            * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
+            * (len(self.forward_primer.seq)
+               - len(self.forward_primer.footprint)),
             sp3=" " * (3 + len(self.forward_primer.seq)),
         )
         return _pretty_str(_textwrap.dedent(f).strip("\n"))

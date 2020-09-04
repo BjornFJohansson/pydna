@@ -5,9 +5,9 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-"""This module provides functions for assembly of sequences by homologous 
-recombination and other related techniques. Given a list of sequences 
-(Dseqrecords), all sequences are analyzed for shared homology longer than the 
+"""This module provides functions for assembly of sequences by homologous
+recombination and other related techniques. Given a list of sequences
+(Dseqrecords), all sequences are analyzed for shared homology longer than the
 set limit.
 
 A graph is constructed where each overlapping region form a node and
@@ -15,33 +15,32 @@ sequences separating the overlapping regions form edges.
 
 
 ::
-          
-     
+
+
                 -- A --
     catgatctacgtatcgtgt     -- B --
                 atcgtgtactgtcatattc
                             catattcaaagttct
 
-     
-     
+
+
     --x--> A --y--> B --z-->   (Graph)
-     
+
     Nodes:
 
     A : atcgtgt
     B : catattc
- 
+
     Edges:
 
     x : catgatctacgt
     y : actgt
     z : aaagttct
-    
-    
+
+
 The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
-from collections import UserString as _UserString
 from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
@@ -49,13 +48,11 @@ from pydna.utils import rc as _rc
 from pydna.utils import memorize as _memorize
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
-from pydna.common_sub_strings import terminal_overlap
 from pydna.common_sub_strings import common_sub_strings
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 import networkx as _nx
 from copy import deepcopy as _deepcopy
 import itertools as _itertools
-import sys
 
 # if sys.version_info < (3, 6):
 #     from collections import OrderedDict as _od
@@ -78,11 +75,11 @@ class _Memoize(type):
 
 
 class Assembly(object, metaclass=_Memoize):
-    """Assembly of a list of linear DNA fragments into linear or circular constructs.
-    The Assembly is meant to replace the Assembly method as it is easier to use.
-    Accepts a list of Dseqrecords (source fragments) to initiate an Assembly object.
-    Several methods are available for analysis of overlapping sequences, graph construction
-    and assembly.
+    """Assembly of a list of linear DNA fragments into linear or circular
+    constructs. The Assembly is meant to replace the Assembly method as it
+    is easier to use. Accepts a list of Dseqrecords (source fragments) to
+    initiate an Assembly object. Several methods are available for analysis
+    of overlapping sequences, graph construction and assembly.
 
     Parameters
     ----------
@@ -94,8 +91,8 @@ class Assembly(object, metaclass=_Memoize):
     algorithm : function, optional
         The algorithm used to determine the shared sequences.
     max_nodes : int
-          The maximum number of nodes in the graph. This can be tweaked to manage
-        sequences with a high number of shared sub sequences.
+        The maximum number of nodes in the graph. This can be tweaked to
+        manage sequences with a high number of shared sub sequences.
 
 
 
@@ -172,25 +169,31 @@ class Assembly(object, metaclass=_Memoize):
             firrc = rcfragments[first["mixed"]]
             secrc = rcfragments[secnd["mixed"]]
 
-            # matches is a list of tuples of three integers describing overlapping sequences:
+            # matches is a list of tuples of three integers describing
+            # overlapping sequences:
             # (start position in first, start position in secnd, length)
-            # This comparison is done using uppercase strings, see _Fragment class
+            # This comparison is done using uppercase strings, see _
+            # Fragment class
             matches = algorithm(first["upper"], secnd["upper"], limit)
 
             for start_in_first, start_in_secnd, length in matches:
-                # node is a string and represent the shared sequence in upper case.
+                # node is a string and represent the shared sequence in upper
+                # case.
                 node = first["upper"][start_in_first: start_in_first + length]
 
                 first["nodes"].append((start_in_first, length, node))
                 secnd["nodes"].append((start_in_secnd, length, node))
 
-                # The same node exists between the reverse complements of first and secnd
-                # The new positions are calculated from the length of the fragment and
+                # The same node exists between the reverse complements of
+                # first and secnd
+                # The new positions are calculated from the length of the
+                # fragment and
                 # the overlapping sequence
                 start_in_firrc = len(first["upper"]) - start_in_first - length
                 start_in_secrc = len(secnd["upper"]) - start_in_secnd - length
                 # noderc is the reverse complement of node
-                noderc = firrc["upper"][start_in_firrc: start_in_firrc + length]
+                noderc = firrc["upper"][start_in_firrc: start_in_firrc
+                                        + length]
                 firrc["nodes"].append((start_in_firrc, length, noderc))
                 secrc["nodes"].append((start_in_secrc, length, noderc))
                 nodemap[node] = noderc
@@ -207,14 +210,17 @@ class Assembly(object, metaclass=_Memoize):
                     len(first["upper"]) - start_in_first - length,
                     len(secnd["upper"]) - start_in_secrc - length,
                 )
-                noderc = firrc["upper"][start_in_firrc: start_in_firrc + length]
+                noderc = firrc["upper"][start_in_firrc: start_in_firrc
+                                        + length]
                 firrc["nodes"].append((start_in_firrc, length, noderc))
                 secnd["nodes"].append((start_in_secnd, length, noderc))
                 nodemap[node] = noderc
 
         # A directed graph class that can store multiedges.
-        # Multiedges are multiple edges between two nodes. Each edge can hold optional data or attributes.
-        # https://networkx.github.io/documentation/stable/reference/classes/multidigraph.html
+        # Multiedges are multiple edges between two nodes. Each edge can hold
+        # optional data or attributes.
+        # https://networkx.github.io/documentation/stable/reference/classes/
+        # multidigraph.html
 
         order = 0
         G = _nx.MultiDiGraph()
@@ -230,7 +236,8 @@ class Assembly(object, metaclass=_Memoize):
 
             # nodes are sorted in place in the order of their position
             # duplicates are removed (same position and sequence)
-            # along the fragment since nodes are a tuple (position(int), sequence(str))
+            # along the fragment since nodes are a tuple (position(int),
+            # sequence(str))
 
             before = G.order()
             G.add_nodes_from(
@@ -269,7 +276,9 @@ class Assembly(object, metaclass=_Memoize):
         self.G = _nx.create_empty_copy(G)
         self.G.add_edges_from(
             sorted(
-                G.edges(data=True), key=lambda t: len(t[2].get("seq", 1)), reverse=True
+                G.edges(data=True),
+                key=lambda t: len(t[2].get("seq", 1)),
+                reverse=True
             )
         )
         self.nodemap = {**nodemap, **{nodemap[i]: i for i in nodemap}}
@@ -284,7 +293,8 @@ class Assembly(object, metaclass=_Memoize):
 
         G.add_nodes_from(["begin", "begin_rc", "end", "end_rc"], length=0)
 
-        # add edges from "begin" to nodes in the first sequence in self.fragments
+        # add edges from "begin" to nodes in the first
+        # sequence in self.fragments
         firstfragment = self.fragments[0]
         for start, length, node in firstfragment["nodes"][::-1]:
             G.add_edge(
@@ -300,7 +310,8 @@ class Assembly(object, metaclass=_Memoize):
                 name=firstfragment["name"],
             )
 
-        # add edges from "begin_rc" to nodes in the reverse complement of the first sequence
+        # add edges from "begin_rc" to nodes in the reverse complement of the
+        # first sequence
         firstfragmentrc = self.rcfragments[firstfragment["mixed"]]
         for start, length, node in firstfragmentrc["nodes"][::-1]:
             G.add_edge(
@@ -324,7 +335,7 @@ class Assembly(object, metaclass=_Memoize):
                 "end",
                 piece=slice(start, len(lastfragment["mixed"])),
                 features=[
-                    f for f in lastfragment["features"] if start <= f.location.end
+                f for f in lastfragment["features"] if start <= f.location.end
                 ],
                 seq=lastfragment["mixed"],
                 name=lastfragment["name"],
@@ -338,7 +349,8 @@ class Assembly(object, metaclass=_Memoize):
                 "end_rc",
                 piece=slice(start, len(lastfragmentrc["mixed"])),
                 features=[
-                    f for f in lastfragmentrc["features"] if start <= f.location.end
+                f for f in lastfragmentrc["features"] if start
+                                                             <= f.location.end
                 ],
                 seq=lastfragmentrc["mixed"],
                 name=lastfragmentrc["name"],
@@ -378,7 +390,8 @@ class Assembly(object, metaclass=_Memoize):
                 if [
                     True
                     for ((u, v, e), (x, y, z)) in zip(edges, edges[1:])
-                    if (e["seq"], e["piece"].stop) == (z["seq"], z["piece"].start)
+                    if ((e["seq"], e["piece"].stop)
+                        == (z["seq"], z["piece"].start))
                 ]:
                     continue
                 ct = "".join(e["seq"][e["piece"]] for u, v, e in edges)
@@ -450,7 +463,8 @@ class Assembly(object, metaclass=_Memoize):
                 if [
                     True
                     for ((u, v, e), (x, y, z)) in zip(edges, edges[1:])
-                    if (e["seq"], e["piece"].stop) == (z["seq"], z["piece"].start)
+                    if ((e["seq"], e["piece"].stop)
+                        == (z["seq"], z["piece"].start))
                 ]:
                     continue
                 ct = "".join(e["seq"][e["piece"]] for u, v, e in edges)
@@ -461,7 +475,8 @@ class Assembly(object, metaclass=_Memoize):
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
                 sg.add_nodes_from((n, d)
-                                  for n, d in self.G.nodes(data=True) if n in cp)
+                                  for n, d in
+                                  self.G.nodes(data=True) if n in cp)
 
                 edgefeatures = []
                 offset = 0
@@ -473,7 +488,8 @@ class Assembly(object, metaclass=_Memoize):
                     edgefeatures.extend(feats)
                     offset += e["piece"].stop - e["piece"].start
                     for f in edgefeatures:
-                        if f.location.start > len(ct) and f.location.end > len(ct):
+                        if (f.location.start >
+                            len(ct) and f.location.end > len(ct)):
                             f.location += -len(ct)
                         elif f.location.end > len(ct):
                             f.location = _CompoundLocation(
