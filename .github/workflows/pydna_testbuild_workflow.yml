@@ -25,9 +25,8 @@ jobs:
           activate-environment: pydna_build_environment
           environment-file: pydna_build_environment.yml
           use-only-tar-bz2: true
-      - name: conda ctivate
-        run: conda activate pydna_build_environment
       - name: Build pypi wheel package
+        shell: bash
         run: python setup.py build bdist_wheel
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@master
