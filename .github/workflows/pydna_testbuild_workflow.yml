@@ -22,13 +22,12 @@ jobs:
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: pydna_build_environment
-          python-version: ${{ matrix.python-version }}
-          channels: conda-forge, defaults
           environment-file: pydna_test_environment.yml
           use-only-tar-bz2: true
-
-	  - name: Publish a Python distribution to PyPI
-	    uses: pypa/gh-action-pypi-publish@master
-	    with:
-		  user: __token__
-		  password: ${{ secrets.PYDNA_TEST_PYPI_TOKEN }}
+      - name: Build pypi wheel package
+        run: python setup.py build bdist_wheel
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYDNA_TEST_PYPI_TOKEN }}
