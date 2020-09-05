@@ -19,6 +19,7 @@ jobs:
       - name: Setup Miniconda
         uses: goanpeca/setup-miniconda@v1
         with:
+          python-version: 3.8
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: pydna_build_environment
@@ -31,3 +32,10 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYDNA_TEST_PYPI_TOKEN }}
+
+
+
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge, defaults
+          environment-file: pydna_test_environment.yml
+          use-only-tar-bz2: true
