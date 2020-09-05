@@ -15,7 +15,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/conda_pkgs_dir
-          key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('pydna_build_environment.yml') }}
+          key: conda-ubuntu-latest-python-3.8-${{ hashFiles('pydna_build_environment.yml') }}
       - name: Setup Miniconda
         uses: goanpeca/setup-miniconda@v1
         with:
@@ -25,6 +25,8 @@ jobs:
           activate-environment: pydna_build_environment
           environment-file: pydna_build_environment.yml
           use-only-tar-bz2: true
+      - shell: bash -l {0}
+          run: conda info --all
       - name: Build pypi wheel package
         shell: bash
         run: python setup.py build bdist_wheel
@@ -33,10 +35,3 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYDNA_TEST_PYPI_TOKEN }}
-
-
-
-          python-version: ${{ matrix.python-version }}
-          channels: conda-forge, defaults
-          environment-file: pydna_test_environment.yml
-          use-only-tar-bz2: true
