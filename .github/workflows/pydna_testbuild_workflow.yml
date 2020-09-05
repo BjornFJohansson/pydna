@@ -22,7 +22,7 @@ jobs:
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: pydna_build_environment
-          environment-file: pydna_test_environment.yml
+          environment-file: pydna_build_environment.yml
           use-only-tar-bz2: true
       - name: Build pypi wheel package
         run: python setup.py build bdist_wheel
