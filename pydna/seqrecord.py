@@ -24,7 +24,6 @@ from prettytable import PrettyTable as _PrettyTable
 import datetime as _datetime
 import os as _os
 import re as _re
-import colorsys as _colorsys
 
 from pydna import _PydnaWarning
 from warnings import warn as _warn
