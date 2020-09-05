@@ -27,6 +27,7 @@ jobs:
         with:
           auto-update-conda: true
           auto-activate-base: false
+          add-pip-as-python-dependency: true
           activate-environment: pydna_test_environment
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, defaults

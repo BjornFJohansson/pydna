@@ -15,7 +15,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/conda_pkgs_dir
-          key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
+          key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('pydna_build_environment.yml') }}
       - name: Setup Miniconda
         uses: goanpeca/setup-miniconda@v1
         with:
