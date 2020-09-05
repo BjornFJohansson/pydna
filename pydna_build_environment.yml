@@ -1,0 +1,14 @@
+name: pydna_build_environment
+channels:
+- conda-forge
+- defaults
+- BjornFJohansson
+dependencies:
+
+- appdirs
+- biopython
+- prettytable
+- networkx
+- pyparsing
+- setuptools
+- twine
