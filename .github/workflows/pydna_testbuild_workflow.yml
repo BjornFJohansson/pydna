@@ -32,6 +32,9 @@ jobs:
       - name: Build pypi wheel package
         shell: bash -l {0}
         run: python setup.py build bdist_wheel
+      - name: tags
+        shell: bash -l {0}
+        run: git tag
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
