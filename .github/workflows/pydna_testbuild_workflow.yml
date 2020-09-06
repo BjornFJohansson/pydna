@@ -30,9 +30,8 @@ jobs:
         shell: bash -l {0}
         run: conda info --all
       - name: Build pypi wheel package
-        shell: bash
+        shell: bash -l {0}
         run: python setup.py build bdist_wheel
-
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
