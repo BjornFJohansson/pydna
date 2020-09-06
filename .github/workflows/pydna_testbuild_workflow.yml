@@ -15,21 +15,24 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/conda_pkgs_dir
-          key: conda-ubuntu-latest-python-3.8-${{ hashFiles('pydna_build_environment.yml') }}
+          key: conda-ubuntu-latest-python-3.8-${{ hashFiles('environment-ci.yml') }}
       - name: Setup Miniconda
         uses: goanpeca/setup-miniconda@v1
         with:
-          python-version: 3.8
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: pydna_build_environment
+          python-version: 3.8
+          channels: conda-forge, defaults
           environment-file: pydna_build_environment.yml
           use-only-tar-bz2: true
-      - shell: bash -l {0}
-          run: conda info --all
+      - name: conda info
+        shell: bash -l {0}
+        run: conda info --all
       - name: Build pypi wheel package
         shell: bash
         run: python setup.py build bdist_wheel
+
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
