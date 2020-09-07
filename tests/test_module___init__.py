@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pytest, appdirs, tempfile, os, shutil, subprocess, sys
+import pytest, tempfile, os, shutil
 
 from unittest import mock
 
@@ -132,8 +132,8 @@ def test_logo():
 
     assert pydna.logo() == textwrap.dedent(
         r"""
-                     _             
-                    | |            
+                     _
+                    | |
      ____  _   _  __| |___   __ ___
     |  _ \| | | |/ _  |  _ \(____ |
     | |_| | |_| ( (_| | | | / ___ |

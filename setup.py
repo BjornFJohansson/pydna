@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import versioneer
-
-# Read author etc. from __init__.py
-for line in open("pydna/__init__.py", encoding="utf-8"):
-    if line.startswith("__") and not line.startswith(("__version", "__long")):
+# Read __author__, __email__. from __init__.py
+__author__ = "__author__"
+__email__  = "__email__"
+for line in open("pydna/__init__.py"):
+    if line.startswith("__author__") or line.startswith("__email__"):
         exec(line.strip())
 
 from setuptools import setup
@@ -18,9 +18,6 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="pydna",
-    version=versioneer.get_version().split("+", 1)[0],
-    product_version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
     author=__author__,
     author_email=__email__,
     zip_safe=False,
@@ -32,6 +29,9 @@ setup(
                      recombination between DNA molecules.""",
     long_description=long_description,
     long_description_content_type="text/markdown",
+    setup_requires =["pytest-runner", "setuptools_scm"],
+    tests_require=["pytest"],
+    use_scm_version=True,
     install_requires=[
         "appdirs",
         "biopython",

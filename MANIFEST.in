@@ -10,9 +10,6 @@ include gpl.txt
 
 recursive-include pydna *
 
-include versioneer.py
-include pydna/_version.py
-
 global-exclude *.pyc
 global-exclude *~
 

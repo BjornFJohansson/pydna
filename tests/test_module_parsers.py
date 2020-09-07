@@ -187,8 +187,8 @@ def test_misc_parse():
     with open("pth1.txt", "r", encoding="utf-8") as f:
         a, b = BPparse(f, "gb")
 
-    print("|" + a.features[13].qualifiers["label"][0] + "|")
-    print("|" + a.format("gb")[3314:3324] + "|")
+    assert "|" + a.features[13].qualifiers["label"][0] + "|" == "|2micron 2µ|"
+    assert "|" + a.format("gb")[3314:3324] + "|" == '|olor="gree|'
 
     assert a.features[13].qualifiers["label"][0] == "2micron 2µ"
     assert a.format("gb")[3268:3278] == "2micron 2µ"

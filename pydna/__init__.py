@@ -12,13 +12,13 @@
 
 pydna
 =====
-Pydna is a python package providing code for simulation of the creation of recombinant DNA molecules 
+Pydna is a python package providing code for simulation of the creation of recombinant DNA molecules
 using `molecular biology <https://en.wikipedia.org/wiki/Molecular_biology>`_ techniques.
 
 Provided:
   1. PCR simulation
   2. Assembly simulation based on shared identical sequences
-  3. Primer design for amplification of a given sequence 
+  3. Primer design for amplification of a given sequence
   4. Automatic design of primer tails for Gibson assembly or homologous recombination.
   5. Restriction digestion and cut&paste cloning
   6. Agarose gel simulation
@@ -30,12 +30,12 @@ pydna package layout
 
 The most important modules and how to import functions or classes from them are listed below.
 Class names starts with a capital letter, functions with a lowercase letter:
-    
+
 ::
-    
+
       from pydna.module import function
       from pydna.module import Class
-            
+
       Example: from pydna.gel import Gel
 
       pydna
@@ -68,7 +68,7 @@ Class names starts with a capital letter, functions with a lowercase letter:
 How to use the documentation
 ----------------------------
 Documentation is available as docstrings provided in the source code for each module.
-These docstrings can be inspected by reading the source code directly. 
+These docstrings can be inspected by reading the source code directly.
 See further below on how to obtain the code for pydna.
 
 In the python shell, use the built-in ``help`` function to view a function's docstring::
@@ -81,11 +81,11 @@ The doctrings are also used to provide an automaticly generated reference manual
 `read the docs <https://pydna.readthedocs.io>`_.
 
 Docstrings can be explored using `IPython <http://ipython.org/>`_, an advanced Python shell with
-TAB-completion and introspection capabilities. To see which functions are available in `pydna`, 
+TAB-completion and introspection capabilities. To see which functions are available in `pydna`,
 type `pydna.<TAB>` (where `<TAB>` refers to the TAB key).
 Use `pydna.open_config_folder?<ENTER>`to view the docstring or `pydna.open_config_folder??<ENTER>` to view the source code.
 
-In the `Spyder IDE <https://github.com/spyder-ide/spyder>`_ it is possible to place the cursor immediately before 
+In the `Spyder IDE <https://github.com/spyder-ide/spyder>`_ it is possible to place the cursor immediately before
 the name of a module,class or function and press ctrl+i to bring up docstrings in a separate window in Spyder
 
 Code snippets are indicated by three greater-than signs::
@@ -103,7 +103,7 @@ The pydna source code is `available on Github <https://github.com/BjornFJohansso
 How to get more help
 --------------------
 
-Please join the `Google grooup <https://groups.google.com/forum/#!forum/pydna>`_ for pydna, this is the preferred 
+Please join the `Google grooup <https://groups.google.com/forum/#!forum/pydna>`_ for pydna, this is the preferred
 location for help. If you find bugs in pydna itself, open an issue at the `Github repository <https://github.com/BjornFJohansson/pydna/issues>`_.
 
 Examples of pydna in use
@@ -273,13 +273,11 @@ else:
         "gel simulation is available, optional dependencies were found.")
 
 
-__long_version__ = _version.get_versions()["version"]
-__version__ = __long_version__.split("+", 1)[0]
+__version__ = _version.version
 del _version
 _sys.modules.pop("pydna._version", None)
 
 _logger.info("__version__ = %s", __version__)
-_logger.info("__long_version__ = %s", __long_version__)
 
 
 class _PydnaWarning(Warning):
@@ -434,16 +432,14 @@ def logo():
     return _pretty_str(
         textwrap.dedent(
             r"""
-                     _             
-                    | |            
+                     _
+                    | |
      ____  _   _  __| |___   __ ___
     |  _ \| | | |/ _  |  _ \(____ |
     | |_| | |_| ( (_| | | | / ___ |
     |  __/ \__  |\____|_| |_\_____|
     |_|   (____/
-    """[
-                1:
-            ]
+    """[1:]
         )
     )
 

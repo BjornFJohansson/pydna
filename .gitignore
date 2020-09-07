@@ -1,3 +1,6 @@
+pydna/_version.py*
+
+
 .pytest_cache
 
 # Backup files
