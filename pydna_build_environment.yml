@@ -12,3 +12,4 @@ dependencies:
 - pyparsing
 - setuptools
 - twine
+- pip
