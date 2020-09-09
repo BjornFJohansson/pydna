@@ -10,6 +10,8 @@ dependencies:
 - prettytable
 - networkx
 - pyparsing
+
 - setuptools
 - twine
 - pip
+- anaconda-client

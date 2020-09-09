@@ -17,6 +17,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+conda/
 env/
 build/
 develop-eggs/
