@@ -40,7 +40,7 @@ jobs:
         run: conda config --set anaconda_upload yes
       - name: Build conde package
         shell: bash -l {0}
-        run: conda build --no-include-recipe --dirty .
+        run: conda build --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
       - name: publish-to-conda
         uses: maxibor/conda-package-publish-action@v1.1
         with:
