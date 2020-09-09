@@ -15,3 +15,4 @@ dependencies:
 - twine
 - pip
 - anaconda-client
+- conda-build
