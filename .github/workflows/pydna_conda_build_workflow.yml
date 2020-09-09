@@ -35,6 +35,9 @@ jobs:
       - name: conda info
         shell: bash -l {0}
         run: conda info --all
+      - name: conda config
+        shell: bash -l {0}
+        run: conda config --set anaconda_upload yes
       - name: Build conde package
         shell: bash -l {0}
         run: conda build --no-include-recipe --dirty .
