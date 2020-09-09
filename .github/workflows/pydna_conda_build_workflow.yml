@@ -21,14 +21,14 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/conda_pkgs_dir
-          key: conda-ubuntu-latest-python-3.8-${{ hashFiles('environment-ci.yml') }}
+          key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
       - name: Setup Miniconda
         uses: goanpeca/setup-miniconda@v1
         with:
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: pydna_build_environment
-          python-version: 3.8
+          python-version: ${{ matrix.python-version }}
           channels: conda-forge, defaults, BjornFJohansson
           environment-file: pydna_build_environment.yml
           use-only-tar-bz2: true
@@ -38,9 +38,9 @@ jobs:
       - name: conda config
         shell: bash -l {0}
         run: conda config --set anaconda_upload yes
-      - name: Build conde package
+      - name: Build conda package
         shell: bash -l {0}
-        run: conda build --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
+        run: conda build --python 3.6 --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
       - name: publish-to-conda
         uses: maxibor/conda-package-publish-action@v1.1
         with:
