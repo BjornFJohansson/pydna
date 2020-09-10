@@ -18,12 +18,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cache conda
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.1
         with:
           path: ~/conda_pkgs_dir
           key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
       - name: Setup Miniconda
-        uses: goanpeca/setup-miniconda@v1
+        uses: goanpeca/setup-miniconda@v1.7.0
         with:
           auto-update-conda: true
           auto-activate-base: false
@@ -31,7 +31,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, defaults, BjornFJohansson
           environment-file: pydna_build_environment.yml
-          use-only-tar-bz2: true
       - name: conda info
         shell: bash -l {0}
         run: conda info --all
