@@ -39,9 +39,4 @@ jobs:
         run: conda config --set anaconda_upload yes
       - name: Build conda package
         shell: bash -l {0}
-        run: conda build --python 3.6 --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
-      - name: publish-to-conda
-        uses: maxibor/conda-package-publish-action@v1.1
-        with:
-          subDir: 'conda'
-          AnacondaToken: ${{ secrets.ANACONDATOKEN }}
+        run: conda build --python ${{ matrix.python-version }} --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
