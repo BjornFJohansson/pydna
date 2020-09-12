@@ -20,37 +20,10 @@ else:
 
 
 def main():
-
-    if os.getenv("CI"):
-        ci = os.getenv("DRONE") or os.getenv("TRAVIS") or os.getenv("APPVEYOR")
-        print("Tests run on continuous integration server {}".format(ci))
-        cwd = os.getcwd()
-        print("current working directroy:", cwd)
-
-        os.environ["pydna_data_dir"] = os.path.join(cwd, "DATA")
-        os.environ["pydna_log_dir"] = os.path.join(cwd, "DATA")
-        os.environ["pydna_config_dir"] = os.path.join(cwd, "DATA")
-
-        # create data directory if not present
-        try:
-            os.makedirs(os.environ["pydna_data_dir"])
-        except OSError:
-            if os.path.isdir(os.environ["pydna_data_dir"]):
-                pass
-            else:
-                raise
-
-        print('os.environ["pydna_data_dir"] = ', os.environ["pydna_data_dir"])
-        print('os.environ["pydna_log_dir"] = ', os.environ["pydna_log_dir"])
-        print('os.environ["pydna_config_dir"] = ', os.environ["pydna_config_dir"])
-        print("")
-
-    else:
-        print("Tests run locally")
-        os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")
-        os.environ["pydna_log_dir"] = tempfile.mkdtemp(prefix="pydna_log_dir_")
-        os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
-        os.environ["pydna_loglevel"] = str(logging.DEBUG)
+    os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")
+    os.environ["pydna_log_dir"] = tempfile.mkdtemp(prefix="pydna_log_dir_")
+    os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
+    os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
     asciitext("test suite on python {}".format(platform.python_version()))
 
@@ -64,7 +37,9 @@ def main():
         del coveralls
         args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]
     try:
-        import nbval  # adds functionality to py.test to recognise and collect Jupyter notebooks
+        # adds functionality to py.test to recognise and collect
+        # Jupyter notebooks
+        import nbval
     except ImportError:
         print("nbval NOT installed!")
     else:

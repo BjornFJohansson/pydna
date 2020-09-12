@@ -1,11 +1,9 @@
-name: tests
-
+name: Tests & Coverage
 on:
   push:
-    branches: [ black ]
+    branches: [ testrelease ]
   pull_request:
-    branches: [ black ]
-
+    branches: [ testrelease ]
 jobs:
   build:
     name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
@@ -17,11 +15,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.2
+
       - name: Cache conda
         uses: actions/cache@v2.1.1
         with:
           path: ~/conda_pkgs_dir
           key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
+
       - name: Setup Miniconda
         uses: goanpeca/setup-miniconda@v1.7.0
         with:
@@ -33,10 +33,20 @@ jobs:
           channels: conda-forge, defaults
           environment-file: pydna_test_environment.yml
           use-only-tar-bz2: true
-      - name: Install from source
-        # This is required for the pre-commit tests
-        shell: pwsh
-        run: pip install .
+
       - name: Test with pytest
-        shell: pwsh
+        shell: bash -l {0}
         run: python run_test.py
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          files: ./coverage1.xml,./coverage2.xml
+          directory: ./coverage/reports/
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          path_to_write_report: ./coverage/codecov_report.gz
