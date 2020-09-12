@@ -43,7 +43,7 @@ jobs:
         run: python run_test.py
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v1.0.13
         with:
           file: ./tests/coverage.xml
           env_vars: OS,PYTHON
