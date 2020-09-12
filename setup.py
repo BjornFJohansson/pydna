@@ -4,11 +4,12 @@
 # Read __author__, __email__. from __init__.py
 __author__ = "__author__"
 __email__  = "__email__"
-for line in open("pydna/__init__.py"):
+for line in open("src/pydna/__init__.py"):
     if line.startswith("__author__") or line.startswith("__email__"):
         exec(line.strip())
 
 from setuptools import setup
+from setuptools import find_packages
 
 from os import path
 
@@ -21,7 +22,8 @@ setup(
     author=__author__,
     author_email=__email__,
     zip_safe=False,
-    packages=["pydna"],
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
     url="https://github.com/BjornFJohansson/pydna",
     license="LICENSE.txt",
     description="""Contains classes and code for representing double
@@ -31,7 +33,7 @@ setup(
     long_description_content_type="text/markdown",
     setup_requires =["pytest-runner", "setuptools_scm"],
     tests_require=["pytest"],
-    use_scm_version={"write_to": "pydna/_version.py"},
+    use_scm_version={"write_to": "src/pydna/_version.py"},
     install_requires=[
         "appdirs",
         "biopython",

@@ -34,6 +34,10 @@ jobs:
           environment-file: pydna_test_environment.yml
           use-only-tar-bz2: true
 
+      - name: Install from source
+        shell: bash -l {0}
+        run: pip install . --editable --no-deps
+
       - name: Test with pytest
         shell: bash -l {0}
         run: python run_test.py
@@ -41,10 +45,8 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
-          files: ./coverage1.xml,./coverage2.xml
-          directory: ./coverage/reports/
+          directory: ./tests/
           flags: unittests
           env_vars: OS,PYTHON
           name: codecov-umbrella

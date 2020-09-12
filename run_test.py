@@ -20,6 +20,7 @@ else:
 
 
 def main():
+
     os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")
     os.environ["pydna_log_dir"] = tempfile.mkdtemp(prefix="pydna_log_dir_")
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
@@ -53,12 +54,6 @@ def main():
     os.chdir("tests")
     result_suite = pytest.cmdline.main(mainargs)
     os.chdir(cwd)
-
-    try:
-        shutil.copy(os.path.join("tests", "coverage.xml"), "coverage.xml")
-        shutil.copy(os.path.join("tests", ".coverage"), ".coverage")
-    except FileNotFoundError:
-        pass
 
     asciitext("doc testson python {}".format(platform.python_version()))
     doctestargs = ["pydna", "--doctest-modules", "-s"]
