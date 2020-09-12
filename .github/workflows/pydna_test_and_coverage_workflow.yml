@@ -38,7 +38,7 @@ jobs:
         shell: bash -l {0}
         run: pip install .
 
-      - name: Test with pytest
+      - name: python run_test.py
         shell: bash -l {0}
         run: python run_test.py
 

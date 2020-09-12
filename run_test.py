@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
-import shutil
 import logging
 import tempfile
 import platform
 import pytest
+
+# pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval --current-env  --capture=no --durations=10 --doctest-modules
 
 try:
     from pyfiglet import Figlet
@@ -26,7 +27,7 @@ def main():
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
-    asciitext("test suite on python {}".format(platform.python_version()))
+    asciitext("tests python {}".format(platform.python_version()))
 
     try:
         import coveralls
@@ -49,14 +50,14 @@ def main():
         args.append("--nbval")
         args.append("--current-env")
 
-    mainargs = [".", "-s", "--durations=10"] + args
+    mainargs = [".", "--capture=no", "--durations=10"] + args
     cwd = os.getcwd()
     os.chdir("tests")
     result_suite = pytest.cmdline.main(mainargs)
     os.chdir(cwd)
 
-    asciitext("doc testson python {}".format(platform.python_version()))
-    doctestargs = ["pydna", "--doctest-modules", "-s"]
+    asciitext("doctests python {}".format(platform.python_version()))
+    doctestargs = ["src/pydna", "--doctest-modules", "--capture=no"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
     asciitext("done!")

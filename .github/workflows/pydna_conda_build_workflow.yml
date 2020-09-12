@@ -1,9 +1,9 @@
-name: Build
+name: Conda Build
 on:
   push:
-    branches: [testrelease]
+    branches: [ master ]
   pull_request:
-    branches: [testrelease]
+    branches: [ master ]
 jobs:
   build:
     name: Build (${{ matrix.python-version }}, ${{ matrix.os }})

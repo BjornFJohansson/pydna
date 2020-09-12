@@ -9,6 +9,7 @@ for line in open("src/pydna/__init__.py"):
         exec(line.strip())
 
 from setuptools import setup
+from setuptools import Command
 from setuptools import find_packages
 
 from os import path
@@ -17,11 +18,28 @@ this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
+class PyTest(Command):
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import subprocess
+        import sys
+        errno = subprocess.call([sys.executable, 'run_test.py'])
+        raise SystemExit(errno)
+
+
+
 setup(
     name="pydna",
     author=__author__,
     author_email=__email__,
     zip_safe=False,
+    cmdclass = {'test': PyTest},
     packages=find_packages('src'),
     package_dir={'': 'src'},
     url="https://github.com/BjornFJohansson/pydna",

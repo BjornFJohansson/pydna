@@ -1,4 +1,4 @@
-name: build
+name: Setuptools Build
 on:
   push:
     branches: [ master ]

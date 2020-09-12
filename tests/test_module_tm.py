@@ -7,8 +7,8 @@ import pytest
 def test_tms():
     from pydna import tm
 
-    args = []
-    kwargs = {"key": "value"}
+    #args = []
+    #kwargs = {"key": "value"}
 
     primer = "AGTCTAGTCTGTGTAGTTTCGACTAGTCTATCG"
     # primer = "agatcgactatctatcttatgcactatgtctat"
@@ -25,8 +25,10 @@ def test_tms():
     assert tm.tm_product(primer * 20) == pytest.approx(76.13974075026366)
     assert tm.ta_default(primer, primer, primer * 20) == pytest.approx(
         58.734572855728054
-    )
-    assert tm.ta_dbd(primer, primer, primer * 20) == pytest.approx(65.74633103079093)
+        )
+    assert tm.ta_dbd(primer, primer, primer * 20) == pytest.approx(
+        65.74633103079093
+        )
     assert tm.tmbresluc(primer) == pytest.approx(63.38496307044147)
 
     with pytest.raises(NotImplementedError):
