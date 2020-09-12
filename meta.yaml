@@ -39,7 +39,7 @@ test:
     - pydna
   source_files:
     - tests
-    - pydna
+    - src/pydna
 about:
   home: https://github.com/BjornFJohansson/pydna
   summary: Representing double stranded DNA and simulating cloning, homologous recombination, Gibson assembly, Gel electrophoresis etc.
