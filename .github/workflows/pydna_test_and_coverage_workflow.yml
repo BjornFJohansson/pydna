@@ -46,6 +46,7 @@ jobs:
         uses: codecov/codecov-action@v1.0.13
         with:
           file: ./tests/coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: true
