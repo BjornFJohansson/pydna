@@ -24,9 +24,9 @@ mysequences = {
 }
 
 if __name__ == "__main__":
-    cache = _os.getenv("pydna_cache")
+    _cache = _os.getenv("pydna_cache")
     _os.environ["pydna_cache"] = "nocache"
-    import doctest
+    import doctest as _doctest
 
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"] = cache
+    _doctest.testmod(verbose=True, optionflags=_doctest.ELLIPSIS)
+    _os.environ["pydna_cache"] = _cache
