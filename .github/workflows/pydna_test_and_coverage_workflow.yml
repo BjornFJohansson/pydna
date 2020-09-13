@@ -9,8 +9,8 @@ jobs:
     name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        python-version: ["3.8", "3.7", "3.6"]
+        os: ['ubuntu-latest'] #, 'macos-latest', 'windows-latest']
+        python-version: ["3.8"] #, "3.7", "3.6"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -50,4 +50,3 @@ jobs:
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: true
-          path_to_write_report: ./coverage/codecov_report.gz
