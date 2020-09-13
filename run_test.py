@@ -7,14 +7,14 @@ import tempfile
 import platform
 import pytest
 
-# pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval --current-env  --capture=no --durations=10 --doctest-modules
+# pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval
+# --current-env  --capture=no --durations=10 --doctest-modules
 
 try:
     from pyfiglet import Figlet
 except ImportError:
     asciitext = print
 else:
-
     def asciitext(*args, **kwargs):
         f = Figlet(font="doom")
         print(f.renderText(" ".join(args)), **kwargs)
@@ -22,10 +22,10 @@ else:
 
 def main():
 
-    os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")
-    os.environ["pydna_log_dir"] = tempfile.mkdtemp(prefix="pydna_log_dir_")
+    os.environ["pydna_data_dir"]  = tempfile.mkdtemp(prefix="pydna_data_dir_")
+    os.environ["pydna_log_dir"]    = tempfile.mkdtemp(prefix="pydna_log_dir_")
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
-    os.environ["pydna_loglevel"] = str(logging.DEBUG)
+    os.environ["pydna_loglevel"]   = str(logging.DEBUG)
 
     asciitext("tests python {}".format(platform.python_version()))
 
