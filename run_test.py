@@ -6,6 +6,7 @@ import logging
 import tempfile
 import platform
 import pytest
+import pathlib
 
 # pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval
 # --current-env  --capture=no --durations=10 --doctest-modules
@@ -56,8 +57,11 @@ def main():
     result_suite = pytest.cmdline.main(mainargs)
     os.chdir(cwd)
 
+    from pydna import __file__ as pydnainit
+    doctestdir = str(pathlib.Path(pydnainit).parent)
+
     asciitext("doctests python {}".format(platform.python_version()))
-    doctestargs = ["src/pydna", "--doctest-modules", "--capture=no", "--import-mode=importlib"]
+    doctestargs = [doctestdir, "--doctest-modules", "--capture=no", "--import-mode=importlib"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
     asciitext("done!")
