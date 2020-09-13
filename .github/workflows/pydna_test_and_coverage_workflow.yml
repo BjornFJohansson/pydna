@@ -44,9 +44,17 @@ jobs:
           environment-file: pydna_test_environment.yml
           use-only-tar-bz2: true
 
+      - name: ls
+        shell: bash -l {0}
+        run: ls
+
       - name: Install from source
         shell: bash -l {0}
         run: pip install .
+
+      - name: ls
+        shell: bash -l {0}
+        run: ls
 
       - name: python run_test.py
         shell: bash -l {0}
