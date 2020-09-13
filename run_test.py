@@ -37,7 +37,7 @@ def main():
     else:
         print("coveralls-python is installed!")
         del coveralls
-        args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml"]
+        args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml", "--import-mode=importlib"]
     try:
         # adds functionality to py.test to recognise and collect
         # Jupyter notebooks
@@ -57,7 +57,7 @@ def main():
     os.chdir(cwd)
 
     asciitext("doctests python {}".format(platform.python_version()))
-    doctestargs = ["src/pydna", "--doctest-modules", "--capture=no"]
+    doctestargs = ["src/pydna", "--doctest-modules", "--capture=no", "--import-mode=importlib"]
     result_doctest = pytest.cmdline.main(doctestargs)
 
     asciitext("done!")
