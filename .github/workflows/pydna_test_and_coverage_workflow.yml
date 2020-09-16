@@ -1,10 +1,5 @@
 name: Tests & Coverage
-on:
-  push:
-    branches: [ testrelease ]
-  pull_request:
-    branches: [ testrelease ]
-
+on: [push, pull_request]
 jobs:
   build:
     name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
@@ -47,10 +42,6 @@ jobs:
       - name: Install from source
         shell: bash -l {0}
         run: pip install .
-
-      - name: ls src
-        shell: bash -l {0}
-        run: ls
 
       - name: python run_test.py
         shell: bash -l {0}

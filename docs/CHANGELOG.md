@@ -3,7 +3,11 @@ version   date       comment
 =======   ========== ==========================================================================================
 
 3.1.0     2020-09-16 Changed to src layout for the package. Changed how melting temperature is calculated.
-                     Changes to tests, added a conftest.py. Updated for comatibility with biopython 1.7.8
+                     Changes to tests, added a conftest.py. Updated for comatibility with biopython 1.7.8.
+                     Removed mysequences.py
+                     Reformatted code with BLACK
+                     Use github actions for building and testing
+
 
 3.0.2a1   2019-07-23 .upper() and .lower() methods for Dseq and Dseqrecord classes. Improved slicing
 
