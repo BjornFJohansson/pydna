@@ -282,14 +282,3 @@ There are three github actions associated with this package:
 The pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
 
 The two other commits are triggered by publishing a github release.
-
-
-
-
-
-
-
-
-
-
-                                                |
