@@ -2,14 +2,13 @@
 
 |                                |                                                                                                                                                                                       |
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Tests                          | [Actions Status](https://github.com/BjornFJohansson/pydna/workflows/tests/badge.svg)](https://github.com/BjornFJohansson/pydna/actions)
+| Tests                          | ![Tests & Coverage](https://github.com/BjornFJohansson/pydna/workflows/Tests%20&%20Coverage/badge.svg)
 | Stars                          | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers)                                                 |
 | Documentation                  | [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)                                                    |
 | Issues                         | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                                                   |
 | Test coverage                  | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/master/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna)                                                  |
-| Conda package for platorms     | [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/platforms.svg)](https://anaconda.org/bjornfjohansson/pydna)                                               |                                             |
 | Setuptools package             | [![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)                                                                                                 |
-| Conda packages                 | [![Anaconda-Server Badge0](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)                                                |
+| Conda packages                 | [![Anaconda-Server Badge0](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna) [![Anaconda-Server Badge](https://anaconda.org/bjornfjohansson/pydna/badges/platforms.svg)](https://anaconda.org/bjornfjohansson/pydna)                                                |
 | Software license               | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna)
 
 Planning genetic constructs with many parts and assembly steps, such as recombinant
@@ -271,5 +270,26 @@ and to the regular [pypi](https://pypi.python.org/pypi/pydna) server.
 
 ## Changelog
 See the [change log](docs/CHANGELOG.md) for recent changes.
+
+## Release process
+
+There are three github actions associated with this package:
+
+- pydna_test_and_coverage_workflow.yml
+- pydna_setuptools_build_workflow.yml
+- pydna_conda_build_workflow.yml
+
+The pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
+
+The two other commits are triggered by publishing a github release.
+
+
+
+
+
+
+
+
+
 
                                                 |
