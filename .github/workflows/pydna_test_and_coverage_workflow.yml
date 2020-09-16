@@ -1,8 +1,9 @@
 name: Tests & Coverage
 on:
   push:
-    tags-ignore:
-      - '*'
+    branches: [ * ]
+  pull_request:
+    branches: [ * ]
 jobs:
   build:
     name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
