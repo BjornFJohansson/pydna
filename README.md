@@ -1,4 +1,4 @@
-# ![icon](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/pydna.resized.png) pydna
+# ![icon](https://raw.githubusercontent.com/bjornFJohansson/pydna/master/docs/pics/pydna.resized.png) pydna
 
 |                                |                                                                                                                                                                                       |
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
