@@ -14,6 +14,13 @@ from Bio.SeqUtils import MeltingTemp as _mt
 import textwrap as _textwrap
 from pydna._pretty import pretty_str as _pretty_str
 
+# See the documentation for Bio.SeqUtils.MeltingTemp for more details
+# The 10X Taq Buffer with (NH4)2SO4 is commercialized by companies like
+# ThermoFisher, although we make it ourselves
+# 10X Buffer Composition
+# 750 mM Tris-HCl (pH 8.8 at 25°C),
+# 200 mM (NH4)2SO4,
+# 0.1% (v/v) Tween 20.
 
 def tm_default(
     seq,
@@ -21,20 +28,20 @@ def tm_default(
     strict=True,
     c_seq=None,
     shift=0,
-    nn_table=_mt.DNA_NN4,
+    nn_table=_mt.DNA_NN4, # DNA_NN4: values from SantaLucia & Hicks (2004)
     tmm_table=None,
     imm_table=None,
     de_table=None,
-    dnac1=250,
-    dnac2=250,
+    dnac1=500/2,          # I assume 500 µM of each primer in the PCR mix
+    dnac2=500/2,          # This is what MELTING and Primer3Plus do
     selfcomp=False,
     Na=40,
     K=0,
-    Tris=75.0,
-    Mg=1.5,
-    dNTPs=0.8,
-    saltcorr=7,
-    func=_mt.Tm_NN,
+    Tris=75.0,           # We use the 10X Taq Buffer with (NH4)2SO4 (above)
+    Mg=1.5,              # 1.5 mM Mg2+ is often seen in modern protocols
+    dNTPs=0.8,           # I assume 200 µM of each dNTP
+    saltcorr=7,          # Tm = 81.5 + 0.41(%GC) - 600/N + 16.6 x log[Na+]
+    func=_mt.Tm_NN,      # Used by Primer3Plus to calculate the product Tm.
 ):
     return func(
         seq,

@@ -11,6 +11,7 @@ import pathlib
 # pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval
 # --current-env  --capture=no --durations=10 --doctest-modules
 
+#
 try:
     from pyfiglet import Figlet
 except ImportError:
@@ -32,30 +33,33 @@ def main():
 
     try:
         import coveralls
+        # also pytest_cov (pip install pytest-cov)
     except ImportError:
-        print("coveralls-python NOT installed!")
+        print("coveralls-python NOT installed! (pip install coveralls)")
         args = []
     else:
-        print("coveralls-python is installed!")
+        print(f"coveralls-python {coveralls.__version__} is installed!")
         del coveralls
-        args = ["--cov=pydna", "--cov-report=html", "--cov-report=xml", "--import-mode=importlib"]
+        args = ["--cov=pydna",
+                "--cov-report=html",
+                "--cov-report=xml",
+                "--import-mode=importlib"]
     try:
-        # adds functionality to py.test to recognise and collect
-        # Jupyter notebooks
+        # A py.test plugin to validate Jupyter notebooks
         import nbval
     except ImportError:
-        print("nbval NOT installed!")
+        print("nbval NOT installed! (pip install nbval)")
     else:
-        print("nbval is installed!")
+        print(f"nbval {nbval.__version__} is installed!")
         del nbval
         args.append("--nbval")
         args.append("--current-env")
 
-    mainargs = [".", "--capture=no", "--durations=10"] + args
-    cwd = os.getcwd()
-    os.chdir("tests")
+    mainargs = ["tests", "--capture=no", "--durations=10"] + args
+    #cwd = os.getcwd()
+    #os.chdir("tests")
     result_suite = pytest.cmdline.main(mainargs)
-    os.chdir(cwd)
+    #os.chdir(cwd)
 
     from pydna import __file__ as pydnainit
     doctestdir = str(pathlib.Path(pydnainit).parent)

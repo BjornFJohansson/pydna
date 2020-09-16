@@ -2,7 +2,10 @@
 version   date       comment
 =======   ========== ==========================================================================================
 
-3.0.2a1   2019-07-23 .upper() and .lower() methods for Dseq and Dseqrecord classes. Improved slicing of 
+3.1.0     2020-09-16 Changed to src layout for the package. Changed how melting temperature is calculated.
+                     Changes to tests, added a conftest.py. Updated for comatibility with biopython 1.7.8
+
+3.0.2a1   2019-07-23 .upper() and .lower() methods for Dseq and Dseqrecord classes. Improved slicing
 
 3.0.1     2019-05-28 Many changes and improvements, especially for the Assembly class.
 
@@ -10,8 +13,8 @@ version   date       comment
 
 2.0.3     2017-12-14 ---
 
-2.0.3a1   2017-12-14 pcr function now takes an amplicon. This way an amplicon can easily be rerun after 
-                     modification of primers or template 
+2.0.3a1   2017-12-14 pcr function now takes an amplicon. This way an amplicon can easily be rerun after
+                     modification of primers or template
 
 2.0.3a0   2017-12-03 ---
 
@@ -23,9 +26,9 @@ version   date       comment
 
 2.0.0     2017-06-23 First release of 2.0.0. This version adds changes in the alpha versions
 
-2.0.0a4   2017-05-05 Fixed bug in _multiply_circular 
+2.0.0a4   2017-05-05 Fixed bug in _multiply_circular
 
-2.0.0a3   2017-04-04 added the all module, from pydna.all import *, now imports a set of useful pydna modules 
+2.0.0a3   2017-04-04 added the all module, from pydna.all import *, now imports a set of useful pydna modules
                      into the main namespace.
                      Finer control over cache, genbank download is now on by default.
                      Bug fix in assembly_fragments function that created too long primer tails.
@@ -35,14 +38,14 @@ version   date       comment
 2.0.0a1              removed setting functions for cache in __init_ and the delete_cache function for simplicity
                      removed these functions
                      pydna.design.print_primer_pair
-                     pydna.design.cloning_primers 
+                     pydna.design.cloning_primers
                      pydna.design.integration_primers
                      pydna.design.assembly_primers
 2.0.0a0   2017-03-15 alpha release, removed imports in __init__
                      This version breaks compatibility.
 
 1.2.0     2017-03-10 New and simpler primer design api, especially for gibson assembly primers. See docstrings
-                     Dseqrecord.find method that allows finding subsequences "over the edge" of circular 
+                     Dseqrecord.find method that allows finding subsequences "over the edge" of circular
                      sequences.
 
 1.1.5     2016-12-16 added message for Dseqrecord write
@@ -60,9 +63,9 @@ version   date       comment
                      pydna.read_primer now a Primer class object
                      pydna.read_url and pydna.parse_url removed, since they are too risky.
                      it is better to use pydna.download_text in combination with read or parse.
-                     this way, the intermediate text can be inspected and genbankfixer can be applied if 
+                     this way, the intermediate text can be inspected and genbankfixer can be applied if
                      necessary
-                     
+
 1.1.1     2016-11-20 New module genbankfixer for salvaging broken genbank files (pydna.gbtext_clean).
                      New pydna.readprimer function (shortcut for reading to Biopython.SeqRecord).
                      Tests merged to pytest.
@@ -74,9 +77,9 @@ version   date       comment
 1.0.2     2016-10-08 Python 3 only!
                      pydna.open_cache -> pydna.open_cache_folder; opens the cache folder in the file browser
                      logging level is not "info"
-                     added the possiblity to specify a text file containing primers and  
+                     added the possiblity to specify a text file containing primers and
                      a path to the ApE plasmid editor (http://biologylabs.utah.edu/jorgensen/wayned/ape/)
-                     These settings can be made in the pydna.ini file that is located in the 
+                     These settings can be made in the pydna.ini file that is located in the
                      "user_config_dir" specified on each platform by the appdirs module.
                      on linux it is in ~/.config/pydna
                      Bugfix: invisible gel bands in the gel module.
