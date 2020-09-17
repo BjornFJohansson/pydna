@@ -581,6 +581,7 @@ class Dseqrecord(_SeqRecord):
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description
+                print(oldstamp, newstamp)
                 if oldstamp and newstamp:
                     if oldstamp.group(0)[:35] == newstamp.group(0)[:35]:
                         newdescription = newdescription.replace(

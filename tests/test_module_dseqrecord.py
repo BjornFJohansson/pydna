@@ -540,6 +540,51 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
     assert m.mock_calls[0]
     assert m.mock_calls[4]
 
+def test_write_different_file_to_stamped_existing_file2(monkeypatch):
+
+    import builtins
+    from unittest.mock import patch
+    from unittest.mock import mock_open
+    from pydna.dseqrecord import Dseqrecord
+    from pydna.readers import read
+
+    new = Dseqrecord("Ggatcc", circular=True)
+    new.stamp()
+    old = Dseqrecord("Ggatcc", circular=True)
+    old.stamp()
+
+    assert new.description[:35] == old.description[:35]
+
+    monkeypatch.setattr("pydna.dseqrecord._os.path.isfile", lambda x: True)
+    monkeypatch.setattr("pydna.dseqrecord._os.rename", lambda x, y: True)
+    m = mock_open(read_data=old.format())
+
+    with patch("builtins.open", m) as d:
+        new.write(filename="Ggatcc.gb")
+
+    new = Dseqrecord("Ggatcc", circular=True)
+
+    with patch("builtins.open", m) as d:
+        new.write(filename="Ggatcc.gb")
+
+    new.description = "cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2018-06-01T05:05:51.778066"
+
+    with patch("builtins.open", m) as d:
+        new.write(filename="Ggatcc.gb")
+
+    new.description = "cSEGUID_N"
+
+    m = mock_open(read_data=old.format())
+    with patch("builtins.open", m) as d:
+        new.write(filename="Ggatcc.gb")
+
+    assert m.called
+    # m.write().assert_called_once_with(new.format())
+    assert m.call_count == 6
+    assert m.mock_calls[0]
+    assert m.mock_calls[4]
+
+
 
 # [call('Ggatcc.gb', 'r', encoding='utf-8'),
 # call().__enter__(),
@@ -1609,10 +1654,37 @@ def test_looped():
     b=a.looped()
     assert a.features == b.features
 
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
+    a.add_feature(0,5)
+    b=a.looped()
+    assert a.features == b.features
+
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
+    a.add_feature(0,5,strand=-1)
+    b=a.looped()
+    assert a.features == b.features
+
     a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
     a.add_feature(2,4)
     b=a.looped()
     assert a.features == b.features
+
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
+    a.add_feature(0,5)
+    b=a.looped()
+    assert a.features == b.features
+
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
+    a.add_feature(0,5,strand=-1)
+    b=a.looped()
+    assert a.features == b.features
+
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
+    a.add_feature(0,6)
+    b=a.looped()
+    assert a.features == b.features
+
+
 
 
 def test_upper():
