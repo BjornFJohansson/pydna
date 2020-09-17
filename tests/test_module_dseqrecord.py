@@ -1094,7 +1094,7 @@ def test_features_change_ori():
                     LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
                     DEFINITION  .
                     SOURCE      .
-                    COMMENT     
+                    COMMENT
                     COMMENT     ApEinfo:methylated:1
                     FEATURES             Location/Qualifiers
                          misc_feature    join(2..3,5..7,9..12)
@@ -1106,7 +1106,7 @@ def test_features_change_ori():
                                          /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
                                          width 5 offset 0"
                     ORIGIN
-                            1 atcaccgatt tta    
+                            1 atcaccgatt tta
                     //"""
     )
 
@@ -1119,8 +1119,8 @@ def test_features_change_ori():
                     LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
                     DEFINITION  .
                     SOURCE      .
-                    COMMENT     
-                    COMMENT     
+                    COMMENT
+                    COMMENT
                     COMMENT     ApEinfo:methylated:1
                     FEATURES             Location/Qualifiers
                          misc_feature    complement(join(2..5,7..9,11..12))
@@ -1132,7 +1132,7 @@ def test_features_change_ori():
                                          /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
                                          width 5 offset 0"
                     ORIGIN
-                            1 taaaatcggt gat    
+                            1 taaaatcggt gat
                     //"""
     )
 
@@ -1587,6 +1587,56 @@ def test_shifted():
     s = Dseqrecord("GGATCCgaattc", circular=False)
     with pytest.raises(TypeError):
         s.shifted(1)
+
+def test_looped():
+    from pydna.dseq import Dseq
+    from pydna.dseqrecord import Dseqrecord
+    a=Dseqrecord("aaaa")
+    a.add_feature(2,4)
+    b=a.looped()
+    assert a.features == b.features
+    a=Dseqrecord("aaaa")
+    a.add_feature(0,2)
+    b=a.looped()
+    assert a.features == b.features
+    a=Dseqrecord("aaaa")
+    a.add_feature(0,4)
+    b=a.looped()
+    assert a.features == b.features
+
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
+    a.add_feature(2,4)
+    b=a.looped()
+    assert a.features == b.features
+
+    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
+    a.add_feature(2,4)
+    b=a.looped()
+    assert a.features == b.features
+
+
+def test_upper():
+    from pydna.dseqrecord import Dseqrecord
+    s = Dseqrecord("Gc")
+    s.annotations["sample"] = ["sample"]
+    u = s.upper()
+    assert s.upper() == u
+    assert s.seq.upper() == u.seq.upper()
+    del u.__dict__["_seq"]
+    del s.__dict__["_seq"]
+    assert u.__dict__ == s.__dict__
+
+
+def test_lower():
+    from pydna.dseqrecord import Dseqrecord
+    s = Dseqrecord("Gc")
+    s.annotations["sample"] = ["sample"]
+    l = s.lower()
+    assert s.lower() == l
+    assert s.seq.upper() == l.seq.upper()
+    del l.__dict__["_seq"]
+    del s.__dict__["_seq"]
+    assert l.__dict__ == s.__dict__
 
 
 def test_map():
