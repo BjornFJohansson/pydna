@@ -5,3 +5,8 @@ build:
 
 conda:
   environment: pydna_build_environment.yml
+
+python:
+   install:
+      - method: pip
+        path: .
