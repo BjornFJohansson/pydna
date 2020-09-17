@@ -19,8 +19,8 @@ from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.utils import cseguid as _cseg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-from pydna._sequencetrace import SequenceTraceFactory as _SequenceTraceFactory
 from pydna.seqfeature import SeqFeature as _SeqFeature
+from Bio import SeqIO
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
 from pydna.seqrecord import SeqRecord as _SeqRecord
@@ -258,67 +258,6 @@ class Dseqrecord(_SeqRecord):
         Use :meth:`looped` or :meth:`tolinear`"""
         return self.seq.circular
 
-    def upper(self):
-        """Returns an uppercase copy.
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> my_seq = Dseqrecord("aAa")
-        >>> my_seq.seq
-        Dseq(-3)
-        aAa
-        tTt
-        >>> upper = my_seq.upper()
-        >>> upper.seq
-        Dseq(-3)
-        AAA
-        TTT
-        >>>
-
-
-        Returns
-        -------
-        Dseqrecord
-            Dseqrecord object in uppercase
-
-
-        See also
-        --------
-        pydna.dseqrecord.Dseqrecord.lower"""
-
-        upper = _copy.deepcopy(self)
-        upper.seq = upper.seq.upper()
-        return upper
-
-    def lower(self):
-        """>>> from pydna.dseqrecord import Dseqrecord
-        >>> my_seq = Dseqrecord("aAa")
-        >>> my_seq.seq
-        Dseq(-3)
-        aAa
-        tTt
-        >>> upper = my_seq.upper()
-        >>> upper.seq
-        Dseq(-3)
-        AAA
-        TTT
-        >>> lower = my_seq.lower()
-        >>> lower
-        Dseqrecord(-3)
-        >>>
-
-        Returns
-        -------
-        Dseqrecord
-            Dseqrecord object in lowercase
-
-        See also
-        --------
-        pydna.dseqrecord.Dseqrecord.upper
-
-        """
-
-        lower = _copy.deepcopy(self)
-        lower.seq = lower.seq.lower()
-        return lower
 
     def m(self):
         """This method returns the mass of the DNA molecule in grams. This is
@@ -743,16 +682,11 @@ class Dseqrecord(_SeqRecord):
 
     def map_trace_files(self, pth):  # TODO allow path-like objects
         import glob
-
         traces = []
-        stf = _SequenceTraceFactory()
         for name in glob.glob(pth):
-            traces.append(stf.loadTraceFile(name))
-            from Bio import SeqIO
-
-            x = str(SeqIO.read(name, "abi").seq).lower()
-            y = str(stf.loadTraceFile(name).basecalls).lower()
-            assert x == y
+            trace = SeqIO.read(name, "abi").lower()
+            trace.annotations["filename"] = trace.fname = name
+            traces.append(trace)
         if not traces:
             raise ValueError("No trace files found in {}".format(pth))
         if hasattr(self.map_target, "step"):
@@ -770,8 +704,8 @@ class Dseqrecord(_SeqRecord):
             target_rc = str(self[area].seq.rc()).lower()
             for trace in traces:
                 if (
-                    target in str(trace.basecalls).lower()
-                    or target_rc in str(trace.basecalls).lower()
+                    target in str(trace.seq)
+                    or target_rc in str(trace.seq)
                 ):
                     self.matching_reads.append(trace)
                 else:
@@ -787,7 +721,7 @@ class Dseqrecord(_SeqRecord):
         for read_ in reads:
 
             matches = _common_sub_strings(
-                str(self.seq).lower(), read_.basecalls.lower(), limit=25
+                str(self.seq).lower(), str(read_.seq), limit=25
             )
 
             if not matches:
@@ -817,11 +751,11 @@ class Dseqrecord(_SeqRecord):
 
             self.features.append(
                 _SeqFeature(
-                    loc, qualifiers={"label": [read_.getFileName()]}, type="trace"
+                    loc, qualifiers={"label": [read_.annotations["filename"]]}, type="trace"
                 )
             )
 
-        return [x.getFileName() for x in matching_reads]
+        return [x.annotations["filename"] for x in matching_reads]
 
     def __repr__(self):
         return "Dseqrecord({}{})".format(
@@ -1293,6 +1227,69 @@ class Dseqrecord(_SeqRecord):
             result = newseq.shifted(start)
         _module_logger.info("synced")
         return Dseqrecord(result)
+
+    def upper(self):
+        """Returns an uppercase copy.
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> my_seq = Dseqrecord("aAa")
+        >>> my_seq.seq
+        Dseq(-3)
+        aAa
+        tTt
+        >>> upper = my_seq.upper()
+        >>> upper.seq
+        Dseq(-3)
+        AAA
+        TTT
+        >>>
+
+
+        Returns
+        -------
+        Dseqrecord
+            Dseqrecord object in uppercase
+
+
+        See also
+        --------
+        pydna.dseqrecord.Dseqrecord.lower"""
+
+        upper = _copy.deepcopy(self)
+        upper.seq = upper.seq.upper()
+        return upper
+
+
+    def lower(self):
+        """>>> from pydna.dseqrecord import Dseqrecord
+        >>> my_seq = Dseqrecord("aAa")
+        >>> my_seq.seq
+        Dseq(-3)
+        aAa
+        tTt
+        >>> upper = my_seq.upper()
+        >>> upper.seq
+        Dseq(-3)
+        AAA
+        TTT
+        >>> lower = my_seq.lower()
+        >>> lower
+        Dseqrecord(-3)
+        >>>
+
+        Returns
+        -------
+        Dseqrecord
+            Dseqrecord object in lowercase
+
+        See also
+        --------
+        pydna.dseqrecord.Dseqrecord.upper
+
+        """
+
+        lower = _copy.deepcopy(self)
+        lower.seq = lower.seq.lower()
+        return lower
 
 
 if __name__ == "__main__":

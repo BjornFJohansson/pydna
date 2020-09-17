@@ -407,56 +407,6 @@ class SeqRecord(_SeqRecord):
                 self.description += " " + newstamp
         return _pretty_str("{}_{}".format(alg, chksum))
 
-    def oldstamp(self):
-        """Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
-        This will show in the genbank format.
-
-        For linear sequences:
-
-        ``SEGUID_<seguid>_<datestring>``
-
-        For circular sequences:
-
-        ``cSEGUID_<seguid>_<datestring>``
-
-
-
-        Examples
-        --------
-
-        >>> from pydna.seqrecord import SeqRecord
-        >>> a=SeqRecord("aaa")
-        >>> a.stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
-        >>> a.description
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
-
-
-        """
-
-        try:
-            linear = self.seq.linear
-        except AttributeError:
-            linear = True
-        alg = {True: "SEGUID", False: "cSEGUID"}[linear]
-        chksum = getattr(self, alg.lower())()
-        pattern = r"(SEGUID|cSEGUID)_\s*(\S{27})_(\S{26})"
-        oldstamp = _re.search(pattern, self.description)
-
-        if oldstamp:
-            old_alg, old_chksum, old_datestring = oldstamp.groups()
-            if alg == old_alg and chksum == old_chksum:
-                return _pretty_str("{}_{}".format(alg, chksum))
-            else:
-                raise ValueError("Stamp is wrong!")
-        else:
-            datestring = _datetime.datetime.utcnow().isoformat(sep="T")
-            newstamp = "{}_{}_{}".format(alg, chksum, datestring)
-            if not self.description or self.description == "description":
-                self.description = newstamp
-            else:
-                self.description += " " + newstamp
-        return _pretty_str("{}_{}".format(alg, chksum))
 
     def seguid(self):
         """Returns the url safe SEGUID [#]_ for the sequence.
