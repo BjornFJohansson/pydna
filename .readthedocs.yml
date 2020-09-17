@@ -6,8 +6,7 @@ build:
 python:
   version: 3.8
 
-formats:
-    - none
+formats: []
 
 conda:
     file: docs/rtdenv.yml
