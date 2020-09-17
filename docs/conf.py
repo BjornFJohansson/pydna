@@ -76,8 +76,8 @@ copyright = "2013-2019, Björn Johansson"
 # versioneer = imp.load_module('versioneer', fp, pathname, description)
 # del imp
 # versioneer.VCS = 'git'
-# versioneer.versionfile_source = '../pydna/_version.py'
-# versioneer.versionfile_build = '../pydna/_version.py'
+# versioneer.versionfile_source = '../src/pydna/_version.py'
+# versioneer.versionfile_build = '../src/pydna/_version.py'
 # versioneer.tag_prefix = ''  # tags are like v1.2.0
 # versioneer.parentdir_prefix = '..'
 # release = versioneer.get_version()
@@ -94,9 +94,15 @@ copyright = "2013-2019, Björn Johansson"
 # version = '.'.join(release.split('.')[:2])
 
 
-exec(open("../pydna/_version.py").read())
-release = get_versions()["version"]
-version = ".".join(release.split(".")[:2])
+#exec(open("../pydna/_version.py").read())
+#release = get_versions()["version"]
+#version = ".".join(release.split(".")[:2])
+
+# contents of docs/conf.py
+from pkg_resources import get_distribution
+release = get_distribution('pydna').version
+# for example take major/minor
+version = '.'.join(release.split('.')[:3])
 
 
 # The full version, including alpha/beta/rc tags.
