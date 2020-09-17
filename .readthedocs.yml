@@ -9,7 +9,7 @@ python:
 formats: []
 
 conda:
-    file: docs/rtdenv.yml
+    file: pydna_build_environment.yml
 
 python:
     setup_py_install: true
