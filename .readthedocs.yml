@@ -3,13 +3,8 @@ version: 2
 build:
   image: latest
 
-python:
-  version: 3.8
-
-formats: []
-
 conda:
-    file: pydna_build_environment.yml
+  environment: pydna_build_environment.yml
 
 python:
     setup_py_install: true
