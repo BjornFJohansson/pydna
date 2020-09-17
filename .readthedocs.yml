@@ -4,7 +4,7 @@ build:
   image: latest
 
 conda:
-  environment: pydna_build_environment.yml
+  environment: docs/rtdenv.yml
 
 python:
    install:
