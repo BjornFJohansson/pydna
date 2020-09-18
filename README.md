@@ -9,11 +9,16 @@ Planning genetic constructs with many parts and assembly steps, such as recombin
 metabolic pathways, are often difficult to **properly** document as is evident from the
 state of such documentation in the scientific literature.
 
-The Pydna python package provide a human-readable formal description of cloning and genetic assembly
+
+The pydna python package provide a human-readable formal description of cloning and genetic assembly
 strategies in Python :snake: which also allows for simulation and verification.
 
+
 Pydna can be though of as executable documentation for molecular biology.
+
+
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
+
 
 Pydna provides simulation of:
 
