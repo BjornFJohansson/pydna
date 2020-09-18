@@ -135,20 +135,20 @@ Please post a message in the [google group](https://groups.google.com/d/forum/py
 for pydna if you need help or have problems, questions or comments :sos:.
 
 Feedback & suggestions are very welcome!
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Who is using pydna?
 
 [An Automated Protein Synthesis Pipeline with Transcriptic and Snakemake](http://blog.booleanbiotech.com/transcriptic_protein_synthesis_pipeline.html)
 
 [Pyviko: an automated Python tool to design gene knockouts in complex viruses with overlapping genes](https://www.ncbi.nlm.nih.gov/pubmed/28061810)
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Documentation
 
 Documentation is built using [Sphinx](http://www.sphinx-doc.org/) from [docstrings](https://www.python.org/dev/peps/pep-0257/)
 in the code and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
 
 The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Installation using conda on Anaconda
 
 The absolutely best way of installing and using pydna is to use the
@@ -169,7 +169,7 @@ Then pydna can be installed by typing the command below followed by return:
     conda install pydna
 
 This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies automatically (see below).
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Installation using pip
 
 The second best way of installing pydna is with pip, the
@@ -194,7 +194,7 @@ By default python and pip are not on the PATH. You can re-install Python and sel
 the full path for pip. Try something like this, depending on where your copy of Python is installed:
 
     C:\Python37\Scripts\pip install pydna
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Installation from Source
 
 If you install from source, you need to install all dependencies separately (listed above).
@@ -203,11 +203,11 @@ Open the pydna source code directory (containing the setup.py file) in
 terminal and type:
 
     python setup.py install
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Source Code
 
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octocat:.
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Minimal installation requirements
 
 Pydna is currently developed on and for Python 3.6 or 3.7. Pydna versions before 1.0.0 were compatible with python 2.7 only.
@@ -220,7 +220,7 @@ The list below is the minimal requirements for installing pydna. Biopython has c
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdirs)
 - [prettytable>=0.7.2](https://pypi.python.org/pypi/PrettyTable)
 - [requests](https://pypi.org/project/requests)
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Optional Requirements
 
 Pydna has been designed to be used from the Jupyter notebook. If [IPython](https://ipython.org/)
@@ -239,25 +239,25 @@ The pydna conda package installs the optional requirements listed above as well 
 
 - [ipython](https://pypi.python.org/pypi/ipython)
 - [jupyter](https://pypi.python.org/pypi/jupyter)
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Requirements for running tests
 
 - [pytest>=6.0.2](https://pypi.python.org/pypi/pytest)
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Requirements for analyzing code coverage
 
 - [python-coveralls >= 2.9.0](https://pypi.python.org/pypi/python-coveralls)
 - [coverage >= 3.7.1](https://pypi.python.org/pypi/coverage)
 - [pytest-cov >= 2.3.1](https://pypi.python.org/pypi/pytest-cov)
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Automatic testing
 
 The test suit is run automatically after each commit on Linux, macOS and Windows using a GitHub action.
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Changelog
 
 See the [change log](docs/CHANGELOG.md) for recent changes.
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 ## Release process
 
 There are three github actions associated with this package:
