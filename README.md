@@ -7,10 +7,12 @@
 
 
 Planning genetic constructs with many parts and assembly steps, such as recombinant
-metabolic pathways are often difficult to properly document.
+metabolic pathways are often difficult to **properly** document.
 
-The Pydna python package provide a human-readable formal description of cloning and assembly
-strategies in Python which also allows for simulation and verification of cloning strategies.
+The Pydna python package provide a human-readable formal description of cloning and genetic assembly
+strategies in Python which also allows for simulation and verification.
+
+
 Pydna can be though of as executable documentation for molecular biology.
 
 Pydna provides simulation of:
@@ -26,7 +28,11 @@ Pydna provides simulation of:
 
 Virtually any sub-cloning experiment can be described in pydna, and its execution yield
 the sequence of the of intermediate and final resulting DNA molecule(s).
-A cloning strategy expressed in pydna is *complete*, *unambiguous* and can be made *stable*.
+
+
+A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
+
+
 Pydna has been designed to be understandable for biologists with only some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
@@ -118,13 +124,14 @@ DNA sequences are downloaded from Genbank by accession numbers that are guarante
 Pydna can automate the simulation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) experiments using
 python. This is helpful to generate examples for teaching purposes.
 
-Read the [documentation](http://pydna.readthedocs.io/index.html) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
+Read the (below) or the [cookbook](https://www.dropbox.com/sh/4re9a0wk03m95z4/AABpu4zwq4IuKUvK0Iy9Io0Fa?dl=0) with example files
 for further information.
 
 Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
 for pydna if you have problems, questions or comments.
 
-Feedback is very welcome!
+Feedback & suggestions are very welcome!
+
 ## Who is using pydna?
 
 [An Automated Protein Synthesis Pipeline with Transcriptic and Snakemake](http://blog.booleanbiotech.com/transcriptic_protein_synthesis_pipeline.html)
@@ -202,19 +209,21 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna).
 Pydna is currently developed on and for Python 3.6 or 3.7. Pydna versions before 1.0.0 were compatible with python 2.7 only.
 The list below is the minimal requirements for installing pydna. Biopython has c-extensions, but the other modules are pure python.
 
-- [Python 3.6 or 3.7](http://www.python.org)
+- [Python 3.6, 3.7 or 3.8](http://www.python.org)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdirs)
 - [prettytable>=0.7.2](https://pypi.python.org/pypi/PrettyTable)
+- [requests](https://pypi.org/project/requests)
 
 ## Optional Requirements
+
 Pydna has been designed to be used from the Jupyter notebook. If [IPython](https://ipython.org/)
 and [Jupyter](http://jupyter.org/) are installed, importing ipython notebooks as modules among are
 supported among other things.
 
-If the modules listed below are installed, gel simulation functionality is available.
+If the modules listed below are installed, gel simulation functionality will be available.
 
 - [numpy](http://www.numpy.org)
 - [scipy](https://www.scipy.org)
@@ -229,7 +238,7 @@ The pydna conda package installs the optional requirements listed above as well 
 
 ## Requirements for running tests
 
-- [pytest>=3.0.3](https://pypi.python.org/pypi/pytest)
+- [pytest>=6.0.2](https://pypi.python.org/pypi/pytest)
 
 ## Requirements for analyzing code coverage
 
@@ -239,31 +248,10 @@ The pydna conda package installs the optional requirements listed above as well 
 
 ## Automatic testing
 
-The test suit is run automatically after each commit on:
-
-- Ubuntu 14.04 using Codeship
-- OSX-64 using TravisCI
-- Windows using AppveyorCI
-
-See the badges at the top of this page.
-
-## Automatic builds
-
-[Conda](http://conda.pydata.org/docs/intro.html) packages are built on Codeship(Linux), TravisCI(MacOS) and AppveyorCI(Windows).
-Source setuptools packages and wheels are built on Linux for all systems.
-Binary setuptools packages are built for Windows and MacOSX.
-
-- Conda packages [![Anaconda-Server Badge0](https://anaconda.org/bjornfjohansson/pydna/badges/version.svg)](https://anaconda.org/bjornfjohansson/pydna)
-- Setuptools packages
-
-Builds are controlled by Git tags. Tags like 1.0.2a4 are considered test builds and are uploaded to
-[testpypi](https://testpypi.python.org/pypi?:action=display&name=pydna) and to Anaconda.org with a "test" label.
-These are only meant to test the finished packages and are not meant to be used.
-
-Tags like 1.0.3 are considered final builds and are built and uploaded to [Anaconda.org](https://anaconda.org/BjornFJohansson/pydna) under the "main" label
-and to the regular [pypi](https://pypi.python.org/pypi/pydna) server.
+The test suit is run automatically after each commit on Linux, macOS and Windows using a GitHub action.
 
 ## Changelog
+
 See the [change log](docs/CHANGELOG.md) for recent changes.
 
 ## Release process
