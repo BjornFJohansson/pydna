@@ -6,7 +6,8 @@
 
 
 Planning genetic constructs with many parts and assembly steps, such as recombinant
-metabolic pathways are often difficult to **properly** document.
+metabolic pathways, are often difficult to **properly** document as is evident from the
+state of such documentation in the scientific literature.
 
 The Pydna python package provide a human-readable formal description of cloning and genetic assembly
 strategies in Python :snake: which also allows for simulation and verification.
