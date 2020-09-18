@@ -48,7 +48,9 @@ There is an open access paper in BMC Bioinformatics describing pydna:
 
 Please reference the above paper when using pydna.
 
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+
+
 ## Usage
 
 Most pydna functionality is implemented as methods for the double stranded DNA sequence record
