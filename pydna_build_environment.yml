@@ -5,11 +5,13 @@ channels:
 - BjornFJohansson
 dependencies:
 - python
+
 - appdirs
 - biopython
-- prettytable
 - networkx
+- prettytable
 - pyparsing
+
 - mpldatacursor
 
 - setuptools

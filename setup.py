@@ -53,6 +53,11 @@ setup(
     long_description_content_type="text/markdown",
     setup_requires=["pytest-runner", "setuptools_scm"],
     tests_require=["pytest"],
+
+
+
+
+
     use_scm_version={"write_to": "src/pydna/_version.py"},
     install_requires=[
         "appdirs",
