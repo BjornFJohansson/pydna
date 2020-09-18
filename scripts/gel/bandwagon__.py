@@ -56,6 +56,7 @@ for b in [10000, 7750, 4000, 3000, 2000, 1500, 1000, 750, 500]:
 
 
 from math import log
+
 x = 100
 fx = 395 - 39.8 * log(x)
 print(fx)

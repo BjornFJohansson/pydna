@@ -50,8 +50,7 @@ class Genbank(object):
         if not _re.match(
             r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}", users_email, _re.IGNORECASE
         ):
-            raise ValueError(
-                "email address {} is not valid.".format(users_email))
+            raise ValueError("email address {} is not valid.".format(users_email))
 
         _module_logger.info("#### Genbank ititiation ####")
         _module_logger.info("Genbank initiated with email: %s", users_email)

@@ -177,8 +177,7 @@ class Dseqrecord(_SeqRecord):
             )
         # record is a Bio.SeqRecord or Dseqrecord object ?
         elif hasattr(record, "features"):
-            _module_logger.info(
-                "record is a Bio.SeqRecord or Dseqrecord object")
+            _module_logger.info("record is a Bio.SeqRecord or Dseqrecord object")
             for key, value in list(record.__dict__.items()):
                 setattr(self, key, value)
             record.letter_annotations = {}
@@ -192,14 +191,12 @@ class Dseqrecord(_SeqRecord):
                 self.seq = new_seq
             # record.seq is Bio.SeqRecord object ?
             else:
-                self.seq = _Dseq(str(self.seq), linear=linear,
-                                 circular=circular)
+                self.seq = _Dseq(str(self.seq), linear=linear, circular=circular)
         else:
             raise ValueError("don't know what to do with {}".format(record))
 
         self.map_target = None
         self.n = n  # amount, set to 5E-14 which is 5 pmols
-
 
     @classmethod
     def from_string(
@@ -257,7 +254,6 @@ class Dseqrecord(_SeqRecord):
         """The circular property can not be set directly.
         Use :meth:`looped` or :meth:`tolinear`"""
         return self.seq.circular
-
 
     def m(self):
         """This method returns the mass of the DNA molecule in grams. This is
@@ -415,10 +411,8 @@ class Dseqrecord(_SeqRecord):
                 fn.location = _CompoundLocation([loc1, loc2])
 
             if fn.location.end > len(new):
-                loc1 = _FeatureLocation(
-                    fn.location.start, len(new), strand=fn.strand)
-                loc2 = _FeatureLocation(
-                    0, fn.location.end - len(new), strand=fn.strand)
+                loc1 = _FeatureLocation(fn.location.start, len(new), strand=fn.strand)
+                loc2 = _FeatureLocation(0, fn.location.end - len(new), strand=fn.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             fn.qualifiers = fo.qualifiers
@@ -535,8 +529,7 @@ class Dseqrecord(_SeqRecord):
             filename = "{name}.{type}".format(name=self.locus, type=f)
             # generate a name if no name was given
         if not isinstance(filename, str):  # is filename a string???
-            raise ValueError(
-                "filename has to be a string, got", type(filename))
+            raise ValueError("filename has to be a string, got", type(filename))
         name, ext = _os.path.splitext(filename)
         msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(
             filename=filename
@@ -626,7 +619,7 @@ class Dseqrecord(_SeqRecord):
             spc = 3 - ln % 3 if ln % 3 else 0
             s = "n" * spc + s + "nnn"
             for frame in range(3):
-                if other.lower() in _translate(s[frame: frame + spc + ln]).lower():
+                if other.lower() in _translate(s[frame : frame + spc + ln]).lower():
                     return True
         return False
 
@@ -668,8 +661,7 @@ class Dseqrecord(_SeqRecord):
         start = None
         for frame in range(3):
             try:
-                start = _translate(
-                    s[frame: frame + ln + spc]).lower().index(other)
+                start = _translate(s[frame : frame + ln + spc]).lower().index(other)
                 break
             except ValueError:
                 pass
@@ -683,6 +675,7 @@ class Dseqrecord(_SeqRecord):
 
     def map_trace_files(self, pth):  # TODO allow path-like objects
         import glob
+
         traces = []
         for name in glob.glob(pth):
             trace = SeqIO.read(name, "abi").lower()
@@ -693,8 +686,7 @@ class Dseqrecord(_SeqRecord):
         if hasattr(self.map_target, "step"):
             area = self.map_target
         elif hasattr(self.map_target, "extract"):
-            area = slice(self.map_target.location.start,
-                         self.map_target.location.end)
+            area = slice(self.map_target.location.start, self.map_target.location.end)
         else:
             area = None  # TODO allow other objects as well and do some checks on map target
 
@@ -704,10 +696,7 @@ class Dseqrecord(_SeqRecord):
             target = str(self[area].seq).lower()
             target_rc = str(self[area].seq.rc()).lower()
             for trace in traces:
-                if (
-                    target in str(trace.seq)
-                    or target_rc in str(trace.seq)
-                ):
+                if target in str(trace.seq) or target_rc in str(trace.seq):
                     self.matching_reads.append(trace)
                 else:
                     self.not_matching_reads.append(trace)
@@ -752,7 +741,9 @@ class Dseqrecord(_SeqRecord):
 
             self.features.append(
                 _SeqFeature(
-                    loc, qualifiers={"label": [read_.annotations["filename"]]}, type="trace"
+                    loc,
+                    qualifiers={"label": [read_.annotations["filename"]]},
+                    type="trace",
                 )
             )
 
@@ -765,8 +756,7 @@ class Dseqrecord(_SeqRecord):
 
     def _repr_pretty_(self, p, cycle):
         p.text(
-            "Dseqrecord({}{})".format(
-                {True: "-", False: "o"}[self.linear], len(self))
+            "Dseqrecord({}{})".format({True: "-", False: "o"}[self.linear], len(self))
         )
 
     def __add__(self, other):
@@ -809,7 +799,7 @@ class Dseqrecord(_SeqRecord):
     def __getitem__(self, sl):
         answer = Dseqrecord(_copy.copy(self))
         answer.seq = self.seq.__getitem__(sl)
-        #answer.seq.alphabet = self.seq.alphabet
+        # answer.seq.alphabet = self.seq.alphabet
 
         sl_start = sl.start or 0  # 6
         sl_stop = sl.stop or len(answer.seq)  # 1
@@ -1258,7 +1248,6 @@ class Dseqrecord(_SeqRecord):
         upper = _copy.deepcopy(self)
         upper.seq = upper.seq.upper()
         return upper
-
 
     def lower(self):
         """>>> from pydna.dseqrecord import Dseqrecord

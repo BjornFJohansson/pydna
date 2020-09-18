@@ -71,7 +71,7 @@ class Amplicon(_Dseqrecord):
     def __getitem__(self, sl):
         answer = _copy.copy(self)
         answer.seq = answer.seq.__getitem__(sl)
-        #answer.seq.alphabet = self.seq.alphabet
+        # answer.seq.alphabet = self.seq.alphabet
         sr = _SeqRecord("n" * len(self))
         sr.features = self.features
         answer.features = _SeqRecord.__getitem__(sr, sl).features
@@ -159,11 +159,9 @@ class Amplicon(_Dseqrecord):
             fzc=self.forward_primer.footprint.complement(),
             rzc=self.reverse_primer.footprint[::-1],
             sp1=" "
-            * (len(self.forward_primer.seq)
-               - len(self.forward_primer.footprint)),
+            * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp2=" "
-            * (len(self.forward_primer.seq)
-               - len(self.forward_primer.footprint)),
+            * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp3=" " * (3 + len(self.forward_primer.seq)),
         )
         return _pretty_str(_textwrap.dedent(f).strip("\n"))

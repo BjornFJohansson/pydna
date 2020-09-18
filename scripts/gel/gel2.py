@@ -3,33 +3,23 @@
 
 import matplotlib
 
-import numpy                                 as _np
-import matplotlib.ticker                     as _mtick
-from   matplotlib        import pyplot       as _plt
-from   matplotlib        import cm           as _cm
-from   matplotlib.ticker import FixedLocator as _FixedLocator
+import numpy as _np
+import matplotlib.ticker as _mtick
+from matplotlib import pyplot as _plt
+from matplotlib import cm as _cm
+from matplotlib.ticker import FixedLocator as _FixedLocator
 
 # from mpldatacursor       import datacursor   as _datacursor
 
-from scipy.interpolate    import griddata     as _griddata
-from scipy.optimize       import leastsq      as _leastsq
-from scipy.optimize       import fsolve       as _fsolve
-from scipy                import stats        as _stats
-from io                   import BytesIO      as _BytesIO
-from pydna.dseqrecord     import Dseqrecord   as _Dseqrecord
+from scipy.interpolate import griddata as _griddata
+from scipy.optimize import leastsq as _leastsq
+from scipy.optimize import fsolve as _fsolve
+from scipy import stats as _stats
+from io import BytesIO as _BytesIO
+from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 
 
-
-
-
-
-
-
-
-
-
-
-horizontal_data_table = '''
+horizontal_data_table = """
 Table 1.Electrophoresis conditions and best-fit parameters
 +------+-----+-------+-------+-----------+-----------+----------+--------+-------+--------+
 |  E   | %T  | L_max | L_min | mu_S*10^8 | mu_L*10^8 |   gamma  |  chi^2 | L'max | chi^2' |
@@ -94,9 +84,9 @@ d) The maximum length DNA fragment which could be included in the fitting proced
 Rill, R.L., Beheshti, A., Van Winkle, D.H., 2002. DNA electrophoresis in agarose gels: 
 effects of field and gel concentration on the exponential dependence of reciprocal mobility 
 on DNA length. Electrophoresis 23, 2710–2719.
-'''
+"""
 
-vertical_data_table = '''
+vertical_data_table = """
 +------+-----+--------+-------+-----------+-----------+----------+--------+-------+--------+
 |  E   | %T  | L_max  | L_min | mu_S*10^8 | mu_L*10^8 |   gamma  |  chi^2 | L'max | chi^2' |
 |(V/cm)|     |  (bp)  | (bp)  |(m^2/V.sec)|(m^2/V.sec)|   (kbp)  |        | (bp)  |        |
@@ -142,98 +132,112 @@ vertical_data_table = '''
 | 4.97 | 1.3 |  48502 |  200  |    2.68   |    0.49   |   4.048  | 0.9983 |  4000 | 0.9993 |
 | 6.21 | 1.3 | 194000 |  200  |    2.70   |    0.59   |   3.555  | 0.9991 |       |        |
 +------+-----+--------+-------+-----------+-----------+----------+--------+-------+--------+
-'''
+"""
 
 # Load data into numpy arrays
 
-dset = _np.genfromtxt(_BytesIO(vertical_data_table.encode()), 
-                      delimiter='|', 
-                      dtype=None,
-                      skip_header=5, skip_footer=1,
-                      usecols=(1, 2, 5, 6, 7),
-                      names=('E', 'T', 'muS', 'muL', 'gamma'))
+dset = _np.genfromtxt(
+    _BytesIO(vertical_data_table.encode()),
+    delimiter="|",
+    dtype=None,
+    skip_header=5,
+    skip_footer=1,
+    usecols=(1, 2, 5, 6, 7),
+    names=("E", "T", "muS", "muL", "gamma"),
+)
 
-def size_to_mobility(dna_fragment_length, 
-                     efield, 
-                     gelconcentration):
-    
-    muS = dset['muS']/(100*100)      # m**2 to cm**2/V/s
-    muL = dset['muL']/(100*100)      # m**2 to cm**2/V/s
-    gamma = dset['gamma']*1000       # kbp  to bp
-    alpha = 1/muL - 1/muS
-    beta = 1/muS
-    
-    mobility = _griddata( (dset['E'], dset['T']),
-                          1/(beta + alpha * (1 - _np.exp(-dna_fragment_length/gamma))),
-                          (efield, gelconcentration) )
+
+def size_to_mobility(dna_fragment_length, efield, gelconcentration):
+
+    muS = dset["muS"] / (100 * 100)  # m**2 to cm**2/V/s
+    muL = dset["muL"] / (100 * 100)  # m**2 to cm**2/V/s
+    gamma = dset["gamma"] * 1000  # kbp  to bp
+    alpha = 1 / muL - 1 / muS
+    beta = 1 / muS
+
+    mobility = _griddata(
+        (dset["E"], dset["T"]),
+        1 / (beta + alpha * (1 - _np.exp(-dna_fragment_length / gamma))),
+        (efield, gelconcentration),
+    )
     return mobility.item()
 
+
 # Constants
-kB = 1.3806488e-23             # m**2 * kg / s**2 / K Boltzmann constant
-lp = 50                        # persistence length of dsDNA (nm)
-l = 2 * lp                     # Kuhn length (nm)
-b = 0.34                       # nm/bp length dsDNA (nm/bp)
-e = 1.602176487e-19            # elementary charge (1.6-19 A.s)
+kB = 1.3806488e-23  # m**2 * kg / s**2 / K Boltzmann constant
+lp = 50  # persistence length of dsDNA (nm)
+l = 2 * lp  # Kuhn length (nm)
+b = 0.34  # nm/bp length dsDNA (nm/bp)
+e = 1.602176487e-19  # elementary charge (1.6-19 A.s)
 qeff = 2.2888235528571428e-20  # effective charge per dsDNA base pair (A.s/bp)
 
 # Intrinsic band broadening as function of the diffusion coefficient and time
-radius_gyration = lambda L, lp: (lp*L/3*(1-lp/L+lp/L*_np.exp(-L/lp)))**(1/2)
+radius_gyration = lambda L, lp: (
+    lp * L / 3 * (1 - lp / L + lp / L * _np.exp(-L / lp))
+) ** (1 / 2)
 
 # Relations between basepairs (Nbp), Kuhn segments (NKuhn) and blobs (N)
-Nbp_to_N = lambda Nbp, a, b, l: Nbp*(b/l)*(l/a)**2  # number of occupied pores
+Nbp_to_N = lambda Nbp, a, b, l: Nbp * (b / l) * (l / a) ** 2  # number of occupied pores
 
-free_solution = lambda kB, T, eta, Rh: kB*T/(6*_np.pi*eta*Rh)
-Zimm_g = lambda Nbp, DRouse, qeff, mu0, kB, T: DRouse*Nbp*qeff/(mu0*kB*T)
+free_solution = lambda kB, T, eta, Rh: kB * T / (6 * _np.pi * eta * Rh)
+Zimm_g = lambda Nbp, DRouse, qeff, mu0, kB, T: DRouse * Nbp * qeff / (mu0 * kB * T)
 Ogston_Zimm = lambda D0, g: D0 * g
-Ogston_Rouse = lambda Nbp, kB, T, a, eta, b, l: kB*T*a**3/(eta*b**2*l**2*Nbp**2)
+Ogston_Rouse = (
+    lambda Nbp, kB, T, a, eta, b, l: kB
+    * T
+    * a ** 3
+    / (eta * b ** 2 * l ** 2 * Nbp ** 2)
+)
 
 # Gaussian function
-Gaussian = lambda x, hgt, ctr, dev: hgt*_np.exp(-(x-ctr)**2/(2*dev**2))
+Gaussian = lambda x, hgt, ctr, dev: hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
 
-Gauss_dev = lambda FWHM: FWHM/(2*_np.sqrt(2*_np.log(2)))
-Gauss_FWHM = lambda FWTM: FWTM * _np.sqrt(2*_np.log(2))/_np.sqrt(2*_np.log(10))
+Gauss_dev = lambda FWHM: FWHM / (2 * _np.sqrt(2 * _np.log(2)))
+Gauss_FWHM = lambda FWTM: FWTM * _np.sqrt(2 * _np.log(2)) / _np.sqrt(2 * _np.log(10))
+
 
 class Gel:
+    def __init__(
+        self,
+        samples,  # list of lists of linear Dseqrecord objects
+        gel_concentration=1,  # % (w/v)
+        gel_length=8,  # cm
+        wellx=0.7,  # cm
+        welly=0.2,  # cm
+        wellsep=0.2,
+    ):  # cm
 
-    def __init__(self,
-                 samples,                                # list of lists of linear Dseqrecord objects
-                 gel_concentration    = 1,               # % (w/v)
-                 gel_length           = 8,               # cm
-                 wellx                = 0.7,             # cm
-                 welly                = 0.2,             # cm
-                 wellsep              = 0.2 ):           # cm
-                 
-        self.samples           = samples
+        self.samples = samples
         self.gel_concentration = gel_concentration
-        self.gel_length        = gel_length
-        self.wellx             = wellx
-        self.welly             = welly
-        self.wellsep           = wellsep
+        self.gel_length = gel_length
+        self.wellx = wellx
+        self.welly = welly
+        self.wellsep = wellsep
 
-    def run(self,
-            field                = 5.0,             # V/cm
-            temperature          = 295.15,          # K
-            runtime              = None,            # seconds
-            exposure             = 0.5,             # [0-1]
-            plot                 = True,
-            res                  = 200,              # px/cm
-            cursor_ovr           = {'hover': False},
-            back_col             = 0.3,
-            band_col             = 1,
-            well_col             = 0.05,
-            noise                = 0.015,
-            detectlim            = 0.04,
-            interpol             = 'linear',   # 'cubic','nearest'
-            dset_name            = 'vertical', # 'horizontal'
-            replNANs             = True):      # replace NANs by 'nearest' interpolation
+    def run(
+        self,
+        field=5.0,  # V/cm
+        temperature=295.15,  # K
+        runtime=None,  # seconds
+        exposure=0.5,  # [0-1]
+        plot=True,
+        res=200,  # px/cm
+        cursor_ovr={"hover": False},
+        back_col=0.3,
+        band_col=1,
+        well_col=0.05,
+        noise=0.015,
+        detectlim=0.04,
+        interpol="linear",  # 'cubic','nearest'
+        dset_name="vertical",  # 'horizontal'
+        replNANs=True,
+    ):  # replace NANs by 'nearest' interpolation
 
         max_mob = 0
-        
-        for i,lane in enumerate(self.samples):            
-            for j,frag in enumerate(lane):
-                mob      = size_to_mobility(len(frag), 
-                                            field, 
-                                            self.gel_concentration) # cm/s
+
+        for i, lane in enumerate(self.samples):
+            for j, frag in enumerate(lane):
+                mob = size_to_mobility(len(frag), field, self.gel_concentration)  # cm/s
                 frag.mobility = mob
                 self.samples[i][j] = frag
                 max_mob = max((max_mob, mob))
@@ -242,33 +246,38 @@ class Gel:
 
         mu = _np.zeros(100)
         for i, Li in enumerate(_np.linspace(100, 50000, 100)):
-            mu[i] = size_to_mobility(Li, 
-                                     field, 
-                                     self.gel_concentration)
+            mu[i] = size_to_mobility(Li, field, self.gel_concentration)
 
-        muS0 = 3.5E-4  # cm^2/(V.sec)  ############################################
-        muL0 = 1.0E-4  # cm^2/(V.sec)  ############################################
+        muS0 = 3.5e-4  # cm^2/(V.sec)  ############################################
+        muL0 = 1.0e-4  # cm^2/(V.sec)  ############################################
         gamma0 = 8000  # bp            ############################################
-        
-        vWBR = lambda L, muS, muL, gamma: (1/muS+(1/muL-1/muS)*(1-_np.exp(-L/gamma)))**-1
-        
+
+        vWBR = (
+            lambda L, muS, muL, gamma: (
+                1 / muS + (1 / muL - 1 / muS) * (1 - _np.exp(-L / gamma))
+            )
+            ** -1
+        )
+
         def residuals(pars, L, mu):
             return mu - vWBR(L, *pars)
-        
-        pars, cov, infodict, mesg, ier = _leastsq(residuals, 
-                                                  [muS0, muL0, gamma0],
-                                                 args=(_np.linspace(100, 50000, 100), mu),
-                                                 full_output=True)
+
+        pars, cov, infodict, mesg, ier = _leastsq(
+            residuals,
+            [muS0, muL0, gamma0],
+            args=(_np.linspace(100, 50000, 100), mu),
+            full_output=True,
+        )
         muS, muL, gamma = pars
 
-        time = runtime or (0.9 * self.gel_length)/max_mob  # sec
+        time = runtime or (0.9 * self.gel_length) / max_mob  # sec
 
         # Free solution mobility estimate
-        
-        space = _np.logspace(_np.log10(100), _np.log10(3000), 10)        
-        DNAspace_for_mu0     = _np.array([round(val, 0) for val in space])
-        
-        Tvals = _np.unique(dset['T']) # (g/(100 mL))*100
+
+        space = _np.logspace(_np.log10(100), _np.log10(3000), 10)
+        DNAspace_for_mu0 = _np.array([round(val, 0) for val in space])
+
+        Tvals = _np.unique(dset["T"])  # (g/(100 mL))*100
 
         # Mobility dependence on size (mu(L)) for each agarose percentage (Ti)
         ln_mu_LxT = []
@@ -286,10 +295,10 @@ class Gel:
             not_nan = _np.logical_not(_np.isnan(ln_mu_LxT[l]))
             if sum(not_nan) > 1:
                 # (enough points for linear regression)
-                gradient, intercept, r_value, p_value, std_err =\
-                          _stats.linregress(Tvals[not_nan], ln_mu_LxT[l][not_nan])
-                lregr_stats.append((gradient, intercept, r_value, p_value,
-                                    std_err))
+                gradient, intercept, r_value, p_value, std_err = _stats.linregress(
+                    Tvals[not_nan], ln_mu_LxT[l][not_nan]
+                )
+                lregr_stats.append((gradient, intercept, r_value, p_value, std_err))
                 exclude.append(False)
             else:
                 exclude.append(True)
@@ -301,27 +310,32 @@ class Gel:
             mu0 = _np.exp(ln_mu0)  # cm^2/(V.seg)
         else:
             mu0 = None
-       
 
         self.freesol_mob = mu0
 
-        eta = 2.414E-5*10**(247.8*(temperature-140))  # (Pa.s)=(kg/(m.s)) accurate to within 2.5% from 0 °C to 370 °C
-    
-        pore_size = lambda gamma, muL, mu0, lp, b: (gamma*muL*lp*b/mu0)**(1/2)
+        eta = 2.414e-5 * 10 ** (
+            247.8 * (temperature - 140)
+        )  # (Pa.s)=(kg/(m.s)) accurate to within 2.5% from 0 °C to 370 °C
 
-        pore_size_fit = lambda C: 143*C**(-0.59)
-        
+        pore_size = lambda gamma, muL, mu0, lp, b: (gamma * muL * lp * b / mu0) ** (
+            1 / 2
+        )
+
+        pore_size_fit = lambda C: 143 * C ** (-0.59)
+
         a = pore_size(gamma, muL, mu0, lp, b)
-        a_fit = pore_size_fit(self.gel_concentration)  # ##################################
-        a_fit = a_fit.to('m')              # ##################################
+        a_fit = pore_size_fit(
+            self.gel_concentration
+        )  # ##################################
+        a_fit = a_fit.to("m")  # ##################################
         self.poresize = a
         self.poresize_fit = a_fit
-        reduced_field = lambda eta, a, mu0, E, kB, T: eta*a**2*mu0*E/(kB*T)
-        epsilon = reduced_field(eta, a, mu0, field*100, kB, temperature)
+        reduced_field = lambda eta, a, mu0, E, kB, T: eta * a ** 2 * mu0 * E / (kB * T)
+        epsilon = reduced_field(eta, a, mu0, field * 100, kB, temperature)
         # Diffusion coefficient of a blob
-        Dblob = lambda kB, T, eta, a: kB*T/(eta*a)
+        Dblob = lambda kB, T, eta, a: kB * T / (eta * a)
         Db = Dblob(kB, temperature, eta, a)
-        
+
         # Diffusion regime frontiers (in number of occupied pores)
 
         def diff_Zimm_Rouse(Nbp, args):
@@ -335,58 +349,60 @@ class Gel:
             g = g.to_base_units()
             DZimm = Ogston_Zimm(D0, g)
             return DZimm - DRouse
-        
-        Zimm_Rouse = lambda x0, args: (
-            Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0],args[5], args[6], args[7]))
-        
-        equil_accel = lambda epsilon: epsilon**(-2/3)
-        accel_plateau = lambda epsilon: epsilon**(-1)
-        
-        
-        N_lim1 = accel_plateau(epsilon)     # #################################
-        N_lim2 = equil_accel(epsilon)       # # ***   Major problem    ***   ##
-        N_lim3 = Zimm_Rouse(2000,           # #################################
-                            [kB, temperature, qeff, eta, mu0, a, b, l, lp])
 
-        N_to_Nbp = lambda N, a, b, l: N*(l/b)*(a/l)**2      # number of base pairs (bp)
+        Zimm_Rouse = lambda x0, args: (
+            Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0], args[5], args[6], args[7])
+        )
+
+        equil_accel = lambda epsilon: epsilon ** (-2 / 3)
+        accel_plateau = lambda epsilon: epsilon ** (-1)
+
+        N_lim1 = accel_plateau(epsilon)  # #################################
+        N_lim2 = equil_accel(epsilon)  # # ***   Major problem    ***   ##
+        N_lim3 = Zimm_Rouse(
+            2000,  # #################################
+            [kB, temperature, qeff, eta, mu0, a, b, l, lp],
+        )
+
+        N_to_Nbp = (
+            lambda N, a, b, l: N * (l / b) * (a / l) ** 2
+        )  # number of base pairs (bp)
         self.accel_to_plateau = N_to_Nbp(N_lim1, a, b, l)
         self.equil_to_accel = N_to_Nbp(N_lim2, a, b, l)
         self.Zimm_to_Rouse = N_to_Nbp(N_lim3, a, b, l)
-        
-        for i,lane in enumerate(self.samples):            
-            for j,frag in enumerate(lane):
+
+        for i, lane in enumerate(self.samples):
+            for j, frag in enumerate(lane):
                 Nbp = len(frag)
                 N = Nbp_to_N(Nbp, a, b, l)
-                if N < N_lim3:  # Ogston-Zimm                    
-                    L = Nbp * b   # (m)
+                if N < N_lim3:  # Ogston-Zimm
+                    L = Nbp * b  # (m)
                     Rg = radius_gyration(L, lp)  # (m)
                     D0 = free_solution(kB, temperature, eta, Rg)  # (m^2/s)
-                    DRouse = Ogston_Rouse(Nbp, kB, temperature,
-                                          a, eta, b, l)  # (m^2/s)
+                    DRouse = Ogston_Rouse(Nbp, kB, temperature, a, eta, b, l)  # (m^2/s)
                     g = Zimm_g(Nbp, DRouse, qeff, mu0, kB, temperature)  # base
-                    D = Ogston_Zimm(D0, g)                               # unit
-                elif N < N_lim2: # Rouse/Reptation-equilibrium                    
-                    D = Db/N**2
-                elif N > N_lim1: # Reptation-plateau (reptation with orientation)                    
-                    D = Db*epsilon**(3/2)
-                else:            # Accelerated-reptation
-                    D = Db*epsilon*N**(-1/2)
-                frag.band_width = _np.sqrt(2*D*time) + self.welly  
-                self.samples[i][j]=frag
+                    D = Ogston_Zimm(D0, g)  # unit
+                elif N < N_lim2:  # Rouse/Reptation-equilibrium
+                    D = Db / N ** 2
+                elif N > N_lim1:  # Reptation-plateau (reptation with orientation)
+                    D = Db * epsilon ** (3 / 2)
+                else:  # Accelerated-reptation
+                    D = Db * epsilon * N ** (-1 / 2)
+                frag.band_width = _np.sqrt(2 * D * time) + self.welly
+                self.samples[i][j] = frag
 
         # Total bandwidths
-        time0 = self.welly/(mu0*field)
-        
-        bandwidths0 = [mobs*time0[l]*field for l, mobs in
-                       enumerate(mobilities)]
+        time0 = self.welly / (mu0 * field)
+
+        bandwidths0 = [mobs * time0[l] * field for l, mobs in enumerate(mobilities)]
 
         # Max intensities
         raw_Is = []
-        maxI = Q_(-_np.inf, 'ng/cm')
-        minI = Q_(_np.inf, 'ng/cm')
-        for i,lane in enumerate(self.samples):
+        maxI = Q_(-_np.inf, "ng/cm")
+        minI = Q_(_np.inf, "ng/cm")
+        for i, lane in enumerate(self.samples):
             lane_I = []
-            for j,frag in enumerate(lane):
+            for j, frag in enumerate(lane):
                 frag_Qty = quantities[i][j]
                 frag_Wth = bandwidths[i][j]  # w=FWHM or w=FWTM ???
                 if False:
@@ -395,7 +411,7 @@ class Gel:
                     FWHM = frag_Wth
                 std_dev = Gauss_dev(FWHM)
                 auc = frag_Qty  # area under curve proportional to DNA quantity
-                Gauss_hgt = lambda auc, dev: auc/(dev*_np.sqrt(2*_np.pi))
+                Gauss_hgt = lambda auc, dev: auc / (dev * _np.sqrt(2 * _np.pi))
                 frag_I = Gauss_hgt(auc, std_dev)  # peak height
                 if frag_I > maxI:
                     maxI = frag_I
@@ -405,35 +421,37 @@ class Gel:
             raw_Is.append(lane_I)
 
         # max intensity normalization
-        satI = maxI+exposure*(minI-maxI)
-        intensities = [[(1-back_col)/satI*fragI for fragI in lane]
-                       for lane in raw_Is]
+        satI = maxI + exposure * (minI - maxI)
+        intensities = [
+            [(1 - back_col) / satI * fragI for fragI in lane] for lane in raw_Is
+        ]
         self.intensities = intensities
 
         # Plot gel
         if plot:
             # Title
-            mins, secs = divmod(time.to('s').magnitude, 60)  # time is in secs
+            mins, secs = divmod(time.to("s").magnitude, 60)  # time is in secs
             hours, mins = divmod(mins, 60)
-            hours = Q_(hours, 'hr')
-            mins = Q_(mins, 'min')
-            secs = Q_(secs, 's')
-            title = ('E = %.2f V/cm\n'
-                     'C = %.1f %%\n'
-                     'T = %.2f K\n'
-                     't = %d h %02d m\n'
-                     'expo = %.1f' % (field,
-                                      self.gel_concentration,
-                                      temperature,
-                                      hours, mins,
-                                      exposure))
+            hours = Q_(hours, "hr")
+            mins = Q_(mins, "min")
+            secs = Q_(secs, "s")
+            title = (
+                "E = %.2f V/cm\n"
+                "C = %.1f %%\n"
+                "T = %.2f K\n"
+                "t = %d h %02d m\n"
+                "expo = %.1f"
+                % (field, self.gel_concentration, temperature, hours, mins, exposure)
+            )
 
             gel_width = len(samples) * (self.wellx + self.wellsep) + self.wellsep  # cm
 
-            pxl_x = int( gel_width * res)
-            pxl_y = int( gel_len   * res)
-            lane_centers = [(l+1)*self.wellsep + sum(wellx[:l]) + 0.5*wellx[l]
-                            for l in range(nlanes)]
+            pxl_x = int(gel_width * res)
+            pxl_y = int(gel_len * res)
+            lane_centers = [
+                (l + 1) * self.wellsep + sum(wellx[:l]) + 0.5 * wellx[l]
+                for l in range(nlanes)
+            ]
             rgb_arr = _np.zeros(shape=(pxl_y, pxl_x, 3), dtype=_np.float32)
             bandlengths = wellx
             bands_pxlXYmid = []
@@ -442,8 +460,8 @@ class Gel:
                 distXmid = lane_centers[i]
                 pxlXmid = int(round((distXmid * res).magnitude))
                 bandlength = bandlengths[i]
-                from_x = int(round(((distXmid - bandlength/2.0) * res).magnitude))
-                to_x = int(round(((distXmid + bandlength/2.0) * res).magnitude))
+                from_x = int(round(((distXmid - bandlength / 2.0) * res).magnitude))
+                to_x = int(round(((distXmid + bandlength / 2.0) * res).magnitude))
                 bands_pxlXYmid.append([])
                 for j in range(len(lanes[i])):
                     distYmid = distances[i][j]
@@ -460,32 +478,33 @@ class Gel:
                     if pxlYmid < len(rgb_arr):  # band within gel frontiers
                         rgb_arr[pxlYmid, from_x:to_x] += midI
                     bckwdYstop = False if pxlYmid > 0 else True
-                    forwdYstop = False if pxlYmid < len(rgb_arr)-1 else True
-                    pxlYbck = pxlYmid-1
-                    pxlYfor = pxlYmid+1
+                    forwdYstop = False if pxlYmid < len(rgb_arr) - 1 else True
+                    pxlYbck = pxlYmid - 1
+                    pxlYfor = pxlYmid + 1
                     while not bckwdYstop or not forwdYstop:
                         if not bckwdYstop:
-                            distYbck = Q_(pxlYbck, 'px')/res
+                            distYbck = Q_(pxlYbck, "px") / res
                             bckYI = Gaussian(distYbck, maxI, distYmid, std_dev)
                             if pxlYbck < len(rgb_arr):
                                 rgb_arr[pxlYbck, from_x:to_x] += bckYI
                             pxlYbck -= 1
-                            if bckYI <= 1E-5 or pxlYbck == -1:
+                            if bckYI <= 1e-5 or pxlYbck == -1:
                                 bckwdYstop = True
                         if not forwdYstop:
-                            distYfor = Q_(pxlYfor, 'px')/res
+                            distYfor = Q_(pxlYfor, "px") / res
                             forYI = Gaussian(distYfor, maxI, distYmid, std_dev)
                             rgb_arr[pxlYfor, from_x:to_x] += forYI
                             pxlYfor += 1
-                            if forYI <= 1E-5 or pxlYfor == pxl_y:
+                            if forYI <= 1e-5 or pxlYfor == pxl_y:
                                 forwdYstop = True
-                                
+
             # Background color
             if noise is None or noise <= 0:
                 rgb_arr += back_col
             else:
-                bckg = _np.random.normal(back_col, noise,
-                                        (len(rgb_arr), len(rgb_arr[0])))
+                bckg = _np.random.normal(
+                    back_col, noise, (len(rgb_arr), len(rgb_arr[0]))
+                )
                 rgb_arr += bckg[:, :, _np.newaxis]
             # Saturation
             rgb_arr[rgb_arr > 1] = 1
@@ -494,96 +513,116 @@ class Gel:
             bands_arr = rgb_arr
 
             # Plot
-            
+
             fig = _plt.figure()
-            
+
             ax1 = fig.add_subplot(111, facecolor=str(back_col))
             ax1.xaxis.tick_top()
-            ax1.yaxis.set_ticks_position('left')
-            ax1.spines['left'].set_position(('outward', 8))
-            ax1.spines['left'].set_bounds(0, gel_len)
-            ax1.spines['right'].set_visible(False)
-            ax1.spines['bottom'].set_visible(False)
-            ax1.spines['top'].set_visible(False)
-            ax1.spines['right'].set_color(str(back_col))
-            ax1.spines['bottom'].set_color(str(back_col))
-            ax1.xaxis.set_label_position('top')
-            
-            
-            #_plt.xticks(lane_centers, names)
-            majorLocator = _FixedLocator(list(range(int(gel_len+1))))
-            minorLocator = _FixedLocator([j/10.0 for k in
-                                         range(0, int(gel_len+1)*10, 10)
-                                         for j in range(1+k, 10+k, 1)])
+            ax1.yaxis.set_ticks_position("left")
+            ax1.spines["left"].set_position(("outward", 8))
+            ax1.spines["left"].set_bounds(0, gel_len)
+            ax1.spines["right"].set_visible(False)
+            ax1.spines["bottom"].set_visible(False)
+            ax1.spines["top"].set_visible(False)
+            ax1.spines["right"].set_color(str(back_col))
+            ax1.spines["bottom"].set_color(str(back_col))
+            ax1.xaxis.set_label_position("top")
+
+            # _plt.xticks(lane_centers, names)
+            majorLocator = _FixedLocator(list(range(int(gel_len + 1))))
+            minorLocator = _FixedLocator(
+                [
+                    j / 10.0
+                    for k in range(0, int(gel_len + 1) * 10, 10)
+                    for j in range(1 + k, 10 + k, 1)
+                ]
+            )
             ax1.yaxis.set_major_locator(majorLocator)
             ax1.yaxis.set_minor_locator(minorLocator)
-            ax1.tick_params(axis='x', which='both', top='off')
-            
-            
+            ax1.tick_params(axis="x", which="both", top="off")
+
             # Gel image
-            bands_plt = ax1.imshow(bands_arr, extent=[0, gel_width, gel_len, 0],
-                                   interpolation='none')
+            bands_plt = ax1.imshow(
+                bands_arr, extent=[0, gel_width, gel_len, 0], interpolation="none"
+            )
             # Draw wells
-            
+
             for i in range(nlanes):
                 ctr = lane_centers[i]
                 wx = wellx[i]
                 wy = welly[i]
-                ax1.fill_between(x=[ctr-wx/2, ctr+wx/2], y1=[0, 0],
-                                 y2=[-wy, -wy], color=str(well_col))
+                ax1.fill_between(
+                    x=[ctr - wx / 2, ctr + wx / 2],
+                    y1=[0, 0],
+                    y2=[-wy, -wy],
+                    color=str(well_col),
+                )
             # Invisible rectangles overlapping the bands for datacursor to detect
             bands = []
             for i in range(nlanes):
                 bandlength = bandlengths[i]
                 center = lane_centers[i]
-                x = center - bandlength/2.0
+                x = center - bandlength / 2.0
                 for j in range(len(lanes[i])):
                     dna_frag = lanes[i][j]
                     bandwidth = bandwidths[i][j]
                     dist = distances[i][j].magnitude
-                    y = dist - bandwidth/2.0
+                    y = dist - bandwidth / 2.0
                     pxlX, pxlY = bands_pxlXYmid[i][j]
                     band_midI = bands_arr[pxlY, pxlX][0]
                     alpha = 0 if abs(band_midI - back_col) >= detectlim else 0.4
-                    band = _plt.Rectangle((x, y), bandlength, bandwidth,
-                                         fc='none', ec='w', ls=':', alpha=alpha,
-                                         label='{} bp'.format(len(dna_frag)))
+                    band = _plt.Rectangle(
+                        (x, y),
+                        bandlength,
+                        bandwidth,
+                        fc="none",
+                        ec="w",
+                        ls=":",
+                        alpha=alpha,
+                        label="{} bp".format(len(dna_frag)),
+                    )
                     _plt.gca().add_patch(band)
                     bands.append(band)
             _plt.ylim(gel_len, -max(welly))
-            xlim = sum(wellx) + (nlanes+1)*self.wellsep
+            xlim = sum(wellx) + (nlanes + 1) * self.wellsep
             _plt.xlim(0, xlim)
-            _plt.ylabel('Distance (cm)')
-            _plt.xlabel('Lanes')
-            bbox_args = dict(boxstyle='round,pad=0.6', fc='none')
-            an1 = _plt.annotate(title, xy=(0, 0),
-                               xytext=(xlim+0.4, (gel_len+max(welly))/2.0),
-                               va="center", bbox=bbox_args)
+            _plt.ylabel("Distance (cm)")
+            _plt.xlabel("Lanes")
+            bbox_args = dict(boxstyle="round,pad=0.6", fc="none")
+            an1 = _plt.annotate(
+                title,
+                xy=(0, 0),
+                xytext=(xlim + 0.4, (gel_len + max(welly)) / 2.0),
+                va="center",
+                bbox=bbox_args,
+            )
             an1.draggable()
-            _plt.gca().set_aspect('equal', adjustable='box')
-            cursor_args = dict(display='multiple',
-                               draggable=True,
-                               hover=False,
-                               bbox=dict(fc='white'),
-                               arrowprops=dict(arrowstyle='simple',
-                                               fc='white', alpha=0.5),
-                               xytext=(15, -15),
-                               formatter='{label}'.format)
+            _plt.gca().set_aspect("equal", adjustable="box")
+            cursor_args = dict(
+                display="multiple",
+                draggable=True,
+                hover=False,
+                bbox=dict(fc="white"),
+                arrowprops=dict(arrowstyle="simple", fc="white", alpha=0.5),
+                xytext=(15, -15),
+                formatter="{label}".format,
+            )
             if cursor_ovr:
                 for key in cursor_ovr:
                     cursor_args[key] = cursor_ovr[key]
-            if cursor_args['hover'] == True:
-                cursor_args['display'] = 'single'
-            #_datacursor(bands, **cursor_args)
+            if cursor_args["hover"] == True:
+                cursor_args["display"] = "single"
+            # _datacursor(bands, **cursor_args)
             return _plt
         return None
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     import os as _os
+
     cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"]=""
+    _os.environ["pydna_cached_funcs"] = ""
     import doctest
+
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"]=cached
-     
+    _os.environ["pydna_cached_funcs"] = cached

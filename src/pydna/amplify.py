@@ -108,7 +108,7 @@ def _annealing_positions(primer, template, limit=15):
         length = len(tail)
         results = []
         for match_start in positions:
-            tm = template[match_start + limit: match_start + limit + length]
+            tm = template[match_start + limit : match_start + limit + length]
             footprint = len(
                 list(
                     _itertools.takewhile(
@@ -246,8 +246,7 @@ class Anneal(object, metaclass=_Memoize):
                         position=tcl - pos - min(self.template.seq.ovhg, 0),
                         footprint=fp,
                     )
-                    for pos, fp in _annealing_positions(str(p.seq),
-                                                        tc, self.limit)
+                    for pos, fp in _annealing_positions(str(p.seq), tc, self.limit)
                     if pos < tcl
                 )
             )
@@ -259,16 +258,13 @@ class Anneal(object, metaclass=_Memoize):
                         position=pos + max(0, self.template.seq.ovhg),
                         footprint=fp,
                     )
-                    for pos, fp in _annealing_positions(str(p.seq),
-                                                        tw,
-                                                        self.limit)
+                    for pos, fp in _annealing_positions(str(p.seq), tw, self.limit)
                     if pos < twl
                 )
             )
 
         self.forward_primers.sort(key=_operator.attrgetter("position"))
-        self.reverse_primers.sort(
-            key=_operator.attrgetter("position"), reverse=True)
+        self.reverse_primers.sort(key=_operator.attrgetter("position"), reverse=True)
 
         for fp in self.forward_primers:
             if fp.position - fp._fp >= 0:
@@ -355,8 +351,7 @@ class Anneal(object, metaclass=_Memoize):
                     tmpl = self.template.shifted(fp.position - fp._fp)
                     tmpl = tmpl[:] * 2
                     for f in tmpl.features:
-                        for x, y in zip(f.location.parts,
-                                        f.location.parts[1:]):
+                        for x, y in zip(f.location.parts, f.location.parts[1:]):
                             if x.end == y.start + len(self.template):
                                 f.location = _FeatureLocation(
                                     x.start,
@@ -372,11 +367,9 @@ class Anneal(object, metaclass=_Memoize):
                             + fp._fp
                         ]
                     else:
-                        tmpl = tmpl[: rp.position +
-                                    rp._fp - (fp.position - fp._fp)]
+                        tmpl = tmpl[: rp.position + rp._fp - (fp.position - fp._fp)]
                 else:
-                    tmpl = self.template[fp.position -
-                                         fp._fp: rp.position + rp._fp]
+                    tmpl = self.template[fp.position - fp._fp : rp.position + rp._fp]
 
                 prd = (
                     _Dseqrecord(fp.tail)

@@ -92,8 +92,7 @@ def kark_sort(s, SA, n, K):
 
         if SA12[t] < n0:
             test = (
-                (s12[SA12[t] + n0] <= s12[j // 3]
-                 ) if (s[i] == s[j]) else (s[i] < s[j])
+                (s12[SA12[t] + n0] <= s12[j // 3]) if (s[i] == s[j]) else (s[i] < s[j])
             )
         elif s[i] == s[j]:
             test = (
@@ -121,8 +120,7 @@ def kark_sort(s, SA, n, K):
                 k += 1
                 while t < n02:
                     SA[k] = (
-                        (SA12[t] * 3) +
-                        1 if SA12[t] < n0 else ((SA12[t] - n0) * 3) + 2
+                        (SA12[t] * 3) + 1 if SA12[t] < n0 else ((SA12[t] - n0) * 3) + 2
                     )
                     t += 1
                     k += 1

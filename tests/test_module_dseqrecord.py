@@ -540,6 +540,7 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
     assert m.mock_calls[0]
     assert m.mock_calls[4]
 
+
 def test_write_different_file_to_stamped_existing_file2(monkeypatch):
 
     import builtins
@@ -583,7 +584,6 @@ def test_write_different_file_to_stamped_existing_file2(monkeypatch):
     assert m.call_count == 6
     assert m.mock_calls[0]
     assert m.mock_calls[4]
-
 
 
 # [call('Ggatcc.gb', 'r', encoding='utf-8'),
@@ -1633,62 +1633,63 @@ def test_shifted():
     with pytest.raises(TypeError):
         s.shifted(1)
 
+
 def test_looped():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    a=Dseqrecord("aaaa")
-    a.add_feature(2,4)
-    b=a.looped()
+
+    a = Dseqrecord("aaaa")
+    a.add_feature(2, 4)
+    b = a.looped()
     assert a.features == b.features
-    a=Dseqrecord("aaaa")
-    a.add_feature(0,2)
-    b=a.looped()
+    a = Dseqrecord("aaaa")
+    a.add_feature(0, 2)
+    b = a.looped()
     assert a.features == b.features
-    a=Dseqrecord("aaaa")
-    a.add_feature(0,4)
-    b=a.looped()
+    a = Dseqrecord("aaaa")
+    a.add_feature(0, 4)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
-    a.add_feature(2,4)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a.add_feature(2, 4)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
-    a.add_feature(0,5)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a.add_feature(0, 5)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
-    a.add_feature(0,5,strand=-1)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a.add_feature(0, 5, strand=-1)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
-    a.add_feature(2,4)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=1))
+    a.add_feature(2, 4)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
-    a.add_feature(0,5)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=1))
+    a.add_feature(0, 5)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=1))
-    a.add_feature(0,5,strand=-1)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=1))
+    a.add_feature(0, 5, strand=-1)
+    b = a.looped()
     assert a.features == b.features
 
-    a=Dseqrecord(Dseq("aaaa", "tttt",ovhg=-1))
-    a.add_feature(0,6)
-    b=a.looped()
+    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a.add_feature(0, 6)
+    b = a.looped()
     assert a.features == b.features
-
-
 
 
 def test_upper():
     from pydna.dseqrecord import Dseqrecord
+
     s = Dseqrecord("Gc")
     s.annotations["sample"] = ["sample"]
     u = s.upper()
@@ -1701,6 +1702,7 @@ def test_upper():
 
 def test_lower():
     from pydna.dseqrecord import Dseqrecord
+
     s = Dseqrecord("Gc")
     s.annotations["sample"] = ["sample"]
     l = s.lower()

@@ -22,26 +22,27 @@ from pydna._pretty import pretty_str as _pretty_str
 # 200 mM (NH4)2SO4,
 # 0.1% (v/v) Tween 20.
 
+
 def tm_default(
     seq,
     check=True,
     strict=True,
     c_seq=None,
     shift=0,
-    nn_table=_mt.DNA_NN4, # DNA_NN4: values from SantaLucia & Hicks (2004)
+    nn_table=_mt.DNA_NN4,  # DNA_NN4: values from SantaLucia & Hicks (2004)
     tmm_table=None,
     imm_table=None,
     de_table=None,
-    dnac1=500/2,          # I assume 500 µM of each primer in the PCR mix
-    dnac2=500/2,          # This is what MELTING and Primer3Plus do
+    dnac1=500 / 2,  # I assume 500 µM of each primer in the PCR mix
+    dnac2=500 / 2,  # This is what MELTING and Primer3Plus do
     selfcomp=False,
     Na=40,
     K=0,
-    Tris=75.0,           # We use the 10X Taq Buffer with (NH4)2SO4 (above)
-    Mg=1.5,              # 1.5 mM Mg2+ is often seen in modern protocols
-    dNTPs=0.8,           # I assume 200 µM of each dNTP
-    saltcorr=7,          # Tm = 81.5 + 0.41(%GC) - 600/N + 16.6 x log[Na+]
-    func=_mt.Tm_NN,      # Used by Primer3Plus to calculate the product Tm.
+    Tris=75.0,  # We use the 10X Taq Buffer with (NH4)2SO4 (above)
+    Mg=1.5,  # 1.5 mM Mg2+ is often seen in modern protocols
+    dNTPs=0.8,  # I assume 200 µM of each dNTP
+    saltcorr=7,  # Tm = 81.5 + 0.41(%GC) - 600/N + 16.6 x log[Na+]
+    func=_mt.Tm_NN,  # Used by Primer3Plus to calculate the product Tm.
 ):
     return func(
         seq,
@@ -170,8 +171,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
     # Taq polymerase extension rate is set to 30 nt/s
     # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
     taq_extension_rate = 30  # seconds/kB PCR product length
-    extension_time_taq = int(taq_extension_rate *
-                             len(amplicon) / 1000)  # seconds
+    extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000)  # seconds
 
     f = _textwrap.dedent(
         r"""

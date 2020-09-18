@@ -17,6 +17,7 @@ try:
 except ImportError:
     asciitext = print
 else:
+
     def asciitext(*args, **kwargs):
         f = Figlet(font="doom")
         print(f.renderText(" ".join(args)), **kwargs)
@@ -24,15 +25,16 @@ else:
 
 def main():
 
-    os.environ["pydna_data_dir"]  = tempfile.mkdtemp(prefix="pydna_data_dir_")
-    os.environ["pydna_log_dir"]    = tempfile.mkdtemp(prefix="pydna_log_dir_")
+    os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")
+    os.environ["pydna_log_dir"] = tempfile.mkdtemp(prefix="pydna_log_dir_")
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
-    os.environ["pydna_loglevel"]   = str(logging.DEBUG)
+    os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
     asciitext("tests python {}".format(platform.python_version()))
 
     try:
         import coveralls
+
         # also pytest_cov (pip install pytest-cov)
     except ImportError:
         print("coveralls-python NOT installed! (pip install coveralls)")
@@ -40,10 +42,12 @@ def main():
     else:
         print(f"coveralls-python {coveralls.__version__} is installed!")
         del coveralls
-        args = ["--cov=pydna",
-                "--cov-report=html",
-                "--cov-report=xml",
-                "--import-mode=importlib"]
+        args = [
+            "--cov=pydna",
+            "--cov-report=html",
+            "--cov-report=xml",
+            "--import-mode=importlib",
+        ]
     try:
         # A py.test plugin to validate Jupyter notebooks
         import nbval
@@ -56,16 +60,22 @@ def main():
         args.append("--current-env")
 
     mainargs = ["tests", "--capture=no", "--durations=10"] + args
-    #cwd = os.getcwd()
-    #os.chdir("tests")
+    # cwd = os.getcwd()
+    # os.chdir("tests")
     result_suite = pytest.cmdline.main(mainargs)
-    #os.chdir(cwd)
+    # os.chdir(cwd)
 
     from pydna import __file__ as pydnainit
+
     doctestdir = str(pathlib.Path(pydnainit).parent)
 
     asciitext("doctests python {}".format(platform.python_version()))
-    doctestargs = [doctestdir, "--doctest-modules", "--capture=no", "--import-mode=importlib"]
+    doctestargs = [
+        doctestdir,
+        "--doctest-modules",
+        "--capture=no",
+        "--import-mode=importlib",
+    ]
     result_doctest = pytest.cmdline.main(doctestargs)
 
     asciitext("done!")

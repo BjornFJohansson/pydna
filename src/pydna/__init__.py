@@ -178,8 +178,7 @@ _os.environ["pydna_cached_funcs"] = _os.getenv(
 )
 
 _os.environ["pydna_data_dir"] = _os.getenv(
-    "pydna_data_dir", _mainsection.get(
-        "data_dir", _appdirs.user_data_dir("pydna"))
+    "pydna_data_dir", _mainsection.get("data_dir", _appdirs.user_data_dir("pydna"))
 )
 _os.environ["pydna_email"] = _os.getenv(
     "pydna_email", _mainsection.get("email", "someone@example.com")
@@ -188,8 +187,7 @@ _os.environ["pydna_enzymes"] = _os.getenv(
     "pydna_enzymes", _mainsection.get("enzymes", "put/path/to/enzymes/here")
 )
 _os.environ["pydna_log_dir"] = _os.getenv(
-    "pydna_log_dir", _mainsection.get(
-        "log_dir", _appdirs.user_log_dir("pydna"))
+    "pydna_log_dir", _mainsection.get("log_dir", _appdirs.user_log_dir("pydna"))
 )
 _os.environ["pydna_loglevel"] = _os.getenv(
     "pydna_loglevel", _mainsection.get("loglevel", str(_logging.WARNING))
@@ -200,9 +198,7 @@ _os.environ["pydna_primers"] = _os.getenv(
 
 
 # create log directory if not present
-_os.makedirs(
-    _os.environ["pydna_log_dir"], exist_ok=True
-)  # changes to file system ####
+_os.makedirs(_os.environ["pydna_log_dir"], exist_ok=True)  # changes to file system ####
 _logmsg = "Log directory {}".format(_os.environ["pydna_log_dir"])
 
 # create logger
@@ -215,13 +211,11 @@ _hdlr = _handlers.RotatingFileHandler(
     backupCount=10,
     encoding="utf-8",
 )
-_formatter = _logging.Formatter(
-    "%(asctime)s %(levelname)s %(funcName)s %(message)s")
+_formatter = _logging.Formatter("%(asctime)s %(levelname)s %(funcName)s %(message)s")
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
 _logger.info(_logmsg)
-_logger.info("Environmental variable pydna_ape          = %s",
-             _os.environ["pydna_ape"])
+_logger.info("Environmental variable pydna_ape          = %s", _os.environ["pydna_ape"])
 _logger.info(
     "Environmental variable pydna_cached_funcs = %s", _os.environ["pydna_cached_funcs"]
 )
@@ -265,12 +259,10 @@ _missing = _missing_modules_for_gel()
 
 if _missing:
     _logger.warning(
-        "gel simulation will NOT be available. Missing modules: %s", ", ".join(
-            _missing)
+        "gel simulation will NOT be available. Missing modules: %s", ", ".join(_missing)
     )
 else:
-    _logger.info(
-        "gel simulation is available, optional dependencies were found.")
+    _logger.info("gel simulation is available, optional dependencies were found.")
 
 
 __version__ = _version.version
@@ -439,7 +431,9 @@ def logo():
     | |_| | |_| ( (_| | | | / ___ |
     |  __/ \__  |\____|_| |_\_____|
     |_|   (____/
-    """[1:]
+    """[
+                1:
+            ]
         )
     )
 

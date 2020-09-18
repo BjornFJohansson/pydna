@@ -94,15 +94,16 @@ copyright = "2013-2019, Björn Johansson"
 # version = '.'.join(release.split('.')[:2])
 
 
-#exec(open("../pydna/_version.py").read())
-#release = get_versions()["version"]
-#version = ".".join(release.split(".")[:2])
+# exec(open("../pydna/_version.py").read())
+# release = get_versions()["version"]
+# version = ".".join(release.split(".")[:2])
 
 # contents of docs/conf.py
 from pkg_resources import get_distribution
-release = get_distribution('pydna').version
+
+release = get_distribution("pydna").version
 # for example take major/minor
-version = '.'.join(release.split('.')[:3])
+version = ".".join(release.split(".")[:3])
 
 
 # The full version, including alpha/beta/rc tags.

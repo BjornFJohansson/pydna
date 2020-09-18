@@ -179,7 +179,7 @@ class Assembly(object, metaclass=_Memoize):
             for start_in_first, start_in_secnd, length in matches:
                 # node is a string and represent the shared sequence in upper
                 # case.
-                node = first["upper"][start_in_first: start_in_first + length]
+                node = first["upper"][start_in_first : start_in_first + length]
 
                 first["nodes"].append((start_in_first, length, node))
                 secnd["nodes"].append((start_in_secnd, length, node))
@@ -192,8 +192,7 @@ class Assembly(object, metaclass=_Memoize):
                 start_in_firrc = len(first["upper"]) - start_in_first - length
                 start_in_secrc = len(secnd["upper"]) - start_in_secnd - length
                 # noderc is the reverse complement of node
-                noderc = firrc["upper"][start_in_firrc: start_in_firrc
-                                        + length]
+                noderc = firrc["upper"][start_in_firrc : start_in_firrc + length]
                 firrc["nodes"].append((start_in_firrc, length, noderc))
                 secrc["nodes"].append((start_in_secrc, length, noderc))
                 nodemap[node] = noderc
@@ -202,7 +201,7 @@ class Assembly(object, metaclass=_Memoize):
             matches = algorithm(first["upper"], secrc["upper"], limit)
 
             for start_in_first, start_in_secrc, length in matches:
-                node = first["upper"][start_in_first: start_in_first + length]
+                node = first["upper"][start_in_first : start_in_first + length]
                 first["nodes"].append((start_in_first, length, node))
                 secrc["nodes"].append((start_in_secrc, length, node))
 
@@ -210,8 +209,7 @@ class Assembly(object, metaclass=_Memoize):
                     len(first["upper"]) - start_in_first - length,
                     len(secnd["upper"]) - start_in_secrc - length,
                 )
-                noderc = firrc["upper"][start_in_firrc: start_in_firrc
-                                        + length]
+                noderc = firrc["upper"][start_in_firrc : start_in_firrc + length]
                 firrc["nodes"].append((start_in_firrc, length, noderc))
                 secnd["nodes"].append((start_in_secnd, length, noderc))
                 nodemap[node] = noderc
@@ -276,9 +274,7 @@ class Assembly(object, metaclass=_Memoize):
         self.G = _nx.create_empty_copy(G)
         self.G.add_edges_from(
             sorted(
-                G.edges(data=True),
-                key=lambda t: len(t[2].get("seq", 1)),
-                reverse=True
+                G.edges(data=True), key=lambda t: len(t[2].get("seq", 1)), reverse=True
             )
         )
         self.nodemap = {**nodemap, **{nodemap[i]: i for i in nodemap}}
@@ -335,7 +331,7 @@ class Assembly(object, metaclass=_Memoize):
                 "end",
                 piece=slice(start, len(lastfragment["mixed"])),
                 features=[
-                f for f in lastfragment["features"] if start <= f.location.end
+                    f for f in lastfragment["features"] if start <= f.location.end
                 ],
                 seq=lastfragment["mixed"],
                 name=lastfragment["name"],
@@ -349,8 +345,7 @@ class Assembly(object, metaclass=_Memoize):
                 "end_rc",
                 piece=slice(start, len(lastfragmentrc["mixed"])),
                 features=[
-                f for f in lastfragmentrc["features"] if start
-                                                             <= f.location.end
+                    f for f in lastfragmentrc["features"] if start <= f.location.end
                 ],
                 seq=lastfragmentrc["mixed"],
                 name=lastfragmentrc["name"],
@@ -360,8 +355,7 @@ class Assembly(object, metaclass=_Memoize):
 
         linearpaths = list(
             _itertools.chain(
-                _nx.all_simple_paths(_nx.DiGraph(
-                    G), "begin", "end", cutoff=max_nodes),
+                _nx.all_simple_paths(_nx.DiGraph(G), "begin", "end", cutoff=max_nodes),
                 _nx.all_simple_paths(
                     _nx.DiGraph(G), "begin", "end_rc", cutoff=max_nodes
                 ),
@@ -390,8 +384,7 @@ class Assembly(object, metaclass=_Memoize):
                 if [
                     True
                     for ((u, v, e), (x, y, z)) in zip(edges, edges[1:])
-                    if ((e["seq"], e["piece"].stop)
-                        == (z["seq"], z["piece"].start))
+                    if ((e["seq"], e["piece"].stop) == (z["seq"], z["piece"].start))
                 ]:
                     continue
                 ct = "".join(e["seq"][e["piece"]] for u, v, e in edges)
@@ -401,8 +394,7 @@ class Assembly(object, metaclass=_Memoize):
                     continue
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
-                sg.add_nodes_from((n, d)
-                                  for n, d in G.nodes(data=True) if n in lp)
+                sg.add_nodes_from((n, d) for n, d in G.nodes(data=True) if n in lp)
 
                 edgefeatures = []
                 offset = 0
@@ -414,8 +406,7 @@ class Assembly(object, metaclass=_Memoize):
                     edgefeatures.extend(feats)
                     offset += e["piece"].stop - e["piece"].start
 
-                lps[key] = ct, edgefeatures, sg, {
-                    n: self.nodemap[n] for n in lp}
+                lps[key] = ct, edgefeatures, sg, {n: self.nodemap[n] for n in lp}
 
         return sorted(
             (
@@ -439,8 +430,7 @@ class Assembly(object, metaclass=_Memoize):
         cpaths = sorted(_nx.simple_cycles(self.G), key=len)
         cpaths_sorted = []
         for cpath in cpaths:
-            order, node = min(
-                (self.G.nodes[node]["order"], node) for node in cpath)
+            order, node = min((self.G.nodes[node]["order"], node) for node in cpath)
             i = cpath.index(node)
             cpaths_sorted.append((order, cpath[i:] + cpath[:i]))
         cpaths_sorted.sort()
@@ -463,8 +453,7 @@ class Assembly(object, metaclass=_Memoize):
                 if [
                     True
                     for ((u, v, e), (x, y, z)) in zip(edges, edges[1:])
-                    if ((e["seq"], e["piece"].stop)
-                        == (z["seq"], z["piece"].start))
+                    if ((e["seq"], e["piece"].stop) == (z["seq"], z["piece"].start))
                 ]:
                     continue
                 ct = "".join(e["seq"][e["piece"]] for u, v, e in edges)
@@ -474,9 +463,7 @@ class Assembly(object, metaclass=_Memoize):
                     continue  # TODO: cpsrc not needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
-                sg.add_nodes_from((n, d)
-                                  for n, d in
-                                  self.G.nodes(data=True) if n in cp)
+                sg.add_nodes_from((n, d) for n, d in self.G.nodes(data=True) if n in cp)
 
                 edgefeatures = []
                 offset = 0
@@ -488,19 +475,16 @@ class Assembly(object, metaclass=_Memoize):
                     edgefeatures.extend(feats)
                     offset += e["piece"].stop - e["piece"].start
                     for f in edgefeatures:
-                        if (f.location.start >
-                            len(ct) and f.location.end > len(ct)):
+                        if f.location.start > len(ct) and f.location.end > len(ct):
                             f.location += -len(ct)
                         elif f.location.end > len(ct):
                             f.location = _CompoundLocation(
                                 (
                                     _FeatureLocation(
-                                        f.location.start, _ExactPosition(
-                                            len(ct))
+                                        f.location.start, _ExactPosition(len(ct))
                                     ),
                                     _FeatureLocation(
-                                        _ExactPosition(
-                                            0), f.location.end - len(ct)
+                                        _ExactPosition(0), f.location.end - len(ct)
                                     ),
                                 )
                             )

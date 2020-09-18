@@ -593,13 +593,11 @@ def assembly_fragments(f, overlap=35, maxlink=40):
         )
         f = f[:-1]
         _module_logger.debug(
-            "last fragment removed since len(f[%s]) = %s", len(
-                f), last_fragment_length
+            "last fragment removed since len(f[%s]) = %s", len(f), last_fragment_length
         )
     else:
         _module_logger.debug(
-            "last fragment stays since len(f[%s]) = %s", len(
-                f), last_fragment_length
+            "last fragment stays since len(f[%s]) = %s", len(f), last_fragment_length
         )
 
     empty = _Dseqrecord("")
@@ -632,11 +630,11 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                 )
 
                 first.reverse_primer = (
-                    secnd.seq.reverse_complement()._data[secnd_len // 2:]
+                    secnd.seq.reverse_complement()._data[secnd_len // 2 :]
                     + first.reverse_primer
                 )
                 third.forward_primer = (
-                    secnd.seq._data[secnd_len // 2:] + third.forward_primer
+                    secnd.seq._data[secnd_len // 2 :] + third.forward_primer
                 )
 
                 lnk = (
@@ -697,13 +695,11 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
 def circular_assembly_fragments(f, overlap=35, maxlink=40):
 
-    fragments = assembly_fragments(
-        f + f[0:1], overlap=overlap, maxlink=maxlink)
+    fragments = assembly_fragments(f + f[0:1], overlap=overlap, maxlink=maxlink)
 
     if hasattr(fragments[0], "template"):
         fragments[0] = _pcr(
-            (fragments[-1].forward_primer,
-             fragments[0].reverse_primer), fragments[0]
+            (fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0]
         )
     return fragments[:-1]
 

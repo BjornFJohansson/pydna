@@ -161,6 +161,7 @@ def test_eq():
 
 def test_cseguid():
     from pydna.utils import cseguid
+
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
     assert (
         cseguid(x)
@@ -169,8 +170,10 @@ def test_cseguid():
         == "naaZmDzyMa58OsNXROe5SvjC7WU"
     )
 
+
 def test_lseguid():
     from pydna.utils import lseguid
+
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
     assert (
         lseguid(x)
@@ -179,29 +182,38 @@ def test_lseguid():
         == "bHrqalTJ793oAigMQ5_qCttJRTk"
     )
 
+
 def test_seq31():
     pass
+
 
 def test_parse_text_table():
     pass
 
+
 def test_join_list_to_table():
     pass
+
 
 def test_expandtolist():
     pass
 
+
 def test_randomRNA():
     pass
+
 
 def test_randomDNA():
     pass
 
+
 def test_randomORF():
     pass
 
+
 def test_randomprot():
     pass
+
 
 def test_smallest_rotation():
     from pydna.utils import SmallestRotation as sr

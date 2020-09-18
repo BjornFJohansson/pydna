@@ -83,8 +83,7 @@ class Editor:
         # https://stackoverflow.com/questions/470690/how-to-automatically-generate-n-distinct-colors
         seq.features.sort(key=_operator.attrgetter("location.start"))
         name = "{name}.gb".format(
-            name="".join(c for c in seq.name.strip().replace(
-                " ", "_") if c in _wl)
+            name="".join(c for c in seq.name.strip().replace(" ", "_") if c in _wl)
             or _uuid.uuid3(_uuid.NAMESPACE_DNS, seq.name)
         )
         tdir = _tempfile.mkdtemp(dir=self.tmpdir)

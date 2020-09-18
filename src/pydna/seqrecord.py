@@ -14,7 +14,8 @@ from pydna.seqfeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-#from Bio.Alphabet import generic_dna as _generic_dna
+
+# from Bio.Alphabet import generic_dna as _generic_dna
 from Bio.Data.CodonTable import TranslationError as _TranslationError
 from Bio.SeqUtils import GC as _GC
 from Bio.SeqRecord import SeqRecord as _SeqRecord
@@ -35,8 +36,7 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 
 class SeqRecord(_SeqRecord):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args,
-                         **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.annotations.update({"molecule_type": "DNA"})
         if len(self.name) > 16:
@@ -68,7 +68,7 @@ class SeqRecord(_SeqRecord):
             self.seq = _Seq(self.seq)
 
         self.seq._data = "".join(self.seq._data.split())  # remove whitespaces
-        #self.seq.alphabet = _generic_dna
+        # self.seq.alphabet = _generic_dna
         self.id = _pretty_str(self.id)
         self.name = _pretty_str(self.name)
         self.description = _pretty_str(self.description)
@@ -87,8 +87,7 @@ class SeqRecord(_SeqRecord):
         if len(value) > 16:
             shortvalue = value[:16]
             _warn(
-                "locus property {} truncated to 16 chars {}".format(
-                    value, shortvalue),
+                "locus property {} truncated to 16 chars {}".format(value, shortvalue),
                 _PydnaWarning,
                 stacklevel=2,
             )
@@ -407,7 +406,6 @@ class SeqRecord(_SeqRecord):
                 self.description += " " + newstamp
         return _pretty_str("{}_{}".format(alg, chksum))
 
-
     def seguid(self):
         """Returns the url safe SEGUID [#]_ for the sequence.
         This checksum is the same as seguid but with base64.urlsafe
@@ -440,7 +438,7 @@ class SeqRecord(_SeqRecord):
         else:
             r = str(other.lower())
         olaps = _common_sub_strings(str(self.seq).lower(), r, **kwargs)
-        return [self[olap[0]: olap[0] + olap[2]] for olap in olaps]
+        return [self[olap[0] : olap[0] + olap[2]] for olap in olaps]
 
     def gc(self):
         """Returns GC content"""
