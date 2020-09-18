@@ -12,8 +12,8 @@ metabolic pathways are often difficult to **properly** document.
 The Pydna python package provide a human-readable formal description of cloning and genetic assembly
 strategies in Python which also allows for simulation and verification.
 
-
 Pydna can be though of as executable documentation for molecular biology.
+A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
 
 Pydna provides simulation of:
 
@@ -28,10 +28,6 @@ Pydna provides simulation of:
 
 Virtually any sub-cloning experiment can be described in pydna, and its execution yield
 the sequence of the of intermediate and final resulting DNA molecule(s).
-
-
-A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
-
 
 Pydna has been designed to be understandable for biologists with only some basic understanding of Python.
 
