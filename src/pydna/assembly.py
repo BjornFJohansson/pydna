@@ -53,12 +53,6 @@ from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 import networkx as _nx
 from copy import deepcopy as _deepcopy
 import itertools as _itertools
-
-# if sys.version_info < (3, 6):
-#     from collections import OrderedDict as _od
-# else:
-#     _od = dict
-
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
@@ -158,7 +152,7 @@ class Assembly(object, metaclass=_Memoize):
             "end_rc": "begin_rc",
         }
 
-        # all cominations of fragments are compared.
+        # all combinations of fragments are compared.
         # see https://docs.python.org/3.6/library/itertools.html
         # itertools.combinations('ABCD', 2)-->  AB AC AD BC BD CD
         for first, secnd in _itertools.combinations(fragments, 2):
@@ -398,11 +392,10 @@ class Assembly(object, metaclass=_Memoize):
 
                 edgefeatures = []
                 offset = 0
-
                 for u, v, e in edges:
                     feats = _deepcopy(e["features"])
                     for f in feats:
-                        f.location += offset
+                        f.location += offset - e["piece"].start
                     edgefeatures.extend(feats)
                     offset += e["piece"].stop - e["piece"].start
 
@@ -551,6 +544,10 @@ circular_results = (
 )
 
 
+
+
+
+
 if __name__ == "__main__":
     import os as _os
 
@@ -560,3 +557,8 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
+
+
+
+
+
