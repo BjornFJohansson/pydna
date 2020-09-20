@@ -7,6 +7,7 @@ import tempfile
 import platform
 import pytest
 import pathlib
+import pkg_resources
 
 # pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval
 # --current-env  --capture=no --durations=10 --doctest-modules
@@ -32,32 +33,27 @@ def main():
 
     asciitext("tests python {}".format(platform.python_version()))
 
-    try:
-        import coveralls
+    installed = {pkg.key for pkg in pkg_resources.working_set}
 
-        # also pytest_cov (pip install pytest-cov)
-    except ImportError:
-        print("coveralls-python NOT installed! (pip install coveralls)")
-        args = []
-    else:
-        print(f"coveralls-python {coveralls.__version__} is installed!")
-        del coveralls
+    if "coveralls" in installed:
+        print("coveralls-python is installed.")
         args = [
             "--cov=pydna",
             "--cov-report=html",
             "--cov-report=xml",
             "--import-mode=importlib",
         ]
-    try:
-        # A py.test plugin to validate Jupyter notebooks
-        import nbval
-    except ImportError:
-        print("nbval NOT installed! (pip install nbval)")
     else:
-        print(f"nbval {nbval.__version__} is installed!")
-        del nbval
+        print("coveralls-python NOT installed! (pip install coveralls)")
+        args = []
+
+    if "nbval" in installed:
+        print("nbval is installed.")
         args.append("--nbval")
         args.append("--current-env")
+    else:
+        print("nbval NOT installed! (pip install nbval)")
+
 
     mainargs = ["tests", "--capture=no", "--durations=10"] + args
     # cwd = os.getcwd()
