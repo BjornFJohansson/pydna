@@ -203,6 +203,7 @@ class Anneal(object, metaclass=_Memoize):
         Name: 51bp_PCR_prod
         Description: pcr product_p1_p2
         Number of features: 2
+        /molecule_type=DNA
         Dseq(-51)
         taca..gcac
         atgt..cgtg
