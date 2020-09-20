@@ -3,6 +3,7 @@
 
 import pytest
 import pydna
+pydna
 
 
 def test_IPython_missing(monkeypatch):
