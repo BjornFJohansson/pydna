@@ -197,6 +197,7 @@ class Dseqrecord(_SeqRecord):
 
         self.map_target = None
         self.n = n  # amount, set to 5E-14 which is 5 pmols
+        self.annotations.update({"molecule_type": "DNA"})
 
     @classmethod
     def from_string(
@@ -211,7 +212,7 @@ class Dseqrecord(_SeqRecord):
         obj.name = _pretty_str("name")
         obj.description = _pretty_str("description")
         obj.dbxrefs = []
-        obj.annotations = {}
+        obj.annotations = {"molecule_type": "DNA"}
         obj._per_letter_annotations = {}
         obj.features = []
         obj.map_target = None
@@ -574,7 +575,7 @@ class Dseqrecord(_SeqRecord):
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description
-                print(oldstamp, newstamp)
+                #print(oldstamp, newstamp)
                 if oldstamp and newstamp:
                     if oldstamp.group(0)[:35] == newstamp.group(0)[:35]:
                         newdescription = newdescription.replace(
