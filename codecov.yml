@@ -1,17 +1,10 @@
 codecov:
-  branch: testrelease
-  notify:
-    require_ci_to_pass: no
+  require_ci_to_pass: yes
 
 coverage:
   precision: 2
   round: down
   range: "70...100"
-
-  status:
-    project: yes
-    patch: yes
-    changes: no
 
 parsers:
   gcov:
@@ -22,6 +15,6 @@ parsers:
       macro: no
 
 comment:
-  layout: "reach, diff, flags, files, footer"
+  layout: "reach,diff,flags,tree"
   behavior: default
   require_changes: no

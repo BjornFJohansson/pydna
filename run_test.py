@@ -31,21 +31,21 @@ def main():
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
-    asciitext("tests python {}".format(platform.python_version()))
+    asciitext("tests py {}".format(platform.python_version()))
 
     installed = {pkg.key for pkg in pkg_resources.working_set}
 
+    args = []
+
     if "coveralls" in installed:
         print("coveralls-python is installed.")
-        args = [
-            "--cov=pydna",
-            "--cov-report=html",
-            "--cov-report=xml",
-            "--import-mode=importlib",
-        ]
+
+        args = ["--cov=pydna",
+                "--cov-report=html",
+                "--cov-report=xml",
+                "--import-mode=importlib"]
     else:
         print("coveralls-python NOT installed! (pip install coveralls)")
-        args = []
 
     if "nbval" in installed:
         print("nbval is installed.")
@@ -54,18 +54,16 @@ def main():
     else:
         print("nbval NOT installed! (pip install nbval)")
 
-
     mainargs = ["tests", "--capture=no", "--durations=10"] + args
-    # cwd = os.getcwd()
-    # os.chdir("tests")
+
     result_suite = pytest.cmdline.main(mainargs)
-    # os.chdir(cwd)
+
 
     from pydna import __file__ as pydnainit
 
     doctestdir = str(pathlib.Path(pydnainit).parent)
 
-    asciitext("doctests python {}".format(platform.python_version()))
+    asciitext("doctests py {}".format(platform.python_version()))
     doctestargs = [
         doctestdir,
         "--doctest-modules",
