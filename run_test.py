@@ -5,6 +5,7 @@ import os
 import logging
 import tempfile
 import pytest
+import pathlib
 
 def main():
 
@@ -13,8 +14,12 @@ def main():
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
+    from pydna import __file__ as pydnainit
+
+    doctestdir = str(pathlib.Path(pydnainit).parent)
+
     args = [ "tests",
-             "src",
+             doctestdir,
              "--capture=no",
              "--durations=10",
              "--cov=pydna",
