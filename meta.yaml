@@ -33,6 +33,7 @@ requirements:
 test:
   requires:
     - pytest
+    - pytest-cov
     - pytest-doctestplus
     - requests-mock
     - nbval
@@ -41,6 +42,7 @@ test:
     - pydna
   source_files:
     - tests
+    - src
     - src/pydna
 about:
   home: https://github.com/BjornFJohansson/pydna
