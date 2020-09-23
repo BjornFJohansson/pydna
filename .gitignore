@@ -1,4 +1,4 @@
-src/pydna/_version.p*
+src/pydna/_version.py*
 
 
 .pytest_cache
