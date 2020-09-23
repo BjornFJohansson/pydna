@@ -35,6 +35,8 @@ test:
     - pytest
     - pytest-doctestplus
     - requests-mock
+    - nbval
+    - coverage
   imports:
     - pydna
   source_files:
