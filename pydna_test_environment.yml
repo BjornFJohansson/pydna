@@ -28,7 +28,6 @@ dependencies:
 - pytest-runner
 - pytest-doctestplus
 - coverage
-- coveralls
 - nbval
 
 - setuptools
