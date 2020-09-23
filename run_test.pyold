@@ -4,9 +4,25 @@ import sys
 import os
 import logging
 import tempfile
+import platform
 import pytest
 import pathlib
 import pkg_resources
+
+# pytest . --cov=pydna --cov-report=html --cov-report=xml --nbval
+# --current-env  --capture=no --durations=10 --doctest-modules
+
+#
+try:
+    from pyfiglet import Figlet
+except ImportError:
+    asciitext = print
+else:
+
+    def asciitext(*args, **kwargs):
+        f = Figlet(font="doom")
+        print(f.renderText(" ".join(args)), **kwargs)
+
 
 def main():
 
@@ -15,11 +31,13 @@ def main():
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
+    asciitext("tests py {}".format(platform.python_version()))
+
     installed = {pkg.key for pkg in pkg_resources.working_set}
 
     args = []
 
-    if "coverage" in installed:
+    if "coveralls" in installed:
         print("coveralls-python is installed.")
 
         args = ["--cov=pydna",
@@ -27,7 +45,7 @@ def main():
                 "--cov-report=xml",
                 "--import-mode=importlib"]
     else:
-        print("coverage NOT installed! (pip install coverage)")
+        print("coveralls-python NOT installed! (pip install coveralls)")
 
     if "nbval" in installed:
         print("nbval is installed.")
@@ -40,10 +58,12 @@ def main():
 
     result_suite = pytest.cmdline.main(mainargs)
 
+
     from pydna import __file__ as pydnainit
 
     doctestdir = str(pathlib.Path(pydnainit).parent)
 
+    asciitext("doctests py {}".format(platform.python_version()))
     doctestargs = [
         doctestdir,
         "--doctest-modules",
@@ -51,6 +71,8 @@ def main():
         "--import-mode=importlib",
     ]
     result_doctest = pytest.cmdline.main(doctestargs)
+
+    asciitext("done!")
 
     return result_doctest and result_suite
 
