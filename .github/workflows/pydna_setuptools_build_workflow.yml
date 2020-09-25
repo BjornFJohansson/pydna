@@ -23,7 +23,6 @@ jobs:
           auto-activate-base: false
           activate-environment: pydna_build_environment
           python-version: 3.8
-          channels: conda-forge, defaults
           environment-file: pydna_build_environment.yml
           use-only-tar-bz2: true
       - name: conda info

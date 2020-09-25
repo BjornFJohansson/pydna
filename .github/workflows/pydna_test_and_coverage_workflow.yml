@@ -40,7 +40,6 @@ jobs:
           add-pip-as-python-dependency: true
           activate-environment: pydna_test_environment
           python-version: ${{ matrix.python-version }}
-          channels: conda-forge, defaults
           environment-file: pydna_test_environment.yml
           use-only-tar-bz2: true
 

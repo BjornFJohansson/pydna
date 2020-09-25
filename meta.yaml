@@ -21,7 +21,7 @@ requirements:
         - appdirs
         - biopython
         - prettytable
-        - networkx >=2.4.0
+        - networkx
         - pyparsing
         - requests
         - ipython
