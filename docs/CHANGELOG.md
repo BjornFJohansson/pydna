@@ -2,6 +2,10 @@
 version   date       comment
 =======   ========== ==========================================================================================
 
+3.1.1     2020-09-25 Bugfix release. There was a bug in locating features in certain circular assemblies.
+                     Added a test: "test_marker_replacement_on_plasmid" in test_module_assembly.py to
+                     test for this.
+
 3.1.0     2020-09-16 Changed to src layout for the package. Changed how melting temperature is calculated.
                      Changes to tests, added a conftest.py. Updated for comatibility with biopython 1.7.8.
                      Removed mysequences.py
@@ -36,6 +40,7 @@ version   date       comment
                      into the main namespace.
                      Finer control over cache, genbank download is now on by default.
                      Bug fix in assembly_fragments function that created too long primer tails.
+
 2.0.0a2   ---        ----
 
 
@@ -45,6 +50,7 @@ version   date       comment
                      pydna.design.cloning_primers
                      pydna.design.integration_primers
                      pydna.design.assembly_primers
+
 2.0.0a0   2017-03-15 alpha release, removed imports in __init__
                      This version breaks compatibility.
 
@@ -90,15 +96,20 @@ version   date       comment
 
 1.0.1     2016-03-10 Bugfix: for errors in IPython import if IPython is too old (<4.0)
                      Bugfix: Large genbank records were not downloaded completely.
+
 1.0.0     -          Gel simulation added
+
 0.9.3     2015-06-03 Shelve does not work under MacOS under certain conditions.
                      This release tries to solve this by not specifying file extensions
                      for the cache files. Two functions are added, pydna.
+
 0.9.2     2015-05-28 pydna_data_dir is encoded to a string in __init__.py instead of
                      unicode. The Popen module does not accept environment variables that
                      are not strings.
+
 0.9.1     2015-05-26 fixed critical error in the calculation of seguid and cseguid
                      checksums
+
 0.9.0     2015-05-26 seguid and cseguid are now url safe so they can be part of urls and
                      file names.
                      Dseqrecord.locus is an alias of Dseqrecord.name
