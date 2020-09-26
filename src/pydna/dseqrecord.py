@@ -826,7 +826,7 @@ class Dseqrecord(_SeqRecord):
             elif "note" in sf.qualifiers:
                 identifier = " ".join(sf.qualifiers["note"])
         answer.id = _identifier_from_string(identifier)[:16]
-        answer.name = answer.id
+        answer.name = _identifier_from_string("part_{name}".format(name=self.name))[:16]
         return answer
 
     def __eq__(self, other):

@@ -155,32 +155,49 @@ def test_format():
 
 
 def test_seqrecord():
-    import datetime
-    import pydna
     from pydna import seqrecord, _PydnaWarning
     from Bio.Seq import Seq
+
+    s = seqrecord.SeqRecord("gatt")
+    assert s.name == s.locus == "name"
+    assert s.id == s.accession == "id"
+    assert s.definition == s.description == "description"
+
+    t = s[2:]
+
+    assert t.name == t.locus == "part_name"
+    assert t.id == t.accession == "part_id"
+    assert t.definition == t.description == "description"
+
+    s = seqrecord.SeqRecord("gatt", name="1234567890123456")
+    assert s.name == s.locus == "1234567890123456"
+    assert s.id == s.accession == "id"
+    assert s.definition == s.description == "description"
+
+    t = s[2:]
+
+    assert t.name == t.locus == "part_12345678901"
+    assert t.id == t.accession == "part_id"
+    assert t.definition == t.description == "description"
 
     s = Seq("ATGAAATAA")
 
     obj = seqrecord.SeqRecord(s, name="1234567890123456")
+    assert obj.name == "1234567890123456"
 
-    with pytest.warns(None) as pdw:
+    with pytest.warns(_PydnaWarning, match="truncated") as pdw:
         obj = seqrecord.SeqRecord(s, name="12345678901234567")
 
     obj = seqrecord.SeqRecord(s, name="<unknown name>")
-
     assert obj.name == "name"
 
     obj = seqrecord.SeqRecord(s, id="<unknown id>")
-
     assert obj.id == "id"
 
     obj = seqrecord.SeqRecord(s, description="<unknown description>")
-
     assert obj.description == "description"
 
     obj = seqrecord.SeqRecord(s, annotations={"date": "24-DEC-1970"})
-
     assert obj.annotations["date"] == "24-DEC-1970"
 
     obj = seqrecord.SeqRecord(s)
@@ -244,7 +261,7 @@ def test_seqrecord():
     obj.description = "new456"
     assert obj.definition == obj.description == "new456"
 
-    with pytest.warns(None) as pdw:
+    with pytest.warns(_PydnaWarning) as pdw:
         obj.locus = "12345678901234567"
 
     lf = str(

@@ -59,9 +59,6 @@ class SeqRecord(_SeqRecord):
         if self.description == "<unknown description>":
             self.description = "description"
 
-        # if not 'date' in self.annotations:
-        #    self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
-
         self.map_target = None
 
         if not hasattr(self.seq, "transcribe"):
@@ -504,7 +501,7 @@ class SeqRecord(_SeqRecord):
             elif "note" in sf.qualifiers:
                 identifier = " ".join(sf.qualifiers["note"])
         answer.id = _identifier_from_string(identifier)[:16]
-        answer.name = answer.id
+        answer.name = _identifier_from_string("part_{name}".format(name=self.name))[:16]
         return answer
 
 
