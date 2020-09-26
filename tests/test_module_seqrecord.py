@@ -155,7 +155,8 @@ def test_format():
 
 
 def test_seqrecord():
-    from pydna import seqrecord, _PydnaWarning
+    import pydna
+    from pydna import seqrecord
     from Bio.Seq import Seq
 
     s = seqrecord.SeqRecord("gatt")
@@ -185,7 +186,7 @@ def test_seqrecord():
     obj = seqrecord.SeqRecord(s, name="1234567890123456")
     assert obj.name == "1234567890123456"
 
-    with pytest.warns(_PydnaWarning, match="truncated") as pdw:
+    with pytest.warns(None, match="truncated") as pdw:
         obj = seqrecord.SeqRecord(s, name="12345678901234567")
 
     obj = seqrecord.SeqRecord(s, name="<unknown name>")
@@ -261,7 +262,7 @@ def test_seqrecord():
     obj.description = "new456"
     assert obj.definition == obj.description == "new456"
 
-    with pytest.warns(_PydnaWarning) as pdw:
+    with pytest.warns(None, match="truncated") as pdw:
         obj.locus = "12345678901234567"
 
     lf = str(
