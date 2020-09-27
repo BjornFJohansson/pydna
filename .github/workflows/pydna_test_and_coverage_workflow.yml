@@ -45,7 +45,7 @@ jobs:
 
       - name: Install from source
         shell: bash -l {0}
-        run: pip install .
+        run: pip install --editable . --no-deps
 
       - name: set PY_IGNORE_IMPORTMISMATCH=1
         uses: allenevans/set-env@v1.1.0
