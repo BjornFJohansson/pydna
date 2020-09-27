@@ -285,17 +285,78 @@ def test_linear_circular():
 
 
 def test_stamp():
-    from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
-    from pydna.utils import eq
 
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
+    lin = Dseqrecord("attt")
+    assert lin.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert lin.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    lin.description = "cSEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    with pytest.raises(ValueError):
+        lin.stamp()
+    lin.description = "XcSEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    with pytest.raises(ValueError):
+        lin.stamp()
+    lin.description = "cSEGUID_ot6JPLeAeMmfztW1736Kc6DAqloX"
+    with pytest.raises(ValueError):
+        lin.stamp()
+    lin.description = "XcSEGUID_ot6JPLeAeMmfztW1736Kc6DAqloX"
+    with pytest.raises(ValueError):
+        lin.stamp()
+    lin.description = "SEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnnn"
+    with pytest.raises(ValueError):
+        lin.stamp()
+    lin.description = "SEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnn"
+    assert lin.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    lin.description = "cSEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnnn"
+    with pytest.raises(ValueError):
+        lin.stamp()
+    lin.description = "cSEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnn"
+    assert lin.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
 
-    a = Dseqrecord("attt")
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+
+
+    crc = Dseqrecord("attt", circular = True)
+    assert crc.stamp() == "cSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
+    assert crc.stamp() == "cSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
+    crc.description = "SEGUID_oopV-6158nHJqedi8lsshIfcqYA"
+    with pytest.raises(ValueError):
+        crc.stamp()
+    crc.description = "XSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
+    with pytest.raises(ValueError):
+        crc.stamp()
+    crc.description = "SEGUID_oopV-6158nHJqedi8lsshIfcqYAX"
+    with pytest.raises(ValueError):
+        crc.stamp()
+    crc.description = "XSEGUID_oopV-6158nHJqedi8lsshIfcqYAX"
+    with pytest.raises(ValueError):
+        crc.stamp()
+    crc.description = "cSEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnnn"
+    with pytest.raises(ValueError):
+        crc.stamp()
+    crc.description = "cSEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnn"
+    assert crc.stamp() == "cSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
+    crc.description = "SEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnnn"
+    with pytest.raises(ValueError):
+        crc.stamp()
+    crc.description = "SEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnn"
+    assert crc.stamp() == "cSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
+
+    from pydna.dseq import Dseq
+
+    blunt = Dseqrecord(Dseq("aa"))
+
+    assert blunt.stamp() == "SEGUID_gBw0Jp907Tg_yX3jNgS4qQWttjU"
+
+    staggered = Dseqrecord(Dseq("aa", "tta"))
+    assert staggered.stamp() == "Sequence is not blunt nor circular, so it can not be stamped."
+
+    staggered = Dseqrecord(Dseq("aa", "att"))
+    assert staggered.stamp() == "Sequence is not blunt nor circular, so it can not be stamped."
+
+    staggered = Dseqrecord(Dseq("aa", "atta"))
+    assert staggered.stamp() == "Sequence is not blunt nor circular, so it can not be stamped."
+
+
 
 
 def test_revcomp():

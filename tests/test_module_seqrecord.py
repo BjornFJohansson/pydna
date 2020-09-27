@@ -106,6 +106,9 @@ def test_stamp():
         a.stamp()
 
 
+
+
+
 def test___hash__():
     from Bio.Seq import Seq
     from pydna.seqrecord import SeqRecord

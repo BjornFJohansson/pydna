@@ -1,9 +1,91 @@
-#!/usr/bin/env python
+  #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import pytest
 from unittest import mock
+import pydna
 
+
+def test_rc():
+    import pydna
+    from pydna.utils import rc
+    assert rc("gattc")=='gaatc'
+    assert rc("GATTC")=='GAATC'
+
+
+def test_complement():
+    import pydna
+    from pydna.utils import complement
+    assert complement("gattc") == 'ctaag'
+    assert complement("GATTC") == 'CTAAG'
+
+def test_seq31():
+    import pydna
+    from pydna.utils import seq31
+    assert seq31('MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer') == 'M  A  I  V  M  G  R  W  K  G  A  R  *'
+
+
+def test_parse_text_table():
+    import pydna
+    from pydna.utils import parse_text_table
+    pass
+
+
+def test_join_list_to_table():
+    import pydna
+    from pydna.utils import join_list_to_table
+    pass
+
+
+def test_expandtolist():
+    import pydna
+    from pydna.utils import expandtolist
+    pass
+
+
+def test_randomRNA():
+    import pydna
+    from pydna.utils import randomRNA
+    pass
+
+
+def test_randomDNA():
+    import pydna
+    from pydna.utils import randomDNA
+    pass
+
+
+def test_randomORF():
+    import pydna
+    from pydna.utils import randomORF
+    orf = randomORF(3)
+    assert orf.startswith("ATG")
+
+    cdns = (
+    "TTT", "TTC", "TTA", "TTG", "TCT", "TCC", "TCA", "TCG", "TAT", "TAC",
+    "TGT", "TGC", "TGG", "CTT", "CTC", "CTA", "CTG", "CCT", "CCC", "CCA",
+    "CCG", "CAT", "CAC", "CAA", "CAG", "CGT", "CGC", "CGA", "CGG", "ATT",
+    "ATC", "ATA", "ATG", "ACT", "ACC", "ACA", "ACG", "AAT", "AAC", "AAA",
+    "AAG", "AGT", "AGC", "AGA", "AGG", "GTT", "GTC", "GTA", "GTG", "GCT",
+    "GCC", "GCA", "GCG", "GAT", "GAC", "GAA", "GAG", "GGT", "GGC", "GGA",
+    "GGG")
+
+    assert orf[3:6] in cdns
+
+    assert orf.endswith(("TAA", "TAG", "TGA"))
+
+    assert 9<=len(randomORF(3,6))<=18
+
+
+def test_randomprot():
+    import pydna
+    from pydna.utils import randomprot
+    protein = randomprot(10)
+    assert len(protein) == 10
+    assert all( [aa in "ACDEFGHIKLMNPQRSTVWY" for aa in protein] )
+    protein = randomprot(10,20)
+    assert 10<=len(protein)<=20
+    assert all( [aa in "ACDEFGHIKLMNPQRSTVWY" for aa in protein] )
 
 def test_eq():
 

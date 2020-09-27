@@ -571,7 +571,7 @@ class Dseqrecord(_SeqRecord):
                 with open(filename, "w") as fp:
                     fp.write(self.format(f))
             elif "SEGUID" in old_file.description:
-                pattern = r"(lSEGUID|cSEGUID|SEGUID)_\s*(\S{27})_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}"
+                pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description
@@ -585,6 +585,7 @@ class Dseqrecord(_SeqRecord):
                     newdescription += " " + oldstamp.group(0)
                 newobj = _copy.copy(self)
                 newobj.description = newdescription
+
                 with open(filename, "w") as fp:
                     fp.write(newobj.format(f))
             else:
