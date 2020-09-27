@@ -2,61 +2,58 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from unittest import mock
-import pydna
-
 
 def test_rc():
-    import pydna
+
     from pydna.utils import rc
     assert rc("gattc")=='gaatc'
     assert rc("GATTC")=='GAATC'
 
 
 def test_complement():
-    import pydna
+
     from pydna.utils import complement
     assert complement("gattc") == 'ctaag'
     assert complement("GATTC") == 'CTAAG'
 
 def test_seq31():
-    import pydna
+
     from pydna.utils import seq31
     assert seq31('MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer') == 'M  A  I  V  M  G  R  W  K  G  A  R  *'
 
 
 def test_parse_text_table():
-    import pydna
+
     from pydna.utils import parse_text_table
     pass
 
 
 def test_join_list_to_table():
-    import pydna
+
     from pydna.utils import join_list_to_table
     pass
 
 
 def test_expandtolist():
-    import pydna
+
     from pydna.utils import expandtolist
     pass
 
 
 def test_randomRNA():
-    import pydna
+
     from pydna.utils import randomRNA
     pass
 
 
 def test_randomDNA():
-    import pydna
+
     from pydna.utils import randomDNA
     pass
 
 
 def test_randomORF():
-    import pydna
+
     from pydna.utils import randomORF
     orf = randomORF(3)
     assert orf.startswith("ATG")
@@ -78,7 +75,7 @@ def test_randomORF():
 
 
 def test_randomprot():
-    import pydna
+
     from pydna.utils import randomprot
     protein = randomprot(10)
     assert len(protein) == 10

@@ -18,26 +18,9 @@ def main():
 
     #doctestdir = str(pathlib.Path(pydnainit).parent)
 
-    args = [ "src",                             # doctestdir
-             "--cov=pydna",
-             "--cov-append",
-             "--cov-report=html",
-             "--cov-report=xml",
-             "--capture=no",
-             "--durations=10",
-             "--import-mode=importlib",
-             "--nbval",
-             "--current-env",
-             "--doctest-modules",
-             "--capture=no",
-             "--import-mode=importlib",
-             "-vvv",]
-
-    result_suite_src = pytest.main(args)
-
     args = [ "tests",
+             "src",                             # doctestdir
              "--cov=pydna",
-             "--cov-append",
              "--cov-report=html",
              "--cov-report=xml",
              "--capture=no",
@@ -50,11 +33,9 @@ def main():
              "--import-mode=importlib",
              "-vvv",]
 
-    result_suite_tests = pytest.main(args)
+    result_suite = pytest.main(args)
 
-
-
-    return result_suite_tests and result_suite_src
+    return result_suite
 
 
 if __name__ == "__main__":
