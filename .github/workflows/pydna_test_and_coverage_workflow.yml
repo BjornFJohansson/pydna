@@ -47,6 +47,11 @@ jobs:
         shell: bash -l {0}
         run: pip install .
 
+      - name: set environment variables
+        uses: allenevans/set-env@v1.1.0
+        with:
+          PY_IGNORE_IMPORTMISMATCH: '1'
+
       - name: python run_test.py
         shell: bash -l {0}
         run: python run_test.py
