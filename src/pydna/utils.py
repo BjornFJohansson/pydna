@@ -303,17 +303,35 @@ def identifier_from_string(s: str) -> str:
 
 
 def seguid(seq: str) -> _pretty_str:
-    """Returns the url safe SEGUID checksum for the sequence. This is the SEGUID
-    checksum with the '+' and '/' characters of standard Base64 encoding are respectively
-    replaced by '-' and '_'.
+    """Returns the url safe SEGUID checksum for the sequence.
+    This is the SEGUID checksum with the '+' and '/' characters of standard
+    Base64 encoding are respectively replaced by '-' and '_'.
+
+    Examples
+    --------
+    >>> from pydna.utils import seguid
+    >>> seguid("a")
+    'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
     """
-    return _pretty_str(_base64_seguid(seq.upper()).replace("+", "-").replace("/", "_"))
+    return (
+        _pretty_str(_base64_seguid(seq.upper())
+        .replace("+", "-")
+        .replace("/", "_"))
+    )
 
 
 def lseguid(seq: str) -> _pretty_str:
-    """Returns the url safe lSEGUID checksum for the sequence (seq). This is the SEGUID
-    checksum with the '+' and '/' characters of standard Base64 encoding are respectively
-    replaced by '-' and '_'.
+    """Returns the url safe lSEGUID checksum for the sequence (seq).
+    This is the SEGUID checksum with the '+' and '/' characters of standard
+    Base64 encoding are respectively replaced by '-' and '_'.
+
+    Examples
+    --------
+    >>> from pydna.utils import lseguid
+    >>> lseguid("a")
+    'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
+    >>> lseguid("t")
+    'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
     """
     return (
         seguid(min(seq.upper(), str(rc(seq)).upper()))
@@ -323,12 +341,22 @@ def lseguid(seq: str) -> _pretty_str:
 
 
 def cseguid(seq: str) -> _pretty_str:
-    """Returns the url safe cSEGUID for the sequence. The cSEGUID is the SEGUID checksum
-    calculated for the lexicographically minimal string rotation of a DNA sequence.
-    Only defined for circular sequences.
+    """Returns the url safe cSEGUID for the sequence.
+    The cSEGUID is the SEGUID checksum calculated for the lexicographically
+    minimal string rotation of a DNA sequence. Only defined for circular
+    sequences.
+
+    Examples
+    --------
+    >>> from pydna.utils import cseguid
+    >>> cseguid("attt")
+    'oopV-6158nHJqedi8lsshIfcqYA'
+    >>> cseguid("ttta")
+    'oopV-6158nHJqedi8lsshIfcqYA'
     """
     return seguid(
-        min(SmallestRotation(seq.upper()), SmallestRotation(str(rc(seq)).upper()))
+        min(SmallestRotation(seq.upper()),
+            SmallestRotation(str(rc(seq)).upper()))
     )
 
 
@@ -363,12 +391,14 @@ def seq31(seq):
     Any unknown
     character (including possible gap characters), is changed into 'Xaa'.
 
-    e.g.
+    Examples
+    --------
     >>> from Bio.SeqUtils import seq3
     >>> seq3("MAIVMGRWKGAR*")
     'MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer'
-
-    This function was inspired by BioPerl's seq3.
+    >>> from pydna.utils import seq31
+    >>> seq31('MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer')
+    'M  A  I  V  M  G  R  W  K  G  A  R  *'
     """
     threecode = {
         "Ala": "A",
@@ -540,14 +570,19 @@ def parse_text_table(rawtable, tabs=4):
 
     columnsplit = "\n|||\n".join(
         [
-            "\n".join(["".join(c) for c in zip(*col.strip("\n").splitlines())])
+            "\n".join([x.strip() for x in ["".join(c) for c in zip(*col.strip("\n").splitlines())]])
             for col in cols
         ]
     )
 
     rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
+    rowsplit ="\n".join(row.strip() for row in rowsplit.splitlines())
 
-    return formatted, columnsplit, rowsplit, list_of_lists_rc, list_of_lists_cr
+    return (_pretty_str(item) for item in ( formatted,
+                                            columnsplit,
+                                            rowsplit,
+                                            list_of_lists_rc,
+                                            list_of_lists_cr))
 
 
 def join_list_to_table(rawlist):
@@ -562,7 +597,7 @@ def join_list_to_table(rawlist):
         rows = [row.splitlines() for row in rawrows]
         cols = list(itertools.zip_longest(*rows, fillvalue=""))
     else:
-        return
+        return None
 
     number_of_rows = max([len(col) for col in cols])
     formatted_cols = []
@@ -585,7 +620,7 @@ def join_list_to_table(rawlist):
 
     new_text = "\n".join(combinedlist)
 
-    return new_text
+    return _pretty_str(new_text)
 
 
 def expandtolist(content):
@@ -630,7 +665,7 @@ def expandtolist(content):
     rt = ""
     for a in range(ml):
         rt += "".join([b[a] for b in norm]) + "\n"
-    return rt
+    return _pretty_str(rt)
 
 
 def randomRNA(length, maxlength=None):
@@ -647,80 +682,25 @@ def randomDNA(length, maxlength=None):
 
 
 def randomORF(length, maxlength=None):
-
+    length-=2
     if maxlength and maxlength > length:
-        length = int(round(random.triangular(length, maxlength)))
+        length = int(round(random.triangular(length, maxlength-2)))
 
     cdns = (
-        "TTT",
-        "TTC",
-        "TTA",
-        "TTG",
-        "TCT",
-        "TCC",
-        "TCA",
-        "TCG",
-        "TAT",
-        "TAC",
-        "TGT",
-        "TGC",
-        "TGG",
-        "CTT",
-        "CTC",
-        "CTA",
-        "CTG",
-        "CCT",
-        "CCC",
-        "CCA",
-        "CCG",
-        "CAT",
-        "CAC",
-        "CAA",
-        "CAG",
-        "CGT",
-        "CGC",
-        "CGA",
-        "CGG",
-        "ATT",
-        "ATC",
-        "ATA",
-        "ATG",
-        "ACT",
-        "ACC",
-        "ACA",
-        "ACG",
-        "AAT",
-        "AAC",
-        "AAA",
-        "AAG",
-        "AGT",
-        "AGC",
-        "AGA",
-        "AGG",
-        "GTT",
-        "GTC",
-        "GTA",
-        "GTG",
-        "GCT",
-        "GCC",
-        "GCA",
-        "GCG",
-        "GAT",
-        "GAC",
-        "GAA",
-        "GAG",
-        "GGT",
-        "GGC",
-        "GGA",
-        "GGG",
-    )
+        "TTT", "TTC", "TTA", "TTG", "TCT", "TCC", "TCA", "TCG", "TAT", "TAC",
+        "TGT", "TGC", "TGG", "CTT", "CTC", "CTA", "CTG", "CCT", "CCC", "CCA",
+        "CCG", "CAT", "CAC", "CAA", "CAG", "CGT", "CGC", "CGA", "CGG", "ATT",
+        "ATC", "ATA", "ATG", "ACT", "ACC", "ACA", "ACG", "AAT", "AAC", "AAA",
+        "AAG", "AGT", "AGC", "AGA", "AGG", "GTT", "GTC", "GTA", "GTG", "GCT",
+        "GCC", "GCA", "GCG", "GAT", "GAC", "GAA", "GAG", "GGT", "GGC", "GGA",
+        "GGG")
 
     starts = ("ATG",)
     stops = ("TAA", "TAG", "TGA")
 
     return (
         random.choice(starts)
-        + "".join([random.choice(cdns) for x in range(int((length - 6) / 3))])
+        + "".join([random.choice(cdns) for x in range(length)])
         + random.choice(stops)
     )
 

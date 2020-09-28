@@ -571,7 +571,7 @@ class Dseqrecord(_SeqRecord):
                 with open(filename, "w") as fp:
                     fp.write(self.format(f))
             elif "SEGUID" in old_file.description:
-                pattern = r"(lSEGUID|cSEGUID|SEGUID)_\s*(\S{27})_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}"
+                pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description
@@ -585,6 +585,7 @@ class Dseqrecord(_SeqRecord):
                     newdescription += " " + oldstamp.group(0)
                 newobj = _copy.copy(self)
                 newobj.description = newdescription
+
                 with open(filename, "w") as fp:
                     fp.write(newobj.format(f))
             else:
@@ -826,7 +827,7 @@ class Dseqrecord(_SeqRecord):
             elif "note" in sf.qualifiers:
                 identifier = " ".join(sf.qualifiers["note"])
         answer.id = _identifier_from_string(identifier)[:16]
-        answer.name = answer.id
+        answer.name = _identifier_from_string("part_{name}".format(name=self.name))[:16]
         return answer
 
     def __eq__(self, other):

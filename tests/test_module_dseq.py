@@ -669,6 +669,34 @@ def test_misc():
 
     assert z.shifted(5) == x
 
+def test_cut_missing_enzyme():
+
+    from pydna.dseq import Dseq
+
+    x = Dseq("ctcgGCGGCCGCcagcggccg")
+
+    from Bio.Restriction import PstI
+
+    assert x.cut(PstI) == ()
+
+    x = Dseq("ctcgGCGGCCGCcagcggccg", circular=True)
+
+    assert x.cut(PstI) == ()
+
+def test_cut_with_no_enzymes():
+
+    from pydna.dseq import Dseq
+
+    x = Dseq("ctcgGCGGCCGCcagcggccg")
+
+    assert x.cut([]) == ()
+
+    x = Dseq("ctcgGCGGCCGCcagcggccg", circular=True)
+
+    assert x.cut([]) == ()
+
+
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])

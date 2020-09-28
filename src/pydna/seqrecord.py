@@ -59,9 +59,6 @@ class SeqRecord(_SeqRecord):
         if self.description == "<unknown description>":
             self.description = "description"
 
-        # if not 'date' in self.annotations:
-        #    self.annotations.update({"date": _datetime.date.today().strftime("%d-%b-%Y").upper()})
-
         self.map_target = None
 
         if not hasattr(self.seq, "transcribe"):
@@ -384,27 +381,40 @@ class SeqRecord(_SeqRecord):
         """
 
         try:
+            blunt = self.seq.isblunt()
+        except AttributeError:
+            blunt = True
+
+        try:
             linear = self.seq.linear
         except AttributeError:
             linear = True
-        alg = {True: "SEGUID", False: "cSEGUID"}[linear]
-        chksum = getattr(self, alg.lower())()
-        pattern = r"(SEGUID|cSEGUID)_\s*(\S{27})"
+
+        if (not blunt) and linear:
+            return _pretty_str("Sequence is not blunt nor circular,"
+                               " so it can not be stamped.")
+
+        algorithm = {True: "SEGUID", False: "cSEGUID"}[linear]
+        chksum = getattr(self, algorithm.lower())()
+        pattern = r"((?P<algorithm>c?SEGUID)(?:_|\s){1,5}(?P<sha1>\S{27}))"
         oldstamp = _re.search(pattern, self.description)
 
         if oldstamp:
-            old_alg, old_chksum = oldstamp.groups()
-            if alg == old_alg and chksum == old_chksum:
-                return _pretty_str("{}_{}".format(alg, chksum))
+            old_stamp, old_algorithm, old_chksum = oldstamp.groups()
+            newstamp = _pretty_str("{}_{}".format(algorithm, chksum))
+            if chksum == old_chksum and algorithm == old_algorithm:
+                return newstamp
             else:
-                raise ValueError("Stamp is wrong!")
+                raise ValueError("Stamp is wrong.\n"
+                                 f"Old: {old_stamp}\n"
+                                 f"New: {newstamp}")
         else:
-            newstamp = "{}_{}".format(alg, chksum)
+            newstamp = "{}_{}".format(algorithm, chksum)
             if not self.description or self.description == "description":
                 self.description = newstamp
             else:
                 self.description += " " + newstamp
-        return _pretty_str("{}_{}".format(alg, chksum))
+        return _pretty_str("{}_{}".format(algorithm, chksum))
 
     def seguid(self):
         """Returns the url safe SEGUID [#]_ for the sequence.
@@ -504,7 +514,7 @@ class SeqRecord(_SeqRecord):
             elif "note" in sf.qualifiers:
                 identifier = " ".join(sf.qualifiers["note"])
         answer.id = _identifier_from_string(identifier)[:16]
-        answer.name = answer.id
+        answer.name = _identifier_from_string("part_{name}".format(name=self.name))[:16]
         return answer
 
 

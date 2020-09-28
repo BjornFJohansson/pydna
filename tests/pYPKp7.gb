@@ -6,8 +6,8 @@ VERSION     6180bp gCItH7lLRXLdK3XbHaL3u89TYD4
 KEYWORDS    .
 SOURCE      .
   ORGANISM  . .
-COMMENT     
-COMMENT     
+COMMENT
+COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      primer_bind     complement(458..486)

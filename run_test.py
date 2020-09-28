@@ -5,7 +5,10 @@ import os
 import logging
 import tempfile
 import pytest
-import pathlib
+
+# https://discuss.python.org/t/testing-doctests-breaks-src-layout/3728
+# https://coverage.readthedocs.io/en/coverage-5.2.1/cmd.html
+
 
 def main():
 
@@ -14,28 +17,40 @@ def main():
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
-    from pydna import __file__ as pydnainit
-
-    doctestdir = str(pathlib.Path(pydnainit).parent)
-
-    args = [ "tests",
-             doctestdir,
-             "--capture=no",
-             "--durations=10",
+    args = [ "src",                             # doctestdir
              "--cov=pydna",
              "--cov-report=html",
              "--cov-report=xml",
+             "--capture=no",
+             "--durations=10",
              "--import-mode=importlib",
              "--nbval",
              "--current-env",
              "--doctest-modules",
              "--capture=no",
              "--import-mode=importlib",
-             "-vvv"]
+             "-vvv",]
 
-    result_suite = pytest.cmdline.main(args)
+    result_suite_src = pytest.main(args)
 
-    return result_suite
+    args = [ "tests",                             # test suite
+             "--cov=pydna",
+             "--cov-append",
+             "--cov-report=html",
+             "--cov-report=xml",
+             "--capture=no",
+             "--durations=10",
+             "--import-mode=importlib",
+             "--nbval",
+             "--current-env",
+             "--doctest-modules",
+             "--capture=no",
+             "--import-mode=importlib",
+             "-vvv",]
+
+    result_suite_tests = pytest.main(args)
+
+    return result_suite_tests and result_suite_src
 
 
 if __name__ == "__main__":

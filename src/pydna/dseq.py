@@ -1259,6 +1259,46 @@ class Dseq(_Seq):
             o = self._ovhg
         return _seg(_pretty_str(o) + w + "|" + c)
 
+    def isblunt(self):
+        """Returns True if Dseq is blunt and false if staggered or circular.
+
+        Examples
+        --------
+
+        >>> from pydna.dseq import Dseq
+        >>> a=Dseq("gat")
+        >>> a
+        Dseq(-3)
+        gat
+        cta
+        >>> a.isblunt()
+        True
+        >>> a=Dseq("gat", "atcg")
+        >>> a
+        Dseq(-4)
+         gat
+        gcta
+        >>> a.isblunt()
+        False
+        >>> a=Dseq("gat", "gatc")
+        >>> a
+        Dseq(-4)
+        gat
+        ctag
+        >>> a.isblunt()
+        False
+        >>> a=Dseq("gat", circular=True)
+        >>> a
+        Dseq(o3)
+        gat
+        cta
+        >>> a.isblunt()
+        False"""
+
+        return ( self._ovhg==0 and
+                len(self.watson) == len(self.crick)
+                and self._linear)
+
     def cut(self, *enzymes):
         """Returns a list of linear Dseq fragments produced in the digestion.
         If there are no cuts, an empty list is returned.
@@ -1372,8 +1412,6 @@ class Dseq(_Seq):
                 else:
                     continue
                 break
-            else:
-                frags = []
 
         newfrags = []
 
