@@ -6,6 +6,10 @@ import logging
 import tempfile
 import pytest
 
+# https://discuss.python.org/t/testing-doctests-breaks-src-layout/3728
+# https://coverage.readthedocs.io/en/coverage-5.2.1/cmd.html
+
+
 def main():
 
     os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")

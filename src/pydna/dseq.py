@@ -1412,8 +1412,6 @@ class Dseq(_Seq):
                 else:
                     continue
                 break
-            else:
-                frags = []
 
         newfrags = []
 

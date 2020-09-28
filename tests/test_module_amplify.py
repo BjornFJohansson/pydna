@@ -11,12 +11,35 @@ from pydna.amplify import pcr, Anneal
 from Bio.SeqUtils.CheckSum import seguid
 
 
+def test_set_primer_footprint():
+
+    f, r = parse_primers(
+        """>ForwardPrimer
+                            gctactacacacgtactgactg
+
+                            >ReversePrimer
+                            tgtggttactgactctatcttg"""
+    )
+
+    t = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
+
+    ampl = pcr((f, r), t)
+
+    assert len(ampl.forward_primer.footprint) == 22
+    assert len(ampl.reverse_primer.footprint) == 22
+
+    ampl.set_forward_primer_footprint(15)
+    ampl.set_reverse_primer_footprint(15)
+
+    assert len(ampl.forward_primer.footprint) == 15
+    assert len(ampl.reverse_primer.footprint) == 15
+
 def test_string_arguments():
 
     f0, r0 = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
-                            
+
                             >ReversePrimer
                             tgtggttactgactctatcttg"""
     )
@@ -36,7 +59,7 @@ def test_Seq_arguments():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
-                            
+
                             >ReversePrimer
                             tgtggttactgactctatcttg"""
     )
@@ -56,7 +79,7 @@ def test_Dseq_arguments():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
-                            
+
                             >ReversePrimer
                             tgtggttactgactctatcttg"""
     )
@@ -80,7 +103,7 @@ def test_no_primers_anneal():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctacta
-                            
+
                              >ReversePrimer
                              tgtggtt"""
     )
@@ -100,7 +123,7 @@ def test_no_fwdprimer_anneal():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctact
-                            
+
                              >ReversePrimer
                              tgtggttactgactctatcttg"""
     )
@@ -120,7 +143,7 @@ def test_no_revprimer_anneal():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
-                            
+
                              >ReversePrimer
                              tgtggtt"""
     )
@@ -140,7 +163,7 @@ def test_Primer_arguments():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
-                            
+
                              >ReversePrimer
                              tgtggttactgactctatcttg"""
     )
@@ -159,7 +182,7 @@ def test_feature_label():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
-                            
+
                              >ReversePrimer
                              tgtggttactgactctatcttg"""
     )
@@ -179,7 +202,7 @@ def test_feature_note():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
-                            
+
                              >ReversePrimer
                              tgtggttactgactctatcttg"""
     )
@@ -202,7 +225,7 @@ def test_Amplicon_argument():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
-                            
+
                              >ReversePrimer
                              tgtggttactgactctatcttg"""
     )
@@ -230,7 +253,7 @@ def test_pcr_not_specific():
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
-                            
+
                              >ReversePrimer
                              tgtggttactgactctatcttg"""
     )
@@ -252,7 +275,7 @@ def test_too_short_primers():
     f, r = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
-                            
+
                             >ReversePrimer
                             tgtggttactgactctatcttg"""
     )
@@ -631,13 +654,13 @@ def test_shifts():
     f, r, t = parse(
         """
     #A
-    
+
     >ForwardPrimer
     actacacacgtactgactg
-    
+
     >ReversePrimer
     ggttactgactctatcttg
-    
+
     >MyTemplate
     gctactacacacgtactgactGcctcCaagatAgagtcagtaaccaca"""
     )
@@ -647,13 +670,13 @@ def test_shifts():
     f, r, t = parse(
         """
     #B
-    
+
     >ForwardPrimer
     actacacacgtactgactg
-    
+
     >ReversePrimer
     ggttactgactctatcttg
-    
+
     >MyTemplate circular
     gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"""
     )
@@ -678,13 +701,13 @@ def test_shifts():
     f, r, t = parse(
         """
     #C
-    
+
     >ForwardPrimer
     actacacacgtactgactg
-    
+
     >ReversePrimer
     ggttactgactctatcttg
-    
+
     >MyTemplate circular
     cgtactgactgcctccaagatagagtcagtaaccacagctactacaca"""
     )
@@ -695,13 +718,13 @@ def test_shifts():
     f, r, t = parse(
         """
     #D
-    
+
     >ForwardPrimer
     actacacacgtactgactg
-    
+
     >ReversePrimer
     ggttactgactctatcttg
-    
+
     >MyTemplate48 circular
     tccaagatagagtcagtaaccacagctactacacacgtactgactgcc"""
     )
@@ -712,17 +735,17 @@ def test_shifts():
                                actacacacgtactgactg
     tccaagatagagtcagtaaccacagctactacacacgtactgactgcc
       caagatagagtcagtaacc
-    --  
+    --
     012345678901234567890123456789012345678901234567
-    
+
     ------------23----------
     actacacacgtactgactg
     actacacacgtactgactgcctccaagatagagtcagtaaccacagct
                            caagatagagtcagtaacc
-                           
+
     ------------------------------------------
     actacacacgtactgactgcctccaagatagagtcagtaacc
-    
+
     """
 
     d = pcr(f, r, t)
@@ -732,13 +755,13 @@ def test_shifts():
     f, r, t = parse(
         """
     #E
-    
+
     >ForwardPrimer
     actacacacgtactgactg
-    
+
     >ReversePrimer
     ggttactgactctatcttg
-    
+
     >MyTemplate circular
     gagtcagtaaccacagctactacacacgtactgactGcctccaagata"""
     )
@@ -749,13 +772,13 @@ def test_shifts():
     f, r, t = parse(
         """
     #F
-    
+
     >ForwardPrimer
     actacacacgtactgactg
-    
+
     >ReversePrimer
     ggttactgactctatcttg
-    
+
     >MyTemplate circular
     actacacacgtactgactGcctccaagatagagtcagtaaccacagct"""
     )

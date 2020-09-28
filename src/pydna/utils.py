@@ -597,7 +597,7 @@ def join_list_to_table(rawlist):
         rows = [row.splitlines() for row in rawrows]
         cols = list(itertools.zip_longest(*rows, fillvalue=""))
     else:
-        return
+        return None
 
     number_of_rows = max([len(col) for col in cols])
     formatted_cols = []

@@ -247,23 +247,6 @@ def test_parse_text_table():
 
     assert rs == rowsplit
 
-    # ( formatted2,
-    #   columnsplit2,
-    #   rowsplit2,
-    #   list_of_lists_rc2,
-    #   list_of_lists_cr2 ) = parse_text_table(formatted)
-
-    # assert formatted2 == formatted
-    # assert columnsplit2 == columnsplit
-    # assert rowsplit2 == rowsplit
-    # assert list_of_lists_rc2 == list_of_lists_rc
-    # assert list_of_lists_cr2 == list_of_lists_cr
-
-    # ( formatted3,
-    #   columnsplit3,
-    #   rowsplit3,
-    #   list_of_lists_rc3,
-    #   list_of_lists_cr3 ) = parse_text_table(columnsplit2)
 
 def test_join_list_to_table():
     from pydna.utils import join_list_to_table
@@ -295,6 +278,19 @@ def test_join_list_to_table():
             "nine" )
 
     assert join_list_to_table(rs) == 'one   two   three\nfour  five  six  \nseven eight nine '
+
+    assert join_list_to_table("somestring") == None
+
+    cs = (   "one\n"
+            "four\n"
+            " \n"
+            "|||\n"
+            "two\n"
+            " \n"
+            "eight")
+
+    assert join_list_to_table(cs) == 'one  two  \nfour      \n     eight'
+
 
 
 def test_expandtolist():
