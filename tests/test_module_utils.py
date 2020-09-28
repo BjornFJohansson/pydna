@@ -3,86 +3,7 @@
 
 import pytest
 
-def test_rc():
 
-    from pydna.utils import rc
-    assert rc("gattc")=='gaatc'
-    assert rc("GATTC")=='GAATC'
-
-
-def test_complement():
-
-    from pydna.utils import complement
-    assert complement("gattc") == 'ctaag'
-    assert complement("GATTC") == 'CTAAG'
-
-def test_seq31():
-
-    from pydna.utils import seq31
-    assert seq31('MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer') == 'M  A  I  V  M  G  R  W  K  G  A  R  *'
-
-
-def test_parse_text_table():
-
-    from pydna.utils import parse_text_table
-    pass
-
-
-def test_join_list_to_table():
-
-    from pydna.utils import join_list_to_table
-    pass
-
-
-def test_expandtolist():
-
-    from pydna.utils import expandtolist
-    pass
-
-
-def test_randomRNA():
-
-    from pydna.utils import randomRNA
-    pass
-
-
-def test_randomDNA():
-
-    from pydna.utils import randomDNA
-    pass
-
-
-def test_randomORF():
-
-    from pydna.utils import randomORF
-    orf = randomORF(3)
-    assert orf.startswith("ATG")
-
-    cdns = (
-    "TTT", "TTC", "TTA", "TTG", "TCT", "TCC", "TCA", "TCG", "TAT", "TAC",
-    "TGT", "TGC", "TGG", "CTT", "CTC", "CTA", "CTG", "CCT", "CCC", "CCA",
-    "CCG", "CAT", "CAC", "CAA", "CAG", "CGT", "CGC", "CGA", "CGG", "ATT",
-    "ATC", "ATA", "ATG", "ACT", "ACC", "ACA", "ACG", "AAT", "AAC", "AAA",
-    "AAG", "AGT", "AGC", "AGA", "AGG", "GTT", "GTC", "GTA", "GTG", "GCT",
-    "GCC", "GCA", "GCG", "GAT", "GAC", "GAA", "GAG", "GGT", "GGC", "GGA",
-    "GGG")
-
-    assert orf[3:6] in cdns
-
-    assert orf.endswith(("TAA", "TAG", "TGA"))
-
-    assert 9<=len(randomORF(3,6))<=18
-
-
-def test_randomprot():
-
-    from pydna.utils import randomprot
-    protein = randomprot(10)
-    assert len(protein) == 10
-    assert all( [aa in "ACDEFGHIKLMNPQRSTVWY" for aa in protein] )
-    protein = randomprot(10,20)
-    assert 10<=len(protein)<=20
-    assert all( [aa in "ACDEFGHIKLMNPQRSTVWY" for aa in protein] )
 
 def test_eq():
 
@@ -262,36 +183,189 @@ def test_lseguid():
     )
 
 
+
+
+
+
+def test_rc():
+
+    from pydna.utils import rc
+    assert rc("gattc")=='gaatc'
+    assert rc("GATTC")=='GAATC'
+
+
+def test_complement():
+
+    from pydna.utils import complement
+    assert complement("gattc") == 'ctaag'
+    assert complement("GATTC") == 'CTAAG'
+
 def test_seq31():
-    pass
+    from pydna.utils import seq31
+    assert seq31('MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer') == 'M  A  I  V  M  G  R  W  K  G  A  R  *'
 
 
 def test_parse_text_table():
-    pass
+    from pydna.utils import parse_text_table
+    table1 =(
+        "one     two   three\n"
+        "  four   five    six\n"
+        "seven   eight     nine\n")
+    ( formatted,
+      columnsplit,
+      rowsplit,
+      list_of_lists_rc,
+      list_of_lists_cr ) = parse_text_table(table1)
 
+    assert formatted == 'one   two   three\nfour  five  six  \nseven eight nine '
+
+    cs = (   "one\n"
+            "four\n"
+            "seven\n"
+            "|||\n"
+            "two\n"
+            "five\n"
+            "eight\n"
+            "|||\n"
+            "three\n"
+            "six\n"
+            "nine" )
+
+    assert cs == columnsplit
+
+    rs = (  "one\n"
+            "two\n"
+            "three\n"
+            "---\n"
+            "four\n"
+            "five\n"
+            "six\n"
+            "---\n"
+            "seven\n"
+            "eight\n"
+            "nine" )
+
+    assert rs == rowsplit
+
+    # ( formatted2,
+    #   columnsplit2,
+    #   rowsplit2,
+    #   list_of_lists_rc2,
+    #   list_of_lists_cr2 ) = parse_text_table(formatted)
+
+    # assert formatted2 == formatted
+    # assert columnsplit2 == columnsplit
+    # assert rowsplit2 == rowsplit
+    # assert list_of_lists_rc2 == list_of_lists_rc
+    # assert list_of_lists_cr2 == list_of_lists_cr
+
+    # ( formatted3,
+    #   columnsplit3,
+    #   rowsplit3,
+    #   list_of_lists_rc3,
+    #   list_of_lists_cr3 ) = parse_text_table(columnsplit2)
 
 def test_join_list_to_table():
-    pass
+    from pydna.utils import join_list_to_table
+
+    cs = (   "one\n"
+            "four\n"
+            "seven\n"
+            "|||\n"
+            "two\n"
+            "five\n"
+            "eight\n"
+            "|||\n"
+            "three\n"
+            "six\n"
+            "nine" )
+
+    assert join_list_to_table(cs) == 'one   two   three\nfour  five  six  \nseven eight nine '
+
+    rs = (  "one\n"
+            "two\n"
+            "three\n"
+            "---\n"
+            "four\n"
+            "five\n"
+            "six\n"
+            "---\n"
+            "seven\n"
+            "eight\n"
+            "nine" )
+
+    assert join_list_to_table(rs) == 'one   two   three\nfour  five  six  \nseven eight nine '
 
 
 def test_expandtolist():
-    pass
+    from pydna.utils import expandtolist
 
+    samples = "Sample [1..3] prepared according to [A..C]"
+
+    result = ("Sample 1 prepared according to A\n"
+              "Sample 2 prepared according to B\n"
+              "Sample 3 prepared according to C\n")
+
+    assert result ==  expandtolist(samples)
+
+    samples = "Sample [1..4] prepared according to [A..B]"
+
+    result = ("Sample 1 prepared according to A\n"
+              "Sample 2 prepared according to A\n"
+              "Sample 3 prepared according to B\n"
+              "Sample 4 prepared according to B\n")
+
+    assert result ==  expandtolist(samples)
 
 def test_randomRNA():
-    pass
+    from pydna.utils import randomRNA
+    rna = randomRNA(10)
+    assert len(rna) == 10
+    assert all( [nt in "GAUC" for nt in rna] )
+    rna = randomRNA(10,20)
+    assert 10<=len(rna)<=20
+    assert all( [nt in "GAUC" for nt in rna] )
 
 
 def test_randomDNA():
-    pass
+    from pydna.utils import randomDNA
+    dna = randomDNA(10)
+    assert len(dna) == 10
+    assert all( [nt in "GATC" for nt in dna] )
+    dna = randomDNA(10,20)
+    assert 10<=len(dna)<=20
+    assert all( [nt in "GATC" for nt in dna] )
 
 
 def test_randomORF():
-    pass
+    from pydna.utils import randomORF
+    orf = randomORF(3)
+    assert orf.startswith("ATG")
+
+    cdns = (
+    "TTT", "TTC", "TTA", "TTG", "TCT", "TCC", "TCA", "TCG", "TAT", "TAC",
+    "TGT", "TGC", "TGG", "CTT", "CTC", "CTA", "CTG", "CCT", "CCC", "CCA",
+    "CCG", "CAT", "CAC", "CAA", "CAG", "CGT", "CGC", "CGA", "CGG", "ATT",
+    "ATC", "ATA", "ATG", "ACT", "ACC", "ACA", "ACG", "AAT", "AAC", "AAA",
+    "AAG", "AGT", "AGC", "AGA", "AGG", "GTT", "GTC", "GTA", "GTG", "GCT",
+    "GCC", "GCA", "GCG", "GAT", "GAC", "GAA", "GAG", "GGT", "GGC", "GGA",
+    "GGG")
+
+    assert orf[3:6] in cdns
+
+    assert orf.endswith(("TAA", "TAG", "TGA"))
+
+    assert 9<=len(randomORF(3,6))<=18
 
 
 def test_randomprot():
-    pass
+    from pydna.utils import randomprot
+    protein = randomprot(10)
+    assert len(protein) == 10
+    assert all( [aa in "ACDEFGHIKLMNPQRSTVWY" for aa in protein] )
+    protein = randomprot(10,20)
+    assert 10<=len(protein)<=20
+    assert all( [aa in "ACDEFGHIKLMNPQRSTVWY" for aa in protein] )
 
 
 def test_smallest_rotation():

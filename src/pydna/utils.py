@@ -570,14 +570,19 @@ def parse_text_table(rawtable, tabs=4):
 
     columnsplit = "\n|||\n".join(
         [
-            "\n".join(["".join(c) for c in zip(*col.strip("\n").splitlines())])
+            "\n".join([x.strip() for x in ["".join(c) for c in zip(*col.strip("\n").splitlines())]])
             for col in cols
         ]
     )
 
     rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
+    rowsplit ="\n".join(row.strip() for row in rowsplit.splitlines())
 
-    return formatted, columnsplit, rowsplit, list_of_lists_rc, list_of_lists_cr
+    return (_pretty_str(item) for item in ( formatted,
+                                            columnsplit,
+                                            rowsplit,
+                                            list_of_lists_rc,
+                                            list_of_lists_cr))
 
 
 def join_list_to_table(rawlist):
@@ -615,7 +620,7 @@ def join_list_to_table(rawlist):
 
     new_text = "\n".join(combinedlist)
 
-    return new_text
+    return _pretty_str(new_text)
 
 
 def expandtolist(content):
@@ -660,7 +665,7 @@ def expandtolist(content):
     rt = ""
     for a in range(ml):
         rt += "".join([b[a] for b in norm]) + "\n"
-    return rt
+    return _pretty_str(rt)
 
 
 def randomRNA(length, maxlength=None):
