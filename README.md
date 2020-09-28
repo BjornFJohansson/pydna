@@ -300,10 +300,14 @@ There are three github actions associated with this package:
 - pydna_conda_build_workflow.yml
 
 The pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
+This workflow run tests, doctests and a series of Jupyter notebooks using pytest.
 
-The two other commits are triggered by publishing a github release.
+The two other workflows build a setuptools wheel and packages for python 3.6, 3.7 and 3.8
+on Linux, Windows and macOS.  These are triggered by publishing a github release.
 
 
 
+:microbe:  
 
-:microbe:  :portugal:
+
+:portugal:
