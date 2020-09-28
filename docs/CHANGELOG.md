@@ -2,6 +2,8 @@
 version   date       comment
 =======   ========== ==========================================================================================
 
+3.1.2     2020-09-28 Bugfix release. There was a bug in stamping genbank files with cSEGUID.
+
 3.1.1     2020-09-25 Bugfix release. There was a bug in locating features in certain circular assemblies.
                      Added a test: "test_marker_replacement_on_plasmid" in test_module_assembly.py to
                      test for this.
