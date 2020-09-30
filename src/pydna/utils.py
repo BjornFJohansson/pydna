@@ -291,7 +291,8 @@ def SmallestRotation(s):
 
 
 def identifier_from_string(s: str) -> str:
-    """This function returns a string that is a valid python identifier based on the argument s or an empty string"""
+    """This function returns a string that is a valid python identifier
+    based on the argument s or an empty string"""
     s = s.strip()
     s = _re.sub(r"\s+", r"_", s)
     s.replace("-", "_")

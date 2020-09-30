@@ -699,4 +699,4 @@ def test_cut_with_no_enzymes():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-vv", "-s"])

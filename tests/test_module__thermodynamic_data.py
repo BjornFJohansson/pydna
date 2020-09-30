@@ -19,4 +19,4 @@ def test_dSBr():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-v", "-s"])

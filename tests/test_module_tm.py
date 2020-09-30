@@ -34,4 +34,4 @@ def test_tms():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-vv", "-s"])

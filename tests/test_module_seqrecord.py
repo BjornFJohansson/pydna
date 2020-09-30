@@ -131,20 +131,35 @@ def test___hash__():
         s < "3"
 
 
-def test_olaps():
+def test_lcs():
     from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord as BSeqRecord
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from pydna.seqrecord import SeqRecord
 
+    from pydna.seqfeature import SeqFeature
+    from Bio.SeqFeature import FeatureLocation,ExactPosition
+
     s = SeqRecord(Seq("GGATCC"))
-    assert "GGATCC" == str(s.olaps("GGATCC", limit=4)[0].seq)
-    assert "GGATCC" == str(s.olaps(Seq("GGATCC"), limit=4)[0].seq)
-    assert "GGATCC" == str(s.olaps(BSeqRecord(Seq("GGATCC")), limit=4)[0].seq)
-    assert "GGATCC" == str(s.olaps(Dseq("GGATCC"), limit=4)[0].seq)
-    assert "GGATCC" == str(s.olaps(Dseqrecord(Dseq("GGATCC")), limit=4)[0].seq)
-    assert "GGATCC" == str(s.olaps(Dseqrecord("GGATCC"), limit=4)[0].seq)
+
+    expected = SeqFeature()
+    expected.__dict__ = {
+        'location': FeatureLocation(ExactPosition(0),
+                                    ExactPosition(6),
+                                    strand=1),
+        'type': 'read',
+        'id': '<unknown id>',
+        'qualifiers': {'label': ['sequence'],
+                       'ApEinfo_fwdcolor': ['#DAFFCF'],
+                       'ApEinfo_revcolor': ['#DFFDFF']}}
+
+    assert s.lcs("GGATCC", limit=4).__dict__ == expected.__dict__
+    assert s.lcs(Seq("GGATCC"), limit=4).__dict__ == expected.__dict__
+    assert s.lcs(BSeqRecord(Seq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
+    assert s.lcs(Dseq("GGATCC"), limit=4).__dict__ == expected.__dict__
+    assert s.lcs(Dseqrecord(Dseq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
+    assert s.lcs(Dseqrecord("GGATCC", name="sequence"), limit=4).__dict__ == expected.__dict__
 
 
 def test_format():
@@ -313,7 +328,7 @@ def test_seqrecord():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-vv", "-s"])
 
 
 #    >>> import warnings

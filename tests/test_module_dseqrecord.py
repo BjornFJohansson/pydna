@@ -1893,4 +1893,4 @@ def test_assemble_YEp24PGK_XK():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-vv", "-s"])
