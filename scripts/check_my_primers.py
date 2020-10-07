@@ -6,8 +6,10 @@
 
 from pydna.myprimers import list_primers
 
+unique = set(str(p.seq).lower() for p in list_primers)
+
 print("number of primers", len(list_primers))
-print("unique primers", len(set(str(p.seq).lower() for p in list_primers)))
+print("unique primers", len(unique))
 print("no seq (n)", len([p for p in list_primers if set(p.seq.lower()) == set("n")]))
 
 for i, p in enumerate(list_primers):
@@ -16,21 +18,19 @@ for i, p in enumerate(list_primers):
 
 print("names checked for primer number for ", i + 1, "primers")
 
-duplicates = []
-for i1, p1 in enumerate(list_primers):
-    for i2, p2 in enumerate(list_primers):
-        if set(p1.seq.lower()) == set("n") or set(p2.seq.lower()) == set("n"):
+from collections import defaultdict
+dct = defaultdict(list)
+
+for u in unique:
+    for p in list_primers:
+        if set(u) == set("n") or set(p.seq.lower()) == set("n"):
             continue
-        if i1 != i2:
-            if str(p1.seq).lower() == str(p2.seq).lower():
-                duplicates.extend((p1, p2))
+        if u == str(p.seq).lower():
+            dct[u].append(p.name)
 
 
-duplicates = list(dict.fromkeys(duplicates))
-
-for d in duplicates:
-    print(d.format("fasta"))
-
-
-if __name__ == "__main__":
-    input("press enter to close")
+for seq,names in dct.items():
+    if len(names)>1:
+        print("\n".join(names))
+        print(seq)
+        print()
