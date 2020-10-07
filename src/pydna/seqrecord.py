@@ -333,7 +333,7 @@ class SeqRecord(_SeqRecord):
         return _pretty_str(x)
 
     def extract_feature(self, n):
-        """Extracts a feature and creates a new SeqRecord object.
+        """Extracts a feature and returns a new SeqRecord object.
 
         Parameters
         ----------
@@ -351,6 +351,24 @@ class SeqRecord(_SeqRecord):
         SeqRecord(seq=Seq('gt'), id='ft2', name='ft2', description='description', dbxrefs=[])
         """
         return self.features[n].extract(self)
+
+    def sorted_features(self):
+        """Returns a list of the features sorted by start position.
+
+        Examples
+        --------
+
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("atgtaa")
+        >>> a.add_feature(3,4)
+        >>> a.add_feature(2,4)
+        >>> print(a.features)
+        [SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc')]
+        >>> b
+        print(a.sorted_features())
+        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc')]
+        """
+        return sorted(self.features, key=lambda x: x.location.start)
 
     def stamp(self):
         """Adds a SEGUID or cSEGUID checksum to the description property.
