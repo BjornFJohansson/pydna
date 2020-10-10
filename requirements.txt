@@ -1,6 +1,6 @@
 appdirs>=1.4.3
-biopython>=1.76
-networkx>=2.4.0
+biopython>=1.78
+networkx>=2.5.0
 prettytable>=0.7.2
 pyparsing>=2.4.7
-requests>=2.23
+requests>=2.23.0
