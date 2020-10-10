@@ -6,10 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.1.3] - 2020-10-10
 
+### Added
 
+- added .sorted_features method for SeqRecord
+- added a new lcs (*l*ongest *c*ommon *s*ubstring) method for SeqRecord and DseqRecord
 
+### Changed
 
+- changed format for changelog
+- biopython 1.78 in requirements.txt
+- fix to scripts/check_my_primers.py
 
 ## [3.1.2] - 2020-09-28
 
