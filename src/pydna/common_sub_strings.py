@@ -5,15 +5,14 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-"""This module is based on the Py-rstr-max package that 
+"""This module is based on the Py-rstr-max package that
 was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
-(https://brixtel.users.greyc.fr) and is available from 
+(https://brixtel.users.greyc.fr) and is available from
 https://code.google.com/p/py-rstr-max
+https://github.com/gip0/py-rstr-max
 the original code was covered by an MIT licence."""
 
 from array import array as _array
-
-# from collections import defaultdict     as _defaultdict
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
 

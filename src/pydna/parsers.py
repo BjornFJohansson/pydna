@@ -35,7 +35,8 @@ def parse(data, ds=True):
         1. an absolute path to a local file.
            The file will be read in text
            mode and parsed for EMBL, FASTA
-           and Genbank sequences.
+           and Genbank sequences. Can be
+           a string or a Path object.
 
         2. a string containing one or more
            sequences in EMBL, GENBANK,

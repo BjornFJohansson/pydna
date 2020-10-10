@@ -22,7 +22,6 @@ from Bio.SeqRecord import SeqRecord as _SeqRecord
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
 from Bio.Seq import Seq as _Seq
 from prettytable import PrettyTable as _PrettyTable
-import datetime as _datetime
 import os as _os
 import re as _re
 
@@ -334,7 +333,7 @@ class SeqRecord(_SeqRecord):
         return _pretty_str(x)
 
     def extract_feature(self, n):
-        """Extracts a feature and creates a new SeqRecord object.
+        """Extracts a feature and returns a new SeqRecord object.
 
         Parameters
         ----------
@@ -352,6 +351,24 @@ class SeqRecord(_SeqRecord):
         SeqRecord(seq=Seq('gt'), id='ft2', name='ft2', description='description', dbxrefs=[])
         """
         return self.features[n].extract(self)
+
+    def sorted_features(self):
+        """Returns a list of the features sorted by start position.
+
+        Examples
+        --------
+
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("atgtaa")
+        >>> a.add_feature(3,4)
+        >>> a.add_feature(2,4)
+        >>> print(a.features)
+        [SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc')]
+        >>> b
+        print(a.sorted_features())
+        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc')]
+        """
+        return sorted(self.features, key=lambda x: x.location.start)
 
     def stamp(self):
         """Adds a SEGUID or cSEGUID checksum to the description property.
@@ -436,9 +453,32 @@ class SeqRecord(_SeqRecord):
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID"""
         return _seg(str(self.seq))
 
-    def olaps(self, other, *args, **kwargs):
-        """Returns the overlaps between the sequence and another sequence,
-        The other sequence can be a string, Seq, SeqRecord, Dseq or DseqRecord"""
+
+    def lcs(self, other, *args, limit=25, **kwargs):
+        """Returns the longest common substring between the sequence
+        and another sequence (other). The other sequence can be a string,
+        Seq, SeqRecord, Dseq or DseqRecord.
+
+        The method returns a SeqFeature with type "read" as this method
+        is mostly used to map sequence reads to the sequence. This can be
+        changed by passing a type as keyword with some other string value.
+
+        Examples
+        --------
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a = SeqRecord("GGATCC")
+        >>> a.lcs("GGATCC", limit=6)
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(6), strand=1), type='read')
+        >>> a.lcs("GATC", limit=4)
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(6), strand=1), type='read')
+        >>> a = SeqRecord("CCCCC")
+        >>> a.lcs("GGATCC", limit=6)
+        SeqFeature(None)
+
+        """
+
+        # longest_common_substring
+        # https://biopython.org/wiki/ABI_traces
         if hasattr(other, "seq"):
             r = other.seq
             if hasattr(r, "watson"):
@@ -447,8 +487,26 @@ class SeqRecord(_SeqRecord):
                 r = str(r).lower()
         else:
             r = str(other.lower())
-        olaps = _common_sub_strings(str(self.seq).lower(), r, **kwargs)
-        return [self[olap[0] : olap[0] + olap[2]] for olap in olaps]
+
+        olaps = _common_sub_strings(str(self.seq).lower(), r, limit, **kwargs)
+
+        try:
+            start_in_self, start_in_other, length = olaps.pop(0)
+        except IndexError:
+            result = _SeqFeature()
+        else:
+            label = "sequence" if not hasattr(other, "name") else other.name
+            result = _SeqFeature(_FeatureLocation(start_in_self,
+                                                  start_in_self+length),
+                                  type = kwargs.get("type") or "read",
+                                  strand=1,
+                                  qualifiers={
+                                  "label": [label],
+                                  "ApEinfo_fwdcolor": ["#DAFFCF"],
+                                  "ApEinfo_revcolor": ["#DFFDFF"],
+                                  },)
+        return result
+
 
     def gc(self):
         """Returns GC content"""

@@ -675,7 +675,7 @@ class Dseqrecord(_SeqRecord):
 
     find_aa = find_aminoacids
 
-    def map_trace_files(self, pth):  # TODO allow path-like objects
+    def map_trace_files(self, pth, limit=25):  # TODO allow path-like objects
         import glob
 
         traces = []
@@ -713,7 +713,7 @@ class Dseqrecord(_SeqRecord):
         for read_ in reads:
 
             matches = _common_sub_strings(
-                str(self.seq).lower(), str(read_.seq), limit=25
+                str(self.seq).lower(), str(read_.seq), limit
             )
 
             if not matches:
@@ -750,6 +750,10 @@ class Dseqrecord(_SeqRecord):
             )
 
         return [x.annotations["filename"] for x in matching_reads]
+
+
+
+
 
     def __repr__(self):
         return "Dseqrecord({}{})".format(

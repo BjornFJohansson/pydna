@@ -56,7 +56,7 @@ def test_():
     (8, 0, 2)
     (2, 4, 2)
     (8, 4, 2)
-    
+
     (1, 0, 2)
     (1, 1, 2) 1
     (1, 4, 2)
@@ -73,4 +73,4 @@ def test_():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-v", "-s"])

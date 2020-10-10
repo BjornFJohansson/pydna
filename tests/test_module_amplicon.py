@@ -145,4 +145,4 @@ def test_amplicon_dbd_low_gc():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-vv", "-s"])

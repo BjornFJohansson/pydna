@@ -67,4 +67,4 @@ def test_editor_with_feature_wo_label_and_note(monkeypatch):
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-x", "-vv", "-s", "--cov=pydna", "--cov-report=html"])
+    pytest.main([__file__, "-x", "-vv", "-s"])
