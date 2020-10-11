@@ -461,7 +461,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -pydna created from Python-dna.
 
-[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/HEAD..3.1.3
+[unreleased]: https://github.com/BjornFJohansson/pydna/compare/HEAD..3.1.3
 [3.1.3]: https://github.com/BjornFJohansson/pydna/compare/3.1.3..3.1.2
 [3.1.2]: https://github.com/BjornFJohansson/pydna/compare/3.1.2..3.1.1
 [3.1.1]: https://github.com/BjornFJohansson/pydna/compare/3.1.1..3.1.0a1
