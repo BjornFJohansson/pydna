@@ -34,6 +34,7 @@ def test_set_primer_footprint():
     assert len(ampl.forward_primer.footprint) == 15
     assert len(ampl.reverse_primer.footprint) == 15
 
+
 def test_string_arguments():
 
     f0, r0 = parse_primers(

@@ -314,11 +314,7 @@ def seguid(seq: str) -> _pretty_str:
     >>> seguid("a")
     'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
     """
-    return (
-        _pretty_str(_base64_seguid(seq.upper())
-        .replace("+", "-")
-        .replace("/", "_"))
-    )
+    return _pretty_str(_base64_seguid(seq.upper()).replace("+", "-").replace("/", "_"))
 
 
 def lseguid(seq: str) -> _pretty_str:
@@ -356,8 +352,7 @@ def cseguid(seq: str) -> _pretty_str:
     'oopV-6158nHJqedi8lsshIfcqYA'
     """
     return seguid(
-        min(SmallestRotation(seq.upper()),
-            SmallestRotation(str(rc(seq)).upper()))
+        min(SmallestRotation(seq.upper()), SmallestRotation(str(rc(seq)).upper()))
     )
 
 
@@ -571,19 +566,29 @@ def parse_text_table(rawtable, tabs=4):
 
     columnsplit = "\n|||\n".join(
         [
-            "\n".join([x.strip() for x in ["".join(c) for c in zip(*col.strip("\n").splitlines())]])
+            "\n".join(
+                [
+                    x.strip()
+                    for x in ["".join(c) for c in zip(*col.strip("\n").splitlines())]
+                ]
+            )
             for col in cols
         ]
     )
 
     rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
-    rowsplit ="\n".join(row.strip() for row in rowsplit.splitlines())
+    rowsplit = "\n".join(row.strip() for row in rowsplit.splitlines())
 
-    return (_pretty_str(item) for item in ( formatted,
-                                            columnsplit,
-                                            rowsplit,
-                                            list_of_lists_rc,
-                                            list_of_lists_cr))
+    return (
+        _pretty_str(item)
+        for item in (
+            formatted,
+            columnsplit,
+            rowsplit,
+            list_of_lists_rc,
+            list_of_lists_cr,
+        )
+    )
 
 
 def join_list_to_table(rawlist):
@@ -683,18 +688,73 @@ def randomDNA(length, maxlength=None):
 
 
 def randomORF(length, maxlength=None):
-    length-=2
+    length -= 2
     if maxlength and maxlength > length:
-        length = int(round(random.triangular(length, maxlength-2)))
+        length = int(round(random.triangular(length, maxlength - 2)))
 
     cdns = (
-        "TTT", "TTC", "TTA", "TTG", "TCT", "TCC", "TCA", "TCG", "TAT", "TAC",
-        "TGT", "TGC", "TGG", "CTT", "CTC", "CTA", "CTG", "CCT", "CCC", "CCA",
-        "CCG", "CAT", "CAC", "CAA", "CAG", "CGT", "CGC", "CGA", "CGG", "ATT",
-        "ATC", "ATA", "ATG", "ACT", "ACC", "ACA", "ACG", "AAT", "AAC", "AAA",
-        "AAG", "AGT", "AGC", "AGA", "AGG", "GTT", "GTC", "GTA", "GTG", "GCT",
-        "GCC", "GCA", "GCG", "GAT", "GAC", "GAA", "GAG", "GGT", "GGC", "GGA",
-        "GGG")
+        "TTT",
+        "TTC",
+        "TTA",
+        "TTG",
+        "TCT",
+        "TCC",
+        "TCA",
+        "TCG",
+        "TAT",
+        "TAC",
+        "TGT",
+        "TGC",
+        "TGG",
+        "CTT",
+        "CTC",
+        "CTA",
+        "CTG",
+        "CCT",
+        "CCC",
+        "CCA",
+        "CCG",
+        "CAT",
+        "CAC",
+        "CAA",
+        "CAG",
+        "CGT",
+        "CGC",
+        "CGA",
+        "CGG",
+        "ATT",
+        "ATC",
+        "ATA",
+        "ATG",
+        "ACT",
+        "ACC",
+        "ACA",
+        "ACG",
+        "AAT",
+        "AAC",
+        "AAA",
+        "AAG",
+        "AGT",
+        "AGC",
+        "AGA",
+        "AGG",
+        "GTT",
+        "GTC",
+        "GTA",
+        "GTG",
+        "GCT",
+        "GCC",
+        "GCA",
+        "GCG",
+        "GAT",
+        "GAC",
+        "GAA",
+        "GAG",
+        "GGT",
+        "GGC",
+        "GGA",
+        "GGG",
+    )
 
     starts = ("ATG",)
     stops = ("TAA", "TAG", "TGA")

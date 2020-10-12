@@ -575,7 +575,7 @@ class Dseqrecord(_SeqRecord):
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description
-                #print(oldstamp, newstamp)
+                # print(oldstamp, newstamp)
                 if oldstamp and newstamp:
                     if oldstamp.group(0)[:35] == newstamp.group(0)[:35]:
                         newdescription = newdescription.replace(
@@ -712,9 +712,7 @@ class Dseqrecord(_SeqRecord):
 
         for read_ in reads:
 
-            matches = _common_sub_strings(
-                str(self.seq).lower(), str(read_.seq), limit
-            )
+            matches = _common_sub_strings(str(self.seq).lower(), str(read_.seq), limit)
 
             if not matches:
                 continue
@@ -750,10 +748,6 @@ class Dseqrecord(_SeqRecord):
             )
 
         return [x.annotations["filename"] for x in matching_reads]
-
-
-
-
 
     def __repr__(self):
         return "Dseqrecord({}{})".format(

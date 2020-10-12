@@ -1295,9 +1295,7 @@ class Dseq(_Seq):
         >>> a.isblunt()
         False"""
 
-        return ( self._ovhg==0 and
-                len(self.watson) == len(self.crick)
-                and self._linear)
+        return self._ovhg == 0 and len(self.watson) == len(self.crick) and self._linear
 
     def cut(self, *enzymes):
         """Returns a list of linear Dseq fragments produced in the digestion.

@@ -364,7 +364,6 @@ class SeqRecord(_SeqRecord):
         >>> a.add_feature(2,4)
         >>> print(a.features)
         [SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc')]
-        >>> b
         print(a.sorted_features())
         [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc')]
         """
@@ -408,8 +407,9 @@ class SeqRecord(_SeqRecord):
             linear = True
 
         if (not blunt) and linear:
-            return _pretty_str("Sequence is not blunt nor circular,"
-                               " so it can not be stamped.")
+            return _pretty_str(
+                "Sequence is not blunt nor circular," " so it can not be stamped."
+            )
 
         algorithm = {True: "SEGUID", False: "cSEGUID"}[linear]
         chksum = getattr(self, algorithm.lower())()
@@ -422,9 +422,9 @@ class SeqRecord(_SeqRecord):
             if chksum == old_chksum and algorithm == old_algorithm:
                 return newstamp
             else:
-                raise ValueError("Stamp is wrong.\n"
-                                 f"Old: {old_stamp}\n"
-                                 f"New: {newstamp}")
+                raise ValueError(
+                    "Stamp is wrong.\n" f"Old: {old_stamp}\n" f"New: {newstamp}"
+                )
         else:
             newstamp = "{}_{}".format(algorithm, chksum)
             if not self.description or self.description == "description":
@@ -453,7 +453,6 @@ class SeqRecord(_SeqRecord):
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID"""
         return _seg(str(self.seq))
 
-
     def lcs(self, other, *args, limit=25, **kwargs):
         """Returns the longest common substring between the sequence
         and another sequence (other). The other sequence can be a string,
@@ -462,7 +461,6 @@ class SeqRecord(_SeqRecord):
         The method returns a SeqFeature with type "read" as this method
         is mostly used to map sequence reads to the sequence. This can be
         changed by passing a type as keyword with some other string value.
-
         Examples
         --------
         >>> from pydna.seqrecord import SeqRecord
@@ -470,7 +468,7 @@ class SeqRecord(_SeqRecord):
         >>> a.lcs("GGATCC", limit=6)
         SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(6), strand=1), type='read')
         >>> a.lcs("GATC", limit=4)
-        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(6), strand=1), type='read')
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(5), strand=1), type='read')
         >>> a = SeqRecord("CCCCC")
         >>> a.lcs("GGATCC", limit=6)
         SeqFeature(None)
@@ -496,17 +494,17 @@ class SeqRecord(_SeqRecord):
             result = _SeqFeature()
         else:
             label = "sequence" if not hasattr(other, "name") else other.name
-            result = _SeqFeature(_FeatureLocation(start_in_self,
-                                                  start_in_self+length),
-                                  type = kwargs.get("type") or "read",
-                                  strand=1,
-                                  qualifiers={
-                                  "label": [label],
-                                  "ApEinfo_fwdcolor": ["#DAFFCF"],
-                                  "ApEinfo_revcolor": ["#DFFDFF"],
-                                  },)
+            result = _SeqFeature(
+                _FeatureLocation(start_in_self, start_in_self + length),
+                type=kwargs.get("type") or "read",
+                strand=1,
+                qualifiers={
+                    "label": [label],
+                    "ApEinfo_fwdcolor": ["#DAFFCF"],
+                    "ApEinfo_revcolor": ["#DFFDFF"],
+                },
+            )
         return result
-
 
     def gc(self):
         """Returns GC content"""

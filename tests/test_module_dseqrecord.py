@@ -3,7 +3,19 @@
 
 import pytest
 import pydna
+
 pydna
+
+
+def test_FadiBakoura():
+    from Bio.SeqFeature import SeqFeature, FeatureLocation
+    from pydna.dseq import Dseq
+    from pydna.dseqrecord import Dseqrecord
+
+    dseq_record = Dseqrecord(Dseq("ACTCTTTCTCTCTCT", circular=True))
+    dseq_record.features = [SeqFeature(FeatureLocation(start=2, end=4))]
+    # below assert fails (not anymore)
+    assert len(dseq_record[6:1].features) == 0
 
 
 def test_IPython_missing(monkeypatch):
@@ -313,9 +325,7 @@ def test_stamp():
     lin.description = "cSEGUID_nnnnnnnnnnnnnnnnnnnnnnnnnn"
     assert lin.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
 
-
-
-    crc = Dseqrecord("attt", circular = True)
+    crc = Dseqrecord("attt", circular=True)
     assert crc.stamp() == "cSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
     assert crc.stamp() == "cSEGUID_oopV-6158nHJqedi8lsshIfcqYA"
     crc.description = "SEGUID_oopV-6158nHJqedi8lsshIfcqYA"
@@ -348,15 +358,22 @@ def test_stamp():
     assert blunt.stamp() == "SEGUID_gBw0Jp907Tg_yX3jNgS4qQWttjU"
 
     staggered = Dseqrecord(Dseq("aa", "tta"))
-    assert staggered.stamp() == "Sequence is not blunt nor circular, so it can not be stamped."
+    assert (
+        staggered.stamp()
+        == "Sequence is not blunt nor circular, so it can not be stamped."
+    )
 
     staggered = Dseqrecord(Dseq("aa", "att"))
-    assert staggered.stamp() == "Sequence is not blunt nor circular, so it can not be stamped."
+    assert (
+        staggered.stamp()
+        == "Sequence is not blunt nor circular, so it can not be stamped."
+    )
 
     staggered = Dseqrecord(Dseq("aa", "atta"))
-    assert staggered.stamp() == "Sequence is not blunt nor circular, so it can not be stamped."
-
-
+    assert (
+        staggered.stamp()
+        == "Sequence is not blunt nor circular, so it can not be stamped."
+    )
 
 
 def test_revcomp():

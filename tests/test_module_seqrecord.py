@@ -106,9 +106,6 @@ def test_stamp():
         a.stamp()
 
 
-
-
-
 def test___hash__():
     from Bio.Seq import Seq
     from pydna.seqrecord import SeqRecord
@@ -139,27 +136,37 @@ def test_lcs():
     from pydna.seqrecord import SeqRecord
 
     from pydna.seqfeature import SeqFeature
-    from Bio.SeqFeature import FeatureLocation,ExactPosition
+    from Bio.SeqFeature import FeatureLocation, ExactPosition
 
     s = SeqRecord(Seq("GGATCC"))
 
     expected = SeqFeature()
     expected.__dict__ = {
-        'location': FeatureLocation(ExactPosition(0),
-                                    ExactPosition(6),
-                                    strand=1),
-        'type': 'read',
-        'id': '<unknown id>',
-        'qualifiers': {'label': ['sequence'],
-                       'ApEinfo_fwdcolor': ['#DAFFCF'],
-                       'ApEinfo_revcolor': ['#DFFDFF']}}
+        "location": FeatureLocation(ExactPosition(0), ExactPosition(6), strand=1),
+        "type": "read",
+        "id": "<unknown id>",
+        "qualifiers": {
+            "label": ["sequence"],
+            "ApEinfo_fwdcolor": ["#DAFFCF"],
+            "ApEinfo_revcolor": ["#DFFDFF"],
+        },
+    }
 
     assert s.lcs("GGATCC", limit=4).__dict__ == expected.__dict__
     assert s.lcs(Seq("GGATCC"), limit=4).__dict__ == expected.__dict__
-    assert s.lcs(BSeqRecord(Seq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
+    assert (
+        s.lcs(BSeqRecord(Seq("GGATCC"), name="sequence"), limit=4).__dict__
+        == expected.__dict__
+    )
     assert s.lcs(Dseq("GGATCC"), limit=4).__dict__ == expected.__dict__
-    assert s.lcs(Dseqrecord(Dseq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
-    assert s.lcs(Dseqrecord("GGATCC", name="sequence"), limit=4).__dict__ == expected.__dict__
+    assert (
+        s.lcs(Dseqrecord(Dseq("GGATCC"), name="sequence"), limit=4).__dict__
+        == expected.__dict__
+    )
+    assert (
+        s.lcs(Dseqrecord("GGATCC", name="sequence"), limit=4).__dict__
+        == expected.__dict__
+    )
 
 
 def test_format():

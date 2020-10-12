@@ -805,7 +805,8 @@ def test_marker_replacement_on_plasmid(monkeypatch):
     from pydna.all import Assembly
     from pydna.parsers import parse
 
-    f,r, _, _ = parse('''
+    f, r, _, _ = parse(
+        """
 
     >807_pYPK0_hygfwd2
     tctgacgctcagtggaacgaaaactcacgttaagggattttggtcatgagCACATACGATTTAGGTGACAC
@@ -818,7 +819,8 @@ def test_marker_replacement_on_plasmid(monkeypatch):
 
     >666_pYPK0_hygrev (70-mer)
     catctttgacagcttatcatcgataagctCGACTCACTATAGGGAGACC
-    ''')
+    """
+    )
 
     from pydna.readers import read
 
@@ -834,10 +836,10 @@ def test_marker_replacement_on_plasmid(monkeypatch):
     candidate, other = asm_hyg.assemble_linear()
 
     # AmpR feature
-    assert (pMEC1135.features[-1].extract(pMEC1135).seq ==
-            candidate.features[-1].extract(candidate).seq       )
-
-
+    assert (
+        pMEC1135.features[-1].extract(pMEC1135).seq
+        == candidate.features[-1].extract(candidate).seq
+    )
 
 
 if __name__ == "__main__":

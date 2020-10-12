@@ -544,10 +544,6 @@ circular_results = (
 )
 
 
-
-
-
-
 if __name__ == "__main__":
     import os as _os
 
@@ -557,8 +553,3 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
-
-
-
-
-

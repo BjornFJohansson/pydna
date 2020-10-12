@@ -17,36 +17,40 @@ def main():
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
-    args = [ "src",                             # doctestdir
-             "--cov=pydna",
-             "--cov-report=html",
-             "--cov-report=xml",
-             "--capture=no",
-             "--durations=10",
-             "--import-mode=importlib",
-             "--nbval",
-             "--current-env",
-             "--doctest-modules",
-             "--capture=no",
-             "--import-mode=importlib",
-             "-vvv",]
+    args = [
+        "src",  # doctestdir
+        "--cov=pydna",
+        "--cov-report=html",
+        "--cov-report=xml",
+        "--capture=no",
+        "--durations=10",
+        "--import-mode=importlib",
+        "--nbval",
+        "--current-env",
+        "--doctest-modules",
+        "--capture=no",
+        "--import-mode=importlib",
+        "-vvv",
+    ]
 
     result_suite_src = pytest.main(args)
 
-    args = [ "tests",                             # test suite
-             "--cov=pydna",
-             "--cov-append",
-             "--cov-report=html",
-             "--cov-report=xml",
-             "--capture=no",
-             "--durations=10",
-             "--import-mode=importlib",
-             "--nbval",
-             "--current-env",
-             "--doctest-modules",
-             "--capture=no",
-             "--import-mode=importlib",
-             "-vvv",]
+    args = [
+        "tests",  # test suite
+        "--cov=pydna",
+        "--cov-append",
+        "--cov-report=html",
+        "--cov-report=xml",
+        "--capture=no",
+        "--durations=10",
+        "--import-mode=importlib",
+        "--nbval",
+        "--current-env",
+        "--doctest-modules",
+        "--capture=no",
+        "--import-mode=importlib",
+        "-vvv",
+    ]
 
     result_suite_tests = pytest.main(args)
 

@@ -19,6 +19,7 @@ for i, p in enumerate(list_primers):
 print("names checked for primer number for ", i + 1, "primers")
 
 from collections import defaultdict
+
 dct = defaultdict(list)
 
 for u in unique:
@@ -29,8 +30,8 @@ for u in unique:
             dct[u].append(p.name)
 
 
-for seq,names in dct.items():
-    if len(names)>1:
+for seq, names in dct.items():
+    if len(names) > 1:
         print("\n".join(names))
         print(seq)
         print()

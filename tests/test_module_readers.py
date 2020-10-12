@@ -36,10 +36,10 @@ def test_read_primer():
 def test_pydna_read_test():
     from pydna.readers import read
 
-    #print("sys.getdefaultencoding()", sys.getdefaultencoding())
+    # print("sys.getdefaultencoding()", sys.getdefaultencoding())
     import locale
 
-    #print("locale.getpreferredencoding()", locale.getpreferredencoding())
+    # print("locale.getpreferredencoding()", locale.getpreferredencoding())
     assert read("pydna_read_test.txt").format("gb")[349:368] == '/label="2micron 2µ"'
 
 
@@ -60,8 +60,8 @@ def test_parse_and_read_with_biopython_and_pydna():
     with open("pth1.txt", "r", encoding="utf-8") as f:
         a, b = BPparse(f, "gb")
 
-    #print("|" + a.features[13].qualifiers["label"][0] + "|")
-    #print("|" + a.format("gb")[3314:3324] + "|")
+    # print("|" + a.features[13].qualifiers["label"][0] + "|")
+    # print("|" + a.format("gb")[3314:3324] + "|")
 
     assert a.features[13].qualifiers["label"][0] == "2micron 2µ"
     assert a.format("gb")[3268:3278] == "2micron 2µ"
