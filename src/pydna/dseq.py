@@ -441,16 +441,13 @@ class Dseq(_Seq):
         """
         nts = (self.watson + self.crick).lower()
 
-        return (
-            sum(
-                [313.2 for n in nts if n == "a"]
-                + [304.2 for n in nts if n == "t"]
-                + [289.2 for n in nts if n == "c"]
-                + [329.2 for n in nts if n == "g"]
-                + [308.9 for n in nts if n == "n"]
-            )
-            + 79
-        )
+        return ( 313.2 * nts.count("a") +
+                 304.2 * nts.count("t") +
+                 289.2 * nts.count("c") +
+                 329.2 * nts.count("g") +
+                 308.9 * nts.count("n") +
+                 79.0 )
+
 
     def upper(self):
         """Return an upper case copy of the sequence.

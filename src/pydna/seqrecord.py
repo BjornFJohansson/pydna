@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 # Copyright 2013-2018 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-"""This module provide a subclass of the Biopython SeqRecord class.
-It has a number of extra methods and uses
+
+"""
+A subclass of the Biopython SeqRecord class.
+
+Has a number of extra methods and uses
 the :class:`pydna._pretty_str.pretty_str` class instread of str for a
-nicer output in the IPython shell."""
+nicer output in the IPython shell.
+"""
 
 
 from pydna.seqfeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-
-# from Bio.Alphabet import generic_dna as _generic_dna
 from Bio.Data.CodonTable import TranslationError as _TranslationError
 from Bio.SeqUtils import GC as _GC
 from Bio.SeqRecord import SeqRecord as _SeqRecord
@@ -34,6 +37,14 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 
 
 class SeqRecord(_SeqRecord):
+    """
+    A subclass of the Biopython SeqRecord class.
+
+    Has a number of extra methods and uses
+    the :class:`pydna._pretty_str.pretty_str` class instread of str for a
+    nicer output in the IPython shell.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -74,16 +85,18 @@ class SeqRecord(_SeqRecord):
 
     @property
     def locus(self):
-        """ alias for name property """
+        """Alias for name property."""
         return self.name
 
     @locus.setter
     def locus(self, value):
-        """ alias for name property """
+        """Alias for name property."""
         if len(value) > 16:
             shortvalue = value[:16]
             _warn(
-                "locus property {} truncated to 16 chars {}".format(value, shortvalue),
+                ("locus property {} truncated"
+                 "to 16 chars {}").format(value,
+                                          shortvalue),
                 _PydnaWarning,
                 stacklevel=2,
             )
@@ -93,35 +106,42 @@ class SeqRecord(_SeqRecord):
 
     @property
     def accession(self):
-        """ alias for id property """
+        """Alias for id property."""
         return self.id
 
     @accession.setter
     def accession(self, value):
-        """ alias for id property """
+        """Alias for id property."""
         self.id = value
         return
 
     @property
     def definition(self):
-        """ alias for description property """
+        """Alias for description property."""
         return self.description
 
     @definition.setter
     def definition(self, value):
-        """ alias for id property """
+        """Alias for id property."""
         self.description = value
         return
 
     def reverse_complement(self, *args, **kwargs):
+        """Return the reverse complement of the sequence."""
         answer = super().reverse_complement(*args, **kwargs)
         answer.__class__ = type(self)
-        # https://stackoverflow.com/questions/15404256/changing-the-class-of-a-python-object-casting
-        # answer = type(self)(super().reverse_complement(*args,**kwargs).seq, *args,**kwargs)
+        # https://stackoverflow.com/questions/15404256/changing-the-\
+        # class-of-a-python-object-casting
+        # answer = type(self)(super().reverse_complement(*args,
+        #                                                **kwargs).seq,
+        #                                                *args,**kwargs)
         return answer
 
     def isorf(self, table=1):
-        """Detects if sequence is an open reading frame (orf) in the 5'-3' direction.
+        """Detect if sequence is an open reading frame (orf) in the 5'-3'.
+
+        direction.
+
         Translation tables are numbers according to the NCBI numbering [#]_.
 
         Parameters
@@ -137,7 +157,6 @@ class SeqRecord(_SeqRecord):
 
         Examples
         --------
-
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("atgtaa")
         >>> a.isorf()
@@ -151,11 +170,9 @@ class SeqRecord(_SeqRecord):
 
         References
         ----------
-
         .. [#] http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=c
 
         """
-
         try:
             self.seq.translate(table=table, cds=True)
         except _TranslationError:
@@ -164,9 +181,12 @@ class SeqRecord(_SeqRecord):
             return True
 
     def add_colors_to_features_for_ape(self):
-        """This method assigns colors to features compatible with the
-        `ApE editor <http://jorgensen.biology.utah.edu/wayned/ape/>`_"""
+        """Assign colors to features.
 
+        compatible with
+        the `ApE editor <http://jorgensen.biology.utah.edu/wayned/ape/>`_.
+
+        """
         cols = (
             "#66ffa3",
             "#84ff66",
@@ -205,19 +225,9 @@ class SeqRecord(_SeqRecord):
             f.qualifiers["ApEinfo_revcolor"] = [cols[::-1][i % len(cols)]]
 
     def add_feature(
-        self, x=None, y=None, seq=None, type="misc", strand=1, *args, **kwargs
-    ):
-
-        #         location=None,
-        #         type='',
-        #         location_operator='',
-        #         strand=None,
-        #         id="<unknown id>",
-        #         qualifiers=None,
-        #         sub_features=None,
-        #         ref=None,
-        #         ref_db=None
-        """Adds a feature of type misc to the feature list of the sequence.
+        self, x=None, y=None, seq=None,
+            type="misc", strand=1, *args, **kwargs):
+        """Add a feature of type misc to the feature list of the sequence.
 
         Parameters
         ----------
@@ -228,14 +238,14 @@ class SeqRecord(_SeqRecord):
 
         Examples
         --------
-
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("atgtaa")
         >>> a.features
         []
         >>> a.add_feature(2,4)
         >>> a.features
-        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc')]
+        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4),
+                                    strand=1), type='misc')]
         """
         qualifiers = {}
         qualifiers.update(kwargs)
@@ -264,21 +274,29 @@ class SeqRecord(_SeqRecord):
                 qualifiers["label"] = ["orf{}".format(y - x)]
 
         sf = _SeqFeature(
-            _FeatureLocation(x, y, strand=strand), type=type, qualifiers=qualifiers
+            _FeatureLocation(x, y, strand=strand),
+            type=type,
+            qualifiers=qualifiers
         )
 
         self.features.append(sf)
 
+        #         location=None,
+        #         type='',
+        #         location_operator='',
+        #         strand=None,
+        #         id="<unknown id>",
+        #         qualifiers=None,
+        #         sub_features=None,
+        #         ref=None,
+        #         ref_db=None
         """
-
         In [11]: a.seq.translate()
         Out[11]: Seq('K', ExtendedIUPACProtein())
-
-        In [12]:
         """
 
     def list_features(self):
-        """Prints an ASCII table with all features.
+        """Print ASCII table with all features.
 
         Examples
         --------
@@ -291,10 +309,11 @@ class SeqRecord(_SeqRecord):
         | Ft# | Label or Note | Dir | Sta | End | Len | type | orf? |
         +-----+---------------+-----+-----+-----+-----+------+------+
         |   0 | L:ft2         | --> | 2   | 4   |   2 | misc |  no  |
-        +-----+---------------+-----+-----+-----+-----+------+------+"""
-
+        +-----+---------------+-----+-----+-----+-----+------+------+
+        """
         x = _PrettyTable(
-            ["Ft#", "Label or Note", "Dir", "Sta", "End", "Len", "type", "orf?"]
+            ["Ft#", "Label or Note", "Dir",
+             "Sta", "End", "Len", "type", "orf?"]
         )
         x.align["Ft#"] = "r"  # Left align
         x.align["Label or Note"] = "l"  # Left align
@@ -333,39 +352,45 @@ class SeqRecord(_SeqRecord):
         return _pretty_str(x)
 
     def extract_feature(self, n):
-        """Extracts a feature and returns a new SeqRecord object.
+        """Extract feature and return a new SeqRecord object.
 
         Parameters
         ----------
         n  : int
-            Indicates the feature to extract
+        Indicates the feature to extract
 
         Examples
         --------
-
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("atgtaa")
         >>> a.add_feature(2,4)
         >>> b=a.extract_feature(0)
         >>> b
-        SeqRecord(seq=Seq('gt'), id='ft2', name='ft2', description='description', dbxrefs=[])
+        SeqRecord(seq=Seq('gt'), id='ft2', name='ft2',
+                  description='description', dbxrefs=[])
         """
         return self.features[n].extract(self)
 
     def sorted_features(self):
-        """Returns a list of the features sorted by start position.
+        """Return a list of the features sorted by start position.
 
         Examples
         --------
-
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("atgtaa")
         >>> a.add_feature(3,4)
         >>> a.add_feature(2,4)
         >>> print(a.features)
-        [SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc')]
-        print(a.sorted_features())
-        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc'), SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4), strand=1), type='misc')]
+        [SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4),
+                                    strand=1), type='misc'),
+         SeqFeature(FeatureLocation(ExactPosition(2),
+                                    ExactPosition(4), strand=1), type='misc')]
+        >>> print(a.sorted_features())
+        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4),
+                                    strand=1), type='misc'),
+         SeqFeature(FeatureLocation(ExactPosition(3),
+                                    ExactPosition(4), strand=1), type='misc')]
+
         """
         return sorted(self.features, key=lambda x: x.location.start)
 
@@ -389,9 +414,9 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("aaa")
         >>> a.stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
         >>> a.description
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
 
 
         """
@@ -408,7 +433,8 @@ class SeqRecord(_SeqRecord):
 
         if (not blunt) and linear:
             return _pretty_str(
-                "Sequence is not blunt nor circular," " so it can not be stamped."
+                "Sequence is not blunt nor circular,"
+                " so it can not be stamped."
             )
 
         algorithm = {True: "SEGUID", False: "cSEGUID"}[linear]
@@ -423,7 +449,8 @@ class SeqRecord(_SeqRecord):
                 return newstamp
             else:
                 raise ValueError(
-                    "Stamp is wrong.\n" f"Old: {old_stamp}\n" f"New: {newstamp}"
+                    "Stamp is wrong.\n"
+                    f"Old: {old_stamp}\n" f"New: {newstamp}"
                 )
         else:
             newstamp = "{}_{}".format(algorithm, chksum)
@@ -466,9 +493,11 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a = SeqRecord("GGATCC")
         >>> a.lcs("GGATCC", limit=6)
-        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(6), strand=1), type='read')
+        SeqFeature(FeatureLocation(ExactPosition(0),
+                                   ExactPosition(6), strand=1), type='read')
         >>> a.lcs("GATC", limit=4)
-        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(5), strand=1), type='read')
+        SeqFeature(FeatureLocation(ExactPosition(1),
+                                   ExactPosition(5), strand=1), type='read')
         >>> a = SeqRecord("CCCCC")
         >>> a.lcs("GGATCC", limit=6)
         SeqFeature(None)
@@ -486,7 +515,9 @@ class SeqRecord(_SeqRecord):
         else:
             r = str(other.lower())
 
-        olaps = _common_sub_strings(str(self.seq).lower(), r, limit, **kwargs)
+        olaps = _common_sub_strings(str(self.seq).lower(),
+                                    r,
+                                    limit = limit or 25)
 
         try:
             start_in_self, start_in_other, length = olaps.pop(0)
@@ -499,7 +530,7 @@ class SeqRecord(_SeqRecord):
                 type=kwargs.get("type") or "read",
                 strand=1,
                 qualifiers={
-                    "label": [label],
+                    "label": [kwargs.get("label") or label],
                     "ApEinfo_fwdcolor": ["#DAFFCF"],
                     "ApEinfo_revcolor": ["#DFFDFF"],
                 },
@@ -526,7 +557,8 @@ class SeqRecord(_SeqRecord):
 
     def __eq__(self, other):
         try:
-            if self.seq == other.seq and str(self.__dict__) == str(other.__dict__):
+            if (self.seq == other.seq and
+                str(self.__dict__) == str(other.__dict__)):
                 return True
         except AttributeError:
             pass
@@ -537,7 +569,8 @@ class SeqRecord(_SeqRecord):
 
     def __hash__(self):
         """__hash__ must be based on __eq__"""
-        return hash((str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
+        return hash((str(self.seq).lower(),
+                     str(tuple(sorted(self.__dict__.items())))))
 
     def __str__(self):
         return _pretty_str(super().__str__())
@@ -570,7 +603,7 @@ class SeqRecord(_SeqRecord):
             elif "note" in sf.qualifiers:
                 identifier = " ".join(sf.qualifiers["note"])
         answer.id = _identifier_from_string(identifier)[:16]
-        answer.name = _identifier_from_string("part_{name}".format(name=self.name))[:16]
+        answer.name = _identifier_from_string(f"part_{self.name}")[:16]
         return answer
 
 
@@ -581,5 +614,7 @@ if __name__ == "__main__":
     _os.environ["pydna_cached_funcs"] = ""
     import doctest
 
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    doctest.testmod(verbose=True,
+                    optionflags=(doctest.ELLIPSIS |
+                                 doctest.NORMALIZE_WHITESPACE))
     _os.environ["pydna_cached_funcs"] = cached

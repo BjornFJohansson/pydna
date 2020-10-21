@@ -423,9 +423,8 @@ def test_revcomp():
 
 def test_m():
     from pydna.dseqrecord import Dseqrecord
-
     s = Dseqrecord("A" * 5000)
-    assert s.m() == 1.543539500000192e-07
+    assert f'{s.m():.3e}' == '1.544e-07'
 
 
 def test_extract_feature():

@@ -46,7 +46,13 @@ There is an open access paper in BMC Bioinformatics describing pydna:
 
 [![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
 
-Please reference the above paper when using pydna.
+Please reference the above paper:
+
+
+Pereira, F., Azevedo, F., Carvalho, Â., Ribeiro, G. F., Budde, M. W., & Johansson, B. (2015). Pydna: a simulation and documentation tool for DNA assembly strategies using python. BMC Bioinformatics, 16(142), 142.
+
+
+if using pydna in a scientific publication.
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
@@ -234,7 +240,7 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octoca
 Pydna is currently developed on and for Python 3.6, 3.7 and 3.8. Pydna versions before 1.0.0 were compatible with python 2.7 only.
 The list below is the minimal requirements for installing pydna. Biopython has c-extensions, but the other modules are pure python.
 
-- [Python 3.6, 3.7 or 3.8](http://www.python.org)
+- [Python 3.6, 3.7, 3.8 or 3.9](http://www.python.org)
 - [biopython >= 1.65](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing)

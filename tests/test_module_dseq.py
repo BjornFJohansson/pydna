@@ -422,7 +422,7 @@ def test_dseq():
 
     assert repr(obj) == "Dseq(-32)\n tagc..ctaa\ntatcg..gatt"
 
-    assert obj.mw() == 19535.600000000024
+    assert round(obj.mw(), 1) == 19535.6
 
     obj1 = Dseq(
         "tagcgtagctgtagtatgtgatctggtcta",
