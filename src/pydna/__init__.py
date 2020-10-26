@@ -115,9 +115,9 @@ See this repository for a collection of `examples <https://github.com/BjornFJoha
 
 
 from pydna import _version
+from pydna.utils import open_folder as _open_folder
 import os as _os
 import sys as _sys
-import subprocess as _subprocess
 import logging as _logging
 import logging.handlers as _handlers
 import appdirs as _appdirs
@@ -371,18 +371,6 @@ def open_config_folder():
 
 def open_log_folder():
     return _open_folder(_os.environ["pydna_log_dir"])
-
-
-def _open_folder(pth):
-    if _sys.platform == "win32":
-        _subprocess.run(["start", pth], shell=True)
-    elif _sys.platform == "darwin":
-        _subprocess.run(["open", pth])
-    else:
-        try:
-            _subprocess.run(["xdg-open", pth])
-        except OSError:
-            return "no cache to open."
 
 
 def get_env():
