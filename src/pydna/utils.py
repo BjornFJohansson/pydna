@@ -572,9 +572,10 @@ def parse_text_table(rawtable, tabs=4):
 
     list_of_lists_rc = [list(i) for i in zip(*list_of_lists_cr)]
 
-    formatted = "\n".join(" ".join(cell) for cell in list_of_lists_rc)
+    formatted = _pretty_str("\n".join(" ".join(cell) for cell in
+                            list_of_lists_rc))
 
-    columnsplit = "\n|||\n".join(
+    columnsplit = _pretty_str("\n|||\n".join(
         [
             "\n".join(
                 [
@@ -584,21 +585,16 @@ def parse_text_table(rawtable, tabs=4):
             )
             for col in cols
         ]
-    )
+    ))
 
     rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
-    rowsplit = "\n".join(row.strip() for row in rowsplit.splitlines())
+    rowsplit = _pretty_str("\n".join(row.strip() for row in rowsplit.splitlines()))
 
-    return (
-        _pretty_str(item)
-        for item in (
-            formatted,
+    return (formatted,
             columnsplit,
             rowsplit,
             list_of_lists_rc,
-            list_of_lists_cr,
-        )
-    )
+            list_of_lists_cr,)
 
 
 def join_list_to_table(rawlist):

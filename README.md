@@ -39,8 +39,8 @@ Pydna has been designed to be understandable for biologists with only some basic
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
 
-Look at some assembly strategies made in the Jupyter notebook
-format [here](http://nbviewer.ipython.org/github/BjornFJohansson/ypk-xylose-pathways/blob/release/index.ipynb).
+Look at some assembly strategies of D-xylose metabolic pathways made in the Jupyter notebook
+format [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways).
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 

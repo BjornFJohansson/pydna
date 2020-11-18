@@ -5,10 +5,11 @@
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
-"""This module provides functions for assembly of sequences by homologous
-recombination and other related techniques. Given a list of sequences
-(Dseqrecords), all sequences are analyzed for shared homology longer than the
-set limit.
+"""Assembly of sequences by homologous recombination.
+
+Should also be useful for related techniques such as Gibson assembly and fusion
+PCR. Given a list of sequences (Dseqrecords), all sequences are analyzed for
+shared homology longer than the set limit.
 
 A graph is constructed where each overlapping region form a node and
 sequences separating the overlapping regions form edges.
