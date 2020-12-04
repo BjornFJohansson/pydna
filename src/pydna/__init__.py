@@ -116,6 +116,7 @@ See this repository for a collection of `examples <https://github.com/BjornFJoha
 
 from pydna import _version
 from pydna.utils import open_folder as _open_folder
+import pathlib as _pathlib
 import os as _os
 import sys as _sys
 import logging as _logging
@@ -151,51 +152,31 @@ _ini_path = _os.path.join(_os.environ["pydna_config_dir"], "pydna.ini")
 # initiate a config parser instance
 _parser = _configparser.ConfigParser()
 
+user_data_dir = _pathlib.Path(_appdirs.user_data_dir("pydna"))
+default_ini = {"loglevel": str(_logging.WARNING),
+               "email": "someone@example.com",
+               "data_dir": user_data_dir,
+               "log_dir": _appdirs.user_log_dir("pydna"),
+               "cached_funcs": "pydna.genbank.genbank.nucleotide",
+               "ape": "put/path/to/ape/here",
+               "primers": user_data_dir/"primers.md",
+               "enzymes": user_data_dir/"enzymes.md",
+               "primersgdoc":"PRIMERS"}
+
 # if a pydna.ini exists, it is read
 if _os.path.exists(_ini_path):
     _parser.read(_ini_path)
 else:  # otherwise it is created with default settings
+    _parser["main"] = default_ini
     with open(_ini_path, "w", encoding="utf-8") as f:  # TODO needs encoding?
-        _parser["main"] = {
-            "loglevel": str(_logging.WARNING),
-            "email": "someone@example.com",
-            "data_dir": _appdirs.user_data_dir("pydna"),
-            "log_dir": _appdirs.user_log_dir("pydna"),
-            "cached_funcs": "pydna.genbank.genbank.nucleotide",
-            "ape": "put/path/to/ape/here",
-            "primers": "put/path/to/primers/here",
-            "enzymes": "put/path/to/enzymes/here",
-        }
         _parser.write(f)
 
 # pydna related environmental variables are set from pydna.ini if they are not set already
 _mainsection = _parser["main"]
-_os.environ["pydna_ape"] = _os.getenv(
-    "pydna_ape", _mainsection.get("ape", "put/path/to/ape/here")
-)
-_os.environ["pydna_cached_funcs"] = _os.getenv(
-    "pydna_cached_funcs", _mainsection.get("cached_funcs", "none")
-)
 
-_os.environ["pydna_data_dir"] = _os.getenv(
-    "pydna_data_dir", _mainsection.get("data_dir", _appdirs.user_data_dir("pydna"))
-)
-_os.environ["pydna_email"] = _os.getenv(
-    "pydna_email", _mainsection.get("email", "someone@example.com")
-)
-_os.environ["pydna_enzymes"] = _os.getenv(
-    "pydna_enzymes", _mainsection.get("enzymes", "put/path/to/enzymes/here")
-)
-_os.environ["pydna_log_dir"] = _os.getenv(
-    "pydna_log_dir", _mainsection.get("log_dir", _appdirs.user_log_dir("pydna"))
-)
-_os.environ["pydna_loglevel"] = _os.getenv(
-    "pydna_loglevel", _mainsection.get("loglevel", str(_logging.WARNING))
-)
-_os.environ["pydna_primers"] = _os.getenv(
-    "pydna_primers", _mainsection.get("primers", "put/path/to/primers/here")
-)
-
+for key in default_ini:
+    _os.environ[f"pydna_{key}"] = _os.getenv(
+    f"pydna_{key}", _mainsection.get(key, default_ini[key] ))
 
 # create log directory if not present
 _os.makedirs(_os.environ["pydna_log_dir"], exist_ok=True)  # changes to file system ####
@@ -248,7 +229,7 @@ def _missing_modules_for_gel():
     from importlib import util
 
     _missing = []
-    for _optm in ["scipy", "numpy", "matplotlib", "mpldatacursor", "pint"]:
+    for _optm in ["scipy", "numpy", "matplotlib", "pillow"]:
         _missing.extend([_optm] if not util.find_spec(_optm) else [])
     del importlib
     del util

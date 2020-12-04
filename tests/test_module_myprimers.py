@@ -12,14 +12,12 @@ def test_myprimers(monkeypatch):
 
     reload(myprimers)
     newlist = parse_primers("primers_linux_line_endings.txt")[::-1]
-    primerdict = myprimers.dict_primers
+    primerdict = myprimers.primerdict()
 
     assert len(primerdict) == 4
-    primer_list = myprimers.list_primers
+    primer_list = myprimers.primerlist()
     assert primer_list == newlist
 
-    with pytest.raises(NotImplementedError):
-        myprimers.append_primer_list("slask")
 
 
 if __name__ == "__main__":

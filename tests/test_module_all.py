@@ -26,7 +26,7 @@ def test_repr():
         "circular_assembly_fragments",
         "eq",
         "gbtext_clean",
-        "list_primers",
+        "primerlist",
     ]
 
 

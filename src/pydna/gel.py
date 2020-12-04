@@ -9,12 +9,10 @@
 
 """docstring."""
 
-from IPython.display import display
 from PIL import Image, ImageDraw
 import numpy as np
 import math
 from scipy.interpolate import CubicSpline
-from pydna.fakeseq import FakeSeq
 from pydna.ladders import PennStateLadder
 
 
@@ -92,6 +90,7 @@ def gel(samples=[PennStateLadder, ],
 
     #  im.rotate(90, expand=1)
     #  im_invert = ImageOps.invert(im)
+
 
 if __name__ == "__main__":
     import os as _os

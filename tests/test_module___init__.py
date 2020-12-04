@@ -103,6 +103,34 @@ def test_read_ini_file():
     import pydna
 
 
+def test_without_dependency():
+    import sys
+    from unittest.mock import patch
+    with patch.dict(sys.modules, {'pillow': None}):
+        from importlib import reload
+        reload(sys.modules['pydna'])
+        import pydna
+        assert pydna._missing == ['pillow']
+
+# def test_missing_modules(monkeypatch)
+
+#     import sys
+#     from unittest.mock import patch
+
+#     def test_without_dependency(self):
+#         with patch.dict(sys.modules, {'optional_dependency': None}):
+#             # do whatever you want
+
+#     import sys
+#     from unittest.mock import patch
+#     from importlib import reload
+
+#     def test_without_dependency(self):
+#         with patch.dict(sys.modules, {'optional_dependency': None}):
+#             reload(sys.modules['my_module_under_test'])
+#             # do whatever you want
+#https://stackoverflow.com/questions/51044068/test-for-import-of-optional-dependencies-in-init-py-with-pytest-python-3-5/65034142#65034142
+
 # def test_missing_modules(monkeypatch):
 #    import importlib
 #    find_spec_orig = importlib.util.find_spec
