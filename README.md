@@ -110,15 +110,24 @@ can be easily simulated without any additional information besides the primary s
 Gel electrophoresis of DNA fragments can be simulated using the included gel module
 
 
-    >>> from pydna.gel import gel
-    >>> from pydna.ladder import PennStateLadder
-    >>> from pydna.dseqrecord import Dseqrecord
-    >>> from pydna.ladders import PennStateLadder
-    >>> gel([PennStateLadder,[Dseqrecord("gatc"*500)]])
-    >>> gel([PennStateLadder,[Dseqrecord("N"*2000])])
+    Jupyter QtConsole 4.7.7
+    Python 3.8.5 | packaged by conda-forge | (default, Aug 29 2020, 01:22:49)
+    Type 'copyright', 'credits' or 'license' for more information
+    IPython 7.18.1 -- An enhanced Interactive Python. Type '?' for help.
+
+    In [1]: from pydna.gel import gel
+
+    In [2]: from pydna.ladders import PennStateLadder
+
+    In [3]: from pydna.dseqrecord import Dseqrecord
+
+    In [4]: gel([PennStateLadder,[Dseqrecord("A"*2000)]])
+    Out[4]:
+
 
 
 ![](https://raw.githubusercontent.com/bjornFJohansson/pydna/scripts/pydna_gel.png)
+
 
 
 Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/release/scripts/gel_inline_ex.ipynb).
