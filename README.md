@@ -126,7 +126,7 @@ Gel electrophoresis of DNA fragments can be simulated using the included gel mod
 
 
 
-![](https://raw.githubusercontent.com/bjornFJohansson/pydna/scripts/pydna_gel.png)
+![](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/scripts/pydna_gel.png)
 
 
 
