@@ -118,8 +118,7 @@ Gel electrophoresis of DNA fragments can be simulated using the included gel mod
     >>> gel([PennStateLadder,[Dseqrecord("N"*2000])])
 
 
-![](scripts/ pydna_gel.png)
-
+![](https://raw.githubusercontent.com/bjornFJohansson/pydna/scripts/pydna_gel.png)
 
 
 Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/release/scripts/gel_inline_ex.ipynb).
