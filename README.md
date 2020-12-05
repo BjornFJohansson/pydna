@@ -129,10 +129,7 @@ Gel electrophoresis of DNA fragments can be simulated using the included gel mod
 ![](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/scripts/pydna_gel.png)
 
 
-
-Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/release/scripts/gel_inline_ex.ipynb).
-
-Pydna can be very compact. The nine lines of Python below, simulates the construction of a recombinant plasmid.
+Pydna can be very compact. The eleven lines of Python below simulates the construction of a recombinant plasmid.
 DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
 
     from pydna.genbank import Genbank
@@ -323,11 +320,12 @@ There are three github actions associated with this package:
 - pydna_setuptools_build_workflow.yml
 - pydna_conda_build_workflow.yml
 
-The pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
+The `pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
 This workflow run tests, doctests and a series of Jupyter notebooks using pytest.
 
 The two other workflows build a setuptools wheel and packages for python 3.6, 3.7 and 3.8
-on Linux, Windows and macOS.  These are triggered by publishing a github release.
+on Linux, Windows and macOS.  These are triggered by publishing a github release manually
+from the github interface.
 
 
 
