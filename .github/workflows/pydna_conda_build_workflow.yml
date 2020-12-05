@@ -13,16 +13,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.2
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Cache conda
-        uses: actions/cache@v2.1.1
+        uses: actions/cache@v2
         with:
           path: ~/conda_pkgs_dir
           key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
       - name: Setup Miniconda
-        uses: goanpeca/setup-miniconda@v1.7.0
+        uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
           auto-activate-base: false

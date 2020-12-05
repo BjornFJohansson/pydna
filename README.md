@@ -108,9 +108,19 @@ Notably, homologous recombination and Gibson assembly between linear DNA fragmen
 can be easily simulated without any additional information besides the primary sequence of the fragments.
 
 Gel electrophoresis of DNA fragments can be simulated using the included gel module
-by [Bruno Silva](https://github.com/bruno2git):
 
-![alt text](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/gel.png "simulated agarose gel")
+
+    >>> from pydna.gel import gel
+    >>> from pydna.ladder import PennStateLadder
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.ladders import PennStateLadder
+    >>> gel([PennStateLadder,[Dseqrecord("gatc"*500)]])
+    >>> gel([PennStateLadder,[Dseqrecord("N"*2000])])
+
+
+![](scripts/ pydna_gel.png)
+
+
 
 Look at an example notebook with a gel simulation [here](http://nbviewer.jupyter.org/github/BjornFJohansson/pydna/blob/release/scripts/gel_inline_ex.ipynb).
 
