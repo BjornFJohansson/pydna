@@ -20,16 +20,16 @@ requirements:
         - python {{ python }}
         - appdirs
         - biopython >=1.78
-        - prettytable
         - networkx
+        - prettytable
         - pyparsing
         - requests
         - ipython
         - jupyter
         - scipy
         - matplotlib
-        - mpldatacursor
-        - pint
+        - pillow
+
 test:
   requires:
     - pytest

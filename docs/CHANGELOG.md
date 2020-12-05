@@ -6,13 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+### Changed
 
+## [4.0.0] - 2020-10-10
 
 ### Added
 
+- New gel module
+- New module myprimers_gdoc for storing primers in a google doc
+- New module fakeseq for making DNA ladders.
+- New module ladders containing DNA molecular weight markers.
 
 ### Changed
 
+- Changes to myprimer module.
 
 ## [3.1.3] - 2020-10-10
 

@@ -276,8 +276,7 @@ If the modules listed below are installed, gel simulation functionality will be 
 - [numpy](http://www.numpy.org)
 - [scipy](https://www.scipy.org)
 - [matplotlib](http://matplotlib.org)
-- [mpldatacursor](https://pypi.python.org/pypi/mpldatacursor)
-- [pint >= 0.7.2](https://pypi.python.org/pypi/pint)
+- [pillow](https://github.com/python-pillow/Pillow)
 
 The pydna conda package installs the optional requirements listed above as well as:
 

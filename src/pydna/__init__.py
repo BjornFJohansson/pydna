@@ -229,7 +229,7 @@ def _missing_modules_for_gel():
     from importlib import util
 
     _missing = []
-    for _optm in ["scipy", "numpy", "matplotlib", "pillow"]:
+    for _optm in ["scipy", "matplotlib", "pillow"]:
         _missing.extend([_optm] if not util.find_spec(_optm) else [])
     del importlib
     del util

@@ -9,6 +9,5 @@ requests>=2.23
 pytest>=6.0.2
 pytest-doctestplus>=0.8.0
 coverage>=4.0.3
-pint>=0.7.2
 nbval>=0.3.6
 setuptools

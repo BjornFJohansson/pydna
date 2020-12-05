@@ -19,8 +19,6 @@ dependencies:
 - numpy
 - scipy
 - matplotlib
-- mpldatacursor
-- pint
 
 - pytest
 - pytest-cov
