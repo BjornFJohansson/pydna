@@ -51,7 +51,7 @@ jobs:
         run: pip install --editable . --no-deps
 
       - name: set PY_IGNORE_IMPORTMISMATCH=1
-        uses: allenevans/set-env@v1.1.0
+        uses: allenevans/set-env@v2
         with:
           PY_IGNORE_IMPORTMISMATCH: '1'
 
