@@ -38,6 +38,7 @@ test:
     - requests-mock
     - nbval
     - coverage
+    - pydrive2
   imports:
     - pydna
   source_files:
