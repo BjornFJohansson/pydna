@@ -29,6 +29,7 @@ requirements:
         - scipy
         - matplotlib
         - pillow
+        - pydrive2
 
 test:
   requires:
