@@ -4,7 +4,6 @@ source = pydna
 omit =
     */tests/*
     */_version.py
-    */gel.py
 
 [report]
 exclude_lines =

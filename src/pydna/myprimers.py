@@ -1,30 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-"""This module provides three ways to access a primer list specified
-in the primers entry in the pydna.ini file or in the pydna_primers
-environment variable.
+"""Provides three ways to access a list of primer sequences.
 
-The list has to have sequences in FASTA, Genbank or EMBL formats.
+The path of a text file can be specified in the pydna.ini file or by the in
+´pydna_primers´ environment variable.
+
+The file is expected to contain sequences in FASTA, Genbank or EMBL formats.
 The primer list can have the format below for example:
 
 ::
 
-    >first_primer
+    >1_second_primer
     tgatcgtcatgctgactatactat
-    >second_primer
+    >0_first_primer
     ctaggatcgtagatctagctg
     ...
 
-list_primers is a list :class:`pydna.primer.Primer` objects
-dict_primers is a dict where the key is the id of the object
+The primerlist funtion returns a list of :class:`pydna.primer.Primer` objects
+primerdict returns a dict where the key is the id of the object.
+"""
 
-each primer is instantiated as p001, p002, ... for all primers"""
 import os as _os
+import copy as _copy
 from pydna.parsers import parse_primers as _parse_primers
+from pydna._pretty import pretty_str as _pretty_str
+from collections import defaultdict as _defaultdict
 
 
 def primerlist():
@@ -37,65 +41,48 @@ def primerdict():
     return dict((p.id, p) for p in primerlist())
 
 
-# def myprimers():
-#     """docstring."""
-#     obj = 1
-#     for _i, _p in enumerate(primerlist()):
-#         name_space["p{:03d}".format(_i)] = _p
-#     return obj
-
-
-def prepend_primerlist(primerlist):
+def prepend_primerlist(newprimers: list, oldprimers: list = primerlist()):
     """docstring."""
-
-    primers = primerlist()
-
-    no = len(primers)
-
-    newprimers = []
-
-    for i,p in zip(range(no+len(primerlist)-1, no-1, -1), primerlist):
+    no = len(oldprimers)
+    new = []
+    for i, p in zip(range(no+len(newprimers)-1, no-1, -1), newprimers):
         suff = p.id.split(str(i))[-1]
         suff.lstrip("_")
         newprimer = _copy.copy(p)
         newprimer.id = f"{i}_{suff}"
-        newprimers.append(newprimer)
-
-    return _pretty_str("\n".join([p.format("fasta") for p in newprimers]))
+        new.append(newprimer)
+    return _pretty_str("\n".join([p.format("fasta") for p in new]))
 
 
 def check_primer_list(primerlist=primerlist):
+    """docstring."""
+    pl = primerlist()
 
-    unique = set(str(p.seq).lower() for p in primerlist())
+    unique_seqs = set(str(p.seq).lower() for p in pl)
 
-    print("number of primers", len(primerlist))
-    print("unique primers", len(unique))
-    print("no seq (n)", len([p for p in primerlist if set(p.seq.lower()) == set("n")]))
+    msg = f"{len(pl)} primers, {len(unique_seqs)} unique primer sequences\n"
 
-    for i, p in enumerate(primerlist):
+    defined = [p for p in pl if set(p.seq.lower()) != set("n")]
+
+    msg += f"{len(pl) - len(defined)} primer(s) without sequence (N)"
+
+    for i, p in enumerate(pl):
         if not p.name.startswith(str(i)):
-            print(i, p.format("tab"))
+            msg += f"\nWrong number: {i} {p.format('tab')}"
 
-    print("names checked for correct primer number for ", i + 1, "primers")
+    dct = _defaultdict(list)
 
-    from collections import defaultdict
-
-    dct = defaultdict(list)
-
-    for u in unique:
-        for p in primerlist:
-            if set(u) == set("n") or set(p.seq.lower()) == set("n"):
-                continue
+    for u in unique_seqs:
+        for p in defined:
             if u == str(p.seq).lower():
                 dct[u].append(p.name)
 
-
     for seq, names in dct.items():
         if len(names) > 1:
-            print("\n".join(names))
-            print(seq)
-            print()
+            msg += " ".join(names)
+            msg += f" {seq}\n"
 
+    return _pretty_str(msg.strip())
 
 
 if __name__ == "__main__":

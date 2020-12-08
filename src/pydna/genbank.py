@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 """This module provides a class for downloading sequences from genbank
 called Genbank and an function that does the same thing called genbank.
 
-The function can be used if the environmental variable **pydna_email** has 
-been set to a valid email address. The easiest way to do this permanantly is to edit the 
+The function can be used if the environmental variable **pydna_email** has
+been set to a valid email address. The easiest way to do this permanantly is to edit the
 `pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`"""
 
 from pydna.utils import memorize as _memorize

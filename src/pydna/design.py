@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-"""This module contain functions for primer design for various purposes. 
+"""This module contain functions for primer design for various purposes.
 
 - :func:primer_design for designing primers for a sequence or a matching primer for an existing primer. Returns an :class:`Amplicon` object (same as the :mod:`amplify` module returns).
 
@@ -183,14 +183,14 @@ def primer_design(
 
 
 def assembly_fragments(f, overlap=35, maxlink=40):
-    """This function return a list of :mod:`pydna.amplicon.Amplicon` objects where 
-    primers have been modified with tails so that the fragments can be fused in 
-    the order they appear in the list by for example Gibson assembly or homologous 
+    """This function return a list of :mod:`pydna.amplicon.Amplicon` objects where
+    primers have been modified with tails so that the fragments can be fused in
+    the order they appear in the list by for example Gibson assembly or homologous
     recombination.
 
-    Given that we have two linear :mod:`pydna.amplicon.Amplicon` objects a and b 
+    Given that we have two linear :mod:`pydna.amplicon.Amplicon` objects a and b
 
-    we can modify the reverse primer of a and forward primer of b with tails to allow 
+    we can modify the reverse primer of a and forward primer of b with tails to allow
     fusion by fusion PCR, Gibson assembly or in-vivo homologous recombination.
     The basic requirements for the primers for the three techniques are the same.
 
@@ -260,7 +260,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
       tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
 
 
-    The first argument of this function is a list of sequence objects containing 
+    The first argument of this function is a list of sequence objects containing
     Amplicons and other similar objects.
 
     **At least every second sequence object needs to be an Amplicon**
@@ -268,7 +268,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     This rule exists because if a sequence object is that is not a PCR product
     is to be fused with another fragment, that other fragment needs to be an Amplicon
     so that the primer of the other object can be modified to include the whole stretch
-    of sequence homology needed for the fusion. See the example below where a is a 
+    of sequence homology needed for the fusion. See the example below where a is a
     non-amplicon (a linear plasmid  vector for instance)
 
     ::
@@ -333,7 +333,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
                                    TCGCATGACTCTTCTTT
                       ||||||||||||||||||||||||||||||
-                      gagacgtAAATATAGCGTACTGAGAAGAAA 
+                      gagacgtAAATATAGCGTACTGAGAAGAAA
 
     to form c:
 
@@ -344,11 +344,11 @@ def assembly_fragments(f, overlap=35, maxlink=40):
       tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA
 
 
-    The first argument of this function is a list of sequence objects containing 
+    The first argument of this function is a list of sequence objects containing
     Amplicons and other similar objects.
 
-    The overlap argument controls how many base pairs of overlap required between 
-    adjacent sequence fragments. In the junction between Amplicons, tails with the 
+    The overlap argument controls how many base pairs of overlap required between
+    adjacent sequence fragments. In the junction between Amplicons, tails with the
     length of about half of this value is added to the two primers
     closest to the junction.
 
@@ -364,10 +364,10 @@ def assembly_fragments(f, overlap=35, maxlink=40):
             >       <-
             Amplicon1
                      Amplicon2
-                    ->       <                     
+                    ->       <
 
-    In the case of an Amplicon adjacent to a Dseqrecord object, the tail will 
-    be twice as long (1*overlap) since the 
+    In the case of an Amplicon adjacent to a Dseqrecord object, the tail will
+    be twice as long (1*overlap) since the
     recombining sequence is present entirely on this primer:
 
     ::
@@ -382,13 +382,13 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                      Amplicon1
                    -->       <
 
-    Note that if the sequence of DNA fragments starts or stops with an Amplicon, 
-    the very first and very last prinmer will not be modified i.e. assembles are 
+    Note that if the sequence of DNA fragments starts or stops with an Amplicon,
+    the very first and very last prinmer will not be modified i.e. assembles are
     always assumed to be linear. There are simple tricks around that for circular
     assemblies depicted in the last two examples below.
 
     The maxlink arguments controls the cut off length for sequences that will be
-    synhtesized by adding them to primers for the adjacent fragment(s). The 
+    synhtesized by adding them to primers for the adjacent fragment(s). The
     argument list may contain short spacers (such as spacers between fusion proteins).
 
 
@@ -404,10 +404,10 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
                              ⇣
                              pydna.design.assembly_fragments
-                             ⇣ 
+                             ⇣
 
         >       <-       ->       <-                      pydna.assembly.Assembly
-        Amplicon1         Amplicon3                         
+        Amplicon1         Amplicon3
                  Amplicon2         Amplicon4     ➤  Amplicon1Amplicon2Amplicon3Amplicon4
                 ->       <-       ->       <
 
@@ -421,7 +421,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
                              ⇣
                              pydna.design.assembly_fragments
-                             ⇣ 
+                             ⇣
 
         >       <--     -->       <--                     pydna.assembly.Assembly
         Amplicon1         Amplicon2
@@ -452,10 +452,10 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                -->       <-
                              ⇣
                              pydna.design.assembly_fragments
-                             ⇣ 
+                             ⇣
                                                            pydna.assembly.Assembly
                          ->       <==
-        Dseqrecd1         Amplicon2                    -Dseqrecd1Amplicon1Amplicon2-  
+        Dseqrecd1         Amplicon2                    -Dseqrecd1Amplicon1Amplicon2-
                  Amplicon1                       ➤    |                             |
                -->       <-                            -----------------------------
 
@@ -468,19 +468,19 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
                              ⇣
                              pydna.design.assembly_fragments
-                             ⇣ 
+                             ⇣
 
-        >       <=       ->       <-        
-        Amplicon1         Amplicon3                  
+        >       <=       ->       <-
+        Amplicon1         Amplicon3
                  Amplicon2         Amplicon1
                 ->       <-       +>       <
 
                              ⇣
-                     make new Amplicon using the Amplicon1.template and 
+                     make new Amplicon using the Amplicon1.template and
                      the last fwd primer and the first rev primer.
                              ⇣
                                                            pydna.assembly.Assembly
-        +>       <=       ->       <-        
+        +>       <=       ->       <-
          Amplicon1         Amplicon3                  -Amplicon1Amplicon2Amplicon3-
                   Amplicon2                      ➤   |                             |
                  ->       <-                          -----------------------------
@@ -513,7 +513,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     Examples
     --------
 
-    >>> from pydna.dseqrecord import Dseqrecord    
+    >>> from pydna.dseqrecord import Dseqrecord
     >>> from pydna.design import primer_design
     >>> a=primer_design(Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg"))
     >>> b=primer_design(Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc"))
@@ -553,7 +553,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     |                 /\\
     |                 36-
     |                    |
-     --------------------    
+     --------------------
     >>>
 
     """

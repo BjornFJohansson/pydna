@@ -19,6 +19,48 @@ def test_myprimers(monkeypatch):
     assert primer_list == newlist
 
 
+def test_prepend_primerlist(monkeypatch):
+    monkeypatch.setenv("pydna_primers", "primers_linux_line_endings.txt")
+    from pydna import myprimers
+    from pydna.parsers import parse_primers
+    from importlib import reload
+
+    reload(myprimers)
+
+    newlist = parse_primers("""
+                            >a
+                            aaa
+                            >b
+                            ttt
+                            """)
+
+    np = myprimers.prepend_primerlist(newlist)
+
+    assert [s.name for s in parse_primers(np)] == ["5_a", "4_b"]
+
+
+def test_check_primer_list(monkeypatch):
+    monkeypatch.setenv("pydna_primers",
+                       "primers_linux_line_endings_not_unique.txt")
+    from pydna import myprimers
+    from pydna.parsers import parse_primers
+    from importlib import reload
+
+    reload(myprimers)
+
+    from textwrap import dedent
+
+    m = dedent("""\
+    6 primers, 5 unique primer sequences
+    1 primer(s) without sequence (N)
+    Wrong number: 5 6_primer	atatatat
+    1_primer 3_primer gggggggg""")
+
+    print(myprimers.check_primer_list() == m)
+
+
+
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])

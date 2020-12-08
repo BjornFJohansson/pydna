@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2018 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-"""This module establish a RestrictionBatch based on enzymes found in a text file specified in the enzymes entry 
+"""This module establish a RestrictionBatch based on enzymes found in a text file specified in the enzymes entry
 in the python.ini file or by the environment variable pydna_enzymes.
 
-The text file will be searched for all enzymes in the biopython 
+The text file will be searched for all enzymes in the biopython
 AllEnzymes batch which is located in the Bio.Restriction package.
 
 The pydna.myenzymes.myenzymes contains a new restriction batch with the enzymes contained

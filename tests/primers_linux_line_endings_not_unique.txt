@@ -1,8 +1,14 @@
->3_primer
+>6_primer
+atatatat
+
+>4_primer
 aaaaaaaa
 
+>3_primer
+gggggggg
+
 >2_primer
-cccccccc
+nnn
 
 >1_primer
 gggggggg

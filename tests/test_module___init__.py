@@ -112,38 +112,6 @@ def test_without_dependency():
         import pydna
         assert pydna._missing == ['pillow']
 
-# def test_missing_modules(monkeypatch)
-
-#     import sys
-#     from unittest.mock import patch
-
-#     def test_without_dependency(self):
-#         with patch.dict(sys.modules, {'optional_dependency': None}):
-#             # do whatever you want
-
-#     import sys
-#     from unittest.mock import patch
-#     from importlib import reload
-
-#     def test_without_dependency(self):
-#         with patch.dict(sys.modules, {'optional_dependency': None}):
-#             reload(sys.modules['my_module_under_test'])
-#             # do whatever you want
-#https://stackoverflow.com/questions/51044068/test-for-import-of-optional-dependencies-in-init-py-with-pytest-python-3-5/65034142#65034142
-
-# def test_missing_modules(monkeypatch):
-#    import importlib
-#    find_spec_orig = importlib.util.find_spec
-#    def mocked_find_spec(name, *args):
-#        if name == 'scipy':
-#            return None
-#        return find_spec_orig(name, *args)
-#    with monkeypatch.context() as m:
-#        m.setattr("pydna._importlib.util.find_spec", mocked_find_spec)
-#        sys.modules.pop("pydna", None)
-#        import pydna
-#        assert  "scipy" in pydna._missing
-
 
 def test_no_xdg_open(monkeypatch):
     subp = mock.MagicMock(side_effect=OSError(["xdg-open", os.getcwd()]))
