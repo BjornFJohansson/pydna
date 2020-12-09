@@ -40,7 +40,12 @@ def test_drive(monkeypatch):
     mock_GD.assert_called()
     mock_SAC.assert_not_called()
 
-    call = ('/home/bjorn/.config/pydna/service_account.json',
+    import os
+    from pathlib import Path
+
+    pth = Path(os.getenv("pydna_config_dir"))/"service_account.json"
+
+    call = (str(pth),
             ['https://www.googleapis.com/auth/drive'])
 
     mock_SAC.from_json_keyfile_name.assert_called_with(*call)
