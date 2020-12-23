@@ -12,8 +12,6 @@ dependencies:
 - prettytable
 - pyparsing
 
-- mpldatacursor
-
 - setuptools
 - twine
 - pip
