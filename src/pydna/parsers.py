@@ -23,8 +23,9 @@ from pydna.primer import Primer as _Primer
 
 
 def parse(data, ds=True):
-    """This function returns *all* DNA sequences found in data. If no
-    sequences are found, an empty list is returned. This is a greedy
+    """Return *all* DNA sequences found in data.
+
+    If no sequences are found, an empty list is returned. This is a greedy
     function, use carefully.
 
     Parameters
@@ -47,7 +48,8 @@ def parse(data, ds=True):
 
     ds : bool
         If True double stranded :class:`Dseqrecord` objects are returned.
-        If False single stranded :class:`Bio.SeqRecord` [#]_ objects are returned.
+        If False single stranded :class:`Bio.SeqRecord` [#]_ objects are
+        returned.
 
     Returns
     -------
@@ -56,7 +58,6 @@ def parse(data, ds=True):
 
     References
     ----------
-
     .. [#] http://biopython.org/wiki/SeqRecord
 
     See Also
@@ -67,7 +68,8 @@ def parse(data, ds=True):
 
     def embl_gb_fasta(raw, ds, path=None):
 
-        pattern = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
+        pattern = (r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|"
+                   r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)")
 
         result_list = []
 
