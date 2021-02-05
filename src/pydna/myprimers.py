@@ -49,7 +49,7 @@ def primerdict():
 def prepend_primerlist(newprimers: list, oldprimers: list = primerlist()):
     """docstring."""
     new = []
-    msg = ""
+    found = []
     no = len(oldprimers)
     oldstrs = [str(p.seq).upper() for p in oldprimers]
     for p in newprimers:
@@ -63,8 +63,8 @@ def prepend_primerlist(newprimers: list, oldprimers: list = primerlist()):
             newprimer.id = f"{i}_{suff}"
             new.append(newprimer)
         else:
-            msg += f"{p.format('fasta')}{oldprimers[i].format('fasta')}\n"
-    return _pretty_str(msg + "\n".join([p.format("fasta") for p in new]))
+            found.append(oldprimers[i])
+    return found or _pretty_str("\n".join([p.format("fasta") for p in new]))
 
 
 def check_primer_list(primerlist=primerlist):
