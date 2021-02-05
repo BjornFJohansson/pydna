@@ -33,7 +33,12 @@ from collections import defaultdict as _defaultdict
 
 def primerlist():
     """docstring."""
-    return _parse_primers(_os.environ["pydna_primers"])[::-1]
+    lines = []
+    with open(_os.environ["pydna_primers"]) as f:
+        for line in f.readlines():
+            if not line.startswith("#"):
+                lines.append(line)
+    return _parse_primers("\n".join(lines))[::-1]
 
 
 def primerdict():
@@ -43,15 +48,23 @@ def primerdict():
 
 def prepend_primerlist(newprimers: list, oldprimers: list = primerlist()):
     """docstring."""
-    no = len(oldprimers)
     new = []
-    for i, p in zip(range(no+len(newprimers)-1, no-1, -1), newprimers):
-        suff = p.id.split(str(i))[-1]
-        suff.lstrip("_")
-        newprimer = _copy.copy(p)
-        newprimer.id = f"{i}_{suff}"
-        new.append(newprimer)
-    return _pretty_str("\n".join([p.format("fasta") for p in new]))
+    msg = ""
+    no = len(oldprimers)
+    oldstrs = [str(p.seq).upper() for p in oldprimers]
+    for p in newprimers:
+        try:
+            i = oldstrs.index(str(p.seq).upper())
+        except ValueError:
+            i = no + len(new)
+            suff = p.id.split(str(i))[-1]
+            suff.lstrip("_")
+            newprimer = _copy.copy(p)
+            newprimer.id = f"{i}_{suff}"
+            new.append(newprimer)
+        else:
+            msg += f"{p.format('fasta')}{oldprimers[i].format('fasta')}\n"
+    return _pretty_str(msg + "\n".join([p.format("fasta") for p in new]))
 
 
 def check_primer_list(primerlist=primerlist):
