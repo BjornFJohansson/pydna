@@ -44,7 +44,12 @@ def get_primer_list_from_gdoc(title=_os.environ["pydna_primersgdoc"],
 
     content = fl.pop(0).GetContentString(mimetype="text/plain")
 
-    return _parse_primers(content)[::-1]
+    lines = []
+    for line in content.splitlines():
+        if not line.startswith("#"):
+            lines.append(line)
+
+    return _parse_primers("\n".join(lines))[::-1]
 
 
 if __name__ == "__main__":
