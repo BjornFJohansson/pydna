@@ -27,6 +27,7 @@ from Bio.Seq import Seq as _Seq
 from prettytable import PrettyTable as _PrettyTable
 import os as _os
 import re as _re
+import pickle as _pickle
 
 from pydna import _PydnaWarning
 from warnings import warn as _warn
@@ -605,6 +606,16 @@ class SeqRecord(_SeqRecord):
         answer.id = _identifier_from_string(identifier)[:16]
         answer.name = _identifier_from_string(f"part_{self.name}")[:16]
         return answer
+
+    def dump(self, filename):
+        """docstring."""
+        from pathlib import Path
+        pth = Path(filename)
+        if not pth.suffix:
+            pth = pth.with_suffix(".pickle")
+        with open(pth, 'wb') as f:
+            _pickle.dump(self, f)
+        return _pretty_str(pth)
 
 
 if __name__ == "__main__":
