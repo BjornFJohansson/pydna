@@ -46,13 +46,13 @@ def primerdict():
     return dict((p.id, p) for p in primerlist())
 
 
-def prepend_primerlist(newprimers: list, oldprimers: list = primerlist()):
+def prepend_primerlist(newprimers: list, oldprimers: list):
     """docstring."""
     new = []
     found = []
     no = len(oldprimers)
     oldstrs = [str(p.seq).upper() for p in oldprimers]
-    for p in newprimers:
+    for p in newprimers[::-1]:
         try:
             i = oldstrs.index(str(p.seq).upper())
         except ValueError:
@@ -64,12 +64,13 @@ def prepend_primerlist(newprimers: list, oldprimers: list = primerlist()):
             new.append(newprimer)
         else:
             found.append(oldprimers[i])
-    return found or _pretty_str("\n".join([p.format("fasta") for p in new]))
+    new = new[::-1]
+    return found[::-1] or _pretty_str("\n".join([p.format("fasta") for p in new]))
 
 
-def check_primer_list(primerlist=primerlist):
+def check_primer_list(primerlist: list):
     """docstring."""
-    pl = primerlist()
+    pl = primerlist
 
     unique_seqs = set(str(p.seq).lower() for p in pl)
 

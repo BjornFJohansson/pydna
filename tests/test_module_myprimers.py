@@ -25,18 +25,30 @@ def test_prepend_primerlist(monkeypatch):
     from pydna.parsers import parse_primers
     from importlib import reload
 
+    # >3_primer
+    # aaaaaaaa
+    # >2_primer
+    # cccccccc
+    # >1_primer
+    # gggggggg
+    # >0_primer
+    # tttttttt
+
+    oldlist = myprimers.primerlist()
+
     reload(myprimers)
 
     newlist = parse_primers("""
-                            >a
+                            >abc
                             aaa
-                            >b
+                            >efg
                             ttt
                             """)
 
-    np = myprimers.prepend_primerlist(newlist)
+    np = myprimers.prepend_primerlist(newlist, oldlist)
 
-    assert [s.name for s in parse_primers(np)] == ["5_a", "4_b"]
+    assert [s.name for s in parse_primers(np)] == ["5_abc",
+                                                   "4_efg"]
 
 
 def test_check_primer_list(monkeypatch):
@@ -56,7 +68,9 @@ def test_check_primer_list(monkeypatch):
     Wrong number: 5 6_primer	atatatat
     1_primer 3_primer gggggggg""")
 
-    print(myprimers.check_primer_list() == m)
+    pl = myprimers.primerlist()
+
+    print(myprimers.check_primer_list(pl) == m)
 
 
 
