@@ -9,14 +9,15 @@
 
 """docstring."""
 
-from PIL import Image, ImageDraw
-import numpy as np
-import math
-from scipy.interpolate import CubicSpline
-from pydna.ladders import PennStateLadder
+from PIL import Image as _Image
+from PIL import ImageDraw as _ImageDraw
+import numpy as _np
+import math as _math
+from scipy.interpolate import CubicSpline as _CubicSpline
+from pydna.ladders import PennStateLadder as _PennStateLadder
 
 
-interpolator = CubicSpline(
+interpolator = _CubicSpline(
     [int(bp) for bp in ("500 750 1000 1500 2000"
                         " 3000 4000 5000 7750 10000").split()],
     [int(px) for px in "366 296 246 183 146 104 84 70 50 41".split()],
@@ -24,7 +25,9 @@ interpolator = CubicSpline(
     extrapolate=False,)
 
 
-def gel(samples=[PennStateLadder, ],
+
+
+def gel(samples=[_PennStateLadder, ],
         gel_length=600,
         margin=50,
         interpolator=interpolator):
@@ -34,9 +37,9 @@ def gel(samples=[PennStateLadder, ],
     lanesep = 10
     start = 10
     width = int(60 + (lane_width + lanesep) * len(samples))
-    lanes = np.zeros((len(samples), gel_length), dtype=np.int)
-    image = Image.new("RGB", (width, gel_length), "#ddd")
-    draw = ImageDraw.Draw(image)
+    lanes = _np.zeros((len(samples), gel_length), dtype=_np.int)
+    image = _Image.new("RGB", (width, gel_length), "#ddd")
+    draw = _ImageDraw.Draw(image)
     draw.rectangle((0, 0, (width, gel_length)), fill=(0, 0, 0))
     scale = (gel_length-margin)/interpolator(min(interpolator.x))
 
@@ -47,7 +50,7 @@ def gel(samples=[PennStateLadder, ],
 
     for lane_number, lane in enumerate(samples):
         for band in lane:
-            log = math.log(len(band), 10)
+            log = _math.log(len(band), 10)
             height = (band.m() / (240 * log)) * 1e10
             peak_centre = interpolator(len(band)) * scale + start
             max_spread = 10
@@ -59,17 +62,17 @@ def gel(samples=[PennStateLadder, ],
             for i in range(max_spread, 0, -1):
                 y1 = peak_centre - i
                 y2 = peak_centre + i
-                intensity = height * math.exp(-float(
+                intensity = height * _math.exp(-float(
                     ((y1 - peak_centre) ** 2)) / (2 * (band_spread**2))
                     ) * max_intensity
                 for y in range(int(y1), int(y2)):
                     lanes[lane_number][y] += intensity
 
     for i, lane in enumerate(lanes):
-        max_intensity = np.amax(lanes[i])
+        max_intensity = _np.amax(lanes[i])
         if max_intensity > 256:
-            lanes[i] = np.multiply(lanes[i], 256)
-            lanes[i] = np.divide(lanes[i], max_intensity)
+            lanes[i] = _np.multiply(lanes[i], 256)
+            lanes[i] = _np.divide(lanes[i], max_intensity)
 
     for i, lane in enumerate(lanes):
         x1 = 50 + i * (lane_width+lanesep)

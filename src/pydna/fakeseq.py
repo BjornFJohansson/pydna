@@ -12,7 +12,7 @@ class FakeSeq(object):
 
     def __init__(self,
                  length,
-                 n=5e-14):    # mol ( = 0.05 pmol)):
+                 n=50e-15):  # mol, default 0.05 pmol, 50 fmol
         self._length = int(length)
         self.n = n
 

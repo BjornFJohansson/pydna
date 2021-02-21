@@ -43,13 +43,12 @@ except ImportError:
     def _display_html(item):
         return item
 
-    def _HTML(item):
-        return item
-
+    #def _HTML(item):
+    #    return item
 
 else:
     from IPython.display import display_html as _display_html
-    from IPython.display import HTML as _HTML
+    #from IPython.display import HTML as _HTML
 
 
 class Dseqrecord(_SeqRecord):
@@ -532,9 +531,7 @@ class Dseqrecord(_SeqRecord):
         if not isinstance(filename, str):  # is filename a string???
             raise ValueError("filename has to be a string, got", type(filename))
         name, ext = _os.path.splitext(filename)
-        msg = "<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>".format(
-            filename=filename
-        )
+        msg = f"<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>"
         if not _os.path.isfile(filename):
             with open(filename, "w") as fp:
                 fp.write(self.format(f))
@@ -591,7 +588,9 @@ class Dseqrecord(_SeqRecord):
             else:
                 with open(filename, "w") as fp:
                     fp.write(self.format(f))
-        return _display_html(_HTML(msg))
+        #from IPython.display import display_markdown
+        #return display_markdown("[link](ling.gb)",raw=True)
+        return _display_html(msg, raw=True)
 
     def find(self, other):
         # TODO allow strings, seqs, seqrecords or Dseqrecords
