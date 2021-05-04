@@ -12,14 +12,20 @@ class FakeSeq(object):
 
     def __init__(self,
                  length,
-                 n=50e-15):  # mol, default 0.05 pmol, 50 fmol
+                 n=50e-15,  # 50 fmol = 0.05 pmol
+                 rf=0):
         self._length = int(length)
         self.n = n
+        self.rf = rf
 
     def m(self):
         """Mass of the DNA molecule in grams."""
-        # Da(g/mol) * mol = g
-        return (308.9 * self._length + 79.0) * 2 * self.n
+        # M(Da) * n (mol) = g
+        return self.M() * self.n
+
+    def M(self):
+        """M grams/mol."""
+        return (308.9 * self._length + 79.0) * 2
 
     def __len__(self):
         """docstring."""
@@ -27,11 +33,15 @@ class FakeSeq(object):
 
     def __lt__(self, other):
         """docstring."""
-        return self._length<len(other)
+        return self._length < len(other)
 
     def __repr__(self):
         """docstring."""
-        return f"FakeSeq({self._length})"
+        return f"FakeSeq({self._length:.1e})"
+
+    def __str__(self):
+        """docstring."""
+        return self.__repr__
 
 
 if __name__ == "__main__":
