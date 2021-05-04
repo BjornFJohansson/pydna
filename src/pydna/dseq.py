@@ -11,11 +11,11 @@ can hold more meta data.
 
 The Dseq class support the notion of circular and linear DNA topology."""
 
-from collections.abc import Iterable as _Iterable
 
 import copy as _copy
 import itertools as _itertools
-
+import re as _re
+import regex as _regex
 import sys as _sys
 import math as _math
 
@@ -25,7 +25,6 @@ from Bio.Seq import Seq as _Seq
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.utils import rc as _rc
-from pydna.utils import complement as _complement
 from pydna.utils import flatten as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
@@ -1449,6 +1448,24 @@ class Dseq(_Seq):
             newfrags = []
 
         return tuple(frags)
+
+
+    def cas9(self, RNA:str):
+        """docstring."""
+        cuts=[0]
+        for m in _re.finditer(RNA, self._data):
+            cuts.append(m.start()+17)
+        cuts.append(self.length)
+        fragments = []
+        for x,y in zip(cuts,cuts[1:]):
+            fragments.append(self[x:y])
+        return fragments
+
+    def orfs(self):
+        orf = "ATG(?:...){15,}?(?:TAG|TAA|TGA)"
+        match = _regex.findall(orf, self._data, flags=_regex.IGNORECASE, overlapped=True)
+        match.sort(key=len, reverse=True)
+        return [Dseq(m) for m in match]
 
 
 if __name__ == "__main__":
