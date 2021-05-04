@@ -123,7 +123,7 @@ import logging as _logging
 import logging.handlers as _handlers
 import appdirs as _appdirs
 import configparser as _configparser
-import prettytable as _prettytable
+from pydna._pretty import PrettyTable as _PrettyTable
 
 
 __author__ = "Björn Johansson"
@@ -362,15 +362,15 @@ def get_env():
     """
     from pydna._pretty import pretty_str as _pretty_str
 
-    _table = _prettytable.PrettyTable(["Variable", "Value"])
-    _table.set_style(_prettytable.DEFAULT)
+    _table = _PrettyTable(["Variable", "Value"])
+    #_table.set_style(_prettytable.DEFAULT)
     _table.align["Variable"] = "l"  # Left align
     _table.align["Value"] = "l"  # Left align
     _table.padding_width = 1  # One space between column edges and contents
     for k, v in sorted(_os.environ.items()):
         if k.startswith("pydna"):
             _table.add_row([k, v])
-    return _pretty_str(_table)
+    return _table
 
 
 def logo():
