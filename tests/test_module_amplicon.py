@@ -28,12 +28,13 @@ def test_amplicon():
 
     # assert pp.text.assert_called_with('Amplicon(57)')
 
-    fig = """    5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
-                               ||||||||||||||||||||||
-                              3gctgacatagtagactatcgtgGGG5
- 5CCCtacactcaccgtctatcattatc3
-     |||||||||||||||||||||||
-    3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5"""
+    fig = """\
+       5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
+                                  ||||||||||||||||||||||
+                                 3gctgacatagtagactatcgtgGGG5
+    5CCCtacactcaccgtctatcattatc3
+        |||||||||||||||||||||||
+       3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5"""
 
     import textwrap
 

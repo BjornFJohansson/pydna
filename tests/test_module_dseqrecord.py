@@ -23,7 +23,7 @@ def test_IPython_missing(monkeypatch):
     from pydna import dseqrecord
 
     # assert dseqrecord._display is IPython.display.display
-    assert dseqrecord._HTML("item").__dict__ == IPython.display.HTML("item").__dict__
+    assert dseqrecord._display_html == IPython.display.display_html
     import sys
     import copy
 
@@ -37,7 +37,7 @@ def test_IPython_missing(monkeypatch):
     from pydna import dseqrecord
 
     assert dseqrecord._display_html("item") == "item"
-    assert dseqrecord._HTML("item") == "item"
+    #assert dseqrecord._HTML("item") == "item"
 
 
 def test_initialization():

@@ -11,7 +11,7 @@ def test_fakeseq():
 
     assert len(fs) == 1000
 
-    assert repr(fs) == 'FakeSeq(1000)'
+    assert repr(fs) == 'FakeSeq(1.0e+03)'
 
     assert fs > FakeSeq(999)
 

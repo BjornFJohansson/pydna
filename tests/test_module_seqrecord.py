@@ -45,18 +45,18 @@ def test_add_feature():
     a.add_feature(2, 4)
 
     assert (
-        a.list_features()
+        a.list_features().get_string()
         == "+-----+---------------+-----+-----+-----+-----+------+------+\n| Ft# | Label or Note | Dir | Sta | End | Len | type | orf? |\n+-----+---------------+-----+-----+-----+-----+------+------+\n|   0 | L:ft2         | --> | 2   | 4   |   2 | misc |  no  |\n+-----+---------------+-----+-----+-----+-----+------+------+"
     )
     a.features[0].qualifiers
     del a.features[0].qualifiers["label"]
     assert (
-        a.list_features()
+        a.list_features().get_string()
         == "+-----+---------------+-----+-----+-----+-----+------+------+\n| Ft# | Label or Note | Dir | Sta | End | Len | type | orf? |\n+-----+---------------+-----+-----+-----+-----+------+------+\n|   0 | nd            | --> | 2   | 4   |   2 | misc |  no  |\n+-----+---------------+-----+-----+-----+-----+------+------+"
     )
     a.features[0].qualifiers["note"] = ["AwesomeFeature"]
     assert (
-        a.list_features()
+        a.list_features().get_string()
         == "+-----+------------------+-----+-----+-----+-----+------+------+\n| Ft# | Label or Note    | Dir | Sta | End | Len | type | orf? |\n+-----+------------------+-----+-----+-----+-----+------+------+\n|   0 | N:AwesomeFeature | --> | 2   | 4   |   2 | misc |  no  |\n+-----+------------------+-----+-----+-----+-----+------+------+"
     )
 
@@ -259,7 +259,7 @@ def test_seqrecord():
     assert obj.features[0].qualifiers["ApEinfo_fwdcolor"] == ["#66ffa3"]
     assert obj.features[0].qualifiers["ApEinfo_revcolor"] == ["#66ffff"]
 
-    assert obj.gc() == 6.7
+    assert obj.gc() == 0.067
 
     repr(
         obj
@@ -304,7 +304,7 @@ def test_seqrecord():
         "+-----+---------------+-----+-----+-----+-----+------+------+"
     )
 
-    assert obj.list_features() == lf
+    assert obj.list_features().get_string() == lf
 
     exft = obj.extract_feature(0)
 
