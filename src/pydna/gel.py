@@ -14,20 +14,24 @@ from PIL import ImageDraw as _ImageDraw
 import numpy as _np
 import math as _math
 from scipy.interpolate import CubicSpline as _CubicSpline
-from pydna.ladders import PennStateLadder as _PennStateLadder
+from pydna.ladders import GeneRuler_1kb_plus as _mwstd
 
 
 interpolator = _CubicSpline(
-    [int(bp) for bp in ("500 750 1000 1500 2000"
-                        " 3000 4000 5000 7750 10000").split()],
-    [int(px) for px in "366 296 246 183 146 104 84 70 50 41".split()],
+    [len(fr) for fr in _mwstd[::-1]],
+    [fr.rf for fr in _mwstd[::-1]],
     bc_type="natural",
     extrapolate=False,)
 
 
+# interpolator = _CubicSpline(
+#     [int(bp) for bp in ],
+#     [int(px) for px in "366 296 246 183 146 104 84 70 50 41".split()],
+#     bc_type="natural",
+#     extrapolate=False,)
 
 
-def gel(samples=[_PennStateLadder, ],
+def gel(samples=[_mwstd, ],
         gel_length=600,
         margin=50,
         interpolator=interpolator):
@@ -84,10 +88,6 @@ def gel(samples=[_PennStateLadder, ],
                            fill=(intensity,
                                  intensity,
                                  intensity))
-        draw.rectangle((x1, 5, x2, start),
-                       fill=(0, 0, 0),
-                       outline=(256, 256, 256),
-                       width=1)
 
     return image
 
