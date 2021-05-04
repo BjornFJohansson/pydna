@@ -39,16 +39,10 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 try:
     from IPython.display import display as _display
 except ImportError:
-
-    def _display_html(item):
+    def _display_html(item, raw=None):
         return item
-
-    #def _HTML(item):
-    #    return item
-
 else:
     from IPython.display import display_html as _display_html
-    #from IPython.display import HTML as _HTML
 
 
 class Dseqrecord(_SeqRecord):
@@ -952,6 +946,22 @@ class Dseqrecord(_SeqRecord):
             [len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]
         )  # flatten
 
+
+    def cas9(self, RNA:str):
+        """docstring."""
+        frags = []
+        for target in (self.seq._data, self.seq.rc()._data):
+            cuts=[0]
+            for m in _re.finditer(RNA, target):
+                cuts.append(m.start()+17)
+            cuts.append(self.seq.length)
+            fragments = []
+            for x,y in zip(cuts,cuts[1:]):
+                fragments.append(self[x:y])
+            frags.append(fragments)
+        return frags
+
+
     def reverse_complement(self):
         """Returns the reverse complement.
 
@@ -1280,6 +1290,19 @@ class Dseqrecord(_SeqRecord):
         lower.seq = lower.seq.lower()
         return lower
 
+    def orfs(self, minsize=30):
+        orf = _re.compile(f"ATG(?:...){{{minsize},}}?(?:TAG|TAA|TGA)", flags=_re.IGNORECASE)
+        start = 0
+        matches = []
+        s = self.seq._data
+        while True:
+            match = orf.search(s, pos=start)
+            if match:
+                matches.append(slice(match.start(), match.end()))
+                start=start + match.start() + 1
+            else:
+                break
+        return sorted([self[sl] for sl in matches], key=len, reverse=True)
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")
