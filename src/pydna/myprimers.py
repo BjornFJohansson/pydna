@@ -78,7 +78,7 @@ def check_primer_list(primerlist: list):
 
     defined = [p for p in pl if set(p.seq.lower()) != set("n")]
 
-    msg += f"{len(pl) - len(defined)} primer(s) without sequence (N)"
+    msg += f"{len(pl) - len(defined)} primer(s) without sequence (N)\n"
 
     for i, p in enumerate(pl):
         if not p.name.startswith(str(i)):
