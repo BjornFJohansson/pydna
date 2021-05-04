@@ -19,18 +19,29 @@ from pydna.seqfeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
+
+from pydna.codon import weights as _weights
+from pydna.codon import rare_codons as _rare_codons
+from pydna.codon import start as _start
+from pydna.codon import stop as _stop
+from pydna.codon import n_end as _n_end
+
+from Bio.SeqUtils import seq3 as _seq3
+
 from Bio.Data.CodonTable import TranslationError as _TranslationError
 from Bio.SeqUtils import GC as _GC
 from Bio.SeqRecord import SeqRecord as _SeqRecord
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
 from Bio.Seq import Seq as _Seq
-from prettytable import PrettyTable as _PrettyTable
-import os as _os
+from pydna._pretty import PrettyTable as _PrettyTable
+
 import re as _re
 import pickle as _pickle
+from copy import copy as _copy
 
 from pydna import _PydnaWarning
 from warnings import warn as _warn
+from CAI import CAI as _CAI
 
 import logging as _logging
 
@@ -350,7 +361,7 @@ class SeqRecord(_SeqRecord):
                     ],
                 ]
             )
-        return _pretty_str(x)
+        return x
 
     def extract_feature(self, n):
         """Extract feature and return a new SeqRecord object.
@@ -396,7 +407,8 @@ class SeqRecord(_SeqRecord):
         return sorted(self.features, key=lambda x: x.location.start)
 
     def stamp(self):
-        """Adds a SEGUID or cSEGUID checksum to the description property.
+        """Add a SEGUID or cSEGUID checksum to the description property.
+
         This will show in the genbank format.
 
         For linear sequences:
@@ -411,17 +423,13 @@ class SeqRecord(_SeqRecord):
 
         Examples
         --------
-
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("aaa")
         >>> a.stamp()
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
         >>> a.description
         'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-
-
         """
-
         try:
             blunt = self.seq.isblunt()
         except AttributeError:
@@ -462,7 +470,8 @@ class SeqRecord(_SeqRecord):
         return _pretty_str("{}_{}".format(algorithm, chksum))
 
     def seguid(self):
-        """Returns the url safe SEGUID [#]_ for the sequence.
+        """Return the url safe SEGUID [#]_ for the sequence.
+
         This checksum is the same as seguid but with base64.urlsafe
         encoding [#]_ instead of the normal base 64. This means that
         the characters + and / are replaced with - and _ so that
@@ -477,18 +486,19 @@ class SeqRecord(_SeqRecord):
 
         References
         ----------
-
-        .. [#] http://wiki.christophchamp.com/index.php/SEGUID"""
+        .. [#] http://wiki.christophchamp.com/index.php/SEGUID
+        """
         return _seg(str(self.seq))
 
     def lcs(self, other, *args, limit=25, **kwargs):
-        """Returns the longest common substring between the sequence
+        """Return the longest common substring between the sequence.
+
         and another sequence (other). The other sequence can be a string,
         Seq, SeqRecord, Dseq or DseqRecord.
-
         The method returns a SeqFeature with type "read" as this method
         is mostly used to map sequence reads to the sequence. This can be
         changed by passing a type as keyword with some other string value.
+
         Examples
         --------
         >>> from pydna.seqrecord import SeqRecord
@@ -504,7 +514,6 @@ class SeqRecord(_SeqRecord):
         SeqFeature(None)
 
         """
-
         # longest_common_substring
         # https://biopython.org/wiki/ABI_traces
         if hasattr(other, "seq"):
@@ -518,7 +527,7 @@ class SeqRecord(_SeqRecord):
 
         olaps = _common_sub_strings(str(self.seq).lower(),
                                     r,
-                                    limit = limit or 25)
+                                    limit=limit or 25)
 
         try:
             start_in_self, start_in_other, length = olaps.pop(0)
@@ -538,11 +547,79 @@ class SeqRecord(_SeqRecord):
             )
         return result
 
+
     def gc(self):
-        """Returns GC content"""
-        return round(_GC(str(self.seq)), 1)
+        """Return GC content."""
+        return round(_GC(str(self.seq))/100.0, 3)
+
+    def cai(self, organism="sce"):
+        """docstring."""
+        return round(_CAI(str(self.seq).upper(),
+                     weights=_weights[organism]), 3)
+
+    def rarecodons(self, organism="sce"):
+        """docstring."""
+        rare = _rare_codons[organism]
+        s = str(self.seq).upper()
+        sfs = []
+        for i in range(0, len(self)//3):
+            x, y = i*3, i*3+3
+            trip = s[x:y]
+            if trip in rare:
+                sfs.append(_SeqFeature(
+                           _FeatureLocation(x, y),
+                           type=f"rare_codon_{organism}",
+                           qualifiers={"label": trip}))
+        return sfs
+
+    def startcodon(self, organism="sce"):
+        """docstring."""
+        return _start[organism].get(str(self.seq)[:3].upper())
+
+    def stopcodon(self, organism="sce"):
+        """docstring."""
+        return _stop[organism].get(str(self.seq)[-3:].upper())
+
+    def express(self, organism="sce"):
+        """docstring."""
+        x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
+                          "n-end"]+_rare_codons[organism]+["rare"])
+        val = []
+        val.append(f"{str(self.seq)[:3].upper()}..."
+                   f"{str(self.seq)[-3:].upper()}")
+        val.append(len(self)/3)
+        val.append(self.cai(organism))
+        val.append(self.gc())
+        val.append(self.startcodon())
+        val.append(self.stopcodon())
+        val.append(_n_end[organism].get(_seq3(self[3:6].seq.translate())))
+        s = str(self.seq).upper()
+        trps = [s[i*3:i*3+3] for i in range(0, len(s)//3)]
+        tot = 0
+        for cdn in _rare_codons[organism]:
+            cnt = trps.count(cdn)
+            tot += cnt
+            val.append(cnt)
+        val.append(round(tot/len(trps),3))
+        x.add_row(val)
+        return x
+
+
+
+
+#  _weights
+# _rare_codons
+#  _start
+# _stop
+# _n_end
+
+
+    def copy(self):
+        """docstring."""
+        return _copy(self)
 
     def __lt__(self, other):
+        """docstring."""
         try:
             return str(self.seq) < str(other.seq)
         except AttributeError:
@@ -550,6 +627,7 @@ class SeqRecord(_SeqRecord):
             return NotImplemented
 
     def __gt__(self, other):
+        """docstring."""
         try:
             return str(self.seq) > str(other.seq)
         except AttributeError:
@@ -557,38 +635,45 @@ class SeqRecord(_SeqRecord):
             return NotImplemented
 
     def __eq__(self, other):
+        """docstring."""
         try:
             if (self.seq == other.seq and
-                str(self.__dict__) == str(other.__dict__)):
+               str(self.__dict__) == str(other.__dict__)):
                 return True
         except AttributeError:
             pass
         return False
 
     def __ne__(self, other):
+        """docstring."""
         return not self.__eq__(other)
 
     def __hash__(self):
-        """__hash__ must be based on __eq__"""
+        """__hash__ must be based on __eq__."""
         return hash((str(self.seq).lower(),
                      str(tuple(sorted(self.__dict__.items())))))
 
     def __str__(self):
+        """docstring."""
         return _pretty_str(super().__str__())
 
     def __repr__(self):
+        """docstring."""
         return _pretty_str(super().__repr__())
 
     def __format__(self, format):
+        """docstring."""
         return _pretty_str(super().__format__(format))
 
     def __add__(self, other):
+        """docstring."""
         answer = super().__add__(other)
         if answer.name == "<unknown name>":
             answer.name = "name"
         return answer
 
     def __getitem__(self, index):
+        """docstring."""
         from pydna.utils import (
             identifier_from_string as _identifier_from_string,
         )  # TODO: clean this up
