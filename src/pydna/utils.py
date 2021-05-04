@@ -34,20 +34,6 @@ _ambiguous_dna_complement.update({"U": "A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
 
 
-# Zhang, S. P., Zubay, G., & Goldman, E. (1991).
-# Low-usage codons in Escherichia
-# coli, yeast, fruit fly and primates. Gene, 105(1), 61–72.
-# https://www.embl.de/pepcore/pepcore_services/cloning/choice_expression_systems/codons8
-
-rare_codons = {
-    "E. coli": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC", "TCG"],
-    "S. cerevisiae": ["AGG", "CGA", "CGG", "CGC", "CCG", "CTC", "GCG", "ACG"],
-    "D. melanogaster": ["AGA", "ATA", "CGA", "CGG", "TTA", "GGG", "AGT",
-                        "TGT"],
-    "Primates": ["CGA", "CGG", "TCG", "CGC", "CCG", "GCG", "ACG", "CGT"],
-}
-
-
 def open_folder(pth):
     """docstring."""
     if _sys.platform == "win32":
