@@ -208,7 +208,6 @@ class Anneal(object, metaclass=_Memoize):
         taca..gcac
         atgt..cgtg
         >>> print(amplicon.program())
-        <BLANKLINE>
         |95°C|95°C               |    |tmf:59.5
         |____|_____          72°C|72°C|tmr:59.7
         |5min|30s  \ 47.7°C _____|____|30s/kb
