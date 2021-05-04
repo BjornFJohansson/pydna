@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from setuptools import setup
+from setuptools import Command
+from setuptools import find_packages
+from os import path
+
 # Read __author__, __email__. from __init__.py
 __author__ = "__author__"
 __email__ = "__email__"
 for line in open("src/pydna/__init__.py"):
     if line.startswith("__author__") or line.startswith("__email__"):
         exec(line.strip())
-
-from setuptools import setup
-from setuptools import Command
-from setuptools import find_packages
-
-from os import path
 
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
@@ -61,6 +60,8 @@ setup(
         "prettytable",
         "pyparsing",
         "requests",
+        "CAI",
+        "regex"
     ],
     keywords="bioinformatics",
     classifiers=[
