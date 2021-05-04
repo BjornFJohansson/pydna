@@ -195,10 +195,10 @@ def program(amplicon, tm=tm_default, ta=ta_default):
             ),
             tmf=tm(amplicon.forward_primer.footprint),
             tmr=tm(amplicon.reverse_primer.footprint),
-            GC_prod=int(amplicon.gc()),
+            GC_prod=int(amplicon.gc()*100),
             *map(int, divmod(extension_time_taq, 60)),
         )
-    )
+    ).strip()
 
     return _pretty_str(f)
 
@@ -256,7 +256,7 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
                 rate=PfuSso7d_extension_rate,
                 tmf=tmf,
                 tmr=tmr,
-                GC_prod=int(amplicon.gc()),
+                GC_prod=int(amplicon.gc()*100),
                 size=len(amplicon.seq),
                 *map(int, divmod(extension_time_PfuSso7d, 60)),
             )
@@ -284,7 +284,7 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
                 ),
                 tmf=tmf,
                 tmr=tmr,
-                GC_prod=int(amplicon.gc()),
+                GC_prod=int(amplicon.gc()*100),
                 *map(int, divmod(extension_time_PfuSso7d, 60)),
             )
         )
