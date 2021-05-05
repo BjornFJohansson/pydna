@@ -11,6 +11,8 @@ dependencies:
 - networkx
 - prettytable
 - pyparsing
+- CAI
+- regex
 
 - setuptools
 - twine
