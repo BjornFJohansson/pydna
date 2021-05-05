@@ -10,6 +10,8 @@ dependencies:
 - prettytable
 - networkx
 - pyparsing
+- CAI
+- regex
 
 - requests
 - requests-mock
