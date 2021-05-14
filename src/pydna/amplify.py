@@ -172,22 +172,23 @@ class Anneal(object, metaclass=_Memoize):
         >>> from pydna.readers import read
         >>> from pydna.amplify import Anneal
         >>> from pydna.dseqrecord import Dseqrecord as Ds
-        >>> t = Ds("tacactcaccgtctatcattatcta"
+        >>> t = Ds("tacactcaccgtctatcattatcta" +
+        ...        "gatc"*240 +
         ...        "ctatcgactgtatcatctgatagcac")
         >>> from Bio.SeqRecord import SeqRecord
         >>> p1 = read(">p1\ntacactcaccgtctatcattatc", ds = False)
         >>> p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
         >>> ann = Anneal((p1, p2), t)
         >>> print(ann.report())
-        Template name 51 nt linear:
+        Template name 1011 nt linear:
         p1 anneals forward (--->) at 23
-        p2 anneals reverse (<---) at 29
+        p2 anneals reverse (<---) at 989
         >>> ann.products
-        [Amplicon(51)]
+        [Amplicon(1011)]
         >>> amplicon_list = ann.products
         >>> amplicon = amplicon_list.pop()
         >>> amplicon
-        Amplicon(51)
+        Amplicon(1011)
         >>> print(amplicon.figure())
         5tacactcaccgtctatcattatc...cgactgtatcatctgatagcac3
                                    ||||||||||||||||||||||
@@ -198,21 +199,21 @@ class Anneal(object, metaclass=_Memoize):
         >>> print(amplicon)
         Dseqrecord
         circular: False
-        size: 51
-        ID: 51bp U96-TO06Y6pFs74SQx8M1IVTBiY
-        Name: 51bp_PCR_prod
+        size: 1011
+        ID: 1011bp 8SyDnG-azV61tx-z8PalCWZoVDo
+        Name: 1011bp_PCR_prod
         Description: pcr product_p1_p2
         Number of features: 2
         /molecule_type=DNA
-        Dseq(-51)
+        Dseq(-1011)
         taca..gcac
         atgt..cgtg
         >>> print(amplicon.program())
         |95°C|95°C               |    |tmf:59.5
         |____|_____          72°C|72°C|tmr:59.7
-        |5min|30s  \ 47.7°C _____|____|30s/kb
-        |    |      \______/ 0: 1|5min|GC 39%
-        |    |       30s         |    |51bp
+        |5min|30s  \ 58.5°C _____|____|60s/kb
+        |    |      \______/ 1:00|5min|GC 49%
+        |    |       30s         |    |1011bp
         >>>
 
         """

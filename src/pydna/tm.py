@@ -162,15 +162,13 @@ def program(amplicon, tm=tm_default, ta=ta_default):
 
      |95°C|95°C               |    |tmf:59.5
      |____|_____          72°C|72°C|tmr:59.7
-     |5min|30s  \ 59.1°C _____|____|30s/kb
+     |5min|30s  \ 59.1°C _____|____|60s/kb
      |    |      \______/ 0:32|5min|GC 51%
      |    |       30s         |    |1051bp
 
     """
 
-    # Taq polymerase extension rate is set to 30 nt/s
-    # see https://www.thermofisher.com/pt/en/home/life-science/pcr/pcr-enzymes-master-mixes/taq-dna-polymerase-enzymes/taq-dna-polymerase.html
-    taq_extension_rate = 30  # seconds/kB PCR product length
+    taq_extension_rate = 60  # seconds/kB PCR product length (1min/kb)
     extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000)  # seconds
 
     f = _textwrap.dedent(
@@ -178,7 +176,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
                             |95°C|95°C               |    |tmf:{tmf:.1f}
                             |____|_____          72°C|72°C|tmr:{tmr:.1f}
                             |5min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                            |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
+                            |    |      \______/{0:2}:{1:0<2}|5min|GC {GC_prod}%
                             |    |       30s         |    |{size}bp
                             """[
             1:-1
