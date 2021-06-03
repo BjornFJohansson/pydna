@@ -17,34 +17,36 @@ from scipy.interpolate import CubicSpline as _CubicSpline
 from pydna.ladders import GeneRuler_1kb_plus as _mwstd
 
 
-# interpolator = _CubicSpline(
-#     [len(fr) for fr in _mwstd[::-1]],
-#     [fr.rf for fr in _mwstd[::-1]],
-#     bc_type="natural",
-#     extrapolate=False,)
+def interpolator(mwstd):
+    """docstring."""
+    interpolator = _CubicSpline(
+        [len(fr) for fr in mwstd[::-1]],
+        [fr.rf for fr in mwstd[::-1]],
+        bc_type="natural",
+        extrapolate=False,
+    )
+    interpolator.mwstd = mwstd
+    return interpolator
 
-def interpolator(mwstd=_mwstd):
-    return _CubicSpline([len(fr) for fr in mwstd[::-1]],
-                        [fr.rf for fr in mwstd[::-1]],
-                        bc_type="natural",
-                        extrapolate=False,)
 
-
-def gel(samples=[_mwstd, ],
-        gel_length=600,
-        margin=50,
-        interpolator=interpolator()):
+def gel(
+    samples=None,
+    gel_length=600,
+    margin=50,
+    interpolator=interpolator(mwstd=_mwstd),
+):
     """docstring."""
     max_intensity = 256
     lane_width = 50
     lanesep = 10
     start = 10
+    samples = samples or [interpolator.mwstd]
     width = int(60 + (lane_width + lanesep) * len(samples))
     lanes = _np.zeros((len(samples), gel_length), dtype=_np.int)
     image = _Image.new("RGB", (width, gel_length), "#ddd")
     draw = _ImageDraw.Draw(image)
     draw.rectangle((0, 0, (width, gel_length)), fill=(0, 0, 0))
-    scale = (gel_length-margin)/interpolator(min(interpolator.x))
+    scale = (gel_length - margin) / interpolator(min(interpolator.x))
 
     for labelsource in samples[0]:
         peak_centre = (interpolator(len(labelsource))) * scale - 5 + start
@@ -65,9 +67,13 @@ def gel(samples=[_mwstd, ],
             for i in range(max_spread, 0, -1):
                 y1 = peak_centre - i
                 y2 = peak_centre + i
-                intensity = height * _math.exp(-float(
-                    ((y1 - peak_centre) ** 2)) / (2 * (band_spread**2))
-                    ) * max_intensity
+                intensity = (
+                    height
+                    * _math.exp(
+                        -float(((y1 - peak_centre) ** 2)) / (2 * (band_spread ** 2))
+                    )
+                    * max_intensity
+                )
                 for y in range(int(y1), int(y2)):
                     lanes[lane_number][y] += intensity
 
@@ -78,15 +84,12 @@ def gel(samples=[_mwstd, ],
             lanes[i] = _np.divide(lanes[i], max_intensity)
 
     for i, lane in enumerate(lanes):
-        x1 = 50 + i * (lane_width+lanesep)
+        x1 = 50 + i * (lane_width + lanesep)
         x2 = x1 + lane_width
         for y, intensity in enumerate(lane):
             y1 = y
             y2 = y + 1
-            draw.rectangle((x1, y1, x2, y2),
-                           fill=(intensity,
-                                 intensity,
-                                 intensity))
+            draw.rectangle((x1, y1, x2, y2), fill=(intensity, intensity, intensity))
 
     return image
 
