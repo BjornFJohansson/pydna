@@ -17,24 +17,23 @@ from scipy.interpolate import CubicSpline as _CubicSpline
 from pydna.ladders import GeneRuler_1kb_plus as _mwstd
 
 
-interpolator = _CubicSpline(
-    [len(fr) for fr in _mwstd[::-1]],
-    [fr.rf for fr in _mwstd[::-1]],
-    bc_type="natural",
-    extrapolate=False,)
-
-
 # interpolator = _CubicSpline(
-#     [int(bp) for bp in ],
-#     [int(px) for px in "366 296 246 183 146 104 84 70 50 41".split()],
+#     [len(fr) for fr in _mwstd[::-1]],
+#     [fr.rf for fr in _mwstd[::-1]],
 #     bc_type="natural",
 #     extrapolate=False,)
+
+def interpolator(mwstd=_mwstd):
+    return _CubicSpline([len(fr) for fr in mwstd[::-1]],
+                        [fr.rf for fr in mwstd[::-1]],
+                        bc_type="natural",
+                        extrapolate=False,)
 
 
 def gel(samples=[_mwstd, ],
         gel_length=600,
         margin=50,
-        interpolator=interpolator):
+        interpolator=interpolator()):
     """docstring."""
     max_intensity = 256
     lane_width = 50
