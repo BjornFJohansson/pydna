@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 # Copyright 2013-2020 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 """Provides the Dseq class for handling double stranded DNA sequences.
-Dseq is a subclass of :class:`Bio.Seq.Seq`. The Dseq class
-is mostly useful as a part of the :class:`pydna.dseqrecord.Dseqrecord` class which
-can hold more meta data.
 
-The Dseq class support the notion of circular and linear DNA topology."""
+Dseq is a subclass of :class:`Bio.Seq.Seq`. The Dseq class
+is mostly useful as a part of the :class:`pydna.dseqrecord.Dseqrecord` class
+which can hold more meta data.
+
+The Dseq class support the notion of circular and linear DNA topology.
+"""
 
 
 import copy as _copy
@@ -33,13 +36,13 @@ from Bio.Restriction import CommOnly
 
 
 class Dseq(_Seq):
-    """Dseq is a class designed to hold information for a double stranded
-    DNA fragment. Dseq also holds information describing the topology of
+    """Dseq holds information for a double stranded DNA fragment.
+
+    Dseq also holds information describing the topology of
     the DNA fragment (linear or circular).
 
     Parameters
     ----------
-
     watson : str
         a string representing the watson (sense) DNA strand.
 
@@ -59,7 +62,6 @@ class Dseq(_Seq):
 
     Examples
     --------
-
     Dseq is a subclass of the Biopython Seq object. It stores two
     strings representing the watson (sense) and crick(antisense) strands.
     two properties called linear and circular, and a numeric value ovhg
