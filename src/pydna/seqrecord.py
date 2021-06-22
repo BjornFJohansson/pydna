@@ -86,7 +86,7 @@ class SeqRecord(_SeqRecord):
         if not hasattr(self.seq, "transcribe"):
             self.seq = _Seq(self.seq)
 
-        self.seq._data = "".join(self.seq._data.split())  # remove whitespaces
+        self.seq._data = b"".join(self.seq._data.split())  # remove whitespaces
         # self.seq.alphabet = _generic_dna
         self.id = _pretty_str(self.id)
         self.name = _pretty_str(self.name)
@@ -488,7 +488,7 @@ class SeqRecord(_SeqRecord):
         ----------
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID
         """
-        return _seg(str(self.seq))
+        return _seg(self.seq)
 
     def lcs(self, other, *args, limit=25, **kwargs):
         """Return the longest common substring between the sequence.

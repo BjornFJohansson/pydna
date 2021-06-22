@@ -42,7 +42,7 @@ def gel(
     start = 10
     samples = samples or [interpolator.mwstd]
     width = int(60 + (lane_width + lanesep) * len(samples))
-    lanes = _np.zeros((len(samples), gel_length), dtype=_np.int)
+    lanes = _np.zeros((len(samples), gel_length), dtype=int)
     image = _Image.new("RGB", (width, gel_length), "#ddd")
     draw = _ImageDraw.Draw(image)
     draw.rectangle((0, 0, (width, gel_length)), fill=(0, 0, 0))

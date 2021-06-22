@@ -19,7 +19,7 @@ requirements:
     run:
         - python {{ python }}
         - appdirs
-        - biopython >=1.78
+        - biopython >=1.79
         - networkx
         - prettytable
         - pyparsing

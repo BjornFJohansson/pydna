@@ -256,16 +256,19 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octoca
 
 ## Minimal installation requirements
 
-Pydna is currently developed on and for Python 3.6 - 3.9. Pydna versions before 1.0.0 were compatible with python 2.7 only.
+Pydna is currently developed on and for Python 3.7, 3.8 and 3.9. Pydna versions before 1.0.0 were compatible with python 2.7 only.
 The list below is the minimal requirements for installing pydna. Biopython has c-extensions, but the other modules are pure python.
 
-- [Python 3.6, 3.7, 3.8 or 3.9](http://www.python.org)
-- [biopython >= 1.78](http://pypi.python.org/pypi/biopython)
+- [Python 3.7, 3.8 or 3.9](http://www.python.org)
+- [biopython >= 1.79](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing)
 - [appdirs >=1.3.0](https://pypi.python.org/pypi/appdirs)
 - [prettytable>=0.7.2](https://pypi.python.org/pypi/PrettyTable)
 - [requests](https://pypi.org/project/requests)
+- [pydrive2](https://pypi.org/project/pydrive2)
+- [CAI](https://pypi.org/project/CAI)
+- [regex](https://pypi.org/project/regex)
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
@@ -326,7 +329,7 @@ There are three github actions associated with this package:
 The `pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
 This workflow run tests, doctests and a series of Jupyter notebooks using pytest.
 
-The two other workflows build a setuptools wheel and packages for python 3.6, 3.7 and 3.8
+The two other workflows build a setuptools wheel and packages for Python 3.7, 3.8 and 3.9
 on Linux, Windows and macOS.  These are triggered by publishing a github release manually
 from the github interface.
 

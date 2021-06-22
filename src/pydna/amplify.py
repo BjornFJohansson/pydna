@@ -108,7 +108,7 @@ def _annealing_positions(primer, template, limit=15):
         length = len(tail)
         results = []
         for match_start in positions:
-            tm = template[match_start + limit : match_start + limit + length]
+            tm = template[match_start + limit: match_start + limit + length]
             footprint = len(
                 list(
                     _itertools.takewhile(
@@ -211,8 +211,8 @@ class Anneal(object, metaclass=_Memoize):
         >>> print(amplicon.program())
         |95°C|95°C               |    |tmf:59.5
         |____|_____          72°C|72°C|tmr:59.7
-        |5min|30s  \ 58.5°C _____|____|60s/kb
-        |    |      \______/ 1:00|5min|GC 49%
+        |5min|30s  \ 58.5°C _____|____|45s/kb
+        |    |      \______/ 0:45|5min|GC 49%
         |    |       30s         |    |1011bp
         >>>
 

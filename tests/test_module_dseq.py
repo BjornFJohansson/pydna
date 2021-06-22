@@ -199,9 +199,9 @@ def test_dseq():
 
     obj = Dseq("atg", "cat", 0, circular=False)
 
-    assert obj[1:2]._data == "atg"[1:2]
+    assert obj[1:2]._data == b"atg"[1:2]
 
-    assert obj[2:1]._data == "atg"[2:1]
+    assert obj[2:1]._data == b"atg"[2:1]
 
     assert obj.reverse_complement() == obj.rc() == Dseq("cat", "atg", 0)
 
@@ -211,9 +211,9 @@ def test_dseq():
 
     assert obj[:] == Dseq("atg", "cat", 0, circular=False)
 
-    assert obj[1:2]._data == "atg"[1:2]
+    assert obj[1:2]._data == b"atg"[1:2]
 
-    assert obj[2:1]._data == "ga"
+    assert obj[2:1]._data == b"ga"
 
     obj = Dseq("G", "", 0)
     assert obj.five_prime_end() == ("5'", "g")
@@ -221,7 +221,7 @@ def test_dseq():
     assert obj.five_prime_end() == ("3'", "c")
 
     obj = Dseq("ccGGATCC", "aaggatcc", -2)
-    assert obj._data == "ccGGATCCtt"
+    assert obj._data == b"ccGGATCCtt"
     assert str(obj.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -275,8 +275,8 @@ def test_dseq():
     assert Dseq("GGATCC", "GGATCC").t4("gat") == Dseq("ggat", "ggat", ovhg=-2)
 
     a2 = Dseq("ccGGATCCaa", "ggatcc", -2)
-    assert a2._data == "ccGGATCCaa"
-    assert a2._data == "ccGGATCCaa"
+    assert a2._data == b"ccGGATCCaa"
+    assert a2._data == b"ccGGATCCaa"
     assert str(a2.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -288,8 +288,8 @@ def test_dseq():
     assert repr(a2) == rpr
 
     a3 = Dseq("ccGGATCC", "ggatcc", -2)
-    assert a3._data == "ccGGATCC"
-    assert a3._data == "ccGGATCC"
+    assert a3._data == b"ccGGATCC"
+    assert a3._data == b"ccGGATCC"
     assert str(a3.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -301,8 +301,8 @@ def test_dseq():
     assert repr(a3) == rpr
 
     b = Dseq("GGATCC", "aaggatcccc", 2)
-    assert b._data == "ggGGATCCtt"
-    assert b._data == "ggGGATCCtt"
+    assert b._data == b"ggGGATCCtt"
+    assert b._data == b"ggGGATCCtt"
     assert str(b.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -314,8 +314,8 @@ def test_dseq():
     assert repr(b) == rpr
 
     b2 = Dseq("GGATCCaa", "ggatcccc", 2)
-    assert b2._data == "ggGGATCCaa"
-    assert b2._data == "ggGGATCCaa"
+    assert b2._data == b"ggGGATCCaa"
+    assert b2._data == b"ggGGATCCaa"
     assert str(b2.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -329,8 +329,8 @@ def test_dseq():
     assert b2.seguid() == "hPNrcQ0sluXyfu4XuUh1trsnygc"
 
     b3 = Dseq("GGATCC", "ggatcccc", 2)
-    assert b3._data == "ggGGATCC"
-    assert b3._data == "ggGGATCC"
+    assert b3._data == b"ggGGATCC"
+    assert b3._data == b"ggGGATCC"
     assert str(b3.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -342,8 +342,8 @@ def test_dseq():
     assert repr(b3) == rpr
 
     c = Dseq("GGATCCaaa", "ggatcc", 0)
-    assert c._data == "GGATCCaaa"
-    assert c._data == "GGATCCaaa"
+    assert c._data == b"GGATCCaaa"
+    assert c._data == b"GGATCCaaa"
     assert str(c.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """
@@ -355,8 +355,8 @@ def test_dseq():
     assert repr(c) == rpr
 
     d = Dseq("GGATCC", "aaaggatcc", 0)
-    assert d._data == "GGATCCttt"
-    assert d._data == "GGATCCttt"
+    assert d._data == b"GGATCCttt"
+    assert d._data == b"GGATCCttt"
     assert str(d.mung()) == "GGATCC"
     rpr = textwrap.dedent(
         """

@@ -23,6 +23,7 @@ import sys as _sys
 import math as _math
 
 from Bio.Seq import Seq as _Seq
+from Bio.Seq import _translate_str
 
 # from Bio.Alphabet import generic_dna as _generic_dna
 from pydna._pretty import pretty_str as _pretty_str
@@ -306,7 +307,7 @@ class Dseq(_Seq):
             if ovhg is None:
                 crick = _rc(watson)
                 ovhg = 0
-                self._data = watson
+                self._data = bytes(watson, encoding="ASCII")
             else:  # ovhg given, but no crick strand
                 raise ValueError("ovhg defined without crick strand!")
         else:  # crick strand given
@@ -333,42 +334,42 @@ class Dseq(_Seq):
                 sns = (ovhg * " ") + _pretty_str(watson)
                 asn = (-ovhg * " ") + _pretty_str(_rc(crick))
 
-                self._data = "".join(
+                self._data = bytes("".join(
                     [
                         a.strip() or b.strip()
                         for a, b in _itertools.zip_longest(sns, asn, fillvalue=" ")
                     ]
-                )
+                ), encoding="ASCII")
 
             else:  # ovhg given
                 if ovhg == 0:
                     if len(watson) == len(crick):
-                        self._data = watson
+                        self._data = bytes(watson, encoding="ASCII")
                     elif len(watson) > len(crick):
-                        self._data = watson
+                        self._data = bytes(watson, encoding="ASCII")
                     else:
-                        self._data = watson + _rc(crick[: len(crick) - len(watson)])
+                        self._data = bytes(watson + _rc(crick[: len(crick) - len(watson)]),encoding="ASCII")
                 elif ovhg > 0:
                     if ovhg + len(watson) > len(crick):
-                        self._data = _rc(crick[-ovhg:]) + watson
+                        self._data = bytes(_rc(crick[-ovhg:]) + watson, encoding="ASCII")
                     else:
-                        self._data = (
+                        self._data = bytes(
                             _rc(crick[-ovhg:])
                             + watson
-                            + _rc(crick[: len(crick) - ovhg - len(watson)])
-                        )
+                            + _rc(crick[: len(crick) - ovhg - len(watson)]), 
+                            encoding="ASCII")
                 else:  # ovhg < 0
                     if -ovhg + len(crick) > len(watson):
-                        self._data = watson + _rc(
+                        self._data = bytes(watson + _rc(
                             crick[: -ovhg + len(crick) - len(watson)]
-                        )
+                        ), encoding="ASCII")
                     else:
-                        self._data = watson
+                        self._data = bytes(watson, encoding="ASCII")
 
         self._circular = (
             bool(circular)
             and bool(linear) ^ bool(circular)
-            or linear == False
+            or linear is False
             and circular is None
         )
         self._linear = not self._circular
@@ -378,7 +379,7 @@ class Dseq(_Seq):
         self.length = len(self._data)
         self._ovhg = ovhg
         self.pos = pos
-        self._data = self._data
+        # self._data = self._data
         # self.alphabet = _generic_dna
 
     @classmethod
@@ -391,11 +392,12 @@ class Dseq(_Seq):
         obj._linear = linear
         obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
         obj.pos = pos
+        wb = bytes(watson, encoding="ASCII")
+        cb = bytes(crick, encoding="ASCII")
         obj._data = (
-            _rc(crick[-max(0, ovhg) or len(crick) :])
-            + watson
-            + _rc(crick[: max(0, len(crick) - ovhg - len(watson))])
-        )
+            _rc(cb[-max(0, ovhg) or len(cb) :])
+            + wb
+            + _rc(cb[: max(0, len(cb) - ovhg - len(wb))]))
         # obj.alphabet = _generic_dna
         return obj
 
@@ -409,7 +411,7 @@ class Dseq(_Seq):
         obj._linear = linear
         obj.length = len(dna)
         obj.pos = 0
-        obj._data = dna
+        obj._data = bytes(dna, encoding="ASCII")
         # obj.alphabet = _generic_dna
         return obj
 
@@ -965,9 +967,10 @@ class Dseq(_Seq):
         other_type, other_tail = other.five_prime_end()
 
         if self_type == other_type and str(self_tail) == str(_rc(other_tail)):
-
             answer = Dseq.quick(
-                self.watson + other.watson, other.crick + self.crick, self._ovhg
+                self.watson + other.watson,
+                other.crick + self.crick,
+                self._ovhg
             )
         elif not self:
             answer = _copy.copy(other)
@@ -1076,6 +1079,12 @@ class Dseq(_Seq):
         crick, ovhg = self._fill_in_five_prime(nucleotides)
         watson = self._fill_in_three_prime(nucleotides)
         return Dseq(watson, crick, ovhg)
+    
+    def translate(self, table="Standard", stop_symbol="*", 
+                  to_stop=False, cds=False, gap="-"):
+        return _Seq(_translate_str(str(self), table, stop_symbol, to_stop, cds, gap=gap))
+        
+        
 
     def mung(self):
         """
@@ -1346,7 +1355,7 @@ class Dseq(_Seq):
         if self.linear:
             dsseq = self.mung()
         else:
-            dsseq = Dseq.from_string(self._data, linear=True, circular=False)
+            dsseq = Dseq.from_string(self._data.decode("ASCII"), linear=True, circular=False)
 
         if len(enzymes) == 1 and hasattr(
             enzymes[0], "intersection"

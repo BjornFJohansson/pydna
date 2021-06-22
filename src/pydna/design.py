@@ -577,7 +577,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
     if first_fragment_length <= maxlink:
         # first fragment should be removed and added to second fragment (new first fragment) forward primer
-        f[1].forward_primer = f[0].seq._data + f[1].forward_primer
+        f[1].forward_primer = f[0].seq._data.decode("ASCII") + f[1].forward_primer
         _module_logger.debug(
             "first fragment removed since len(f[0]) = %s", first_fragment_length
         )
@@ -589,7 +589,7 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
     if last_fragment_length <= maxlink:
         f[-2].reverse_primer = (
-            f[-1].seq.reverse_complement()._data + f[-2].reverse_primer
+            f[-1].seq.reverse_complement()._data.decode("ASCII") + f[-2].reverse_primer
         )
         f = f[:-1]
         _module_logger.debug(
@@ -630,21 +630,21 @@ def assembly_fragments(f, overlap=35, maxlink=40):
                 )
 
                 first.reverse_primer = (
-                    secnd.seq.reverse_complement()._data[secnd_len // 2 :]
+                    secnd.seq.reverse_complement()._data.decode("ASCII")[secnd_len // 2 :]
                     + first.reverse_primer
                 )
                 third.forward_primer = (
-                    secnd.seq._data[secnd_len // 2 :] + third.forward_primer
+                    secnd.seq._data.decode("ASCII")[secnd_len // 2 :] + third.forward_primer
                 )
 
                 lnk = (
-                    third.seq.reverse_complement()._data
-                    + secnd.reverse_complement().seq._data[: secnd_len // 2]
+                    third.seq.reverse_complement()._data.decode("ASCII")
+                    + secnd.reverse_complement().seq._data.decode("ASCII")[: secnd_len // 2]
                 )[-tail_length:]
                 _module_logger.debug("1 %s", lnk)
                 first.reverse_primer = lnk + first.reverse_primer
 
-                lnk = (first.seq._data + secnd.seq._data[: secnd_len // 2])[
+                lnk = (first.seq._data.decode("ASCII") + secnd.seq._data.decode("ASCII")[: secnd_len // 2])[
                     -tail_length:
                 ]
                 _module_logger.debug("2 %s", lnk)
@@ -652,12 +652,12 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
             elif hasattr(first, "template"):
                 first.reverse_primer = (
-                    secnd.seq.reverse_complement()._data + first.reverse_primer
+                    secnd.seq.reverse_complement()._data.decode("ASCII") + first.reverse_primer
                 )
                 lnk = str(third.seq[:overlap].reverse_complement())
                 first.reverse_primer = lnk + first.reverse_primer
             elif hasattr(third, "template"):
-                third.forward_primer = secnd.seq._data + third.forward_primer
+                third.forward_primer = secnd.seq._data.decode("ASCII") + third.forward_primer
                 lnk = str(first.seq[-overlap:])
                 third.forward_primer = lnk + third.forward_primer
             secnd = empty

@@ -168,8 +168,8 @@ def program(amplicon, tm=tm_default, ta=ta_default):
 
     """
 
-    taq_extension_rate = 60  # seconds/kB PCR product length (1min/kb)
-    extension_time_taq = int(taq_extension_rate * len(amplicon) / 1000)  # seconds
+    taq_extension_rate = 45  # seconds/kB PCR product length (1min/kb)
+    extension_time_taq = max(30, int(taq_extension_rate * len(amplicon) / 1000))  # seconds
 
     f = _textwrap.dedent(
         r"""
