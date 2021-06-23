@@ -40,9 +40,9 @@ class Genbank(object):
 
     >>> from pydna.genbank import Genbank
     >>> gb=Genbank("bjornjobb@gmail.com")
-    >>> rec = gb.nucleotide("AJ515731")   # <- entry from genbank
+    >>> rec = gb.nucleotide("LP002422.1")   # <- entry from genbank
     >>> print(len(rec))
-    19
+    1
     """
 
     def __init__(self, users_email: str, *args, tool="pydna", **kwargs):
