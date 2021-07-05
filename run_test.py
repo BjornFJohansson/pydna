@@ -35,7 +35,6 @@ def main():
         "--current-env",
         "--doctest-modules",
         "--capture=no",
-        "--import-mode=importlib",
         "-vvv",
     ]
 
@@ -54,7 +53,6 @@ def main():
         "--current-env",
         "--doctest-modules",
         "--capture=no",
-        "--import-mode=importlib",
         "-vvv",
     ]
 
