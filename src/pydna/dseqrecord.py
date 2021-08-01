@@ -949,10 +949,11 @@ class Dseqrecord(_SeqRecord):
 
     def cas9(self, RNA:str):
         """docstring."""
+        bRNA = bytes(RNA,"ascii")
         frags = []
         for target in (self.seq._data, self.seq.rc()._data):
             cuts=[0]
-            for m in _re.finditer(RNA, target):
+            for m in _re.finditer(bRNA, target):
                 cuts.append(m.start()+17)
             cuts.append(self.seq.length)
             fragments = []
