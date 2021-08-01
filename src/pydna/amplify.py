@@ -542,7 +542,8 @@ tatcgactgtatcatctgatagcac")
 
     # A single Amplicon object
     if len(new) == 1 and hasattr(new[0], "forward_primer"):
-        new = [new[0].forward_primer, new[0].reverse_primer, new[0]]
+        new = [new[0].forward_primer, new[0].reverse_primer, new[0].template]
+
 
     if not hasattr(new[-1].seq, "watson"):
         new[-1] = _Dseqrecord(s)
