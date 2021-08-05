@@ -10,6 +10,7 @@
 
 import math as _math
 from Bio.SeqUtils import MeltingTemp as _mt
+from Bio.SeqUtils import GC as _GC
 
 import textwrap as _textwrap
 from pydna._pretty import pretty_str as _pretty_str
@@ -109,44 +110,35 @@ def tm_dbd(
     )
 
 
-def tm_product(
-    seq,
-    check=True,
-    strict=True,
-    valueset=7,
-    userset=None,
-    Na=50,
-    K=0,
-    Tris=0,
-    Mg=0,
-    dNTPs=0,
-    saltcorr=0,
-    mismatch=True,
-    func=_mt.Tm_GC,
-):
-    return func(
-        seq,
-        check=check,
-        strict=strict,
-        valueset=valueset,
-        userset=userset,
-        Na=Na,
-        K=K,
-        Tris=Tris,
-        Mg=Mg,
-        dNTPs=dNTPs,
-        saltcorr=saltcorr,
-        mismatch=mismatch,
-    )
+def tm_product(seq: str, K=0.050):
+    """Tm calculation for the amplicon.
+
+    according to:
+
+    Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+    ing temperature for DNA amplification in vitro
+    http://www.ncbi.nlm.nih.gov/pubmed/2243783
+    """
+    tmp = 81.5 + 0.41 * _GC(seq) + 16.6 * _math.log10(K) - 675/len(seq)
+    return tmp
 
 
-def ta_default(fp, rp, seq, tm=tm_default, tm_product=tm_product):
-    # Ta calculation according to
-    # Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
-    # ing temperature for DNA amplification in vitro
-    # http://www.ncbi.nlm.nih.gov/pubmed/2243783
-    # The formula described uses the length and GC content of the product and
-    # salt concentration (monovalent cations)
+def ta_default(fp: str,
+               rp: str,
+               seq: str,
+               tm=tm_default,
+               tm_product=tm_product):
+    """Ta calculation.
+
+    according to:
+
+    Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+    ing temperature for DNA amplification in vitro
+    http://www.ncbi.nlm.nih.gov/pubmed/2243783
+
+    The formula described uses the length and GC content of the product and
+    salt concentration (monovalent cations)
+    """
     return 0.3 * min((tm(fp), tm(rp))) + 0.7 * tm_product(seq) - 14.9
 
 
@@ -187,7 +179,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
                 ta(
                     amplicon.forward_primer.footprint,
                     amplicon.reverse_primer.footprint,
-                    amplicon.seq,
+                    str(amplicon.seq),
                 ),
                 1,
             ),
