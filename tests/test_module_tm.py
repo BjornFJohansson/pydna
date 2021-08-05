@@ -22,9 +22,9 @@ def test_tms():
 
     assert tm.tm_default(primer) == pytest.approx(67.78918110181166)
     assert tm.tm_dbd(primer) == pytest.approx(62.74633103079093)
-    assert tm.tm_product(primer * 20) == pytest.approx(76.13974075026366)
+    assert tm.tm_product(primer * 20) == pytest.approx(76.27411419319003)
     assert tm.ta_default(primer, primer, primer * 20) == pytest.approx(
-        58.734572855728054
+        58.82863426577652
     )
     assert tm.ta_dbd(primer, primer, primer * 20) == pytest.approx(65.74633103079093)
     assert tm.tmbresluc(primer) == pytest.approx(63.38496307044147)
