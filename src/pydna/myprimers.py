@@ -74,6 +74,7 @@ class PrimerList(_UserList):
         else:
             lines = []
             self.path = Path(path or _os.environ["pydna_primers"])
+            self.path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.path, "a+") as f:
                 f.seek(0)
                 for line in f.readlines():

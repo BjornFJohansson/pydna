@@ -44,7 +44,7 @@ format [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/Me
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
-[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/release/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/master/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
 
 Please reference the above paper:
 
