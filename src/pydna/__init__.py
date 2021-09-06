@@ -229,7 +229,7 @@ def _missing_modules_for_gel():
     from importlib import util
 
     _missing = []
-    for _optm in ["scipy", "matplotlib", "pillow"]:
+    for _optm in ["scipy", "matplotlib", "PIL"]:
         _missing.extend([_optm] if not util.find_spec(_optm) else [])
     del importlib
     del util
@@ -240,10 +240,12 @@ _missing = _missing_modules_for_gel()
 
 if _missing:
     _logger.warning(
-        "gel simulation will NOT be available. Missing modules: %s", ", ".join(_missing)
+        "gel simulation will NOT be available."
+        " Missing modules: %s", ", ".join(_missing)
     )
 else:
-    _logger.info("gel simulation is available, optional dependencies were found.")
+    _logger.info("gel simulation is available,"
+                 " optional dependencies were found.")
 
 
 __version__ = _version.version

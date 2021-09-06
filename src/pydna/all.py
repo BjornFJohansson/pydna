@@ -21,7 +21,7 @@ Dseqrecord(-3)
 ['Anneal', 'pcr', 'Assembly', 'genbank', 'Genbank', 'download_text\
 ', 'Dseqrecord', 'Dseq', 'read', 'read_primer', 'parse', 'parse_primers\
 ', 'ape', 'primer_design', 'assembly_fragments', 'circular_assembly_fragments\
-', 'eq', 'gbtext_clean', 'primerlist']
+', 'eq', 'gbtext_clean', 'PrimerList']
 >>>
 """
 
@@ -45,7 +45,7 @@ __all__ = [
     "circular_assembly_fragments",
     "eq",
     "gbtext_clean",
-    "primerlist",
+    "PrimerList",
 ]
 
 
@@ -67,7 +67,7 @@ from pydna.design import assembly_fragments
 from pydna.design import circular_assembly_fragments
 from pydna.utils import eq
 from pydna.genbankfixer import gbtext_clean
-from pydna.myprimers import primerlist
+from pydna.myprimers import PrimerList
 
 
 if __name__ == "__main__":

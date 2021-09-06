@@ -22,7 +22,7 @@ import regex as _regex
 import sys as _sys
 import math as _math
 
-from Bio.Seq import Seq as _Seq
+from pydna.seq import Seq as _Seq
 from Bio.Seq import _translate_str
 
 # from Bio.Alphabet import generic_dna as _generic_dna
@@ -299,9 +299,13 @@ class Dseq(_Seq):
 
     """
 
-    def __init__(
-        self, watson, crick=None, ovhg=None, linear=None, circular=None, pos=0
-    ):
+    def __init__(self,
+                 watson,
+                 crick=None,
+                 ovhg=None,
+                 linear=None,
+                 circular=None,
+                 pos=0):
 
         if crick is None:
             if ovhg is None:
@@ -375,12 +379,9 @@ class Dseq(_Seq):
         self._linear = not self._circular
         self.watson = _pretty_str(watson)
         self.crick = _pretty_str(crick)
-        # self.length = max(len(watson)+max(0,ovhg), len(crick)+max(0,-ovhg))
         self.length = len(self._data)
         self._ovhg = ovhg
         self.pos = pos
-        # self._data = self._data
-        # self.alphabet = _generic_dna
 
     @classmethod
     def quick(cls, watson: str, crick: str, ovhg=0, linear=True, circular=False, pos=0):
@@ -1460,23 +1461,31 @@ class Dseq(_Seq):
 
         return tuple(frags)
 
-
-    def cas9(self, RNA:str):
+    def cas9(self, RNA: str):
         """docstring."""
-        cuts=[0]
-        for m in _re.finditer(RNA, self._data):
+        bRNA = bytes(RNA, "ASCII")
+        slices = []
+        cuts = [0]
+        for m in _re.finditer(bRNA, self._data):
             cuts.append(m.start()+17)
         cuts.append(self.length)
-        fragments = []
-        for x,y in zip(cuts,cuts[1:]):
-            fragments.append(self[x:y])
-        return fragments
+        slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
+        return slices
 
-    def orfs(self):
-        orf = "ATG(?:...){15,}?(?:TAG|TAA|TGA)"
-        match = _regex.findall(orf, self._data, flags=_regex.IGNORECASE, overlapped=True)
-        match.sort(key=len, reverse=True)
-        return [Dseq(m) for m in match]
+    # def cas9(self, RNA: str):
+    #     """docstring."""
+    #     bRNA = bytes(RNA, "ASCII")
+    #     frags = []
+    #     for target in (self.seq._data, self.seq.rc()._data):
+    #         cuts = [0]
+    #         for m in _re.finditer(bRNA, target):
+    #             cuts.append(m.start()+17)
+    #         cuts.append(self.seq.length)
+    #         fragments = []
+    #         for x, y in zip(cuts, cuts[1:]):
+    #             fragments.append(self[x:y])
+    #         frags.append(fragments)
+    #     return frags
 
 
 if __name__ == "__main__":

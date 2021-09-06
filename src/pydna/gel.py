@@ -19,22 +19,18 @@ from pydna.ladders import GeneRuler_1kb_plus as _mwstd
 
 def interpolator(mwstd):
     """docstring."""
-    interpolator = _CubicSpline(
-        [len(fr) for fr in mwstd[::-1]],
-        [fr.rf for fr in mwstd[::-1]],
-        bc_type="natural",
-        extrapolate=False,
-    )
+    interpolator = _CubicSpline([len(fr) for fr in mwstd[::-1]],
+                                [fr.rf for fr in mwstd[::-1]],
+                                bc_type="natural",
+                                extrapolate=False)
     interpolator.mwstd = mwstd
     return interpolator
 
 
-def gel(
-    samples=None,
-    gel_length=600,
-    margin=50,
-    interpolator=interpolator(mwstd=_mwstd),
-):
+def gel(samples=None,
+        gel_length=600,
+        margin=50,
+        interpolator=interpolator(mwstd=_mwstd)):
     """docstring."""
     max_intensity = 256
     lane_width = 50
@@ -59,7 +55,7 @@ def gel(
             height = (band.m() / (240 * log)) * 1e10
             peak_centre = interpolator(len(band)) * scale + start
             max_spread = 10
-            if len(band) < 50:
+            if len(band) <= 50:
                 peak_centre += 50
                 max_spread *= 4
                 max_intensity /= 10
@@ -68,14 +64,14 @@ def gel(
                 y1 = peak_centre - i
                 y2 = peak_centre + i
                 intensity = (
-                    height
-                    * _math.exp(
+                    height * _math.exp(
                         -float(((y1 - peak_centre) ** 2)) / (2 * (band_spread ** 2))
-                    )
-                    * max_intensity
-                )
+                    ) * max_intensity)
                 for y in range(int(y1), int(y2)):
-                    lanes[lane_number][y] += intensity
+                    try:
+                        lanes[lane_number][y] += intensity
+                    except IndexError:
+                        pass
 
     for i, lane in enumerate(lanes):
         max_intensity = _np.amax(lanes[i])
@@ -89,7 +85,9 @@ def gel(
         for y, intensity in enumerate(lane):
             y1 = y
             y2 = y + 1
-            draw.rectangle((x1, y1, x2, y2), fill=(intensity, intensity, intensity))
+            draw.rectangle((x1, y1, x2, y2), fill=(intensity,
+                                                   intensity,
+                                                   intensity))
 
     return image
 

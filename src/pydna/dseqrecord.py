@@ -98,7 +98,7 @@ class Dseqrecord(_SeqRecord):
     Dseq(-3)
     aaa
     ttt
-    >>> from Bio.Seq import Seq
+    >>> from pydna.seq import Seq
     >>> b=Dseqrecord(Seq("aaa"))
     >>> b
     Dseqrecord(-3)
@@ -807,9 +807,7 @@ class Dseqrecord(_SeqRecord):
                 if f.location.parts[-1].end.position <= answer.seq.length
             ]
         else:
-            x = len(answer.seq)
-            answer.features = self.shifted(sl_start)[:x].features
-            # answer.features = [f for f in answer.features if f.location.parts == sorted(f.location.parts)]
+            answer = Dseqrecord("")
         identifier = "part_{id}".format(id=self.id)
         if answer.features:
             sf = max(answer.features, key=len)  # default
@@ -946,25 +944,17 @@ class Dseqrecord(_SeqRecord):
             [len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]
         )  # flatten
 
-
-    def cas9(self, RNA:str):
+    def cas9(self, RNA: str):
         """docstring."""
-        bRNA = bytes(RNA,"ascii")
-        frags = []
-        for target in (self.seq._data, self.seq.rc()._data):
-            cuts=[0]
-            for m in _re.finditer(bRNA, target):
-                cuts.append(m.start()+17)
-            cuts.append(self.seq.length)
-            fragments = []
-            for x,y in zip(cuts,cuts[1:]):
-                fragments.append(self[x:y])
-            frags.append(fragments)
-        return frags
-
+        fragments = []
+        result = []
+        for target in (self.seq, self.seq.rc()):
+            fragments = [self[sl.start:sl.stop] for sl in target.cas9(RNA)]
+            result.append(fragments)
+        return result
 
     def reverse_complement(self):
-        """Returns the reverse complement.
+        """Reverse complement.
 
         Examples
         --------
@@ -982,7 +972,7 @@ class Dseqrecord(_SeqRecord):
         ttaagg
         >>>
 
-        See also
+        See Also
         --------
         pydna.dseq.Dseq.reverse_complement
 
@@ -1286,24 +1276,14 @@ class Dseqrecord(_SeqRecord):
         pydna.dseqrecord.Dseqrecord.upper
 
         """
-
         lower = _copy.deepcopy(self)
         lower.seq = lower.seq.lower()
         return lower
 
     def orfs(self, minsize=30):
-        orf = _re.compile(f"ATG(?:...){{{minsize},}}?(?:TAG|TAA|TGA)", flags=_re.IGNORECASE)
-        start = 0
-        matches = []
-        s = self.seq._data
-        while True:
-            match = orf.search(s, pos=start)
-            if match:
-                matches.append(slice(match.start(), match.end()))
-                start=start + match.start() + 1
-            else:
-                break
-        return sorted([self[sl] for sl in matches], key=len, reverse=True)
+        """docstring."""
+        return tuple(Dseqrecord(s) for s in self.seq.orfs(minsize=minsize))
+
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")

@@ -10,7 +10,16 @@ import pytest
 # https://coverage.readthedocs.io/en/coverage-5.2.1/cmd.html
 
 
+# pytest tests/test_module_seqrecord.py --cov=pydna --cov-append
+# --cov-report=html --cov-report=xml --capture=no --durations=10
+# --import-mode=importlib --nbval --current-env --doctest-modules
+# --capture=no -vvv
+
+
+
 def main():
+    
+    arg = sys.argv[-1] if len(sys.argv)>1 else ""
 
     os.environ["pydna_data_dir"] = tempfile.mkdtemp(
         prefix="pydna_data_dir_")
@@ -24,8 +33,9 @@ def main():
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
     args = [
-        "src",  # doctestdir
+        f"src/{arg}",  # doctestdir
         "--cov=pydna",
+        "--cov-append",
         "--cov-report=html",
         "--cov-report=xml",
         "--capture=no",
@@ -41,7 +51,7 @@ def main():
     result_suite_src = pytest.main(args)
 
     args = [
-        "tests",  # test suite
+        f"tests/{arg}",  # test suite
         "--cov=pydna",
         "--cov-append",
         "--cov-report=html",

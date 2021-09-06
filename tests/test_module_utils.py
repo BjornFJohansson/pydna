@@ -255,6 +255,7 @@ def test_parse_text_table():
 
 
 def test_join_list_to_table():
+
     from pydna.utils import join_list_to_table
 
     cs = (
@@ -270,11 +271,29 @@ def test_join_list_to_table():
         "six\n"
         "nine"
     )
-
+    
     assert (
         join_list_to_table(cs)
         == "one   two   three\nfour  five  six  \nseven eight nine "
     )
+    
+    
+    cs = (
+        "one\n"
+        "four\n"
+        "seven\n"
+        "|||\n"
+        "two\n"
+        "five\n"
+        "\n"
+        "|||\n"
+        "three\n"
+        "six\n"
+        "nine"
+    )
+
+    answer = 'one   two  three\nfour  five six  \nseven \"    nine '
+    assert join_list_to_table(cs) == answer
 
     rs = (
         "one\n"
@@ -295,12 +314,12 @@ def test_join_list_to_table():
         == "one   two   three\nfour  five  six  \nseven eight nine "
     )
 
-    assert join_list_to_table("somestring") == None
+    assert join_list_to_table("somestring") is None
 
     cs = "one\n" "four\n" " \n" "|||\n" "two\n" " \n" "eight"
 
-    assert join_list_to_table(cs) == "one  two  \nfour      \n     eight"
-
+    assert join_list_to_table(cs) == 'one  two  \nfour "    \n"    eight'
+    
 
 def test_expandtolist():
     from pydna.utils import expandtolist

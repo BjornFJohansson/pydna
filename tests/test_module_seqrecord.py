@@ -2,7 +2,7 @@ import pytest
 
 
 def test_add_feature():
-    from Bio.Seq import Seq
+    from pydna.seq import Seq
     from Bio.SeqRecord import SeqRecord as BSeqRecord
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
@@ -188,7 +188,7 @@ def test_format():
 def test_seqrecord():
     import pydna
     from pydna import seqrecord
-    from Bio.Seq import Seq
+    from pydna.seq import Seq
 
     s = seqrecord.SeqRecord("gatt")
     assert s.name == s.locus == "name"
@@ -234,7 +234,7 @@ def test_seqrecord():
 
     obj = seqrecord.SeqRecord(s)
 
-    assert obj.map_target == None
+    assert obj.map_target is None
 
     assert obj.isorf()
 
@@ -261,9 +261,8 @@ def test_seqrecord():
 
     assert obj.gc() == 0.067
 
-    repr(
-        obj
-    ) == "SeqRecord(seq=Seq('aaaATGAAATAAttt'), id='id', name='name', description='description', dbxrefs=[])"
+    assert repr(obj) == ("SeqRecord(seq=Seq('aaaATGAAATAAttt'), id='id', "
+                         "name='name', description='description', dbxrefs=[])")
 
     obj.annotations = {"date": "24-DEC-1970"}
 
@@ -338,6 +337,79 @@ def test_seqrecord():
     # assert gbf+"\n" == str(obj.format("gb"))
 
     # print(obj.__hash__())
+    
+    rare_codons = {"sce": ["CGA", "CGG", "CGC", "CCG", "CTC", "GCG"],
+                   "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC",
+                           "TCG"]}
+
+    s = Seq("atgCGACGGCGCCCGCTCGCGtaa")
+    
+    obj = seqrecord.SeqRecord(s, name="1234567890123456")
+
+    assert obj.name == "1234567890123456"
+
+    from pydna.codon import rare_codons
+
+    assert seqrecord.SeqRecord("atgtaa").gc() == 0.167
+
+    assert seqrecord.SeqRecord("atgtaa").startcodon() == 1.0
+
+    assert seqrecord.SeqRecord("atgtaa").stopcodon() == 0.47
+
+    assert seqrecord.SeqRecord("atgtaa").gc() == 0.167
+
+    assert seqrecord.SeqRecord("atgtaa").cai() == 1.0
+
+    from copy import copy
+
+    assert obj.copy() == copy(obj)
+
+    from tempfile import mkdtemp
+    from pathlib import Path
+    path = Path(mkdtemp())/"dump"
+    obj.dump(path)
+    path = Path(mkdtemp())/"dump.pickle"
+    obj.dump(path)
+
+    organism = "sce"
+
+    s = seqrecord.SeqRecord(Seq("atg"+"".join(rare_codons[organism])+"taa"))
+
+    features = s.rarecodons()
+
+    for feat in features:
+        assert feat.extract(s).seq in s
+
+    lol = [['cds',
+            'len',
+            'cai',
+            'gc',
+            'sta',
+            'stp',
+            'n-end',
+            'CGA',
+            'CGG',
+            'CGC',
+            'CCG',
+            'CTC',
+            'GCG',
+            'rare'],
+           ['ATG...TAA',
+            8.0,
+            0.219,
+            0.708,
+            1.0,
+            0.47,
+            '2 min',
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0.75]]
+
+    assert s.express().lol() == lol
 
 
 if __name__ == "__main__":

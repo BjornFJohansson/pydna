@@ -34,7 +34,9 @@ def test_genbankfile():
 
     assert (
         gbr.hyperlink
-        == "<a href='https://www.ncbi.nlm.nih.gov/nuccore/accession?from=1&to=2&strand=1' target='_blank'>accession 1-2</a>"
+        == ("<a href='https://www.ncbi.nlm.nih.gov/nuccore/"
+            "accession?from=1&to=2&strand=1'"
+            " target='_blank'>accession 1-2</a>")
     )
 
     gbr_rc = gbr.rc()
@@ -47,6 +49,8 @@ def test_genbankfile():
     arg = SeqRecord(Seq("aaa"))
 
     genbankrecord.GenbankRecord.from_SeqRecord(arg)
+
+    genbankrecord.GenbankRecord.from_SeqRecord(arg, start=0, stop=2)
 
 
 if __name__ == "__main__":

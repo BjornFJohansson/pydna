@@ -49,7 +49,7 @@ GeneRuler_1kb = [
 GeneRuler_1kb_plus = [
     _FakeSeq(ln, n=n * 1e-15, rf=rf)
     for ln, n, rf in (
-        (20000, 1.538, 0.000),  # ( bp length, fmol, Rf )
+        (20000, 1.538, 0.000),  # ( length, fmol, Rf )
         (10000, 3.077, 0.040),
         (7000, 4.396, 0.096),
         (5000, 23.077, 0.154),

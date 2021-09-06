@@ -41,7 +41,7 @@ class FakeSeq(object):
 
     def __str__(self):
         """docstring."""
-        return self.__repr__
+        return self.__repr__()
 
 
 if __name__ == "__main__":

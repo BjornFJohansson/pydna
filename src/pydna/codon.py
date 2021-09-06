@@ -77,8 +77,11 @@ weights["sce"] = {'TTT': 1.0,
 # PMID: 6390186
 # PMID: 11589713
 
+
 start = {"sce": {"ATG": 1.000, "TTG": 0.069, "ATA": 0.005},
          "eco": {}}
+
+
 # Zhang, S. P., Zubay, G., & Goldman, E. (1991).
 # Low-usage codons in Escherichia
 # coli, yeast, fruit fly and primates. Gene, 105(1), 61–72.

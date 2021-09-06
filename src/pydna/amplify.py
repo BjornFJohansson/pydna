@@ -24,7 +24,7 @@ from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.seqfeature import SeqFeature as _SeqFeature
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from Bio.Seq import Seq as _Seq
+from pydna.seq import Seq as _Seq
 import itertools as _itertools
 import re as _re
 import copy as _copy
@@ -211,7 +211,7 @@ class Anneal(object, metaclass=_Memoize):
         >>> print(amplicon.program())
         |95°C|95°C               |    |tmf:59.5
         |____|_____          72°C|72°C|tmr:59.7
-        |5min|30s  \ 58.6°C _____|____|45s/kb
+        |3min|30s  \ 58.6°C _____|____|45s/kb
         |    |      \______/ 0:45|5min|GC 49%
         |    |       30s         |    |1011bp
         >>>

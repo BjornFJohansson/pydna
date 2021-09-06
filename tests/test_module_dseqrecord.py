@@ -2,9 +2,27 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-import pydna
 
-pydna
+def test_orfs():
+    from pydna.dseqrecord import Dseqrecord
+    
+    s = Dseqrecord("atgaaattttaa")
+
+    assert s.orfs(2) == (s,)
+
+def test_cas9():
+
+    from pydna.dseqrecord import Dseqrecord
+
+    s = Dseqrecord("gattcatgcatgtagcttacgtagtct")
+
+    RNA = "catgcatgtagcttacgtag"
+
+    (f1, f2), (f3,) = s.cas9(RNA)
+
+    assert f1.seq == Dseqrecord("gattcatgcatgtagcttacg").seq
+    assert f2.seq == Dseqrecord("tagtct").seq
+    assert f3.seq == Dseqrecord("gattcatgcatgtagcttacgtagtct").seq
 
 
 def test_FadiBakoura():
@@ -1202,6 +1220,9 @@ def test_features_on_slice():
     assert len(dseq_record[6:4].features) == 1
     assert len(dseq_record[6:5].features) == 1
 
+    dseq_record2 = Dseqrecord(Dseq("ACTCTTTCTCTCTCT", linear=True))
+    assert dseq_record2[6:1].seq == Dseq("")
+
 
 def test_features_change_ori():
     from pydna.dseq import Dseq
@@ -1566,6 +1587,7 @@ def test___getitem__():
     assert s[1:5].seq == Dseqrecord("GATC", circular=False).seq
     assert s[5:1:-1].seq == Dseqrecord("CCTA", circular=False).seq
 
+    assert t[1:1].seq == Dseqrecord("").seq
     assert t[5:1].seq == Dseqrecord("CG", circular=False).seq
     assert t[9:1].seq == Dseqrecord("").seq
     assert t[1:9].seq == Dseqrecord("").seq
@@ -1909,4 +1931,18 @@ def test_assemble_YEp24PGK_XK():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv", "-s"])
+    args = [
+    __file__,
+    "--cov=pydna",
+    "--cov-append",
+    "--cov-report=html:../htmlcov",
+    "--cov-report=xml",
+    "--capture=no",
+    "--durations=10",
+    "--import-mode=importlib",
+    "--nbval",
+    "--current-env",
+    "--doctest-modules",
+    "--capture=no",
+    "-vvv"]    
+    pytest.main(args)

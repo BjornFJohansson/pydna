@@ -588,8 +588,6 @@ def join_list_to_table(rawlist):
     if "|||\n" in rawlist:
         raw_columns = rawlist.split("|||\n")
         cols = [col.splitlines() for col in raw_columns]
-        if "" in [item for sublist in cols for item in sublist]:
-            cols = [col.split("\n\n") for col in raw_columns]
     elif "---\n" in rawlist:
         rawrows = rawlist.split("---\n")
         rows = [row.splitlines() for row in rawrows]
@@ -602,7 +600,7 @@ def join_list_to_table(rawlist):
 
     for col in cols:
         # print col
-        rows = [row.strip() for row in col]
+        rows = [row.strip() or "\"" for row in col]
         width = max([len(row) for row in rows])
 
         rows = [row.ljust(width) for row in rows]

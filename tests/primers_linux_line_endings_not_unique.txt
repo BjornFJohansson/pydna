@@ -1,3 +1,6 @@
+# Comment
+# Another comment
+
 >6_primer
 atatatat
 

@@ -4,6 +4,17 @@
 import pytest
 
 
+def test_cas9():
+
+    from pydna.dseq import Dseq
+
+    s = Dseq("gattcatgcatgtagcttacgtagtct")
+
+    RNA = "catgcatgtagcttacgtag"
+
+    assert slice(0, 21, 1), slice(21, 27, 1) == s.cas9(RNA)
+
+
 def test_initialization():
 
     import pytest

@@ -20,19 +20,10 @@ from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
-from pydna.codon import weights as _weights
-from pydna.codon import rare_codons as _rare_codons
-from pydna.codon import start as _start
-from pydna.codon import stop as _stop
-from pydna.codon import n_end as _n_end
-
-from Bio.SeqUtils import seq3 as _seq3
-
 from Bio.Data.CodonTable import TranslationError as _TranslationError
-from Bio.SeqUtils import GC as _GC
 from Bio.SeqRecord import SeqRecord as _SeqRecord
 from Bio.SeqFeature import FeatureLocation as _FeatureLocation
-from Bio.Seq import Seq as _Seq
+from pydna.seq import Seq as _Seq
 from pydna._pretty import PrettyTable as _PrettyTable
 
 import re as _re
@@ -41,7 +32,6 @@ from copy import copy as _copy
 
 from pydna import _PydnaWarning
 from warnings import warn as _warn
-from CAI import CAI as _CAI
 
 import logging as _logging
 
@@ -312,7 +302,7 @@ class SeqRecord(_SeqRecord):
 
         Examples
         --------
-        >>> from Bio.Seq import Seq
+        >>> from pydna.seq import Seq
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord(Seq("atgtaa"))
         >>> a.add_feature(2,4)
@@ -547,72 +537,35 @@ class SeqRecord(_SeqRecord):
             )
         return result
 
-
     def gc(self):
         """Return GC content."""
-        return round(_GC(str(self.seq))/100.0, 3)
+        return self.seq.gc()
 
     def cai(self, organism="sce"):
         """docstring."""
-        return round(_CAI(str(self.seq).upper(),
-                     weights=_weights[organism]), 3)
+        return self.seq.cai(organism=organism)
 
     def rarecodons(self, organism="sce"):
         """docstring."""
-        rare = _rare_codons[organism]
-        s = str(self.seq).upper()
         sfs = []
-        for i in range(0, len(self)//3):
-            x, y = i*3, i*3+3
-            trip = s[x:y]
-            if trip in rare:
-                sfs.append(_SeqFeature(
-                           _FeatureLocation(x, y),
-                           type=f"rare_codon_{organism}",
-                           qualifiers={"label": trip}))
+        for slc in self.seq.rarecodons(organism):
+            cdn = self.seq._data[slc].decode("ASCII")
+            sfs.append(_SeqFeature(_FeatureLocation(slc.start, slc.stop),
+                                   type=f"rare_codon_{organism}",
+                                   qualifiers={"label": [cdn]}))
         return sfs
 
     def startcodon(self, organism="sce"):
         """docstring."""
-        return _start[organism].get(str(self.seq)[:3].upper())
+        return self.seq.startcodon()
 
     def stopcodon(self, organism="sce"):
         """docstring."""
-        return _stop[organism].get(str(self.seq)[-3:].upper())
+        return self.seq.stopcodon()
 
     def express(self, organism="sce"):
         """docstring."""
-        x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
-                          "n-end"]+_rare_codons[organism]+["rare"])
-        val = []
-        val.append(f"{str(self.seq)[:3].upper()}..."
-                   f"{str(self.seq)[-3:].upper()}")
-        val.append(len(self)/3)
-        val.append(self.cai(organism))
-        val.append(self.gc())
-        val.append(self.startcodon())
-        val.append(self.stopcodon())
-        val.append(_n_end[organism].get(_seq3(self[3:6].seq.translate())))
-        s = str(self.seq).upper()
-        trps = [s[i*3:i*3+3] for i in range(0, len(s)//3)]
-        tot = 0
-        for cdn in _rare_codons[organism]:
-            cnt = trps.count(cdn)
-            tot += cnt
-            val.append(cnt)
-        val.append(round(tot/len(trps),3))
-        x.add_row(val)
-        return x
-
-
-
-
-#  _weights
-# _rare_codons
-#  _start
-# _stop
-# _n_end
-
+        return self.seq.express()
 
     def copy(self):
         """docstring."""
@@ -692,14 +645,14 @@ class SeqRecord(_SeqRecord):
         answer.name = _identifier_from_string(f"part_{self.name}")[:16]
         return answer
 
-    def dump(self, filename):
+    def dump(self, filename, protocol=None):
         """docstring."""
         from pathlib import Path
         pth = Path(filename)
         if not pth.suffix:
             pth = pth.with_suffix(".pickle")
         with open(pth, 'wb') as f:
-            _pickle.dump(self, f)
+            _pickle.dump(self, f, protocol=protocol)
         return _pretty_str(pth)
 
 

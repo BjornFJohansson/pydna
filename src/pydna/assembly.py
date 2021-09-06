@@ -385,8 +385,8 @@ class Assembly(object, metaclass=_Memoize):
                 ct = "".join(e["seq"][e["piece"]] for u, v, e in edges)
                 key = ct.upper()
 
-                if key in lps:
-                    continue
+                if key in lps: 
+                    continue    # TODO: is this test needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
                 sg.add_nodes_from((n, d) for n, d in G.nodes(data=True) if n in lp)
@@ -454,7 +454,7 @@ class Assembly(object, metaclass=_Memoize):
                 key = ct.upper()
 
                 if key in cps or key in cpsrc:
-                    continue  # TODO: cpsrc not needed?
+                    continue  # TODO: is test in cpsrc needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
                 sg.add_nodes_from((n, d) for n, d in self.G.nodes(data=True) if n in cp)

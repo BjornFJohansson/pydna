@@ -1,11 +1,15 @@
+"""A Biopython SeqFeature with an extract method.
+
+preserves some of the meta data from the parent sequence
+"""
+
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 from pydna.utils import identifier_from_string as _identifier_from_string
 
-"""This module provides a Biopython SeqFeature with an extract method that 
-preserves some of the meta data from the parent sequence"""
-
 
 class SeqFeature(_SeqFeature):
+    """docstring."""
+
     def __init__(
         self,
         location=None,
@@ -31,6 +35,7 @@ class SeqFeature(_SeqFeature):
         )
 
     def extract(self, parent_sequence):
+        """docstring."""
         answer = super().extract(parent_sequence)
         identifier = "feat_{}".format(parent_sequence.id)
         if "label" in self.qualifiers:

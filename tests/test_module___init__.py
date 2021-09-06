@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pytest, tempfile, os, shutil
+import pytest
+import tempfile
+import os
+import shutil
 
 from unittest import mock
 
@@ -79,7 +82,6 @@ def test_default_env(monkeypatch):
         assert envvar in pydnaenv
         assert os.environ[envvar] in pydnaenv
 
-
     subp = mock.MagicMock()
     monkeypatch.setattr("sys.platform", "linux")
     monkeypatch.setattr("subprocess.run", subp)
@@ -102,16 +104,26 @@ def test_default_env(monkeypatch):
 
 def test_read_ini_file():
     import pydna
+    pydna
 
 
 def test_without_dependency():
     import sys
     from unittest.mock import patch
-    with patch.dict(sys.modules, {'pillow': None}):
+    with patch.dict(sys.modules, {'PIL': None}):
         from importlib import reload
         reload(sys.modules['pydna'])
         import pydna
-        assert pydna._missing == ['pillow']
+        assert pydna._missing == ['PIL']
+
+
+def test_with_dependencies():
+    import sys
+    import pydna
+    from importlib import reload
+    reload(sys.modules['pydna'])
+    import pydna
+    assert pydna._missing == []
 
 
 def test_no_xdg_open(monkeypatch):
