@@ -161,14 +161,15 @@ def program(amplicon, tm=tm_default, ta=ta_default):
     """
 
     taq_extension_rate = 45  # seconds/kB PCR product length (1min/kb)
-    extension_time_taq = max(30, int(taq_extension_rate * len(amplicon) / 1000))  # seconds
+    extension_time_taq = max(30, int(taq_extension_rate*len(amplicon)/1000))
+    # seconds
 
     f = _textwrap.dedent(
         r"""
                             |95°C|95°C               |    |tmf:{tmf:.1f}
                             |____|_____          72°C|72°C|tmr:{tmr:.1f}
                             |3min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                            |    |      \______/{0:2}:{1:0<2}|5min|GC {GC_prod}%
+                            |    |      \______/{0:2}:{1:0<2}|5min|GC {GC}%
                             |    |       30s         |    |{size}bp
                             """[
             1:-1
@@ -185,7 +186,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
             ),
             tmf=tm(amplicon.forward_primer.footprint),
             tmr=tm(amplicon.reverse_primer.footprint),
-            GC_prod=int(amplicon.gc()*100),
+            GC=int(amplicon.gc()*100),
             *map(int, divmod(extension_time_taq, 60)),
         )
     ).strip()
@@ -197,8 +198,9 @@ taq_program = program
 
 
 def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
-    r"""Returns a string containing a text representation of a suggested
-    PCR program using a polymerase with a DNA binding domain such as Pfu-Sso7d.
+    r"""Text representation of a suggested PCR program.
+
+    Using a polymerase with a DNA binding domain such as Pfu-Sso7d.
 
     ::
 
@@ -217,9 +219,9 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
 
     """
     PfuSso7d_extension_rate = 15  # seconds/kB PCR product
-    extension_time_PfuSso7d = int(
-        PfuSso7d_extension_rate * len(amplicon) / 1000
-    )  # seconds
+    extension_time_PfuSso7d = max(10,
+                                  int(PfuSso7d_extension_rate
+                                      * len(amplicon)/1000))  # seconds
 
     # The program returned is eaither a two step or three step progrem
     # This depends on the tm and length of the primers in the
@@ -257,7 +259,7 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
                                 |98°C|98°C               |    |tmf:{tmf:.1f}
                                 |____|_____          72°C|72°C|tmr:{tmr:.1f}
                                 |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                                |    |      \______/{0:2}:{1:2}|5min|GC {GC_prod}%
+                                |    |      \______/{0:2}:{1:2}|5min|GC {GC}%
                                 |    |       10s         |    |{size}bp
                                 """[
                 1:-1
@@ -274,7 +276,7 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
                 ),
                 tmf=tmf,
                 tmr=tmr,
-                GC_prod=int(amplicon.gc()*100),
+                GC=int(amplicon.gc()*100),
                 *map(int, divmod(extension_time_PfuSso7d, 60)),
             )
         )
