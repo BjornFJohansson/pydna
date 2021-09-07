@@ -16,10 +16,9 @@ import pytest
 # --capture=no -vvv
 
 
-
 def main():
-    
-    arg = sys.argv[-1] if len(sys.argv)>1 else ""
+    """docstring."""
+    arg = sys.argv[-1] if len(sys.argv) > 1 else ""
 
     os.environ["pydna_data_dir"] = tempfile.mkdtemp(
         prefix="pydna_data_dir_")

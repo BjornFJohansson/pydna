@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2021 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -98,18 +98,23 @@ Code snippets are indicated by three greater-than signs::
 pydna source code
 -----------------
 
-The pydna source code is `available on Github <https://github.com/BjornFJohansson/pydna>`_.
+The pydna source code is `available on Github
+ <https://github.com/BjornFJohansson/pydna>`_.
 
 How to get more help
 --------------------
 
-Please join the `Google grooup <https://groups.google.com/forum/#!forum/pydna>`_ for pydna, this is the preferred
-location for help. If you find bugs in pydna itself, open an issue at the `Github repository <https://github.com/BjornFJohansson/pydna/issues>`_.
+Please join the
+`Google group <https://groups.google.com/forum/#!forum/pydna>`_
+for pydna, this is the preferred location for help. If you find bugs
+in pydna itself, open an issue at the
+`Github repository <https://github.com/BjornFJohansson/pydna/issues>`_.
 
 Examples of pydna in use
 ------------------------
 
-See this repository for a collection of `examples <https://github.com/BjornFJohansson/pydna-examples>`_.
+See this repository for a collection of
+ `examples <https://github.com/BjornFJohansson/pydna-examples>`_.
 
 """
 
@@ -127,7 +132,7 @@ from pydna._pretty import PrettyTable as _PrettyTable
 
 
 __author__ = "Björn Johansson"
-__copyright__ = "Copyright 2013 - 2018 Björn Johansson"
+__copyright__ = "Copyright 2013 - 2021 Björn Johansson"
 __credits__ = ["Björn Johansson", "Mark Budde"]
 __license__ = "BSD"
 __maintainer__ = "Björn Johansson"

@@ -83,7 +83,7 @@ def test_amplicon_dbd():
               00min30s|10s  \        |      |Primer1C 1.0µM
                       |      \ 72.0°C|72.0°C|Primer2C 1.0µM
                       |       \______|______|GC 81%
-                      |       0min 0s|10min |4-12°C
+                      |       0min10s|10min |4-12°C
               """[
         1:
     ]
@@ -92,7 +92,7 @@ def test_amplicon_dbd():
             |____|____      |    |tmr:75.3
             |30s |10s \ 72°C|72°C|15s/kb
             |    |     \____|____|GC 81%
-            |    |      0: 0|5min|65bp
+            |    |      0:10|5min|65bp
             """[
         1:
     ]
@@ -135,7 +135,7 @@ def test_amplicon_dbd_low_gc():
               |98°C|98°C               |    |tmf:32.6
               |____|_____          72°C|72°C|tmr:39.6
               |30s |10s  \ 35.6°C _____|____|15s/kb
-              |    |      \______/ 0: 0|5min|GC 14%
+              |    |      \______/ 0:10|5min|GC 14%
               |    |       10s         |    |55bp
               """[
         1:
