@@ -577,10 +577,10 @@ class Dseqrecord(_SeqRecord):
                 newobj = _copy.copy(self)
                 newobj.description = newdescription
 
-                with open(filename, "w") as fp:
+                with open(filename, "w", encoding="utf8") as fp:
                     fp.write(newobj.format(f))
             else:
-                with open(filename, "w") as fp:
+                with open(filename, "w", encoding="utf8") as fp:
                     fp.write(self.format(f))
         #from IPython.display import display_markdown
         #return display_markdown("[link](ling.gb)",raw=True)
