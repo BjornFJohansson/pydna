@@ -527,7 +527,7 @@ class Dseqrecord(_SeqRecord):
         name, ext = _os.path.splitext(filename)
         msg = f"<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>"
         if not _os.path.isfile(filename):
-            with open(filename, "w") as fp:
+            with open(filename, "w", encoding="utf8") as fp:
                 fp.write(self.format(f))
         else:
             from pydna.readers import read
@@ -559,7 +559,7 @@ class Dseqrecord(_SeqRecord):
                     ntop={True: "-", False: "o"}[self.linear],
                     otop={True: "-", False: "o"}[old_file.linear],
                 )
-                with open(filename, "w") as fp:
+                with open(filename, "w", encoding="utf8") as fp:
                     fp.write(self.format(f))
             elif "SEGUID" in old_file.description:
                 pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
