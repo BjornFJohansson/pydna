@@ -540,7 +540,7 @@ def test_write():
     with patch("pydna.dseqrecord.open", m):
         s.write(filename="AAA.gb")
     m.mock_calls
-    m.assert_called_once_with("AAA.gb", "w")
+    m.assert_called_once_with("AAA.gb", "w", encoding='utf8')
     handle = m()
     handle.write.assert_called_once_with(Dseqrecord("GGATCC", circular=True).format())
 
@@ -548,7 +548,7 @@ def test_write():
     with patch("pydna.dseqrecord.open", m):
         s.write()
     m.mock_calls
-    m.assert_called_once_with("name.gb", "w")
+    m.assert_called_once_with("name.gb", "w", encoding='utf8')
     handle = m()
     handle.write.assert_called_once_with(Dseqrecord("GGATCC", circular=True).format())
 
