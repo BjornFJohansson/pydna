@@ -47,43 +47,29 @@ class SeqRecord(_SeqRecord):
     nicer output in the IPython shell.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self,
+                 *args,
+                 id="id",
+                 name="name",
+                 description="description",
+                 **kwargs):
+
+        super().__init__(*args,
+                         **kwargs)
+
+        self.id = _pretty_str(id)
+        self.name = _pretty_str(name)
+        self.description = _pretty_str(description)
 
         self.annotations.update({"molecule_type": "DNA"})
-        if len(self.name) > 16:
-            short_name = self.name[:16]
-            _warn(
-                "name property {} truncated to 16 chars {}".format(
-                    self.name, short_name
-                ),
-                _PydnaWarning,
-                stacklevel=2,
-            )
-            self.name = short_name
-
-        if self.name == "<unknown name>":
-            self.name = "name"
-
-        if self.id == "<unknown id>":
-            self.id = "id"
-
-        if self.description == "<unknown description>":
-            self.description = "description"
-
         self.map_target = None
 
         if not hasattr(self.seq, "transcribe"):
             self.seq = _Seq(self.seq)
 
         self.seq._data = b"".join(self.seq._data.split())  # remove whitespaces
-        # self.seq.alphabet = _generic_dna
-        self.id = _pretty_str(self.id)
-        self.name = _pretty_str(self.name)
-        self.description = _pretty_str(self.description)
-        self.annotations = {
-            _pretty_str(k): _pretty_str(v) for k, v in self.annotations.items()
-        }
+        self.annotations = {_pretty_str(k): _pretty_str(v) for k, v in
+                            self.annotations.items()}
 
     @property
     def locus(self):
