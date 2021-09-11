@@ -167,7 +167,9 @@ class PrimerList(_UserList):
         Defaults to primers accessed from the list.
         """
         indices = indices or self.accessed
-        msg = ", ".join(f"{self.identifier}[{i}]" for i in indices)
+        curly = "{}"
+        msg = f"{self.identifier} = {curly}\n"
+        msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
         msg += " = parse_primers('''\n\n"
         msg += "\n".join(self[i].format("fasta") for i in indices)
         msg += "\n''')"
@@ -176,6 +178,8 @@ class PrimerList(_UserList):
     def open_folder(self):
         """Open folder where primer file is located."""
         _open_folder(self.path.parent)
+
+    code = pydna_code_from_indices
 
 
 def check_primer_numbers(pl: list = PrimerList()):
