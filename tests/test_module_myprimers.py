@@ -59,6 +59,7 @@ def test_PrimerList_init(monkeypatch):
     import textwrap
 
     code = textwrap.dedent("""\
+    p = {}
     p[0], p[1], p[2], p[3] = parse_primers('''
 
     >0_primer

@@ -220,15 +220,6 @@ def test_seqrecord():
     with pytest.warns(None, match="truncated") as pdw:
         obj = seqrecord.SeqRecord(s, name="12345678901234567")
 
-    obj = seqrecord.SeqRecord(s, name="<unknown name>")
-    assert obj.name == "name"
-
-    obj = seqrecord.SeqRecord(s, id="<unknown id>")
-    assert obj.id == "id"
-
-    obj = seqrecord.SeqRecord(s, description="<unknown description>")
-    assert obj.description == "description"
-
     obj = seqrecord.SeqRecord(s, annotations={"date": "24-DEC-1970"})
     assert obj.annotations["date"] == "24-DEC-1970"
 
