@@ -120,6 +120,7 @@ def parse(data, ds=True):
                         )
                     )
                 else:
+                    parsed.annotations.update({"molecule_type": "DNA"})
                     result_list.append(parsed)
 
         return result_list
