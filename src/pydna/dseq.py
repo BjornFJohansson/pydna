@@ -18,7 +18,6 @@ The Dseq class support the notion of circular and linear DNA topology.
 import copy as _copy
 import itertools as _itertools
 import re as _re
-import regex as _regex
 import sys as _sys
 import math as _math
 
@@ -51,7 +50,8 @@ class Dseq(_Seq):
         a string representing the crick (antisense) DNA strand.
 
     ovhg : int, optional
-        A positive or negative number to describe the stagger between the watson and crick strands.
+        A positive or negative number to describe the stagger between the
+        watson and crick strands.
         see below for a detailed explanation.
 
     linear : bool, optional
@@ -152,8 +152,8 @@ class Dseq(_Seq):
       agt
     attca
 
-    If the ovhg parameter is specified a crick strand also needs to be supplied,
-    otherwise an exception is raised.
+    If the ovhg parameter is specified a crick strand also
+    needs to be supplied, otherwise an exception is raised.
 
     >>> Dseq(watson="agt",ovhg=2)
     Traceback (most recent call last):
@@ -277,8 +277,8 @@ class Dseq(_Seq):
     GgccT
 
 
-    The slice [X:X] produces an empty slice for a string, while this will return
-    the linearized sequence starting at X:
+    The slice [X:X] produces an empty slice for a string, while this
+    will return the linearized sequence starting at X:
 
     >>> s="ggatcc"
     >>> d=Dseq(s, circular=True)
@@ -384,22 +384,23 @@ class Dseq(_Seq):
         self.pos = pos
 
     @classmethod
-    def quick(cls, watson: str, crick: str, ovhg=0, linear=True, circular=False, pos=0):
+    def quick(cls, watson: str, crick: str, ovhg=0, 
+              linear=True, circular=False, pos=0):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(watson)
         obj.crick = _pretty_str(crick)
         obj._ovhg = ovhg
         obj._circular = circular
         obj._linear = linear
-        obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
+        obj.length = max(len(watson) + max(0, ovhg),
+                         len(crick) + max(0, -ovhg))
         obj.pos = pos
         wb = bytes(watson, encoding="ASCII")
         cb = bytes(crick, encoding="ASCII")
         obj._data = (
-            _rc(cb[-max(0, ovhg) or len(cb) :])
+            _rc(cb[-max(0, ovhg) or len(cb):])
             + wb
             + _rc(cb[: max(0, len(cb) - ovhg - len(wb))]))
-        # obj.alphabet = _generic_dna
         return obj
 
     @classmethod

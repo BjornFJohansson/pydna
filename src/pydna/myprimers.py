@@ -44,6 +44,7 @@ from pydna.parsers import parse_primers as _parse_primers
 from pydna._pretty import pretty_str as _pretty_str
 from collections import UserList as _UserList
 from pydna.utils import open_folder as _open_folder
+from builtins import __dict__ as _kw
 
 
 class PrimerList(_UserList):
@@ -83,7 +84,7 @@ class PrimerList(_UserList):
             self.data = _parse_primers("\n".join(lines))[::-1]
         # super().__init__(*args, **kwargs)
         self.accessed = []
-        if identifier.isidentifier() or _iskeyword(identifier):
+        if (identifier.isidentifier() and not _iskeyword(identifier) and identifier not in _kw):
             self.identifier = identifier
         else:
             raise ValueError(f"{identifier} is not a valid identifier.")
@@ -106,9 +107,7 @@ class PrimerList(_UserList):
         return result
 
     def __setitem__(self, i, item):
-        """
-        Items already present can be set to the same value.
-        """
+        """Items already present can be set to the same value."""
         if abs(i) > len(self):
             raise IndexError(f"index {i} does not exist.")
         else:
@@ -121,7 +120,7 @@ class PrimerList(_UserList):
         """Find new primers in lst.
 
         Returns a string containing new primers with their assigned
-        numbers. This string can be copied and psted to the primer
+        numbers. This string can be copied and pasted to the primer
         text file.
         """
         new = []

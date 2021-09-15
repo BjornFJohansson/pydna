@@ -79,8 +79,7 @@ class Editor:
                 qf["ApEinfo_fwdcolor"] = "#ddfeff"
             if not "ApEinfo_revcolor" in qf:
                 qf["ApEinfo_revcolor"] = "#ffe6cc"
-        # TODO: pick feature colors
-        # https://stackoverflow.com/questions/470690/how-to-automatically-generate-n-distinct-colors
+
         seq.features.sort(key=_operator.attrgetter("location.start"))
         name = "{name}.gb".format(
             name="".join(c for c in seq.name.strip().replace(" ", "_") if c in _wl)
@@ -105,6 +104,7 @@ apeloader = Editor(_os.getenv("pydna_ape"))
 
 
 def ape(*args, **kwargs):
+    """docstring."""
     return apeloader.open(*args, **kwargs)
 
 
