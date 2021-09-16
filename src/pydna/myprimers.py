@@ -167,12 +167,16 @@ class PrimerList(_UserList):
         """
         indices = indices or self.accessed
         curly = "{}"
-        msg = f"{self.identifier} = {curly}\n"
+        msg = f"{self.identifier} = {curly}\n\n"
         msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
         msg += " = parse_primers('''\n\n"
         msg += "\n".join(self[i].format("fasta") for i in indices)
         msg += "\n''')"
         return _pretty_str(msg)
+
+    def pydna_code_from_acessed(self):
+        """Pydna code for acessed primers."""
+        return self.pydna_code_from_indices(self.accessed)
 
     def open_folder(self):
         """Open folder where primer file is located."""
