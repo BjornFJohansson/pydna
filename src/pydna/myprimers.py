@@ -160,12 +160,7 @@ class PrimerList(_UserList):
         return self.pydna_code_from_indices(indices)
 
     def pydna_code_from_indices(self, indices: list = None):
-        """
-        Pydna code for a list of primer indices.
-
-        Defaults to primers accessed from the list.
-        """
-        indices = indices or self.accessed
+        """Pydna code for a list of primer indices."""
         curly = "{}"
         msg = f"{self.identifier} = {curly}\n\n"
         msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
@@ -174,7 +169,7 @@ class PrimerList(_UserList):
         msg += "\n''')"
         return _pretty_str(msg)
 
-    def pydna_code_from_acessed(self):
+    def pydna_code_from_accessed(self):
         """Pydna code for acessed primers."""
         return self.pydna_code_from_indices(self.accessed)
 

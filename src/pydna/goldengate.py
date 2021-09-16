@@ -22,7 +22,7 @@
 #  ~~^-~^_~^~/  \~^-~^~_~^-~_^~-^~_^~~-^~_~^~-~_~-^~_^/  \~^-~_~^-~~-
 # ~ _~~- ~^-^~-^~~- ^~_^-^~~_ -~^_ -~_-~~^- _~~_~-^_ ~^-^~~-_^-~ ~^
 
-"""Assembly of sequences by GoldenGate ligation assebmly."""
+"""Assembly of sequences by GoldenGate ligation assembly."""
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from copy import deepcopy as _deepcopy
 import logging as _logging
@@ -40,7 +40,4 @@ assert a+b == DNA
 
 # MoClo
 
-
-
-
-
+# https://edinburgh-genome-foundry.github.io/GoldenHinges

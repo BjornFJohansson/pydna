@@ -79,7 +79,9 @@ def test_PrimerList_init(monkeypatch):
 
     assert pl1.pydna_code_from_list(pl1) == code
 
-    assert pl1.pydna_code_from_indices() == code
+    assert pl1.pydna_code_from_indices([0, 1, 2, 3]) == code
+
+    assert pl1.pydna_code_from_accessed() == code
 
     pl3 = myprimers.PrimerList(path="primers_linux_line_endings.txt")
 
@@ -94,21 +96,11 @@ def test_PrimerList_init(monkeypatch):
     with pytest.raises(ValueError):
         myprimers.PrimerList(identifier="/")
 
-
-
     with pytest.raises(ValueError):
         pl3[2] = primer_source[1]
 
     with pytest.raises(IndexError):
         pl3[999] = primer_source[1]
-
-
-
-
-
-
-
-
 
     from unittest import mock
     
