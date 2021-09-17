@@ -37,7 +37,7 @@ extensions = [
 # Add mappings https://kev.inburke.com/kevin/sphinx-interlinks
 intersphinx_mapping = {
     "biopython": ("https://biopython.org/docs/latest/api/", None),
-    "python": ("http://docs.python.org/3.8", None),
+    "python":    ("http://docs.python.org/3.8", None),
 }
 
 numpydoc_show_class_members = False
