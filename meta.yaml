@@ -29,9 +29,7 @@ requirements:
         - scipy
         - matplotlib
         - pillow
-        - pydrive2
         - CAI
-        - regex
 
 test:
   requires:

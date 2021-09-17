@@ -21,8 +21,6 @@ import re as _re
 from Bio.Seq import Seq as _Seq
 from pydna._pretty import PrettyTable as _PrettyTable
 
-from CAI import CAI as _CAI
-
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
@@ -40,6 +38,7 @@ class Seq(_Seq):
 
     def cai(self, organism="sce"):
         """docstring."""
+        from CAI import CAI as _CAI
         return round(_CAI(self._data.upper().decode("ASCII"),
                           weights=_weights[organism]), 3)
 
