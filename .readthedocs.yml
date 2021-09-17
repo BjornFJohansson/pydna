@@ -11,5 +11,5 @@ conda:
 
 python:
    install:
-      - method: conda
+      - method: pip
         path: .
