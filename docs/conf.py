@@ -55,8 +55,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "Pydna"
-copyright = "2013-2021, Björn Johansson"
+# project = "Pydna"
+# copyright = "2013-2021, Björn Johansson"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
