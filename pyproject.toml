@@ -1,5 +1,5 @@
 # pyproject.toml
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
 [tool.setuptools_scm]
 write_to = "src/pydna/_version.py"

@@ -99,11 +99,25 @@ master_doc = "index"
 # version = ".".join(release.split(".")[:2])
 
 # contents of docs/conf.py
-from pkg_resources import get_distribution
+# from pkg_resources import get_distribution
 
-release = get_distribution("pydna").version
+# release = get_distribution("pydna").version
 # for example take major/minor
-version = ".".join(release.split(".")[:3])
+# version = ".".join(release.split(".")[:3])
+
+
+
+
+
+
+# contents of docs/conf.py
+from importlib.metadata import version
+release = version('pydna')
+# for example take major/minor
+version = '.'.join(release.split('.')[:3])
+
+
+
 
 
 # The full version, including alpha/beta/rc tags.
