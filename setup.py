@@ -60,7 +60,6 @@ setup(
         "prettytable",
         "pyparsing",
         "requests",
-        "CAI",
     ],
     keywords="bioinformatics",
     classifiers=[
