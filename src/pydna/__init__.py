@@ -98,8 +98,8 @@ Code snippets are indicated by three greater-than signs::
 pydna source code
 -----------------
 
-The pydna source code is `available on Github
- <https://github.com/BjornFJohansson/pydna>`_.
+The pydna source code is
+`available on Github <https://github.com/BjornFJohansson/pydna>`_.
 
 How to get more help
 --------------------

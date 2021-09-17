@@ -449,7 +449,7 @@ class SeqRecord(_SeqRecord):
         """Return the url safe SEGUID [#]_ for the sequence.
 
         This checksum is the same as seguid but with base64.urlsafe
-        encoding [#]_ instead of the normal base 64. This means that
+        encoding instead of the normal base 64. This means that
         the characters + and / are replaced with - and _ so that
         the checksum can be a part of and URL or a filename.
 

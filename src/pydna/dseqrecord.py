@@ -11,6 +11,7 @@ Seq and SeqRecord classes, respectively.
 
 The Dseq and Dseqrecord classes support the notion of circular and linear DNA topology.
 """
+from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 from pydna.dseq import Dseq as _Dseq
 from pydna._pretty import pretty_str as _pretty_str
@@ -852,23 +853,40 @@ class Dseqrecord(_SeqRecord):
         answer.name = answer.id[:16]
         return fragments[0]
 
-    def no_cutters(self, batch=CommOnly):
-        """See """
+    def no_cutters(self, batch: _RestrictionBatch = None):
+        """docstring."""
+        if not batch:
+            batch = CommOnly
         return self.seq.no_cutters(batch=batch)
 
-    def unique_cutters(self, batch=CommOnly):
+    def unique_cutters(self, batch: _RestrictionBatch = None):
+        """docstring."""
+        if not batch:
+            batch = CommOnly
         return self.seq.unique_cutters(batch=batch)
 
-    def once_cutters(self, batch=CommOnly):
+    def once_cutters(self, batch: _RestrictionBatch = None):
+        """docstring."""
+        if not batch:
+            batch = CommOnly
         return self.seq.once_cutters(batch=batch)
 
-    def twice_cutters(self, batch=CommOnly):
+    def twice_cutters(self, batch: _RestrictionBatch = None):
+        """docstring."""
+        if not batch:
+            batch = CommOnly
         return self.seq.twice_cutters(batch=batch)
 
-    def n_cutters(self, n=3, batch=CommOnly):
+    def n_cutters(self, n=3, batch: _RestrictionBatch = None):
+        """docstring."""
+        if not batch:
+            batch = CommOnly
         return self.seq.n_cutters(n=n, batch=batch)
 
-    def cutters(self, batch=CommOnly):
+    def cutters(self, batch: _RestrictionBatch = None):
+        """docstring."""
+        if not batch:
+            batch = CommOnly
         return self.seq.cutters(batch=batch)
 
     def cut(self, *enzymes):

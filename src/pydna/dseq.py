@@ -1216,35 +1216,41 @@ class Dseq(_Seq):
 
     t4 = T4  # alias for the T4 method.
 
-    def no_cutters(self, batch=CommOnly):
-        """Returns the enzymes in a RestrictionBatch that do **not**
-        cut the sequence."""
+    def no_cutters(self, batch: _RestrictionBatch = None):
+        """Enzymes in a RestrictionBatch not cutting sequence."""
+        if not batch:
+            batch = CommOnly
         ana = batch.search(self)
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if not sitelist}
         return _RestrictionBatch(ncut)
 
-    def unique_cutters(self, batch=CommOnly):
-        """Returns the enzymes in a RestrictionBatch that cut the sequence
-        exactly once."""
+    def unique_cutters(self, batch: _RestrictionBatch = None):
+        """Enzymes in a RestrictionBatch cutting sequence once."""
+        if not batch:
+            batch = CommOnly
         return self.n_cutters(n=1, batch=batch)
 
     once_cutters = unique_cutters  # alias for unique_cutters
 
-    def twice_cutters(self, batch=CommOnly):
-        """Returns the enzymes in a RestrictionBatch that cut the sequence
-        exactly twice."""
+    def twice_cutters(self, batch: _RestrictionBatch = None):
+        """Enzymes in a RestrictionBatch cutting sequence twice."""
+        if not batch:
+            batch = CommOnly
         return self.n_cutters(n=2, batch=batch)
 
-    def n_cutters(self, n=3, batch=CommOnly):
+    def n_cutters(self, n=3, batch: _RestrictionBatch = None):
         """Returns the enzymes in a RestrictionBatch that cut the sequence
         n times."""
+        if not batch:
+            batch = CommOnly
         ana = batch.search(self)
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if len(sitelist) == n}
         return _RestrictionBatch(ncut)
 
-    def cutters(self, batch=CommOnly):
-        """Returns the enzymes in a RestrictionBatch that cut the sequence
-        at least once."""
+    def cutters(self, batch: _RestrictionBatch=None):
+        """Enzymes in a RestrictionBatch cutting sequence at least once."""
+        if not batch:
+            batch = CommOnly
         ana = batch.search(self)
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if sitelist}
         return _RestrictionBatch(ncut)

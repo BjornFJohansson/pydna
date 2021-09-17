@@ -34,10 +34,10 @@ extensions = [
     "sphinx.ext.intersphinx",
 ]
 
-# Add mappings https://kev.inburke.com/kevin/sphinx-interlinks/
+# Add mappings https://kev.inburke.com/kevin/sphinx-interlinks
 intersphinx_mapping = {
-    "biopython": ("https://biopython.readthedocs.io/en/latest", None),
-    "python": ("http://docs.python.org/3.6", None),
+    "biopython": ("https://biopython.org/docs/latest/api/", None),
+    "python": ("http://docs.python.org/3.8", None),
 }
 
 numpydoc_show_class_members = False
@@ -56,7 +56,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Pydna"
-copyright = "2013-2019, Björn Johansson"
+copyright = "2013-2021, Björn Johansson"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -155,7 +155,7 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "default"
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

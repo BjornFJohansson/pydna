@@ -1,5 +1,5 @@
 Welcome to Pydna's documentation!
-===============================
+=================================
 
 
 Module contents
@@ -190,7 +190,7 @@ pydna.utils module
 
 
 
-   
+
 
 Indices and tables
 ==================
@@ -198,4 +198,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
