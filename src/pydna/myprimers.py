@@ -180,8 +180,10 @@ class PrimerList(_UserList):
     code = pydna_code_from_indices
 
 
-def check_primer_numbers(pl: list = PrimerList()):
+def check_primer_numbers(pl: list = None):
     """Find primers whose number do not match position in list."""
+    if not pl:
+        pl = PrimerList()
     primers_with_wrong_number = []
     for i, p in enumerate(pl):
         if not p.name.startswith(str(i)):
@@ -189,13 +191,17 @@ def check_primer_numbers(pl: list = PrimerList()):
     return primers_with_wrong_number
 
 
-def undefined_sequence(pl: list = PrimerList()):
+def undefined_sequence(pl: list = None):
     """Primers in list with N or n instead of a sequence."""
+    if not pl:
+        pl = PrimerList()
     return [p for p in pl if _re.match("N+", str(p.seq.upper()))]
 
 
-def find_duplicate_primers(pl: list = PrimerList()):
+def find_duplicate_primers(pl: list = None):
     """Find a list of lists with duplicated primer sequences."""
+    if not pl:
+        pl = PrimerList()
     pg = {}
     for p in pl:
         pg.setdefault(str(p.seq).upper(), []).append(p)
