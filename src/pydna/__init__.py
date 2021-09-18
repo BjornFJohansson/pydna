@@ -8,28 +8,34 @@
 """
 :copyright: Copyright 2013 - 2021 by Björn Johansson. All rights reserved.
 :license:   This code is part of the pydna package, governed by the
-            license in LICENSE.txt that should be included as part of this package.
+            license in LICENSE.txt that should be included as part
+            of this package.
 
 pydna
 =====
-Pydna is a python package providing code for simulation of the creation of recombinant DNA molecules
-using `molecular biology <https://en.wikipedia.org/wiki/Molecular_biology>`_ techniques.
+Pydna is a python package providing code for simulation of the creation of
+recombinant DNA molecules using
+`molecular biology <https://en.wikipedia.org/wiki/Molecular_biology>`_
+techniques.
 
 Provided:
   1. PCR simulation
   2. Assembly simulation based on shared identical sequences
   3. Primer design for amplification of a given sequence
-  4. Automatic design of primer tails for Gibson assembly or homologous recombination.
+  4. Automatic design of primer tails for Gibson assembly
+     or homologous recombination.
   5. Restriction digestion and cut&paste cloning
   6. Agarose gel simulation
   7. Download sequences from Genbank
-  8. Parsing various sequence formats including the capacity to handle broken Genbank format
+  8. Parsing various sequence formats including the capacity to
+     handle broken Genbank format
 
 pydna package layout
 --------------------
 
-The most important modules and how to import functions or classes from them are listed below.
-Class names starts with a capital letter, functions with a lowercase letter:
+The most important modules and how to import functions or classes from
+them are listed below. Class names starts with a capital letter,
+functions with a lowercase letter:
 
 ::
 
@@ -67,26 +73,33 @@ Class names starts with a capital letter, functions with a lowercase letter:
 
 How to use the documentation
 ----------------------------
-Documentation is available as docstrings provided in the source code for each module.
+Documentation is available as docstrings provided in the source code for
+each module.
 These docstrings can be inspected by reading the source code directly.
 See further below on how to obtain the code for pydna.
 
-In the python shell, use the built-in ``help`` function to view a function's docstring::
+In the python shell, use the built-in ``help`` function to view a
+function's docstring::
 
   >>> from pydna import readers
   >>> help(readers.read)
   ... # doctest: +SKIP
 
-The doctrings are also used to provide an automaticly generated reference manual available online at
+The doctrings are also used to provide an automaticly generated reference
+manual available online at
 `read the docs <https://pydna.readthedocs.io>`_.
 
-Docstrings can be explored using `IPython <http://ipython.org/>`_, an advanced Python shell with
-TAB-completion and introspection capabilities. To see which functions are available in `pydna`,
+Docstrings can be explored using `IPython <http://ipython.org/>`_, an
+advanced Python shell with
+TAB-completion and introspection capabilities. To see which functions
+are available in `pydna`,
 type `pydna.<TAB>` (where `<TAB>` refers to the TAB key).
-Use `pydna.open_config_folder?<ENTER>`to view the docstring or `pydna.open_config_folder??<ENTER>` to view the source code.
+Use `pydna.open_config_folder?<ENTER>`to view the docstring or
+`pydna.open_config_folder??<ENTER>` to view the source code.
 
-In the `Spyder IDE <https://github.com/spyder-ide/spyder>`_ it is possible to place the cursor immediately before
-the name of a module,class or function and press ctrl+i to bring up docstrings in a separate window in Spyder
+In the `Spyder IDE <https://github.com/spyder-ide/spyder>`_ it is possible
+to place the cursor immediately before the name of a module,class or
+function and press ctrl+i to bring up docstrings in a separate window in Spyder
 
 Code snippets are indicated by three greater-than signs::
 
@@ -141,9 +154,8 @@ __status__ = "Development"  # "Production" #"Prototype"
 
 
 # create config directory
-_os.environ["pydna_config_dir"] = _os.getenv(
-    "pydna_config_dir", _appdirs.user_config_dir("pydna")
-)
+_os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir",
+                                             _appdirs.user_config_dir("pydna"))
 
 try:
     _os.makedirs(_os.environ["pydna_config_dir"])
@@ -166,7 +178,7 @@ default_ini = {"loglevel": str(_logging.WARNING),
                "ape": "put/path/to/ape/here",
                "primers": user_data_dir/"primers.md",
                "enzymes": user_data_dir/"enzymes.md",
-               "primersgdoc":"PRIMERS"}
+               "primersgdoc": "PRIMERS"}
 
 # if a pydna.ini exists, it is read
 if _os.path.exists(_ini_path):
@@ -176,15 +188,18 @@ else:  # otherwise it is created with default settings
     with open(_ini_path, "w", encoding="utf-8") as f:  # TODO needs encoding?
         _parser.write(f)
 
-# pydna related environmental variables are set from pydna.ini if they are not set already
+# pydna related environmental variables are set
+# from pydna.ini if they are not set already
 _mainsection = _parser["main"]
 
 for key in default_ini:
-    _os.environ[f"pydna_{key}"] = _os.getenv(
-    f"pydna_{key}", _mainsection.get(key, default_ini[key] ))
+    _os.environ[f"pydna_{key}"] = _os.getenv(f"pydna_{key}",
+                                             _mainsection.get(key,
+                                                              default_ini[key])
+                                             )
 
 # create log directory if not present
-_os.makedirs(_os.environ["pydna_log_dir"], exist_ok=True)  # changes to file system ####
+_os.makedirs(_os.environ["pydna_log_dir"], exist_ok=True)  # changes to fs
 _logmsg = "Log directory {}".format(_os.environ["pydna_log_dir"])
 
 # create logger
@@ -195,30 +210,38 @@ _hdlr = _handlers.RotatingFileHandler(
     mode="a",
     maxBytes=10 * 1024 * 1024,
     backupCount=10,
-    encoding="utf-8",
-)
-_formatter = _logging.Formatter("%(asctime)s %(levelname)s %(funcName)s %(message)s")
+    encoding="utf-8")
+
+_formatter = _logging.Formatter(("%(asctime)s %(levelname)s"
+                                 " %(funcName)s %(message)s"))
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
 _logger.info(_logmsg)
-_logger.info("Environmental variable pydna_ape          = %s", _os.environ["pydna_ape"])
+_logger.info("Environmental variable pydna_ape          = %s",
+             _os.environ["pydna_ape"])
 _logger.info(
-    "Environmental variable pydna_cached_funcs = %s", _os.environ["pydna_cached_funcs"]
+    "Environmental variable pydna_cached_funcs = %s",
+    _os.environ["pydna_cached_funcs"]
 )
 _logger.info(
-    "Environmental variable pydna_data_dir     = %s", _os.environ["pydna_data_dir"]
+    "Environmental variable pydna_data_dir     = %s",
+    _os.environ["pydna_data_dir"]
 )
 _logger.info(
-    "Environmental variable pydna_email        = %s", _os.environ["pydna_email"]
+    "Environmental variable pydna_email        = %s",
+    _os.environ["pydna_email"]
 )
 _logger.info(
-    "Environmental variable pydna_log_dir      = %s", _os.environ["pydna_log_dir"]
+    "Environmental variable pydna_log_dir      = %s",
+    _os.environ["pydna_log_dir"]
 )
 _logger.info(
-    "Environmental variable pydna_loglevel     = %s", _os.environ["pydna_loglevel"]
+    "Environmental variable pydna_loglevel     = %s",
+    _os.environ["pydna_loglevel"]
 )
 _logger.info(
-    "Environmental variable pydna_primers      = %s", _os.environ["pydna_primers"]
+    "Environmental variable pydna_primers      = %s",
+    _os.environ["pydna_primers"]
 )
 # create cache directory if not present
 
@@ -298,9 +321,11 @@ class _PydnaDeprecationWarning(_PydnaWarning):
 
 
 def open_current_folder():
-    """Calling this function opens the current working directory
-    in the default file manager. The location for this folder is
-    given by the :func:`os.getcwd` function"""
+    """Open the current working directory.
+
+    Opens in the default file manager. The location for this folder is
+    given by the :func:`os.getcwd` function
+    """
     return _open_folder(_os.getcwd())
 
 
@@ -308,15 +333,18 @@ _logger.info("Current working directory = os.getcwd() = %s", _os.getcwd())
 
 
 def open_cache_folder():
-    """Calling this function opens the pydna cache folder in
-    the default file manager. The location for this folder is stored
-    in the *pydna_data_dir* environmental variable."""
+    """Open the pydna cache folder.
+
+    Opens in the default file manager. The location for this folder is stored
+    in the *pydna_data_dir* environmental variable.
+    """
     return _open_folder(_os.environ["pydna_data_dir"])
 
 
 def open_config_folder():
-    """Calling this function opens the pydna configuration folder in
-    the default file manager. The location for this folder is stored
+    """Open the pydna configuration folder.
+
+    Opens in the default file manager. The location for this folder is stored
     in the *pydna_config_dir* environmental variable.
 
     The `pydna.ini` file can be edited to make pydna quicker to use.
@@ -332,15 +360,15 @@ def open_config_folder():
         email=myemail@example.org
         data_dir=/home/bjorn/.local/share/pydna
         log_dir=/home/bjorn/.cache/pydna/log
-        ape=tclsh /home/bjorn/.ApE/apeextractor/ApE.vfs/lib/app-AppMain/AppMain.tcl
+        ape=tclsh /home/bjorn/.ApE/AppMain.tcl
         cached_funcs=Genbank_nucleotide
         primers=/home/bjorn/Dropbox/wikidata/PRIMERS.txt
         enzymes=/home/bjorn/Dropbox/wikidata/RestrictionEnzymes.txt
 
-    The email address is set to someone@example.com by default. If you change this
-    to you own address, the :func:`pydna.genbank.genbank` function can be used
-    to download sequences from Genbank directly without having to explicitly add
-    the email address.
+    The email address is set to someone@example.com by default. If you change
+    this to you own address, the :func:`pydna.genbank.genbank` function can be
+    used to download sequences from Genbank directly without having to
+    explicitly add the email address.
 
     Pydna can cache results from the following functions or methods:
 
@@ -350,27 +378,25 @@ def open_config_folder():
     - :func:`pydna.download.download_text`       download.download_text
     - :func:`pydna.dseqrecord.Dseqrecord.synced` Dseqrecord_synced
 
-    These can be added separated by a comma to the cached_funcs entry in **pydna.ini**
-    file or the pydna_cached_funcs environment variable.
+    These can be added separated by a comma to the cached_funcs entry
+    in **pydna.ini** file or the pydna_cached_funcs environment variable.
 
     """
     return _open_folder(_os.environ["pydna_config_dir"])
 
 
 def open_log_folder():
+    """docstring."""
     return _open_folder(_os.environ["pydna_log_dir"])
 
 
 def get_env():
-    """Calling this function prints a an ascii table containing all environmental
-    variables set by `pydna` and their values. Pydna related variables have names
-    that starts with `pydna_`
+    """Print a an ascii table containing all environmental variables.
 
+    Pydna related variables have names that starts with `pydna_`
     """
-    from pydna._pretty import pretty_str as _pretty_str
-
     _table = _PrettyTable(["Variable", "Value"])
-    #_table.set_style(_prettytable.DEFAULT)
+    # _table.set_style(_prettytable.DEFAULT)
     _table.align["Variable"] = "l"  # Left align
     _table.align["Value"] = "l"  # Left align
     _table.padding_width = 1  # One space between column edges and contents
@@ -381,7 +407,7 @@ def get_env():
 
 
 def logo():
-    """This function returns the ascii-art logotype of pydna.
+    r"""Ascii-art logotype of pydna.
 
     >>> import pydna
     >>> print(pydna.logo())
