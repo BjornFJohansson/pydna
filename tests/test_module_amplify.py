@@ -275,10 +275,10 @@ def test_too_short_primers():
 
     f, r = parse_primers(
         """>ForwardPrimer
-                            gctactacacacgtactgactg
+           gctactacacacgtactgactg
 
-                            >ReversePrimer
-                            tgtggttactgactctatcttg"""
+           >ReversePrimer
+           tgtggttactgactctatcttg"""
     )
 
     t = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")

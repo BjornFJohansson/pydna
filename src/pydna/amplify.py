@@ -369,9 +369,10 @@ class Anneal(object, metaclass=_Memoize):
                         ]
                     else:
                         tmpl = tmpl[: rp.position + rp._fp - (fp.position - fp._fp)]
-                else:
+                elif fp.position <= rp.position:
                     tmpl = self.template[fp.position - fp._fp : rp.position + rp._fp]
-
+                else:
+                    continue
                 prd = (
                     _Dseqrecord(fp.tail)
                     + tmpl
