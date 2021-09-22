@@ -66,6 +66,8 @@ classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biop
 
 These classes make cut and paste cloning and PCR very simple:
 
+::
+
     >>> from pydna.dseq import Dseq
     >>> seq = Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
     >>> seq
@@ -215,9 +217,9 @@ Pip is included in recent Python versions.
 Pip installs the minimal installation requirements automatically, but not the optional requirements (see below).
 
 
-### Linux:
+::
 
-    bjorn@bjorn-UL30A:~/pydna$ sudo pip install pydna --pre
+    sudo pip install pydna --pre
 
 Use the --pre switch to get the latest version of pydna.
 
