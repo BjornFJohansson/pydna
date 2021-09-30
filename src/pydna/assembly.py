@@ -375,7 +375,7 @@ class Assembly(object, metaclass=_Memoize):
                 edgelol.append(e)
 
             for edges in _itertools.product(*edgelol):
-                # TODO explai
+                # TODO explain
                 if [
                     True
                     for ((u, v, e), (x, y, z)) in zip(edges, edges[1:])
@@ -385,7 +385,7 @@ class Assembly(object, metaclass=_Memoize):
                 ct = "".join(e["seq"][e["piece"]] for u, v, e in edges)
                 key = ct.upper()
 
-                if key in lps: 
+                if key in lps:
                     continue    # TODO: is this test needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)

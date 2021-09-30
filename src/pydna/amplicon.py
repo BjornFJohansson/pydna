@@ -118,27 +118,6 @@ class Amplicon(_Dseqrecord):
              A string containing a text representation of the primers
              annealing on the template (see example above).
 
-
-        Notes
-        -----
-        tm in the figure above is the melting temperature (tm) for each primer
-        calculated according to SantaLucia 1998 [#]_.
-
-        dbd is the tm calculation for enzymes with dsDNA binding domains
-        like Pfu-Sso7d [#]_. See [#]_ for more information.
-
-        References
-        ----------
-
-        .. [#] J. SantaLucia, “A Unified View of Polymer, Dumbbell, and
-               Oligonucleotide DNA Nearest-neighbor Thermodynamics",
-               Proceedings of the National Academy of Sciences 95,
-               no. 4 (1998): 1460.
-        .. [#] M. Nørholm, “A Mutant Pfu DNA Polymerprimerase Designed for
-               Advanced Uracil-excision DNA Engineering,” BMC Biotechnology 10,
-               no. 1 (2010): 21, doi:10.1186/1472-6750-10-21.
-        .. [#] http://www.thermoscientificbio.com/webtools/tmc
-
         """
 
         f = """
