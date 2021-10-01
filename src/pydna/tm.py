@@ -169,7 +169,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
                             |95°C|95°C               |    |tmf:{tmf:.1f}
                             |____|_____          72°C|72°C|tmr:{tmr:.1f}
                             |3min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                            |    |      \______/{0:2}:{1:0<2}|5min|GC {GC}%
+                            |    |      \______/{0:2}:{1:0>2}|5min|GC {GC}%
                             |    |       30s         |    |{size}bp
                             """[
             1:-1
@@ -235,51 +235,40 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
 
     if tmf >= 69.0 and tmr >= 69.0:
 
-        f = _textwrap.dedent(
-            r"""
-                                |98°C|98°C      |    |tmf:{tmf:.1f}
-                                |____|____      |    |tmr:{tmr:.1f}
-                                |30s |10s \ 72°C|72°C|{rate}s/kb
-                                |    |     \____|____|GC {GC_prod}%
-                                |    |     {0:2}:{1:2}|5min|{size}bp
-                                """[
-                1:-1
-            ].format(
+        f = _textwrap.dedent(r"""
+                              |98°C|98°C      |    |tmf:{tmf:.1f}
+                              |____|____      |    |tmr:{tmr:.1f}
+                              |30s |10s \ 72°C|72°C|{rate}s/kb
+                              |    |     \____|____|GC {GC_prod}%
+                              |    |     {0:2}:{1:0>2}|5min|{size}bp
+                              """.format(
                 rate=PfuSso7d_extension_rate,
                 tmf=tmf,
                 tmr=tmr,
                 GC_prod=int(amplicon.gc()*100),
                 size=len(amplicon.seq),
-                *map(int, divmod(extension_time_PfuSso7d, 60)),
-            )
-        )
+                *map(int, divmod(extension_time_PfuSso7d, 60)))).strip()
     else:
         f = _textwrap.dedent(
             r"""
-                                |98°C|98°C               |    |tmf:{tmf:.1f}
-                                |____|_____          72°C|72°C|tmr:{tmr:.1f}
-                                |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                                |    |      \______/{0:2}:{1:2}|5min|GC {GC}%
-                                |    |       10s         |    |{size}bp
-                                """[
-                1:-1
-            ].format(
-                rate=PfuSso7d_extension_rate,
-                size=len(amplicon.seq),
-                ta=round(
-                    ta(
-                        amplicon.forward_primer.footprint,
-                        amplicon.reverse_primer.footprint,
-                        amplicon.seq,
-                    ),
-                    1,
+             |98°C|98°C               |    |tmf:{tmf:.1f}
+             |____|_____          72°C|72°C|tmr:{tmr:.1f}
+             |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb
+             |    |      \______/{0:2}:{1:0>2}|5min|GC {GC}%
+             |    |       10s         |    |{size}bp
+             """.format(
+             rate=PfuSso7d_extension_rate,
+             size=len(amplicon.seq),
+             ta=round(
+              ta(amplicon.forward_primer.footprint,
+                 amplicon.reverse_primer.footprint,
+                 amplicon.seq,),
+                 1,
                 ),
                 tmf=tmf,
                 tmr=tmr,
                 GC=int(amplicon.gc()*100),
-                *map(int, divmod(extension_time_PfuSso7d, 60)),
-            )
-        )
+                *map(int, divmod(extension_time_PfuSso7d, 60)))).strip()
 
     return _pretty_str(f)
 

@@ -63,7 +63,9 @@ def test_amplicon_dbd():
     from textwrap import dedent
 
     template = Dseqrecord(
-        "GCGTCCAGCGGCTGCCCGAGGCGCCAAGTGCCCGGGCCGAGCCCGCATCTGAGGCCGCCGCGGGC"
+        "GCGTCCAGCGGCTGCCCGAGGCGCCAAGTG" +
+        "GATC"*360 +
+        "CCCGGGCCGAGCCCGCATCTGAGGCCGCCGCGGGC"
     )
 
     p1 = Primer("GCGTCCAGCGGCTGCCCGAGG")
@@ -73,32 +75,29 @@ def test_amplicon_dbd():
 
     prod = ann.products[0]
 
-    assert repr(prod) == "Amplicon(65)"
+    assert repr(prod) == "Amplicon(1505)"
 
     fig = r"""
-              Pfu-Sso7d (rate 15s/kb)
-              Two-step|    30 cycles |      |65bp
-              98.0°C  |98.0C         |      |Tm formula: Pydna tmbresluc
-              _____ __|_____         |      |SaltC 50mM
-              00min30s|10s  \        |      |Primer1C 1.0µM
-                      |      \ 72.0°C|72.0°C|Primer2C 1.0µM
-                      |       \______|______|GC 81%
-                      |       0min10s|10min |4-12°C
-              """[
-        1:
-    ]
-    fig = r"""
-            |98°C|98°C      |    |tmf:71.6
-            |____|____      |    |tmr:75.3
-            |30s |10s \ 72°C|72°C|15s/kb
-            |    |     \____|____|GC 81%
-            |    |      0:10|5min|65bp
-            """[
-        1:
-    ]
+    |95°C|95°C               |    |tmf:80.3
+    |____|_____          72°C|72°C|tmr:84.4
+    |3min|30s  \ 65.5°C _____|____|45s/kb
+    |    |      \______/ 1:07|5min|GC 51%
+    |    |       30s         |    |1505bp
+    """
+    fig = dedent(fig).strip()
+    assert str(prod.program()) == fig
 
-    fig = dedent(fig)
+    fig = r"""
+    |98°C|98°C      |    |tmf:71.6
+    |____|____      |    |tmr:75.3
+    |30s |10s \ 72°C|72°C|15s/kb
+    |    |     \____|____|GC 51%
+    |    |      0:22|5min|1505bp
+    """
+    fig = dedent(fig).strip()
     assert str(prod.dbd_program()) == fig
+
+
 
 
 def test_amplicon_dbd_low_gc():
@@ -108,7 +107,9 @@ def test_amplicon_dbd_low_gc():
     from pydna.primer import Primer
     from textwrap import dedent
 
-    template = Dseqrecord("AAAATATTTTTATACATAATACAATTGTATATTCTTAAATAAAAAATACGTCATC")
+    template = Dseqrecord("AAAATATTTTTATACAT" +
+                          "GAAA"*370 +
+                          "ATAAAAAATACGTCATC")
 
     p1 = Primer("AAAATATTTTTATACAT")
     p2 = Primer("GATGACGTATTTTTTAT")
@@ -117,30 +118,17 @@ def test_amplicon_dbd_low_gc():
 
     prod = ann.products[0]
 
-    assert repr(prod) == "Amplicon(55)"
+    assert repr(prod) == "Amplicon(1514)"
 
     fig = r"""
-            Pfu-Sso7d (rate 15s/kb)                 |55bp
-            Three-step|          30 cycles   |      |Tm formula: Pydna tmbresluc
-            98.0°C    |98.0°C                |      |SaltC 50mM
-            __________|_____          72.0°C |72.0°C|Primer1C 1.0µM
-            00min30s  |10s  \ 39.0°C ________|______|Primer2C 1.0µM
-                      |      \______/ 0min 0s|10min |GC 14%
-                      |        10s           |      |4-12°C
-            """[
-        1:
-    ]
+    |98°C|98°C               |    |tmf:32.6
+    |____|_____          72°C|72°C|tmr:39.6
+    |30s |10s  \ 35.6°C _____|____|15s/kb
+    |    |      \______/ 0:22|5min|GC 24%
+    |    |       10s         |    |1514bp
+    """
 
-    fig = r"""
-              |98°C|98°C               |    |tmf:32.6
-              |____|_____          72°C|72°C|tmr:39.6
-              |30s |10s  \ 35.6°C _____|____|15s/kb
-              |    |      \______/ 0:10|5min|GC 14%
-              |    |       10s         |    |55bp
-              """[
-        1:
-    ]
-    fig = dedent(fig)
+    fig = dedent(fig).strip()
 
     assert str(prod.dbd_program()) == fig
 
