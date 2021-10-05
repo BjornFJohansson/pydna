@@ -166,14 +166,12 @@ def program(amplicon, tm=tm_default, ta=ta_default):
 
     f = _textwrap.dedent(
         r"""
-                            |95°C|95°C               |    |tmf:{tmf:.1f}
-                            |____|_____          72°C|72°C|tmr:{tmr:.1f}
-                            |3min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
-                            |    |      \______/{0:2}:{1:0>2}|5min|GC {GC}%
-                            |    |       30s         |    |{size}bp
-                            """[
-            1:-1
-        ].format(
+        |95°C|95°C               |    |tmf:{tmf:.1f}
+        |____|_____          72°C|72°C|tmr:{tmr:.1f}
+        |3min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb
+        |    |      \______/{0:2}:{1:0>2}|5min|GC {GC}%
+        |    |       30s         |    |{size}bp
+        """.format(
             rate=taq_extension_rate,
             size=len(amplicon.seq),
             ta=round(
@@ -188,8 +186,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
             tmr=tm(amplicon.reverse_primer.footprint),
             GC=int(amplicon.gc()*100),
             *map(int, divmod(extension_time_taq, 60)),
-        )
-    ).strip()
+        )).strip()
 
     return _pretty_str(f)
 

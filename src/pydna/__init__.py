@@ -6,7 +6,7 @@
 # as part of this package.
 
 """
-:copyright: Copyright 2013 - 2021 by Björn Johansson. All rights reserved.
+:copyright: Copyright 2013-2021 by Björn Johansson. All rights reserved.
 :license:   This code is part of the pydna package, governed by the
             license in LICENSE.txt that should be included as part
             of this package.
@@ -16,7 +16,7 @@ pydna
 Pydna is a python package providing code for simulation of the creation of
 recombinant DNA molecules using
 `molecular biology <https://en.wikipedia.org/wiki/Molecular_biology>`_
-techniques.
+techniques. Development of pydna happens in this Github `repository <https://github.com/BjornFJohansson/pydna>`_.
 
 Provided:
   1. PCR simulation
