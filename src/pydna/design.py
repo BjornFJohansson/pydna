@@ -132,23 +132,34 @@ def primer_design(
         tmps = tm_func(str(ps))
         _module_logger.debug(((p, tmp), (ps, tmps)))
         return min((abs(target_tm - tmp), p), (abs(target_tm - tmps), ps))[1]
-
-    if fp and not rp:
-        fp = _Anneal((fp,), template).forward_primers.pop()
-        target_tm = tm_func(fp.footprint)
-        _module_logger.debug("forward primer given, design reverse primer:")
-        rp = _Primer(design(target_tm, template.reverse_complement()))
-    elif not fp and rp:
-        rp = _Anneal([rp], template).reverse_primers.pop()
-        target_tm = tm_func(rp.footprint)
-        _module_logger.debug("reverse primer given, design forward primer:")
-        fp = _Primer(design(target_tm, template))
-    elif not fp and not rp:
+    if not fp and not rp:
         _module_logger.debug("no primer given, design forward primer:")
         fp = _Primer((design(target_tm, template)))
         target_tm = tm_func(str(fp.seq))
         _module_logger.debug("no primer given, design reverse primer:")
         rp = _Primer(design(target_tm, template.reverse_complement()))
+    elif fp and not rp:
+        try:
+            fp = _Anneal((fp,), template).forward_primers.pop()
+        except IndexError:
+            raise ValueError("Forward primer does not anneal")
+        except Exception:
+            print("Unexpected error")
+            raise
+        target_tm = tm_func(fp.footprint)
+        _module_logger.debug("forward primer given, design reverse primer:")
+        rp = _Primer(design(target_tm, template.reverse_complement()))
+    elif not fp and rp:
+        try:
+            rp = _Anneal((rp,), template).reverse_primers.pop()
+        except IndexError:
+            raise ValueError("Reverse primer does not anneal")
+        except Exception:
+            print("Unexpected error")
+            raise
+        target_tm = tm_func(rp.footprint)
+        _module_logger.debug("reverse primer given, design forward primer:")
+        fp = _Primer(design(target_tm, template))
     else:
         raise ValueError("Specify maximum one of the two primers.")
 
