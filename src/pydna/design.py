@@ -143,7 +143,7 @@ def primer_design(
             fp = _Anneal((fp,), template).forward_primers.pop()
         except IndexError:
             raise ValueError("Forward primer does not anneal")
-        except Exception:
+        except Exception: # pragma: no cover
             print("Unexpected error")
             raise
         target_tm = tm_func(fp.footprint)
@@ -154,7 +154,7 @@ def primer_design(
             rp = _Anneal((rp,), template).reverse_primers.pop()
         except IndexError:
             raise ValueError("Reverse primer does not anneal")
-        except Exception:
+        except Exception: # pragma: no cover
             print("Unexpected error")
             raise
         target_tm = tm_func(rp.footprint)
@@ -723,4 +723,4 @@ if __name__ == "__main__":
     import doctest
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"] = cach
+    _os.environ["pydna_cached_funcs"] = cached

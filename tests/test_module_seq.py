@@ -1,15 +1,19 @@
 import pytest
 
 
-def test_Seq():
-
+def test_gc():
     from pydna.seq import Seq
-
-    from pydna.codon import rare_codons
-
     assert Seq("atgtaa").gc() == 0.167
 
+
+def test_cai():
+    from pydna.seq import Seq
     assert Seq("atgtaa").cai() == 1.0
+
+
+def test_rare_codons():
+    from pydna.seq import Seq
+    from pydna.codon import rare_codons
 
     lol = {}
 
@@ -54,14 +58,27 @@ def test_Seq():
             assert s[slc].upper() in codons
         assert s.express().lol() == lol[organism]
 
+def test_startcodon():
+    from pydna.seq import Seq
     assert Seq("atgtaa").startcodon() == 1.0
+
+def test_stopcodon():
+    from pydna.seq import Seq 
     assert Seq("atgtaa").stopcodon() == 0.47
 
+def test_orf():
+    
+    from pydna.seq import Seq
+    
     s = Seq("atgaaattttaa")
 
     assert s.orfs(2) == [Seq('atgaaattttaa')]
-
-    s2 = Seq("ctgaaattttaa")
+    
+def test_no_orf():
+    
+    from pydna.seq import Seq
+    
+    s2 = Seq("aaaaaaaaaaaaaaa")
 
     assert s2.orfs(2) == []
     
