@@ -11,12 +11,7 @@ import os as _os
 import re as _re
 import io as _io
 import textwrap as _textwrap
-
-# import glob      as _glob
-
 from Bio import SeqIO as _SeqIO
-
-# from Bio.Alphabet import generic_dna as _generic_dna
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer

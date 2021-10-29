@@ -24,7 +24,6 @@ import math as _math
 from pydna.seq import Seq as _Seq
 from Bio.Seq import _translate_str
 
-# from Bio.Alphabet import generic_dna as _generic_dna
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
 from pydna.utils import rc as _rc
@@ -311,6 +310,7 @@ class Dseq(_Seq):
             if ovhg is None:
                 crick = _rc(watson)
                 ovhg = 0
+                print(watson[:10])
                 self._data = bytes(watson, encoding="ASCII")
             else:  # ovhg given, but no crick strand
                 raise ValueError("ovhg defined without crick strand!")
@@ -360,7 +360,7 @@ class Dseq(_Seq):
                         self._data = bytes(
                             _rc(crick[-ovhg:])
                             + watson
-                            + _rc(crick[: len(crick) - ovhg - len(watson)]), 
+                            + _rc(crick[: len(crick) - ovhg - len(watson)]),
                             encoding="ASCII")
                 else:  # ovhg < 0
                     if -ovhg + len(crick) > len(watson):
@@ -384,7 +384,7 @@ class Dseq(_Seq):
         self.pos = pos
 
     @classmethod
-    def quick(cls, watson: str, crick: str, ovhg=0, 
+    def quick(cls, watson: str, crick: str, ovhg=0,
               linear=True, circular=False, pos=0):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(watson)
@@ -1081,12 +1081,12 @@ class Dseq(_Seq):
         crick, ovhg = self._fill_in_five_prime(nucleotides)
         watson = self._fill_in_three_prime(nucleotides)
         return Dseq(watson, crick, ovhg)
-    
-    def translate(self, table="Standard", stop_symbol="*", 
+
+    def translate(self, table="Standard", stop_symbol="*",
                   to_stop=False, cds=False, gap="-"):
         return _Seq(_translate_str(str(self), table, stop_symbol, to_stop, cds, gap=gap))
-        
-        
+
+
 
     def mung(self):
         """

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""doctsring."""
 
 from setuptools import setup
 from setuptools import Command
 from setuptools import find_packages
 from os import path
+import re
 
 # Read __author__, __email__. from __init__.py
 __author__ = "__author__"
@@ -18,16 +20,27 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 
+install_requires = []
+with open("requirements.txt", encoding="utf-8") as f:
+    for line in f.readlines():
+        install_requires.append(re.split(r"(<|>|=)=", line)[0])
+
+
 class PyTest(Command):
+    """doctsring."""
+
     user_options = []
 
     def initialize_options(self):
+        """doctsring."""
         pass
 
     def finalize_options(self):
+        """doctsring."""
         pass
 
     def run(self):
+        """doctsring."""
         import subprocess
         import sys
 
@@ -53,14 +66,7 @@ setup(
     setup_requires=["pytest-runner", "setuptools_scm"],
     tests_require=["pytest"],
     use_scm_version={"write_to": "src/pydna/_version.py"},
-    install_requires=[
-        "appdirs",
-        "biopython",
-        "networkx",
-        "prettytable",
-        "pyparsing",
-        "requests",
-    ],
+    install_requires=install_requires,
     keywords="bioinformatics",
     classifiers=[
         "Development Status :: 4 - Beta",

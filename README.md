@@ -237,6 +237,17 @@ or give the full path for pip. Try something like this, depending on where your 
 
 
 
+### Installing requirements
+
+If you want to install requirements before installing pydna, you can do:
+
+	pip install -r requirements.txt
+
+or
+
+	conda install --file requirements.txt
+
+
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Installation from Source

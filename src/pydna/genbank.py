@@ -151,6 +151,9 @@ class Genbank(object):
         _Entrez.email = self.email
         _Entrez.tool = self.tool
 
+        seq_start = int(seq_start)
+        seq_stop = int(seq_stop)
+
         _module_logger.info("Entrez.email  %s", self.email)
         text = _Entrez.efetch(
             db="nuccore",
