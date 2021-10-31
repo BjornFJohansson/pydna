@@ -310,7 +310,7 @@ class Dseq(_Seq):
             if ovhg is None:
                 crick = _rc(watson)
                 ovhg = 0
-                print(watson[:10])
+                #print(watson[:10])
                 self._data = bytes(watson, encoding="ASCII")
             else:  # ovhg given, but no crick strand
                 raise ValueError("ovhg defined without crick strand!")

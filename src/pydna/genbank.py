@@ -151,8 +151,8 @@ class Genbank(object):
         _Entrez.email = self.email
         _Entrez.tool = self.tool
 
-        seq_start = int(seq_start)
-        seq_stop = int(seq_stop)
+        seq_start = int(seq_start) if seq_start else None
+        seq_stop = int(seq_stop) if seq_stop else None
 
         _module_logger.info("Entrez.email  %s", self.email)
         text = _Entrez.efetch(
