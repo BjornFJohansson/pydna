@@ -292,7 +292,7 @@ class Dseq(_Seq):
     >>>
 
 
-    See also
+    See Also
     --------
     pydna.dseqrecord.Dseqrecord
 
@@ -310,8 +310,12 @@ class Dseq(_Seq):
             if ovhg is None:
                 crick = _rc(watson)
                 ovhg = 0
-                #print(watson[:10])
-                self._data = bytes(watson, encoding="ASCII")
+                try:
+                    self._data = bytes(watson, encoding="ASCII")
+                except TypeError:
+                    self._data = watson
+                    watson = watson.decode("ASCII")
+                    crick = crick.decode("ASCII")
             else:  # ovhg given, but no crick strand
                 raise ValueError("ovhg defined without crick strand!")
         else:  # crick strand given
@@ -370,12 +374,11 @@ class Dseq(_Seq):
                     else:
                         self._data = bytes(watson, encoding="ASCII")
 
-        self._circular = (
-            bool(circular)
-            and bool(linear) ^ bool(circular)
-            or linear is False
-            and circular is None
-        )
+        self._circular = (bool(circular)
+                          and bool(linear) ^ bool(circular)
+                          or linear is False
+                          and circular is None)
+
         self._linear = not self._circular
         self.watson = _pretty_str(watson)
         self.crick = _pretty_str(crick)
@@ -1081,6 +1084,9 @@ class Dseq(_Seq):
         crick, ovhg = self._fill_in_five_prime(nucleotides)
         watson = self._fill_in_three_prime(nucleotides)
         return Dseq(watson, crick, ovhg)
+    
+    def transcribe(self):
+        return _Seq(self.watson).transcribe()
 
     def translate(self, table="Standard", stop_symbol="*",
                   to_stop=False, cds=False, gap="-"):

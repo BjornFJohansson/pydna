@@ -20,6 +20,10 @@ def test_initialization():
     import pytest
     from pydna.dseq import Dseq
 
+    obj = Dseq(b"aaa")
+    assert obj.crick == "ttt"
+    assert obj.watson == "aaa"
+
     obj = Dseq("a", "t", 0)
     assert obj * 3 == Dseq("aaa", "ttt", 0)
     assert not obj == 123
@@ -707,6 +711,28 @@ def test_cut_with_no_enzymes():
     x = Dseq("ctcgGCGGCCGCcagcggccg", circular=True)
 
     assert x.cut([]) == ()
+
+
+def test_transcribe():
+
+    from pydna.dseq import Dseq
+
+    x = Dseq("ATGAAATAA")
+
+    assert str(x.transcribe()) == 'AUGAAAUAA'
+
+    assert str(x.reverse_complement().transcribe()) == 'UUAUUUCAU'
+
+
+def test_translate():
+
+    from pydna.dseq import Dseq
+
+    x = Dseq("ATGAAATAA")
+
+    assert str(x.translate()) == 'MK*'
+
+    assert str(x.reverse_complement().translate()) == 'LFH'
 
 
 if __name__ == "__main__":
