@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""doctsring."""
+"""docstring."""
 
 from setuptools import setup
 from setuptools import Command
@@ -48,38 +48,35 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 
-setup(
-    name="pydna",
-    author=__author__,
-    author_email=__email__,
-    zip_safe=False,
-    cmdclass={"test": PyTest},
-    packages=find_packages("src"),
-    package_dir={"": "src"},
-    url="https://github.com/BjornFJohansson/pydna",
-    license="LICENSE.txt",
-    description="""Contains classes and code for representing double
-                     stranded DNA and functions for simulating homologous
-                     recombination between DNA molecules.""",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    setup_requires=["pytest-runner", "setuptools_scm"],
-    tests_require=["pytest"],
-    use_scm_version={"write_to": "src/pydna/_version.py"},
-    install_requires=install_requires,
-    keywords="bioinformatics",
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Environment :: Console",
-        "Intended Audience :: Education",
-        "Intended Audience :: Developers",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: BSD License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Topic :: Education",
-        "Topic :: Scientific/Engineering :: Bio-Informatics",
-    ],
+setup(  name="pydna",
+		author=__author__,
+		author_email=__email__,
+		zip_safe=False,
+		cmdclass={"test": PyTest},
+		packages=find_packages("src"),
+		package_dir={"": "src"},
+		url="https://github.com/BjornFJohansson/pydna",
+		license="LICENSE.txt",
+		description="Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules.",
+		long_description=long_description,
+		long_description_content_type="text/markdown",
+		setup_requires=["pytest-runner", "setuptools_scm"],
+		tests_require=["pytest"],
+		use_scm_version={"write_to": "src/pydna/_version.py"},
+		install_requires=install_requires,
+		keywords="bioinformatics",
+		classifiers=[
+			"Development Status :: 4 - Beta",
+			"Environment :: Console",
+			"Intended Audience :: Education",
+			"Intended Audience :: Developers",
+			"Intended Audience :: Science/Research",
+			"License :: OSI Approved :: BSD License",
+			"Operating System :: OS Independent",
+			"Programming Language :: Python :: 3.7",
+			"Programming Language :: Python :: 3.8",
+			"Programming Language :: Python :: 3.9",
+			"Topic :: Education",
+			"Topic :: Scientific/Engineering :: Bio-Informatics",
+		],
 )
