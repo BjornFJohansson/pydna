@@ -253,8 +253,22 @@ def eq(*args, **kwargs):
 
 
 def SmallestRotation(s):
+    """Find the rotation of s that is smallest in lexicographic order.
+
+    Algorithm according to Duval 1983:
+
+    Pierre Duval, Jean. 1983. “Factorizing Words over an Ordered Alphabet.”
+    Journal of Algorithms & Computational Technology* 4 (4) (December 1):
+    363–381.
+
+    Algorithms on strings and sequences based on Lyndon words.
+    David Eppstein, October 2011.
+
+    https://gist.github.com/dvberkel/1950267
+    """
     prev, rep = None, 0
     ds = 2 * s
+    lens = len(s)
     lends = len(ds)
     old = 0
     k = 0
@@ -273,7 +287,7 @@ def SmallestRotation(s):
                 rep += 1
             else:
                 prev, rep = w, 1
-            if len(w) * rep == len(s):
+            if len(w) * rep == lens:
                 return w * rep
 
 
@@ -347,9 +361,8 @@ def cseguid(seq: str) -> _pretty_str:
     >>> cseguid("ttta")
     'oopV-6158nHJqedi8lsshIfcqYA'
     """
-    return seguid(
-        min(SmallestRotation(seq.upper()), SmallestRotation(str(rc(seq)).upper()))
-    )
+    return seguid(min(SmallestRotation(seq.upper()),
+                      SmallestRotation(str(rc(seq)).upper())))
 
 
 def flatten(*args):  # flatten
