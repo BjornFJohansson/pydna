@@ -18,7 +18,6 @@ from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
 from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
-from pydna.utils import cseguid as _cseg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.seqfeature import SeqFeature as _SeqFeature
 from Bio import SeqIO
@@ -306,7 +305,7 @@ class Dseqrecord(_SeqRecord):
         """
         if self.linear:
             raise TypeError("cseguid is only defined for circular sequences.")
-        return _cseg(str(self.seq))
+        return self.seq.cseguid()
 
     def lseguid(self):
         """Returns the url safe lSEGUID for the sequence.
@@ -334,7 +333,7 @@ class Dseqrecord(_SeqRecord):
         """
         if self.circular:
             raise TypeError("lseguid is only defined for linear sequences.")
-        return self.seq.seguid()
+        return self.seq.lseguid()
 
     def stamp(self):
         """Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
@@ -564,15 +563,15 @@ class Dseqrecord(_SeqRecord):
                     fp.write(self.format(f))
             elif "SEGUID" in old_file.description:
                 pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
+                # cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description
-                # print(oldstamp, newstamp)
                 if oldstamp and newstamp:
                     if oldstamp.group(0)[:35] == newstamp.group(0)[:35]:
                         newdescription = newdescription.replace(
-                            newstamp.group(0), oldstamp.group(0)
-                        )
+                                         newstamp.group(0),
+                                         oldstamp.group(0))
                 elif oldstamp:
                     newdescription += " " + oldstamp.group(0)
                 newobj = _copy.copy(self)
@@ -855,39 +854,27 @@ class Dseqrecord(_SeqRecord):
 
     def no_cutters(self, batch: _RestrictionBatch = None):
         """docstring."""
-        if not batch:
-            batch = CommOnly
-        return self.seq.no_cutters(batch=batch)
+        return self.seq.no_cutters(batch=batch or CommOnly)
 
     def unique_cutters(self, batch: _RestrictionBatch = None):
         """docstring."""
-        if not batch:
-            batch = CommOnly
-        return self.seq.unique_cutters(batch=batch)
+        return self.seq.unique_cutters(batch=batch or CommOnly)
 
     def once_cutters(self, batch: _RestrictionBatch = None):
         """docstring."""
-        if not batch:
-            batch = CommOnly
-        return self.seq.once_cutters(batch=batch)
+        return self.seq.once_cutters(batch=batch or CommOnly)
 
     def twice_cutters(self, batch: _RestrictionBatch = None):
         """docstring."""
-        if not batch:
-            batch = CommOnly
-        return self.seq.twice_cutters(batch=batch)
+        return self.seq.twice_cutters(batch=batch or CommOnly)
 
     def n_cutters(self, n=3, batch: _RestrictionBatch = None):
         """docstring."""
-        if not batch:
-            batch = CommOnly
-        return self.seq.n_cutters(n=n, batch=batch)
+        return self.seq.n_cutters(n=n, batch=batch or CommOnly)
 
     def cutters(self, batch: _RestrictionBatch = None):
         """docstring."""
-        if not batch:
-            batch = CommOnly
-        return self.seq.cutters(batch=batch)
+        return self.seq.cutters(batch=batch or CommOnly)
 
     def cut(self, *enzymes):
         """Digest the Dseqrecord object with one or more restriction enzymes.
@@ -956,11 +943,10 @@ class Dseqrecord(_SeqRecord):
         return tuple(dsfs)
 
     def number_of_cuts(self, *enzymes):
-        """This method returns the number of cuts by digestion with the Restriction enzymes contained in
-        the iterable."""
-        return sum(
-            [len(enzyme.search(self.seq)) for enzyme in _flatten(enzymes)]
-        )  # flatten
+        """The number of cuts by digestion with the Restriction enzymes
+        contained in the iterable."""
+        return sum([len(enzyme.search(self.seq)) for enzyme
+                    in _flatten(enzymes)])
 
     def cas9(self, RNA: str):
         """docstring."""

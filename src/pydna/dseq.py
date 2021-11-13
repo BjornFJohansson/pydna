@@ -26,6 +26,7 @@ from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import seguid as _seg
+from pydna.utils import cseguid as _cseg
 from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
@@ -95,38 +96,33 @@ class Dseq(_Seq):
 
     If both watson and crick are given, but not ovhg an attempt
     will be made to find the best annealing between the strands.
-    There are limitations to this! For long fragments it is quite
+    There are limitations to this. For long fragments it is quite
     slow. The length of the annealing sequences have to be at least
     half the length of the shortest of the strands.
 
     Three arguments (string, string, ovhg=int):
-
+  
+    The ovhg parameter is an integer describing the length of the
+    crick strand overhang in the 5' end of the molecule.
+    
     The ovhg parameter controls the stagger at the five prime end::
 
-        ovhg = -2
+        dsDNA    ovhg
 
+          XXX    2
         XXXXX
-          XXX
 
-        ovhg = -1
-
+         XXXX    1
         XXXXX
+
+        XXXXX    0
+        XXXXX
+
+        XXXXX   -1
          XXXX
 
-        ovhg = 0
-
-        XXXXX
-        XXXXX
-
-        ovhg = 1
-
-         XXXX
-        XXXXX
-
-        ovhg = 2
-
+        XXXXX   -2
           XXX
-        XXXXX
 
     Example of creating Dseq objects with different amounts of stagger:
 
@@ -1092,8 +1088,6 @@ class Dseq(_Seq):
                   to_stop=False, cds=False, gap="-"):
         return _Seq(_translate_str(str(self), table, stop_symbol, to_stop, cds, gap=gap))
 
-
-
     def mung(self):
         """
         Simulates treatment a nuclease with 5'-3' and 3'-5' single
@@ -1253,7 +1247,7 @@ class Dseq(_Seq):
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if len(sitelist) == n}
         return _RestrictionBatch(ncut)
 
-    def cutters(self, batch: _RestrictionBatch=None):
+    def cutters(self, batch: _RestrictionBatch = None):
         """Enzymes in a RestrictionBatch cutting sequence at least once."""
         if not batch:
             batch = CommOnly
@@ -1261,31 +1255,46 @@ class Dseq(_Seq):
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if sitelist}
         return _RestrictionBatch(ncut)
 
-    def seguid(self):
-        """Returns the SEGUID for the Dseq. The definition
-        varies with the amount of stagger between the sequences."""
+    def cseguid(self):
+        """Url safe cSEGUID for the sequence."""
+        if self.linear:
+            raise TypeError("cseguid is only defined for circular sequences.")
+        return _cseg(str(self.watson))
+
+    def lseguid(self):
+        """Url safe lSEGUID for the sequence.
+
+        Definition depends on the amount of stagger
+        between the sequences.
+        """
+        if self.circular:
+            raise TypeError("lseguid is only defined for linear sequences.")
         rc_ovhg = len(self.watson) - len(self.crick) + self._ovhg
+        watson = self.watson.upper()
+        crick = self.crick.upper()
         if self._ovhg == rc_ovhg == 0:
-            return _seg(min(self.watson, self.crick))
+            return _seg(min(watson, crick))
         if self._ovhg < rc_ovhg:
-            w = self.watson
-            c = self.crick
+            w = watson
+            c = crick
             o = self._ovhg
         elif self._ovhg > rc_ovhg:
-            w = self.crick
-            c = self.watson
+            w = crick
+            c = watson
             o = rc_ovhg
         elif self._ovhg == rc_ovhg:
-            w, c = sorted((self.watson, self.crick))
+            w, c = sorted((watson, crick))
             o = self._ovhg
-        return _seg(_pretty_str(o) + w + "|" + c)
+        return _seg(f"{o}{w}|{c}")
 
     def isblunt(self):
-        """Returns True if Dseq is blunt and false if staggered or circular.
+        """isblunt.
+
+        Return True if Dseq is linear and blunt and
+        false if staggered or circular.
 
         Examples
         --------
-
         >>> from pydna.dseq import Dseq
         >>> a=Dseq("gat")
         >>> a
@@ -1314,8 +1323,8 @@ class Dseq(_Seq):
         gat
         cta
         >>> a.isblunt()
-        False"""
-
+        False
+        """
         return self._ovhg == 0 and len(self.watson) == len(self.crick) and self._linear
 
     def cut(self, *enzymes):

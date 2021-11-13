@@ -32,7 +32,7 @@ def test_initialization():
     with pytest.raises(TypeError):
         obj * 2.3
 
-    assert obj.seguid() == "bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
+    assert obj.lseguid() == "bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
 
     assert obj == Dseq("a", "t", circular=False, linear=True)
 
@@ -341,7 +341,8 @@ def test_dseq():
     ).strip()
     assert repr(b2) == rpr
 
-    assert b2.seguid() == "hPNrcQ0sluXyfu4XuUh1trsnygc"
+    assert b2.lseguid() == "hPNrcQ0sluXyfu4XuUh1trsnygc"
+    assert b2.rc().lseguid() == "hPNrcQ0sluXyfu4XuUh1trsnygc"
 
     b3 = Dseq("GGATCC", "ggatcccc", 2)
     assert b3._data == b"ggGGATCC"
@@ -392,11 +393,14 @@ def test_dseq():
 
     assert frag1 + frag2 == obj
 
-    obj.seguid() == "HtK7-_BmOJw0BmtYE8f1yGdHc0c"
+    assert obj.lseguid() == "HtK7-_BmOJw0BmtYE8f1yGdHc0c"
 
-    assert frag1.seguid() == "yJkorWG5V2etvSLp6E6QNK-KMlQ"
-    assert frag2.seguid() == "Aw3buI-N85OztBZAzeGJvXGlwO8"
-
+    assert frag1.lseguid() == "yJkorWG5V2etvSLp6E6QNK-KMlQ"
+    assert frag2.lseguid() == "Aw3buI-N85OztBZAzeGJvXGlwO8"
+    
+    assert frag1.rc().lseguid() == "yJkorWG5V2etvSLp6E6QNK-KMlQ"
+    assert frag2.rc().lseguid() == "Aw3buI-N85OztBZAzeGJvXGlwO8"    
+    
     obj = Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta")
     assert (
         repr(obj)
