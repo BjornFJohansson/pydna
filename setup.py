@@ -26,28 +26,6 @@ with open("requirements.txt", encoding="utf-8") as f:
         install_requires.append(re.split(r"(<|>|=)=", line)[0])
 
 
-class PyTest(Command):
-    """doctsring."""
-
-    user_options = []
-
-    def initialize_options(self):
-        """doctsring."""
-        pass
-
-    def finalize_options(self):
-        """doctsring."""
-        pass
-
-    def run(self):
-        """doctsring."""
-        import subprocess
-        import sys
-
-        errno = subprocess.call([sys.executable, "run_test.py"])
-        raise SystemExit(errno)
-
-
 setup(  name="pydna",
 		author=__author__,
 		author_email=__email__,
@@ -61,7 +39,6 @@ setup(  name="pydna",
 		long_description=long_description,
 		long_description_content_type="text/markdown",
 		setup_requires=["pytest-runner", "setuptools_scm"],
-		tests_require=["pytest"],
 		use_scm_version={"write_to": "src/pydna/_version.py"},
 		install_requires=install_requires,
 		keywords="bioinformatics",
