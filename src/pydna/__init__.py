@@ -176,8 +176,8 @@ default_ini = {"loglevel": str(_logging.WARNING),
                "log_dir": _appdirs.user_log_dir("pydna"),
                "cached_funcs": "pydna.genbank.genbank.nucleotide",
                "ape": "put/path/to/ape/here",
-               "primers": user_data_dir/"primers.md",
-               "enzymes": user_data_dir/"enzymes.md",
+               "primers": str(user_data_dir/"primers.md"),
+               "enzymes": str(user_data_dir/"enzymes.md"),
                "primersgdoc": "PRIMERS"}
 
 # if a pydna.ini exists, it is read
@@ -190,13 +190,12 @@ else:  # otherwise it is created with default settings
 
 # pydna related environmental variables are set
 # from pydna.ini if they are not set already
-_mainsection = _parser["main"]
+_main = _parser["main"]
 
 for key in default_ini:
     _os.environ[f"pydna_{key}"] = _os.getenv(f"pydna_{key}",
-                                             _mainsection.get(key,
-                                                              default_ini[key])
-                                             )
+                                             _main.get(key,
+                                                       default_ini[key]))
 
 # create log directory if not present
 _os.makedirs(_os.environ["pydna_log_dir"], exist_ok=True)  # changes to fs
