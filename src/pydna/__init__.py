@@ -134,7 +134,7 @@ See this repository for a collection of
 
 from pydna import _version
 from pydna.utils import open_folder as _open_folder
-import pathlib as _pathlib
+from pathlib import Path as _Path
 import os as _os
 import sys as _sys
 import logging as _logging
@@ -142,6 +142,7 @@ import logging.handlers as _handlers
 import appdirs as _appdirs
 import configparser as _configparser
 from pydna._pretty import PrettyTable as _PrettyTable
+from pydna._version import version as __version__
 
 
 __author__ = "Björn Johansson"
@@ -156,29 +157,26 @@ __status__ = "Development"  # "Production" #"Prototype"
 # create config directory
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir",
                                              _appdirs.user_config_dir("pydna"))
-
-try:
-    _os.makedirs(_os.environ["pydna_config_dir"])
-except OSError:
-    if not _os.path.isdir(_os.environ["pydna_config_dir"]):
-        raise
+config_dir = _Path(_os.environ["pydna_config_dir"])
+config_dir.mkdir(parents=True, exist_ok=True)
 
 # set path for the pydna.ini file
-_ini_path = _os.path.join(_os.environ["pydna_config_dir"], "pydna.ini")
+_ini_path = config_dir/"pydna.ini"
+
+# define user_data_dir
+user_data_dir = _Path(_appdirs.user_data_dir("pydna"))
+
+default_ini = {"ape": "put/path/to/ape/here",
+               "cached_funcs": "pydna.genbank.genbank.nucleotide",
+               "data_dir": str(user_data_dir),
+               "email": "someone@example.com",
+               "enzymes": str(user_data_dir/"enzymes.md"),
+               "log_dir": _appdirs.user_log_dir("pydna"),
+               "loglevel": str(_logging.WARNING),
+               "primers": str(user_data_dir/"primers.md")}
 
 # initiate a config parser instance
 _parser = _configparser.ConfigParser()
-
-user_data_dir = _pathlib.Path(_appdirs.user_data_dir("pydna"))
-default_ini = {"loglevel": str(_logging.WARNING),
-               "email": "someone@example.com",
-               "data_dir": user_data_dir,
-               "log_dir": _appdirs.user_log_dir("pydna"),
-               "cached_funcs": "pydna.genbank.genbank.nucleotide",
-               "ape": "put/path/to/ape/here",
-               "primers": str(user_data_dir/"primers.md"),
-               "enzymes": str(user_data_dir/"enzymes.md"),
-               "primersgdoc": "PRIMERS"}
 
 # if a pydna.ini exists, it is read
 if _os.path.exists(_ini_path):
@@ -197,19 +195,20 @@ for key in default_ini:
                                              _main.get(key,
                                                        default_ini[key]))
 
+logdir = _Path(_os.environ["pydna_log_dir"])
+
 # create log directory if not present
-_os.makedirs(_os.environ["pydna_log_dir"], exist_ok=True)  # changes to fs
-_logmsg = "Log directory {}".format(_os.environ["pydna_log_dir"])
+logdir.mkdir(parents=True, exist_ok=True)
+_logmsg = "Log directory {}".format(logdir)
 
 # create logger
 _logger = _logging.getLogger("pydna")
 _logger.setLevel(int(_os.environ["pydna_loglevel"]))
-_hdlr = _handlers.RotatingFileHandler(
-    _os.path.join(_os.environ["pydna_log_dir"], "pydna.log"),
-    mode="a",
-    maxBytes=10 * 1024 * 1024,
-    backupCount=10,
-    encoding="utf-8")
+_hdlr = _handlers.RotatingFileHandler(logdir/"pydna.log",
+                                      mode="a",
+                                      maxBytes=10 * 1024 * 1024,
+                                      backupCount=10,
+                                      encoding="utf-8")
 
 _formatter = _logging.Formatter(("%(asctime)s %(levelname)s"
                                  " %(funcName)s %(message)s"))
@@ -244,9 +243,7 @@ _logger.info(
 )
 # create cache directory if not present
 
-_os.makedirs(
-    _os.environ["pydna_data_dir"], exist_ok=True
-)  # changes to file system ####
+_Path(_os.environ["pydna_data_dir"]).mkdir(parents=True, exist_ok=True)
 
 # find out if optional dependecies for gel module are in place
 
@@ -275,9 +272,7 @@ else:
                  " optional dependencies were found.")
 
 
-__version__ = _version.version
-del _version
-_sys.modules.pop("pydna._version", None)
+# _sys.modules.pop("pydna._version", None)
 
 _logger.info("__version__ = %s", __version__)
 

@@ -11,28 +11,28 @@ from unittest import mock
 import textwrap
 
 
-def test_makedirs_fail(monkeypatch, caplog):
+# def test_makedirs_fail(monkeypatch, caplog):
 
-    from unittest.mock import patch
+#     from unittest.mock import patch
 
-    with patch("pydna._os.path.isdir") as pid, patch("pydna._os.makedirs") as pmd:
-        pmd.side_effect = OSError()
-        pid.return_value = True
-        with pytest.raises(OSError):
-            import pydna
-            from importlib import reload
+#     with patch("pydna._os.path.isdir") as pid, patch("pydna._os.makedirs") as pmd:
+#         pmd.side_effect = OSError()
+#         pid.return_value = True
+#         with pytest.raises(OSError):
+#             import pydna
+#             from importlib import reload
 
-            reload(pydna)
-        # assert pmd.called == True
+#             reload(pydna)
+#         # assert pmd.called == True
 
-    with patch("pydna._os.path.isdir") as pid, patch("pydna._os.makedirs") as pmd:
-        pmd.side_effect = IOError()  # OSError()
-        pid.return_value = False
-        with pytest.raises(IOError):
-            import pydna
-            from importlib import reload
+#     with patch("pydna._os.path.isdir") as pid, patch("pydna._os.makedirs") as pmd:
+#         pmd.side_effect = IOError()  # OSError()
+#         pid.return_value = False
+#         with pytest.raises(IOError):
+#             import pydna
+#             from importlib import reload
 
-            reload(pydna)
+#             reload(pydna)
 
 
 def test_default_env(monkeypatch):
