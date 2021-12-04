@@ -3,11 +3,12 @@
 preserves some of the meta data from the parent sequence
 """
 
-from Bio.SeqFeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import SeqFeature as _Sf
+# from Bio.SeqFeature import FeatureLocation as _Fl
 from pydna.utils import identifier_from_string as _identifier_from_string
 
 
-class SeqFeature(_SeqFeature):
+class SeqFeature(_Sf):
     """docstring."""
 
     def __init__(
@@ -44,6 +45,17 @@ class SeqFeature(_SeqFeature):
             identifier = " ".join(self.qualifiers["note"])
         answer.name = answer.id = _identifier_from_string(identifier)[:16]
         return answer
+
+    def unfold(self):
+        """docstring."""
+        results = []
+        for part in self.location.parts:
+            results.append(SeqFeature(location=part,
+                                      type=self.type,
+                                      strand=self.strand,
+                                      id=self.id,
+                                      qualifiers=self.qualifiers))
+        return results
 
 
 if __name__ == "__main__":
