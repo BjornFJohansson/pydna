@@ -3,7 +3,6 @@
 """docstring."""
 
 from setuptools import setup
-from setuptools import Command
 from setuptools import find_packages
 from os import path
 import re
@@ -38,7 +37,7 @@ setup(name="pydna",
                    " between DNA molecules."),
       long_description=long_description,
       long_description_content_type="text/markdown",
-      setup_requires=["pytest-runner", "setuptools_scm"],
+      setup_requires=["setuptools_scm"],
       use_scm_version={"write_to": "src/pydna/_version.py"},
       install_requires=install_requires,
       keywords="bioinformatics",
