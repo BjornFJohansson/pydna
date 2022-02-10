@@ -200,9 +200,9 @@ class Anneal(object, metaclass=_Memoize):
         Dseqrecord
         circular: False
         size: 1011
-        ID: 1011bp 8SyDnG-azV61tx-z8PalCWZoVDo
+        ID: 1011bp_8SyDnG-azV61tx-z8PalCWZoVDo
         Name: 1011bp_PCR_prod
-        Description: pcr product_p1_p2
+        Description: pcr_product_p1_p2
         Number of features: 2
         /molecule_type=DNA
         Dseq(-1011)
