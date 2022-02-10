@@ -130,6 +130,7 @@ def test_no_xdg_open(monkeypatch):
     subp = mock.MagicMock(side_effect=OSError(["xdg-open", os.getcwd()]))
     monkeypatch.setattr("sys.platform", "linux")
     monkeypatch.setattr("subprocess.run", subp)
+
     import pydna
 
     pydna.open_current_folder()

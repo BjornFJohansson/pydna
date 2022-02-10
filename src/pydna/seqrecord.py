@@ -609,6 +609,10 @@ class SeqRecord(_SeqRecord):
         answer = super().__add__(other)
         if answer.name == "<unknown name>":
             answer.name = "name"
+        if answer.id == "<unknown id>":
+            answer.id = "id"
+        if answer.description == "<unknown description>":
+            answer.description = "description"
         return answer
 
     def __getitem__(self, index):
@@ -630,6 +634,21 @@ class SeqRecord(_SeqRecord):
         answer.id = _identifier_from_string(identifier)[:16]
         answer.name = _identifier_from_string(f"part_{self.name}")[:16]
         return answer
+
+    def __bool__(self):
+        """Boolean value of an instance of this class (True).
+
+        This behaviour is for backwards compatibility, since until the
+        __len__ method was added, a SeqRecord always evaluated as True.
+
+        Note that in comparison, a Seq object will evaluate to False if it
+        has a zero length sequence.
+
+        WARNING: The SeqRecord may in future evaluate to False when its
+        sequence is of zero length (in order to better match the Seq
+        object behaviour)!
+        """
+        return bool(self.seq)
 
     def dump(self, filename, protocol=None):
         """docstring."""

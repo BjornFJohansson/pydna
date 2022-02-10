@@ -30,6 +30,8 @@ import copy as _copy
 import operator as _operator
 import os as _os
 import re as _re
+import time as _time
+import datetime as _datetime
 
 import logging as _logging
 
@@ -193,14 +195,22 @@ class Dseqrecord(_SeqRecord):
         self.annotations.update({"molecule_type": "DNA"})
 
     @classmethod
-    def from_string(
-        cls, record: str = "", *args, linear=True, circular=False, n=5e-14, **kwargs
-    ):
-        # def from_string(cls, record:str="", *args, linear=True, circular=False, n = 5E-14, **kwargs):
+    def from_string(cls,
+                    record: str = "",
+                    *args,
+                    linear=True,
+                    circular=False,
+                    n=5e-14,
+                    **kwargs):
+        """docstring."""
+        # def from_string(cls, record:str="", *args,
+        # linear=True, circular=False, n = 5E-14, **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
-        obj._seq = _Dseq.quick(
-            record, _rc(record), ovhg=0, linear=linear, circular=circular
-        )
+        obj._seq = _Dseq.quick(record,
+                               _rc(record),
+                               ovhg=0,
+                               linear=linear,
+                               circular=circular)
         obj.id = _pretty_str("id")
         obj.name = _pretty_str("name")
         obj.description = _pretty_str("description")
@@ -531,36 +541,66 @@ class Dseqrecord(_SeqRecord):
                 fp.write(self.format(f))
         else:
             from pydna.readers import read
-
             old_file = read(filename)
+
             if self.seq != old_file.seq:
-                # If new sequence is different, the old file is renamed with "_OLD" suffix:
-                # TODO: add this timestamp so that all old versions are stored
-                # int(time.time() * 1000000)  = 1512035297658778
-                old_filename = "{}_OLD{}".format(name, ext)
+                # If new sequence is different, the old file is
+                # renamed with "_OLD_" suffix:
+                oldmtime = _datetime.datetime.fromtimestamp(_os.path.getmtime(filename)).isoformat()
+                tstmp = int(_time.time() * 1_000_000)
+                old_filename = f"{name}_OLD_{tstmp}{ext}"
                 _os.rename(filename, old_filename)
-                msg = (
-                    "<font color='DarkOrange ' face=monospace>"
-                    "Sequence changed.<br>"
-                    "</font>"
-                    "<font color='red' face=monospace>"
-                    "new: <a href='{filename}' target='_blank'>{filename}</a> &nbsp&nbsp&nbsp size: {nlen}bp topology: {ntop} SEGUID: {ns}<br>"
-                    "</font>"
-                    "<font color='green' face=monospace>"
-                    "old: <a href='{oldfname}' target='_blank'>{oldfname}</a> size: {olen}bp topology: {otop} SEGUID: {os}<br>"
-                    "</font>"
-                ).format(
-                    filename=filename,
-                    oldfname=old_filename,
-                    nlen=len(self),
-                    olen=len(old_file),
-                    ns=self.seguid(),
-                    os=old_file.seguid(),
-                    ntop={True: "-", False: "o"}[self.linear],
-                    otop={True: "-", False: "o"}[old_file.linear],
-                )
+                newcseguid = self.cseguid() if self.circular else "na"
+                oldcseguid = old_file.cseguid() if old_file.circular else "na"
                 with open(filename, "w", encoding="utf8") as fp:
                     fp.write(self.format(f))
+                newmtime = _datetime.datetime.fromtimestamp(_os.path.getmtime(filename)).isoformat()
+                msg = f"""
+                <table style="padding:10px 10px;
+                word-break:normal;
+                border-color:#fe0000;
+                border-collapse:collapse;
+                border-spacing:1;
+                font-family:monospace;
+                font-size:large;
+                font-weight:bold;
+                text-align:left;
+                border: 5px solid red;">
+                <thead>
+                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
+                    <th style="color:#fe0000;border: 1px solid;text-align:center;font-size:xxx-large;text-align:left;">&#9888</th>
+                    <th style="color:#f56b00;border: 1px solid;text-align:left;" colspan="2">Sequence change</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
+                    <td>Filename</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;"><a href='{filename}' target='_blank'>{filename}</a></td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;"><a href='{old_filename}' target='_blank'>{old_filename}</a></td>
+                  </tr>
+                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
+                    <td >Saved</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{newmtime}</td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{oldmtime}</td>
+                  </tr>
+                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
+                    <td>Length</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{len(self)}</td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{len(old_file)}</td>
+                  </tr>
+                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
+                    <td>SEGUID</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{self.seguid()}</td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{old_file.seguid()}</td>
+                  </tr>
+                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
+                    <td>cSEGUID</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{newcseguid}</td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{oldcseguid}</td>
+                  </tr>
+                </tbody>
+                </table>
+                """
             elif "SEGUID" in old_file.description:
                 pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
                 # cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
@@ -582,8 +622,6 @@ class Dseqrecord(_SeqRecord):
             else:
                 with open(filename, "w", encoding="utf8") as fp:
                     fp.write(self.format(f))
-        #from IPython.display import display_markdown
-        #return display_markdown("[link](ling.gb)",raw=True)
         return _display_html(msg, raw=True)
 
     def find(self, other):

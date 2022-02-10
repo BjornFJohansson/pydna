@@ -35,6 +35,12 @@ class SeqFeature(_Sf):
             ref_db,
         )
 
+    # def __lt__(self, other):
+    #     return self.location.start < other.location.start
+
+    # def __gt__(self, other):
+    #     return self.location.start > other.location.start
+
     def extract(self, parent_sequence):
         """docstring."""
         answer = super().extract(parent_sequence)
