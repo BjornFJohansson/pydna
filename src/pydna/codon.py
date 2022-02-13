@@ -90,8 +90,8 @@ start = {"sce": {"ATG": 1.000, "TTG": 0.069, "ATA": 0.005},
 
 
 rare_codons = {"sce": ["CGA", "CGG", "CGC", "CCG", "CTC", "GCG"],
-               "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC",
-                       "TCG"]}
+               "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG",
+                       "CCC", "TCG"]}
 
 stop = {"sce": {"TAA": 0.470, "TAG": 0.230, "TGA": 0.300},  #
         "eco": {}}
