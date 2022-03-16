@@ -140,7 +140,8 @@ class PrimerList(_UserList):
             else:
                 found.append(self[i])
         new = new[::-1]
-        return _pretty_str("\n".join([p.format("fasta") for p in new]))
+        newold = new + found
+        return _pretty_str("\n".join([p.format("fasta") for p in newold]))
 
     def pydna_code_from_list(self, lst: list):
         """Pydna code for a list of primer objects."""
