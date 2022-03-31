@@ -952,7 +952,7 @@ class Dseqrecord(_SeqRecord):
 
         """
 
-        frags = self.seq.cut(enzymes)
+        frags = self.seq.cut(*enzymes)
 
         if not frags:
             return ()
