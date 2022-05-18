@@ -161,6 +161,9 @@ class Amplicon(_Dseqrecord):
     def dbd_program(self):
         return _dbd_program(self)
 
+    def primers(self):
+        return self.forward_primer, self.reverse_primer
+
 
 if __name__ == "__main__":
     import os as _os

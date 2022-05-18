@@ -73,15 +73,9 @@ class PrimerList(_UserList):
             self.data = initlist
             self.path = None
         else:
-            lines = []
             self.path = Path(path or _os.environ["pydna_primers"])
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.path, "a+") as f:
-                f.seek(0)
-                for line in f.readlines():
-                    if not line.startswith("#"):
-                        lines.append(line)
-            self.data = _parse_primers("\n".join(lines))[::-1]
+            self.data = _parse_primers(self.path.read_text())[::-1]
         # super().__init__(*args, **kwargs)
         self.accessed = []
         if (identifier.isidentifier() and not _iskeyword(identifier) and identifier not in _kw):
@@ -170,9 +164,9 @@ class PrimerList(_UserList):
         msg += "\n''')"
         return _pretty_str(msg)
 
-    def pydna_code_from_accessed(self):
-        """Pydna code for acessed primers."""
-        return self.pydna_code_from_indices(self.accessed)
+    # def pydna_code_from_accessed(self):
+    #     """Pydna code for acessed primers."""
+    #     return self.pydna_code_from_indices(self.accessed)
 
     def open_folder(self):
         """Open folder where primer file is located."""

@@ -34,6 +34,7 @@ from pydna import _PydnaWarning
 from warnings import warn as _warn
 
 import logging as _logging
+import datetime
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
@@ -383,11 +384,12 @@ class SeqRecord(_SeqRecord):
         return sorted(self.features, key=lambda x: x.location.start)
 
     def stamp(self):
-        """Add a SEGUID or cSEGUID checksum to the description property.
+        """Add a SEGUID or cSEGUID checksum.
 
-        This will show in the genbank format.
+        The checksum is stored in object.annotations["comment"].
+        This shows in the COMMENTS section of a formatted genbank file.
 
-        For linear sequences:
+        For blunt linear sequences:
 
         ``SEGUID_<seguid>``
 
@@ -395,16 +397,19 @@ class SeqRecord(_SeqRecord):
 
         ``cSEGUID_<seguid>``
 
+        Fore linear sequences which are not blunt:
+
+        ``lSEGUID_<seguid>``
 
 
         Examples
         --------
         >>> from pydna.seqrecord import SeqRecord
-        >>> a=SeqRecord("aaa")
+        >>> a = SeqRecord("aaa")
         >>> a.stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-        >>> a.description
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+        'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+        >>> a.annotations["comment"][:34]
+        'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
         """
         try:
             blunt = self.seq.isblunt()
@@ -416,34 +421,37 @@ class SeqRecord(_SeqRecord):
         except AttributeError:
             linear = True
 
-        if (not blunt) and linear:
-            return _pretty_str(
-                "Sequence is not blunt nor circular,"
-                " so it can not be stamped."
-            )
+        if linear and not blunt:
+            algorithm = "lSEGUID"
+        else:
+            algorithm = {True: "SEGUID", False: "cSEGUID"}[linear]
 
-        algorithm = {True: "SEGUID", False: "cSEGUID"}[linear]
         chksum = getattr(self, algorithm.lower())()
-        pattern = r"((?P<algorithm>c?SEGUID)(?:_|\s){1,5}(?P<sha1>\S{27}))"
-        oldstamp = _re.search(pattern, self.description)
+        newstamp = _pretty_str(f"{algorithm} {chksum}")
+
+        pattern = (r"(?P<algorithm>(c|l)?SEGUID)(?:_|\s){1,5}(?P<sha1>\S{27})"
+                   r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
+                   r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
+                   r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
+                   r"[0-5][0-9])?)?")
+
+        oldstamp = _re.search(pattern, self.annotations.get("comment") or "")
 
         if oldstamp:
-            old_stamp, old_algorithm, old_chksum = oldstamp.groups()
-            newstamp = _pretty_str("{}_{}".format(algorithm, chksum))
+            old_stamp = oldstamp.group(0)
+            old_algorithm = oldstamp.group("algorithm")
+            old_chksum = oldstamp.group("sha1")
+            old_iso = oldstamp.group("iso")
             if chksum == old_chksum and algorithm == old_algorithm:
                 return newstamp
             else:
-                raise ValueError(
-                    "Stamp is wrong.\n"
-                    f"Old: {old_stamp}\n" f"New: {newstamp}"
-                )
-        else:
-            newstamp = "{}_{}".format(algorithm, chksum)
-            if not self.description or self.description == "description":
-                self.description = newstamp
-            else:
-                self.description += " " + newstamp
-        return _pretty_str("{}_{}".format(algorithm, chksum))
+                _warn(f"Stamp change.\nNew: {newstamp}\nOld: {old_stamp}",
+                      _PydnaWarning)
+
+        nowiso = datetime.datetime.now().replace(microsecond=0).isoformat()
+        self.annotations["comment"] = (f"{newstamp} {nowiso}\n"
+                                       f"{(self.annotations.get('comment') or '')}")
+        return newstamp
 
     def seguid(self):
         """Return the url safe SEGUID [#]_ for the sequence.

@@ -21,15 +21,15 @@ requirements:
         - appdirs
         - biopython >=1.79
         - networkx
-        - prettytable
-        - pyparsing
-        - requests
-        - ipython
-        - jupyter
-        - scipy
-        - matplotlib
-        - pillow
-        - CAI
+        - prettytable  # tabulate
+        #- pyparsing
+        #- requests
+        #- ipython
+        #- jupyter
+        #- scipy
+        #- matplotlib
+        #- pillow
+        #- CAI
 
 test:
   requires:

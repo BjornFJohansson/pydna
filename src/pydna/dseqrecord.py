@@ -124,15 +124,13 @@ class Dseqrecord(_SeqRecord):
 
     """
 
-    def __init__(
-        self,
-        record,
-        *args,
-        linear=None,
-        circular=None,
-        n=5e-14,  # mol ( = 0.05 pmol)
-        **kwargs
-    ):
+    def __init__(self,
+                 record,
+                 *args,
+                 linear=None,
+                 circular=None,
+                 n=5e-14,  # mol ( = 0.05 pmol)
+                 **kwargs):
 
         _module_logger.info("### Dseqrecord initialized ###")
         _module_logger.info("argument linear = %s", linear)
@@ -142,7 +140,7 @@ class Dseqrecord(_SeqRecord):
             circular = (
                 bool(circular)
                 and bool(linear) ^ bool(circular)
-                or linear == False
+                or linear is False
                 and circular is None
             )
             linear = not circular
@@ -153,8 +151,9 @@ class Dseqrecord(_SeqRecord):
         if isinstance(record, str):
             _module_logger.info("record is a string")
             super().__init__(
-                _Dseq(record, linear=linear, circular=circular), *args, **kwargs
-            )
+                _Dseq(record, linear=linear, circular=circular),
+                *args, **kwargs)
+
         # record is a Dseq object ?
         elif hasattr(record, "watson"):
             if record.circular and linear:
@@ -168,8 +167,9 @@ class Dseqrecord(_SeqRecord):
         elif hasattr(record, "transcribe"):
             _module_logger.info("record is a Seq object")
             super().__init__(
-                _Dseq(str(record), linear=linear, circular=circular), *args, **kwargs
-            )
+                _Dseq(str(record), linear=linear, circular=circular),
+                *args, **kwargs)
+
         # record is a Bio.SeqRecord or Dseqrecord object ?
         elif hasattr(record, "features"):
             _module_logger.info("record is a Bio.SeqRecord or Dseqrecord object")
@@ -186,7 +186,8 @@ class Dseqrecord(_SeqRecord):
                 self.seq = new_seq
             # record.seq is Bio.SeqRecord object ?
             else:
-                self.seq = _Dseq(str(self.seq), linear=linear, circular=circular)
+                self.seq = _Dseq(str(self.seq), linear=linear,
+                                 circular=circular)
         else:
             raise ValueError("don't know what to do with {}".format(record))
 
@@ -503,6 +504,7 @@ class Dseqrecord(_SeqRecord):
         else:
             return _pretty_str(s).strip()
 
+
     def write(self, filename=None, f="gb"):
         """Writes the Dseqrecord to a file using the format f, which must
         be a format supported by Biopython SeqIO for writing [#]_. Default
@@ -601,7 +603,7 @@ class Dseqrecord(_SeqRecord):
                 </tbody>
                 </table>
                 """
-            elif "SEGUID" in old_file.description:
+            elif "SEGUID" in old_file.annotations.get("comments", ""):
                 pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
                 # cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
                 oldstamp = _re.search(pattern, old_file.description)
@@ -655,6 +657,7 @@ class Dseqrecord(_SeqRecord):
                 if other.lower() in _translate(s[frame : frame + spc + ln]).lower():
                     return True
         return False
+
 
     def find_aminoacids(self, other):
         """

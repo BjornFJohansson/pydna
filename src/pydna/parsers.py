@@ -63,14 +63,12 @@ def parse(data, ds=True):
 
     def embl_gb_fasta(raw, ds, path=None):
 
-        pattern = (r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|"
-                   r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)")
+        regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
 
         result_list = []
 
-        rawseqs = _re.findall(
-            pattern, _textwrap.dedent(raw + "\n\n"), flags=_re.MULTILINE
-        )
+        rawseqs = _re.findall(regex, _textwrap.dedent(raw + "\n\n"),
+                              flags=_re.MULTILINE | _re.VERBOSE | _re.DOTALL)
 
         for rawseq in rawseqs:
             handle = _io.StringIO(rawseq)
@@ -90,9 +88,8 @@ def parse(data, ds=True):
                     except ValueError:
                         parsed = ""
             handle.close()
-            if (
-                "circular" in rawseq.splitlines()[0].lower().split()
-            ):  # hack to pick up topology from malformed files
+            if "circular" in rawseq.splitlines()[0].lower().split():
+                # hack to pick up topology from malformed files
                 circular = True
             if parsed:
                 from copy import deepcopy as _deepcopy  # TODO: clean up !
@@ -105,7 +102,9 @@ def parse(data, ds=True):
                 if ds and path:
                     result_list.append(
                         _GenbankFile.from_SeqRecord(
-                            parsed, linear=not circular, circular=circular, path=path
+                            parsed, linear=not circular,
+                            circular=circular,
+                            path=path
                         )
                     )
                 elif ds:

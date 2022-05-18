@@ -57,6 +57,13 @@ class Primer(_SeqRecord):
             result._fp = self._fp - (i1 - j1 > 0) * abs(i1 - j1)
         return result
 
+    def reverse_complement(self, *args, **kwargs):
+        """Return the reverse complement of the sequence."""
+        answer = super().reverse_complement(*args, **kwargs)
+        answer.amplicon = None
+        answer.position = None
+        answer._fp = len(self)
+        return answer
 
 if __name__ == "__main__":
     import os as _os
