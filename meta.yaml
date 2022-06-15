@@ -13,33 +13,30 @@ source:
 requirements:
     build:
         - python {{ python }}
-        - setuptools
-        - setuptools_scm
-        #- pytest-runner
+        - setuptools >= 59.2.0
+        - setuptools_scm >= 6.3.2
     run:
         - python {{ python }}
-        - appdirs
+        - appdirs >= 1.4.4
         - biopython >=1.79
-        - networkx
-        - prettytable  # todo replace with tabulate at some point
+        - networkx >= 2.6.3
+        - prettytable >= 3.2.0  # todo replace with tabulate at some point
 
-        - pyparsing    # optional
-        - requests     # optional
-        - scipy        # optional
-        - matplotlib   # optional
-        - pillow       # optional
-        - CAI          # optional
+        - pyparsing >= 2.4.7    # optional
+        - requests >= 2.26.0    # optional
+        - scipy >= 1.8.0        # optional
+        - matplotlib >= 3.4.3   # optional
+        - pillow >= 8.4.0       # optional
+        - CAI >= 1.0.3          # optional
 
 test:
   requires:
-    - pytest
-    - pytest-cov
-    - pytest-doctestplus
-    - requests-mock
-    - nbval
-    - coverage
-    - ipython
-    - jupyter
+    - pytest >= 4.6.11
+    - pytest-cov >= 3.0.0
+    - pytest-doctestplus >= 0.12.0
+    - requests-mock >= 1.9.3
+    - nbval >= 0.9.6
+    - coverage >= 6.1.2
   imports:
     - pydna
   source_files:
