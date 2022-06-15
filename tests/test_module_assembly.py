@@ -785,7 +785,8 @@ def test_assemble_pGUP1(monkeypatch):
 
 def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
 
-    from pydna.all import read, Assembly
+    from pydna.readers import read
+    from pydna.assembly import Assembly
 
     pMEC1142 = read("pYPK0_TDH3_GAL2_PGI1.gb")
 
@@ -802,7 +803,7 @@ def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
 
 def test_marker_replacement_on_plasmid(monkeypatch):
 
-    from pydna.all import Assembly
+    from pydna.assembly import Assembly
     from pydna.parsers import parse
 
     f, r, _, _ = parse(

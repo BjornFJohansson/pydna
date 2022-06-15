@@ -326,8 +326,6 @@ def test_seqrecord():
 
     assert obj.name == "1234567890123456"
 
-    from pydna.codon import rare_codons
-
     assert seqrecord.SeqRecord("atgtaa").gc() == 0.167
 
     assert seqrecord.SeqRecord("atgtaa").startcodon() == 1.0
@@ -336,18 +334,15 @@ def test_seqrecord():
 
     assert seqrecord.SeqRecord("atgtaa").gc() == 0.167
 
+
+def test_cai():
+    pytest.importorskip("CAI")
+    import pydna
+    from pydna import seqrecord
+    from pydna.seq import Seq
+    from pydna.codon import rare_codons
+
     assert seqrecord.SeqRecord("atgtaa").cai() == 1.0
-
-    from copy import copy
-
-    assert obj.copy() == copy(obj)
-
-    from tempfile import mkdtemp
-    from pathlib import Path
-    path = Path(mkdtemp())/"dump"
-    obj.dump(path)
-    path = Path(mkdtemp())/"dump.pickle"
-    obj.dump(path)
 
     organism = "sce"
 

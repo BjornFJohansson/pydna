@@ -10,15 +10,10 @@ dependencies:
 - biopython
 - prettytable
 - networkx
+
 - pyparsing
 - CAI
-- regex
-
 - requests
-- requests-mock
-
-- ipython
-- jupyter
 - numpy
 - scipy
 - matplotlib
@@ -26,12 +21,10 @@ dependencies:
 - pytest
 - pytest-cov
 - pytest-mock
-- pytest-runner
+#- pytest-runner
 - pytest-doctestplus
 - coverage
 - nbval
-
-- setuptools
 - requests-mock
 
-- twine
+- setuptools

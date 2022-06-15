@@ -15,21 +15,20 @@ requirements:
         - python {{ python }}
         - setuptools
         - setuptools_scm
-        - pytest-runner
+        #- pytest-runner
     run:
         - python {{ python }}
         - appdirs
         - biopython >=1.79
         - networkx
-        - prettytable  # tabulate
-        #- pyparsing
-        #- requests
-        #- ipython
-        #- jupyter
-        #- scipy
-        #- matplotlib
-        - pillow
-        - CAI
+        - prettytable  # todo replace with tabulate at some point
+
+        - pyparsing    # optional
+        - requests     # optional
+        - scipy        # optional
+        - matplotlib   # optional
+        - pillow       # optional
+        - CAI          # optional
 
 test:
   requires:
@@ -39,6 +38,8 @@ test:
     - requests-mock
     - nbval
     - coverage
+    - ipython
+    - jupyter
   imports:
     - pydna
   source_files:

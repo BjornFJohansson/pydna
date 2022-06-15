@@ -1,7 +1,8 @@
 import pytest
 
-
 def test_gel():
+
+    pytest.importorskip("PIL")
 
     import numpy as np
 

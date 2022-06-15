@@ -19,4 +19,3 @@ dependencies:
 - anaconda-client
 - conda-build
 - conda-verify
-- pydrive2

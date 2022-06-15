@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import pytest
 
-
 def test_pydna_gbtext_clean():
+
+    pytest.importorskip("pyparsing")
+
     from pydna.readers import read
     from pydna.genbankfixer import gbtext_clean
 
@@ -34,6 +35,9 @@ def test_pydna_gbtext_clean():
 
 
 def test_wrapstring():
+
+    pytest.importorskip("pyparsing")
+
     from pydna.genbankfixer import wrapstring
 
     assert (

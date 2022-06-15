@@ -185,25 +185,29 @@ The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blo
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Installation using conda on Anaconda
+## Installation using conda
 
 The absolutely best way of installing and using pydna is to use the
-free [Anaconda](https://store.continuum.io/cshop/anaconda) or [Miniconda](http://conda.pydata.org/miniconda.html) python distributions.
+free [Anaconda](https://store.continuum.io/cshop/anaconda) or [Miniconda](http://conda.pydata.org/miniconda.html)
+python distributions.
 
-Anaconda is a large download (about 400 Mb) while Miniconda is about 40-50 Mb.
+Anaconda is a large download (about 600-700 Mb) while Miniconda is about 70-80 Mb.
 
 Once Anaconda (or Miniconda) is installed, the conda package manager can be used to install pydna.
 
 Type the command below followed by return:
 
-    conda install -c conda-forge -c bjornfjohansson pydna
+    conda install -c conda-forge -c defaults -c bjornfjohansson pydna
+
+The command above pulls packages from the software channels `conda-forge` and `defaults`.
+The pydna package itself is present in the `BjornFJohansson` channel.
 
 This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies
 automatically (see below).
 
 The conda install command will install the latest version, even if this is an alpha version.
 
-Other versions of pydna are available from the [BjornFJohansson](https://anaconda.org/bjornfjohansson) package channel.
+Older versions of pydna are available from the [BjornFJohansson](https://anaconda.org/bjornfjohansson) package channel.
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
@@ -215,9 +219,6 @@ officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/l
 Pip is included in recent Python versions.
 
 Pip installs the minimal installation requirements automatically, but not the optional requirements (see below).
-
-
-::
 
     sudo pip install pydna --pre
 
@@ -233,8 +234,6 @@ By default python and pip are not on the PATH. You can re-install Python and sel
 or give the full path for pip. Try something like this, depending on where your copy of Python is installed:
 
     C:\Python37\Scripts\pip install pydna --pre
-
-
 
 
 ### Installing requirements
@@ -267,69 +266,58 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octoca
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Minimal installation requirements
+## Minimal installation dependencies
 
-Pydna is currently developed on and for Python 3.6 - 3.9. Pydna versions before 1.0.0 were compatible with
-python 2.7 only.
-The list below is the minimal requirements for installing pydna. Biopython has c-extensions, but the other
-modules are pure python.
+Pydna is currently developed on and for Python 3.6 - 3.10.
+Pydna versions before 1.0.0 were compatible with python 2.7 only.
+The list below is the minimal requirements for installing pydna.
+Biopython has c-extensions, but the other modules are pure python.
 
-- [Python 3.6, 3.7, 3.8 or 3.9](http://www.python.org)
+- [Python 3.7, 3.8, 3.9 or 3.10](http://www.python.org)
+- [appdirs >= 1.3.0](https://pypi.python.org/pypi/appdirs)
 - [biopython >= 1.79](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
-- [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing)
-- [appdirs >=1.3.0](https://pypi.python.org/pypi/appdirs)
-- [prettytable>=0.7.2](https://pypi.python.org/pypi/PrettyTable)
-- [requests](https://pypi.org/project/requests)
-- [pydrive2](https://pypi.org/project/pydrive2)
-- [CAI](https://pypi.org/project/CAI)
-- [regex](https://pypi.org/project/regex)
+- [prettytable >= 0.7.2](https://pypi.python.org/pypi/PrettyTable)
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Optional Requirements
-
-Pydna has been designed to be used from the Jupyter notebook. If [IPython](https://ipython.org/)
-and [Jupyter](http://jupyter.org/) are installed, importing ipython notebooks as modules among are
-supported among other things.
+## Optional dependencies
 
 If the modules listed below are installed, gel simulation functionality will be available.
 
-- [numpy](http://www.numpy.org)
-- [scipy](https://www.scipy.org)
-- [matplotlib](http://matplotlib.org)
-- [pillow](https://github.com/python-pillow/Pillow)
-
-The pydna conda package installs the optional requirements listed above as well as:
-
-- [ipython](https://pypi.python.org/pypi/ipython)
-- [jupyter](https://pypi.python.org/pypi/jupyter)
+- [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing) for genbankfixer
+- [requests](https://pypi.org/project/requests) download sequences
+- [CAI](https://pypi.org/project/CAI) Codon Adaptation Index
+- [numpy](http://www.numpy.org) gel simulation functionality
+- [scipy](https://www.scipy.org) gel simulation functionality
+- [matplotlib](http://matplotlib.org) gel simulation functionality
+- [pillow](https://github.com/python-pillow/Pillow) gel simulation functionality
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Requirements for running tests
+## Requirements for running tests and analyzing code coverage
 
-- [pytest>=6.0.2](https://pypi.python.org/pypi/pytest)
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
-
-## Requirements for analyzing code coverage
-
-- [python-coveralls >= 2.9.0](https://pypi.python.org/pypi/python-coveralls)
-- [coverage >= 3.7.1](https://pypi.python.org/pypi/coverage)
-- [pytest-cov >= 2.3.1](https://pypi.python.org/pypi/pytest-cov)
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
-
-## Automatic testing
-
-The test suit is run automatically after each commit on Linux, macOS and Windows using a GitHub action.
+| Dependency                                          | Function in pydna                                      |
+|-----------------------------------------------------|--------------------------------------------------------|
+| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt genbank files with pydna.genbankfixer      |
+| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
+| [CAI](https://pypi.org/project/CAI)                 | Codon Adaptation Index calculations in several modules |
+| [numpy](http://www.numpy.org)                       | gel simulation with pydna.gel                          |
+| [scipy](https://www.scipy.org)                      | “                                                      |
+| [matplotlib](http://matplotlib.org)                 | “                                                      |
+| [pillow](https://github.com/python-pillow/Pillow)   | “                                                      |
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Changelog
 
 See the [change log](docs/CHANGELOG.md) for recent changes.
+
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+
+## Automatic testing
+
+The test suit is run automatically after each commit on Linux, MacOS and Windows using GitHub actions.
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 

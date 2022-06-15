@@ -114,10 +114,13 @@ def test_without_dependency():
         from importlib import reload
         reload(sys.modules['pydna'])
         import pydna
-        assert pydna._missing == ['PIL']
+        assert 'PIL' in pydna._missing
 
 
 def test_with_dependencies():
+    pytest.importorskip("PIL")
+    pytest.importorskip("scipy")
+    pytest.importorskip("numpy")
     import sys
     import pydna
     from importlib import reload
