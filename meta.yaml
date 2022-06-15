@@ -28,8 +28,8 @@ requirements:
         #- jupyter
         #- scipy
         #- matplotlib
-        #- pillow
-        #- CAI
+        - pillow
+        - CAI
 
 test:
   requires:
