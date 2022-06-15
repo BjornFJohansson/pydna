@@ -77,7 +77,7 @@ class PrimerList(_UserList):
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self.data = _parse_primers(self.path.read_text())[::-1]
         # super().__init__(*args, **kwargs)
-        self.accessed = []
+        self.accessed_indices = []
         if (identifier.isidentifier() and not _iskeyword(identifier) and identifier not in _kw):
             self.identifier = identifier
         else:
@@ -88,16 +88,16 @@ class PrimerList(_UserList):
         if isinstance(i, slice):
             result = self.__class__(self.data[i])
             for ind in range(i.start, i.stop, i.step or 1):
-                if ind not in self.accessed:
-                    self.accessed.append(ind)
+                if ind not in self.accessed_indices:
+                    self.accessed_indices.append(ind)
         else:
             try:
                 result = self.data[i]
             except IndexError as e:
                 raise(e)
             else:
-                if i not in self.accessed:
-                    self.accessed.append(i)
+                if i not in self.accessed_indices:
+                    self.accessed_indices.append(i)
         return result
 
     def __setitem__(self, i, item):
@@ -107,10 +107,15 @@ class PrimerList(_UserList):
         else:
             if str(item.seq).lower() != str(self.data[i].seq).lower():
                 raise ValueError("Cannot change existing primer.")
-        if i not in self.accessed:
-            self.accessed.append(i)
+        if i not in self.accessed_indices:
+            self.accessed_indices.append(i)
 
-    def assign_numbers_to_new_primers(self, lst: list):
+    @property
+    def accessed(self):
+        """docstring."""
+        return [self.data[i] for i in self.accessed_indices]
+
+    def assign_numbers(self, lst: list):
         """Find new primers in lst.
 
         Returns a string containing new primers with their assigned
@@ -152,10 +157,7 @@ class PrimerList(_UserList):
                 indices.append(i)
         if err:
             raise ValueError("At least one primer not in list.")
-        return self.pydna_code_from_indices(indices)
 
-    def pydna_code_from_indices(self, indices: list = None):
-        """Pydna code for a list of primer indices."""
         curly = "{}"
         msg = f"{self.identifier} = {curly}\n\n"
         msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
@@ -164,15 +166,14 @@ class PrimerList(_UserList):
         msg += "\n''')"
         return _pretty_str(msg)
 
-    # def pydna_code_from_accessed(self):
-    #     """Pydna code for acessed primers."""
-    #     return self.pydna_code_from_indices(self.accessed)
-
     def open_folder(self):
         """Open folder where primer file is located."""
-        _open_folder(self.path.parent)
+        if self.path:
+            _open_folder(self.path.parent)
+        else:
+            raise ValueError("path property not set.")
 
-    code = pydna_code_from_indices
+    code = pydna_code_from_list
 
 
 def check_primer_numbers(pl: list = None):

@@ -76,6 +76,25 @@ def test_initialization():
     )
 
 
+    obj3 = Dseq.from_representation("""
+                                   GGATCC
+                                   CCTAGG
+                                   """)
+    assert obj3.ovhg == 0
+
+    obj3 = Dseq.from_representation("""
+                                   aGGATCC
+                                    CCTAGGg
+                                   """)
+    assert obj3.ovhg == -1
+
+    obj3 = Dseq.from_representation("""
+                                    GGATCCg
+                                   aCCTAGG
+                                   """)
+    assert obj3.ovhg == 1
+
+
 def test_cut_around_and_religate():
     from pydna.dseq import Dseq
     from pydna.utils import eq
@@ -341,8 +360,8 @@ def test_dseq():
     ).strip()
     assert repr(b2) == rpr
 
-    assert b2.lseguid() == "hPNrcQ0sluXyfu4XuUh1trsnygc"
-    assert b2.rc().lseguid() == "hPNrcQ0sluXyfu4XuUh1trsnygc"
+    assert b2.lseguid() == "yz2Dl2jN1FxbE1BNV1hvT2r4S3Y"
+    assert b2.rc().lseguid() == "yz2Dl2jN1FxbE1BNV1hvT2r4S3Y"
 
     b3 = Dseq("GGATCC", "ggatcccc", 2)
     assert b3._data == b"ggGGATCC"
@@ -393,14 +412,14 @@ def test_dseq():
 
     assert frag1 + frag2 == obj
 
-    assert obj.lseguid() == "HtK7-_BmOJw0BmtYE8f1yGdHc0c"
+    assert obj.lseguid() == "XtNVVlmD0oknESP6ErbhOUlPp9M"
 
-    assert frag1.lseguid() == "yJkorWG5V2etvSLp6E6QNK-KMlQ"
-    assert frag2.lseguid() == "Aw3buI-N85OztBZAzeGJvXGlwO8"
-    
-    assert frag1.rc().lseguid() == "yJkorWG5V2etvSLp6E6QNK-KMlQ"
-    assert frag2.rc().lseguid() == "Aw3buI-N85OztBZAzeGJvXGlwO8"    
-    
+    assert frag1.lseguid() == "uTTkMqUMJ524xcTzAKlAPsq6q7g"
+    assert frag2.lseguid() == "pXjshRKBvk2SnAZeuVgsMWXmkfE"
+
+    assert frag1.rc().lseguid() == "uTTkMqUMJ524xcTzAKlAPsq6q7g"
+    assert frag2.rc().lseguid() == "pXjshRKBvk2SnAZeuVgsMWXmkfE"
+
     obj = Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta")
     assert (
         repr(obj)

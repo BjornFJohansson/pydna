@@ -276,7 +276,6 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-
         >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("atgtaa")
         >>> a.add_feature(2,4)
@@ -291,11 +290,28 @@ class Dseqrecord(_SeqRecord):
         """
         return super().extract_feature(n)
 
+    def useguid(self):
+        """Url safe SEGUID for the sequence.
+
+        This checksum is the same as seguid but with base64.urlsafe
+        encoding instead of the normal base64. This means that
+        the characters + and / are replaced with - and _ so that
+        the checksum can be part of a URL.
+
+        Examples
+        --------
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a = Dseqrecord("aa")
+        >>> a.useguid() # useguid is gBw0Jp907Tg_yX3jNgS4qQWttjU
+        'gBw0Jp907Tg_yX3jNgS4qQWttjU'
+
+        """
+        return self.seq.useguid()
+
     def cseguid(self):
-        """Returns the url safe cSEGUID for the sequence.
+        """Url safe cSEGUID for a circular sequence.
 
         Only defined for circular sequences.
-
         The cSEGUID checksum uniquely identifies a circular
         sequence regardless of where the origin is set.
         The two Dseqrecord objects below are circular
@@ -303,7 +319,6 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-
         >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("agtatcgtacatg", circular=True)
         >>> a.cseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
@@ -319,19 +334,18 @@ class Dseqrecord(_SeqRecord):
         return self.seq.cseguid()
 
     def lseguid(self):
-        """Returns the url safe lSEGUID for the sequence.
+        """Url safe lSEGUID for a linear sequence.
 
         Only defined for linear double stranded sequences.
 
         The lSEGUID checksum uniquely identifies a linear
-        sequence independent of the direction.
+        sequence independent of its representation.
         The two Dseqrecord objects below are each others
         reverse complements, so they do in fact refer to
         the same molecule.
 
         Examples
         --------
-
         >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("agtatcgtacatg")
         >>> a.lseguid()
@@ -346,35 +360,104 @@ class Dseqrecord(_SeqRecord):
             raise TypeError("lseguid is only defined for linear sequences.")
         return self.seq.lseguid()
 
-    def stamp(self):
-        """Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
-        This will show in the genbank format.
+    # def stamp(self):
+    #     """Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
+    #     This will show in the genbank format.
 
-        For linear sequences:
+    #     For linear sequences:
 
-        ``SEGUID_<seguid>_<datestring>``
+    #     ``SEGUID_<seguid>_<datestring>``
 
-        For circular sequences:
+    #     For circular sequences:
 
-        ``cSEGUID_<seguid>_<datestring>``
+    #     ``cSEGUID_<seguid>_<datestring>``
 
 
-        Examples
-        --------
+    #     Examples
+    #     --------
 
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("aaa")
-        >>> a.stamp()
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
-        >>> a.description
-        'SEGUID_YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+    #     >>> from pydna.dseqrecord import Dseqrecord
+    #     >>> a = Dseqrecord("aaa")
+    #     >>> a.stamp()
+    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
+    #     >>> a.annotations["comment"]
+    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
 
-        See also
-        --------
-        pydna.dseqrecord.Dseqrecord.verify_stamp
-        """
+    #     See also
+    #     --------
+    #     pydna.dseqrecord.Dseqrecord.verify_stamp
+    #     """
+    #     return super().stamp()
 
-        return super().stamp()
+    # def stamp(self, chksum):
+    #     """Add a uSEGUID or cSEGUID checksum.
+
+    #     The checksum is stored in object.annotations["comment"].
+    #     This shows in the COMMENTS section of a formatted genbank file.
+
+    #     For blunt linear sequences:
+
+    #     ``SEGUID <seguid>``
+
+    #     For circular sequences:
+
+    #     ``cSEGUID <seguid>``
+
+    #     Fore linear sequences which are not blunt:
+
+    #     ``lSEGUID <seguid>``
+
+
+    #     Examples
+    #     --------
+    #     >>> from pydna.dseqrecord import Dseqrecord
+    #     >>> a = Dseqrecord("tga")
+    #     >>> a.stamp()
+    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+    #     >>> a.annotations["comment"][:34]
+    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+    #     """
+    #     # try:
+    #     #     blunt = self.seq.isblunt()
+    #     # except AttributeError:
+    #     #     blunt = True
+
+    #     # try:
+    #     #     linear = self.seq.linear
+    #     # except AttributeError:
+    #     #     linear = True
+
+    #     if self.seq.linear:
+    #         algorithm = "lSEGUID"
+    #     else:
+    #         algorithm = "cSEGUID"
+
+    #     chksum = getattr(self.seq, algorithm.lower())()
+    #     newstamp = _pretty_str(f"{algorithm} {chksum}")
+
+    #     pattern = (r"(?P<algorithm>(c|l|u)?SEGUID)(?:_|\s){1,5}(?P<sha1>\S{27})"
+    #                r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
+    #                r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
+    #                r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
+    #                r"[0-5][0-9])?)?")
+
+    #     oldstamp = _re.search(pattern, self.annotations.get("comment") or "")
+
+    #     if oldstamp:
+    #         old_stamp = oldstamp.group(0)
+    #         old_algorithm = oldstamp.group("algorithm")
+    #         old_chksum = oldstamp.group("sha1")
+    #         old_iso = oldstamp.group("iso")
+    #         if chksum == old_chksum and algorithm == old_algorithm:
+    #             return newstamp
+    #         else:
+    #             _warn(f"Stamp change.\nNew: {newstamp}\nOld: {old_stamp}",
+    #                   _PydnaWarning)
+
+    #     nowiso = datetime.datetime.now().replace(microsecond=0).isoformat()
+    #     self.annotations["comment"] = (f"{newstamp} {nowiso}\n"
+    #                                    f"{(self.annotations.get('comment') or '')}")
+    #     return newstamp
 
     def looped(self):
         """
@@ -591,9 +674,9 @@ class Dseqrecord(_SeqRecord):
                     <td style="color:#32cb00;border: 1px solid;text-align:left;">{len(old_file)}</td>
                   </tr>
                   <tr style="color:#0000FF;border: 1px solid;text-align:left;">
-                    <td>SEGUID</td>
-                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{self.seguid()}</td>
-                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{old_file.seguid()}</td>
+                    <td>uSEGUID</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{self.useguid()}</td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{old_file.useguid()}</td>
                   </tr>
                   <tr style="color:#0000FF;border: 1px solid;text-align:left;">
                     <td>cSEGUID</td>

@@ -1,5 +1,5 @@
 import pytest
-
+from pydna import _PydnaWarning
 
 def test_add_feature():
     from pydna.seq import Seq
@@ -62,48 +62,35 @@ def test_add_feature():
 
 
 def test_stamp():
+    from pydna.seq import Seq
     from pydna.seqrecord import SeqRecord
     from pydna.readers import read
     from pydna.utils import eq
 
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
+    from Bio.Seq import Seq as bpSeq
+    from Bio.SeqRecord import SeqRecord as bpSecRecord
 
     a = SeqRecord("attt")
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo" in a.definition
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
+    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
 
     a = SeqRecord("attt")
-    a.description = "something"
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo" in a.definition
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "something" in a.definition
+    a.annotations["comment"] = "something"
+    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+
+    assert "something" in a.annotations["comment"]
 
     a = SeqRecord("attt")
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
     a.seq = a.seq + "a"
-    with pytest.raises(ValueError):
-        a.stamp()
 
-    a = SeqRecord(Seq("attt"))
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo" in a.definition
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
+    with pytest.warns(_PydnaWarning):
+        a.stamp("useguid")
 
-    a = SeqRecord(Seq("attt"))
-    a.description = "something"
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo" in a.definition
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "something" in a.definition
-
-    a = SeqRecord(Seq("attt"))
-    assert a.stamp() == "SEGUID_ot6JPLeAeMmfztW1736Kc6DAqlo"
-    a.seq = a.seq + "a"
-    with pytest.raises(ValueError):
-        a.stamp()
+    a = SeqRecord(bpSeq("attt"))
+    with pytest.raises(AttributeError):
+        a.stamp("useguid")
 
 
 def test___hash__():
@@ -328,13 +315,13 @@ def test_seqrecord():
     # assert gbf+"\n" == str(obj.format("gb"))
 
     # print(obj.__hash__())
-    
+
     rare_codons = {"sce": ["CGA", "CGG", "CGC", "CCG", "CTC", "GCG"],
                    "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC",
                            "TCG"]}
 
     s = Seq("atgCGACGGCGCCCGCTCGCGtaa")
-    
+
     obj = seqrecord.SeqRecord(s, name="1234567890123456")
 
     assert obj.name == "1234567890123456"

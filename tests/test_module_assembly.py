@@ -677,7 +677,7 @@ def test_MXblaster1(monkeypatch):
 
     pCAPs_MX4blaster1 = pCAPs_MX4blaster1.synced("tcgcgcgtttcggtgatgacggtgaaaacc")
 
-    assert pCAPs_MX4blaster1.seguid() == "X9WqaNk2lw6FbZlJr995MaDfn-M"
+    assert pCAPs_MX4blaster1.useguid() == "X9WqaNk2lw6FbZlJr995MaDfn-M"
 
     from Bio.Restriction import AjiI, AgeI
 
@@ -695,19 +695,19 @@ def test_MXblaster1(monkeypatch):
 
     GAL_GIN = pcr(primer[592], primer[593], GAL10prom + GIN11M86)
 
-    assert GAL_GIN.seguid() == "7Lkfw8dsz9_kkBU3XXnz4KAON3A"
+    assert GAL_GIN.useguid() == "7Lkfw8dsz9_kkBU3XXnz4KAON3A"
 
-    assert pCAPs.seguid() == "-XHU8OxITyHGTl9XtMrJ4NvEv3o"
+    assert pCAPs.useguid() == "-XHU8OxITyHGTl9XtMrJ4NvEv3o"
 
     pCAPs_GAL_GIN = (pCAPs.cut(AjiI)[0] + GAL_GIN).looped()
 
-    assert pCAPs_GAL_GIN.seguid() == "T1eWCPIXPlq2HriSfpFSNnGwmd4"
+    assert pCAPs_GAL_GIN.useguid() == "T1eWCPIXPlq2HriSfpFSNnGwmd4"
 
     GAL_GIN2 = pcr(primer[592], primer[467], pCAPs_GAL_GIN)
 
-    assert GAL_GIN2.seguid() == "zdIU4vjdfOxLkTTnKzIxhphnewg"
+    assert GAL_GIN2.useguid() == "zdIU4vjdfOxLkTTnKzIxhphnewg"
 
-    assert pCAPs_MX4blaster1.seguid() == "X9WqaNk2lw6FbZlJr995MaDfn-M"  # 9772bp__a
+    assert pCAPs_MX4blaster1.useguid() == "X9WqaNk2lw6FbZlJr995MaDfn-M"  # 9772bp__a
 
     pCAPs_MX4blaster1_AgeI = pCAPs_MX4blaster1.cut(AgeI)[0]
 
@@ -730,9 +730,9 @@ def test_MXblaster1(monkeypatch):
     pCAPs_MX4blaster2_old = read("pMX4blaster2_old.gb")
 
     assert len(pCAPs_MX4blaster2_old) == 10566
-    assert pCAPs_MX4blaster2_old.seguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
+    assert pCAPs_MX4blaster2_old.useguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
     assert eq(pCAPs_MX4blaster2, pCAPs_MX4blaster2_old)
-    assert pCAPs_MX4blaster2.seguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
+    assert pCAPs_MX4blaster2.useguid() == "7B4KKAeM2x8npjkp5U942rtMbB8"
 
 
 def test_assemble_pGUP1(monkeypatch):
@@ -769,8 +769,8 @@ def test_assemble_pGUP1(monkeypatch):
     assert len(pGUP1_correct) == 9981
     assert len(pGUP1) == 9981
     assert eq(pGUP1, pGUP1_correct)
-    assert pGUP1_correct.seguid() == "42wIByERn2kSe_Exn405RYwhffU"
-    assert pGUP1.seguid() == "42wIByERn2kSe_Exn405RYwhffU"
+    assert pGUP1_correct.useguid() == "42wIByERn2kSe_Exn405RYwhffU"
+    assert pGUP1.useguid() == "42wIByERn2kSe_Exn405RYwhffU"
 
 
 # def test_35_36(monkeypatch):

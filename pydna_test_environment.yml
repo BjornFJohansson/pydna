@@ -3,6 +3,7 @@ channels:
 - conda-forge
 - defaults
 - BjornFJohansson
+
 dependencies:
 
 - appdirs
@@ -21,7 +22,6 @@ dependencies:
 - numpy
 - scipy
 - matplotlib
-- pydrive2
 
 - pytest
 - pytest-cov

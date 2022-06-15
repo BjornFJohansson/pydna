@@ -9,7 +9,7 @@
 from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
 from Bio.Seq import _maketrans
 from pydna._pretty import pretty_str as _pretty_str
-from Bio.SeqUtils.CheckSum import seguid as _base64_seguid
+from Bio.SeqUtils.CheckSum import seguid as _seguid
 import shelve as _shelve
 import os as _os
 import re as _re
@@ -301,8 +301,10 @@ def SmallestRotation(s):
 
 
 def identifier_from_string(s: str) -> str:
-    """This function returns a string that is a valid python identifier
-    based on the argument s or an empty string"""
+    """Return a valid python identifier.
+
+    based on the argument s or an empty string
+    """
     s = s.strip()
     s = _re.sub(r"\s+", r"_", s)
     s.replace("-", "_")
@@ -314,41 +316,101 @@ def identifier_from_string(s: str) -> str:
 
 
 def seguid(seq: str) -> _pretty_str:
+    """SEGUID checksum for a string representing a biological sequence.
+
+    This is the SEGUID checksum with the standard Base64
+    encoding that can contain '+' and '/' as originally
+    defined by Babnigg and Giometti:
+
+    Babnigg, Giometti 2006. “A Database of Unique
+    Protein Sequence Identifiers for Proteome Studies.” *Proteomics* 6
+    (16) (August): 4514–4522.
+
+    Examples
+    --------
+    >>> from pydna.utils import seguid
+    >>> seguid("aaa")
+    'YG7G6b2Kj/KtFOX63j8mRHHoIlE'
+    """
+    return _pretty_str(_seguid(seq.upper()))
+
+def useguid(seq: str) -> _pretty_str:
     """Returns the url safe SEGUID checksum for the sequence.
     This is the SEGUID checksum with the '+' and '/' characters of standard
     Base64 encoding are respectively replaced by '-' and '_'.
 
     Examples
     --------
-    >>> from pydna.utils import seguid
-    >>> seguid("a")
-    'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
+    >>> from pydna.utils import useguid
+    >>> useguid("aaa")
+    'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
     """
-    return _pretty_str(_base64_seguid(seq.upper()).replace("+", "-").replace("/", "_"))
+    return seguid(seq).replace("+", "-").replace("/", "_")
 
 
-def lseguid(seq: str) -> _pretty_str:
-    """Returns the url safe lSEGUID checksum for the sequence (seq).
-    This is the SEGUID checksum with the '+' and '/' characters of standard
-    Base64 encoding are respectively replaced by '-' and '_'.
+def lseguid_blunt(seq: str) -> _pretty_str:
+    """lSEGUID checksum.
+
+    for a string representing a blunt double stranded DNA molecule.
 
     Examples
     --------
-    >>> from pydna.utils import lseguid
-    >>> lseguid("a")
-    'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
-    >>> lseguid("t")
-    'bc1M4j2I4u6VaLpUbAB8Y9kTHBs'
+    >>> from pydna.utils import lseguid_blunt
+    >>> lseguid_blunt("ttt")
+    'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+    >>> lseguid_blunt("aaa")
+    'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
     """
-    return (
-        seguid(min(seq.upper(), str(rc(seq)).upper()))
-        .replace("+", "-")
-        .replace("/", "_")
-    )
+    return useguid(min(seq.upper(), str(rc(seq)).upper()))
+
+
+def lseguid_sticky(watson: str, crick: str, overhang: int) -> _pretty_str:
+    """Linear SEGUID (lSEGUID) checksum.
+
+    Calculates the lSEGUID checksum for a double stranded DNA sequence
+    described by two strings (watson and crick) representing the two
+    complementary DNA strands and an integer describing the stagger
+    between the two strands in the 5' end.
+
+    The overhang is defined as the amount of 3' overhang in the 5'
+    side of the molecule. A molecule with 5' overhang has a negative
+    value.
+
+        dsDNA    ovhg
+
+          nnn...    2
+        nnnnn...
+
+          nnnn...    1
+        nnnnn...
+
+        nnnnn...    0
+        nnnnn...
+
+        nnnnn...   -1
+          nnnn...
+
+        nnnnn...   -2
+          nnn...
+
+    """
+    watson = watson.upper()
+    crick = crick.upper()
+    lw = len(watson)
+    lc = len(crick)
+    if overhang == 0 and lw == lc:
+        return lseguid_blunt(watson)
+    else:
+        w, c, o = min(((watson, crick, overhang),
+                       (crick, watson, lw - lc + overhang)))
+
+    return useguid(f"{o*chr(32)}{w}\n{-o*chr(32)}{c[::-1]}")
 
 
 def cseguid(seq: str) -> _pretty_str:
-    """Returns the url safe cSEGUID for the sequence.
+    """Url safe cSEGUID for a string representing a circular double stranded
+    DNA molecule.
+
     The cSEGUID is the SEGUID checksum calculated for the lexicographically
     minimal string rotation of a DNA sequence. Only defined for circular
     sequences.
@@ -361,8 +423,8 @@ def cseguid(seq: str) -> _pretty_str:
     >>> cseguid("ttta")
     'oopV-6158nHJqedi8lsshIfcqYA'
     """
-    return seguid(min(SmallestRotation(seq.upper()),
-                      SmallestRotation(str(rc(seq)).upper())))
+    return useguid(min(SmallestRotation(seq.upper()),
+                       SmallestRotation(str(rc(seq)).upper())))
 
 
 def flatten(*args):  # flatten

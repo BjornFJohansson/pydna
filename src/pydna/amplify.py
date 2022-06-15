@@ -405,7 +405,7 @@ class Anneal(object, metaclass=_Memoize):
                 prd.id = (
                     _identifier_from_string(new_identifier)[:16]
                     or self.kwargs.get("id")
-                    or "{}bp_{}".format(str(len(prd))[:14], prd.seguid())
+                    or "{}bp_{}".format(str(len(prd))[:14], prd.useguid())
                 )
                 prd.description = self.kwargs.get(
                     "description"

@@ -22,13 +22,15 @@ def test_PrimerList_init(monkeypatch):
 
     pl1 = myprimers.PrimerList()
 
-    assert len(pl1) == 4
-
     assert pl1 == primer_source
 
-    pl2 = myprimers.PrimerList(path="primers_linux_line_endings.txt")
+    pl2 = myprimers.PrimerList(primer_source)
 
-    assert pl1 == pl2
+    pl3 = myprimers.PrimerList(path="primers_linux_line_endings.txt")
+
+    assert len(pl1) == len(pl2) == len(pl3) == 4
+
+    assert pl1 == pl2 == pl3
 
     newlist = parse_primers("""
                             >abc
@@ -37,7 +39,7 @@ def test_PrimerList_init(monkeypatch):
                             ttt
                             """)
 
-    np = pl1.assign_numbers_to_new_primers(newlist)
+    np = pl1.assign_numbers(newlist)
 
     assert [s.name for s in parse_primers(np)] == ["5_abc",
                                                    "4_efg"]
@@ -49,9 +51,9 @@ def test_PrimerList_init(monkeypatch):
                             tttttttt
                             """)
 
-    np = pl1.assign_numbers_to_new_primers(newlist)
+    np = pl1.assign_numbers(newlist)
 
-    assert [s.name for s in parse_primers(np)] == ["4_abc"]
+    assert [s.name for s in parse_primers(np)] == ["4_abc", "0_primer"]
 
     with pytest.raises(ValueError):
         pl1.pydna_code_from_list(newlist)
@@ -79,19 +81,17 @@ def test_PrimerList_init(monkeypatch):
 
     assert pl1.pydna_code_from_list(pl1) == code
 
-    assert pl1.pydna_code_from_indices([0, 1, 2, 3]) == code
+    pl4 = myprimers.PrimerList(path="primers_linux_line_endings.txt")
 
-    assert pl1.pydna_code_from_accessed() == code
+    assert pl4.accessed_indices == []
+    pl4[1] = primer_source[1]
+    assert pl4.accessed == primer_source[1:2]
 
-    pl3 = myprimers.PrimerList(path="primers_linux_line_endings.txt")
+    assert pl4.accessed_indices == [1]
 
-    assert pl3.accessed == []
-    pl3[1] = primer_source[1]
-    assert pl3.accessed == [1]
-
-    pl3.accessed == []
-    assert pl3[2:4] == primer_source[2:4]
-    assert pl3.accessed == [1, 2, 3]
+    pl4.accessed_indices == []
+    assert pl4[2:4] == primer_source[2:4]
+    assert pl4.accessed_indices == [1, 2, 3]
 
     with pytest.raises(ValueError):
         myprimers.PrimerList(identifier="/")
@@ -102,14 +102,17 @@ def test_PrimerList_init(monkeypatch):
     with pytest.raises(IndexError):
         pl3[999] = primer_source[1]
 
+    with pytest.raises(ValueError):
+        pl2.open_folder()
+
     from unittest import mock
-    
+
     subp = mock.MagicMock()
-    
+
     monkeypatch.setattr("sys.platform", "linux")
     monkeypatch.setattr("subprocess.run", subp)
-    
-    pl3.open_folder()
+
+    pl4.open_folder()
 
     subp.assert_called_with(["xdg-open", pl3.path.parent])
 

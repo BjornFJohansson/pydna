@@ -171,13 +171,13 @@ def test_cseguid():
 
 
 def test_lseguid():
-    from pydna.utils import lseguid
+    from pydna.utils import lseguid_blunt
 
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
     assert (
-        lseguid(x)
-        == lseguid(x.upper())
-        == lseguid(x.lower())
+        lseguid_blunt(x)
+        == lseguid_blunt(x.upper())
+        == lseguid_blunt(x.lower())
         == "bHrqalTJ793oAigMQ5_qCttJRTk"
     )
 

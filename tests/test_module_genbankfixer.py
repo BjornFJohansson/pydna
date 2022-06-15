@@ -28,9 +28,9 @@ def test_pydna_gbtext_clean():
             from Bio import BiopythonParserWarning
 
             with pytest.warns(BiopythonParserWarning):
-                assert read(gbtext_clean(infile).gbtext).seguid() == seg
+                assert read(gbtext_clean(infile).gbtext).useguid() == seg
         else:
-            assert read(gbtext_clean(infile).gbtext).seguid() == seg
+            assert read(gbtext_clean(infile).gbtext).useguid() == seg
 
 
 def test_wrapstring():

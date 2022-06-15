@@ -25,7 +25,7 @@ from pydna.seq import Seq as _Seq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
-from pydna.utils import seguid as _seg
+from pydna.utils import lseguid_sticky as _lseg
 from pydna.utils import cseguid as _cseg
 from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
@@ -101,10 +101,10 @@ class Dseq(_Seq):
     half the length of the shortest of the strands.
 
     Three arguments (string, string, ovhg=int):
-  
+
     The ovhg parameter is an integer describing the length of the
     crick strand overhang in the 5' end of the molecule.
-    
+
     The ovhg parameter controls the stagger at the five prime end::
 
         dsDNA    ovhg
@@ -150,7 +150,7 @@ class Dseq(_Seq):
     If the ovhg parameter is specified a crick strand also
     needs to be supplied, otherwise an exception is raised.
 
-    >>> Dseq(watson="agt",ovhg=2)
+    >>> Dseq(watson="agt", ovhg=2)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "/usr/local/lib/python2.7/dist-packages/pydna_/dsdna.py", line 169, in __init__
@@ -416,6 +416,29 @@ class Dseq(_Seq):
         # obj.alphabet = _generic_dna
         return obj
 
+    @classmethod
+    def from_representation(cls,
+                            dsdna: str,
+                            *args,
+                            **kwargs):
+        obj = cls.__new__(cls)  # Does not call __init__
+        w, c, *r = [ln for ln in dsdna.splitlines() if ln]
+        ovhg = obj._ovhg = len(w)-len(w.lstrip()) - (len(c) - len(c.lstrip()))
+        watson = obj.watson = _pretty_str(w.strip())
+        crick = obj.crick = _pretty_str(c.strip()[::-1])
+        obj._circular = False
+        obj._linear = True
+        obj.length = max(len(watson) + max(0, ovhg),
+                         len(crick) + max(0, -ovhg))
+        obj.pos = 0
+        wb = bytes(watson, encoding="ASCII")
+        cb = bytes(crick, encoding="ASCII")
+        obj._data = (
+            _rc(cb[-max(0, ovhg) or len(cb):])
+            + wb
+            + _rc(cb[: max(0, len(cb) - ovhg - len(wb))]))
+        return obj
+
     @property
     def ovhg(self):
         """The ovhg property. This cannot be set directly, but is a
@@ -629,7 +652,7 @@ class Dseq(_Seq):
         if len(self) > 30:
 
             if self._ovhg > 0:
-                d = self.crick[-self._ovhg :][::-1]
+                d = self.crick[-self._ovhg:][::-1]
                 hej = len(d)
                 if len(d) > 10:
                     d = "{}..{}".format(d[:4], d[-4:])
@@ -649,7 +672,7 @@ class Dseq(_Seq):
             x = self._ovhg + len(self.watson) - len(self.crick)
 
             if x > 0:
-                c = self.watson[len(self.crick) - self._ovhg :]
+                c = self.watson[len(self.crick) - self._ovhg:]
                 y = len(c)
                 if len(c) > 10:
                     c = "{}..{}".format(c[:4], c[-4:])
@@ -1080,7 +1103,7 @@ class Dseq(_Seq):
         crick, ovhg = self._fill_in_five_prime(nucleotides)
         watson = self._fill_in_three_prime(nucleotides)
         return Dseq(watson, crick, ovhg)
-    
+
     def transcribe(self):
         return _Seq(self.watson).transcribe()
 
@@ -1256,36 +1279,16 @@ class Dseq(_Seq):
         return _RestrictionBatch(ncut)
 
     def cseguid(self):
-        """Url safe cSEGUID for the sequence."""
+        """Circular uSEGUID (cSEGUID) for the sequence."""
         if self.linear:
             raise TypeError("cseguid is only defined for circular sequences.")
         return _cseg(str(self.watson))
 
     def lseguid(self):
-        """Url safe lSEGUID for the sequence.
-
-        Definition depends on the amount of stagger
-        between the sequences.
-        """
+        """Linear uSEGUID (lSEGUID) for the sequence."""
         if self.circular:
             raise TypeError("lseguid is only defined for linear sequences.")
-        rc_ovhg = len(self.watson) - len(self.crick) + self._ovhg
-        watson = self.watson.upper()
-        crick = self.crick.upper()
-        if self._ovhg == rc_ovhg == 0:
-            return _seg(min(watson, crick))
-        if self._ovhg < rc_ovhg:
-            w = watson
-            c = crick
-            o = self._ovhg
-        elif self._ovhg > rc_ovhg:
-            w = crick
-            c = watson
-            o = rc_ovhg
-        elif self._ovhg == rc_ovhg:
-            w, c = sorted((watson, crick))
-            o = self._ovhg
-        return _seg(f"{o}{w}|{c}")
+        return _lseg(self.watson, self.crick, self.ovhg)
 
     def isblunt(self):
         """isblunt.

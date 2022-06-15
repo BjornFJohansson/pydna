@@ -383,59 +383,72 @@ class SeqRecord(_SeqRecord):
         """
         return sorted(self.features, key=lambda x: x.location.start)
 
-    def stamp(self):
-        """Add a SEGUID or cSEGUID checksum.
+    def useguid(self):
+        """Return the url safe SEGUID [#]_ for the sequence.
+
+        This checksum is the same as seguid but with base64.urlsafe
+        encoding instead of the normal base 64. This means that
+        the characters + and / are replaced with - and _ so that
+        the checksum can be a part of and URL or a filename.
+
+        Examples
+        --------
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("aaaaaaa")
+        >>> a.useguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
+        '-bKGnebMkia5kNg_gF7IORXMnIU'
+
+        References
+        ----------
+        .. [#] http://wiki.christophchamp.com/index.php/SEGUID
+        """
+        return self.seq.useguid()
+
+    def stamp(self, algorithm):
+        """Add a uSEGUID or cSEGUID checksum.
 
         The checksum is stored in object.annotations["comment"].
         This shows in the COMMENTS section of a formatted genbank file.
 
         For blunt linear sequences:
 
-        ``SEGUID_<seguid>``
+        ``SEGUID <seguid>``
 
         For circular sequences:
 
-        ``cSEGUID_<seguid>``
+        ``cSEGUID <seguid>``
 
         Fore linear sequences which are not blunt:
 
-        ``lSEGUID_<seguid>``
+        ``lSEGUID <seguid>``
 
 
         Examples
         --------
         >>> from pydna.seqrecord import SeqRecord
-        >>> a = SeqRecord("aaa")
-        >>> a.stamp()
-        'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-        >>> a.annotations["comment"][:34]
-        'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
+        >>> a = SeqRecord("aa")
+        >>> a.stamp("uSEGUID")
+        'uSEGUID gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        >>> a.annotations["comment"][:35]
+        'uSEGUID gBw0Jp907Tg_yX3jNgS4qQWttjU'
         """
-        try:
-            blunt = self.seq.isblunt()
-        except AttributeError:
-            blunt = True
 
-        try:
-            linear = self.seq.linear
-        except AttributeError:
-            linear = True
-
-        if linear and not blunt:
-            algorithm = "lSEGUID"
-        else:
-            algorithm = {True: "SEGUID", False: "cSEGUID"}[linear]
-
-        chksum = getattr(self, algorithm.lower())()
+        comments = self.annotations.get("comment") or ""
+        algorithm = _re.sub("seguid",
+                            "SEGUID",
+                            algorithm,
+                            flags=_re.IGNORECASE)
+        chksum = getattr(self.seq, algorithm.lower())()
         newstamp = _pretty_str(f"{algorithm} {chksum}")
 
-        pattern = (r"(?P<algorithm>(c|l)?SEGUID)(?:_|\s){1,5}(?P<sha1>\S{27})"
+        pattern = (r"(?P<algorithm>(c|l|u)?(?i)SEGUID)"
+                   r"(?:_|\s){1,5}(?P<sha1>\S{27})"
                    r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
                    r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
                    r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
                    r"[0-5][0-9])?)?")
 
-        oldstamp = _re.search(pattern, self.annotations.get("comment") or "")
+        oldstamp = _re.search(pattern, comments)
 
         if oldstamp:
             old_stamp = oldstamp.group(0)
@@ -449,30 +462,9 @@ class SeqRecord(_SeqRecord):
                       _PydnaWarning)
 
         nowiso = datetime.datetime.now().replace(microsecond=0).isoformat()
-        self.annotations["comment"] = (f"{newstamp} {nowiso}\n"
-                                       f"{(self.annotations.get('comment') or '')}")
+        self.annotations["comment"] = (f"{comments}\n"
+                                       f"{newstamp} {nowiso}").strip()
         return newstamp
-
-    def seguid(self):
-        """Return the url safe SEGUID [#]_ for the sequence.
-
-        This checksum is the same as seguid but with base64.urlsafe
-        encoding instead of the normal base 64. This means that
-        the characters + and / are replaced with - and _ so that
-        the checksum can be a part of and URL or a filename.
-
-        Examples
-        --------
-        >>> from pydna.seqrecord import SeqRecord
-        >>> a=SeqRecord("aaaaaaa")
-        >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
-        '-bKGnebMkia5kNg_gF7IORXMnIU'
-
-        References
-        ----------
-        .. [#] http://wiki.christophchamp.com/index.php/SEGUID
-        """
-        return _seg(self.seq)
 
     def lcs(self, other, *args, limit=25, **kwargs):
         """Return the longest common substring between the sequence.

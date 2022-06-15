@@ -196,7 +196,7 @@ Once Anaconda (or Miniconda) is installed, the conda package manager can be used
 
 Type the command below followed by return:
 
-    conda install -c bjornfjohansson pydna
+    conda install -c conda-forge -c bjornfjohansson pydna
 
 This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies
 automatically (see below).
