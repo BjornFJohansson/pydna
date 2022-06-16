@@ -14,7 +14,7 @@ The pydna python package provide a human-readable formal descriptions of :dna: c
 strategies in Python :snake: which allow for simulation and verification.
 
 
-Pydna can be though of as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+Pydna can be thought of as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
 
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
