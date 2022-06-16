@@ -1381,11 +1381,12 @@ class Dseq(_Seq):
         if self.linear:
             dsseq = self.mung()
         else:
-            dsseq = Dseq.from_string(self._data.decode("ASCII"), linear=True, circular=False)
+            dsseq = Dseq.from_string(self._data.decode("ASCII"),
+                                     linear=True,
+                                     circular=False)
 
-        if len(enzymes) == 1 and hasattr(
-            enzymes[0], "intersection"
-        ):  # RestrictionBatch
+        if len(enzymes) == 1 and hasattr(enzymes[0], "intersection"):
+            # argument is probably a RestrictionBatch
             enzymecuts = []
             for e in enzymes[0]:
                 # cuts = e.search(dsseq+dsseq[:e.size-1] if self.circular else dsseq)
@@ -1398,6 +1399,7 @@ class Dseq(_Seq):
             enzymecuts.sort()
             enzymes = [e for (c, e) in enzymecuts if c]
         else:
+            # argument is probably a list of restriction enzymes
             enzymes = [
                 e
                 for e in list(dict.fromkeys(_flatten(enzymes)))
