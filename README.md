@@ -66,7 +66,6 @@ classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biop
 
 These classes make cut and paste cloning and PCR very simple:
 
-::
 
     >>> from pydna.dseq import Dseq
     >>> seq = Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
@@ -197,7 +196,7 @@ Once Anaconda (or Miniconda) is installed, the conda package manager can be used
 
 Type the command below followed by return:
 
-    conda install -c conda-forge -c defaults -c bjornfjohansson pydna
+    conda install -c conda-forge -c defaults -c BjornFJohansson pydna
 
 The command above pulls packages from the software channels `conda-forge` and `defaults`.
 The pydna package itself is present in the `BjornFJohansson` channel.
@@ -242,6 +241,14 @@ If you want to install requirements before installing pydna, you can do:
 
 	pip install -r requirements.txt
 
+And for the optional requirements:
+
+	pip install -r requirements_optional.txt
+
+For testing:
+
+	pip install -r requirements_test.txt
+
 or
 
 	conda install --file requirements.txt
@@ -283,23 +290,12 @@ Biopython has c-extensions, but the other modules are pure python.
 
 ## Optional dependencies
 
-If the modules listed below are installed, gel simulation functionality will be available.
-
-- [pyparsing >= 2.1.10](https://pypi.python.org/pypi/pyparsing) for genbankfixer
-- [requests](https://pypi.org/project/requests) download sequences
-- [CAI](https://pypi.org/project/CAI) Codon Adaptation Index
-- [numpy](http://www.numpy.org) gel simulation functionality
-- [scipy](https://www.scipy.org) gel simulation functionality
-- [matplotlib](http://matplotlib.org) gel simulation functionality
-- [pillow](https://github.com/python-pillow/Pillow) gel simulation functionality
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
-
-## Requirements for running tests and analyzing code coverage
+If the modules listed below in the first column are installed, they will provide the functionality
+listed in the second column.
 
 | Dependency                                          | Function in pydna                                      |
 |-----------------------------------------------------|--------------------------------------------------------|
-| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt genbank files with pydna.genbankfixer      |
+| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
 | [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
 | [CAI](https://pypi.org/project/CAI)                 | Codon Adaptation Index calculations in several modules |
 | [numpy](http://www.numpy.org)                       | gel simulation with pydna.gel                          |
@@ -309,32 +305,41 @@ If the modules listed below are installed, gel simulation functionality will be 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
+## Requirements for running tests and analyzing code coverage
+
+- [pytest](https://pypi.org/project/pytest)
+- [pytest-cov](https://pypi.org/project/pytest-cov)
+- [pytest-mock](https://pypi.org/project/pytest-mock)
+- [pytest-doctestplus](https://pypi.org/project/pytest-doctestplus)
+- [coverage](https://pypi.org/project/coverage)
+- [nbval](https://pypi.org/project/nbval)
+- [requests-mock](https://pypi.org/project/requests-mock)
+
+
+
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+
 ## Changelog
 
 See the [change log](docs/CHANGELOG.md) for recent changes.
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Automatic testing
-
-The test suit is run automatically after each commit on Linux, MacOS and Windows using GitHub actions.
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
-
-## Release process
+##  Automatic testing & Release process
 
 There are three github actions associated with this package:
 
-- pydna_test_and_coverage_workflow.yml
-- pydna_setuptools_build_workflow.yml
-- pydna_conda_build_workflow.yml
+- `pydna_test_and_coverage_workflow.yml`
+- `pydna_setuptools_build_workflow.yml`
+- `pydna_conda_build_workflow.yml`
 
-The `pydna_test_and_coverage_workflow.yml is triggered on all pushed non-tagged commits.
+The `pydna_test_and_coverage_workflow.yml` is triggered on all pushed non-tagged commits.
 This workflow run tests, doctests and a series of Jupyter notebooks using pytest.
 
 The two other workflows build a setuptools wheel and packages for different Python versions
-on Linux, Windows and macOS. These are triggered by publishing a github release manually
-from the github interface.
+on Linux, Windows and macOS.
+
+These are triggered by publishing a github release manually from the github interface.
 
 
 
