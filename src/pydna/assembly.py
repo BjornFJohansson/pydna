@@ -154,7 +154,7 @@ class Assembly(object, metaclass=_Memoize):
         }
 
         # all combinations of fragments are compared.
-        # see https://docs.python.org/3.6/library/itertools.html
+        # see https://docs.python.org/3.10/library/itertools.html
         # itertools.combinations('ABCD', 2)-->  AB AC AD BC BD CD
         for first, secnd in _itertools.combinations(fragments, 2):
 
