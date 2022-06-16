@@ -14,7 +14,7 @@ The pydna python package provide a human-readable formal descriptions of :dna: c
 strategies in Python :snake: which allow for simulation and verification.
 
 
-Pydna can be thought of as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+Pydna can perhaps be thought of as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
 
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
@@ -32,15 +32,17 @@ Pydna provides simulation of:
 - Gel electrophoresis of DNA with generation of gel images
 
 Virtually any sub-cloning experiment can be described in pydna, and its execution yield
-the sequence of the of intermediate and final resulting DNA molecule(s).
+the sequences of intermediate and final DNA molecules.
 
 Pydna has been designed to be understandable for biologists with only some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
 
-Look at some assembly strategies of D-xylose metabolic pathways made in the Jupyter notebook
-format [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways).
+
+To get started, we have compiled some [simple examples](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
+For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
+
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
