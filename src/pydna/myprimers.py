@@ -78,7 +78,8 @@ class PrimerList(_UserList):
             self.data = _parse_primers(self.path.read_text())[::-1]
         # super().__init__(*args, **kwargs)
         self.accessed_indices = []
-        if (identifier.isidentifier() and not _iskeyword(identifier) and identifier not in _kw):
+        if (identifier.isidentifier() and not _iskeyword(identifier)
+           and identifier not in _kw):
             self.identifier = identifier
         else:
             raise ValueError(f"{identifier} is not a valid identifier.")
