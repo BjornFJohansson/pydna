@@ -404,7 +404,24 @@ class SeqRecord(_SeqRecord):
         """
         return self.seq.useguid()
 
-    def stamp(self, algorithm):
+    def comment(self, newcomment=""):
+        """docstring."""
+        result = self.annotations.get("comment", "")
+        if newcomment:
+            self.annotations["comment"] = (result + "\n" + newcomment).strip()
+            result = _pretty_str(self.annotations["comment"])
+        return result
+
+    def datefunction():
+        """docstring."""
+        return datetime.datetime.now().replace(microsecond=0).isoformat()
+
+    def stamp(self,
+              algorithm,
+              now=datefunction,
+              tool="pydna",
+              separator=" ",
+              comment=""):
         """Add a uSEGUID or cSEGUID checksum.
 
         The checksum is stored in object.annotations["comment"].
@@ -428,27 +445,27 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a = SeqRecord("aa")
         >>> a.stamp("uSEGUID")
-        'uSEGUID gBw0Jp907Tg_yX3jNgS4qQWttjU'
-        >>> a.annotations["comment"][:35]
-        'uSEGUID gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        'gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        >>> a.annotations["comment"][:41]
+        'pydna uSEGUID gBw0Jp907Tg_yX3jNgS4qQWttjU'
         """
+        oldcomment = self.annotations.get("comment", "")
 
-        comments = self.annotations.get("comment") or ""
         algorithm = _re.sub("seguid",
                             "SEGUID",
                             algorithm,
                             flags=_re.IGNORECASE)
+
         chksum = getattr(self.seq, algorithm.lower())()
-        newstamp = _pretty_str(f"{algorithm} {chksum}")
 
         pattern = (r"(?P<algorithm>(c|l|u)?(?i)SEGUID)"
-                   r"(?:_|\s){1,5}(?P<sha1>\S{27})"
+                   r"(?:_|\s|:){1,5}(?P<sha1>\S{27})"
                    r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
                    r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
                    r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
                    r"[0-5][0-9])?)?")
 
-        oldstamp = _re.search(pattern, comments)
+        oldstamp = _re.search(pattern, oldcomment)
 
         if oldstamp:
             old_stamp = oldstamp.group(0)
@@ -456,15 +473,15 @@ class SeqRecord(_SeqRecord):
             old_chksum = oldstamp.group("sha1")
             old_iso = oldstamp.group("iso")
             if chksum == old_chksum and algorithm == old_algorithm:
-                return newstamp
+                return _pretty_str(oldstamp.group(0))
             else:
-                _warn(f"Stamp change.\nNew: {newstamp}\nOld: {old_stamp}",
+                _warn(f"Stamp change.\nNew: {algorithm} {chksum}\nOld: {old_stamp}",
                       _PydnaWarning)
 
-        nowiso = datetime.datetime.now().replace(microsecond=0).isoformat()
-        self.annotations["comment"] = (f"{comments}\n"
-                                       f"{newstamp} {nowiso}").strip()
-        return newstamp
+        # now = datetime.datetime.now().replace(microsecond=0).isoformat()
+        self.annotations["comment"] = (f"{oldcomment}\n"
+                                       f"{tool} {algorithm} {chksum} {now()} {comment}").strip()
+        return _pretty_str(chksum)
 
     def lcs(self, other, *args, limit=25, **kwargs):
         """Return the longest common substring between the sequence.

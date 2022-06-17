@@ -71,18 +71,18 @@ def test_stamp():
     from Bio.SeqRecord import SeqRecord as bpSecRecord
 
     a = SeqRecord("attt")
-    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
-    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp("useguid") == "ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert "pydna uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
+    assert a.stamp("useguid")[:35] == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
 
     a = SeqRecord("attt")
     a.annotations["comment"] = "something"
-    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp("useguid") == "ot6JPLeAeMmfztW1736Kc6DAqlo"
 
     assert "something" in a.annotations["comment"]
 
     a = SeqRecord("attt")
-    assert a.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp("useguid") == "ot6JPLeAeMmfztW1736Kc6DAqlo"
     a.seq = a.seq + "a"
 
     with pytest.warns(_PydnaWarning):

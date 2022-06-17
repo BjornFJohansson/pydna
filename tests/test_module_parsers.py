@@ -203,5 +203,14 @@ def test_misc_parse():
     )
 
 
+def test_dna2949():
+    from pydna.parsers import parse
+    with open("dna2943.gb") as f:
+        f.read()
+    seqlist = parse("dna2943.gb", ds=True)
+    assert len(seqlist) == 1
+    assert seqlist[0].useguid() == "jkB2Ky9pW-hR7XCocz40PR_RKl4"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])

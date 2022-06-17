@@ -320,11 +320,11 @@ def test_stamp():
 
 
     lin = Dseqrecord("attt")
-    assert lin.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert lin.stamp("useguid") == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert lin.stamp("useguid") == "ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert lin.stamp("useguid")[:35] == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
 
     crc = Dseqrecord("attt", circular=True)
-    assert crc.stamp("cseguid") == "cSEGUID oopV-6158nHJqedi8lsshIfcqYA"
+    assert crc.stamp("cseguid") == "oopV-6158nHJqedi8lsshIfcqYA"
     crc.annotations["comment"] = "cSEGUID_oopV-6158nHJqedi8lsshIfcqYZ"
     with pytest.warns(_PydnaWarning):
         crc.stamp("cseguid")
@@ -333,16 +333,16 @@ def test_stamp():
 
     blunt = Dseqrecord(Dseq("aa"))
 
-    assert blunt.stamp("useguid") == "uSEGUID gBw0Jp907Tg_yX3jNgS4qQWttjU"
+    assert blunt.stamp("useguid") == "gBw0Jp907Tg_yX3jNgS4qQWttjU"
 
     staggered = Dseqrecord(Dseq("aa", "tta"))
-    assert staggered.stamp("lseguid") == "lSEGUID qlQKjCD04EhPHtsdnEQ0DriOr10"
+    assert staggered.stamp("lseguid") == "qlQKjCD04EhPHtsdnEQ0DriOr10"
 
     staggered = Dseqrecord(Dseq("aa", "att"))
-    assert staggered.stamp("lseguid") == "lSEGUID mvhPR1scFLQfgDn3olxegJmckgg"
+    assert staggered.stamp("lseguid") == "mvhPR1scFLQfgDn3olxegJmckgg"
 
     staggered = Dseqrecord(Dseq("aa", "atta"))
-    assert staggered.stamp("lseguid") == "lSEGUID hPVQIzC3k29tDuAu_C5xEgLsFZs"
+    assert staggered.stamp("lseguid") == "hPVQIzC3k29tDuAu_C5xEgLsFZs"
 
 
 def test_revcomp():

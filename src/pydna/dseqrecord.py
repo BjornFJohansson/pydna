@@ -360,110 +360,11 @@ class Dseqrecord(_SeqRecord):
             raise TypeError("lseguid is only defined for linear sequences.")
         return self.seq.lseguid()
 
-    # def stamp(self):
-    #     """Adds a SEGUID or cSEGUID checksum and a datestring to the description property.
-    #     This will show in the genbank format.
-
-    #     For linear sequences:
-
-    #     ``SEGUID_<seguid>_<datestring>``
-
-    #     For circular sequences:
-
-    #     ``cSEGUID_<seguid>_<datestring>``
-
-
-    #     Examples
-    #     --------
-
-    #     >>> from pydna.dseqrecord import Dseqrecord
-    #     >>> a = Dseqrecord("aaa")
-    #     >>> a.stamp()
-    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
-    #     >>> a.annotations["comment"]
-    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE...'
-
-    #     See also
-    #     --------
-    #     pydna.dseqrecord.Dseqrecord.verify_stamp
-    #     """
-    #     return super().stamp()
-
-    # def stamp(self, chksum):
-    #     """Add a uSEGUID or cSEGUID checksum.
-
-    #     The checksum is stored in object.annotations["comment"].
-    #     This shows in the COMMENTS section of a formatted genbank file.
-
-    #     For blunt linear sequences:
-
-    #     ``SEGUID <seguid>``
-
-    #     For circular sequences:
-
-    #     ``cSEGUID <seguid>``
-
-    #     Fore linear sequences which are not blunt:
-
-    #     ``lSEGUID <seguid>``
-
-
-    #     Examples
-    #     --------
-    #     >>> from pydna.dseqrecord import Dseqrecord
-    #     >>> a = Dseqrecord("tga")
-    #     >>> a.stamp()
-    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-    #     >>> a.annotations["comment"][:34]
-    #     'SEGUID YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-    #     """
-    #     # try:
-    #     #     blunt = self.seq.isblunt()
-    #     # except AttributeError:
-    #     #     blunt = True
-
-    #     # try:
-    #     #     linear = self.seq.linear
-    #     # except AttributeError:
-    #     #     linear = True
-
-    #     if self.seq.linear:
-    #         algorithm = "lSEGUID"
-    #     else:
-    #         algorithm = "cSEGUID"
-
-    #     chksum = getattr(self.seq, algorithm.lower())()
-    #     newstamp = _pretty_str(f"{algorithm} {chksum}")
-
-    #     pattern = (r"(?P<algorithm>(c|l|u)?SEGUID)(?:_|\s){1,5}(?P<sha1>\S{27})"
-    #                r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
-    #                r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
-    #                r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
-    #                r"[0-5][0-9])?)?")
-
-    #     oldstamp = _re.search(pattern, self.annotations.get("comment") or "")
-
-    #     if oldstamp:
-    #         old_stamp = oldstamp.group(0)
-    #         old_algorithm = oldstamp.group("algorithm")
-    #         old_chksum = oldstamp.group("sha1")
-    #         old_iso = oldstamp.group("iso")
-    #         if chksum == old_chksum and algorithm == old_algorithm:
-    #             return newstamp
-    #         else:
-    #             _warn(f"Stamp change.\nNew: {newstamp}\nOld: {old_stamp}",
-    #                   _PydnaWarning)
-
-    #     nowiso = datetime.datetime.now().replace(microsecond=0).isoformat()
-    #     self.annotations["comment"] = (f"{newstamp} {nowiso}\n"
-    #                                    f"{(self.annotations.get('comment') or '')}")
-    #     return newstamp
-
     def looped(self):
         """
-        Returns a circular version of the Dseqrecord object. The
-        underlying Dseq object has to have compatible ends.
+        Circular version of the Dseqrecord object.
 
+        The underlying linear Dseq object has to have compatible ends.
 
         Examples
         --------
@@ -476,7 +377,7 @@ class Dseqrecord(_SeqRecord):
         Dseqrecord(o3)
         >>>
 
-        See also
+        See Also
         --------
         pydna.dseq.Dseq.looped
         """
@@ -686,8 +587,8 @@ class Dseqrecord(_SeqRecord):
                 </tbody>
                 </table>
                 """
-            elif "SEGUID" in old_file.annotations.get("comments", ""):
-                pattern = r"(lSEGUID|cSEGUID|SEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
+            elif "SEGUID" in old_file.annotations.get("comment", ""):
+                pattern = r"(lSEGUID|cSEGUID|uSEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
                 # cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
