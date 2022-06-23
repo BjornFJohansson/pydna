@@ -14,6 +14,7 @@ been set to a valid email address. The easiest way to do this permanantly is to 
 from pydna.utils import memorize as _memorize
 from pydna.genbankrecord import GenbankRecord as _GenbankRecord
 from pydna.readers import read as _read
+
 from Bio import Entrez as _Entrez
 import re as _re
 import os as _os
@@ -102,7 +103,7 @@ class Genbank(object):
         downloaded.
 
         If strand is 2. "c", "C", "crick", "Crick", "antisense","Antisense",
-        "2", 2 or "-", the antisense (Crick) strand is returned, otherwise
+        "2", 2, "-" or "-1", the antisense (Crick) strand is returned, otherwise
         the sense (Watson) strand is returned.
 
         Result is returned as a :class:`pydna.genbankrecord.GenbankRecord` object.
@@ -135,9 +136,12 @@ class Genbank(object):
 
         if strand not in [1, 2]:
             try:
-                strand = {"c": 2, "crick": 2, "antisense": 2, "2": 2, "-": 2}[
-                    strand.lower()
-                ]
+                strand = {"c": 2,
+                          "crick": 2,
+                          "antisense": 2,
+                          "2": 2,
+                          "-": 2,
+                          "-1": 2}[strand.lower()]
             except (KeyError, AttributeError):
                 strand = 1
 
@@ -172,6 +176,7 @@ class Genbank(object):
         )
 
 
+
 def genbank(accession: str = "CS570233.1", *args, **kwargs):
     """Download a genbank nuclotide record. This function takes the same paramenters as the
     :func:pydna.genbank.Genbank.nucleotide method. The email address stored in the `pydna_email`
@@ -179,9 +184,33 @@ def genbank(accession: str = "CS570233.1", *args, **kwargs):
     `pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`
 
     if no accession is given, a `very short Genbank entry <https://www.ncbi.nlm.nih.gov/nuccore/CS570233.1>`_
-    is used as an example. This can be usefuk for testing the connection to Genbank.
+    is used as an example (see below). This can be useful for testing the connection to Genbank.
+
     Please note that this result is also cached by default by settings in the pydna.ini file.
     See the documentation of :func:`pydna.open_config_folder`
+
+    LOCUS       CS570233                  14 bp    DNA     linear   PAT 18-MAY-2007
+    DEFINITION  Sequence 6 from Patent WO2007025016.
+    ACCESSION   CS570233
+    VERSION     CS570233.1
+    KEYWORDS    .
+    SOURCE      synthetic construct
+      ORGANISM  synthetic construct
+                other sequences; artificial sequences.
+    REFERENCE   1
+      AUTHORS   Shaw,R.W. and Cottenoir,M.
+      TITLE     Inhibition of metallo-beta-lactamase by double-stranded dna
+      JOURNAL   Patent: WO 2007025016-A1 6 01-MAR-2007;
+                Texas Tech University System (US)
+    FEATURES             Location/Qualifiers
+         source          1..14
+                         /organism="synthetic construct"
+                         /mol_type="unassigned DNA"
+                         /db_xref="taxon:32630"
+                         /note="This is a 14bp aptamer inhibitor."
+    ORIGIN
+            1 atgttcctac atga
+    //
     """
     email = _os.getenv("pydna_email")
     _module_logger.info("#### genbank function called ####")
