@@ -92,6 +92,8 @@ class Genbank(object):
         | NM_005546 REGION: complement(1..100)
         | 21614549:1-100
         | 21614549:c100-1
+        | 21614549 1-100
+        | 21614549 c100-1
 
         It is useful to set an interval for large genbank records to limit the download time.
         The items above containing interval information and can be obtained directly by
@@ -116,14 +118,9 @@ class Genbank(object):
         """
         matches = (
             (1, _re.search(r"(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
-            (
-                2,
-                _re.search(
-                    r"(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))", item
-                ),
-            ),
-            (1, _re.search(r":(?P<start>\d+)-(?P<stop>\d+)", item)),
-            (2, _re.search(r":c(?P<start>\d+)-(?P<stop>\d+)", item)),
+            (2, _re.search(r"(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))", item),),
+            (1, _re.search(r"(:|\s)(?P<start>\d+)-(?P<stop>\d+)", item)),
+            (2, _re.search(r"(:|\s)c(?P<start>\d+)-(?P<stop>\d+)", item)),
         )
 
         for strand_, match in matches:
