@@ -815,6 +815,7 @@ class Dseqrecord(_SeqRecord):
             return self.__class__("")
 
     def __getitem__(self, sl):
+        """docstring."""
         answer = Dseqrecord(_copy.copy(self))
         answer.seq = self.seq.__getitem__(sl)
         # answer.seq.alphabet = self.seq.alphabet
