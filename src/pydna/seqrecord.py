@@ -57,10 +57,12 @@ class SeqRecord(_SeqRecord):
 
         super().__init__(*args,
                          **kwargs)
+        self._fix_attributes()
 
-        self.id = _pretty_str(id)
-        self.name = _pretty_str(name)
-        self.description = _pretty_str(description)
+    def _fix_attributes(self):
+        self.id = _pretty_str(self.id)
+        self.name = _pretty_str(self.name)
+        self.description = _pretty_str(self.description)
 
         self.annotations.update({"molecule_type": "DNA"})
         self.map_target = None
@@ -71,6 +73,15 @@ class SeqRecord(_SeqRecord):
         self.seq._data = b"".join(self.seq._data.split())  # remove whitespaces
         self.annotations = {_pretty_str(k): _pretty_str(v) for k, v in
                             self.annotations.items()}
+    
+    @classmethod
+    def from_Bio_SeqRecord(clc, sr: _SeqRecord):
+        """Creates a pydnaSeqRecord from a Biopython SeqRecord."""        
+        # https://stackoverflow.com/questions/15404256/changing-the-\
+        # class-of-a-python-object-casting
+        sr.__class__ = clc
+        sr._fix_attributes()
+        return sr
 
     @property
     def locus(self):
@@ -118,12 +129,7 @@ class SeqRecord(_SeqRecord):
     def reverse_complement(self, *args, **kwargs):
         """Return the reverse complement of the sequence."""
         answer = super().reverse_complement(*args, **kwargs)
-        answer.__class__ = type(self)
-        # https://stackoverflow.com/questions/15404256/changing-the-\
-        # class-of-a-python-object-casting
-        # answer = type(self)(super().reverse_complement(*args,
-        #                                                **kwargs).seq,
-        #                                                *args,**kwargs)
+        answer = type(self).from_Bio_SeqRecord(answer)
         return answer
 
     def isorf(self, table=1):
@@ -630,6 +636,7 @@ class SeqRecord(_SeqRecord):
             answer.id = "id"
         if answer.description == "<unknown description>":
             answer.description = "description"
+        answer = type(self).from_Bio_SeqRecord(answer)
         return answer
 
     def __getitem__(self, index):
