@@ -15,7 +15,7 @@ def test_genbankfile():
         == "<a href='https://www.ncbi.nlm.nih.gov/nuccore/accession?from=&to=&strand=1' target='_blank'>accession</a>"
     )
 
-    assert repr(gbr) == "Gbank(accession)(-3)"
+    assert repr(gbr) == "Gbnk(-3 accession)"
 
     assert (
         gbr._repr_html_()
@@ -28,7 +28,7 @@ def test_genbankfile():
 
     gbr._repr_pretty_(pp, None)
 
-    pp.text.assert_called_with("Gbank(accession)(-3)")
+    pp.text.assert_called_with("Gbnk(-3 accession)")
 
     gbr = genbankrecord.GenbankRecord("aaa", start=1, stop=2)
 
