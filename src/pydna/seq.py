@@ -95,6 +95,7 @@ class Seq(_Seq):
         start = 0
         matches = []
         s = self._data.decode("ASCII")
+
         while True:
             match = orf.search(s, pos=start)
             if match:
@@ -135,6 +136,3 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
-
-
-
