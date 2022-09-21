@@ -29,9 +29,64 @@ import math
 import random
 import subprocess as _subprocess
 
+from pydna.codon import weights as _weights
+from pydna.codon import rare_codons as _rare_codons
+from pydna.codon import n_end as _n_end
+from Bio.SeqUtils import seq3 as _seq3
+from pydna._pretty import PrettyTable as _PrettyTable
+
 _module_logger = _logging.getLogger("pydna." + __name__)
 _ambiguous_dna_complement.update({"U": "A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
+
+
+def cai(seq: str,
+        organism: str = "sce"):
+    """docstring."""
+    from CAI import CAI as _CAI
+    return round(_CAI(seq.upper(),
+                      weights=_weights[organism]), 3)
+
+
+def rarecodons(seq: str,
+               organism="sce"):
+    """docstring."""
+    rare = _rare_codons[organism]
+    s = seq.upper()
+    slices = []
+    for i in range(0, len(seq)//3):
+        x, y = i*3, i*3+3
+        trip = s[x:y]
+        if trip in rare:
+            slices.append(slice(x, y, 1))
+    return slices
+
+
+def express(seq: str,
+            organism="sce"):
+    """docstring."""
+    x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
+                      "n-end"]+_rare_codons[organism]+["rare"])
+    val = []
+
+    val.append(f"{self._data.upper().decode('ASCII')[:3]}..."
+               f"{self._data.upper().decode('ASCII')[-3:]}")
+    val.append(len(self)/3)
+    val.append(cai(organism))
+    val.append(gc())
+    val.append(startcodon())
+    val.append(stopcodon())
+    val.append(_n_end[organism].get(_seq3(self[3:6].translate())))
+    s = self._data.upper().decode("ASCII")
+    trps = [s[i*3:i*3+3] for i in range(0, len(s)//3)]
+    tot = 0
+    for cdn in _rare_codons[organism]:
+        cnt = trps.count(cdn)
+        tot += cnt
+        val.append(cnt)
+    val.append(round(tot/len(trps), 3))
+    x.add_row(val)
+    return x
 
 
 def open_folder(pth):
