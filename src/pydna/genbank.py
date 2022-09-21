@@ -169,8 +169,11 @@ class Genbank(object):
         _module_logger.info("text[:160]  %s", text[:160])
 
         return _GenbankRecord(
-            _read(text), item=item, start=seq_start, stop=seq_stop, strand=strand
-        )
+            _read(text),
+            item=item,
+            start=seq_start,
+            stop=seq_stop,
+            strand=strand)
 
 
 
