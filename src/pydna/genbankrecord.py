@@ -96,24 +96,20 @@ class GenbankRecord(_Dseqrecord):
     def __getitem__(self, sl):
         answer = super().__getitem__(sl)
         answer.item = self.item
-        answer.start = self.start+sl.start
-        answer.stop= self.start+sl.stop
+        answer.start = self.start or 0 + sl.start
+        answer.stop = self.start or 0 + sl.stop
         answer.strand = self.strand
         return answer
 
     def __repr__(self):
         """returns a short string representation of the object"""
-        return "Gbank({})({}{})".format(
-            self._repr, {True: "-", False: "o"}[self.linear], len(self)
-        )
+        return "Gbnk({}{} {})".format({True: "-", False: "o"}[self.linear],
+                                       len(self),
+                                       self._repr)
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
-        p.text(
-            "Gbank({})({}{})".format(
-                self._repr, {True: "-", False: "o"}[self.linear], len(self)
-            )
-        )
+        p.text(self.__repr__())
 
     def _repr_html_(self):
         return self.hyperlink
