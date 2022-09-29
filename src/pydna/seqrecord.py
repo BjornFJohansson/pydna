@@ -56,6 +56,9 @@ class SeqRecord(_SeqRecord):
                  **kwargs):
 
         super().__init__(*args,
+                         id = id,
+                         name = name,
+                         description = description,
                          **kwargs)
         self._fix_attributes()
 
