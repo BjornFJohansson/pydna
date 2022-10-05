@@ -155,12 +155,13 @@ class PrimerList(_UserList):
                 print(f"{p.format('fasta')}")
                 err = e
             else:
-                indices.append(i)
+                indices.append(self.data.index(p))
         if err:
             raise ValueError("At least one primer not in list.")
 
         curly = "{}"
-        msg = f"{self.identifier} = {curly}\n\n"
+        msg = "from pydna.parsers import parse_primers\n\n"
+        msg += f"{self.identifier} = {curly}\n\n"
         msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
         msg += " = parse_primers('''\n\n"
         msg += "\n".join(self[i].format("fasta") for i in indices)
