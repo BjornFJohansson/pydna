@@ -78,7 +78,7 @@ def _annealing_positions(primer, template, limit=15):
 
     prc = _rc(primer)
 
-    # head is minimum part of primer that can anneal
+    # head is minimum part of primer that must anneal
     head = prc[:limit].upper()
 
     table = {
@@ -104,18 +104,15 @@ def _annealing_positions(primer, template, limit=15):
     ]
 
     if positions:
-        tail = prc[limit:]
+        tail = prc[limit:].lower()
         length = len(tail)
         results = []
         for match_start in positions:
-            tm = template[match_start + limit: match_start + limit + length]
-            footprint = len(
-                list(
-                    _itertools.takewhile(
-                        lambda x: x[0].lower() == x[1].lower(), zip(tail, tm)
-                    )
-                )
-            )
+            tm = template[match_start + limit:
+                          match_start + limit + length].lower()
+            footprint = len(list(_itertools.takewhile(lambda x: x[0] == x[1],
+                                                      zip(tail,
+                                                          tm))))
             results.append((match_start, footprint + limit))
         return results
     return []
@@ -326,13 +323,16 @@ class Anneal(object, metaclass=_Memoize):
                     _SeqFeature(
                         _CompoundLocation(
                             [
-                                _FeatureLocation(0, end),
-                                _FeatureLocation(start, len(self.template)),
-                            ]
+                                _FeatureLocation(0,
+                                                 end,
+                                                 strand=-1),
+                                _FeatureLocation(start,
+                                                 len(self.template),
+                                                 strand=-1),
+                            ],
                         ),
                         type="primer_bind",
                         location_operator="join",
-                        strand=-1,
                         qualifiers={"label": [rp.name]},
                     )
                 )
@@ -526,6 +526,7 @@ tatcgactgtatcatctgatagcac")
     output = _flatten(args)  # flatten
     new = []
     for s in output:
+        breakpoint()
         if hasattr(s, "watson"):
             s = _SeqRecord(_Seq(s.watson))
         elif hasattr(s, "transcribe"):

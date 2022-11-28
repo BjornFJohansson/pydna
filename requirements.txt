@@ -1,4 +1,4 @@
-appdirs>=1.4.3
-biopython>=1.79
-networkx>=2.5.0
-prettytable>=0.7.2
+appdirs>=1.4.4
+biopython>=1.80
+networkx>=2.6.3
+prettytable>=3.5.0

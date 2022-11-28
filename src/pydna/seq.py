@@ -17,7 +17,7 @@ from pydna.codon import n_end as _n_end
 from pydna.utils import useguid as _useg
 
 from Bio.SeqUtils import seq3 as _seq3
-from Bio.SeqUtils import GC as _GC
+from Bio.SeqUtils import gc_fraction as _GC
 import re as _re
 from Bio.Seq import Seq as _Seq
 from pydna._pretty import PrettyTable as _PrettyTable
@@ -35,7 +35,7 @@ class Seq(_Seq):
 
     def gc(self):
         """Return GC content."""
-        return round(_GC(self._data.upper().decode("ASCII"))/100.0, 3)
+        return round(_GC(self._data.upper().decode("ASCII")), 3)
 
     def cai(self, organism="sce"):
         """docstring."""

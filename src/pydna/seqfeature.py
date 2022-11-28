@@ -5,7 +5,7 @@ preserves some of the meta data from the parent sequence
 
 from Bio.SeqFeature import SeqFeature as _Sf
 # from Bio.SeqFeature import FeatureLocation as _Fl
-from pydna.utils import identifier_from_string as _identifier_from_string
+# from pydna.utils import identifier_from_string as _identifier_from_string
 
 
 class SeqFeature(_Sf):
@@ -44,12 +44,12 @@ class SeqFeature(_Sf):
     def extract(self, parent_sequence):
         """docstring."""
         answer = super().extract(parent_sequence)
-        identifier = "feat_{}".format(parent_sequence.id)
-        if "label" in self.qualifiers:
-            identifier = " ".join(self.qualifiers["label"])
-        elif "note" in self.qualifiers:
-            identifier = " ".join(self.qualifiers["note"])
-        answer.name = answer.id = _identifier_from_string(identifier)[:16]
+        # identifier = "feat_{}".format(parent_sequence.id)
+        # if "label" in self.qualifiers:
+        #     identifier = " ".join(self.qualifiers["label"])
+        # elif "note" in self.qualifiers:
+        #     identifier = " ".join(self.qualifiers["note"])
+        # answer.name = answer.id = _identifier_from_string(identifier)[:16]
         return answer
 
     def unfold(self):
@@ -58,9 +58,9 @@ class SeqFeature(_Sf):
         for part in self.location.parts:
             results.append(SeqFeature(location=part,
                                       type=self.type,
-                                      strand=self.strand,
                                       id=self.id,
                                       qualifiers=self.qualifiers))
+
         return results
 
 

@@ -10,7 +10,7 @@
 
 import math as _math
 from Bio.SeqUtils import MeltingTemp as _mt
-from Bio.SeqUtils import GC as _GC
+from Bio.SeqUtils import gc_fraction as _GC
 
 import textwrap as _textwrap
 from pydna._pretty import pretty_str as _pretty_str
@@ -119,7 +119,7 @@ def tm_product(seq: str, K=0.050):
     ing temperature for DNA amplification in vitro
     http://www.ncbi.nlm.nih.gov/pubmed/2243783
     """
-    tmp = 81.5 + 0.41 * _GC(seq) + 16.6 * _math.log10(K) - 675/len(seq)
+    tmp = 81.5 + 0.41 * _GC(seq) * 100 + 16.6 * _math.log10(K) - 675/len(seq)
     return tmp
 
 

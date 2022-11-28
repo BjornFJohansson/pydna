@@ -126,7 +126,9 @@ class PrimerList(_UserList):
         new = []
         found = []
         oldstrs = [str(p.seq).upper() for p in self.data]
-        no = len(oldstrs)
+        # no = len(oldstrs)
+        no, *rest = self.data[-1].name.split("_")
+        no = int(no) + 1
         for p in lst[::-1]:
             try:
                 i = oldstrs.index(str(p.seq).upper())

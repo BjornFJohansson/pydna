@@ -382,29 +382,31 @@ class Dseqrecord(_SeqRecord):
         pydna.dseq.Dseq.looped
         """
         new = _copy.copy(self)
-        for key, value in list(self.__dict__.items()):
-            setattr(new, key, value)
+        # for key, value in list(self.__dict__.items()):
+        #     setattr(new, key, value)
         new._seq = self.seq.looped()
         five_prime = self.seq.five_prime_end()
         for fn, fo in zip(new.features, self.features):
             if five_prime[0] == "5'":
-                fn.location = fn.location + self.seq.ovhg
+                pass
+                # fn.location = fn.location + self.seq.ovhg
             elif five_prime[0] == "3'":
                 fn.location = fn.location + (-self.seq.ovhg)
-
             if fn.location.start < 0:
-                loc1 = _FeatureLocation(
-                    len(new) + fn.location.start, len(new), strand=fn.strand
-                )
+                loc1 = _FeatureLocation(len(new) + fn.location.start,
+                                        len(new), strand=fn.strand)
                 loc2 = _FeatureLocation(0, fn.location.end, strand=fn.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             if fn.location.end > len(new):
-                loc1 = _FeatureLocation(fn.location.start, len(new), strand=fn.strand)
-                loc2 = _FeatureLocation(0, fn.location.end - len(new), strand=fn.strand)
+                loc1 = _FeatureLocation(fn.location.start,
+                                        len(new), strand=fn.strand)
+                loc2 = _FeatureLocation(0, fn.location.end - len(new),
+                                        strand=fn.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             fn.qualifiers = fo.qualifiers
+        # breakpoint()
         return new
 
     def tolinear(self):  # pragma: no cover
@@ -946,23 +948,24 @@ class Dseqrecord(_SeqRecord):
             return ()
 
         if self.linear:
-            shift = 0
+            shift = frags[0].pos # 0
             features = self.features
         else:
+            # breakpoint()
             shift = frags[0].pos
             features = self.shifted(shift).features
             for fr in frags:
-                fr.pos -= shift
+                fr.pos -= shift + max(fr.ovhg, 0)
+                # breakpoint()
         dsfs = []
         for fr in frags:
             dsf = Dseqrecord(fr, linear=True, n=self.n)
             start = fr.pos  # - shift
             end = fr.pos + fr.length  # - shift
-            dsf.features = [
-                _copy.copy(fe)
-                for fe in features
-                if start <= fe.location.start and end >= fe.location.end
-            ]
+            dsf.features = [_copy.copy(fe)
+                            for fe in features
+                            if start <= fe.location.start
+                            and end >= fe.location.end]
             for fe in dsf.features:
                 fe.location += -fr.pos
             dsfs.append(dsf)

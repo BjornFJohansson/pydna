@@ -4,6 +4,34 @@
 import pytest
 
 
+def test_flatten():
+
+    from Bio.Seq import Seq as bSeq
+    from pydna.dseq import Dseq
+    from Bio.SeqRecord import SeqRecord as bSeqRecord
+    from pydna.seqrecord import SeqRecord
+    from pydna.dseqrecord import Dseqrecord
+    from pydna.utils import flatten
+
+    testtuple = (
+      [1, 2, 3],
+      [bSeq("a"), bSeq("a"), bSeq("a")],
+      [Dseq("a"), Dseq("a"), Dseq("a")],
+      [bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a"))],
+      [SeqRecord(bSeq("a")), SeqRecord(bSeq("a")), SeqRecord(bSeq("a"))],
+      [Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a"))],
+      [Dseqrecord("a"), Dseqrecord("a"), Dseqrecord("a")],
+      ["a", "b", "c"]
+      )
+
+    for t in testtuple:
+        assert flatten(t) == t
+    testtuple2 = ( ([1, [2, 3]], [1, 2, 3]),
+    )
+    for argument, result in testtuple2:
+        assert flatten(argument) == result
+
+
 def test_eq():
 
     from pydna.dseqrecord import Dseqrecord
@@ -48,10 +76,14 @@ def test_eq():
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=True)
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=False)
 
-    assert eq(Dseqrecord("AAA", circular=False), Dseqrecord("AAA", circular=False))
-    assert eq(Dseqrecord("AAA", circular=True), Dseqrecord("AAA", circular=True))
-    assert not eq(Dseqrecord("ATA", circular=False), Dseqrecord("AAT", circular=False))
-    assert eq(Dseqrecord("ATA", circular=True), Dseqrecord("AAT", circular=True))
+    assert eq(Dseqrecord("AAA", circular=False),
+              Dseqrecord("AAA", circular=False))
+    assert eq(Dseqrecord("AAA", circular=True),
+              Dseqrecord("AAA", circular=True))
+    assert not eq(Dseqrecord("ATA", circular=False),
+                  Dseqrecord("AAT", circular=False))
+    assert eq(Dseqrecord("ATA", circular=True),
+              Dseqrecord("AAT", circular=True))
 
     with pytest.raises(ValueError):
         eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATA", circular=False))
@@ -271,13 +303,13 @@ def test_join_list_to_table():
         "six\n"
         "nine"
     )
-    
+
     assert (
         join_list_to_table(cs)
         == "one   two   three\nfour  five  six  \nseven eight nine "
     )
-    
-    
+
+
     cs = (
         "one\n"
         "four\n"
@@ -319,7 +351,7 @@ def test_join_list_to_table():
     cs = "one\n" "four\n" " \n" "|||\n" "two\n" " \n" "eight"
 
     assert join_list_to_table(cs) == 'one  two  \nfour "    \n"    eight'
-    
+
 
 def test_expandtolist():
     from pydna.utils import expandtolist

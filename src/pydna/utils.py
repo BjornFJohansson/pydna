@@ -482,17 +482,20 @@ def cseguid(seq: str) -> _pretty_str:
                        SmallestRotation(str(rc(seq)).upper())))
 
 
-def flatten(*args):  # flatten
-    """Flattens an iterable of iterables down to str, bytes, bytearray or any of the pydna or Biopython seq objects"""
+def flatten(*args):
+    """Flattens an iterable of iterables.
+
+    Down to str, bytes, bytearray or any of the pydna or Biopython seq objects
+    """
     output = []
     args = list(args)
     while args:
         top = args.pop()
         if (
-            isinstance(top, _collections.abc.Iterable)
-            and not isinstance(top, (str, bytes, bytearray))
-            and not hasattr(top, "features")
-        ):
+                isinstance(top, _collections.abc.Iterable)
+                and not isinstance(top, (str, bytes, bytearray))
+                and not hasattr(top, "reverse_complement")
+                ):
             args.extend(top)
         else:
             output.append(top)

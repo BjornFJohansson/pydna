@@ -6,7 +6,7 @@ from pydna import _PydnaWarning
 
 def test_orfs():
     from pydna.dseqrecord import Dseqrecord
-    
+
     s = Dseqrecord("atgaaattttaa")
 
     assert s.orfs(2) == (s,)
@@ -1264,12 +1264,13 @@ def test_features_change_ori():
         """
     )
 
-    assert str(s.features[0].extract(s).seq) == "CGGGAAAG"
-    assert str(s.features[1].extract(s).seq) == "GTACCTTTGGATC"
+    assert str(s.features[0].extract(s).seq) == "CGGGAAAG"        # bb
+    assert str(s.features[1].extract(s).seq) == "GTACCTTTGGATC"   # ins
 
     for i in range(1, len(s)):
 
         b = s.shifted(i)
+
         assert [
             str(f.extract(b).seq)
             for f in b.features
@@ -1689,35 +1690,64 @@ def test_looped():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
 
-    a = Dseqrecord("aaaa")
-    a.add_feature(2, 4)
+    a = Dseqrecord("aAAa")
+    a.add_feature()
     b = a.looped()
+    assert a.features[0].extract(a).seq == b.features[0].extract(b).seq
+    assert str(a.features[0].extract(a).seq) == str(b.features[0].extract(b).seq)
     assert a.features == b.features
-    a = Dseqrecord("aaaa")
-    a.add_feature(0, 2)
-    b = a.looped()
-    assert a.features == b.features
-    a = Dseqrecord("aaaa")
+
+    a = Dseqrecord("aAAa")
     a.add_feature(0, 4)
     b = a.looped()
+    assert a.features[0].extract(a).seq == b.features[0].extract(b).seq
+    assert str(a.features[0].extract(a).seq) == str(b.features[0].extract(b).seq)
     assert a.features == b.features
 
-    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a = Dseqrecord("aAAa")
     a.add_feature(2, 4)
     b = a.looped()
+    assert a.features[0].extract(a).seq == b.features[0].extract(b).seq
+    assert str(a.features[0].extract(a).seq) == str(b.features[0].extract(b).seq)
     assert a.features == b.features
 
-    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a = Dseqrecord("aAAa")
+    a.add_feature(2, 4)
+    b = a.looped()
+    assert a.features[0].extract(a).seq == b.features[0].extract(b).seq
+    assert str(a.features[0].extract(a).seq) == str(b.features[0].extract(b).seq)
+    assert a.features == b.features
+
+    a = Dseqrecord("aAAa")
+    a.add_feature(2, 4)
+    b = a.looped()
+    assert a.features[0].extract(a).seq == b.features[0].extract(b).seq
+    assert str(a.features[0].extract(a).seq) == str(b.features[0].extract(b).seq)
+    assert a.features == b.features
+
+
+
+
+
+
+    a = Dseqrecord(Dseq("gAAa", "cTTt", ovhg=-1))
+    a.add_feature(2, 4)
+    b = a.looped()
+    assert a.features[0].extract(a).seq == b.features[0].extract(b).seq
+    assert str(a.features[0].extract(a).seq) == str(b.features[0].extract(b).seq)
+    assert a.features == b.features
+
+    a = Dseqrecord(Dseq("caaa", "gttt", ovhg=-1))
     a.add_feature(0, 5)
     b = a.looped()
     assert a.features == b.features
 
-    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=-1))
+    a = Dseqrecord(Dseq("caaa", "gttt", ovhg=-1))
     a.add_feature(0, 5, strand=-1)
     b = a.looped()
     assert a.features == b.features
 
-    a = Dseqrecord(Dseq("aaaa", "tttt", ovhg=1))
+    a = Dseqrecord(Dseq("aaac", "tttg", ovhg=1))
     a.add_feature(2, 4)
     b = a.looped()
     assert a.features == b.features
@@ -1895,5 +1925,5 @@ if __name__ == "__main__":
     "--current-env",
     "--doctest-modules",
     "--capture=no",
-    "-vvv"]    
+    "-vvv"]
     pytest.main(args)

@@ -726,9 +726,10 @@ class Dseq(_Seq):
                 )
             )
 
-    def reverse_complement(self):
-        """Returns a Dseq object where watson and crick have switched
-        places. This represents the same double stranded sequence.
+    def reverse_complement(self, inplace=False):
+        """Dseq object where watson and crick have switched places.
+
+        This represents the same double stranded sequence.
 
         Examples
         --------
@@ -758,7 +759,7 @@ class Dseq(_Seq):
     rc = reverse_complement  # alias for reverse_complement
 
     def shifted(self, shift):
-        """Returns a shifted version of a circular Dseq object."""
+        """Shifted version of a circular Dseq object."""
         if self.linear:
             raise TypeError("DNA is not circular.")
         shift = shift % len(self)
@@ -768,8 +769,10 @@ class Dseq(_Seq):
             return (self[shift:] + self[:shift]).looped()
 
     def looped(self):
-        """Returns a circularized Dseq object. This can only be done if the
-        two ends are compatible, otherwise a TypeError is raised.
+        """Circularized Dseq object.
+
+        This can only be done if the two ends are compatible,
+        otherwise a TypeError is raised.
 
         Examples
         --------
@@ -1391,7 +1394,7 @@ class Dseq(_Seq):
             for e in enzymes[0]:
                 # cuts = e.search(dsseq+dsseq[:e.size-1] if self.circular else dsseq)
                 cuts = e.search(
-                    _Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad)
+                    _Seq(pad + dsseq.watson + dsseq.watson[:e.size-1] + pad)
                     if self.circular
                     else dsseq
                 )

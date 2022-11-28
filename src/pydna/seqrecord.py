@@ -17,7 +17,7 @@ nicer output in the IPython shell.
 
 from pydna.seqfeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
-from pydna.utils import seguid as _seg
+# from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
 from Bio.Data.CodonTable import TranslationError as _TranslationError
@@ -76,10 +76,10 @@ class SeqRecord(_SeqRecord):
         self.seq._data = b"".join(self.seq._data.split())  # remove whitespaces
         self.annotations = {_pretty_str(k): _pretty_str(v) for k, v in
                             self.annotations.items()}
-    
+
     @classmethod
     def from_Bio_SeqRecord(clc, sr: _SeqRecord):
-        """Creates a pydnaSeqRecord from a Biopython SeqRecord."""        
+        """Creates a pydnaSeqRecord from a Biopython SeqRecord."""
         # https://stackoverflow.com/questions/15404256/changing-the-\
         # class-of-a-python-object-casting
         sr.__class__ = clc
@@ -224,7 +224,7 @@ class SeqRecord(_SeqRecord):
 
     def add_feature(
         self, x=None, y=None, seq=None,
-            type="misc", strand=1, *args, **kwargs):
+            type_="misc", strand=1, *args, **kwargs):
         """Add a feature of type misc to the feature list of the sequence.
 
         Parameters
@@ -242,8 +242,11 @@ class SeqRecord(_SeqRecord):
         []
         >>> a.add_feature(2,4)
         >>> a.features
-        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4),
-                                    strand=1), type='misc')]
+        [SeqFeature(SimpleLocation(ExactPosition(2),
+                                   ExactPosition(4),
+                                   strand=1),
+                    type='misc',
+                    qualifiers=...)]
         """
         qualifiers = {}
         qualifiers.update(kwargs)
@@ -271,11 +274,9 @@ class SeqRecord(_SeqRecord):
             if self[x:y].isorf() or self[x:y].reverse_complement().isorf():
                 qualifiers["label"] = ["orf{}".format(y - x)]
 
-        sf = _SeqFeature(
-            _FeatureLocation(x, y, strand=strand),
-            type=type,
-            qualifiers=qualifiers
-        )
+        sf = _SeqFeature(_FeatureLocation(x, y, strand=strand),
+                         type=type_,
+                         qualifiers=qualifiers)
 
         self.features.append(sf)
 
@@ -364,7 +365,7 @@ class SeqRecord(_SeqRecord):
         >>> a.add_feature(2,4)
         >>> b=a.extract_feature(0)
         >>> b
-        SeqRecord(seq=Seq('gt'), id='ft2', name='ft2',
+        SeqRecord(seq=Seq('gt'), id='ft2', name='part_name',
                   description='description', dbxrefs=[])
         """
         return self.features[n].extract(self)
@@ -379,16 +380,19 @@ class SeqRecord(_SeqRecord):
         >>> a.add_feature(3,4)
         >>> a.add_feature(2,4)
         >>> print(a.features)
-        [SeqFeature(FeatureLocation(ExactPosition(3), ExactPosition(4),
-                                    strand=1), type='misc'),
-         SeqFeature(FeatureLocation(ExactPosition(2),
-                                    ExactPosition(4), strand=1), type='misc')]
+        [SeqFeature(SimpleLocation(ExactPosition(3), ExactPosition(4),
+                                   strand=1),
+                    type='misc', qualifiers=...),
+         SeqFeature(SimpleLocation(ExactPosition(2), ExactPosition(4),
+                                   strand=1),
+                    type='misc', qualifiers=...)]
         >>> print(a.sorted_features())
-        [SeqFeature(FeatureLocation(ExactPosition(2), ExactPosition(4),
-                                    strand=1), type='misc'),
-         SeqFeature(FeatureLocation(ExactPosition(3),
-                                    ExactPosition(4), strand=1), type='misc')]
-
+        [SeqFeature(SimpleLocation(ExactPosition(2), ExactPosition(4),
+                                   strand=1),
+                    type='misc', qualifiers=...),
+         SeqFeature(SimpleLocation(ExactPosition(3), ExactPosition(4),
+                                   strand=1),
+                    type='misc', qualifiers=...)]
         """
         return sorted(self.features, key=lambda x: x.location.start)
 
@@ -506,11 +510,15 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a = SeqRecord("GGATCC")
         >>> a.lcs("GGATCC", limit=6)
-        SeqFeature(FeatureLocation(ExactPosition(0),
-                                   ExactPosition(6), strand=1), type='read')
+        SeqFeature(SimpleLocation(ExactPosition(0),
+                                  ExactPosition(6), strand=1),
+                                  type='read',
+                                  qualifiers=...)
         >>> a.lcs("GATC", limit=4)
-        SeqFeature(FeatureLocation(ExactPosition(1),
-                                   ExactPosition(5), strand=1), type='read')
+        SeqFeature(SimpleLocation(ExactPosition(1),
+                                  ExactPosition(5), strand=1),
+                                  type='read',
+                                  qualifiers=...)
         >>> a = SeqRecord("CCCCC")
         >>> a.lcs("GGATCC", limit=6)
         SeqFeature(None)
@@ -538,9 +546,8 @@ class SeqRecord(_SeqRecord):
         else:
             label = "sequence" if not hasattr(other, "name") else other.name
             result = _SeqFeature(
-                _FeatureLocation(start_in_self, start_in_self + length),
+                _FeatureLocation(start_in_self, start_in_self + length, strand=1),
                 type=kwargs.get("type") or "read",
-                strand=1,
                 qualifiers={
                     "label": [kwargs.get("label") or label],
                     "ApEinfo_fwdcolor": ["#DAFFCF"],
