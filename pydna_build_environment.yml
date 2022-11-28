@@ -8,7 +8,7 @@ dependencies:
 - python
 
 - appdirs
-- biopython
+- biopython==1.80
 - networkx
 - prettytable
 - pyparsing
