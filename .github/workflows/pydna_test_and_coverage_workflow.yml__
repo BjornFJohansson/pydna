@@ -35,24 +35,20 @@ jobs:
           path: ~/conda_pkgs_dir
           key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
 
-      - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: Install conda environment from pydna_test_environment.yml
+        uses: mamba-org/provision-with-micromamba@main
         with:
-          auto-update-conda: true
-          auto-activate-base: false
-          add-pip-as-python-dependency: true
-          activate-environment: pydna_test_environment
-          python-version: ${{ matrix.python-version }}
           environment-file: pydna_test_environment.yml
-          use-only-tar-bz2: true
+          environment-name: pydna_test_environment
+          extra-specs: python=${{ matrix.python-version }}
 
-      - name: conda info
+      - name: micromamba info
         shell: bash -l {0}
-        run: conda info --all
+        run: micromamba info
 
-      - name: conda list
+      - name: micromamba list
         shell: bash -l {0}
-        run: conda list
+        run: micromamba list
 
       - name: Install from source
         shell: bash -l {0}

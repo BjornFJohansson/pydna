@@ -9,32 +9,31 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        python-version: ["3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.10", "3.9", "3.8"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Cache conda
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/conda_pkgs_dir
           key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-update-conda: true
-          auto-activate-base: false
           activate-environment: pydna_build_environment
           python-version: ${{ matrix.python-version }}
           environment-file: pydna_build_environment.yml
-      - name: conda info
+		  auto-activate-base: false
+      - name: mamba info --all
         shell: bash -l {0}
-        run: conda info --all
-      - name: conda config
+        run: mamba info --all
+      - name: mamba config
         shell: bash -l {0}
-        run: conda config --set anaconda_upload yes
+        run: mamba config --set anaconda_upload yes
       - name: Build conda package
         shell: bash -l {0}
-        run: conda build --python ${{ matrix.python-version }} --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
+        run: mamba build --python ${{ matrix.python-version }} --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
