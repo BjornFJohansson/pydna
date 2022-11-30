@@ -39,6 +39,8 @@ jobs:
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: pydna_test_environment.yml
+		  cache-downloads: true
+          extra-specs: python=${{matrix.python-version}}
 
       - name: micromamba info
         shell: bash -l {0}
