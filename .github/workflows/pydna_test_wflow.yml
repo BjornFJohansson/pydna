@@ -40,7 +40,8 @@ jobs:
         with:
           environment-file: pydna_test_environment.yml
 		  cache-downloads: true
-          extra-specs: python=${{ matrix.python-version }}
+          extra-specs: |
+			python=${{ matrix.python-version }}
 
       - name: micromamba info
         shell: bash -l {0}
