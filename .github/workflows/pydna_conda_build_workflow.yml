@@ -1,7 +1,14 @@
 name: Conda Build
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
+#on:
+#  release:
+#    types: [published]
+
 jobs:
   build:
     name: Build (${{ matrix.python-version }}, ${{ matrix.os }})
