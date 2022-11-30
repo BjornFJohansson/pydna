@@ -34,7 +34,7 @@ jobs:
           activate-environment: pydna_build_environment
           python-version: ${{ matrix.python-version }}
           environment-file: pydna_build_environment.yml
-		  auto-activate-base: false
+          auto-activate-base: false
       - name: mamba info --all
         shell: bash -l {0}
         run: mamba info --all
