@@ -15,6 +15,7 @@ dependencies:
 - CAI
 - regex
 
+- mamba
 - setuptools
 - twine
 - pip
