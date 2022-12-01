@@ -28,42 +28,42 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
 
-      - name: Cancel Previous Runs
+      - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
 
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@v3
 
-      - name: Cache conda
+      - name: 🌰 Cache conda
         uses: actions/cache@v3
         with:
           path: ~/conda_pkgs_dir
           key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
 
-      - name: Install conda environment from pydna_test_environment.yml
+      - name: 🌍 Install conda environment from pydna_test_environment.yml
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: pydna_test_environment.yml
           environment-name: pydna_test_environment
           extra-specs: python=${{ matrix.python-version }}
 
-      - name: micromamba info
+      - name: 🐍 micromamba info
         shell: bash -l {0}
         run: micromamba info
 
-      - name: micromamba list
+      - name: 🐍 micromamba list
         shell: bash -l {0}
         run: micromamba list
 
-      - name: Install from source
+      - name: 🔩 Install from source
         shell: bash -l {0}
         run: pip install --editable . --no-deps
 
-      - name: python run_test.py
+      - name: 🔎 python run_test.py
         shell: bash -l {0}
         run: python run_test.py
 
-      - name: Upload coverage to Codecov
+      - name: 🔼 Upload coverage to Codecov
         if: (matrix.codecov)
         uses: codecov/codecov-action@v1.0.13
         with:
