@@ -1,4 +1,4 @@
-name: Setuptools Build
+name: Setuptools Build for PyPI
 on:
   release:
     types: [published]

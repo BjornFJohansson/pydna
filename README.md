@@ -277,14 +277,13 @@ Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octoca
 
 ## Minimal installation dependencies
 
-Pydna is currently developed on and for Python 3.7 - 3.10.
 Pydna versions before 1.0.0 were compatible with python 2.7 only.
 The list below is the minimal requirements for installing pydna.
 Biopython has c-extensions, but the other modules are pure python.
 
-- [Python 3.7, 3.8, 3.9 or 3.10](http://www.python.org)
+- [Python 3.7, 3.8, 3.9, 3.10 or 3.11](http://www.python.org)
 - [appdirs >= 1.3.0](https://pypi.python.org/pypi/appdirs)
-- [biopython >= 1.79](http://pypi.python.org/pypi/biopython)
+- [biopython >= 1.80](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
 - [prettytable >= 0.7.2](https://pypi.python.org/pypi/PrettyTable)
 
@@ -299,7 +298,7 @@ listed in the second column.
 |-----------------------------------------------------|--------------------------------------------------------|
 | [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
 | [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
-| [CAI](https://pypi.org/project/CAI)                 | Codon Adaptation Index calculations in several modules |
+| [CAI](https://pypi.org/project/CAI)                 | codon adaptation index calculations in several modules |
 | [numpy](http://www.numpy.org)                       | gel simulation with pydna.gel                          |
 | [scipy](https://www.scipy.org)                      | “                                                      |
 | [matplotlib](http://matplotlib.org)                 | “                                                      |
