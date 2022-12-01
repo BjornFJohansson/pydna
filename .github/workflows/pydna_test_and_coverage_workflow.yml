@@ -34,18 +34,14 @@ jobs:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
 
-      - name: 🌰 Cache conda
-        uses: actions/cache@v3
-        with:
-          path: ~/conda_pkgs_dir
-          key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
-
       - name: 🌍 Install conda environment from pydna_test_environment.yml
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: pydna_test_environment.yml
           environment-name: pydna_test_environment
           extra-specs: python=${{ matrix.python-version }}
+          cache-downloads: true
+          cache-env: true
 
       - name: 🐍 micromamba info
         shell: bash -l {0}
