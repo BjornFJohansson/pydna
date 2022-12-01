@@ -6,11 +6,6 @@ on:
     tags-ignore:
       - '*.*'
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.11.0
   build:
     name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
     strategy:
@@ -31,6 +26,10 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
       - name: Checkout
         uses: actions/checkout@v3
 
