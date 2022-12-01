@@ -270,9 +270,8 @@ class Anneal(object, metaclass=_Memoize):
                 end = fp.position
                 self.template.features.append(
                     _SeqFeature(
-                        _FeatureLocation(start, end),
+                        _FeatureLocation(start, end, strand=1),
                         type="primer_bind",
-                        strand=1,
                         qualifiers={
                             "label": [fp.name],
                             "ApEinfo_fwdcolor": ["#baffa3"],
@@ -306,9 +305,8 @@ class Anneal(object, metaclass=_Memoize):
                 end = rp.position + rp._fp
                 self.template.features.append(
                     _SeqFeature(
-                        _FeatureLocation(start, end),
+                        _FeatureLocation(start, end, strand=-1),
                         type="primer_bind",
-                        strand=-1,
                         qualifiers={
                             "label": [rp.name],
                             "ApEinfo_fwdcolor": ["#baffa3"],

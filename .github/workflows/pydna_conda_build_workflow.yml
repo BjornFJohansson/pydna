@@ -40,7 +40,7 @@ jobs:
         run: mamba info --all
       - name: mamba config
         shell: bash -l {0}
-        run: mamba config --set anaconda_upload yes
-      - name: Build conda package
+        run: conda config --set anaconda_upload yes
+      - name: Build conda package with mamba
         shell: bash -l {0}
         run: mamba build --python ${{ matrix.python-version }} --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
