@@ -7,36 +7,37 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Cache conda
+      - name: 🌰 Cache conda
         uses: actions/cache@v3
         with:
           path: ~/conda_pkgs_dir
           key: conda-ubuntu-latest-python-3.11-${{ hashFiles('environment-ci.yml') }}
-      - name: Install conda environment from pydna_build_environment.yml
+      - name: 🌍 Install conda environment from pydna_build_environment.yml
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: pydna_build_environment.yml
           environment-name: pydna_build_environment
           extra-specs: python=3.11
-      - name: micromamba info
+      - name: 🐍 micromamba info
         shell: bash -l {0}
         run: micromamba info
-      - name: micromamba list
+      - name: 🐍 micromamba list
         shell: bash -l {0}
         run: micromamba list
+
       - name: Git tag
         shell: bash -l {0}
         run: git describe --tags
 
-      - name: Build pypi wheel package
+      - name: 🔩 Build pypi wheel package
         shell: bash -l {0}
         run: python -m build
 
-      - name: Publish a Python distribution to PyPI
+      - name: 🔼 Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
