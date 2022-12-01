@@ -1,0 +1,49 @@
+name: Setuptools Build
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
+# on:
+#   release:
+#     types: [published]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cache conda
+        uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key: conda-ubuntu-latest-python-3.11-${{ hashFiles('environment-ci.yml') }}
+      - name: Install conda environment from pydna_build_environment.yml
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: pydna_build_environment.yml
+          environment-name: pydna_build_environment
+          extra-specs: python=3.11
+      - name: micromamba info
+        shell: bash -l {0}
+        run: micromamba info
+      - name: micromamba list
+        shell: bash -l {0}
+        run: micromamba list
+
+      - name: Build pypi wheel package
+        shell: bash -l {0}
+        run: python setup.py build bdist_wheel
+      - name: tags
+        shell: bash -l {0}
+        run: git tag
+      # - name: Publish a Python distribution to PyPI
+      #   uses: pypa/gh-action-pypi-publish          @master
+      #   with:
+      #     user: __token__
+      #     password: ${{ secrets.PYDNA_PYPI_TOKEN }}
+      #     skip_existing: true

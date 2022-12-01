@@ -1,13 +1,7 @@
-name: Conda Build
+name: Conda Package Build
 on:
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '*.*'
-#on:
-#  release:
-#    types: [published]
+  release:
+    types: [published]
 
 jobs:
   build:
