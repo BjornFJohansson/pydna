@@ -4,7 +4,9 @@ on:
     branches:
       - '**'
     tags-ignore:
-      - '*.*'
+      - '**'
+  pull_request: {}
+
 jobs:
   build:
     name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
