@@ -755,17 +755,19 @@ def join_list_to_table(rawlist):
 def expandtolist(content):
 
     resultlist = []
-    for line in re.finditer("(?P<item>[^\(\)]*?)(?P<brack>\[.*?\])", content):
+    for line in re.finditer(r"(?P<item>[^\(\)]*?)(?P<brack>\[.*?\])", content):
         text2rep = line.group("item")
         bracket = line.group("brack")
         padding = max(
-            [len(str(x).strip()) for x in re.split("\.\.|,", bracket.strip("[ ]"))]
+            [len(str(x).strip()) for x in re.split(r"\.\.|,",
+                                                   bracket.strip("[ ]"))]
         )
         inbracket = [item.strip("[ ]") for item in bracket.split(",")]
         expanded = []
 
         for item in inbracket:
-            if re.match("(\d+\.\.\d+)|([a-z]+\.\.[a-z]+)|([A-Z]+\.\.[A-Z]+)", item):
+            if re.match(r"(\d+\.\.\d+)|([a-z]+\.\."
+                        r"[a-z]+)|([A-Z]+\.\.[A-Z]+)", item):
                 low, high = item.split(
                     "..",
                 )

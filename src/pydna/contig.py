@@ -122,12 +122,14 @@ class Contig(_Dseqrecord):
         return _pretty_str(fig)
 
     def figure(self):
-        """Returns a compact ascii representation of the assembled fragments. Each fragment is
-        represented by:
+        r"""Compact ascii representation of the assembled fragments.
+
+        Each fragment is represented by:
 
         ::
 
-         Size of common 5' substring|Name and size of DNA fragment| Size of common 5' substring
+         Size of common 5' substring|Name and size of DNA fragment|
+         Size of common 5' substring
 
         Linear:
 
@@ -165,7 +167,7 @@ class Contig(_Dseqrecord):
         edges = list(self.graph.edges(data=True))
 
         if self.linear:
-            """
+            r"""
             frag20| 6
                    \/
                    /\
