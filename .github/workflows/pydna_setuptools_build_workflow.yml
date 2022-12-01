@@ -1,13 +1,7 @@
 name: Setuptools Build
 on:
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '*.*'
-# on:
-#   release:
-#     types: [published]
+  release:
+    types: [published]
 jobs:
   build:
     name: Build
@@ -34,16 +28,17 @@ jobs:
       - name: micromamba list
         shell: bash -l {0}
         run: micromamba list
+      - name: Git tag
+        shell: bash -l {0}
+        run: git describe --tags
 
       - name: Build pypi wheel package
         shell: bash -l {0}
-        run: python setup.py build bdist_wheel
-      - name: tags
-        shell: bash -l {0}
-        run: git tag
-      # - name: Publish a Python distribution to PyPI
-      #   uses: pypa/gh-action-pypi-publish          @master
-      #   with:
-      #     user: __token__
-      #     password: ${{ secrets.PYDNA_PYPI_TOKEN }}
-      #     skip_existing: true
+        run: python -m build
+
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish
+        with:
+          user: __token__
+          password: ${{ secrets.PYDNA_PYPI_TOKEN }}
+          skip_existing: true
