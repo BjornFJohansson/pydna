@@ -524,7 +524,7 @@ tatcgactgtatcatctgatagcac")
     output = _flatten(args)  # flatten
     new = []
     for s in output:
-        breakpoint()
+
         if hasattr(s, "watson"):
             s = _SeqRecord(_Seq(s.watson))
         elif hasattr(s, "transcribe"):
