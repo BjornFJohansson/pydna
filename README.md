@@ -167,11 +167,22 @@ Feedback & suggestions are very welcome!
 
 ## Who is using pydna?
 
+Taylor, L. J., & Strebel, K. (2017).
+Pyviko: an automated Python tool to design gene knockouts in complex viruses with overlapping genes.
+BMC Microbiology, 17(1), 12.
+[PubMed](https://www.ncbi.nlm.nih.gov/pubmed/28061810)
+
+
+Wang, Y., Xue, H., Pourcel, C., Du, Y., & Gautheret, D. (2021).
+2-kupl: mapping-free variant detection from DNA-seq data of matched samples.
+In Cold Spring Harbor Laboratory (p. 2021.01.17.427048). [DOI](https://doi.org/10.1101/2021.01.17.427048)
+[PubMed](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8180056)
+
+
 [An Automated Protein Synthesis Pipeline with Transcriptic and Snakemake](http://blog.booleanbiotech.com/transcriptic_protein_synthesis_pipeline.html)
 
-[Pyviko: an automated Python tool to design gene knockouts in complex viruses with overlapping genes](https://www.ncbi.nlm.nih.gov/pubmed/28061810)
 
-and [others](https://github.com/BjornFJohansson/pydna/network/dependents?package_id=UGFja2FnZS01MjQ2MjYzNQ%3D%3D)
+and other projects on [github](https://github.com/BjornFJohansson/pydna/network/dependents?package_id=UGFja2FnZS01MjQ2MjYzNQ%3D%3D)
 
 
 
