@@ -104,7 +104,11 @@ def rarecodons(seq: str,
 
 
 def express(seq: str, organism="sce"):
-    """docstring."""
+    """docstring.
+
+
+    **NOT IMPLEMENTED YET**
+    """
     x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
                       "n-end"]+_rare_codons[organism]+["rare"])
     val = []
@@ -366,7 +370,8 @@ def seq31(seq):
     This function returns the amino acid sequence as a string using the one
     letter amino acid codes. Output follows the IUPAC standard (including
     ambiguous characters B for "Asx", J for "Xle" and X for "Xaa", and also U
-    for "Sel" and O for "Pyl") plus "Ter" for a terminator given as an asterisk.
+    for "Sel" and O for "Pyl") plus "Ter" for a terminator given as an
+    asterisk.
 
     Any unknown
     character (including possible gap characters), is changed into 'Xaa'.
