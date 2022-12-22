@@ -1,5 +1,10 @@
+# https://www.toml-lint.com
 [project]
 name = "pydna"
+authors = [{ name = "Björn F. Johansson", email = "bjornjobb@gmail.com" }]
+dynamic = ["version"]
+license = {file = "LICENSE.txt"}
+keywords=["bioinformatics", "DNA", "cloning", "Jupyter"]
 dependencies = [
 "appdirs>=1.4.4",
 "biopython>=1.80",
@@ -48,4 +53,7 @@ requires = [
 [tool.setuptools_scm]
 write_to = "src/pydna/_version.py"
 
-# https://www.toml-lint.com
+[project.urls]
+homepage = "https://github.com/BjornFJohansson/pydna"
+documentation = "https://pydna.readthedocs.io"
+repository = "https://github.com/BjornFJohansson/pydna"

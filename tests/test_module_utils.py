@@ -489,7 +489,7 @@ def test_randomprot():
 
 
 def test_smallest_rotation():
-    from pydna.utils import SmallestRotation as sr
+    from pydna.utils import smallest_rotation as sr
 
     assert sr("tttaaa") == "aaattt"
 
