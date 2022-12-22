@@ -1,5 +1,5 @@
 lussekatt
-			pepparkaka
+pepparkaka
 			chokladboll
 			risboll
 			maräng
