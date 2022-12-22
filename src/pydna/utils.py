@@ -4,9 +4,10 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-"""This module provides miscellaneous functions."""
+"""Miscellaneous functions."""
 
-from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
+from Bio.Data.IUPACData import (ambiguous_dna_complement as
+                                _ambiguous_dna_complement)
 from Bio.Seq import _maketrans
 from pydna._pretty import pretty_str as _pretty_str
 from Bio.SeqUtils.CheckSum import seguid as _seguid
@@ -40,12 +41,52 @@ _ambiguous_dna_complement.update({"U": "A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
 
 
+def smallest_rotation(s):
+    """Smallest rotation of a string.
+
+    Algorithm described in Pierre Duval, Jean. 1983. Factorizing Words
+    over an Ordered Alphabet. Journal of Algorithms & Computational Technology
+    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
+    on Lyndon words, David Eppstein 2011.
+    https://gist.github.com/dvberkel/1950267
+
+    Examples
+    --------
+    >>> from pydna.utils import smallest_rotation
+    >>> smallest_rotation("taaa")
+    'aaat'
+
+    """
+    prev, rep = None, 0
+    ds = 2 * s
+    lens = len(s)
+    lends = len(ds)
+    old = 0
+    k = 0
+    w = ""
+    while k < lends:
+        i, j = k, k + 1
+        while j < lends and ds[i] <= ds[j]:
+            i = (ds[i] == ds[j]) and i + 1 or k
+            j += 1
+        while k < i + 1:
+            k += j - i
+            prev = w
+            w = ds[old:k]
+            old = k
+            if w == prev:
+                rep += 1
+            else:
+                prev, rep = w, 1
+            if len(w) * rep == lens:
+                return w * rep
+
+
 def cai(seq: str,
         organism: str = "sce"):
     """docstring."""
     from CAI import CAI as _CAI
-    return round(_CAI(seq.upper(),
-                      weights=_weights[organism]), 3)
+    return round(_CAI(seq.upper(), weights=_weights[organism]), 3)
 
 
 def rarecodons(seq: str,
@@ -62,8 +103,7 @@ def rarecodons(seq: str,
     return slices
 
 
-def express(seq: str,
-            organism="sce"):
+def express(seq: str, organism="sce"):
     """docstring."""
     x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
                       "n-end"]+_rare_codons[organism]+["rare"])
@@ -103,21 +143,26 @@ def open_folder(pth):
 
 
 def rc(sequence: str):
-    """returns the reverse complement of sequence (string)
+    """Reverse complement.
+
     accepts mixed DNA/RNA
     """
     return sequence.translate(_complement_table)[::-1]
 
 
 def complement(sequence: str):
-    """returns the complement of sequence (string)
+    """Complement.
+
     accepts mixed DNA/RNA
     """
     return sequence.translate(_complement_table)
 
 
 def memorize(filename):
-    """Decorator for caching fucntions and classes, see pydna.download and pydna.Assembly for use"""
+    """Cache functions and classes.
+
+    see pydna.download and pydna.Assembly for use
+    """
 
     def decorator(f):
         def wrappee(*args, **kwargs):
@@ -162,197 +207,6 @@ def memorize(filename):
         return wrappee
 
     return decorator
-
-
-def eq(*args, **kwargs):
-    """Compares two or more DNA sequences for equality i.e. they
-    represent the same DNA molecule. Comparisons are case insensitive.
-
-    Parameters
-    ----------
-    args : iterable
-        iterable containing sequences
-        args can be strings, Biopython Seq or SeqRecord, Dseqrecord
-        or dsDNA objects.
-    circular : bool, optional
-        Consider all molecules circular or linear
-    linear : bool, optional
-        Consider all molecules circular or linear
-
-    Returns
-    -------
-    eq : bool
-        Returns True or False
-
-    Notes
-    -----
-
-    Compares two or more DNA sequences for equality i.e. if they
-    represent the same DNA molecule.
-
-    Two linear sequences are considiered equal if either:
-
-    * They have the same sequence (case insensitive)
-    * One sequence is the reverse complement of the other (case insensitive)
-
-    Two circular sequences are considered equal if they are circular permutations:
-
-    1. They have the same lengt, AND
-    2. One sequence or can be found in the concatenation of the other sequence with it    , OR
-    3. The reverse complement can be found in the concatenation of the other sequence with itself.
-
-    The topology for the comparison can be set using one of the keywords
-    linear or circular to True or False.
-
-    If circular or linear is not set, it will be deduced from the topology of
-    each sequence for sequences that have a linear or circular attribute
-    (like Dseq and Dseqrecord).
-
-    Examples
-    --------
-
-    >>> from pydna.dseqrecord import Dseqrecord
-    >>> from pydna.utils import eq
-    >>> eq("aaa","AAA")
-    True
-    >>> eq("aaa","AAA","TTT")
-    True
-    >>> eq("aaa","AAA","TTT","tTt")
-    True
-    >>> eq("aaa","AAA","TTT","tTt", linear=True)
-    True
-    >>> eq("Taaa","aTaa", linear = True)
-    False
-    >>> eq("Taaa","aTaa", circular = True)
-    True
-    >>> a=Dseqrecord("Taaa")
-    >>> b=Dseqrecord("aTaa")
-    >>> eq(a,b)
-    False
-    >>> eq(a,b,circular=True)
-    True
-    >>> a=a.looped()
-    >>> b=b.looped()
-    >>> eq(a,b)
-    True
-    >>> eq(a,b,circular=False)
-    False
-    >>> eq(a,b,linear=True)
-    False
-    >>> eq(a,b,linear=False)
-    True
-    >>> eq("ggatcc","GGATCC")
-    True
-    >>> eq("ggatcca","GGATCCa")
-    True
-    >>> eq("ggatcca","tGGATCC")
-    True
-
-
-    """
-
-    args = flatten(args)  # flatten
-
-    topology = None
-
-    if "linear" in kwargs:
-        if kwargs["linear"] == True:
-            topology = "linear"
-        if kwargs["linear"] == False:
-            topology = "circular"
-    elif "circular" in kwargs:
-        if kwargs["circular"] == True:
-            topology = "circular"
-        if kwargs["circular"] == False:
-            topology = "linear"
-    else:
-        # topology keyword not set, look for topology associated to each sequence
-        # otherwise raise exception
-        topology = set(
-            [arg.circular if hasattr(arg, "circular") else None for arg in args]
-        )
-
-        if len(topology) != 1:
-            raise ValueError("sequences have different topologies")
-        topology = topology.pop()
-        if topology in (False, None):
-            topology = "linear"
-        elif topology == True:
-            topology = "circular"
-
-    # args_string_list    = [str(arg.seq).lower() if hasattr(arg,"seq") else str(arg).lower() for arg in args]
-
-    args = [arg.seq if hasattr(arg, "seq") else arg for arg in args]
-    args_string_list = [
-        arg.watson.lower() if hasattr(arg, "watson") else str(arg).lower()
-        for arg in args
-    ]
-
-    length = set((len(s) for s in args_string_list))
-
-    if len(length) != 1:
-        return False
-    same = True
-
-    if topology == "circular":
-        # force circular comparison of all given sequences
-        for s1, s2 in _itertools.combinations(args_string_list, 2):
-            if not (s1 in s2 + s2 or rc(s1) in s2 + s2):
-                same = False
-    elif topology == "linear":
-        # force linear comparison of all given sequences
-        for s1, s2 in _itertools.combinations(args_string_list, 2):
-            if not (s1 == s2 or s1 == rc(s2)):
-                same = False
-    return same
-
-
-def SmallestRotation(s):
-    """Find the rotation of s that is smallest in lexicographic order.
-
-    Algorithm according to Duval 1983:
-
-    Pierre Duval, Jean. 1983. “Factorizing Words over an Ordered Alphabet.”
-    Journal of Algorithms & Computational Technology* 4 (4) (December 1):
-    363–381.
-
-    Algorithms on strings and sequences based on Lyndon words.
-    David Eppstein, October 2011.
-
-    https://gist.github.com/dvberkel/1950267
-    """
-    prev, rep = None, 0
-    ds = 2 * s
-    lens = len(s)
-    lends = len(ds)
-    old = 0
-    k = 0
-    w = ""
-    while k < lends:
-        i, j = k, k + 1
-        while j < lends and ds[i] <= ds[j]:
-            i = (ds[i] == ds[j]) and i + 1 or k
-            j += 1
-        while k < i + 1:
-            k += j - i
-            prev = w
-            w = ds[old:k]
-            old = k
-            if w == prev:
-                rep += 1
-            else:
-                prev, rep = w, 1
-            if len(w) * rep == lens:
-                return w * rep
-
-
-# try:
-#    import pyximport
-# except ImportError:
-#    pass
-# else:
-#    pyximport.install()
-#    from pydna._smallest import SmallestRotation
 
 
 def identifier_from_string(s: str) -> str:
@@ -448,6 +302,7 @@ def lseguid_sticky(watson: str, crick: str, overhang: int) -> _pretty_str:
         nnnnn...   -2
           nnn...
 
+
     """
     watson = watson.upper()
     crick = crick.upper()
@@ -478,8 +333,8 @@ def cseguid(seq: str) -> _pretty_str:
     >>> cseguid("ttta")
     'oopV-6158nHJqedi8lsshIfcqYA'
     """
-    return useguid(min(SmallestRotation(seq.upper()),
-                       SmallestRotation(str(rc(seq)).upper())))
+    return useguid(min(smallest_rotation(seq.upper()),
+                       smallest_rotation(str(rc(seq)).upper())))
 
 
 def flatten(*args):
@@ -559,115 +414,6 @@ def seq31(seq):
     sequence = [seq[i * 3 : i * 3 + 3].title() for i in range(nr_of_codons)]
     padding = " " * 2
     return padding.join([threecode.get(aa, "X") for aa in sequence])
-
-
-# def guess_alphabet(sequence: str):
-#     """
-#     This function guesses the alphabet of a string representing a
-#     biological sequence.
-
-#     """
-
-#     import string
-
-#     from Bio.Alphabet import SingleLetterAlphabet
-#     from Bio.Alphabet import NucleotideAlphabet
-#     from Bio.Alphabet import ProteinAlphabet
-#     from Bio.Alphabet.IUPAC import extended_protein
-#     from Bio.Alphabet.IUPAC import protein
-#     from Bio.Alphabet.IUPAC import ambiguous_dna
-#     from Bio.Alphabet.IUPAC import unambiguous_dna
-#     from Bio.Alphabet.IUPAC import extended_dna
-#     from Bio.Alphabet.IUPAC import ambiguous_rna
-#     from Bio.Alphabet.IUPAC import unambiguous_rna
-
-#     if len(sequence) < 1:
-#         return SingleLetterAlphabet()
-
-#     for c in sequence:
-#         if c not in string.printable:
-#             return SingleLetterAlphabet()
-
-#     xp = set(extended_protein.letters)
-#     pr = set(protein.letters)
-
-#     ad = set(ambiguous_dna.letters)
-#     ud = set(unambiguous_dna.letters)
-#     ed = set(extended_dna.letters)
-
-#     ar = set(ambiguous_rna.letters)
-#     ur = set(unambiguous_rna.letters)
-
-#     all = xp | pr | ad | ud | ed | ar | ur
-
-#     sequence_chars = set(sequence.upper())
-
-#     if sequence_chars - all - set(string.punctuation + string.whitespace):
-#         return SingleLetterAlphabet()
-
-#     nucleic_count = 0
-
-#     for letter in "GATCUNgatcun":
-#         nucleic_count += sequence.count(letter)
-
-#     if float(nucleic_count) / float(len(sequence)) >= 0.9:  # DNA or RNA
-#         if "T" in sequence_chars and "U" in sequence_chars:
-#             alphabet = NucleotideAlphabet()
-#         elif not sequence_chars - ud:
-#             alphabet = unambiguous_dna
-#         elif not sequence_chars - ad:
-#             alphabet = ambiguous_dna
-#         elif not sequence_chars - ed:
-#             alphabet = extended_dna
-#         elif not sequence_chars - ur:
-#             alphabet = unambiguous_rna
-#         elif not sequence_chars - ar:
-#             alphabet = ambiguous_rna
-#         else:
-#             alphabet = NucleotideAlphabet()
-#     else:
-#         threecode = [
-#             "ALA",
-#             "ASX",
-#             "CYS",
-#             "ASP",
-#             "GLU",
-#             "PHE",
-#             "GLY",
-#             "HIS",
-#             "ILE",
-#             "LYS",
-#             "LEU",
-#             "MET",
-#             "ASN",
-#             "PRO",
-#             "GLN",
-#             "ARG",
-#             "SER",
-#             "THR",
-#             "VAL",
-#             "TRP",
-#             "TYR",
-#             "GLX",
-#             "XAA",
-#             "TER",
-#             "SEL",
-#             "PYL",
-#             "XLE",
-#         ]
-#         tc = set(threecode)
-#         three_letter_alphabet = set(
-#             [sequence[i: i + 3] for i in range(0, len(sequence), 3)]
-#         )
-#         if not three_letter_alphabet - tc:
-#             alphabet = "three letter code"
-#         elif sequence_chars - pr:
-#             alphabet = protein
-#         elif sequence_chars - xp:
-#             alphabet = extended_protein
-#         else:
-#             alphabet = ProteinAlphabet()
-#     return alphabet
 
 
 def parse_text_table(rawtable, tabs=4):
@@ -753,7 +499,7 @@ def join_list_to_table(rawlist):
 
 
 def expandtolist(content):
-
+    """docstring."""
     resultlist = []
     for line in re.finditer(r"(?P<item>[^\(\)]*?)(?P<brack>\[.*?\])", content):
         text2rep = line.group("item")
@@ -800,19 +546,21 @@ def expandtolist(content):
 
 
 def randomRNA(length, maxlength=None):
+    """docstring."""
     if maxlength and maxlength > length:
         length = int(round(random.triangular(length, maxlength)))
     return "".join([random.choice("GAUC") for x in range(length)])
 
 
 def randomDNA(length, maxlength=None):
-    """ string! """
+    """docstring."""
     if maxlength and maxlength > length:
         length = int(round(random.triangular(length, maxlength)))
     return "".join([random.choice("GATC") for x in range(length)])
 
 
 def randomORF(length, maxlength=None):
+    """docstring."""
     length -= 2
     if maxlength and maxlength > length:
         length = int(round(random.triangular(length, maxlength - 2)))
@@ -892,10 +640,146 @@ def randomORF(length, maxlength=None):
 
 
 def randomprot(length, maxlength=None):
+    """docstring."""
     if maxlength and maxlength > length:
         length = int(round(random.triangular(length, maxlength)))
-    return "".join([random.choice("ACDEFGHIKLMNPQRSTVWY") for x in range(length)])
+    return "".join([random.choice("ACDEFGHIKLMNPQRSTVWY")
+                    for x in range(length)])
 
+
+def eq(*args, **kwargs):
+    """Compare two or more DNA sequences for equality.
+
+    Compares two or more DNA sequences for equality i.e. if they
+    represent the same double stranded DNA molecule.
+
+    Parameters
+    ----------
+    args : iterable
+        iterable containing sequences
+        args can be strings, Biopython Seq or SeqRecord, Dseqrecord
+        or dsDNA objects.
+    circular : bool, optional
+        Consider all molecules circular or linear
+    linear : bool, optional
+        Consider all molecules circular or linear
+
+    Returns
+    -------
+    eq : bool
+        Returns True or False
+
+    Notes
+    -----
+    Compares two or more DNA sequences for equality i.e. if they
+    represent the same DNA molecule.
+
+    Two linear sequences are considiered equal if either:
+
+    1. They have the same sequence (case insensitive)
+    2. One sequence is the reverse complement of the other
+
+    Two circular sequences are considered equal if they are circular
+    permutations meaning that they have the same length and:
+
+    1. One sequence can be found in the concatenation of the other sequence with itself.
+    2. The reverse complement of one sequence can be found in the concatenation of the other sequence with itself.
+
+    The topology for the comparison can be set using one of the keywords
+    linear or circular to True or False.
+
+    If circular or linear is not set, it will be deduced from the topology of
+    each sequence for sequences that have a linear or circular attribute
+    (like Dseq and Dseqrecord).
+
+    Examples
+    --------
+    >>> from pydna.dseqrecord import Dseqrecord
+    >>> from pydna.utils import eq
+    >>> eq("aaa","AAA")
+    True
+    >>> eq("aaa","AAA","TTT")
+    True
+    >>> eq("aaa","AAA","TTT","tTt")
+    True
+    >>> eq("aaa","AAA","TTT","tTt", linear=True)
+    True
+    >>> eq("Taaa","aTaa", linear = True)
+    False
+    >>> eq("Taaa","aTaa", circular = True)
+    True
+    >>> a=Dseqrecord("Taaa")
+    >>> b=Dseqrecord("aTaa")
+    >>> eq(a,b)
+    False
+    >>> eq(a,b,circular=True)
+    True
+    >>> a=a.looped()
+    >>> b=b.looped()
+    >>> eq(a,b)
+    True
+    >>> eq(a,b,circular=False)
+    False
+    >>> eq(a,b,linear=True)
+    False
+    >>> eq(a,b,linear=False)
+    True
+    >>> eq("ggatcc","GGATCC")
+    True
+    >>> eq("ggatcca","GGATCCa")
+    True
+    >>> eq("ggatcca","tGGATCC")
+    True
+    """
+    args = flatten(args)  # flatten
+
+    topology = None
+
+    if "linear" in kwargs:
+        if kwargs["linear"] is True:
+            topology = "linear"
+        if kwargs["linear"] is False:
+            topology = "circular"
+    elif "circular" in kwargs:
+        if kwargs["circular"] is True:
+            topology = "circular"
+        if kwargs["circular"] is False:
+            topology = "linear"
+    else:
+        topology = set([arg.circular if
+                        hasattr(arg, "circular") else None for arg in args])
+
+        if len(topology) != 1:
+            raise ValueError("sequences have different topologies")
+        topology = topology.pop()
+        if topology in (False, None):
+            topology = "linear"
+        elif topology is True:
+            topology = "circular"
+
+    args = [arg.seq if hasattr(arg, "seq") else arg for arg in args]
+    args_string_list = [
+        arg.watson.lower() if hasattr(arg, "watson") else str(arg).lower()
+        for arg in args
+    ]
+
+    length = set((len(s) for s in args_string_list))
+
+    if len(length) != 1:
+        return False
+    same = True
+
+    if topology == "circular":
+        # force circular comparison of all given sequences
+        for s1, s2 in _itertools.combinations(args_string_list, 2):
+            if not (s1 in s2 + s2 or rc(s1) in s2 + s2):
+                same = False
+    elif topology == "linear":
+        # force linear comparison of all given sequences
+        for s1, s2 in _itertools.combinations(args_string_list, 2):
+            if not (s1 == s2 or s1 == rc(s2)):
+                same = False
+    return same
 
 if __name__ == "__main__":
     import os as _os

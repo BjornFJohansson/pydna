@@ -69,7 +69,7 @@ def parse(data, ds=True):
 
         result_list = []
 
-        rawseqs = _re.findall(regex, _textwrap.dedent(raw + "\n\n"),
+        rawseqs = _re.findall(regex, _textwrap.dedent(str(raw) + "\n\n"),
                               flags=_re.MULTILINE)
         for rawseq in rawseqs:
             handle = _io.StringIO(rawseq)

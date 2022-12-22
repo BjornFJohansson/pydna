@@ -42,7 +42,7 @@ def read(data, ds=True):
     try:
         results = results.pop()
     except IndexError:
-        raise ValueError("No sequences found in data:\n({})".format(data[:79]))
+        raise ValueError(f"No sequences found in data:\n({str(data)[:79]})")
     return results
 
 

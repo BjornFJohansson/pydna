@@ -176,41 +176,50 @@ class Genbank(object):
             strand=strand)
 
 
-
 def genbank(accession: str = "CS570233.1", *args, **kwargs):
-    """Download a genbank nuclotide record. This function takes the same paramenters as the
-    :func:pydna.genbank.Genbank.nucleotide method. The email address stored in the `pydna_email`
-    environment variable is used. The easiest way set this permanantly is to edit the
-    `pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`
+    """
+    Download a genbank nuclotide record.
 
-    if no accession is given, a `very short Genbank entry <https://www.ncbi.nlm.nih.gov/nuccore/CS570233.1>`_
-    is used as an example (see below). This can be useful for testing the connection to Genbank.
-
-    Please note that this result is also cached by default by settings in the pydna.ini file.
+    This function takes the same paramenters as the
+    :func:pydna.genbank.Genbank.nucleotide method. The email address stored
+    in the `pydna_email` environment variable is used. The easiest way set
+    this permanantly is to edit the `pydna.ini` file.
     See the documentation of :func:`pydna.open_config_folder`
 
-    LOCUS       CS570233                  14 bp    DNA     linear   PAT 18-MAY-2007
-    DEFINITION  Sequence 6 from Patent WO2007025016.
-    ACCESSION   CS570233
-    VERSION     CS570233.1
-    KEYWORDS    .
-    SOURCE      synthetic construct
-      ORGANISM  synthetic construct
-                other sequences; artificial sequences.
-    REFERENCE   1
-      AUTHORS   Shaw,R.W. and Cottenoir,M.
-      TITLE     Inhibition of metallo-beta-lactamase by double-stranded dna
-      JOURNAL   Patent: WO 2007025016-A1 6 01-MAR-2007;
-                Texas Tech University System (US)
-    FEATURES             Location/Qualifiers
-         source          1..14
-                         /organism="synthetic construct"
-                         /mol_type="unassigned DNA"
-                         /db_xref="taxon:32630"
-                         /note="This is a 14bp aptamer inhibitor."
-    ORIGIN
-            1 atgttcctac atga
-    //
+    if no accession is given, a `very short Genbank
+    entry <https://www.ncbi.nlm.nih.gov/nuccore/CS570233.1>`_
+    is used as an example (see below). This can be useful for testing the
+    connection to Genbank.
+
+    Please note that this result is also cached by default by settings in
+    the pydna.ini file.
+    See the documentation of :func:`pydna.open_config_folder`
+
+    ::
+
+        LOCUS       CS570233                  14 bp    DNA     linear   PAT 18-MAY-2007
+        DEFINITION  Sequence 6 from Patent WO2007025016.
+        ACCESSION   CS570233
+        VERSION     CS570233.1
+        KEYWORDS    .
+        SOURCE      synthetic construct
+          ORGANISM  synthetic construct
+                    other sequences; artificial sequences.
+        REFERENCE   1
+          AUTHORS   Shaw,R.W. and Cottenoir,M.
+          TITLE     Inhibition of metallo-beta-lactamase by double-stranded dna
+          JOURNAL   Patent: WO 2007025016-A1 6 01-MAR-2007;
+                    Texas Tech University System (US)
+        FEATURES             Location/Qualifiers
+             source          1..14
+                             /organism="synthetic construct"
+                             /mol_type="unassigned DNA"
+                             /db_xref="taxon:32630"
+                             /note="This is a 14bp aptamer inhibitor."
+        ORIGIN
+                1 atgttcctac atga
+        //
+
     """
     email = _os.getenv("pydna_email")
     _module_logger.info("#### genbank function called ####")
