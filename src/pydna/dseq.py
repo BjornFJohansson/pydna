@@ -909,7 +909,7 @@ class Dseq(_Seq):
             sticky = self.watson[: -self._ovhg].lower()
             type_ = "5'"
         elif self._ovhg > 0:
-            sticky = self.crick[-self._ovhg :].lower()
+            sticky = self.crick[-self._ovhg:].lower()
             type_ = "3'"
         else:
             sticky = ""
@@ -1502,6 +1502,15 @@ class Dseq(_Seq):
         slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
         return slices
 
+    def terminal_transferase(self, nucleotides="a"):
+        """docstring."""
+        ovhg = self.ovhg
+        if self.ovhg >= 0:
+            ovhg += len(nucleotides)
+        return Dseq(self.watson + nucleotides,
+                    self.crick + nucleotides,
+                    ovhg)
+
     # def cas9(self, RNA: str):
     #     """docstring."""
     #     bRNA = bytes(RNA, "ASCII")
@@ -1516,6 +1525,7 @@ class Dseq(_Seq):
     #             fragments.append(self[x:y])
     #         frags.append(fragments)
     #     return frags
+
 
 
 if __name__ == "__main__":

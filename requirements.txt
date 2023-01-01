@@ -2,3 +2,4 @@ appdirs>=1.4.4
 biopython>=1.80
 networkx>=2.8.8
 prettytable>=3.5.0
+pyperclip>=1.8.2

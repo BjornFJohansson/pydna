@@ -6,7 +6,7 @@ build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
   include_recipe: False
   script: python setup.py install --single-version-externally-managed --record=record.txt
-
+  noarch: python
 source:
   git_url: .
 
@@ -18,9 +18,10 @@ requirements:
     run:
         - python {{ python }}
         - appdirs>=1.4.4
-        - biopython >=1.79
+        - biopython>=1.80
         - networkx>=2.6.3
-        - prettytable>=3.2.0  # todo replace with tabulate at some point
+        - prettytable>=3.2.0  # todo replace with tabulate at some point ?
+        - pyperclip>=1.8.2
 
         - pyparsing>=2.4.7    # optional
         - requests>=2.26.0    # optional
@@ -28,6 +29,7 @@ requirements:
         - matplotlib>=3.4.3   # optional
         - pillow>=8.4.0       # optional
         - CAI>=1.0.3          # optional
+        - pyqt>=5.0.0         # optional
 
 test:
   requires:
