@@ -1,5 +1,6 @@
 lussekatt
-			pepparkaka
+pepparkaka
+			prinsesstårta
 			chokladboll
 			risboll
 			maräng
