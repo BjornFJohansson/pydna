@@ -30,6 +30,7 @@ requirements:
         - pillow>=8.4.0       # optional
         - CAI>=1.0.3          # optional
         - pyqt>=5.0.0         # optional
+        - pyfiglet>=0.8.post1 # optional
 
 test:
   requires:
