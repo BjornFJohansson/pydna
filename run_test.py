@@ -67,9 +67,8 @@ def main():
 
     result_suite_tests = pytest.main(args)
 
-    return result_suite_tests and result_suite_src
+    return int(result_suite_tests or result_suite_src)
 
 
 if __name__ == "__main__":
-    result = main()
-    sys.exit(int(result))
+    sys.exit(main())
