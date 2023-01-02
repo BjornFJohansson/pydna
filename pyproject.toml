@@ -1,7 +1,8 @@
-# https://www.toml-lint.com
 [project]
 name = "pydna"
-authors = [{ name = "Björn F. Johansson", email = "bjornjobb@gmail.com" }]
+authors = [
+    { name = "Björn F. Johansson", email = "bjornjobb@gmail.com" }
+]
 dynamic = ["version"]
 license = {file = "LICENSE.txt"}
 keywords=["bioinformatics", "DNA", "cloning", "Jupyter"]
@@ -57,3 +58,5 @@ write_to = "src/pydna/_version.py"
 homepage = "https://github.com/BjornFJohansson/pydna"
 documentation = "https://pydna.readthedocs.io"
 repository = "https://github.com/BjornFJohansson/pydna"
+
+# https://www.toml-lint.com

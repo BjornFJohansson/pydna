@@ -1,6 +1,6 @@
 lussekatt
 pepparkaka
-prinsesstårta
+			prinsesstårta
 			chokladboll
 			risboll
 			maräng
@@ -10,7 +10,7 @@ prinsesstårta
 			prinsesstårta
 			petit-choux
 			Napoleonbakelse
-			Gustav-Adolf-bakelse
+			Gustav Adolf-bakelse
 			Runebergstårta
 			hallongrotta
 			mockaruta
