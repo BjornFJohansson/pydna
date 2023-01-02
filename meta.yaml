@@ -12,11 +12,11 @@ source:
 
 requirements:
     build:
-        - python {{ python }}
+        - python
         - setuptools>=59.2.0
         - setuptools_scm>=6.3.2
     run:
-        - python {{ python }}
+        - python
         - appdirs>=1.4.4
         - biopython>=1.80
         - networkx>=2.6.3

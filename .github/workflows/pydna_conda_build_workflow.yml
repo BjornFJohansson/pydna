@@ -15,14 +15,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/conda_pkgs_dir
-          key: conda-ubuntu-latest-python-3.11-${{ hashFiles('environment-ci.yml') }}
+          key: conda-ubuntu-latest-python-build-${{ hashFiles('environment-ci.yml') }}
       - name: 🌍 Install conda environment from pydna_build_environment with miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: pydna_build_environment
-          python-version: ${{ matrix.python-version }}
           environment-file: pydna_build_environment.yml
-          auto-activate-base: false
       - name: mamba info --all
         shell: bash -l {0}
         run: mamba info --all
