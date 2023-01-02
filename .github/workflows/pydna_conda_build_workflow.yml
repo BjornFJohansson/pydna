@@ -31,4 +31,4 @@ jobs:
         run: conda config --set anaconda_upload yes
       - name: 🔩 Build conda package with mamba
         shell: bash -l {0}
-        run: mamba build . --python --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }}
+        run: mamba build . --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }}
