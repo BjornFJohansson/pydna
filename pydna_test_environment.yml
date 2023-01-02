@@ -12,6 +12,7 @@ dependencies:
 - networkx
 - pyperclip
 - pyqt
+- pyfiglet
 
 - pyparsing
 - CAI
