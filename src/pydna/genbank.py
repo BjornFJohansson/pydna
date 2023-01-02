@@ -70,6 +70,7 @@ class Genbank(object):
 
     @_memorize("pydna.genbank.Genbank.nucleotide")
     def nucleotide(self, item: str, seq_start=None, seq_stop=None, strand=1):
+
         """This method downloads a genbank nuclotide record from genbank. This method is
         cached by default. This can be controlled by editing the **pydna_cached_funcs** environment
         variable. The best way to do this permanently is to edit the edit the

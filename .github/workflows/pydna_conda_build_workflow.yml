@@ -4,13 +4,8 @@ on:
     types: [published]
 jobs:
   build:
-    name: Build (${{ matrix.python-version }}, ${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        python-version: ["3.11", "3.10", "3.9", "3.8"]
-    runs-on: ${{ matrix.os }}
+    name: Build noarch python package
+    runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
@@ -20,14 +15,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/conda_pkgs_dir
-          key: conda-${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('environment-ci.yml') }}
+          key: conda-ubuntu-latest-python-build-${{ hashFiles('environment-ci.yml') }}
       - name: 🌍 Install conda environment from pydna_build_environment with miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: pydna_build_environment
-          python-version: ${{ matrix.python-version }}
           environment-file: pydna_build_environment.yml
-          auto-activate-base: false
       - name: mamba info --all
         shell: bash -l {0}
         run: mamba info --all
@@ -36,4 +29,4 @@ jobs:
         run: conda config --set anaconda_upload yes
       - name: 🔩 Build conda package with mamba
         shell: bash -l {0}
-        run: mamba build --python ${{ matrix.python-version }} --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }} .
+        run: mamba build . --no-include-recipe --dirty --token ${{ secrets.ANACONDATOKEN }}

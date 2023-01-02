@@ -32,6 +32,7 @@ import os as _os
 import re as _re
 import time as _time
 import datetime as _datetime
+import pyperclip
 
 import logging as _logging
 
@@ -445,6 +446,14 @@ class Dseqrecord(_SeqRecord):
             fn.qualifiers = fo.qualifiers
 
         return new
+
+    def terminal_transferase(self, nucleotides="a"):
+        """docstring."""
+        newseq = _copy.deepcopy(self)
+        newseq.seq = self.seq.terminal_transferase(nucleotides)
+        for feature in newseq.features:
+            feature.location += len(nucleotides)
+        return newseq
 
     def format(self, f="gb"):
         """Returns the sequence as a string using a format supported by Biopython
@@ -1316,6 +1325,11 @@ class Dseqrecord(_SeqRecord):
     def orfs(self, minsize=30):
         """docstring."""
         return tuple(Dseqrecord(s) for s in self.seq.orfs(minsize=minsize))
+
+    def copy_to_clipboard(self, sequence_format="gb"):
+        """docstring."""
+        pyperclip.copy(self.format(sequence_format))
+        return None
 
 
 if __name__ == "__main__":

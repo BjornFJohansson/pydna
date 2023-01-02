@@ -401,37 +401,11 @@ def get_env():
 
 
 def logo():
-    r"""Ascii-art logotype of pydna.
-
-    >>> import pydna
-    >>> print(pydna.logo())
-                     _
-                    | |
-     ____  _   _  __| |___   _____
-    |  _ \| | | |/ _  |  _ \(____ |
-    | |_| | |_| ( (_| | | | / ___ |
-    |  __/ \__  |\____|_| |_\_____|
-    |_|   (____/
-    <BLANKLINE>
-    """
+    """Ascii-art logotype of pydna."""
     from pydna._pretty import pretty_str as _pretty_str
-    import textwrap
-
-    return _pretty_str(
-        textwrap.dedent(
-            r"""
-                     _
-                    | |
-     ____  _   _  __| |___   _____
-    |  _ \| | | |/ _  |  _ \(____ |
-    | |_| | |_| ( (_| | | | / ___ |
-    |  __/ \__  |\____|_| |_\_____|
-    |_|   (____/
-    """[
-                1:
-            ]
-        )
-    )
+    from pyfiglet import Figlet
+    f = Figlet()
+    return _pretty_str(f.renderText(f'pydna {__version__}'))
 
 
 if __name__ == "__main__":

@@ -10,6 +10,9 @@ dependencies:
 - biopython=1.80
 - prettytable
 - networkx
+- pyperclip
+- pyqt
+- pyfiglet
 
 - pyparsing
 - CAI
