@@ -357,9 +357,13 @@ These are triggered by publishing a github release manually from the github inte
 ## Building a setuptools package
 
 
-	python -m build # run this command in the root directory where the pyproject.toml file is located
+	poetry build # run this command in the root directory where the pyproject.toml file is located
+
+	twine upload dist/pydna-5.1a6-py3-none-any.whl  # The exact name depends on the version set as git tagged
 
 
+
+## Building a conda package
 
 
 
