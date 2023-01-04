@@ -337,7 +337,7 @@ See the [change log](docs/CHANGELOG.md) for recent changes.
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-##  Automatic testing & Release process
+## Automatic testing & Release process
 
 There are three github actions associated with this package:
 
@@ -352,6 +352,18 @@ The two other workflows build a setuptools wheel and packages for different Pyth
 on Linux, Windows and macOS.
 
 These are triggered by publishing a github release manually from the github interface.
+
+
+## Building a setuptools package
+
+
+	python -m build # run this command in the root directory where the pyproject.toml file is located
+
+
+
+
+
+
 
 
 
