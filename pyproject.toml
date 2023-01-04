@@ -1,63 +1,24 @@
-[project]
+[tool.poetry]
 name = "pydna"
-authors = [
-    { name = "Björn F. Johansson", email = "bjornjobb@gmail.com" }
-]
-description= "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
-dynamic = ["version"]
-license = {file = "LICENSE.txt"}
-keywords=["bioinformatics", "DNA", "cloning", "Jupyter"]
-dependencies = [
-"appdirs>=1.4.4",
-"biopython>=1.80",
-"networkx>=2.8.8",
-"prettytable>=3.5.0"]
-classifiers=["Development Status :: 4 - Beta",
-           "Environment :: Console",
-           "Intended Audience :: Education",
-           "Intended Audience :: Developers",
-           "Intended Audience :: Science/Research",
-           "License :: OSI Approved :: BSD License",
-           "Operating System :: OS Independent",
-           "Programming Language :: Python :: 3.7",
-           "Programming Language :: Python :: 3.8",
-           "Programming Language :: Python :: 3.9",
-           "Programming Language :: Python :: 3.10",
-           "Programming Language :: Python :: 3.11",
-           "Topic :: Education",
-           "Topic :: Scientific/Engineering :: Bio-Informatics", ]
-[project.optional-dependencies]
-dependencies = [
-"CAI>=1.0.3",
-"numpy>=1.23.5",
-"pillow>=9.2.0",
-"scipy>=1.9.3",
-"pyparsing>=3.0.9",
-"requests>=2.28.1",
-"ipython>=8.2.0"]
+version = "0.0.0"
+description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
+authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
+license = "BSD"
+readme = "README.md"
 
-test = [
-"pytest>=7.2.0",
-"pytest-cov>=4.0.0",
-"pytest-doctestplus>=0.12.1",
-"coverage>=6.5.0",
-"nbval>=0.9.6",
-"requests>=2.26.0",
-"requests-mock>=1.9.3",
-"setuptools>=58.5.3"]
+[tool.poetry.dependencies]
+python = "^3.7"
+appdirs = "^1.4.4"
+biopython = "^1.80"
+networkx = "^2.8.8"
+prettytable = "^3.5.0"
+pyperclip = "^1.8.2"
+pyfiglet = "^0.8.post1"
+
 
 [build-system]
-requires = [
-"setuptools>=45",
-"wheel",
-"setuptools_scm>=6.2"]
+requires = ["poetry-core", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.setuptools_scm]
-write_to = "src/pydna/_version.py"
-
-[project.urls]
-homepage = "https://github.com/BjornFJohansson/pydna"
-documentation = "https://pydna.readthedocs.io"
-repository = "https://github.com/BjornFJohansson/pydna"
-
-# https://www.toml-lint.com
+[tool.poetry-dynamic-versioning]
+enable = true
