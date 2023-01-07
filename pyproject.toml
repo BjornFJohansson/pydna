@@ -6,6 +6,9 @@ authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
 readme = "README.md"
 
+[project]
+dynamic = ["version"]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 appdirs = "^1.4.4"
@@ -17,8 +20,11 @@ pyfiglet = "^0.8.post1"
 
 
 [build-system]
-requires = ["poetry-core", "poetry-dynamic-versioning"]
+requires = ["poetry-core",
+            "poetry-dynamic-versioning",
+            "setuptools>=45",
+            "setuptools_scm[toml]>=6.2"]
 build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.poetry-dynamic-versioning]
-enable = true
+[tool.setuptools_scm]
+write_to = "pkg/_version.py"
