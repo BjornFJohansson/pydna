@@ -1333,6 +1333,26 @@ class Dseq(_Seq):
         """
         return self._ovhg == 0 and len(self.watson) == len(self.crick) and self._linear
 
+    def cas9(self, RNA: str):
+        """docstring."""
+        bRNA = bytes(RNA, "ASCII")
+        slices = []
+        cuts = [0]
+        for m in _re.finditer(bRNA, self._data):
+            cuts.append(m.start()+17)
+        cuts.append(self.length)
+        slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
+        return slices
+
+    def terminal_transferase(self, nucleotides="a"):
+        """docstring."""
+        ovhg = self.ovhg
+        if self.ovhg >= 0:
+            ovhg += len(nucleotides)
+        return Dseq(self.watson + nucleotides,
+                    self.crick + nucleotides,
+                    ovhg)
+
     def cut(self, *enzymes):
         """Returns a list of linear Dseq fragments produced in the digestion.
         If there are no cuts, an empty list is returned.
@@ -1392,12 +1412,10 @@ class Dseq(_Seq):
             # argument is probably a RestrictionBatch
             enzymecuts = []
             for e in enzymes[0]:
-                # cuts = e.search(dsseq+dsseq[:e.size-1] if self.circular else dsseq)
                 cuts = e.search(
                     _Seq(pad + dsseq.watson + dsseq.watson[:e.size-1] + pad)
                     if self.circular
-                    else dsseq
-                )
+                    else dsseq)
                 enzymecuts.append((cuts, e))
             enzymecuts.sort()
             enzymes = [e for (c, e) in enzymecuts if c]
@@ -1454,8 +1472,8 @@ class Dseq(_Seq):
         for enz in enzymes:
             for frag in frags:
 
-                ws = [x - 1 for x in enz.search(_Seq(frag.watson) + "N")]
-                cs = [x - 1 for x in enz.search(_Seq(frag.crick) + "N")]
+                ws = [x - 1 for x in enz.search(_Seq(frag.watson + "n"))]
+                cs = [x - 1 for x in enz.search(_Seq(frag.crick + "n"))]
 
                 sitepairs = [
                     (sw, sc)
@@ -1469,64 +1487,20 @@ class Dseq(_Seq):
                 sitepairs.append((self.length, 0))
 
                 w2, c1 = sitepairs[0]
-
-                newfrags.append(
-                    Dseq(
-                        frag.watson[:w2], frag.crick[c1:], ovhg=frag.ovhg, pos=frag.pos
-                    )
-                )
+                newfrags.append(Dseq(frag.watson[:w2],
+                                     frag.crick[c1:],
+                                     ovhg=frag.ovhg,
+                                     pos=frag.pos))
 
                 for (w1, c2), (w2, c1) in zip(sitepairs[:-1], sitepairs[1:]):
-                    newfrags.append(
-                        Dseq(
-                            frag.watson[w1:w2],
-                            frag.crick[c1:c2],
-                            ovhg=enz.ovhg,
-                            pos=frag.pos + w1 - max(0, enz.ovhg),
-                        )
-                    )
-
+                    newfrags.append(Dseq(frag.watson[w1:w2],
+                                         frag.crick[c1:c2],
+                                         ovhg=enz.ovhg,
+                                         pos=frag.pos + w1 - max(0, enz.ovhg) + max(0, frag.ovhg)))
             frags = newfrags
             newfrags = []
 
         return tuple(frags)
-
-    def cas9(self, RNA: str):
-        """docstring."""
-        bRNA = bytes(RNA, "ASCII")
-        slices = []
-        cuts = [0]
-        for m in _re.finditer(bRNA, self._data):
-            cuts.append(m.start()+17)
-        cuts.append(self.length)
-        slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
-        return slices
-
-    def terminal_transferase(self, nucleotides="a"):
-        """docstring."""
-        ovhg = self.ovhg
-        if self.ovhg >= 0:
-            ovhg += len(nucleotides)
-        return Dseq(self.watson + nucleotides,
-                    self.crick + nucleotides,
-                    ovhg)
-
-    # def cas9(self, RNA: str):
-    #     """docstring."""
-    #     bRNA = bytes(RNA, "ASCII")
-    #     frags = []
-    #     for target in (self.seq._data, self.seq.rc()._data):
-    #         cuts = [0]
-    #         for m in _re.finditer(bRNA, target):
-    #             cuts.append(m.start()+17)
-    #         cuts.append(self.seq.length)
-    #         fragments = []
-    #         for x, y in zip(cuts, cuts[1:]):
-    #             fragments.append(self[x:y])
-    #         frags.append(fragments)
-    #     return frags
-
-
 
 if __name__ == "__main__":
     import os as _os
