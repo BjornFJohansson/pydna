@@ -1205,7 +1205,7 @@ class Dseqrecord(_SeqRecord):
 
         ln = len(self)
 
-        if shift % ln == 0:
+        if not shift % ln:
             return self  # shift is a multiple of ln or 0
         else:
             shift %= ln  # 0<=shift<=ln
