@@ -499,7 +499,6 @@ class Dseqrecord(_SeqRecord):
         else:
             return _pretty_str(s).strip()
 
-
     def write(self, filename=None, f="gb"):
         """Writes the Dseqrecord to a file using the format f, which must
         be a format supported by Biopython SeqIO for writing [#]_. Default
@@ -652,7 +651,6 @@ class Dseqrecord(_SeqRecord):
                 if other.lower() in _translate(s[frame : frame + spc + ln]).lower():
                     return True
         return False
-
 
     def find_aminoacids(self, other):
         """
@@ -872,11 +870,11 @@ class Dseqrecord(_SeqRecord):
         return hash((str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
 
     def linearize(self, *enzymes):
-        """This method is similar to :func:`cut` but throws an exception if there
-        is not excactly one cut i.e. none or more than one digestion products.
+        """Similar to :func:`cut.
 
+        Throws an exception if there is not excactly one cut
+        i.e. none or more than one digestion products.
         """
-
         if self.seq._linear:
             raise TypeError("Can only linearize circular molecules!")
         fragments = self.cut(*enzymes)
@@ -912,73 +910,6 @@ class Dseqrecord(_SeqRecord):
     def cutters(self, batch: _RestrictionBatch = None):
         """docstring."""
         return self.seq.cutters(batch=batch or CommOnly)
-
-    def cut(self, *enzymes):
-        """Digest the Dseqrecord object with one or more restriction enzymes.
-        returns a list of linear Dseqrecords. If there are no cuts, an empty
-        list is returned.
-
-        See also :func:`Dseq.cut`
-
-        Parameters
-        ----------
-
-        enzymes : enzyme object or iterable of such objects
-            A Bio.Restriction.XXX restriction object or iterable of such.
-
-        Returns
-        -------
-        Dseqrecord_frags : list
-            list of Dseqrecord objects formed by the digestion
-
-        Examples
-        --------
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("ggatcc")
-        >>> from Bio.Restriction import BamHI
-        >>> a.cut(BamHI)
-        (Dseqrecord(-5), Dseqrecord(-5))
-        >>> frag1, frag2 = a.cut(BamHI)
-        >>> frag1.seq
-        Dseq(-5)
-        g
-        cctag
-        >>> frag2.seq
-        Dseq(-5)
-        gatcc
-            g
-
-
-        """
-
-        frags = self.seq.cut(enzymes)
-
-        if not frags:
-            return ()
-
-        if self.linear:
-            shift = frags[0].pos # 0
-            features = self.features
-        else:
-            # breakpoint()
-            shift = frags[0].pos
-            features = self.shifted(shift).features
-            for fr in frags:
-                fr.pos -= shift + max(fr.ovhg, 0)
-                # breakpoint()
-        dsfs = []
-        for fr in frags:
-            dsf = Dseqrecord(fr, linear=True, n=self.n)
-            start = fr.pos  # - shift
-            end = fr.pos + fr.length  # - shift
-            dsf.features = [_copy.copy(fe)
-                            for fe in features
-                            if start <= fe.location.start
-                            and end >= fe.location.end]
-            for fe in dsf.features:
-                fe.location += -fr.pos
-            dsfs.append(dsf)
-        return tuple(dsfs)
 
     def number_of_cuts(self, *enzymes):
         """The number of cuts by digestion with the Restriction enzymes
@@ -1028,151 +959,6 @@ class Dseqrecord(_SeqRecord):
         return answer
 
     rc = reverse_complement
-
-    def shifted(self, shift):
-        """Returns a circular Dseqrecord with a new origin <shift>.
-        This only works on circular Dseqrecords. If we consider the following
-        circular sequence:
-
-
-        | ``GAAAT   <-- watson strand``
-        | ``CTTTA   <-- crick strand``
-
-        The T and the G on the watson strand are linked together as well
-        as the A and the C of the of the crick strand.
-
-        if ``shift`` is 1, this indicates a new origin at position 1:
-
-        |    new origin at the | symbol:
-        |
-        | ``G|AAAT``
-        | ``C|TTTA``
-
-        new sequence:
-
-        | ``AAATG``
-        | ``TTTAC``
-
-        Examples
-        --------
-
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("aaat",circular=True)
-        >>> a
-        Dseqrecord(o4)
-        >>> a.seq
-        Dseq(o4)
-        aaat
-        ttta
-        >>> b=a.shifted(1)
-        >>> b
-        Dseqrecord(o4)
-        >>> b.seq
-        Dseq(o4)
-        aata
-        ttat
-
-        """
-        if self.linear:
-            raise TypeError(
-                "Sequence is linear, origin can only be shifted for circular sequences.\n"
-            )
-
-        ln = len(self)
-
-        if not shift % ln:
-            return self  # shift is a multiple of ln or 0
-        else:
-            shift %= ln  # 0<=shift<=ln
-
-        newseq = (self.seq[shift:] + self.seq[:shift]).looped()
-        shift = ln - shift
-        newfeatures = []
-        for feature in self.features:
-            shiftedparts = [
-                featurelocation + shift for featurelocation in feature.location.parts
-            ]
-            zero_length_parts = [
-                featurelocation
-                for featurelocation in shiftedparts
-                if featurelocation.start == featurelocation.end
-            ]
-            newparts = []
-            for location in shiftedparts:
-                newstart = location.start % ln
-                newend = location.end % ln
-                if newstart < newend:
-                    newparts.append(
-                        _FeatureLocation(
-                            newstart,
-                            newend,
-                            location.strand,
-                            location.ref,
-                            location.ref_db,
-                        )
-                    )
-                elif newstart > newend:
-                    if location.strand == 1:
-                        newparts.extend(
-                            [
-                                _FeatureLocation(
-                                    newstart,
-                                    ln,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                                _FeatureLocation(
-                                    0,
-                                    newend,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                            ]
-                        )
-                    else:
-                        newparts.extend(
-                            [
-                                _FeatureLocation(
-                                    0,
-                                    newend,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                                _FeatureLocation(
-                                    newstart,
-                                    ln,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                            ]
-                        )
-            p = next((p for p in newparts if p.end == shift), None)
-            s = next((p for p in newparts if p.start == shift), None)
-            if p and s:
-                newparts.remove(p)
-                newparts[newparts.index(s)] = _FeatureLocation(
-                    p.start, s.end, p.strand, p.ref, p.ref_db
-                )
-            newparts = [p for p in newparts if p]
-            newparts.extend(zero_length_parts)
-            if newparts:
-                newfeatures.append(
-                    _SeqFeature(
-                        location=sum(newparts),
-                        type=feature.type,
-                        id=feature.id,
-                        qualifiers=feature.qualifiers,
-                    )
-                )
-        newfeatures.sort(key=_operator.attrgetter("location.start"))
-        answer = _copy.copy(self)
-        answer.features = newfeatures
-        answer.seq = newseq
-        return answer
 
     @_memorize("pydna.dseqrecord.Dseqrecord.synced")
     def synced(self, ref, limit=25):
@@ -1330,6 +1116,253 @@ class Dseqrecord(_SeqRecord):
         """docstring."""
         pyperclip.copy(self.format(sequence_format))
         return None
+
+    def figure(self, style="\x1b[48;5;11m"):
+        """docstring."""
+        # https://github.com/pycontribs/ansi2html
+        for f in self.features:
+            if f.location.strand == 1:
+                offset = max(0, self.seq.ovhg)
+                start = f.location.start - offset
+                end = f.location.end - offset
+                watson = (f"{self.seq.watson[:start]}"
+                          f"{style}{self.seq.watson[start:end]}"
+                          f"\x1b[0m{self.seq.watson[end:]}")
+                crick = self.seq.crick[::-1]
+            else:
+                offset = min(self.seq.ovhg, 0)
+                start = f.location.start + offset
+                end = f.location.end + offset
+                watson = self.seq.watson
+                crick = self.seq.crick[::-1]
+                crick = (f"{crick[:start]}"
+                         f"{style}{crick[start:end]}"
+                         f"\x1b[0m{crick[end:]}")
+            break
+        else:
+            offset = self.seq.ovhg
+            watson = self.seq.watson
+            crick = self.seq.crick
+        topology = {True: '-', False: 'o'}[self.linear]
+        result = (f"{self.__class__.__name__}({topology}{len(self)})\n"
+                  f"{self.seq.ovhg * ' '}{watson}\n"
+                  f"{-self.seq.ovhg * ' '}{crick}")
+        return _pretty_str(result)
+
+        # from ansi2html import Ansi2HTMLConverter
+        # conv = Ansi2HTMLConverter()
+        # ansi = self.figure()
+        # html = conv.convert(ansi)
+
+    def shifted(self, shift):
+        """Returns a circular Dseqrecord with a new origin <shift>.
+        This only works on circular Dseqrecords. If we consider the following
+        circular sequence:
+
+
+        | ``GAAAT   <-- watson strand``
+        | ``CTTTA   <-- crick strand``
+
+        The T and the G on the watson strand are linked together as well
+        as the A and the C of the of the crick strand.
+
+        if ``shift`` is 1, this indicates a new origin at position 1:
+
+        |    new origin at the | symbol:
+        |
+        | ``G|AAAT``
+        | ``C|TTTA``
+
+        new sequence:
+
+        | ``AAATG``
+        | ``TTTAC``
+
+        Examples
+        --------
+
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("aaat",circular=True)
+        >>> a
+        Dseqrecord(o4)
+        >>> a.seq
+        Dseq(o4)
+        aaat
+        ttta
+        >>> b=a.shifted(1)
+        >>> b
+        Dseqrecord(o4)
+        >>> b.seq
+        Dseq(o4)
+        aata
+        ttat
+
+        """
+        if self.linear:
+            raise TypeError(
+                "Sequence is linear, origin can only be shifted for circular sequences.\n"
+            )
+
+        ln = len(self)
+
+        if shift % ln == 0:
+            return self  # shift is a multiple of ln or 0
+        else:
+            shift %= ln  # 0<=shift<=ln
+
+        newseq = (self.seq[shift:] + self.seq[:shift]).looped()
+        shift = ln - shift
+        newfeatures = []
+        for feature in self.features:
+            shiftedparts = [featurelocation + shift
+                            for featurelocation in feature.location.parts]
+            zero_length_parts = [
+                featurelocation
+                for featurelocation in shiftedparts
+                if featurelocation.start == featurelocation.end
+            ]
+            newparts = []
+            for location in shiftedparts:
+                newstart = location.start % ln
+                newend = location.end % ln
+                if newstart < newend:
+                    newparts.append(
+                        _FeatureLocation(
+                            newstart,
+                            newend,
+                            location.strand,
+                            location.ref,
+                            location.ref_db,
+                        )
+                    )
+                elif newstart > newend:
+                    if location.strand == 1:
+                        newparts.extend(
+                            [
+                                _FeatureLocation(
+                                    newstart,
+                                    ln,
+                                    location.strand,
+                                    location.ref,
+                                    location.ref_db,
+                                ),
+                                _FeatureLocation(
+                                    0,
+                                    newend,
+                                    location.strand,
+                                    location.ref,
+                                    location.ref_db,
+                                ),
+                            ]
+                        )
+                    else:
+                        newparts.extend(
+                            [
+                                _FeatureLocation(
+                                    0,
+                                    newend,
+                                    location.strand,
+                                    location.ref,
+                                    location.ref_db,
+                                ),
+                                _FeatureLocation(
+                                    newstart,
+                                    ln,
+                                    location.strand,
+                                    location.ref,
+                                    location.ref_db,
+                                ),
+                            ]
+                        )
+            p = next((p for p in newparts if p.end == shift), None)
+            s = next((p for p in newparts if p.start == shift), None)
+            if p and s:
+                newparts.remove(p)
+                newparts[newparts.index(s)] = _FeatureLocation(
+                    p.start, s.end, p.strand, p.ref, p.ref_db
+                )
+            newparts = [p for p in newparts if p]
+            newparts.extend(zero_length_parts)
+            if newparts:
+                newfeatures.append(
+                    _SeqFeature(
+                        location=sum(newparts),
+                        type=feature.type,
+                        id=feature.id,
+                        qualifiers=feature.qualifiers,
+                    )
+                )
+        newfeatures.sort(key=_operator.attrgetter("location.start"))
+        answer = _copy.copy(self)
+        answer.features = newfeatures
+        answer.seq = newseq
+        return answer
+
+    def cut(self, *enzymes):
+        """Digest the Dseqrecord object with one or more restriction enzymes.
+        returns a list of linear Dseqrecords. If there are no cuts, an empty
+        list is returned.
+
+        See also :func:`Dseq.cut`
+
+        Parameters
+        ----------
+
+        enzymes : enzyme object or iterable of such objects
+            A Bio.Restriction.XXX restriction object or iterable of such.
+
+        Returns
+        -------
+        Dseqrecord_frags : list
+            list of Dseqrecord objects formed by the digestion
+
+        Examples
+        --------
+        >>> from pydna.dseqrecord import Dseqrecord
+        >>> a=Dseqrecord("ggatcc")
+        >>> from Bio.Restriction import BamHI
+        >>> a.cut(BamHI)
+        (Dseqrecord(-5), Dseqrecord(-5))
+        >>> frag1, frag2 = a.cut(BamHI)
+        >>> frag1.seq
+        Dseq(-5)
+        g
+        cctag
+        >>> frag2.seq
+        Dseq(-5)
+        gatcc
+            g
+
+
+        """
+
+        frags = self.seq.cut(enzymes)
+
+        if not frags:
+            return ()
+
+        if self.linear:
+            shift = frags[0].pos
+            features = self.features
+        else:
+            shift = frags[0].pos
+            features = self.shifted(shift).features
+            for fr in frags:         # FIXME
+                fr.pos -= shift      # FIXME
+        dsfs = []
+        for fr in frags:
+            dsf = Dseqrecord(fr, linear=True, n=self.n)
+            start = fr.pos
+            end = fr.pos + fr.length
+            dsf.features = [_copy.copy(fe)
+                            for fe in features
+                            if start <= fe.location.start
+                            and end >= fe.location.end]
+            for fe in dsf.features:
+                fe.location += - fr.pos #  (fr.pos - fe.location.start)
+                # breakpoint()
+            dsfs.append(dsf)
+        return tuple(dsfs)
 
 
 if __name__ == "__main__":

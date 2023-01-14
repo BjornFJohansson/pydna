@@ -126,7 +126,7 @@ class Dseq(_Seq):
 
     Example of creating Dseq objects with different amounts of stagger:
 
-    >>> Dseq(watson="agt",crick="actta",ovhg=-2)
+    >>> Dseq(watson="agt", crick="actta", ovhg=-2)
     Dseq(-7)
     agt
       attca
@@ -325,14 +325,12 @@ class Dseq(_Seq):
                 try:
                     F, T, L = olaps[0]
                 except IndexError:
-                    raise ValueError(
-                        "Could not anneal the two strands. Please provide ovhg value"
-                    )
+                    raise ValueError("Could not anneal the two strands."
+                                     " Please provide ovhg value")
                 ovhgs = [ol[1] - ol[0] for ol in olaps if ol[2] == L]
                 if len(ovhgs) > 1:
-                    raise ValueError(
-                        "More than one way of annealing the strands. Please provide ovhg value"
-                    )
+                    raise ValueError("More than one way of annealing the"
+                                     " strands. Please provide ovhg value")
                 ovhg = T - F
 
                 sns = (ovhg * " ") + _pretty_str(watson)
@@ -645,11 +643,11 @@ class Dseq(_Seq):
             same = False
         return same
 
-    def __repr__(self):
+    def __repr__(self, trunc=30):
         """Returns a representation of the sequence, truncated if
         longer than 30 bp"""
 
-        if len(self) > 30:
+        if len(self) > trunc:
 
             if self._ovhg > 0:
                 d = self.crick[-self._ovhg:][::-1]
@@ -1439,29 +1437,17 @@ class Dseq(_Seq):
         else:
             l = len(self)
             for e in enzymes:
-                wpos = [
-                    x - len(pad) - 1
-                    for x in e.search(
-                        _Seq(pad + self.watson + self.watson[: e.size - 1]) + pad
-                    )
-                ][::-1]
-                cpos = [
-                    x - len(pad) - 1
-                    for x in e.search(
-                        _Seq(pad + self.crick + self.crick[: e.size - 1]) + pad
-                    )
-                ][::-1]
+
+                wpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.watson + self.watson[: e.size - 1]) + pad)][::-1]
+                cpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.crick + self.crick[: e.size - 1]) + pad)][::-1]
 
                 for w, c in _itertools.product(wpos, cpos):
                     if w % len(self) == (self.length - c + e.ovhg) % len(self):
-                        frags = [
-                            Dseq(
-                                self.watson[w % l :] + self.watson[: w % l],
-                                self.crick[c % l :] + self.crick[: c % l],
-                                ovhg=e.ovhg,
-                                pos=w,
-                            )
-                        ]
+                        frags = [Dseq(self.watson[w % l :] + self.watson[: w % l],
+                                      self.crick[c % l :] + self.crick[: c % l],
+                                      ovhg=e.ovhg,
+                                      pos=min(w, len(dsseq) - c))]
+                        # breakpoint()
                         break
                 else:
                     continue
@@ -1469,20 +1455,16 @@ class Dseq(_Seq):
 
         newfrags = []
 
+        # print(repr(frags[0]))
+        # print(frags[0].pos)
+
         for enz in enzymes:
             for frag in frags:
 
                 ws = [x - 1 for x in enz.search(_Seq(frag.watson + "n"))]
                 cs = [x - 1 for x in enz.search(_Seq(frag.crick + "n"))]
 
-                sitepairs = [
-                    (sw, sc)
-                    for sw, sc in _itertools.product(ws, cs[::-1])
-                    if (
-                        sw + max(0, frag.ovhg) - max(0, enz.ovhg)
-                        == len(frag.crick) - sc - min(0, frag.ovhg) + min(0, enz.ovhg)
-                    )
-                ]
+                sitepairs = [(sw, sc) for sw, sc in _itertools.product(ws, cs[::-1]) if (sw + max(0, frag.ovhg) - max(0, enz.ovhg)== len(frag.crick) - sc - min(0, frag.ovhg) + min(0, enz.ovhg))]
 
                 sitepairs.append((self.length, 0))
 
