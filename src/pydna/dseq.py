@@ -22,6 +22,7 @@ import sys as _sys
 import math as _math
 
 from pydna.seq import Seq as _Seq
+from Bio.Restriction import FormattedSeq as _FormattedSeq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
@@ -31,6 +32,7 @@ from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
+from operator import itemgetter as _itemgetter
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 
@@ -1405,7 +1407,6 @@ class Dseq(_Seq):
             dsseq = Dseq.from_string(self._data.decode("ASCII"),
                                      linear=True,
                                      circular=False)
-
         if len(enzymes) == 1 and hasattr(enzymes[0], "intersection"):
             # argument is probably a RestrictionBatch
             enzymecuts = []
@@ -1484,12 +1485,35 @@ class Dseq(_Seq):
 
         return tuple(frags)
 
+    def _firstcut(self, *enzymes):
+        rb = _RestrictionBatch(_flatten(enzymes))
+        watson = _FormattedSeq(_Seq(self.watson), linear=False)
+        crick = _FormattedSeq(_Seq(self.crick), linear=False)
+        enzdict = dict(sorted(rb.search(watson).items(), key=_itemgetter(1)))
+        ln = self.length
+        for enzyme, wposlist in enzdict.items():
+            for cpos in enzyme.search(crick)[::-1]:
+                for wpos in wposlist:
+                    if cpos == (ln - wpos + enzyme.ovhg + 2) or ln:
+                        return (wpos-1, cpos-1, enzyme.ovhg)
+        return ()
+
+# wpos - max(0, enzyme.ovhg) == len(crick) - cpos + min(0, enzyme.ovhg) + 2
+# cpos == len(self.watson) - wpos + enzyme.ovhg + 2
+
 if __name__ == "__main__":
-    import os as _os
 
-    cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"] = ""
-    import doctest
+    a = Dseq("aaaaaaaGGTACCggtctcaaaa")
+    from Bio.Restriction import BsaI
+    a._firstcut(BsaI)
 
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"] = cached
+
+
+    # import os as _os
+
+    # cached = _os.getenv("pydna_cached_funcs", "")
+    # _os.environ["pydna_cached_funcs"] = ""
+    # import doctest
+
+    # doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    # _os.environ["pydna_cached_funcs"] = cached

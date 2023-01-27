@@ -3,65 +3,67 @@
 preserves some of the meta data from the parent sequence
 """
 
-from Bio.SeqFeature import SeqFeature as _Sf
-# from Bio.SeqFeature import FeatureLocation as _Fl
+from Bio.SeqFeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 # from pydna.utils import identifier_from_string as _identifier_from_string
 
 
-class SeqFeature(_Sf):
-    """docstring."""
+SeqFeature = _SeqFeature
 
-    def __init__(
-        self,
-        location=None,
-        type="",
-        location_operator="",
-        strand=None,
-        id="<unknown id>",
-        qualifiers=None,
-        sub_features=None,
-        ref=None,
-        ref_db=None,
-    ):
-        super().__init__(
-            location,
-            type,
-            location_operator,
-            strand,
-            id,
-            qualifiers,
-            sub_features,
-            ref,
-            ref_db,
-        )
+# class SeqFeature(_SeqFeature):
+#     """docstring."""
 
-    # def __lt__(self, other):
-    #     return self.location.start < other.location.start
+#     def __init__(
+#         self,
+#         location=None,
+#         type="",
+#         location_operator="",
+#         strand=None,
+#         id="<unknown id>",
+#         qualifiers=None,
+#         sub_features=None,
+#         ref=None,
+#         ref_db=None,
+#     ):
+#         super().__init__(
+#             location,
+#             type,
+#             location_operator,
+#             strand,
+#             id,
+#             qualifiers,
+#             sub_features,
+#             ref,
+#             ref_db,
+#         )
 
-    # def __gt__(self, other):
-    #     return self.location.start > other.location.start
+#     # def __lt__(self, other):
+#     #     return self.location.start < other.location.start
 
-    def extract(self, parent_sequence):
-        """docstring."""
-        answer = super().extract(parent_sequence)
-        # identifier = "feat_{}".format(parent_sequence.id)
-        # if "label" in self.qualifiers:
-        #     identifier = " ".join(self.qualifiers["label"])
-        # elif "note" in self.qualifiers:
-        #     identifier = " ".join(self.qualifiers["note"])
-        # answer.name = answer.id = _identifier_from_string(identifier)[:16]
-        return answer
+#     # def __gt__(self, other):
+#     #     return self.location.start > other.location.start
 
-    def unfold(self):
-        """docstring."""
-        results = []
-        for part in self.location.parts:
-            results.append(SeqFeature(location=part,
-                                      type=self.type,
-                                      id=self.id,
-                                      qualifiers=self.qualifiers))
+#     # def extract(self, parent_sequence):
+#     #     """docstring."""
+#     #     answer = super().extract(parent_sequence)
+#     #     # identifier = "feat_{}".format(parent_sequence.id)
+#     #     # if "label" in self.qualifiers:
+#     #     #     identifier = " ".join(self.qualifiers["label"])
+#     #     # elif "note" in self.qualifiers:
+#     #     #     identifier = " ".join(self.qualifiers["note"])
+#     #     # answer.name = answer.id = _identifier_from_string(identifier)[:16]
+#     #     return answer
 
-        return results
+#     def unfold(self):
+#         """docstring."""
+#         results = []
+#         for part in self.location.parts:
+#             results.append(SeqFeature(location=part,
+#                                       type=self.type,
+#                                       id=self.id,
+#                                       qualifiers=self.qualifiers))
+#         return results
 
 
 if __name__ == "__main__":

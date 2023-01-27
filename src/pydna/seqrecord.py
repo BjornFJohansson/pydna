@@ -22,7 +22,8 @@ from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
 from Bio.Data.CodonTable import TranslationError as _TranslationError
 from Bio.SeqRecord import SeqRecord as _SeqRecord
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
+from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.seq import Seq as _Seq
 from pydna._pretty import PrettyTable as _PrettyTable
 
@@ -222,9 +223,12 @@ class SeqRecord(_SeqRecord):
             f.qualifiers["ApEinfo_fwdcolor"] = [cols[i % len(cols)]]
             f.qualifiers["ApEinfo_revcolor"] = [cols[::-1][i % len(cols)]]
 
-    def add_feature(
-        self, x=None, y=None, seq=None,
-            type_="misc", strand=1, *args, **kwargs):
+    def add_feature(self,
+                    x=None,
+                    y=None,
+                    seq=None,
+                    type_="misc",
+                    strand=1, *args, **kwargs):
         """Add a feature of type misc to the feature list of the sequence.
 
         Parameters
@@ -274,21 +278,25 @@ class SeqRecord(_SeqRecord):
             if self[x:y].isorf() or self[x:y].reverse_complement().isorf():
                 qualifiers["label"] = ["orf{}".format(y - x)]
 
-        sf = _SeqFeature(_FeatureLocation(x, y, strand=strand),
+        try:
+            location = _SimpleLocation(x,
+                                       y,
+                                       strand=strand)
+        except ValueError as err:
+            if self.circular:
+                location = _CompoundLocation(
+                    (_SimpleLocation(x, self.seq.length, strand=strand),
+                     _SimpleLocation(0, y, strand=strand))
+                                              )
+            else:
+                raise err
+
+        sf = _SeqFeature(location,
                          type=type_,
                          qualifiers=qualifiers)
 
         self.features.append(sf)
 
-        #         location=None,
-        #         type='',
-        #         location_operator='',
-        #         strand=None,
-        #         id="<unknown id>",
-        #         qualifiers=None,
-        #         sub_features=None,
-        #         ref=None,
-        #         ref_db=None
         """
         In [11]: a.seq.translate()
         Out[11]: Seq('K', ExtendedIUPACProtein())
@@ -546,7 +554,7 @@ class SeqRecord(_SeqRecord):
         else:
             label = "sequence" if not hasattr(other, "name") else other.name
             result = _SeqFeature(
-                _FeatureLocation(start_in_self, start_in_self + length, strand=1),
+                _SimpleLocation(start_in_self, start_in_self + length, strand=1),
                 type=kwargs.get("type") or "read",
                 qualifiers={
                     "label": [kwargs.get("label") or label],
@@ -569,7 +577,7 @@ class SeqRecord(_SeqRecord):
         sfs = []
         for slc in self.seq.rarecodons(organism):
             cdn = self.seq._data[slc].decode("ASCII")
-            sfs.append(_SeqFeature(_FeatureLocation(slc.start, slc.stop),
+            sfs.append(_SeqFeature(_SimpleLocation(slc.start, slc.stop),
                                    type=f"rare_codon_{organism}",
                                    qualifiers={"label": [cdn]}))
         return sfs

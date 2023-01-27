@@ -3,8 +3,6 @@
 
 import pytest
 
-
-
 def test_seqfeature():
 	from pydna.readers import read
 	from pydna.seqfeature import SeqFeature
@@ -27,28 +25,6 @@ def test_seqfeature():
 	nf.qualifiers = OrderedDict()
 
 	assert f.__dict__ == nf.__dict__
-
-	featurelist = f.unfold()
-
-
-
-	result       = [SeqFeature(FeatureLocation(ExactPosition(0),
-		                                       ExactPosition(41),
-		                                       strand=1),
-		                       type='CDS'),
-		            SeqFeature(FeatureLocation(ExactPosition(147),
-		                                       ExactPosition(313),
-		                                       strand=1),
-		                       type='CDS'),
-		            SeqFeature(FeatureLocation(ExactPosition(673),
-		                                       ExactPosition(7267),
-		                                       strand=1),
-		                       type='CDS')]
-
-
-	for fa, fb in zip(featurelist,result):
-		assert fa.__dict__ == fb.__dict__
-
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
 from Bio.SeqFeature import ExactPosition as _ExactPosition
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.utils import rc as _rc
 from pydna.utils import memorize as _memorize
@@ -474,10 +474,10 @@ class Assembly(object, metaclass=_Memoize):
                         elif f.location.end > len(ct):
                             f.location = _CompoundLocation(
                                 (
-                                    _FeatureLocation(
+                                    _SimpleLocation(
                                         f.location.start, _ExactPosition(len(ct))
                                     ),
-                                    _FeatureLocation(
+                                    _SimpleLocation(
                                         _ExactPosition(0), f.location.end - len(ct)
                                     ),
                                 )

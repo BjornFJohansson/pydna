@@ -76,7 +76,7 @@ class Editor:
                 except KeyError:
                     qf["label"] = ["feat{}".format(len(feature))]
             if not "ApEinfo_fwdcolor" in qf:
-                qf["ApEinfo_fwdcolor"] = "#ddfeff"
+                qf["ApEinfo_fwdcolor"] = "#ffff49"
             if not "ApEinfo_revcolor" in qf:
                 qf["ApEinfo_revcolor"] = "#ffe6cc"
 

@@ -22,7 +22,7 @@ from pydna.primer import Primer as _Primer
 from pydna.seqrecord import SeqRecord as _SeqRecord
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.seqfeature import SeqFeature as _SeqFeature
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.seq import Seq as _Seq
 import itertools as _itertools
@@ -270,7 +270,7 @@ class Anneal(object, metaclass=_Memoize):
                 end = fp.position
                 self.template.features.append(
                     _SeqFeature(
-                        _FeatureLocation(start, end, strand=1),
+                        _SimpleLocation(start, end, strand=1),
                         type="primer_bind",
                         qualifiers={
                             "label": [fp.name],
@@ -285,8 +285,8 @@ class Anneal(object, metaclass=_Memoize):
                 sf = _SeqFeature(
                     _CompoundLocation(
                         [
-                            _FeatureLocation(start, len(self.template)),
-                            _FeatureLocation(0, end),
+                            _SimpleLocation(start, len(self.template)),
+                            _SimpleLocation(0, end),
                         ]
                     ),
                     type="primer_bind",
@@ -305,7 +305,7 @@ class Anneal(object, metaclass=_Memoize):
                 end = rp.position + rp._fp
                 self.template.features.append(
                     _SeqFeature(
-                        _FeatureLocation(start, end, strand=-1),
+                        _SimpleLocation(start, end, strand=-1),
                         type="primer_bind",
                         qualifiers={
                             "label": [rp.name],
@@ -321,10 +321,10 @@ class Anneal(object, metaclass=_Memoize):
                     _SeqFeature(
                         _CompoundLocation(
                             [
-                                _FeatureLocation(0,
+                                _SimpleLocation(0,
                                                  end,
                                                  strand=-1),
-                                _FeatureLocation(start,
+                                _SimpleLocation(start,
                                                  len(self.template),
                                                  strand=-1),
                             ],
@@ -352,7 +352,7 @@ class Anneal(object, metaclass=_Memoize):
                     for f in tmpl.features:
                         for x, y in zip(f.location.parts, f.location.parts[1:]):
                             if x.end == y.start + len(self.template):
-                                f.location = _FeatureLocation(
+                                f.location = _SimpleLocation(
                                     x.start,
                                     y.end + len(self.template),
                                     strand=f.location.strand,
@@ -377,15 +377,15 @@ class Anneal(object, metaclass=_Memoize):
                     + _Dseqrecord(rp.tail).reverse_complement()
                 )
 
-                full_tmpl_features = [
+                full_tmpl_Simples = [
                     f
                     for f in tmpl.features
                     if f.location.start == 0 and f.location.end == len(tmpl)
                 ]
 
                 new_identifier = ""
-                if full_tmpl_features:
-                    ft = full_tmpl_features[0]
+                if full_tmpl_Simples:
+                    ft = full_tmpl_Simples[0]
                     if "label" in ft.qualifiers:
                         new_identifier = " ".join(ft.qualifiers["label"])
                     elif "note" in ft.qualifiers:

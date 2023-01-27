@@ -18,11 +18,12 @@ from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
 from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
+from pydna.utils import shift_location as _shift_location
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from pydna.seqfeature import SeqFeature as _SeqFeature
 from Bio import SeqIO
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from pydna.seqrecord import SeqRecord as _SeqRecord
 from Bio.Seq import translate as _translate
 from pydna.utils import identifier_from_string as _identifier_from_string
@@ -291,6 +292,66 @@ class Dseqrecord(_SeqRecord):
         """
         return super().extract_feature(n)
 
+    def add_feature(self,
+                    x=None,
+                    y=None,
+                    seq=None,
+                    type_="misc",
+                    strand=1, *args, **kwargs):
+        """Add a feature of type misc to the feature list of the sequence.
+
+        Parameters
+        ----------
+        x  : int
+            Indicates start of the feature
+        y  : int
+            Indicates end of the feature
+
+        Examples
+        --------
+        >>> from pydna.seqrecord import SeqRecord
+        >>> a=SeqRecord("atgtaa")
+        >>> a.features
+        []
+        >>> a.add_feature(2,4)
+        >>> a.features
+        [SeqFeature(SimpleLocation(ExactPosition(2),
+                                   ExactPosition(4),
+                                   strand=1),
+                    type='misc',
+                    qualifiers=...)]
+        """
+        if x and y and self.circular and x > y:
+            pass
+        else:
+            super().add_feature(x,
+                                y,
+                                seq,
+                                type_,
+                                strand=1,
+                                *args, **kwargs)
+            return
+
+        qualifiers = {}
+        qualifiers.update(kwargs)
+
+        location = _CompoundLocation(
+                    (_SimpleLocation(x, self.seq.length, strand=strand),
+                     _SimpleLocation(0, y, strand=strand)))
+
+        sf = _SeqFeature(location,
+                         type=type_,
+                         qualifiers=qualifiers)
+
+        if "label" not in qualifiers:
+            qualifiers["label"] = [f"ft{len(location)}"]
+
+        if sf.extract(self).isorf():
+            qualifiers["label"] = [f"orf{len(location)}"]
+
+        self.features.append(sf)
+
+
     def useguid(self):
         """Url safe SEGUID for the sequence.
 
@@ -394,15 +455,15 @@ class Dseqrecord(_SeqRecord):
             elif five_prime[0] == "3'":
                 fn.location = fn.location + (-self.seq.ovhg)
             if fn.location.start < 0:
-                loc1 = _FeatureLocation(len(new) + fn.location.start,
+                loc1 = _SimpleLocation(len(new) + fn.location.start,
                                         len(new), strand=fn.strand)
-                loc2 = _FeatureLocation(0, fn.location.end, strand=fn.strand)
+                loc2 = _SimpleLocation(0, fn.location.end, strand=fn.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             if fn.location.end > len(new):
-                loc1 = _FeatureLocation(fn.location.start,
+                loc1 = _SimpleLocation(fn.location.start,
                                         len(new), strand=fn.strand)
-                loc2 = _FeatureLocation(0, fn.location.end - len(new),
+                loc2 = _SimpleLocation(0, fn.location.end - len(new),
                                         strand=fn.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
@@ -760,11 +821,11 @@ class Dseqrecord(_SeqRecord):
             if len(newmatches) > 1:
                 ms = []
                 for m in newmatches:
-                    ms.append(_FeatureLocation(m[0], m[0] + m[2]))
+                    ms.append(_SimpleLocation(m[0], m[0] + m[2]))
                 loc = _CompoundLocation(ms)
             else:
                 a, b, c = newmatches[0]
-                loc = _FeatureLocation(a, a + c)
+                loc = _SimpleLocation(a, a + c)
 
             self.features.append(
                 _SeqFeature(
@@ -1117,42 +1178,125 @@ class Dseqrecord(_SeqRecord):
         pyperclip.copy(self.format(sequence_format))
         return None
 
-    def figure(self, style="\x1b[48;5;11m"):
+    # def figure(self, style="\x1b[48;5;11m"):
+    #     """docstring."""
+    #     # https://github.com/pycontribs/ansi2html
+    #     for f in self.features:
+    #         if f.location.strand == 1:
+    #             # breakpoint()
+    #             offset = max(0, self.seq.ovhg)
+    #             start = f.location.start - offset
+    #             end = f.location.end - offset
+    #             if start<0:
+    #                 end += -start
+    #                 start = 0
+    #             watson = (f"{self.seq.watson[:start]}"
+    #                       f"{style}{self.seq.watson[start:end]}"
+    #                       f"\x1b[0m{self.seq.watson[end:]}")
+    #             crick = self.seq.crick[::-1]
+    #         else:
+    #             offset = min(self.seq.ovhg, 0)
+    #             start = f.location.start + offset
+    #             end = f.location.end + offset
+    #             watson = self.seq.watson
+    #             crick = self.seq.crick[::-1]
+    #             crick = (f"{crick[:start]}"
+    #                      f"{style}{crick[start:end]}"
+    #                      f"\x1b[0m{crick[end:]}")
+    #         break
+    #     else:
+    #         offset = self.seq.ovhg
+    #         watson = self.seq.watson
+    #         crick = self.seq.crick[::-1]
+    #     topology = {True: '-', False: 'o'}[self.linear]
+    #     result = (f"{self.__class__.__name__}({topology}{len(self)})\n"
+    #               f"{self.seq.ovhg * ' '}{watson}\n"
+    #               f"{-self.seq.ovhg * ' '}{crick}")
+    #     return _pretty_str(result)
+
+
+    # def figure(self, feature=0, highlight="\x1b[48;5;11m", plain="\x1b[0m"):
+    #     """docstring."""
+
+    #     feature = self.features[feature] if self.features else None
+
+    #     w = f"{self.seq.ovhg*chr(32)}{self.seq.watson}"
+    #     c = f"{-self.seq.ovhg*chr(32)}{self.seq.crick[::-1]}"
+
+    #     if feature:
+    #         featurelocation = feature.location
+    #     else:
+    #         featurelocation = _SimpleLocation(0, 0, 1)
+
+    #     if featurelocation.strand == 1:
+    #         s1, s2 = w, c
+    #     else:
+    #         s1, s2 = c, w
+
+    #     wfe = [f"{highlight}{s1[part.start:part.end]}{plain}"
+    #            for part in featurelocation.parts]
+
+    #     wfe.append("")
+
+    #     wof = [s1[0:featurelocation.start]]
+    #     for f, s in zip(featurelocation.parts,
+    #                     featurelocation.parts[1:]):
+    #         wof.append(s1[f.end:s.start])
+    #     wof.append(s1[featurelocation.end:len(self)])
+
+    #     topology = {True: '-', False: 'o'}[self.linear]
+    #     result = f"{self.__class__.__name__}({topology}{len(self)})\n"
+
+    #     s1 = "".join(f+s for f, s in zip(wof, wfe))
+
+    #     if featurelocation.strand == 1:
+    #         result += f"{s1}\n{s2}"
+    #     else:
+    #         result += f"{s2}\n{s1}"
+    #     return _pretty_str(result)
+
+    def figure(self, feature=0, highlight="\x1b[48;5;11m", plain="\x1b[0m"):
         """docstring."""
-        # https://github.com/pycontribs/ansi2html
-        for f in self.features:
-            if f.location.strand == 1:
-                offset = max(0, self.seq.ovhg)
-                start = f.location.start - offset
-                end = f.location.end - offset
-                watson = (f"{self.seq.watson[:start]}"
-                          f"{style}{self.seq.watson[start:end]}"
-                          f"\x1b[0m{self.seq.watson[end:]}")
-                crick = self.seq.crick[::-1]
-            else:
-                offset = min(self.seq.ovhg, 0)
-                start = f.location.start + offset
-                end = f.location.end + offset
-                watson = self.seq.watson
-                crick = self.seq.crick[::-1]
-                crick = (f"{crick[:start]}"
-                         f"{style}{crick[start:end]}"
-                         f"\x1b[0m{crick[end:]}")
-            break
+
+        feature = self.features[feature] if self.features else None
+
+        ovhg = self.seq.ovhg+len(self.seq.watson)-len(self.seq.crick)
+
+        w = f"{self.seq.ovhg*chr(32)}{self.seq.watson}{-ovhg*chr(32)}"
+        c = f"{-self.seq.ovhg*chr(32)}{self.seq.crick[::-1]}{ovhg*chr(32)}"
+
+        if feature:
+            featurelocation = feature.location
         else:
-            offset = self.seq.ovhg
-            watson = self.seq.watson
-            crick = self.seq.crick
+            featurelocation = _SimpleLocation(0, 0, 1)
+
+        if featurelocation.strand == 1:
+            s1, s2 = w, c
+        else:
+            s1, s2 = c, w
+
+        wfe = [f"{highlight}{s1[part.start:part.end]}{plain}"
+               for part in featurelocation.parts]
+
+        wfe.append("")
+
+        wof = [s1[0:featurelocation.start]]
+        for f, s in zip(featurelocation.parts,
+                        featurelocation.parts[1:]):
+            wof.append(s1[f.end:s.start])
+        wof.append(s1[featurelocation.end:len(self)])
+
         topology = {True: '-', False: 'o'}[self.linear]
-        result = (f"{self.__class__.__name__}({topology}{len(self)})\n"
-                  f"{self.seq.ovhg * ' '}{watson}\n"
-                  f"{-self.seq.ovhg * ' '}{crick}")
+        result = f"{self.__class__.__name__}({topology}{len(self)})\n"
+
+        s1 = "".join(f+s for f, s in zip(wof, wfe))
+
+        if featurelocation.strand == 1:
+            result += f"{s1}\n{s2}"
+        else:
+            result += f"{s2}\n{s1}"
         return _pretty_str(result)
 
-        # from ansi2html import Ansi2HTMLConverter
-        # conv = Ansi2HTMLConverter()
-        # ansi = self.figure()
-        # html = conv.convert(ansi)
 
     def shifted(self, shift):
         """Returns a circular Dseqrecord with a new origin <shift>.
@@ -1199,99 +1343,19 @@ class Dseqrecord(_SeqRecord):
 
         """
         if self.linear:
-            raise TypeError(
-                "Sequence is linear, origin can only be shifted for circular sequences.\n"
-            )
-
+            raise TypeError("Sequence is linear, origin can only be "
+                            "shifted for circular sequences.\n")
         ln = len(self)
-
         if not shift % ln:
             return self  # shift is a multiple of ln or 0
         else:
             shift %= ln  # 0<=shift<=ln
-
         newseq = (self.seq[shift:] + self.seq[:shift]).looped()
-        shift = ln - shift
-        newfeatures = []
-        for feature in self.features:
-            shiftedparts = [featurelocation + shift
-                            for featurelocation in feature.location.parts]
-            zero_length_parts = [
-                featurelocation
-                for featurelocation in shiftedparts
-                if featurelocation.start == featurelocation.end
-            ]
-            newparts = []
-            for location in shiftedparts:
-                newstart = location.start % ln
-                newend = location.end % ln
-                if newstart < newend:
-                    newparts.append(
-                        _FeatureLocation(
-                            newstart,
-                            newend,
-                            location.strand,
-                            location.ref,
-                            location.ref_db,
-                        )
-                    )
-                elif newstart > newend:
-                    if location.strand == 1:
-                        newparts.extend(
-                            [
-                                _FeatureLocation(
-                                    newstart,
-                                    ln,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                                _FeatureLocation(
-                                    0,
-                                    newend,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                            ]
-                        )
-                    else:
-                        newparts.extend(
-                            [
-                                _FeatureLocation(
-                                    0,
-                                    newend,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                                _FeatureLocation(
-                                    newstart,
-                                    ln,
-                                    location.strand,
-                                    location.ref,
-                                    location.ref_db,
-                                ),
-                            ]
-                        )
-            p = next((p for p in newparts if p.end == shift), None)
-            s = next((p for p in newparts if p.start == shift), None)
-            if p and s:
-                newparts.remove(p)
-                newparts[newparts.index(s)] = _FeatureLocation(
-                    p.start, s.end, p.strand, p.ref, p.ref_db
-                )
-            newparts = [p for p in newparts if p]
-            newparts.extend(zero_length_parts)
-            if newparts:
-                newfeatures.append(
-                    _SeqFeature(
-                        location=sum(newparts),
-                        type=feature.type,
-                        id=feature.id,
-                        qualifiers=feature.qualifiers,
-                    )
-                )
+        newfeatures = _copy.deepcopy(self.features)
+        for feature in newfeatures:
+            feature.location = _shift_location(feature.location,
+                                               -shift,
+                                               ln)
         newfeatures.sort(key=_operator.attrgetter("location.start"))
         answer = _copy.copy(self)
         answer.features = newfeatures
@@ -1299,12 +1363,12 @@ class Dseqrecord(_SeqRecord):
         return answer
 
     def cut(self, *enzymes):
-        """Digest the Dseqrecord object with one or more restriction enzymes.
+        """Digest a Dseqrecord object with one or more restriction enzymes.
+
         returns a list of linear Dseqrecords. If there are no cuts, an empty
         list is returned.
 
         See also :func:`Dseq.cut`
-
         Parameters
         ----------
 
@@ -1335,32 +1399,47 @@ class Dseqrecord(_SeqRecord):
 
 
         """
+        from Bio.SeqFeature import SimpleLocation as _sl
+        from Bio.SeqFeature import CompoundLocation as _cl
+        from pydna.utils import shift_location
 
-        frags = self.seq.cut(enzymes)
+        features = _copy.deepcopy(self.features)
 
-        if not frags:
-            return ()
-
-        if self.linear:
-            shift = frags[0].pos
-            features = self.features
+        if self.circular:
+            try:
+                x, y, oh = self.seq._firstcut(*enzymes)
+            except ValueError:
+                return ()
+            dsr = _Dseq(self.seq.watson[x:] + self.seq.watson[:x],
+                        self.seq.crick[y:] + self.seq.crick[:y],
+                        oh)
+            newstart = min(x, (self.seq.length - y))
+            for f in features:
+                f.location = shift_location(f.location,
+                                            -newstart,
+                                            self.seq.length)
+                f.location, *rest = f.location.parts
+                for part in rest:
+                    if 0 in part:
+                        f.location._end = part.end + self.seq.length
+                    else:
+                        f.location += part
+            frags = dsr.cut(enzymes) or [dsr]
         else:
-            shift = frags[0].pos
-            features = self.shifted(shift).features
-            for fr in frags:         # FIXME
-                fr.pos -= shift      # FIXME
+            frags = self.seq.cut(enzymes)
+            if not frags:
+                return ()
         dsfs = []
         for fr in frags:
             dsf = Dseqrecord(fr, linear=True, n=self.n)
             start = fr.pos
             end = fr.pos + fr.length
-            dsf.features = [_copy.copy(fe)
+            dsf.features = [_copy.deepcopy(fe)
                             for fe in features
                             if start <= fe.location.start
                             and end >= fe.location.end]
-            for fe in dsf.features:
-                fe.location += - fr.pos #  (fr.pos - fe.location.start)
-                # breakpoint()
+            for feature in dsf.features:
+                feature.location += -start
             dsfs.append(dsf)
         return tuple(dsfs)
 

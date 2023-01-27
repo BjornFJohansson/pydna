@@ -17,7 +17,7 @@ The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
 from Bio.SeqFeature import ExactPosition as _ExactPosition
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.utils import rc as _rc
 from pydna.utils import memorize as _memorize
