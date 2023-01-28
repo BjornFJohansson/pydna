@@ -25,9 +25,18 @@ jobs:
       - name: 🐍 micromamba info
         shell: bash -l {0}
         run: micromamba info
+
       - name: 🐍 micromamba list
         shell: bash -l {0}
         run: micromamba list
+
+      - name: Git tag
+        shell: bash -l {0}
+        run: git describe --tags
+
+      - name: 🔩 Set version
+        shell: bash -l {0}
+        run: poetry dynamic-versioning
 
       - name: Git tag
         shell: bash -l {0}
