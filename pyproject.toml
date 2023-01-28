@@ -3,7 +3,7 @@ name = "pydna"
 dynamic = ["version"]
 [tool.poetry]
 name = "pydna"
-version = "5.1.0-a.7"
+version = "5.1a8.post1.dev0+2c03d20795"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
