@@ -26,5 +26,5 @@ requires = ["poetry-core",
             "setuptools_scm[toml]>=6.2"]
 build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.setuptools_scm]
-write_to = "pkg/_version.py"
+[tool.poetry-dynamic-versioning]
+enable = true
