@@ -1159,7 +1159,7 @@ ORIGIN
 def test_features_on_slice():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.seqfeature import SeqFeature
+    from Bio.SeqFeature import SeqFeature
     from Bio.SeqFeature import FeatureLocation
 
     dseq_record = Dseqrecord(Dseq("ACTCTTTCTCTCTCT", circular=True))

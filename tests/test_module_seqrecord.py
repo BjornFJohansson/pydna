@@ -123,7 +123,7 @@ def test_lcs():
     from pydna.dseqrecord import Dseqrecord
     from pydna.seqrecord import SeqRecord
 
-    from pydna.seqfeature import SeqFeature
+    from Bio.SeqFeature import SeqFeature
     from Bio.SeqFeature import FeatureLocation, ExactPosition
 
     s = SeqRecord(Seq("GGATCC"))

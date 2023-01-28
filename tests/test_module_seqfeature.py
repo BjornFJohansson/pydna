@@ -5,7 +5,7 @@ import pytest
 
 def test_seqfeature():
 	from pydna.readers import read
-	from pydna.seqfeature import SeqFeature
+	from Bio.SeqFeature import SeqFeature
 	from Bio.SeqFeature import CompoundLocation, FeatureLocation, ExactPosition
 
 	from collections import OrderedDict

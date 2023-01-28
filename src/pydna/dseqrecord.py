@@ -20,7 +20,7 @@ from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.utils import shift_location as _shift_location
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
-from pydna.seqfeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import SeqFeature as _SeqFeature
 from Bio import SeqIO
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
@@ -1177,9 +1177,19 @@ class Dseqrecord(_SeqRecord):
         """docstring."""
         return tuple(Dseqrecord(s) for s in self.seq.orfs(minsize=minsize))
 
-    def copy_to_clipboard(self, sequence_format="gb"):
+    def _copy_to_clipboard(self, sequence_format):
         """docstring."""
         pyperclip.copy(self.format(sequence_format))
+        return None
+
+    def copy_gb_to_clipboard(self):
+        """docstring."""
+        self._copy_to_clipboard("gb")
+        return None
+
+    def copy_fasta_to_clipboard(self):
+        """docstring."""
+        self._copy_to_clipboard("fasta")
         return None
 
     def figure(self, feature=0, highlight="\x1b[48;5;11m", plain="\x1b[0m"):

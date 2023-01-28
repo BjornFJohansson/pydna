@@ -296,6 +296,8 @@ class Dseq(_Seq):
 
     """
 
+    trunc = 30
+
     def __init__(self,
                  watson,
                  crick=None,
@@ -645,11 +647,11 @@ class Dseq(_Seq):
             same = False
         return same
 
-    def __repr__(self, trunc=30):
+    def __repr__(self):
         """Returns a representation of the sequence, truncated if
         longer than 30 bp"""
 
-        if len(self) > trunc:
+        if len(self) > Dseq.trunc:
 
             if self._ovhg > 0:
                 d = self.crick[-self._ovhg:][::-1]

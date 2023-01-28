@@ -15,7 +15,7 @@ nicer output in the IPython shell.
 """
 
 
-from pydna.seqfeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
 # from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings

@@ -21,7 +21,7 @@ from pydna.amplicon import Amplicon as _Amplicon
 from pydna.primer import Primer as _Primer
 from pydna.seqrecord import SeqRecord as _SeqRecord
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from pydna.seqfeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import SeqFeature as _SeqFeature
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.seq import Seq as _Seq
@@ -377,15 +377,15 @@ class Anneal(object, metaclass=_Memoize):
                     + _Dseqrecord(rp.tail).reverse_complement()
                 )
 
-                full_tmpl_Simples = [
+                full_tmpl_features = [
                     f
                     for f in tmpl.features
                     if f.location.start == 0 and f.location.end == len(tmpl)
                 ]
 
                 new_identifier = ""
-                if full_tmpl_Simples:
-                    ft = full_tmpl_Simples[0]
+                if full_tmpl_features:
+                    ft = full_tmpl_features[0]
                     if "label" in ft.qualifiers:
                         new_identifier = " ".join(ft.qualifiers["label"])
                     elif "note" in ft.qualifiers:
