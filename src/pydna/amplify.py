@@ -290,7 +290,6 @@ class Anneal(object, metaclass=_Memoize):
                         ]
                     ),
                     type="primer_bind",
-                    location_operator="join",
                     qualifiers={
                         "label": [fp.name],
                         "ApEinfo_fwdcolor": ["#baffa3"],
@@ -330,7 +329,6 @@ class Anneal(object, metaclass=_Memoize):
                             ],
                         ),
                         type="primer_bind",
-                        location_operator="join",
                         qualifiers={"label": [rp.name]},
                     )
                 )

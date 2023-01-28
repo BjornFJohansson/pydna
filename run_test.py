@@ -18,7 +18,6 @@ import pytest
 
 def main():
     """docstring."""
-    arg = sys.argv[-1] if len(sys.argv) > 1 else ""
 
     os.environ["pydna_data_dir"] = tempfile.mkdtemp(
         prefix="pydna_data_dir_")
@@ -31,8 +30,43 @@ def main():
 
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
+    # args = [
+    #     f"src/{arg}",  # doctestdir
+    #     "--cov=pydna",
+    #     "--cov-append",
+    #     "--cov-report=html",
+    #     "--cov-report=xml",
+    #     "--capture=no",
+    #     "--durations=10",
+    #     "--import-mode=importlib",
+    #     "--nbval",
+    #     "--current-env",
+    #     "--doctest-modules",
+    #     "--capture=no",
+    #     "-vvv",
+    # ]
+
+    # result_suite_src = pytest.main(args)
+
+    # args = [
+    #     f"tests/{arg}",  # test suite
+    #     "--cov=pydna",
+    #     "--cov-append",
+    #     "--cov-report=html",
+    #     "--cov-report=xml",
+    #     "--capture=no",
+    #     "--durations=10",
+    #     "--import-mode=importlib",
+    #     "--nbval",
+    #     "--current-env",
+    #     "--doctest-modules",
+    #     "--capture=no",
+    #     "-vvv",
+    # ]
+
     args = [
-        f"src/{arg}",  # doctestdir
+        "src",
+        "tests",
         "--cov=pydna",
         "--cov-append",
         "--cov-report=html",
@@ -44,30 +78,10 @@ def main():
         "--current-env",
         "--doctest-modules",
         "--capture=no",
-        "-vvv",
+        # "-vvv",
     ]
 
-    result_suite_src = pytest.main(args)
-
-    args = [
-        f"tests/{arg}",  # test suite
-        "--cov=pydna",
-        "--cov-append",
-        "--cov-report=html",
-        "--cov-report=xml",
-        "--capture=no",
-        "--durations=10",
-        "--import-mode=importlib",
-        "--nbval",
-        "--current-env",
-        "--doctest-modules",
-        "--capture=no",
-        "-vvv",
-    ]
-
-    result_suite_tests = pytest.main(args)
-
-    return int(result_suite_tests or result_suite_src)
+    return int(pytest.main(args))
 
 
 if __name__ == "__main__":

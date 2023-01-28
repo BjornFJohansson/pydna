@@ -359,6 +359,10 @@ These are triggered by publishing a github release manually from the github inte
 
 	poetry build # run this command in the root directory where the pyproject.toml file is located
 
+
+Pydna uses the poetry plugin []()
+
+
 	twine upload dist/pydna-5.1a6-py3-none-any.whl  # The exact name depends on the version set as git tagged
 
 

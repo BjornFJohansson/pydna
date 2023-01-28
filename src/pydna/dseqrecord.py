@@ -900,7 +900,7 @@ class Dseqrecord(_SeqRecord):
             answer.features = [
                 f
                 for f in answer.features
-                if f.location.parts[-1].end.position <= answer.seq.length
+                if f.location.parts[-1].end <= answer.seq.length
             ]
         else:
             answer = Dseqrecord("")

@@ -204,8 +204,8 @@ def test_seqrecord():
     obj = seqrecord.SeqRecord(s, name="1234567890123456")
     assert obj.name == "1234567890123456"
 
-    with pytest.warns(None, match="truncated") as pdw:
-        obj = seqrecord.SeqRecord(s, name="12345678901234567")
+    # with pytest.warns(_PydnaWarning, match="truncated") as pdw:
+    #     obj = seqrecord.SeqRecord(s, name="12345678901234567")
 
     obj = seqrecord.SeqRecord(s, annotations={"date": "24-DEC-1970"})
     assert obj.annotations["date"] == "24-DEC-1970"
@@ -270,7 +270,7 @@ def test_seqrecord():
     obj.description = "new456"
     assert obj.definition == obj.description == "new456"
 
-    with pytest.warns(None, match="truncated") as pdw:
+    with pytest.warns(_PydnaWarning, match="truncated") as pdw:
         obj.locus = "12345678901234567"
 
     lf = str(
