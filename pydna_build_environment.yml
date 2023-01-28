@@ -16,10 +16,11 @@ dependencies:
 - regex
 
 - mamba
-- setuptools
+- poetry
+- pip:
+    - poetry-dynamic-versioning
 - build
 - twine
-- pip
 - anaconda-client
 - conda-build
 - conda-verify

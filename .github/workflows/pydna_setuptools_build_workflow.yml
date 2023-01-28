@@ -35,7 +35,7 @@ jobs:
 
       - name: 🔩 Build pypi wheel package
         shell: bash -l {0}
-        run: python -m build
+        run: poetry build
 
       - name: 🔼 Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
