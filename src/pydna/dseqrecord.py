@@ -1258,44 +1258,49 @@ class Dseqrecord(_SeqRecord):
     def figure(self, feature=0, highlight="\x1b[48;5;11m", plain="\x1b[0m"):
         """docstring."""
 
-        feature = self.features[feature] if self.features else None
+        if self.features:
+            f = self.features[feature]
+            locations = sorted(self.features[feature].location.parts,
+                               key=_SimpleLocation.start.fget)
+            strand = f.strand
+        else:
+            locations = [_SimpleLocation(0, 0, 1)]
+            strand = 1
 
         ovhg = self.seq.ovhg+len(self.seq.watson)-len(self.seq.crick)
 
         w = f"{self.seq.ovhg*chr(32)}{self.seq.watson}{-ovhg*chr(32)}"
         c = f"{-self.seq.ovhg*chr(32)}{self.seq.crick[::-1]}{ovhg*chr(32)}"
 
-        if feature:
-            featurelocation = feature.location
-        else:
-            featurelocation = _SimpleLocation(0, 0, 1)
-
-        if featurelocation.strand == 1:
+        if strand == 1:
             s1, s2 = w, c
         else:
             s1, s2 = c, w
 
         wfe = [f"{highlight}{s1[part.start:part.end]}{plain}"
-               for part in featurelocation.parts]
+               for part in locations]
 
         wfe.append("")
 
-        wof = [s1[0:featurelocation.start]]
-        for f, s in zip(featurelocation.parts,
-                        featurelocation.parts[1:]):
+        wof = [s1[0:locations[0].start]]
+        for f, s in zip(locations,
+                        locations[1:]):
             wof.append(s1[f.end:s.start])
-        wof.append(s1[featurelocation.end:len(self)])
+        wof.append(s1[locations[-1].end:len(self)])
 
         topology = {True: '-', False: 'o'}[self.linear]
         result = f"{self.__class__.__name__}({topology}{len(self)})\n"
 
         s1 = "".join(f+s for f, s in zip(wof, wfe))
 
-        if featurelocation.strand == 1:
+        if strand == 1:
             result += f"{s1}\n{s2}"
         else:
             result += f"{s2}\n{s1}"
         return _pretty_str(result)
+
+
+
 
 
     def shifted(self, shift):
