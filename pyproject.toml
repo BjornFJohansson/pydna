@@ -3,7 +3,7 @@ name = "pydna"
 dynamic = ["version"]
 [tool.poetry]
 name = "pydna"
-version = "5.1a8.post1.dev0+2c03d20795"
+version = "5.1.1a1"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
@@ -23,7 +23,7 @@ build-backend = "poetry_dynamic_versioning.backend"
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
-style = "semver"
+style = "pep440"
 [tool.poetry-dynamic-versioning.substitution]
 folders = [
   { path = "src"}
