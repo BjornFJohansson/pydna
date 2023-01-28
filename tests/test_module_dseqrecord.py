@@ -1603,14 +1603,11 @@ def test_figure():
     assert b25.extract_feature(0).seq == feat
 
 
-
-
-
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
-    from pydna.genbank import Genbank
     from pydna.readers import read
+    # from pydna.genbank import Genbank
     # gb = Genbank("bjornjobb@gmail.com")
     # puc19 = gb.nucleotide("M77789.2")
     # assert puc19.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"

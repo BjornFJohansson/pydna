@@ -916,6 +916,7 @@ class Dseqrecord(_SeqRecord):
         return answer
 
     def __eq__(self, other):
+        """docstring."""
         try:
             if self.seq == other.seq and str(self.__dict__) == str(other.__dict__):
                 return True
@@ -924,11 +925,14 @@ class Dseqrecord(_SeqRecord):
         return False
 
     def __ne__(self, other):
+        """docstring."""
         return not self.__eq__(other)
 
     def __hash__(self):
-        """__hash__ must be based on __eq__"""
-        return hash((str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
+        """__hash__ must be based on __eq__."""
+        return hash(
+            (str(self.seq).lower(), str(tuple(sorted(self.__dict__.items()))))
+            )
 
     def linearize(self, *enzymes):
         """Similar to :func:`cut.
@@ -1178,86 +1182,8 @@ class Dseqrecord(_SeqRecord):
         pyperclip.copy(self.format(sequence_format))
         return None
 
-    # def figure(self, style="\x1b[48;5;11m"):
-    #     """docstring."""
-    #     # https://github.com/pycontribs/ansi2html
-    #     for f in self.features:
-    #         if f.location.strand == 1:
-    #             # breakpoint()
-    #             offset = max(0, self.seq.ovhg)
-    #             start = f.location.start - offset
-    #             end = f.location.end - offset
-    #             if start<0:
-    #                 end += -start
-    #                 start = 0
-    #             watson = (f"{self.seq.watson[:start]}"
-    #                       f"{style}{self.seq.watson[start:end]}"
-    #                       f"\x1b[0m{self.seq.watson[end:]}")
-    #             crick = self.seq.crick[::-1]
-    #         else:
-    #             offset = min(self.seq.ovhg, 0)
-    #             start = f.location.start + offset
-    #             end = f.location.end + offset
-    #             watson = self.seq.watson
-    #             crick = self.seq.crick[::-1]
-    #             crick = (f"{crick[:start]}"
-    #                      f"{style}{crick[start:end]}"
-    #                      f"\x1b[0m{crick[end:]}")
-    #         break
-    #     else:
-    #         offset = self.seq.ovhg
-    #         watson = self.seq.watson
-    #         crick = self.seq.crick[::-1]
-    #     topology = {True: '-', False: 'o'}[self.linear]
-    #     result = (f"{self.__class__.__name__}({topology}{len(self)})\n"
-    #               f"{self.seq.ovhg * ' '}{watson}\n"
-    #               f"{-self.seq.ovhg * ' '}{crick}")
-    #     return _pretty_str(result)
-
-
-    # def figure(self, feature=0, highlight="\x1b[48;5;11m", plain="\x1b[0m"):
-    #     """docstring."""
-
-    #     feature = self.features[feature] if self.features else None
-
-    #     w = f"{self.seq.ovhg*chr(32)}{self.seq.watson}"
-    #     c = f"{-self.seq.ovhg*chr(32)}{self.seq.crick[::-1]}"
-
-    #     if feature:
-    #         featurelocation = feature.location
-    #     else:
-    #         featurelocation = _SimpleLocation(0, 0, 1)
-
-    #     if featurelocation.strand == 1:
-    #         s1, s2 = w, c
-    #     else:
-    #         s1, s2 = c, w
-
-    #     wfe = [f"{highlight}{s1[part.start:part.end]}{plain}"
-    #            for part in featurelocation.parts]
-
-    #     wfe.append("")
-
-    #     wof = [s1[0:featurelocation.start]]
-    #     for f, s in zip(featurelocation.parts,
-    #                     featurelocation.parts[1:]):
-    #         wof.append(s1[f.end:s.start])
-    #     wof.append(s1[featurelocation.end:len(self)])
-
-    #     topology = {True: '-', False: 'o'}[self.linear]
-    #     result = f"{self.__class__.__name__}({topology}{len(self)})\n"
-
-    #     s1 = "".join(f+s for f, s in zip(wof, wfe))
-
-    #     if featurelocation.strand == 1:
-    #         result += f"{s1}\n{s2}"
-    #     else:
-    #         result += f"{s2}\n{s1}"
-    #     return _pretty_str(result)
-
     def figure(self, feature=0, highlight="\x1b[48;5;11m", plain="\x1b[0m"):
         """docstring."""
-
         if self.features:
             f = self.features[feature]
             locations = sorted(self.features[feature].location.parts,
@@ -1299,12 +1225,9 @@ class Dseqrecord(_SeqRecord):
             result += f"{s2}\n{s1}"
         return _pretty_str(result)
 
-
-
-
-
     def shifted(self, shift):
-        """Returns a circular Dseqrecord with a new origin <shift>.
+        """Circular Dseqrecord with a new origin <shift>.
+
         This only works on circular Dseqrecords. If we consider the following
         circular sequence:
 
@@ -1329,7 +1252,6 @@ class Dseqrecord(_SeqRecord):
 
         Examples
         --------
-
         >>> from pydna.dseqrecord import Dseqrecord
         >>> a=Dseqrecord("aaat",circular=True)
         >>> a
