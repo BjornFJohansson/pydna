@@ -367,8 +367,9 @@ These are triggered by publishing a github release manually from the github inte
 
 
 
+### History
 
-
+Pydna was made public in 2012 on [Google code](https://code.google.com/archive/p/pydna).
 
 
 :microbe:

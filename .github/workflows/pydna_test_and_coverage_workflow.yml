@@ -51,6 +51,10 @@ jobs:
         shell: bash -l {0}
         run: micromamba list
 
+      - name: 🔩 Set version
+        shell: bash -l {0}
+        run: poetry dynamic-versioning
+
       - name: 🔩 Install from source
         shell: bash -l {0}
         run: pip install --editable . --no-deps

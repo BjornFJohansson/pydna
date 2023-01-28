@@ -1,14 +1,13 @@
+[project]
+name = "pydna"
+dynamic = ["version"]
 [tool.poetry]
 name = "pydna"
-version = "0.0.0"
+version = "5.1.0-a.7"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
 readme = "README.md"
-
-[project]
-dynamic = ["version"]
-
 [tool.poetry.dependencies]
 python = "^3.7"
 appdirs = "^1.4.4"
@@ -17,14 +16,15 @@ networkx = "^2.8.8"
 prettytable = "^3.5.0"
 pyperclip = "^1.8.2"
 pyfiglet = "^0.8.post1"
-
-
 [build-system]
 requires = ["poetry-core",
-            "poetry-dynamic-versioning",
-            "setuptools>=45",
-            "setuptools_scm[toml]>=6.2"]
+            "poetry-dynamic-versioning"]
 build-backend = "poetry_dynamic_versioning.backend"
-
 [tool.poetry-dynamic-versioning]
 enable = true
+vcs = "git"
+style = "semver"
+[tool.poetry-dynamic-versioning.substitution]
+folders = [
+  { path = "src"}
+]
