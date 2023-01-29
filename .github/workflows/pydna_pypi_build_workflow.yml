@@ -45,7 +45,7 @@ jobs:
 
       - name: 🔩 Check version
         shell: bash -l {0}
-        run: poetry versioning
+        run: poetry version
 
       - name: Git tag
         shell: bash -l {0}
