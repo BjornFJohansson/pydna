@@ -149,7 +149,7 @@ __license__ = "BSD"
 __maintainer__ = "Björn Johansson"
 __email__ = "bjorn_johansson@bio.uminho.pt"
 __status__ = "Development"  # "Production" #"Prototype"
-__version__ = "5.1.1a1"
+__version__ = "0.0.0"
 
 # create config directory
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir",
