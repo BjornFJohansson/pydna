@@ -1,11 +1,10 @@
 name: pydna_build_environment
 channels:
 - conda-forge
-- defaults
 - bjornfjohansson
 
 dependencies:
-- python
+- python==3.11
 
 - appdirs
 - biopython==1.80
@@ -15,12 +14,9 @@ dependencies:
 - CAI
 - regex
 
-- mamba
+- pip
 - poetry
 - pip:
     - poetry-dynamic-versioning
-- build
-- twine
-- anaconda-client
+- mamba
 - conda-build
-- conda-verify
