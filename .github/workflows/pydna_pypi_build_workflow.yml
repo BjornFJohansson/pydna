@@ -37,7 +37,7 @@ jobs:
 
       - name: 🔩 Check version
         shell: bash -l {0}
-        run: poetry versioning
+        run: poetry version
 
       - name: 🔩 Set version
         shell: bash -l {0}
