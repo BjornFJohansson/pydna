@@ -8,7 +8,7 @@ build:
   script: python -m pip install . --no-deps
   noarch: python
 source:
-  git_url: .
+  path: .
 
 requirements:
     build:
