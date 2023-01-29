@@ -1,6 +1,23 @@
 [project]
 name = "pydna"
 dynamic = ["version"]
+description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
+authors = ["Björn F. Johansson<bjornjobb@gmail.com>"]
+readme = "README.md"
+classifiers=["Development Status :: 4 - Beta",
+             "Environment :: Console",
+             "Intended Audience :: Education",
+             "Intended Audience :: Developers",
+             "Intended Audience :: Science/Research",
+             "License :: OSI Approved :: BSD License",
+             "Operating System :: OS Independent",
+             "Programming Language :: Python :: 3.7",
+             "Programming Language :: Python :: 3.8",
+             "Programming Language :: Python :: 3.9",
+             "Programming Language :: Python :: 3.10",
+             "Programming Language :: Python :: 3.11",
+             "Topic :: Education",
+             "Topic :: Scientific/Engineering :: Bio-Informatics", ]
 [tool.poetry]
 name = "pydna"
 version = "0.0.0"

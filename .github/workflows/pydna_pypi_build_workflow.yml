@@ -1,4 +1,4 @@
-name: Setuptools Build for PyPI
+name: Build for PyPI
 on:
   release:
     types: [published]
@@ -22,6 +22,7 @@ jobs:
           environment-file: pydna_build_environment.yml
           environment-name: pydna_build_environment
           extra-specs: python=3.11
+
       - name: 🐍 micromamba info
         shell: bash -l {0}
         run: micromamba info
@@ -34,9 +35,17 @@ jobs:
         shell: bash -l {0}
         run: git describe --tags
 
+      - name: 🔩 Check version
+        shell: bash -l {0}
+        run: poetry versioning
+
       - name: 🔩 Set version
         shell: bash -l {0}
         run: poetry dynamic-versioning
+
+      - name: 🔩 Check version
+        shell: bash -l {0}
+        run: poetry versioning
 
       - name: Git tag
         shell: bash -l {0}

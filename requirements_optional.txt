@@ -1,9 +1,0 @@
-CAI>=1.0.3
-numpy>=1.23.5
-pillow>=9.2.0
-scipy>=1.9.3
-pyparsing>=3.0.9
-requests>=2.28.1
-ipython>=8.2.0
-pyqt>=5.0.0
-pyfiglet
