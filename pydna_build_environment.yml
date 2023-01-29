@@ -20,3 +20,4 @@ dependencies:
     - poetry-dynamic-versioning
 - mamba
 - conda-build
+- conda-verify
