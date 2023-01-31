@@ -20,13 +20,13 @@ classifiers=["Development Status :: 4 - Beta",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
 [tool.poetry]
 name = "pydna"
-version = "0.0.0"
+version = "5.2.0-a.6.post.1+cd0394247c"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
 readme = "README.md"
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 appdirs = "^1.4.4"
 biopython = "^1.80"
 networkx = "^2.8.8"
@@ -45,3 +45,5 @@ style = "semver"
 folders = [
   { path = "src"}
 ]
+[tool.poetry2conda]
+name = "some-name-env"

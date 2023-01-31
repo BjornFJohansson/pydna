@@ -9,30 +9,29 @@ build:
   noarch: python
 source:
   path: .
-
 requirements:
-    build:
-        - python
-        - pip
-        - poetry
-        - poetry-dynamic-versioning
+    host:
+    - python >=3.8
+    - pip
+    - poetry
+    - poetry-dynamic-versioning
     run:
-        - python
-        - appdirs>=1.4.4
-        - biopython>=1.80
-        - networkx>=2.6.3
-        - prettytable>=3.2.0  # todo replace with tabulate at some point ?
-        - pyperclip>=1.8.2
-        - pyfiglet>=0.8.post1
+    - python
+    - appdirs>=1.4.4
+    - biopython>=1.80
+    - networkx>=2.6.3
+    - prettytable>=3.2.0  # todo replace with tabulate at some point ?
+    - pyperclip>=1.8.2
+    - pyfiglet>=0.8.post1
 
-        - pyparsing>=2.4.7    # optional
-        - requests>=2.26.0    # optional
-        - scipy>=1.8.0        # optional
-        - matplotlib>=3.4.3   # optional
-        - pillow>=8.4.0       # optional
-        - CAI>=1.0.3          # optional
-        - pyqt>=5.0.0         # optional
-        - pyfiglet>=0.8.post1 # optional
+    - pyparsing>=2.4.7    # optional
+    - requests>=2.26.0    # optional
+    - scipy>=1.8.0        # optional
+    - matplotlib>=3.4.3   # optional
+    - pillow>=8.4.0       # optional
+    - CAI>=1.0.3          # optional
+    - pyqt>=5.0.0         # optional
+    - pyfiglet>=0.8.post1 # optional
 
 test:
   requires:
