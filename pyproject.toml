@@ -20,7 +20,7 @@ classifiers=["Development Status :: 4 - Beta",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
 [tool.poetry]
 name = "pydna"
-version = "5.2.0-a.7.post.1+7b89c318d6"
+version = "5.2.0-a.8"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
@@ -47,6 +47,7 @@ CAI = { version = "1.0.3", optional = true }
 gel = ["scipy", "matplotlib", "pillow"]
 download = ["pyparsing", "requests"]
 express = ["CAI"]
+test = ["pytest", "pytest-cov", "pytest-mock", "pytest-doctestplus", "coverage", "nbval", "requests-mock"]
 [build-system]
 requires = ["poetry-core",
             "poetry-dynamic-versioning"]
