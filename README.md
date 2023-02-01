@@ -197,56 +197,29 @@ The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blo
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Installation using conda
-
-The absolutely best way of installing and using pydna is to use the
-free [Anaconda](https://store.continuum.io/cshop/anaconda) or [Miniconda](http://conda.pydata.org/miniconda.html)
-python distributions.
-
-Anaconda is a large download (about 600-700 Mb) while Miniconda is about 70-80 Mb.
-
-Once Anaconda (or Miniconda) is installed, the conda package manager can be used to install pydna.
-
-Type the command below followed by return:
-
-    conda install -c conda-forge -c defaults -c BjornFJohansson pydna
-
-The command above pulls packages from the software channels `conda-forge` and `defaults`.
-The pydna package itself is present in the `BjornFJohansson` channel.
-
-This works on Windows, MacOSX and Linux, and installs all necessary and optional dependencies
-automatically (see below).
-
-The conda install command will install the latest version, even if this is an alpha version.
-
-Older versions of pydna are available from the [BjornFJohansson](https://anaconda.org/bjornfjohansson) package channel.
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
-
 ## Installation using pip
 
-The second best way of installing pydna is with pip, the
+Pip is included in recent Python versions and is the
 officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool.
-
-Pip is included in recent Python versions.
 
 Pip installs the minimal installation requirements automatically, but not the optional requirements (see below).
 
-    sudo pip install pydna --pre
+    pip install pydna
 
-Use the --pre switch to get the latest version of pydna.
+or use the --pre switch to get the latest version of pydna.
+
+    pip install pydna --pre
 
 ### Windows:
 
 You should be able to pip install pydna from the Windows terminal as biopython now can be installed with pip as well.
 
-    C:\> pip install pydna --pre
+    C:\> pip install pydna
 
 By default python and pip are not on the PATH. You can re-install Python and select this option during installation,
 or give the full path for pip. Try something like this, depending on where your copy of Python is installed:
 
-    C:\Python37\Scripts\pip install pydna --pre
-
+    C:\Python37\Scripts\pip install pydna
 
 ### Installing requirements
 
@@ -266,18 +239,6 @@ or
 
 	conda install --file requirements.txt
 
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
-
-## Installation from Source
-
-If you install from source, you need to install all dependencies separately (listed above).
-Download one of the source installers from the pypi site or from Github and extract the file.
-Open the pydna source code directory (containing the setup.py file) in
-terminal and type:
-
-    python setup.py install
-
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Source Code
@@ -292,7 +253,7 @@ Pydna versions before 1.0.0 were compatible with python 2.7 only.
 The list below is the minimal requirements for installing pydna.
 Biopython has c-extensions, but the other modules are pure python.
 
-- [Python 3.7, 3.8, 3.9, 3.10 or 3.11](http://www.python.org)
+- [Python 3.8, 3.9, 3.10 or 3.11](http://www.python.org)
 - [appdirs >= 1.3.0](https://pypi.python.org/pypi/appdirs)
 - [biopython >= 1.80](http://pypi.python.org/pypi/biopython)
 - [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
@@ -342,8 +303,6 @@ See the [change log](docs/CHANGELOG.md) for recent changes.
 There are three github actions associated with this package:
 
 - `pydna_test_and_coverage_workflow.yml`
-- `pydna_setuptools_build_workflow.yml`
-- `pydna_conda_build_workflow.yml`
 
 The `pydna_test_and_coverage_workflow.yml` is triggered on all pushed non-tagged commits.
 This workflow run tests, doctests and a series of Jupyter notebooks using pytest.
@@ -354,7 +313,7 @@ on Linux, Windows and macOS.
 These are triggered by publishing a github release manually from the github interface.
 
 
-## Building a setuptools package
+## Building a PyPI package
 
 
 	poetry build # run this command in the root directory where the pyproject.toml file is located
@@ -363,11 +322,7 @@ These are triggered by publishing a github release manually from the github inte
 Pydna uses the poetry plugin []()
 
 
-	twine upload dist/pydna-5.1a6-py3-none-any.whl  # The exact name depends on the version set as git tagged
 
-
-
-## Building a conda package
 
 
 

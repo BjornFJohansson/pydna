@@ -10,7 +10,7 @@ jobs:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 1
       - name: 🌰 Cache conda
         uses: actions/cache@v3
         with:
