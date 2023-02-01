@@ -7,13 +7,13 @@ def test_gc():
 
 
 def test_cai():
-    pytest.importorskip("CAI")
+    pytest.importorskip("cai2")
     from pydna.seq import Seq
     assert Seq("atgtaa").cai() == 1.0
 
 
 def test_rare_codons():
-    pytest.importorskip("CAI")
+    pytest.importorskip("cai2")
     from pydna.seq import Seq
     from pydna.codon import rare_codons
 

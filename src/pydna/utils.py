@@ -115,10 +115,11 @@ def smallest_rotation(s):
 
 
 def cai(seq: str,
-        organism: str = "sce"):
+        organism: str = "sce",
+        weights: dict = _weights):
     """docstring."""
-    from CAI import CAI as _CAI
-    return round(_CAI(seq.upper(), weights=_weights[organism]), 3)
+    from cai2 import CAI as _CAI
+    return round(_CAI(seq.upper(), weights=weights[organism]), 3)
 
 
 def rarecodons(seq: str,

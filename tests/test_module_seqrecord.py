@@ -336,7 +336,7 @@ def test_seqrecord():
 
 
 def test_cai():
-    pytest.importorskip("CAI")
+    pytest.importorskip("cai2")
     import pydna
     from pydna import seqrecord
     from pydna.seq import Seq
