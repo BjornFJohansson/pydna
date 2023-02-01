@@ -8,6 +8,7 @@
 """A DNA sequence widget."""
 
 import sys
+import os
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QGridLayout
@@ -16,7 +17,6 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QSize
-import os
 from multiprocessing import Process
 
 
