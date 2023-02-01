@@ -20,7 +20,7 @@ classifiers=["Development Status :: 4 - Beta",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
 [tool.poetry]
 name = "pydna"
-version = "5.2.0-a.9"
+version = "5.2.0-a.10"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
@@ -34,14 +34,12 @@ prettytable = ">=3.5.0"
 pyperclip = ">=1.8.2"
 pyfiglet = ">=0.8.post1"
 
-# scipy = { version = ">=1.8.0", optional = true }
-# matplotlib = { version = ">=3.4.3", optional = true }
-# pillow = { version = ">=8.4.0", optional = true }
-
-# pyparsing = { version = ">=2.4.7", optional = true }
-# requests = { version = ">=2.26.0", optional = true }
-
-# CAI = { version = ">=1.0.3", optional = true }
+scipy = { version = ">=1.8.0", optional = true }
+matplotlib = { version = ">=3.4.3", optional = true }
+pillow = { version = ">=8.4.0", optional = true }
+pyparsing = { version = ">=2.4.7", optional = true }
+requests = { version = ">=2.26.0", optional = true }
+CAI = { version = ">=1.0.3", optional = true }
 
 [tool.poetry.extras]
 gel = ["scipy", "matplotlib", "pillow"]
