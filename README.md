@@ -58,41 +58,7 @@ classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biop
 
 These classes make cut and paste cloning and PCR very simple:
 
-    >>> from pydna.dseq import Dseq
-    >>> seq = Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
-    >>> seq
-    Dseq(-9)
-    GGATCCAAA
-    CCTAGGTTT
-    >>> from Bio.Restriction import BamHI
-    >>> a,b = seq.cut(BamHI)
-    >>> a
-    Dseq(-5)
-    G
-    CCTAG
-    >>> b
-    Dseq(-8)
-    GATCCAAA
-        GTTT
-    >>> a+b
-    Dseq(-9)
-    GGATCCAAA
-    CCTAGGTTT
-    >>> b+a
-    Dseq(-13)
-    GATCCAAAG
-        GTTTCCTAG
-    >>> b+a+b
-    Dseq(-17)
-    GATCCAAAGGATCCAAA
-        GTTTCCTAGGTTT
-    >>> b+a+a
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "/usr/local/lib/python2.7/dist-packages/pydna/dsdna.py", line 217, in __add__
-        raise TypeError("sticky ends not compatible!")
-    TypeError: sticky ends not compatible!
-    >>>
+![example](https://raw.githubusercontent.com/bjornFJohansson/pydna/master/docs/docs/example.png)
 
 As the example above shows, pydna keeps track of sticky ends.
 
@@ -285,15 +251,16 @@ See the [releases](https://github.com/BjornFJohansson/pydna/releases) for change
 
 ## Automatic testing & Release process
 
-There are three github actions associated with this package:
+There are two github actions for this package:
 
 - `pydna_test_and_coverage_workflow.yml`
+- `pydna_pypi_build_workflow.yml`
 
-The `pydna_test_and_coverage_workflow.yml` is triggered on all pushed non-tagged commits.
-This workflow run tests, doctests and a series of Jupyter notebooks using pytest.
+The `pydna_test_and_coverage_workflow.yml` is triggered on all pushed commits for all branches.
+This workflow run tests, doctests and a series of Jupyter notebooks using pytest on Linux, Windows and macOS and all
+supported python versions.
 
-The two other workflows build a setuptools wheel and packages for different Python versions
-on Linux, Windows and macOS.
+The other workflow builds a PyPI packages using poetry on
 
 These are triggered by publishing a github release manually from the github interface.
 
