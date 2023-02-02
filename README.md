@@ -40,14 +40,14 @@ Pydna can formalize planning and sharing of cloning strategies and is especially
 DNA molecule constructions.
 
 
-To get started, we have compiled some [simple examples](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
+To get started, I have compiled some [simple examples](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
 For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
 
 
 
 
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 
 
@@ -58,14 +58,13 @@ classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biop
 
 These classes make cut and paste cloning and PCR very simple:
 
-![example](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/example.png)
+[![example](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/example.png)](https://github.com/BjornFJohansson/pydna/blob/5b53ffc9ff7ba24485d01bc967714d85f17eec9c/docs/example.ipynb)
 
-As the example above shows, pydna keeps track of sticky ends.
+As the example above shows, pydna keeps track of sticky ends and features.
 
-Notably, homologous recombination and Gibson assembly between linear DNA fragments
-can be easily simulated without any additional information besides the primary sequence of the fragments.
+Notably, pydna can simulate homologous recombination and Gibson assembly.
 
-Gel electrophoresis of DNA fragments can be simulated using the included gel module
+Gel electrophoresis of DNA fragments can be simulated using the included gel module:
 
 
     Jupyter QtConsole 4.7.7
@@ -84,7 +83,7 @@ Gel electrophoresis of DNA fragments can be simulated using the included gel mod
 
 
 
-![](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/scripts/pydna_gel.png)
+![gel](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/scripts/pydna_gel.png)
 
 
 Pydna can be very compact. The eleven lines of Python below simulates the construction of a recombinant plasmid.
@@ -112,12 +111,9 @@ python. This is helpful to generate examples for teaching purposes.
 Read the documentation (below) or the [cookbook](https://github.com/BjornFJohansson/pydna/blob/master/docs/cookbook/cookbook.ipynb) with example files
 for further information.
 
-Please post a message in the [google group](https://groups.google.com/d/forum/pydna)
-for pydna if you need help or have problems, questions or comments :sos:.
+Feedback & suggestions are very welcome! Please post a message in the [google group](https://groups.google.com/d/forum/pydna) for pydna if you need help or have problems, questions or comments :sos:.
 
-Feedback & suggestions are very welcome!
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 
 ## Who is using pydna?
@@ -139,7 +135,7 @@ In Cold Spring Harbor Laboratory (p. 2021.01.17.427048). [DOI](https://doi.org/1
 
 and other projects on [github](https://github.com/BjornFJohansson/pydna/network/dependents?package_id=UGFja2FnZS01MjQ2MjYzNQ%3D%3D)
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
@@ -153,7 +149,7 @@ Pereira, F., Azevedo, F., Carvalho, Â., Ribeiro, G. F., Budde, M. W., & Johanss
 
 When using pydna.
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Documentation
 
@@ -162,7 +158,7 @@ in the code and displayed at readthedocs [![Documentation Status](https://readth
 
 The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Installation using pip
 
@@ -193,13 +189,13 @@ By default python and pip are not on the PATH. You can re-install Python and sel
 
     C:\Python37\Scripts\pip install pydna
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Source Code
 
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octocat:.
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Minimal installation dependencies
 
