@@ -20,7 +20,7 @@ classifiers=["Development Status :: 4 - Beta",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
 [tool.poetry]
 name = "pydna"
-version = "5.2.0-a.14"
+version = "5.2.0-a.15"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
