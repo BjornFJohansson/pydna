@@ -3,6 +3,12 @@ channels:
 - conda-forge
 dependencies:
 - python==3.11
+- appdirs
+- biopython>=1.80,<2.0
+- networkx
+- prettytable
+- pyparsing
+- bjornfjohansson::CAI
 - poetry
 - pip
 - pip:

@@ -3,6 +3,75 @@
 
 import pytest
 
+def test_cut1():
+    from pydna.dseq import Dseq
+
+    """
+    Acc65I.search(_Seq("GGTACC"))
+    Out  [11]: [2]
+
+
+        012345
+        GGTACC
+        CCATGG
+
+
+    KpnI.search(_Seq("GGTACC"))
+    Out  [12]: [6]
+    """
+
+    from Bio.Restriction import Acc65I, Bsp120I, KpnI, ApaI, TaiI, MaeII
+
+
+    """
+
+
+    |--||-------||-------||----|
+    aaaGGTACCcccGGGCCCgggACGTaaa
+    tttCCATGGgggCCCGGGcccTGCAttt
+    |------||-------||-----||--|
+
+    aaaG         GGCCCgggA
+    tttCCATG         GcccTGC         Acc65I Bsp120I MaeII
+
+        GTACCcccG         CGTaaa
+            GgggCCCGG       Attt
+
+    |   |        |        |           0  4  13  22
+    0123456789111111111122222222
+              012345678901234567
+
+
+    aaaGGTAC         CgggACGT
+    tttC         CCGGGccc             KpnI ApaI TaiI
+                                      0 4 13 21
+            CcccGGGCC        aaa
+        CATGGgggC        TGCAttt
+    |------||------||------||--|
+    aaaGGTACCcccGGGCCCgggACGTaaa
+    tttCCATGGgggCCCGGGcccTGCAttt
+    |--||-------||-------||----|
+
+    """
+
+    lds = Dseq("aaaGGTACCcccGGGCCCgggACGTaaa")
+
+    frags = lds.cut((Acc65I, Bsp120I, MaeII))
+
+    first, second, third, fourth = frags
+
+    assert first + second + third + fourth == lds
+
+    assert (first.pos, second.pos, third.pos, fourth.pos) == (0, 4, 13, 22)
+
+    frags2 = lds.cut((KpnI, ApaI, TaiI))
+
+    first2, second2, third2, fourth2 = frags2
+
+    assert first2 + second2 + third2 + fourth2 == lds
+
+    assert (first2.pos, second2.pos, third2.pos, fourth2.pos) == (0, 4, 13, 21)
+
 
 def test_cas9():
 

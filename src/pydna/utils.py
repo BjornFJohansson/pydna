@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -36,9 +36,41 @@ from pydna.codon import n_end as _n_end
 from Bio.SeqUtils import seq3 as _seq3
 from pydna._pretty import PrettyTable as _PrettyTable
 
+from Bio.SeqFeature import SimpleLocation as _sl
+from Bio.SeqFeature import CompoundLocation as _cl
+
 _module_logger = _logging.getLogger("pydna." + __name__)
 _ambiguous_dna_complement.update({"U": "A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
+
+
+def shift_location(original_location, shift, lim):
+    """docstring."""
+    newparts = []
+    strand = original_location.strand
+    for part in original_location.parts:
+        ns = (part.start + shift) % lim
+        ne = (part.end + shift) % lim or lim
+        oe = newparts[-1].end if newparts else None
+        if len(part) == 0:
+            newparts.append(_sl(ns, ns, strand))
+            continue
+        elif oe == ns:
+            part = newparts.pop()
+            part._end = ne
+            ns = part.start
+        if ns < ne:
+            newparts.append(_sl(ns, ne, strand))
+        else:
+            parttuple = (_sl(ns, lim, strand),
+                         _sl(0,  ne,  strand))
+            newparts.extend(parttuple if strand == 1 else parttuple[::-1])
+    try:
+        newloc = _cl(newparts)
+    except ValueError:
+        newloc, *n = newparts
+    assert len(newloc) == len(original_location)
+    return newloc
 
 
 def smallest_rotation(s):
@@ -83,10 +115,11 @@ def smallest_rotation(s):
 
 
 def cai(seq: str,
-        organism: str = "sce"):
+        organism: str = "sce",
+        weights: dict = _weights):
     """docstring."""
-    from CAI import CAI as _CAI
-    return round(_CAI(seq.upper(), weights=_weights[organism]), 3)
+    from cai2 import CAI as _CAI
+    return round(_CAI(seq.upper(), weights=weights[organism]), 3)
 
 
 def rarecodons(seq: str,

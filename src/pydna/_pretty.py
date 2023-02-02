@@ -10,7 +10,6 @@ from prettytable import PrettyTable as _Pt
 from prettytable import MARKDOWN as _md
 from copy import copy as _copy
 
-
 class pretty_str(str):
     """Thanks to Min RK, UC Berkeley for this."""
 

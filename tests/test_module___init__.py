@@ -140,23 +140,5 @@ def test_no_xdg_open(monkeypatch):
     subp.assert_called_with(["xdg-open", os.getcwd()])
 
 
-def test_logo():
-    import pydna
-
-    assert pydna.logo() == textwrap.dedent(
-        r"""
-                     _
-                    | |
-     ____  _   _  __| |___   _____
-    |  _ \| | | |/ _  |  _ \(____ |
-    | |_| | |_| ( (_| | | | / ___ |
-    |  __/ \__  |\____|_| |_\_____|
-    |_|   (____/
-    """[
-            1:
-        ]
-    )
-
-
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])

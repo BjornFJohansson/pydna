@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -22,6 +22,7 @@ import sys as _sys
 import math as _math
 
 from pydna.seq import Seq as _Seq
+from Bio.Restriction import FormattedSeq as _FormattedSeq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
@@ -31,6 +32,7 @@ from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
+from operator import itemgetter as _itemgetter
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 
@@ -126,7 +128,7 @@ class Dseq(_Seq):
 
     Example of creating Dseq objects with different amounts of stagger:
 
-    >>> Dseq(watson="agt",crick="actta",ovhg=-2)
+    >>> Dseq(watson="agt", crick="actta", ovhg=-2)
     Dseq(-7)
     agt
       attca
@@ -294,6 +296,8 @@ class Dseq(_Seq):
 
     """
 
+    trunc = 30
+
     def __init__(self,
                  watson,
                  crick=None,
@@ -325,14 +329,12 @@ class Dseq(_Seq):
                 try:
                     F, T, L = olaps[0]
                 except IndexError:
-                    raise ValueError(
-                        "Could not anneal the two strands. Please provide ovhg value"
-                    )
+                    raise ValueError("Could not anneal the two strands."
+                                     " Please provide ovhg value")
                 ovhgs = [ol[1] - ol[0] for ol in olaps if ol[2] == L]
                 if len(ovhgs) > 1:
-                    raise ValueError(
-                        "More than one way of annealing the strands. Please provide ovhg value"
-                    )
+                    raise ValueError("More than one way of annealing the"
+                                     " strands. Please provide ovhg value")
                 ovhg = T - F
 
                 sns = (ovhg * " ") + _pretty_str(watson)
@@ -649,7 +651,7 @@ class Dseq(_Seq):
         """Returns a representation of the sequence, truncated if
         longer than 30 bp"""
 
-        if len(self) > 30:
+        if len(self) > Dseq.trunc:
 
             if self._ovhg > 0:
                 d = self.crick[-self._ovhg:][::-1]
@@ -1333,6 +1335,26 @@ class Dseq(_Seq):
         """
         return self._ovhg == 0 and len(self.watson) == len(self.crick) and self._linear
 
+    def cas9(self, RNA: str):
+        """docstring."""
+        bRNA = bytes(RNA, "ASCII")
+        slices = []
+        cuts = [0]
+        for m in _re.finditer(bRNA, self._data):
+            cuts.append(m.start()+17)
+        cuts.append(self.length)
+        slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
+        return slices
+
+    def terminal_transferase(self, nucleotides="a"):
+        """docstring."""
+        ovhg = self.ovhg
+        if self.ovhg >= 0:
+            ovhg += len(nucleotides)
+        return Dseq(self.watson + nucleotides,
+                    self.crick + nucleotides,
+                    ovhg)
+
     def cut(self, *enzymes):
         """Returns a list of linear Dseq fragments produced in the digestion.
         If there are no cuts, an empty list is returned.
@@ -1387,17 +1409,14 @@ class Dseq(_Seq):
             dsseq = Dseq.from_string(self._data.decode("ASCII"),
                                      linear=True,
                                      circular=False)
-
         if len(enzymes) == 1 and hasattr(enzymes[0], "intersection"):
             # argument is probably a RestrictionBatch
             enzymecuts = []
             for e in enzymes[0]:
-                # cuts = e.search(dsseq+dsseq[:e.size-1] if self.circular else dsseq)
                 cuts = e.search(
                     _Seq(pad + dsseq.watson + dsseq.watson[:e.size-1] + pad)
                     if self.circular
-                    else dsseq
-                )
+                    else dsseq)
                 enzymecuts.append((cuts, e))
             enzymecuts.sort()
             enzymes = [e for (c, e) in enzymecuts if c]
@@ -1421,29 +1440,17 @@ class Dseq(_Seq):
         else:
             l = len(self)
             for e in enzymes:
-                wpos = [
-                    x - len(pad) - 1
-                    for x in e.search(
-                        _Seq(pad + self.watson + self.watson[: e.size - 1]) + pad
-                    )
-                ][::-1]
-                cpos = [
-                    x - len(pad) - 1
-                    for x in e.search(
-                        _Seq(pad + self.crick + self.crick[: e.size - 1]) + pad
-                    )
-                ][::-1]
+
+                wpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.watson + self.watson[: e.size - 1]) + pad)][::-1]
+                cpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.crick + self.crick[: e.size - 1]) + pad)][::-1]
 
                 for w, c in _itertools.product(wpos, cpos):
                     if w % len(self) == (self.length - c + e.ovhg) % len(self):
-                        frags = [
-                            Dseq(
-                                self.watson[w % l :] + self.watson[: w % l],
-                                self.crick[c % l :] + self.crick[: c % l],
-                                ovhg=e.ovhg,
-                                pos=w,
-                            )
-                        ]
+                        frags = [Dseq(self.watson[w % l :] + self.watson[: w % l],
+                                      self.crick[c % l :] + self.crick[: c % l],
+                                      ovhg=e.ovhg,
+                                      pos=min(w, len(dsseq) - c))]
+                        # breakpoint()
                         break
                 else:
                     continue
@@ -1451,89 +1458,64 @@ class Dseq(_Seq):
 
         newfrags = []
 
+        # print(repr(frags[0]))
+        # print(frags[0].pos)
+
         for enz in enzymes:
             for frag in frags:
 
-                ws = [x - 1 for x in enz.search(_Seq(frag.watson) + "N")]
-                cs = [x - 1 for x in enz.search(_Seq(frag.crick) + "N")]
+                ws = [x - 1 for x in enz.search(_Seq(frag.watson + "n"))]
+                cs = [x - 1 for x in enz.search(_Seq(frag.crick + "n"))]
 
-                sitepairs = [
-                    (sw, sc)
-                    for sw, sc in _itertools.product(ws, cs[::-1])
-                    if (
-                        sw + max(0, frag.ovhg) - max(0, enz.ovhg)
-                        == len(frag.crick) - sc - min(0, frag.ovhg) + min(0, enz.ovhg)
-                    )
-                ]
+                sitepairs = [(sw, sc) for sw, sc in _itertools.product(ws, cs[::-1]) if (sw + max(0, frag.ovhg) - max(0, enz.ovhg)== len(frag.crick) - sc - min(0, frag.ovhg) + min(0, enz.ovhg))]
 
                 sitepairs.append((self.length, 0))
 
                 w2, c1 = sitepairs[0]
-
-                newfrags.append(
-                    Dseq(
-                        frag.watson[:w2], frag.crick[c1:], ovhg=frag.ovhg, pos=frag.pos
-                    )
-                )
+                newfrags.append(Dseq(frag.watson[:w2],
+                                     frag.crick[c1:],
+                                     ovhg=frag.ovhg,
+                                     pos=frag.pos))
 
                 for (w1, c2), (w2, c1) in zip(sitepairs[:-1], sitepairs[1:]):
-                    newfrags.append(
-                        Dseq(
-                            frag.watson[w1:w2],
-                            frag.crick[c1:c2],
-                            ovhg=enz.ovhg,
-                            pos=frag.pos + w1 - max(0, enz.ovhg),
-                        )
-                    )
-
+                    newfrags.append(Dseq(frag.watson[w1:w2],
+                                         frag.crick[c1:c2],
+                                         ovhg=enz.ovhg,
+                                         pos=frag.pos + w1 - max(0, enz.ovhg) + max(0, frag.ovhg)))
             frags = newfrags
             newfrags = []
 
         return tuple(frags)
 
-    def cas9(self, RNA: str):
-        """docstring."""
-        bRNA = bytes(RNA, "ASCII")
-        slices = []
-        cuts = [0]
-        for m in _re.finditer(bRNA, self._data):
-            cuts.append(m.start()+17)
-        cuts.append(self.length)
-        slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
-        return slices
+    def _firstcut(self, *enzymes):
+        rb = _RestrictionBatch(_flatten(enzymes))
+        watson = _FormattedSeq(_Seq(self.watson), linear=False)
+        crick = _FormattedSeq(_Seq(self.crick), linear=False)
+        enzdict = dict(sorted(rb.search(watson).items(), key=_itemgetter(1)))
+        ln = self.length
+        for enzyme, wposlist in enzdict.items():
+            for cpos in enzyme.search(crick)[::-1]:
+                for wpos in wposlist:
+                    if cpos == (ln - wpos + enzyme.ovhg + 2) or ln:
+                        return (wpos-1, cpos-1, enzyme.ovhg)
+        return ()
 
-    def terminal_transferase(self, nucleotides="a"):
-        """docstring."""
-        ovhg = self.ovhg
-        if self.ovhg >= 0:
-            ovhg += len(nucleotides)
-        return Dseq(self.watson + nucleotides,
-                    self.crick + nucleotides,
-                    ovhg)
-
-    # def cas9(self, RNA: str):
-    #     """docstring."""
-    #     bRNA = bytes(RNA, "ASCII")
-    #     frags = []
-    #     for target in (self.seq._data, self.seq.rc()._data):
-    #         cuts = [0]
-    #         for m in _re.finditer(bRNA, target):
-    #             cuts.append(m.start()+17)
-    #         cuts.append(self.seq.length)
-    #         fragments = []
-    #         for x, y in zip(cuts, cuts[1:]):
-    #             fragments.append(self[x:y])
-    #         frags.append(fragments)
-    #     return frags
-
-
+# wpos - max(0, enzyme.ovhg) == len(crick) - cpos + min(0, enzyme.ovhg) + 2
+# cpos == len(self.watson) - wpos + enzyme.ovhg + 2
 
 if __name__ == "__main__":
-    import os as _os
 
-    cached = _os.getenv("pydna_cached_funcs", "")
-    _os.environ["pydna_cached_funcs"] = ""
-    import doctest
+    a = Dseq("aaaaaaaGGTACCggtctcaaaa")
+    from Bio.Restriction import BsaI
+    a._firstcut(BsaI)
 
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cached_funcs"] = cached
+
+
+    # import os as _os
+
+    # cached = _os.getenv("pydna_cached_funcs", "")
+    # _os.environ["pydna_cached_funcs"] = ""
+    # import doctest
+
+    # doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    # _os.environ["pydna_cached_funcs"] = cached

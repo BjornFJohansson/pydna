@@ -29,4 +29,6 @@ dependencies:
 - nbval
 - requests-mock
 
-- setuptools
+- poetry
+- pip:
+    - poetry-dynamic-versioning

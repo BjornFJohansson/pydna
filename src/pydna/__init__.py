@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2021 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
 
 """
-:copyright: Copyright 2013-2021 by Björn Johansson. All rights reserved.
+:copyright: Copyright 2013-2023 by Björn Johansson. All rights reserved.
 :license:   This code is part of the pydna package, governed by the
             license in LICENSE.txt that should be included as part
             of this package.
@@ -132,17 +132,14 @@ See this repository for a collection of
 """
 
 
-from pydna import _version
 from pydna.utils import open_folder as _open_folder
 from pathlib import Path as _Path
 import os as _os
-import sys as _sys
 import logging as _logging
 import logging.handlers as _handlers
 import appdirs as _appdirs
 import configparser as _configparser
 from pydna._pretty import PrettyTable as _PrettyTable
-from pydna._version import version as __version__
 
 
 __author__ = "Björn Johansson"
@@ -152,7 +149,7 @@ __license__ = "BSD"
 __maintainer__ = "Björn Johansson"
 __email__ = "bjorn_johansson@bio.uminho.pt"
 __status__ = "Development"  # "Production" #"Prototype"
-
+__version__ = "5.2.0-a.15"
 
 # create config directory
 _os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir",
@@ -271,8 +268,6 @@ else:
     _logger.info("gel simulation is available,"
                  " optional dependencies were found.")
 
-
-# _sys.modules.pop("pydna._version", None)
 
 _logger.info("__version__ = %s", __version__)
 

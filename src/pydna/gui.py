@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2021 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -8,6 +8,7 @@
 """A DNA sequence widget."""
 
 import sys
+import os
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QGridLayout
@@ -16,7 +17,6 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QSize
-import os
 from multiprocessing import Process
 
 

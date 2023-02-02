@@ -695,7 +695,6 @@ def test_cut_circular():
         nt = test[i:] + test[:i]
 
         a = Dseqrecord(nt, circular=True).cut(Acc65I)[0]
-
         assert a.seq.watson.upper() == "GTACCGGTCTCAAAAAAAAAAG"
         assert a.seq.crick.upper() == "GTACCTTTTTTTTTTGAGACCG"
         assert a.seq.ovhg == -4
@@ -709,7 +708,6 @@ def test_cut_circular():
         assert c.seq.ovhg == -4
         d = Dseqrecord(nt, circular=True).cut(NotI)
         assert d == ()
-
 
 def test_cut_add():
 
@@ -1161,7 +1159,7 @@ ORIGIN
 def test_features_on_slice():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.seqfeature import SeqFeature
+    from Bio.SeqFeature import SeqFeature
     from Bio.SeqFeature import FeatureLocation
 
     dseq_record = Dseqrecord(Dseq("ACTCTTTCTCTCTCT", circular=True))
@@ -1176,66 +1174,83 @@ def test_features_on_slice():
 
 
 def test_features_change_ori():
+
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
     from pydna.utils import eq
 
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
-
-    s = read(
+    s1 = read(
         """
-                    LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
-                    DEFINITION  .
-                    SOURCE      .
-                    COMMENT
-                    COMMENT     ApEinfo:methylated:1
-                    FEATURES             Location/Qualifiers
-                         misc_feature    join(2..3,5..7,9..12)
-                                         /locus_tag="hej"
-                                         /label="hej"
-                                         /ApEinfo_label="hej"
-                                         /ApEinfo_fwdcolor="cyan"
-                                         /ApEinfo_revcolor="green"
-                                         /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                                         width 5 offset 0"
-                    ORIGIN
-                            1 atcaccgatt tta
-                    //"""
-    )
+        LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
+        DEFINITION  .
+        SOURCE      .
+        COMMENT     feature copied in ApE version 3.1.2 yields: tcccgtttt
+        COMMENT     ApEinfo:methylated:1
+        FEATURES             Location/Qualifiers
+             misc_feature    join(2..3,5..7,9..12)
+                             /locus_tag="hej"
+                             /label="hej"
+                             /ApEinfo_label="hej"
+                             /ApEinfo_fwdcolor="cyan"
+                             /ApEinfo_revcolor="green"
+                             /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                             width 5 offset 0"
+        ORIGIN
+                1 atcaccgatt tta
+        //""")
 
-    for i in range(1, len(s)):
-        b = s.shifted(i)
+    for i in range(1, len(s1)):
+        b = s1.shifted(i)
         assert str(b.features[0].extract(b).seq).lower() == "tcccgtttt"
 
-    s = read(
+    s2 = read(
         """
-                    LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
-                    DEFINITION  .
-                    SOURCE      .
-                    COMMENT
-                    COMMENT
-                    COMMENT     ApEinfo:methylated:1
-                    FEATURES             Location/Qualifiers
-                         misc_feature    complement(join(2..5,7..9,11..12))
-                                         /locus_tag="hej"
-                                         /label="hej"
-                                         /ApEinfo_label="hej"
-                                         /ApEinfo_fwdcolor="cyan"
-                                         /ApEinfo_revcolor="green"
-                                         /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
-                                         width 5 offset 0"
-                    ORIGIN
-                            1 taaaatcggt gat
-                    //"""
-    )
+        LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
+        DEFINITION  .
+        SOURCE      .
+        COMMENT
+        COMMENT     feature copied in ApE version 3.1.2 yields: aaaacggga
+        COMMENT     should be tcccgtttt, since feature is on the other strand
+        COMMENT     ApEinfo:methylated:1
+        FEATURES             Location/Qualifiers
+             misc_feature    complement(join(2..5,7..9,11..12))
+                             /locus_tag="hej"
+                             /label="hej"
+                             /ApEinfo_label="hej"
+                             /ApEinfo_fwdcolor="cyan"
+                             /ApEinfo_revcolor="green"
+                             /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                             width 5 offset 0"
+        ORIGIN
+                1 taaaatcggt gat
+        //
 
-    for i in range(1, len(s)):
-        b = s.shifted(i)
+        """)
+
+    assert str(s2.features[0].extract(s2).seq).lower() == "tcccgtttt"
+
+    for i in range(0, len(s2)):
+        b = s2.shifted(i)
         assert str(b.features[0].extract(b).seq).lower() == "tcccgtttt"
 
-    s = read(
+    # for x in b.features[0].location.parts:
+    #     print(x.extract(b.seq))
+
+    # from pydna.utils import shift_location
+    # from Bio.SeqFeature import SimpleLocation
+    # from Bio.SeqFeature import CompoundLocation
+    # from Bio.SeqFeature import ExactPosition
+
+    # ml6 = s2.shifted(6).features[0].location
+    # ml7 = s2.shifted(7).features[0].location
+
+    # ccc = shift_location(s2.features[0].location, -6, 13)
+    # ddd = shift_location(s2.features[0].location, -7, 13)
+
+    # print(b.seq, b.features[0].extract(b).seq, b.features[0].location)
+
+    s3 = read(
         """
             LOCUS       New_DNA                   21 bp ds-DNA     circular     03-APR-2013
             DEFINITION  a
@@ -1259,17 +1274,24 @@ def test_features_change_ori():
                                  /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
                                  width 5 offset 0
             ORIGIN
-                    1 aaaGGTACCt ttGGATCCggg
+                    1 aaagGTACCT TTGGATCcggg
             //
         """
     )
 
-    assert str(s.features[0].extract(s).seq) == "CGGGAAAG"        # bb
-    assert str(s.features[1].extract(s).seq) == "GTACCTTTGGATC"   # ins
+    bbfeat = Dseq.from_representation("cgggaaag\n"
+                                      "gccctttc")
+    insfeat = Dseq.from_representation("GTACCTTTGGATC\n"
+                                       "CATGGAAACCTAG")
 
-    for i in range(1, len(s)):
+    assert str(s3.features[0].extract(s3).seq) == str(bbfeat).upper()   # bb
+    assert str(s3.features[1].extract(s3).seq) == str(insfeat).upper()   # ins
+    assert s3.features[0].extract(s3).seq == bbfeat   # bb
+    assert s3.features[1].extract(s3).seq == insfeat  # ins
 
-        b = s.shifted(i)
+    for i in range(1, len(s3)):
+
+        b = s3.shifted(i)
 
         assert [
             str(f.extract(b).seq)
@@ -1284,28 +1306,323 @@ def test_features_change_ori():
 
     from Bio.Restriction import Acc65I, BamHI
 
-    bb1, ins1 = sorted(s.cut(Acc65I, BamHI), key=len, reverse=True)
+    inseq = Dseq.from_representation("GTACCTTTG\n"
+                                     "    GAAACCTAG")
 
-    for i in range(1, len(s)):
+    bbseq = Dseq.from_representation("GATCCGGGAAAG\n"
+                                     "    GCCCTTTCCATG")
 
-        b = s.shifted(i)
+    assert s3.seq.cut(Acc65I, BamHI) == (inseq, bbseq)
+
+    bb1, ins1 = sorted(s3.cut(Acc65I, BamHI), key=len, reverse=True)
+
+    assert str(bbfeat).upper() in bbseq
+    assert str(insfeat).upper() in inseq
+
+    for i in range(0, len(s3)):
+
+        b = s3.shifted(i)
+
+        """        11
+                   |
+        ATCcgggaaagGTACCTTTGG
+        taggccctttccatggaaacc
+
+                   GTACCTTTGGATCCGGGAAAG
+                       GAAACCTAGGCCCTTTCCATG
+
+                   GTACCTTTG
+                       GAAACCTAG
+
+                            GATCCGGGAAAG
+                                GCCCTTTCCATG
+
+
+        """
+
 
         bb, ins = sorted(b.cut(Acc65I, BamHI), key=len, reverse=True)
 
         assert eq(bb1, bb)
         assert eq(ins1, ins)
 
-        assert bb.features[0].extract(bb).seq.watson == "CGGGAAAG"
-        assert bb.features[0].extract(bb).seq.crick == "CTTTCCCG"
+        assert bb.features[0].extract(bb).seq == bbfeat
+        assert str(ins.features[0].extract(ins).seq) == str(insfeat)
 
-        assert eq(bb.features[0].extract(bb), s.features[0].extract(s))
+def test_amijalis():
+    # Thanks to https://github.com/amijalis
+    from pydna.dseqrecord import Dseqrecord
 
-        assert ins.features[0].extract(ins).seq.watson == "GTACCTTTG"
-        assert ins.features[0].extract(ins).seq.crick == "GATCCAAAG"
+    test_seq = 'ATCGATCGATCGATCGATCGATCGATCGATCGATCG'
 
-        assert str(ins.features[0].extract(ins).seq) == str(
-            s.features[1].extract(s).seq
-        )
+    # length of test_seq is 36.
+
+    test_seq_dseqrecord = Dseqrecord(test_seq).looped()
+    test_seq_dseqrecord.add_feature(0,36,type_='test', label='test')
+
+    # print(f'Features before shifting: {test_seq_dseqrecord.features}')
+
+    f1 = test_seq_dseqrecord.features[0]
+
+    test_seq_shifted = test_seq_dseqrecord.shifted(10)
+
+    f2 = test_seq_shifted.features[0]
+
+    assert f1.extract(test_seq_dseqrecord).seq == f2.extract(test_seq_shifted).seq
+
+    # print(f'Features after shifting: {test_seq_shifted.features}')
+
+def test_figure():
+
+    from pydna.dseq import Dseq
+    from pydna.dseqrecord import Dseqrecord
+    from Bio.Restriction import Acc65I, KpnI, ApaI, Bsp120I
+    from Bio.SeqFeature import SimpleLocation
+    from Bio.SeqFeature import SeqFeature
+
+    # broken feature linear
+
+    linearDseq = Dseq.from_representation("""
+    gatcggtaccgatcATGAAATAAgatcGGGCCCgatc
+    ctagccatggctagTACTTTATTctagCCCGGGctag
+    """)
+
+    linearDseqrecord = Dseqrecord(linearDseq)
+
+    assert linearDseqrecord.figure() == 'Dseqrecord(-37)\n\x1b[48;5;11m\x1b[0mgatcggtaccgatcATGAAATAAgatcGGGCCCgatc\nctagccatggctagTACTTTATTctagCCCGGGctag'
+
+    linearDseqrecord.features.append(
+        SeqFeature(SimpleLocation(14,17,1) + SimpleLocation(20,23,1),
+                   type = "test"))
+
+    expect = ('Dseqrecord(-37)\ngatcggtaccgatc\x1b[48;5;11mATG\x1b[0mAAA\x1b[48;5;11mTAA\x1b[0mgatcGGGCCCgatc\nctagccatggctagTACTTTATTctagCCCGGGctag')
+    assert linearDseqrecord.figure() == expect
+
+    # short feature linear
+
+    linearDseqrecord = Dseqrecord(linearDseq)
+    linearDseqrecord.add_feature(14, 23)
+
+    assert linearDseqrecord.figure() == 'Dseqrecord(-37)\ngatcggtaccgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcGGGCCCgatc\nctagccatggctagTACTTTATTctagCCCGGGctag'
+
+    feat = Dseq("ATGAAATAA")
+    assert linearDseqrecord.features[0].extract(linearDseqrecord).seq == feat
+
+    a1, b1, c1 = linearDseqrecord.cut(Acc65I, Bsp120I)
+    assert b1.figure() == 'Dseqrecord(-27)\ngtaccgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcG    \n    gctagTACTTTATTctagCCCGG'
+    assert b1.extract_feature(0).seq == feat
+    assert b1.rc().extract_feature(0).seq == feat
+    assert b1.rc().figure() == 'Dseqrecord(-27)\nGGCCCgatcTTATTTCATgatcg    \n    Gctag\x1b[48;5;11mAATAAAGTA\x1b[0mctagccatg'
+
+    a2, b2, c2 = linearDseqrecord.cut(KpnI, Bsp120I)
+    assert b2.figure() == 'Dseqrecord(-27)\n    cgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcG    \ncatggctagTACTTTATTctagCCCGG'
+    assert b2.extract_feature(0).seq == feat
+    assert b2.rc().extract_feature(0).seq == feat
+    assert b2.rc().figure() == 'Dseqrecord(-27)\nGGCCCgatcTTATTTCATgatcggtac\n    Gctag\x1b[48;5;11mAATAAAGTA\x1b[0mctagc    '
+
+    a3, b3, c3 = linearDseqrecord.cut(Acc65I, ApaI)
+    assert b3.figure() == 'Dseqrecord(-27)\ngtaccgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcGGGCC\n    gctagTACTTTATTctagC    '
+    assert b3.extract_feature(0).seq == feat
+    assert b3.rc().extract_feature(0).seq == feat
+    assert b3.rc().figure() == 'Dseqrecord(-27)\n    CgatcTTATTTCATgatcg    \nCCGGGctag\x1b[48;5;11mAATAAAGTA\x1b[0mctagccatg'
+
+    a4, b4, c4 = linearDseqrecord.cut(KpnI, ApaI)
+    assert b4.figure() == 'Dseqrecord(-27)\n    cgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcGGGCC\ncatggctagTACTTTATTctagC    '
+    assert b4.extract_feature(0).seq == feat
+    assert b4.rc().extract_feature(0).seq == feat
+    assert b4.rc().figure() == 'Dseqrecord(-27)\n    CgatcTTATTTCATgatcggtac\nCCGGGctag\x1b[48;5;11mAATAAAGTA\x1b[0mctagc    '
+
+    # short feature circular
+
+    circularDseqrecord = linearDseqrecord.looped()
+    assert circularDseqrecord.figure() == 'Dseqrecord(o37)\ngatcggtaccgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcGGGCCCgatc\nctagccatggctagTACTTTATTctagCCCGGGctag'
+    assert circularDseqrecord.features[0].extract(circularDseqrecord).seq == feat
+
+    a5, b5 = circularDseqrecord.cut(Acc65I, Bsp120I)
+    assert a5.figure() == 'Dseqrecord(-27)\ngtaccgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcG    \n    gctagTACTTTATTctagCCCGG'
+    assert a5.extract_feature(0).seq == feat
+
+    a6, b6 = circularDseqrecord.cut(KpnI, Bsp120I)
+    assert a6.figure() == 'Dseqrecord(-27)\n    cgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcG    \ncatggctagTACTTTATTctagCCCGG'
+    assert a6.extract_feature(0).seq == feat
+
+    a7, b7 = circularDseqrecord.cut(Acc65I, ApaI)
+    assert a7.figure() == 'Dseqrecord(-27)\ngtaccgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcGGGCC\n    gctagTACTTTATTctagC    '
+    assert a7.extract_feature(0).seq == feat
+
+    a8, b8 = circularDseqrecord.cut(KpnI, ApaI)
+    assert a8.figure() == 'Dseqrecord(-27)\n    cgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcGGGCC\ncatggctagTACTTTATTctagC    '
+    assert a8.extract_feature(0).seq == feat
+
+    a9, b9 = circularDseqrecord.cut(Bsp120I, KpnI)
+    assert a9.figure() == 'Dseqrecord(-27)\n    cgatc\x1b[48;5;11mATGAAATAA\x1b[0mgatcG    \ncatggctagTACTTTATTctagCCCGG'
+    assert a9.extract_feature(0).seq == feat
+
+    # longer feature linear
+
+    linearDseqrecord = Dseqrecord(linearDseq)
+    linearDseqrecord.add_feature(5, 32)
+    assert linearDseqrecord.figure() == 'Dseqrecord(-37)\ngatcg\x1b[48;5;11mgtaccgatcATGAAATAAgatcGGGCC\x1b[0mCgatc\nctagccatggctagTACTTTATTctagCCCGGGctag'
+    feat = Dseq.from_representation("""
+    gtaccgatcATGAAATAAgatcGGGCC
+    catggctagTACTTTATTctagCCCGG
+    """)
+    assert linearDseqrecord.features[0].extract(linearDseqrecord).seq == feat
+
+    a10, b10, c10 = linearDseqrecord.cut(Acc65I, Bsp120I)
+    assert b10.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11mgtaccgatcATGAAATAAgatcG    \x1b[0m\n    gctagTACTTTATTctagCCCGG'
+    feat10 = Dseq.from_representation("""
+    gtaccgatcATGAAATAAgatcG
+        gctagTACTTTATTctagCCCGG
+    """)
+    assert b10.extract_feature(0).seq == feat10
+    assert b10.rc().extract_feature(0).seq == feat10
+    assert b10.rc().figure() == 'Dseqrecord(-27)\nGGCCCgatcTTATTTCATgatcg    \n\x1b[48;5;11m    GctagAATAAAGTActagccatg\x1b[0m'
+
+    a11, b11, c11 = linearDseqrecord.cut(KpnI, Bsp120I)
+    assert b11.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11m    cgatcATGAAATAAgatcG    \x1b[0m\ncatggctagTACTTTATTctagCCCGG'
+    feat11 = Dseq.from_representation("""
+        cgatcATGAAATAAgatcG
+    catggctagTACTTTATTctagCCCGG
+    """)
+    assert b11.extract_feature(0).seq == feat11
+    assert b11.rc().extract_feature(0).seq == feat11
+    assert b11.rc().figure() == 'Dseqrecord(-27)\nGGCCCgatcTTATTTCATgatcggtac\n\x1b[48;5;11m    GctagAATAAAGTActagc    \x1b[0m'
+
+    a12, b12, c12 = linearDseqrecord.cut(Acc65I, ApaI)
+    assert b12.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11mgtaccgatcATGAAATAAgatcGGGCC\x1b[0m\n    gctagTACTTTATTctagC    '
+    feat12 = Dseq.from_representation("""
+    gtaccgatcATGAAATAAgatcGGGCC
+        gctagTACTTTATTctagC
+    """)
+    assert b12.extract_feature(0).seq == feat12
+    assert b12.rc().extract_feature(0).seq == feat12
+    assert b12.rc().figure() == 'Dseqrecord(-27)\n    CgatcTTATTTCATgatcg    \n\x1b[48;5;11mCCGGGctagAATAAAGTActagccatg\x1b[0m'
+
+    a13, b13, c13 = linearDseqrecord.cut(KpnI, ApaI)
+    assert b13.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11m    cgatcATGAAATAAgatcGGGCC\x1b[0m\ncatggctagTACTTTATTctagC    '
+    feat13 = Dseq.from_representation("""
+        cgatcATGAAATAAgatcGGGCC
+    catggctagTACTTTATTctagC
+    """)
+    assert b13.extract_feature(0).seq == feat13
+    assert b13.rc().extract_feature(0).seq == feat13
+    assert b13.rc().figure() == 'Dseqrecord(-27)\n    CgatcTTATTTCATgatcggtac\n\x1b[48;5;11mCCGGGctagAATAAAGTActagc    \x1b[0m'
+
+    # longer feature circular
+
+    circularDseqrecord = linearDseqrecord.looped()
+    circularDseqrecord.figure()
+    a14, b14 = circularDseqrecord.cut(KpnI, Bsp120I)
+    assert a14.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11m    cgatcATGAAATAAgatcG    \x1b[0m\ncatggctagTACTTTATTctagCCCGG'
+    feat14 = Dseq.from_representation("""
+        cgatcATGAAATAAgatcG
+    catggctagTACTTTATTctagCCCGG
+    """)
+    assert a14.extract_feature(0).seq == feat14
+
+    a15, b15 = circularDseqrecord.cut(KpnI, ApaI)
+    assert a15.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11m    cgatcATGAAATAAgatcGGGCC\x1b[0m\ncatggctagTACTTTATTctagC    '
+    feat15 = Dseq.from_representation("""
+        cgatcATGAAATAAgatcGGGCC
+    catggctagTACTTTATTctagC
+    """)
+    assert a15.extract_feature(0).seq == feat15
+
+    a16, b16 = circularDseqrecord.cut(Acc65I, Bsp120I)
+    assert a16.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11mgtaccgatcATGAAATAAgatcG    \x1b[0m\n    gctagTACTTTATTctagCCCGG'
+    feat16 = Dseq.from_representation("""
+    gtaccgatcATGAAATAAgatcG
+        gctagTACTTTATTctagCCCGG
+    """)
+    assert a16.extract_feature(0).seq == feat16
+
+    a17, b17 = circularDseqrecord.cut(Acc65I, ApaI)
+    assert a17.figure() == 'Dseqrecord(-27)\n\x1b[48;5;11mgtaccgatcATGAAATAAgatcGGGCC\x1b[0m\n    gctagTACTTTATTctagC    '
+    feat17 = Dseq.from_representation("""
+    gtaccgatcATGAAATAAgatcGGGCC
+        gctagTACTTTATTctagC
+    """)
+    assert a17.extract_feature(0).seq == feat17
+
+    # Wrap around feature circular on watson
+
+    circularDseqrecord = Dseqrecord(linearDseq, circular = True)
+    circularDseqrecord.add_feature(32, 5)
+    assert circularDseqrecord.figure() == 'Dseqrecord(o37)\n\x1b[48;5;11mgatcg\x1b[0mgtaccgatcATGAAATAAgatcGGGCC\x1b[48;5;11mCgatc\x1b[0m\nctagccatggctagTACTTTATTctagCCCGGGctag'
+
+    feat = Dseq.from_representation("""
+    Cgatcgatcg
+    Gctagctagc
+    """)
+    assert circularDseqrecord.extract_feature(0).seq == feat
+
+    a18, b18 = circularDseqrecord.cut(KpnI, Bsp120I)
+    assert b18.figure() == 'Dseqrecord(-18)\nGGCC\x1b[48;5;11mCgatcgatcg\x1b[0mgtac\n    Gctagctagc    '
+    assert b18.extract_feature(0).seq == feat
+
+    a19, b19 = circularDseqrecord.cut(KpnI, ApaI)
+    assert b19.figure() == 'Dseqrecord(-18)\n    \x1b[48;5;11mCgatcgatcg\x1b[0mgtac\nCCGGGctagctagc    '
+    assert b19.extract_feature(0).seq == feat
+
+    a20, b20 = circularDseqrecord.cut(Acc65I, Bsp120I)
+    assert b20.figure() == 'Dseqrecord(-18)\nGGCC\x1b[48;5;11mCgatcgatcg\x1b[0m    \n    Gctagctagccatg'
+    assert b20.extract_feature(0).seq == feat
+
+    a21, b21 = circularDseqrecord.cut(Acc65I, ApaI)
+    assert b21.figure() == 'Dseqrecord(-18)\n    \x1b[48;5;11mCgatcgatcg\x1b[0m    \nCCGGGctagctagccatg'
+    assert b21.extract_feature(0).seq == feat
+
+    # Wrap around feature circular on crick
+
+    circularDseqrecord = Dseqrecord(linearDseq, circular = True)
+    circularDseqrecord.add_feature(32, 5)
+    circularDseqrecord = circularDseqrecord.rc()
+    assert circularDseqrecord.figure() == 'Dseqrecord(o37)\ngatcGGGCCCgatcTTATTTCATgatcggtaccgatc\n\x1b[48;5;11mctagC\x1b[0mCCGGGctagAATAAAGTActagccatg\x1b[48;5;11mgctag\x1b[0m'
+
+    feat = Dseq.from_representation("""
+    Cgatcgatcg
+    Gctagctagc
+    """)
+    assert circularDseqrecord.extract_feature(0).seq == feat
+
+    a22, b22 = circularDseqrecord.cut(KpnI, Bsp120I)
+    assert b22.figure() == 'Dseqrecord(-18)\n    cgatcgatcG    \ncatg\x1b[48;5;11mgctag\x1b[0m\x1b[48;5;11mctagC\x1b[0mCCGG'
+    assert b22.extract_feature(0).seq == feat
+
+    a23, b23 = circularDseqrecord.cut(KpnI, ApaI)
+    assert b23.figure() == 'Dseqrecord(-18)\n    cgatcgatcGGGCC\ncatg\x1b[48;5;11mgctag\x1b[0m\x1b[48;5;11mctagC\x1b[0m    '
+    assert b23.extract_feature(0).seq == feat
+
+    a24, b24 = circularDseqrecord.cut(Acc65I, Bsp120I)
+    assert b24.figure() == 'Dseqrecord(-18)\ngtaccgatcgatcG    \n    \x1b[48;5;11mgctag\x1b[0m\x1b[48;5;11mctagC\x1b[0mCCGG'
+    assert b24.extract_feature(0).seq == feat
+
+    a25, b25 = circularDseqrecord.cut(Acc65I, ApaI)
+    assert b25.figure() == 'Dseqrecord(-18)\ngtaccgatcgatcGGGCC\n    \x1b[48;5;11mgctag\x1b[0m\x1b[48;5;11mctagC\x1b[0m    '
+    assert b25.extract_feature(0).seq == feat
+
+
+def test_jan_glx():
+    # Thanks to https://github.com/jan-glx
+    from Bio.Restriction import NdeI, BamHI
+    from pydna.readers import read
+    # from pydna.genbank import Genbank
+    # gb = Genbank("bjornjobb@gmail.com")
+    # puc19 = gb.nucleotide("M77789.2")
+    # assert puc19.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
+    # puc19.write("pUC19_M77789.gb")
+    puc19 = read("pUC19_M77789.gb")
+    assert puc19.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
+    insert, bb = puc19.cut(NdeI, BamHI) # Note the order !
+
+    puc19_ = (bb + insert).looped().synced(puc19)
+    assert puc19_.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
+
+    # print(puc19_.extract_feature(2), "\n")
+    # print(puc19.extract_feature(6))
+
+    assert puc19_.extract_feature(2).seq == puc19.extract_feature(6).seq
 
 
 def test_synced():
@@ -1464,7 +1781,7 @@ def test_slicing2():
             BamHI,
             EcoRI,
             KpnI,
-        )[1].seq
+        )[0].seq
     )
 
 

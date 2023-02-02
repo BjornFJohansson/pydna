@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -15,7 +15,8 @@ from Bio import SeqIO as _SeqIO
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer
-
+from copy import deepcopy as _deepcopy
+from Bio.SeqFeature import SeqFeature as _SeqFeature
 
 def parse(data, ds=True):
     """Return *all* DNA sequences found in data.
@@ -93,9 +94,7 @@ def parse(data, ds=True):
                 # hack to pick up topology from malformed files
                 circular = True
             if parsed:
-                from copy import deepcopy as _deepcopy  # TODO: clean up !
-                from pydna.seqfeature import SeqFeature as _SeqFeature
-
+                # TODO: clean up !
                 nfs = [_SeqFeature() for f in parsed.features]
                 for f, nf in zip(parsed.features, nfs):
                     nf.__dict__ = _deepcopy(f.__dict__)

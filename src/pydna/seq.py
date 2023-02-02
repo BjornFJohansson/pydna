@@ -39,9 +39,8 @@ class Seq(_Seq):
 
     def cai(self, organism="sce"):
         """docstring."""
-        from CAI import CAI as _CAI
-        return round(_CAI(self._data.upper().decode("ASCII"),
-                          weights=_weights[organism]), 3)
+        from pydna.utils import cai as _cai
+        return _cai(self._data.upper().decode("ASCII"), organism=organism)
 
     def rarecodons(self, organism="sce"):
         """docstring."""

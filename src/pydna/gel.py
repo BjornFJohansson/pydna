@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # doctest: +NORMALIZE_WHITESPACE
 # doctest: +SKIP
-# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.

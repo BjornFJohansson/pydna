@@ -610,7 +610,7 @@ def test_MXblaster1(monkeypatch):
     pCAPs_ZraI = pCAPs.linearize(ZraI)
     pCAPs_PCR_prod = pcr(primer[492], primer[493], pCAPs)
     pCAPs_EcoRV = pCAPs.linearize(EcoRV)
-    pCAPs_pSU0_E_Z, stuffer = pCAPs_pSU0.cut(EcoRV, ZraI)
+    stuffer, pCAPs_pSU0_E_Z = pCAPs_pSU0.cut(EcoRV, ZraI)
 
     # make the pCAPs clones, six altoghether
     pCAPs_ZraI_AgTEFp = (pCAPs_ZraI + AgTEFp).looped()
@@ -756,7 +756,7 @@ def test_assemble_pGUP1(monkeypatch):
 
     from Bio.Restriction import SalI
 
-    lin_vect, his3 = pGREG505.cut(SalI)
+    his3, lin_vect = pGREG505.cut(SalI)
 
     ab = assembly.Assembly([insert, lin_vect], limit=28)
 

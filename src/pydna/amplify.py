@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2013-2020 by Björn Johansson.  All rights reserved.
+# Copyright 2013-2023 by Björn Johansson.  All rights reserved.
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
@@ -21,8 +21,8 @@ from pydna.amplicon import Amplicon as _Amplicon
 from pydna.primer import Primer as _Primer
 from pydna.seqrecord import SeqRecord as _SeqRecord
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from pydna.seqfeature import SeqFeature as _SeqFeature
-from Bio.SeqFeature import FeatureLocation as _FeatureLocation
+from Bio.SeqFeature import SeqFeature as _SeqFeature
+from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.seq import Seq as _Seq
 import itertools as _itertools
@@ -270,7 +270,7 @@ class Anneal(object, metaclass=_Memoize):
                 end = fp.position
                 self.template.features.append(
                     _SeqFeature(
-                        _FeatureLocation(start, end, strand=1),
+                        _SimpleLocation(start, end, strand=1),
                         type="primer_bind",
                         qualifiers={
                             "label": [fp.name],
@@ -285,12 +285,11 @@ class Anneal(object, metaclass=_Memoize):
                 sf = _SeqFeature(
                     _CompoundLocation(
                         [
-                            _FeatureLocation(start, len(self.template)),
-                            _FeatureLocation(0, end),
+                            _SimpleLocation(start, len(self.template)),
+                            _SimpleLocation(0, end),
                         ]
                     ),
                     type="primer_bind",
-                    location_operator="join",
                     qualifiers={
                         "label": [fp.name],
                         "ApEinfo_fwdcolor": ["#baffa3"],
@@ -305,7 +304,7 @@ class Anneal(object, metaclass=_Memoize):
                 end = rp.position + rp._fp
                 self.template.features.append(
                     _SeqFeature(
-                        _FeatureLocation(start, end, strand=-1),
+                        _SimpleLocation(start, end, strand=-1),
                         type="primer_bind",
                         qualifiers={
                             "label": [rp.name],
@@ -321,16 +320,15 @@ class Anneal(object, metaclass=_Memoize):
                     _SeqFeature(
                         _CompoundLocation(
                             [
-                                _FeatureLocation(0,
+                                _SimpleLocation(0,
                                                  end,
                                                  strand=-1),
-                                _FeatureLocation(start,
+                                _SimpleLocation(start,
                                                  len(self.template),
                                                  strand=-1),
                             ],
                         ),
                         type="primer_bind",
-                        location_operator="join",
                         qualifiers={"label": [rp.name]},
                     )
                 )
@@ -352,7 +350,7 @@ class Anneal(object, metaclass=_Memoize):
                     for f in tmpl.features:
                         for x, y in zip(f.location.parts, f.location.parts[1:]):
                             if x.end == y.start + len(self.template):
-                                f.location = _FeatureLocation(
+                                f.location = _SimpleLocation(
                                     x.start,
                                     y.end + len(self.template),
                                     strand=f.location.strand,

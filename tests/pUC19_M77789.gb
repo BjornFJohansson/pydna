@@ -1,0 +1,102 @@
+LOCUS       SYNPUC19V               2686 bp    DNA     circular SYN 07-AUG-2008
+DEFINITION  Cloning vector pUC19, complete sequence.
+ACCESSION   M77789
+VERSION     M77789.2
+KEYWORDS    .
+SOURCE      Cloning vector pUC19
+  ORGANISM  Cloning vector pUC19
+            other sequences; artificial sequences; vectors.
+REFERENCE   1  (bases 1 to 2686)
+  AUTHORS   Norrander,J., Kempe,T. and Messing,J.
+  TITLE     Construction of improved M13 vectors using
+            oligodeoxynucleotide-directed mutagenesis
+  JOURNAL   Gene 26 (1), 101-106 (1983)
+   PUBMED   6323249
+REFERENCE   2  (bases 1 to 2686)
+  AUTHORS   Yanisch-Perron,C., Vieira,J. and Messing,J.
+  TITLE     Improved M13 phage cloning vectors and host strains: nucleotide
+            sequences of the M13mp18 and pUC19 vectors
+  JOURNAL   Gene 33 (1), 103-119 (1985)
+   PUBMED   2985470
+  REMARK    Erratum:[Gene. 1992 May 1;114(1):81-3. PMID: 1375182]
+REFERENCE   3  (bases 1 to 2686)
+  AUTHORS   Messing,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (27-SEP-1991) Waksman Institute, Rutgers State Univ., 190
+            Frelinghuysen Road, Piscataway, NJ 08854, USA
+REFERENCE   4  (bases 1 to 2686)
+  AUTHORS   Messing,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (12-JAN-2000) Waksman Institute, Rutgers State Univ., 190
+            Frelinghuysen Road, Piscataway, NJ 08854, USA
+  REMARK    Sequence update by submitter
+COMMENT     On Jan 12, 2000 this sequence version replaced M77789.1.
+FEATURES             Location/Qualifiers
+     source          1..2686
+                     /organism="Cloning vector pUC19"
+                     /mol_type="other DNA"
+                     /strain="ATCC 37254"
+                     /culture_collection="ATCC:37254"
+                     /db_xref="taxon:31851"
+     misc_feature    1..447
+                     /note="M13mp19"
+     misc_feature    1..230
+                     /note="Lac-operon"
+     misc_feature    233..289
+                     /note="polylinker of M13mp19;
+                     HindIII-SphI-PstI-SalI-XbaI-BamHI-SmaI-KpnI-SacI-EcoRI"
+     misc_feature    290..447
+                     /note="Lac-Operon"
+     misc_feature    complement(448..547)
+                     /note="pBR322"
+     misc_feature    complement(548..684)
+                     /note="pBR322"
+     misc_feature    complement(685..2686)
+                     /note="pBR322"
+ORIGIN
+        1 gcgcccaata cgcaaaccgc ctctccccgc gcgttggccg attcattaat gcagctggca
+       61 cgacaggttt cccgactgga aagcgggcag tgagcgcaac gcaattaatg tgagttagct
+      121 cactcattag gcaccccagg ctttacactt tatgcttccg gctcgtatgt tgtgtggaat
+      181 tgtgagcgga taacaatttc acacaggaaa cagctatgac catgattacg ccaagcttgc
+      241 atgcctgcag gtcgactcta gaggatcccc gggtaccgag ctcgaattca ctggccgtcg
+      301 ttttacaacg tcgtgactgg gaaaaccctg gcgttaccca acttaatcgc cttgcagcac
+      361 atcccccttt cgccagctgg cgtaatagcg aagaggcccg caccgatcgc ccttcccaac
+      421 agttgcgcag cctgaatggc gaatggcgcc tgatgcggta ttttctcctt acgcatctgt
+      481 gcggtatttc acaccgcata tggtgcactc tcagtacaat ctgctctgat gccgcatagt
+      541 taagccagcc ccgacacccg ccaacacccg ctgacgcgcc ctgacgggct tgtctgctcc
+      601 cggcatccgc ttacagacaa gctgtgaccg tctccgggag ctgcatgtgt cagaggtttt
+      661 caccgtcatc accgaaacgc gcgagacgaa agggcctcgt gatacgccta tttttatagg
+      721 ttaatgtcat gataataatg gtttcttaga cgtcaggtgg cacttttcgg ggaaatgtgc
+      781 gcggaacccc tatttgttta tttttctaaa tacattcaaa tatgtatccg ctcatgagac
+      841 aataaccctg ataaatgctt caataatatt gaaaaaggaa gagtatgagt attcaacatt
+      901 tccgtgtcgc ccttattccc ttttttgcgg cattttgcct tcctgttttt gctcacccag
+      961 aaacgctggt gaaagtaaaa gatgctgaag atcagttggg tgcacgagtg ggttacatcg
+     1021 aactggatct caacagcggt aagatccttg agagttttcg ccccgaagaa cgttttccaa
+     1081 tgatgagcac ttttaaagtt ctgctatgtg gcgcggtatt atcccgtatt gacgccgggc
+     1141 aagagcaact cggtcgccgc atacactatt ctcagaatga cttggttgag tactcaccag
+     1201 tcacagaaaa gcatcttacg gatggcatga cagtaagaga attatgcagt gctgccataa
+     1261 ccatgagtga taacactgcg gccaacttac ttctgacaac gatcggagga ccgaaggagc
+     1321 taaccgcttt tttgcacaac atgggggatc atgtaactcg ccttgatcgt tgggaaccgg
+     1381 agctgaatga agccatacca aacgacgagc gtgacaccac gatgcctgta gcaatggcaa
+     1441 caacgttgcg caaactatta actggcgaac tacttactct agcttcccgg caacaattaa
+     1501 tagactggat ggaggcggat aaagttgcag gaccacttct gcgctcggcc cttccggctg
+     1561 gctggtttat tgctgataaa tctggagccg gtgagcgtgg gtctcgcggt atcattgcag
+     1621 cactggggcc agatggtaag ccctcccgta tcgtagttat ctacacgacg gggagtcagg
+     1681 caactatgga tgaacgaaat agacagatcg ctgagatagg tgcctcactg attaagcatt
+     1741 ggtaactgtc agaccaagtt tactcatata tactttagat tgatttaaaa cttcattttt
+     1801 aatttaaaag gatctaggtg aagatccttt ttgataatct catgaccaaa atcccttaac
+     1861 gtgagttttc gttccactga gcgtcagacc ccgtagaaaa gatcaaagga tcttcttgag
+     1921 atcctttttt tctgcgcgta atctgctgct tgcaaacaaa aaaaccaccg ctaccagcgg
+     1981 tggtttgttt gccggatcaa gagctaccaa ctctttttcc gaaggtaact ggcttcagca
+     2041 gagcgcagat accaaatact gttcttctag tgtagccgta gttaggccac cacttcaaga
+     2101 actctgtagc accgcctaca tacctcgctc tgctaatcct gttaccagtg gctgctgcca
+     2161 gtggcgataa gtcgtgtctt accgggttgg actcaagacg atagttaccg gataaggcgc
+     2221 agcggtcggg ctgaacgggg ggttcgtgca cacagcccag cttggagcga acgacctaca
+     2281 ccgaactgag atacctacag cgtgagctat gagaaagcgc cacgcttccc gaagggagaa
+     2341 aggcggacag gtatccggta agcggcaggg tcggaacagg agagcgcacg agggagcttc
+     2401 cagggggaaa cgcctggtat ctttatagtc ctgtcgggtt tcgccacctc tgacttgagc
+     2461 gtcgattttt gtgatgctcg tcaggggggc ggagcctatg gaaaaacgcc agcaacgcgg
+     2521 cctttttacg gttcctggcc ttttgctggc cttttgctca catgttcttt cctgcgttat
+     2581 cccctgattc tgtggataac cgtattaccg cctttgagtg agctgatacc gctcgccgca
+     2641 gccgaacgac cgagcgcagc gagtcagtga gcgaggaagc ggaaga
+//
