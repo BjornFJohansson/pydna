@@ -6,15 +6,15 @@
 
 
 Planning genetic constructs with many parts and assembly steps, such as recombinant
-metabolic pathways :petri_dish:, are often difficult to **properly** document as is evident from the
-state of such documentation in the scientific literature :radioactive:.
+metabolic pathways :petri_dish:, are often difficult to **properly** document as is evident from the poor
+state of documentation in the scientific literature :radioactive:.
 
 
 The pydna python package provide a human-readable formal descriptions of :dna: cloning and genetic assembly
 strategies in Python :snake: which allow for simulation and verification.
 
 
-Pydna can perhaps be thought of as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
 
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
@@ -34,7 +34,7 @@ Pydna provides simulation of:
 Virtually any sub-cloning experiment can be described in pydna, and its execution yield
 the sequences of intermediate and final DNA molecules.
 
-Pydna has been designed to be understandable for biologists with only some basic understanding of Python.
+Pydna has been designed with the goal of being understandable for biologists with only some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
@@ -44,17 +44,7 @@ To get started, we have compiled some [simple examples](https://github.com/Metab
 For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
 
 
-There is an open access paper in BMC Bioinformatics describing pydna:
 
-[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/master/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
-
-Please reference the above paper:
-
-
-Pereira, F., Azevedo, F., Carvalho, Â., Ribeiro, G. F., Budde, M. W., & Johansson, B. (2015). Pydna: a simulation and documentation tool for DNA assembly strategies using python. BMC Bioinformatics, 16(142), 142.
-
-
-if using pydna in a scientific publication.
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
@@ -67,7 +57,6 @@ Most pydna functionality is implemented as methods for the double stranded DNA s
 classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
 
 These classes make cut and paste cloning and PCR very simple:
-
 
     >>> from pydna.dseq import Dseq
     >>> seq = Dseq("GGATCCAAA","TTTGGATCC",ovhg=0)
@@ -184,7 +173,19 @@ In Cold Spring Harbor Laboratory (p. 2021.01.17.427048). [DOI](https://doi.org/1
 
 and other projects on [github](https://github.com/BjornFJohansson/pydna/network/dependents?package_id=UGFja2FnZS01MjQ2MjYzNQ%3D%3D)
 
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
+There is an open access paper in BMC Bioinformatics describing pydna:
+
+[![abstr](https://raw.githubusercontent.com/bjornFJohansson/pydna/master/docs/pics/BMC_resized.png)](http://www.biomedcentral.com/1471-2105/16/142/abstract)
+
+Please reference the above paper:
+
+
+Pereira, F., Azevedo, F., Carvalho, Â., Ribeiro, G. F., Budde, M. W., & Johansson, B. (2015). Pydna: a simulation and documentation tool for DNA assembly strategies using python. BMC Bioinformatics, 16(142), 142.
+
+
+When using pydna.
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
@@ -210,34 +211,21 @@ or use the --pre switch to get the latest version of pydna.
 
     pip install pydna --pre
 
+for optional functionality do:
+
+    pip install pydna[gel,download,express,gui]
+
+Remove options inside the square brackets as required, but be sure not to leave spaces as pip will not recognize the options. See below under "Optional dependencies".
+
 ### Windows:
 
 You should be able to pip install pydna from the Windows terminal as biopython now can be installed with pip as well.
 
     C:\> pip install pydna
 
-By default python and pip are not on the PATH. You can re-install Python and select this option during installation,
-or give the full path for pip. Try something like this, depending on where your copy of Python is installed:
+By default python and pip are not on the PATH. You can re-install Python and select this option during installation, or give the full path for pip. Try something like this, depending on where your copy of Python is installed:
 
     C:\Python37\Scripts\pip install pydna
-
-### Installing requirements
-
-If you want to install requirements before installing pydna, you can do:
-
-	pip install -r requirements.txt
-
-And for the optional requirements:
-
-	pip install -r requirements_optional.txt
-
-For testing:
-
-	pip install -r requirements_test.txt
-
-or
-
-	conda install --file requirements.txt
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
@@ -254,49 +242,46 @@ The list below is the minimal requirements for installing pydna.
 Biopython has c-extensions, but the other modules are pure python.
 
 - [Python 3.8, 3.9, 3.10 or 3.11](http://www.python.org)
-- [appdirs >= 1.3.0](https://pypi.python.org/pypi/appdirs)
+- [appdirs >=1.4.4](https://pypi.python.org/pypi/appdirs)
 - [biopython >= 1.80](http://pypi.python.org/pypi/biopython)
-- [networkx >= 1.8.1](http://pypi.python.org/pypi/networkx)
-- [prettytable >= 0.7.2](https://pypi.python.org/pypi/PrettyTable)
+- [networkx >=2.8.8](http://pypi.python.org/pypi/networkx)
+- [prettytable >=3.5.0](https://pypi.python.org/pypi/PrettyTable)
+- [pyperclip >=1.8.2](https://pypi.python.org/pypi/PrettyTable)
+- [pyfiglet >=0.8.post1](https://pypi.python.org/pypi/PrettyTable)
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Optional dependencies
 
-If the modules listed below in the first column are installed, they will provide the functionality
-listed in the second column.
+If the modules listed below in the first column are installed, they will provide the functionality listed in the second column.
 
-| Dependency                                          | Function in pydna                                      |
-|-----------------------------------------------------|--------------------------------------------------------|
-| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
-| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
-| [CAI](https://pypi.org/project/CAI)                 | codon adaptation index calculations in several modules |
-| [numpy](http://www.numpy.org)                       | gel simulation with pydna.gel                          |
-| [scipy](https://www.scipy.org)                      | “                                                      |
-| [matplotlib](http://matplotlib.org)                 | “                                                      |
-| [pillow](https://github.com/python-pillow/Pillow)   | “                                                      |
+| Dependency                                                  | Function in pydna                                      |
+|-------------------------------------------------------------|--------------------------------------------------------|
+| [scipy >=1.8.0](https://www.scipy.org)                      | gel simulation with pydna.gel                          |
+| [matplotlib >=3.4.3](http://matplotlib.org)                 | “                                                      |
+| [pillow >=8.4.0](https://github.com/python-pillow/Pillow)   | “                                                      |
+| [numpy](http://www.numpy.org)                               | "                                                      |
+| [pyparsing >=2.4.7](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
+| [requests >=2.26.0](https://pypi.org/project/requests)      | download sequences with pydna.download                 |
+| [cai2 >=1.0.5](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
+| [pyqt5 >=5.15.0](https://pypi.python.org/pypi/pyqt5)        | codon adaptation index calculations in several modules |
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Requirements for running tests and analyzing code coverage
 
 - [pytest](https://pypi.org/project/pytest)
 - [pytest-cov](https://pypi.org/project/pytest-cov)
-- [pytest-mock](https://pypi.org/project/pytest-mock)
 - [pytest-doctestplus](https://pypi.org/project/pytest-doctestplus)
 - [coverage](https://pypi.org/project/coverage)
 - [nbval](https://pypi.org/project/nbval)
 - [requests-mock](https://pypi.org/project/requests-mock)
 
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
+## Releases
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+See the [releases](https://github.com/BjornFJohansson/pydna/releases) for changes and releases.
 
-## Changelog
-
-See the [change log](docs/CHANGELOG.md) for recent changes.
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
 ## Automatic testing & Release process
 
@@ -312,21 +297,36 @@ on Linux, Windows and macOS.
 
 These are triggered by publishing a github release manually from the github interface.
 
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
 
-## Building a PyPI package
+## Building a PyPI package with [Poetry](https://pypi.org/project/poetry)
 
+1. Commit changes to git
+2. Tag the commit according to the [Semantic Versioning](https://semver.org) format, for example "v2.0.1a3". Do not forget the "v" or poetry will not recognize the tag.
 
-	poetry build # run this command in the root directory where the pyproject.toml file is located
+        git tag v2.0.1a3
 
+3. Pydna uses the poetry [poetry-dynamic-versioning](https://pypi.org/project/poetry-dynamic-versioning) plugin.
 
-Pydna uses the poetry plugin []()
+        poetry dynamic-versioning # This sets the version number in the source files
 
+4. Verify the version
 
+        poetry version
 
+5. Build package:
 
+        poetry build # run this command in the root directory where the pyproject.toml file is located
 
+6. Verify the filename of the files in the dist/ folder, they should match
 
-### History
+7. Publish to pypi
+
+        poetry publish
+
+![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+
+## History
 
 Pydna was made public in 2012 on [Google code](https://code.google.com/archive/p/pydna).
 
