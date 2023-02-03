@@ -53,7 +53,7 @@ For more elaborate use, look at some assembly strategies of D-xylose metabolic p
 Most pydna functionality is implemented as methods for the double stranded DNA sequence record
 classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
 
-These classes make cut and paste cloning and PCR very simple:
+These classes make PCR primer design, PCR simulation and cut-and-paste cloning very simple:
 
 [![example](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/example.png)](https://github.com/BjornFJohansson/pydna/blob/5b53ffc9ff7ba24485d01bc967714d85f17eec9c/docs/example.ipynb)
 
