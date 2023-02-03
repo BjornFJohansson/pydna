@@ -55,7 +55,7 @@ classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biop
 
 These classes make PCR primer design, PCR simulation and cut-and-paste cloning very simple:
 
-[![example](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/example.png)](https://github.com/BjornFJohansson/pydna/blob/5b53ffc9ff7ba24485d01bc967714d85f17eec9c/docs/example.ipynb)
+[![example](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/example.png)](https://github.com/BjornFJohansson/pydna/blob/master/docs/example.ipynb)
 
 As the example above shows, pydna keeps track of sticky ends and features.
 
