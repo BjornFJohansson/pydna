@@ -121,12 +121,12 @@ class Amplicon(_Dseqrecord):
         """
 
         f = """
-            {sp1}5{faz}...{raz}3
+            {sp1}5{faz}{middle1}{raz}3
              {sp3}{rap}
             {sp3}3{rp}5
             5{fp}3
              {fap:>{fplength}}
-            {sp2}3{fzc}...{rzc}5
+            {sp2}3{fzc}{middle2}{rzc}5
             """.format(
             fp=self.forward_primer.seq,
             fap="|" * len(self.forward_primer.footprint),
@@ -142,7 +142,14 @@ class Amplicon(_Dseqrecord):
             sp2=" "
             * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp3=" " * (3 + len(self.forward_primer.seq)),
-        )
+            middle1="...",
+            middle2="..." )
+
+        # type_, watson, rcrick = self.template.figure().splitlines()
+        # f2 = (f"{watson}\n"
+
+        #       f"{rcrick}\n")
+        # print(f2)
         return _pretty_str(_textwrap.dedent(f).strip("\n"))
 
     def set_forward_primer_footprint(self, length):
