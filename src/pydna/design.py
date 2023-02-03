@@ -28,9 +28,13 @@ import logging as _logging
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
-def primer_design(
-    template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=_tm_default, **kwargs
-):
+def primer_design(template,
+                  fp=None,
+                  rp=None,
+                  limit=13,
+                  target_tm=55.0,
+                  tm_func=_tm_default,
+                  **kwargs):
     """This function designs a forward primer and a reverse primer for PCR amplification
     of a given template sequence.
 
@@ -132,6 +136,7 @@ def primer_design(
         tmps = tm_func(str(ps))
         _module_logger.debug(((p, tmp), (ps, tmps)))
         return min((abs(target_tm - tmp), p), (abs(target_tm - tmps), ps))[1]
+
     if not fp and not rp:
         _module_logger.debug("no primer given, design forward primer:")
         fp = _Primer((design(target_tm, template)))
