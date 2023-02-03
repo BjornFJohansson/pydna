@@ -96,8 +96,8 @@ class GenbankRecord(_Dseqrecord):
     def __getitem__(self, sl):
         answer = super().__getitem__(sl)
         answer.item = self.item
-        answer.start = self.start or 0 + sl.start
-        answer.stop = self.start or 0 + sl.stop
+        answer.start = (self.start or 0) + (sl.start or 0)
+        answer.stop = (self.start or 0) + (sl.stop or 0)
         answer.strand = self.strand
         return answer
 
