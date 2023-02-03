@@ -11,10 +11,7 @@ state of documentation in the scientific literature :radioactive:.
 
 
 The pydna python package provide a human-readable formal descriptions of :dna: cloning and genetic assembly
-strategies in Python :snake: which allow for simulation and verification.
-
-
-Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+strategies in Python :snake: which allow for simulation and verification. Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
 
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
@@ -22,14 +19,15 @@ A cloning strategy expressed in pydna is **complete**, **unambiguous** and **sta
 
 Pydna provides simulation of:
 
+- Primer design
+- PCR
 - Restriction digestion
 - Ligation
-- PCR
-- Primer design
+- Gel electrophoresis of DNA with generation of gel images
+- Homologous recombination
 - Gibson assembly
 - Golden gate assembly
-- Homologous recombination
-- Gel electrophoresis of DNA with generation of gel images
+
 
 Virtually any sub-cloning experiment can be described in pydna, and its execution yield
 the sequences of intermediate and final DNA molecules.
@@ -38,7 +36,6 @@ Pydna has been designed with the goal of being understandable for biologists wit
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
-
 
 To get started, I have compiled some [simple examples](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
 For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
@@ -61,8 +58,6 @@ These classes make cut and paste cloning and PCR very simple:
 [![example](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/docs/example.png)](https://github.com/BjornFJohansson/pydna/blob/5b53ffc9ff7ba24485d01bc967714d85f17eec9c/docs/example.ipynb)
 
 As the example above shows, pydna keeps track of sticky ends and features.
-
-Notably, pydna can simulate homologous recombination and Gibson assembly.
 
 Gel electrophoresis of DNA fragments can be simulated using the included gel module:
 
