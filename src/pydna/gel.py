@@ -55,10 +55,10 @@ def gel(samples=None,
             height = (band.m() / (240 * log)) * 1e10
             peak_centre = interpolator(len(band)) * scale + start
             max_spread = 10
-            if len(band) <= 50:
-                peak_centre += 50
-                max_spread *= 4
-                max_intensity /= 10
+            # if len(band) <= 50:
+            #     peak_centre += 50
+            #     max_spread *= 4
+            #     max_intensity /= 10
             band_spread = max_spread / log
             for i in range(max_spread, 0, -1):
                 y1 = peak_centre - i

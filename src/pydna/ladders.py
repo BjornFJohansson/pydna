@@ -45,11 +45,14 @@ GeneRuler_1kb = [
     )
 ]
 
+# Google spreadsheet to make the ladders below
+# https://docs.google.com/spreadsheets/d/1vN0y75ibxPrG6yJQjq1uF2FXP0L-qGSn_fzInUHeTs4/edit#gid=0
 
 GeneRuler_1kb_plus = [
     _FakeSeq(ln, n=n * 1e-15, rf=rf)
     for ln, n, rf in (
-        (20000, 1.538, 0.000),  # ( length, fmol, Rf )
+        # (length, fmol, Rf )
+        (20000, 1.538, 0.000),
         (10000, 3.077, 0.040),
         (7000, 4.396, 0.096),
         (5000, 23.077, 0.154),
@@ -71,6 +74,7 @@ GeneRuler_1kb_plus = [
 HI_LO_DNA_MARKER = [
     _FakeSeq(ln, n=n * 1e-15, rf=rf)
     for ln, n, rf in (
+        # (length, fmol, Rf )
         (10000, 4.545, 0.000),
         (8000, 5.682, 0.013),
         (6000, 11.364, 0.037),

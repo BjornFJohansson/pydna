@@ -59,27 +59,6 @@ These classes make PCR primer design, PCR simulation and cut-and-paste cloning v
 
 As the example above shows, pydna keeps track of sticky ends and features.
 
-Gel electrophoresis of DNA fragments can be simulated using the included gel module:
-
-
-    Jupyter QtConsole 4.7.7
-    Python 3.8.5 | packaged by conda-forge | (default, Aug 29 2020, 01:22:49)
-    Type 'copyright', 'credits' or 'license' for more information
-    IPython 7.18.1 -- An enhanced Interactive Python. Type '?' for help.
-
-    In [1]: from pydna.gel import gel
-
-    In [2]: from pydna.ladders import PennStateLadder
-
-    In [3]: from pydna.dseqrecord import Dseqrecord
-
-    In [4]: gel([PennStateLadder,[Dseqrecord("A"*2000)]])
-    Out[4]:
-
-
-
-![gel](https://raw.githubusercontent.com/BjornFJohansson/pydna/master/scripts/pydna_gel.png)
-
 
 Pydna can be very compact. The eleven lines of Python below simulates the construction of a recombinant plasmid.
 DNA sequences are downloaded from Genbank by accession numbers that are guaranteed to be stable over time.
