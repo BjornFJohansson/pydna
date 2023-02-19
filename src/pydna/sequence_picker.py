@@ -22,7 +22,7 @@ def genbank_accession(s: str):
     s = Dseqrecord(s)
 
     NCBIWWW.email = email
-    NCBIWWW.tool =  tool
+    NCBIWWW.tool = tool
 
     result_handle = NCBIWWW.qblast("blastn",
                                    "nt",

@@ -91,8 +91,12 @@ def gel(samples=None,
 
     return image
 
-    #  im.rotate(90, expand=1)
-    #  im_invert = ImageOps.invert(im)
+# Inverting and rotating the gel
+# im = gel([ GeneRuler_1kb_plus, [band, ]])
+# from PIL import ImageOps
+# im_invert = ImageOps.invert(im)
+# im.rotate(90, expand=1)
+
 
 
 if __name__ == "__main__":
