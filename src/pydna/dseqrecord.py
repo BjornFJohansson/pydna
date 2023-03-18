@@ -328,7 +328,7 @@ class Dseqrecord(_SeqRecord):
                                 y,
                                 seq,
                                 type_,
-                                strand=1,
+                                strand=strand,
                                 *args, **kwargs)
             return
 
