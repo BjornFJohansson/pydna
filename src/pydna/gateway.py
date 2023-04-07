@@ -20,7 +20,7 @@ from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.utils import rc as _rc
-from pydna.utils import memorize as _memorize
+
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
 from pydna.common_sub_strings import common_sub_strings
@@ -84,13 +84,10 @@ for line in (line for line in atts.splitlines() if line.strip()):
     for part in parts:
         part.translate(retable)
 
-class _Memoize(type):
-    @_memorize("pydna.gateway.Gateway")
-    def __call__(cls, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
 
 
-class Gateway(object, metaclass=_Memoize):
+
+class Gateway(object):
     """Assembly of linear DNA fragments into linear or circular constructs.
 
     The Assembly is meant to replace the Assembly method as it

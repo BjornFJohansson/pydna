@@ -844,4 +844,5 @@ def test_marker_replacement_on_plasmid(monkeypatch):
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-x", "-vv", "-s"])
+    # pytest.main([__file__, "-x", "-vv", "-s"])
+    pytest.main([__file__, "-x", "-vv", "-s", "--profile"])

@@ -15,7 +15,7 @@ correctly."""
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
-from pydna.utils import memorize as _memorize
+# from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.amplicon import Amplicon as _Amplicon
 from pydna.primer import Primer as _Primer
@@ -118,13 +118,13 @@ def _annealing_positions(primer, template, limit=15):
     return []
 
 
-class _Memoize(type):
-    @_memorize("pydna.amplify.Anneal")
-    def __call__(cls, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
+# class _Memoize(type):
+#     @_memorize("pydna.amplify.Anneal")
+#     def __call__(cls, *args, **kwargs):
+#         return super().__call__(*args, **kwargs)
 
 
-class Anneal(object, metaclass=_Memoize):
+class Anneal(object): # ), metaclass=_Memoize):
     """The Anneal class has the following important attributes:
 
     Attributes

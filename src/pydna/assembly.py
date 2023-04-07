@@ -46,7 +46,7 @@ from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.utils import rc as _rc
-from pydna.utils import memorize as _memorize
+# from pydna.utils import memorize as _memorize
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
 from pydna.common_sub_strings import common_sub_strings
@@ -64,13 +64,13 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 # TODO remove maxnodes for init
 
 
-class _Memoize(type):
-    @_memorize("pydna.assembly.Assembly")
-    def __call__(cls, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
+# class _Memoize(type):
+#     @_memorize("pydna.assembly.Assembly")
+#     def __call__(cls, *args, **kwargs):
+#         return super().__call__(*args, **kwargs)
 
 
-class Assembly(object, metaclass=_Memoize):
+class Assembly(object):  # , metaclass=_Memoize):
     """Assembly of a list of linear DNA fragments into linear or circular
     constructs. The Assembly is meant to replace the Assembly method as it
     is easier to use. Accepts a list of Dseqrecords (source fragments) to
