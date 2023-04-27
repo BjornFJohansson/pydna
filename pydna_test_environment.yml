@@ -20,7 +20,6 @@ dependencies:
 - numpy
 - scipy
 - matplotlib
-- wrapt-timeout-decorator
 
 - pytest
 - pytest-cov
@@ -33,3 +32,4 @@ dependencies:
 - poetry
 - pip:
     - poetry-dynamic-versioning
+    - wrapt-timeout-decorator
