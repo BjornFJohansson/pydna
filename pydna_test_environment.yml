@@ -20,6 +20,7 @@ dependencies:
 - numpy
 - scipy
 - matplotlib
+- wrapt-timeout-decorator
 
 - pytest
 - pytest-cov
