@@ -503,7 +503,7 @@ def test_write():
     handle = m()
     handle.write.assert_called_once_with(Dseqrecord("GGATCC", circular=True).format())
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         s.write(filename=123)
 
 

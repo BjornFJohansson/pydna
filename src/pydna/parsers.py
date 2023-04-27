@@ -15,8 +15,10 @@ from Bio import SeqIO as _SeqIO
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer
+from pydna.amplify import pcr as _pcr
 from copy import deepcopy as _deepcopy
 from Bio.SeqFeature import SeqFeature as _SeqFeature
+import xml.etree.ElementTree as _et
 
 def parse(data, ds=True):
     """Return *all* DNA sequences found in data.
@@ -144,8 +146,25 @@ def parse(data, ds=True):
 
 
 def parse_primers(data):
-    """ """
+    """docstring."""
     return [_Primer(x) for x in parse(data, ds=False)]
+
+
+def parse_assembly_xml(data):
+    """docstring."""
+    root = _et.fromstring(data)
+    results = []
+    for child in root:
+        if child.tag == "amplicon":
+            fp, rp, tmpl, *rest = parse(child.text)
+            results.append(_pcr(_Primer(fp),
+                                _Primer(rp),
+                                tmpl,
+                                limit=min((len(fp), len(rp)))))
+        elif child.tag == "fragment":
+            f, *rest = parse(child.text)
+            results.append(f)
+    return results
 
 
 if __name__ == "__main__":
@@ -157,3 +176,132 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
+
+
+    data = """\
+    <assembly topology="circular">
+    <amplicon>
+    >f50 14-mer
+    CCCGTACAAAGGGA
+    >r50 12-mer
+    CTGATGCCGCGC
+    >a
+    CCCGTACAAAGGGAACATCCACACTTTGGTGAATCGAAGCGCGGCATCAG
+    </amplicon>
+    <amplicon>
+    >f49 19-mer
+    GATTTCCTTTTGGATACCT
+    >r49 16-mer
+    AAGTCTAAGGACCACG
+    >b
+    GATTTCCTTTTGGATACCTGAAACAAAGCCCATCGTGGTCCTTAGACTT
+    </amplicon>
+    <amplicon>
+    >f48 13-mer
+    TCCCTACACCGAC
+    >r48 16-mer
+    ATGAAGCTCGTCACAT
+    >c
+    TCCCTACACCGACGTACGATGCAACTGTGTGGATGTGACGAGCTTCAT
+    </amplicon>
+    </assembly>
+    """
+
+
+    data = """\
+    <assembly topology="circular">
+    <amplicon>
+    >f50 14-mer
+    CCCGTACAAAGGGA
+    >r50 12-mer
+    CTGATGCCGCGC
+    >a
+    CCCGTACAAAGGGAACATCCACACTTTGGTGAATCGAAGCGCGGCATCAG
+    </amplicon>
+    <fragment>
+    >b
+    GATTTCCTTTTGGATACCTGAAACAAAGCCCATCGTGGTCCTTAGACTT
+    </fragment>
+    <amplicon>
+    >f48 13-mer
+    TCCCTACACCGAC
+    >r48 16-mer
+    ATGAAGCTCGTCACAT
+    >c
+    TCCCTACACCGACGTACGATGCAACTGTGTGGATGTGACGAGCTTCAT
+    </amplicon>
+    </assembly>
+    """
+
+    example = parse_assembly_xml(data)
+
+
+    # #!/usr/bin/env python3
+    # # -*- coding: utf-8 -*-
+    # """
+    # Created on Sat Apr 22 07:39:14 2023
+
+    # @author: bjorn
+    # """
+
+    # import xml.dom.minidom as minidom
+
+
+    # from lxml import etree
+
+
+    # ng = """\
+    # <element name="assembly" xmlns="http://relaxng.org/ns/structure/1.0">
+    #   <zeroOrMore>
+    #     <interleave>
+    #         <element name="amplicon">
+    #             <text/>
+    #         </element>
+    #         <element name="fragment">
+    #             <text/>
+    #         </element>
+    #     </interleave>
+    #   </zeroOrMore>
+    # </element>
+    # """
+
+    # from io import StringIO
+
+    # f = StringIO(ng)
+    # relaxng_doc = etree.parse(f)
+    # relaxng = etree.RelaxNG(relaxng_doc)
+
+
+    # xml = StringIO("""\
+    # <assembly topology="circular">
+    # <amplicon>1</amplicon>
+    # <fragment>2</fragment>
+    # <amplicon>3</amplicon>
+    # </assembly>
+    # """)
+
+    # doc = etree.parse(xml)
+    # relaxng.validate(doc)
+
+    # doc = minidom.parseString(xml) # or minidom.parse(filename)
+    # assert doc.documentElement.tagName == "assembly"
+    # root = doc.getElementsByTagName('assembly')[0]      # or doc.documentElement
+    # items = [n for n in root.childNodes if n.nodeType == doc.ELEMENT_NODE]
+
+    # for item in items:
+    #     print(item.childNodes[0].data)
+
+
+
+
+    # import xml.etree.ElementTree as ET
+    # xml = """\
+    # <assembly topology="circular">
+    # <amplicon>1</amplicon>
+    # <fragment>2</fragment>
+    # <amplicon>3</amplicon>
+    # </assembly>
+    # """
+    # root = ET.fromstring(xml)
+    # for child in root:
+    #     print(child.tag, child.attrib, child.text)

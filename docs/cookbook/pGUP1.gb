@@ -33,10 +33,16 @@ FEATURES             Location/Qualifiers
                      SDMFCTVSGFKFVILASVSLFIAVQIMFEIREEEKRHGIYLKC"
      primer_bind     558..580
                      /label="GUP1rec1sens"
+                     /PCR_conditions="primer
+                     sequence:gaattcgatatcaagcttatcgataccgatgtcgctgatcagcatcctgt
+                     c"
                      /ApEinfo_fwdcolor="#baffa3"
                      /ApEinfo_revcolor="#ffbaba"
      primer_bind     complement(2219..2240)
                      /label="GUP1rec2AS"
+                     /PCR_conditions="primer
+                     sequence:gacataactaattacatgactcgaggtcgactcagcattttaggtaaatt
+                     ccg"
                      /ApEinfo_fwdcolor="#baffa3"
                      /ApEinfo_revcolor="#ffbaba"
      misc_recomb     2513..2546

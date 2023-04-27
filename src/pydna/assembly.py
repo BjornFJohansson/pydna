@@ -56,7 +56,8 @@ import networkx as _nx
 from copy import deepcopy as _deepcopy
 import itertools as _itertools
 import logging as _logging
-
+# from func_timeout import func_set_timeout
+from wrapt_timeout_decorator import timeout
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
@@ -279,6 +280,7 @@ class Assembly(object):  # , metaclass=_Memoize):
         self.rcfragments = rcfragments
         self.algorithm = algorithm
 
+    @timeout(10)
     def assemble_linear(self, start=None, end=None, max_nodes=None):
 
         G = _nx.MultiDiGraph(self.G)
@@ -419,6 +421,7 @@ class Assembly(object):  # , metaclass=_Memoize):
             reverse=True,
         )
 
+    @timeout(10)
     def assemble_circular(self):
         cps = {}  # circular assembly
         cpsrc = {}

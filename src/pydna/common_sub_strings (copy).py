@@ -12,7 +12,6 @@ https://code.google.com/p/py-rstr-max
 https://github.com/gip0/py-rstr-max
 the original code was covered by an MIT licence."""
 
-
 from array import array as _array
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
@@ -246,7 +245,8 @@ class Rstr_max:
     def go(self):
         self.step1_sort_suffix()
         self.step2_lcp()
-        return self.step3_rstr()
+        r = self.step3_rstr()
+        return r
 
 
 def common_sub_strings(stringx: str, stringy: str, limit=25):
@@ -300,14 +300,14 @@ def common_sub_strings(stringx: str, stringy: str, limit=25):
     """
 
     rstr = Rstr_max()
-    rstr.add_str("&".join((stringx, stringy)))
+    rstr.add_str(stringx + "&" + stringy)
     r = rstr.go()
-    match = {}
+    match = {}  # _defaultdict(int)
     for (offset_end, nb), (l, start_plage) in r.items():
-        if l < limit:
-            continue
         startsx = []
         startsy = []
+        if l < limit:
+            continue
         for o in range(start_plage, start_plage + nb):
             offset = rstr.idxPos[rstr.res[o]]
             if offset > len(stringx):

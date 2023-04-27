@@ -177,7 +177,7 @@ class Anneal(object): # ), metaclass=_Memoize):
         >>> p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
         >>> ann = Anneal((p1, p2), t)
         >>> print(ann.report())
-        Template name 1011 nt linear:
+        Template name 1011 bp linear limit=13:
         p1 anneals forward (--->) at 23
         p2 anneals reverse (<---) at 989
         >>> ann.products
@@ -274,6 +274,7 @@ class Anneal(object): # ), metaclass=_Memoize):
                         type="primer_bind",
                         qualifiers={
                             "label": [fp.name],
+                            "PCR_conditions": [f"primer sequence:{fp.seq}"],
                             "ApEinfo_fwdcolor": ["#baffa3"],
                             "ApEinfo_revcolor": ["#ffbaba"],
                         },
@@ -292,6 +293,7 @@ class Anneal(object): # ), metaclass=_Memoize):
                     type="primer_bind",
                     qualifiers={
                         "label": [fp.name],
+                        "PCR_conditions": [f"primer sequence:{fp.seq}"],
                         "ApEinfo_fwdcolor": ["#baffa3"],
                         "ApEinfo_revcolor": ["#ffbaba"],
                     },
@@ -308,6 +310,7 @@ class Anneal(object): # ), metaclass=_Memoize):
                         type="primer_bind",
                         qualifiers={
                             "label": [rp.name],
+                            "PCR_conditions": [f"primer sequence:{rp.seq}"],
                             "ApEinfo_fwdcolor": ["#baffa3"],
                             "ApEinfo_revcolor": ["#ffbaba"],
                         },
@@ -432,10 +435,11 @@ class Anneal(object): # ), metaclass=_Memoize):
         """returns a short report describing if or where primer
         anneal on the template."""
 
-        mystring = "Template {name} {size} nt {top}:\n".format(
+        mystring = "Template {name} {size} bp {top} limit={limit}:\n".format(
             name=self.template.name,
             size=len(self.template),
             top={True: "circular", False: "linear"}[self.template.circular],
+            limit=self.limit
         )
         if self.forward_primers:
             for p in self.forward_primers:
@@ -550,8 +554,8 @@ tatcgactgtatcatctgatagcac")
     if len(anneal_primers.products) == 1:
         return anneal_primers.products[0]
     elif len(anneal_primers.products) == 0:
-        raise ValueError("No PCR product! {}".format(anneal_primers.report()))
-    raise ValueError("PCR not specific! {}".format(anneal_primers.report()))
+        raise ValueError(f"No PCR product! {anneal_primers.report()}")
+    raise ValueError("PCR not specific! {format(anneal_primers.report()}")
 
 
 if __name__ == "__main__":

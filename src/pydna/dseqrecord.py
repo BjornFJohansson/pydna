@@ -589,8 +589,8 @@ class Dseqrecord(_SeqRecord):
         if not filename:
             filename = "{name}.{type}".format(name=self.locus, type=f)
             # generate a name if no name was given
-        if not isinstance(filename, str):  # is filename a string???
-            raise ValueError("filename has to be a string, got", type(filename))
+        # if not isinstance(filename, str):  # is filename a string???
+        #     raise ValueError("filename has to be a string, got", type(filename))
         name, ext = _os.path.splitext(filename)
         msg = f"<font face=monospace><a href='{filename}' target='_blank'>{filename}</a></font><br>"
         if not _os.path.isfile(filename):

@@ -286,7 +286,7 @@ def test_too_short_primers():
     ann = Anneal((f, r), t, limit=22)
 
     assert ann.report() == (
-        "Template name 48 nt linear:\n"
+        "Template name 48 bp linear limit=22:\n"
         "ForwardPrimer anneals forward (--->) at 22\n"
         "ReversePrimer anneals reverse (<---) at 26"
     )
@@ -302,7 +302,7 @@ def test_too_short_primers():
     assert ann.products == []
 
     assert ann.report() == (
-        "Template name 48 nt linear:\n"
+        "Template name 48 bp linear limit=23:\n"
         "No forward primers anneal...\n"
         "No reverse primers anneal..."
     )
