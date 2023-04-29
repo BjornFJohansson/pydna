@@ -32,4 +32,3 @@ dependencies:
 - poetry
 - pip:
     - poetry-dynamic-versioning
-    - wrapt-timeout-decorator
