@@ -170,13 +170,14 @@ default_ini = {"ape": "put/path/to/ape/here",
                "enzymes": str(user_data_dir/"enzymes.md"),
                "log_dir": _appdirs.user_log_dir("pydna"),
                "loglevel": str(_logging.WARNING),
-               "primers": str(user_data_dir/"primers.md")}
+               "primers": str(user_data_dir/"primers.md"),
+               "assembly_limit": str(10)}
 
 # initiate a config parser instance
 _parser = _configparser.ConfigParser()
 
 # if a pydna.ini exists, it is read
-if _os.path.exists(_ini_path):
+if _ini_path.exists():
     _parser.read(_ini_path)
 else:  # otherwise it is created with default settings
     _parser["main"] = default_ini
