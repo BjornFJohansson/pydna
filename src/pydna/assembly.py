@@ -42,6 +42,7 @@ sequences separating the overlapping regions form edges.
 The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
+import os as _os
 from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
@@ -281,7 +282,7 @@ class Assembly(object):  # , metaclass=_Memoize):
         self.rcfragments = rcfragments
         self.algorithm = algorithm
 
-    @exit_after(10)
+    @exit_after(int(_os.getenv("pydna_assembly_limit")))
     def assemble_linear(self, start=None, end=None, max_nodes=None):
 
         G = _nx.MultiDiGraph(self.G)
@@ -422,7 +423,7 @@ class Assembly(object):  # , metaclass=_Memoize):
             reverse=True,
         )
 
-    @exit_after(10)
+    @exit_after(int(_os.getenv("pydna_assembly_limit")))
     def assemble_circular(self):
         cps = {}  # circular assembly
         cpsrc = {}
