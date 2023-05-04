@@ -18,6 +18,11 @@ classifiers=["Development Status :: 4 - Beta",
              "Programming Language :: Python :: 3.11",
              "Topic :: Education",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
+[project.urls]
+homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
+documentation = "https://readthedocs.org"
+repository = "https://github.com"
+changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 [tool.poetry]
 name = "pydna"
 version = "5.2.0-a.15"
