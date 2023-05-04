@@ -2,12 +2,95 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com),
+and this project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
+
+
+## [5.3.0] - 2023-05-04
+
 ### Added
+
 ### Changed
+
+07:26 $ git log --oneline --graph v5.2.0..a16e7a004da1292f33db5a9a48f19c61b415dff6
+* a16e7a004d (HEAD -> dev_bjorn, origin/dev_bjorn) uppdate
+* 5190177811 removed python 2 code
+* 76a5930791 set timeout from env var pydna_assembly_limit
+* 3cf0bba9bc added assembly limit to default env vars
+* cd76b4a123 added urls
+* f4ef97dbc0 uppdated cheat sheet
+* c0f111c67a changed target branch for pull req
+* f0385b7981 New timeout for assembly
+* 5252df3cf4 switched from wrapt-timeout-decorator
+* 5d46b153e6 upd poetry deps
+* 436ae27381 removed cython notebook
+* ce9a919e15 fix dep
+* 2ce61667de fix deps
+* 8be47b5463 stuff
+*   75ea5dbee1 Merge branch 'dev_bjorn' of https://github.com/BjornFJohansson/pydna into dev_bjorn
+|\
+| *   5c2ec77539 Merge pull request #106 from BjornFJohansson/dependabot/pip/coverage-7.2.2
+| |\
+| | * b15fd0cbb4 Bump coverage from 7.2.1 to 7.2.2
+* | | 8e529ff1c7 remove cashing for some functions
+|/ /
+* / 8dd2ca19a0 bugfix: hardcoded strand set to 1
+|/
+* dacb024944 (origin/master, master) updated poetry.lock
+* a3c3791917 fix
+*   74d3850352 Merge pull request #94 from BjornFJohansson/dependabot/pip/ipython-8.10.0
+|\
+| * 66f20aa195 (origin/dependabot/pip/ipython-8.10.0) Bump ipython from 8.9.0 to 8.10.0
+* |   30d109bbb2 Merge pull request #95 from BjornFJohansson/dependabot/pip/biopython-1.81
+|\ \
+| * | bd0ef21a96 Bump biopython from 1.80 to 1.81
+| |/
+* |   879c81ccf7 Merge pull request #96 from BjornFJohansson/dependabot/pip/pyqt5-5.15.9
+|\ \
+| * | 5482b0788f Bump pyqt5 from 5.15.8 to 5.15.9
+| |/
+* | 813ac07394 fix gel image test
+* | 63de396a5f fix gel examples
+* | 1eb18bc709 new example w gel
+|/
+* c6d1fbda8c fix link
+*   ffda81e24e Merge branch 'master' of https://github.com/BjornFJohansson/pydna
+|\
+| * f8896ab27f Update README.md
+* |   546f357997 Merge branch 'dev_bjorn'
+|\ \
+| |/
+|/|
+| * 98b6eaa55f improve example
+| * 186dbff025 bugfix for slicing genbankrecords
+| * 10e79ccaba fix table
+* | c45913bee0 Merge branch 'dev_bjorn'
+|\|
+| * 593b1f4dfb simplify readme
+| * 9800fdf2bb whitespace
+| * 9276a054fa start to make a better figure for amplicon
+| * 0cb741bf84 better example with pcr
+* | a6fda7a276 Merge branch 'dev_bjorn'
+|\|
+| * c1ec911a22 fix example
+| * 5b53ffc9ff fix raw link
+* | 77f2121d76 Merge branch 'dev_bjorn'
+|/
+* fbcdb0bea4 fix link
+* b9ada45f20 (origin/poetry, poetry) new readme
+(END)
+
+
+## [5.3.0]
+
+## [5.2.0]
+
+## [5.0.1]
+
+## [5.0.0]
+
 
 ## [4.0.0] - 2020-10-10
 
