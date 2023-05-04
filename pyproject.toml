@@ -20,9 +20,9 @@ classifiers=["Development Status :: 4 - Beta",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
 [project.urls]
 homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
-documentation = "https://readthedocs.org"
-repository = "https://github.com"
-changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+documentation = "https://pydna.readthedocs.io/?badge=latest"
+repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
+changelog = "https://github.com/BjornFJohansson/pydna/blob/master/docs/CHANGELOG.md#changelog"
 [tool.poetry]
 name = "pydna"
 version = "5.2.0-a.15"
