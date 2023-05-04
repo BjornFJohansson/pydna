@@ -21,27 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from __future__ import print_function
 
 import sys
 import threading
 from time import sleep
-try:
-    import thread
-except ImportError:
-    import _thread as thread
-
-try: # use code that works the same in Python 2 and 3
-    range, _print = xrange, print
-    def print(*args, **kwargs):
-        flush = kwargs.pop('flush', False)
-        _print(*args, **kwargs)
-        if flush:
-            kwargs.get('file', sys.stdout).flush()
-except NameError:
-    pass
-
-
+import _thread as thread
 
 def cdquit(fn_name):
     # print to stderr, unbuffered in Python 2.
