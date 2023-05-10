@@ -21,7 +21,7 @@ import hashlib as _hashlib
 import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
-
+from array import array as _array
 import sys as _sys
 import re
 import textwrap
@@ -90,7 +90,7 @@ def smallest_rotation(s):
 
     """
     prev, rep = None, 0
-    ds = 2 * s
+    ds = _array("u", 2 * s)
     lens = len(s)
     lends = len(ds)
     old = 0
@@ -111,7 +111,7 @@ def smallest_rotation(s):
             else:
                 prev, rep = w, 1
             if len(w) * rep == lens:
-                return w * rep
+                return "".join(w * rep)
 
 
 def cai(seq: str,
@@ -120,7 +120,6 @@ def cai(seq: str,
     """docstring."""
     from cai2 import CAI as _CAI
     return round(_CAI(seq.upper(), weights=weights[organism]), 3)
-
 
 def rarecodons(seq: str,
                organism="sce"):
@@ -327,14 +326,14 @@ def lseguid_sticky(watson: str, crick: str, overhang: int) -> _pretty_str:
           nnn...    2
         nnnnn...
 
-          nnnn...    1
+         nnnn...    1
         nnnnn...
 
         nnnnn...    0
         nnnnn...
 
         nnnnn...   -1
-          nnnn...
+         nnnn...
 
         nnnnn...   -2
           nnn...
