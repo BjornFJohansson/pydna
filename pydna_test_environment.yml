@@ -25,6 +25,7 @@ dependencies:
 - pytest-cov
 - pytest-mock
 - pytest-doctestplus
+- pytest-profiling
 - coverage
 - nbval
 - requests-mock
