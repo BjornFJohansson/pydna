@@ -29,7 +29,17 @@ def main():
         "--doctest-modules",
         "--capture=no",
         "-vvv",
+        "--profile",  # profiling
     ]
+
+    import pstats
+
+    stats = pstats.Stats('./prof/combined.prof')
+    stats.print_stats("pydna", .1)
+
+    # Or alternatively
+    # stats.print_stats("local_path", 20) # Only show 20 of the listings
+    # stats.sort_stats('cumulative').print_stats('dir_name', 20) # Sort by cumulative time
 
     return int(pytest.main(args))
 
