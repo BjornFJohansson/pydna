@@ -415,7 +415,6 @@ class Dseq(_Seq):
         obj.length = len(dna)
         obj.pos = 0
         obj._data = bytes(dna, encoding="ASCII")
-        # obj.alphabet = _generic_dna
         return obj
 
     @classmethod

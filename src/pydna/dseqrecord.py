@@ -139,12 +139,8 @@ class Dseqrecord(_SeqRecord):
         _module_logger.info("argument circular = %s", circular)
 
         if not (linear is None and circular is None):
-            circular = (
-                bool(circular)
-                and bool(linear) ^ bool(circular)
-                or linear is False
-                and circular is None
-            )
+            circular = (bool(circular) and bool(linear) ^ bool(circular)
+                        or linear is False and circular is None)
             linear = not circular
 
         _module_logger.info("linear = %s", linear)
@@ -152,9 +148,10 @@ class Dseqrecord(_SeqRecord):
 
         if isinstance(record, str):
             _module_logger.info("record is a string")
-            super().__init__(
-                _Dseq(record, linear=linear, circular=circular),
-                *args, **kwargs)
+            super().__init__(_Dseq(record,
+                                   linear=linear,
+                                   circular=circular),
+                                   *args, **kwargs)
 
         # record is a Dseq object ?
         elif hasattr(record, "watson"):
