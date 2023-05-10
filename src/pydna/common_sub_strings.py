@@ -18,32 +18,22 @@ import itertools as _itertools
 from operator import itemgetter as _itemgetter
 
 
-def radixpass(a, b, r, s, n, k):
-    c = _array("i", [0] * (k + 1))
-    for i in range(n):
-        c[r[a[i] + s]] += 1
+def _kark_sort(s, SA, n, K):
 
-    somme = 0
-    for i in range(k + 1):
-        freq, c[i] = c[i], somme
-        somme += freq
+    def radixpass(a, b, r, s, n, k):
+        c = _array("i", [0] * (k + 1))
+        for i in range(n):
+            c[r[a[i] + s]] += 1
 
-    for i in range(n):
-        b[c[r[a[i] + s]]] = a[i]
-        c[r[a[i] + s]] += 1
+        somme = 0
+        for i in range(k + 1):
+            freq, c[i] = c[i], somme
+            somme += freq
 
+        for i in range(n):
+            b[c[r[a[i] + s]]] = a[i]
+            c[r[a[i] + s]] += 1
 
-def direct_kark_sort(s):
-    alphabet = [None] + sorted(set(s))
-    k = len(alphabet)
-    n = len(s)
-    t = dict((c, i) for i, c in enumerate(alphabet))
-    SA = _array("i", [0] * (n + 3))
-    kark_sort(_array("i", [t[c] for c in s] + [0] * 3), SA, n, k)
-    return SA[:n]
-
-
-def kark_sort(s, SA, n, K):
     n0 = (n + 2) // 3
     n1 = (n + 1) // 3
     n2 = n // 3
@@ -74,7 +64,7 @@ def kark_sort(s, SA, n, K):
             s12[SA12[i] // 3 + n0] = name
 
     if name < n02:
-        kark_sort(s12, SA12, n02, name + 1)
+        _kark_sort(s12, SA12, n02, name + 1)
         for i in range(n02):
             s12[SA12[i]] = i + 1
     else:
@@ -102,7 +92,6 @@ def kark_sort(s, SA, n, K):
             )
         else:
             test = s[i] < s[j]
-
         if test:
             SA[k] = i
             t += 1
@@ -112,7 +101,6 @@ def kark_sort(s, SA, n, K):
                     SA[k] = SA0[p]
                     p += 1
                     k += 1
-
         else:
             SA[k] = j
             p += 1
@@ -127,14 +115,14 @@ def kark_sort(s, SA, n, K):
         k += 1
 
 
-class Rstr_max:
+class _Rstr_max:
     def __init__(self):
         self.array_str = []
 
     def add_str(self, str_unicode):
         self.array_str.append(str_unicode)
 
-    def step1_sort_suffix(self):
+    def _step1_sort_suffix(self):
         char_frontier = chr(2)
 
         self.global_suffix = char_frontier.join(self.array_str)
@@ -156,9 +144,16 @@ class Rstr_max:
             idx += 1
             k += 1
 
-        self.res = direct_kark_sort(self.global_suffix)
+        s = self.global_suffix
+        alphabet = [None] + sorted(set(s))
+        k = len(alphabet)
+        n = len(s)
+        t = dict((c, i) for i, c in enumerate(alphabet))
+        SA = _array("i", [0] * (n + 3))
+        _kark_sort(_array("i", [t[c] for c in s] + [0] * 3), SA, n, k)
+        self.res = SA[:n]
 
-    def step2_lcp(self):
+    def _step2_lcp(self):
         n = len(self.res)
         init = [0] * n
         rank = _array("i", init)
@@ -186,7 +181,7 @@ class Rstr_max:
                 l = 0
         self.lcp = LCP
 
-    def step3_rstr(self):
+    def _step3_rstr(self):
         prev_len = 0
         idx = 0
         results = {}
@@ -244,9 +239,9 @@ class Rstr_max:
             stack._top -= m
 
     def go(self):
-        self.step1_sort_suffix()
-        self.step2_lcp()
-        return self.step3_rstr()
+        self._step1_sort_suffix()
+        self._step2_lcp()
+        return self._step3_rstr()
 
 
 def common_sub_strings(stringx: str, stringy: str, limit=25):
@@ -266,7 +261,7 @@ def common_sub_strings(stringx: str, stringy: str, limit=25):
     Returns
     -------
     list of tuple
-        [(startx1,starty1,length1),(startx2,starty2,length2), ...]
+        [(startx1, starty1, length1),(startx2, starty2, length2), ...]
 
         startx1 = startposition in x, where substring 1 starts
         starty1 = position in y where substring 1 starts
@@ -299,7 +294,7 @@ def common_sub_strings(stringx: str, stringy: str, limit=25):
 
     """
 
-    rstr = Rstr_max()
+    rstr = _Rstr_max()
     rstr.add_str("&".join((stringx, stringy)))
     r = rstr.go()
     match = {}
