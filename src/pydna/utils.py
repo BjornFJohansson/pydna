@@ -91,8 +91,7 @@ def smallest_rotation(s):
     """
     prev, rep = None, 0
     ds = _array("u", 2 * s)
-    lens = len(s)
-    lends = len(ds)
+    lens, lends = len(s), len(ds)
     old = 0
     k = 0
     w = ""
@@ -342,8 +341,7 @@ def lseguid_sticky(watson: str, crick: str, overhang: int) -> _pretty_str:
     """
     watson = watson.upper()
     crick = crick.upper()
-    lw = len(watson)
-    lc = len(crick)
+    lw, lc = len(watson), len(crick)
     if overhang == 0 and lw == lc:
         return lseguid_blunt(watson)
     else:
