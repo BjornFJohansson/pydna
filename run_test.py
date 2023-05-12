@@ -15,8 +15,24 @@ def main():
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
     args = [
-        "src",
-        "tests",
+        "src",                # doctestdir
+        "--cov=pydna",
+        "--cov-append",
+        "--cov-report=html",
+        "--cov-report=xml",
+        "--capture=no",
+        "--durations=10",
+        "--import-mode=importlib",
+        "--nbval",
+        "--current-env",
+        "--doctest-modules",
+        "-vvv",
+    ]
+
+    return_value_doc_tests = pytest.main(args)
+
+    args = [
+        "tests",             # test suite
         "--cov=pydna",
         "--cov-append",
         "--cov-report=html",
@@ -32,16 +48,18 @@ def main():
         "--profile",  # profiling
     ]
 
-    import pstats
+    return_value_unit_tests = pytest.main(args)
 
-    stats = pstats.Stats('./prof/combined.prof')
-    stats.print_stats("pydna", .1)
+
+    # import pstats
+    # stats = pstats.Stats('./prof/combined.prof')
+    # stats.print_stats("pydna", .1)
 
     # Or alternatively
     # stats.print_stats("local_path", 20) # Only show 20 of the listings
     # stats.sort_stats('cumulative').print_stats('dir_name', 20) # Sort by cumulative time
 
-    return int(pytest.main(args))
+    return int(return_value_doc_tests and return_value_unit_tests)
 
 
 if __name__ == "__main__":
