@@ -67,6 +67,7 @@ pytest-doctestplus =  ">=0.12.1"
 coverage =  ">=7.1.0"
 nbval =  ">=0.9.6"
 requests-mock = ">=1.10.0"
+pyparsing = ">=2.4.7"
 [tool.pytest.ini_options]
 minversion = "6.0.2"
 python_files = "test_*.py"
