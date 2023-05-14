@@ -244,6 +244,10 @@ class _Rstr_max:
         return self._step3_rstr()
 
 
+
+
+
+
 def common_sub_strings(stringx: str, stringy: str, limit=25):
     """Finds all common substrings between stringx and stringy
     longer than limit. This function is case sensitive.
@@ -319,6 +323,13 @@ def common_sub_strings(stringx: str, stringy: str, limit=25):
 
     match.sort(key=_itemgetter(2), reverse=True)
 
+    return match
+
+def common_sub_strings(stringx: str, stringy: str, limit=25):
+    from pydivsufsort import common_substrings
+    match = common_substrings(stringx, stringy, limit=limit)
+    match.sort()
+    match.sort(key=_itemgetter(2), reverse=True)
     return match
 
 
