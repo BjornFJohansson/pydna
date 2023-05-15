@@ -33,3 +33,4 @@ dependencies:
 - poetry
 - pip:
     - poetry-dynamic-versioning
+    - pydivsufsort
