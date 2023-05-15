@@ -70,12 +70,12 @@ def test_initialization():
 
     a = []
 
-    a.append(Dseqrecord("attt"))
-    a.append(Dseqrecord(Dseq("attt")))
-    a.append(Dseqrecord(Seq("attt")))
-    a.append(Dseqrecord(Srec(Seq("attt"))))
-    a.append(Dseqrecord(Dseqrecord("attt")))
-    a.append(Dseqrecord(Dseqrecord(Dseq("attt", circular=True)), circular=False))
+    a.append(Dseqrecord("attt", id="1"))
+    a.append(Dseqrecord(Dseq("attt"), id="2"))
+    a.append(Dseqrecord(Seq("attt"), id="3"))
+    a.append(Dseqrecord(Srec(Seq("attt"), id="4")))
+    a.append(Dseqrecord(Dseqrecord("attt"), id="5"))
+    a.append(Dseqrecord(Dseqrecord(Dseq("attt", circular=True)), id="6", circular=False))
 
     for b in a:
         assert type(b.seq) == Dseq
@@ -83,11 +83,10 @@ def test_initialization():
         assert str(b.seq.crick) == "aaat"
         assert str(b.seq) == "attt"
         assert str(b.seq) == "attt"
-        assert b.linear == b.seq.linear
-        assert b.linear == True
-        assert b.circular == False
-        assert b.seq.linear == True
         assert b.seq.circular == False
+        assert b.circular == False
+
+
 
     a = []
     a.append(Dseqrecord("attt", circular=True))
@@ -102,10 +101,7 @@ def test_initialization():
         assert str(b.seq.crick) == "aaat"
         assert str(b.seq) == "attt"
         assert str(b.seq) == "attt"
-        assert b.linear == b.seq.linear
-        assert b.linear == False
         assert b.circular == True
-        assert b.seq.linear == False
         assert b.seq.circular == True
 
     a = []
@@ -115,23 +111,18 @@ def test_initialization():
     a.append(Dseqrecord(Dseq("attt", circular=False), circular=False))
 
     circular = [True, True, False, False]
-    linear = [False, False, True, True]
 
-    for b, ci, li in zip(a, circular, linear):
+    for b, ci in zip(a, circular):
         assert type(b.seq) == Dseq
         assert str(b.seq.watson) == "attt"
         assert str(b.seq.crick) == "aaat"
         assert str(b.seq) == "attt"
         assert str(b.seq) == "attt"
-        assert b.linear == b.seq.linear
-        assert b.linear == li
         assert b.circular == ci
-        assert b.seq.linear == li
         assert b.seq.circular == ci
 
     a = []
     ds = Dseq("attt", "taaa")
-    assert ds.linear == True
     assert ds.ovhg == -1
     assert str(ds.watson) == "attt"
     assert str(ds.crick) == "taaa"
@@ -139,52 +130,37 @@ def test_initialization():
     #   attt
     #    aaat
 
-    a.append(Dseqrecord(ds, circular=False))
-    assert ds.linear == True
-    a.append(Dseqrecord(ds, linear=True))
-    assert ds.linear == True
+    dsr = Dseqrecord(ds, circular=False)
 
-    a.append(Dseqrecord(ds, circular=True))
-    assert ds.linear == True
-    a.append(Dseqrecord(ds, linear=False))
-    assert ds.linear == True
+    assert type(dsr.seq) == Dseq
+    assert dsr.seq.watson == "attt"
+    assert dsr.seq.crick == "taaa"
+    assert dsr.circular == False
+    assert dsr.seq.circular == False
+    assert str(dsr.seq) == "attta"
 
-    circular = [False, False, True, True]
-    linear = [True, True, False, False]
-    crick = ["taaa", "taaa", "aaat", "aaat"]
-    sek = ["attta", "attta", "attt", "attt"]
-    for b, ci, li, s, cri in zip(a, circular, linear, sek, crick):
+    dsr = Dseqrecord(ds, circular=True)
 
-        assert type(b.seq) == Dseq
-        assert str(b.seq.watson) == "attt"
-        assert str(b.seq.crick) == cri
-        assert str(b.seq) == s
-
-        assert b.linear == b.seq.linear
-        assert b.linear == li
-        assert b.circular == ci
-        assert b.seq.linear == li
-        assert b.seq.circular == ci
+    assert type(dsr.seq) == Dseq
+    assert dsr.seq.watson == "attt"
+    assert dsr.seq.crick == "aaat"
+    assert dsr.circular == True
+    assert dsr.seq.circular == True
+    assert str(dsr.seq) == "attt"
 
     a = []
     ds = Dseq("attt", "caaa")
-    assert ds.linear == True
+    assert ds.circular == False
     assert ds.ovhg == -1
 
     a.append(Dseqrecord(ds, circular=False))
-    assert ds.linear == True
-    a.append(Dseqrecord(ds, linear=True))
-    assert ds.linear == True
 
     with pytest.raises(TypeError):
         Dseqrecord(ds, circular=True)
 
-    assert ds.linear == True
 
     with pytest.raises(TypeError):
-        Dseqrecord(ds, linear=False)
-
-    assert ds.linear == True
+        Dseqrecord(ds, circular=True)
 
     with pytest.raises(ValueError):
         b = Dseqrecord([])
@@ -282,36 +258,26 @@ def test_linear_circular():
     a = Dseqrecord("attt")
     a.stamp("useguid")
     assert a.stamp("useguid")
-    a = Dseqrecord("attt", linear=True)
-    assert a.linear == True
+    a = Dseqrecord("attt", circular=False)
     assert a.circular == False
-    assert a.rc().linear == True
     assert a.rc().circular == False
-    assert a.seq.linear == True
-    assert a.seq.circular == False
 
-    a = Dseqrecord("attt", linear=False)
-    assert a.linear == False
+    a = Dseqrecord("attt", circular=True)
+
     assert a.circular == True
-    assert a.rc().linear == False
     assert a.rc().circular == True
-    assert a.seq.linear == False
     assert a.seq.circular == True
 
     a = Dseqrecord("attt", circular=True)
-    assert a.linear == False
+
     assert a.circular == True
-    assert a.rc().linear == False
     assert a.rc().circular == True
-    assert a.seq.linear == False
     assert a.seq.circular == True
 
     a = Dseqrecord("attt", circular=False)
-    assert a.linear == True
+
     assert a.circular == False
-    assert a.rc().linear == True
     assert a.rc().circular == False
-    assert a.seq.linear == True
     assert a.seq.circular == False
 
 import pydna
@@ -734,33 +700,31 @@ def test_cut_add():
 
     pUC19 = read("pUC19.gb")
 
-    assert pUC19.linear == False
+    assert pUC19.circular == True
 
     assert len(pUC19) == 2686
     assert len(pUC19.seq.watson) == 2686
     assert len(pUC19.seq.crick) == 2686
 
     assert pUC19.seq.circular == True
-    assert pUC19.seq.linear == False
 
     pUC19_SmaI = pUC19.cut(SmaI)
     assert len(pUC19_SmaI) == 1
     pUC19_SmaI = pUC19_SmaI[0]
 
-    assert pUC19_SmaI.linear
+    assert not pUC19_SmaI.circular
     assert len(pUC19_SmaI) == 2686
-    assert pUC19_SmaI.linear
+
 
     pUC19_SmaI_a = pUC19_SmaI.seq + a
 
-    assert pUC19_SmaI_a.linear
+    assert not pUC19_SmaI_a.circular
     assert pUC19_SmaI_a.circular == False
 
     pUC19_SmaI_a = pUC19_SmaI_a.looped()
     assert len(pUC19_SmaI_a) == 2778
 
     assert pUC19_SmaI_a.circular
-    assert pUC19_SmaI_a.linear == False
     assert eq(pUC19_SmaI_a, read("pUC19-SmaI-a.gb"))
 
     """ sticky end cloning """
@@ -778,12 +742,12 @@ def test_cut_add():
     assert len(pUC19_BamHI_a.watson) == len(pUC19_BamHI_a.crick) == 2772
 
     assert pUC19_BamHI_a.circular == False
-    assert pUC19_BamHI_a.linear == True
+
 
     pUC19_BamHI_a = pUC19_BamHI_a.looped()
 
     assert pUC19_BamHI_a.circular == True
-    assert pUC19_BamHI_a.linear == False
+
 
     assert eq(pUC19_BamHI_a, read("pUC19-BamHI-a.gb"))
 
@@ -792,7 +756,7 @@ def test_cut_add():
     pUC19_BamHI_a_rc = pUC19_BamHI_a_rc.looped()
 
     assert pUC19_BamHI_a.circular == True
-    assert pUC19_BamHI_a.linear == False
+
     assert eq(pUC19_BamHI_a_rc, read("pUC19-BamHI-a-rc.gb"))
 
     """ adding (ligating) dsDNA objects """
@@ -1160,16 +1124,18 @@ def test_features_on_slice():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from Bio.SeqFeature import SeqFeature
-    from Bio.SeqFeature import FeatureLocation
+    from Bio.SeqFeature import SimpleLocation
 
     dseq_record = Dseqrecord(Dseq("ACTCTTTCTCTCTCT", circular=True))
-    dseq_record.features = [SeqFeature(FeatureLocation(start=2, end=4))]
+    dseq_record.features = [SeqFeature(SimpleLocation(start=2, end=4))]
     assert len(dseq_record[6:1].features) == 0
     assert len(dseq_record[6:3].features) == 0
     assert len(dseq_record[6:4].features) == 1
     assert len(dseq_record[6:5].features) == 1
+    assert len(dseq_record[:].features) == 1
 
-    dseq_record2 = Dseqrecord(Dseq("ACTCTTTCTCTCTCT", linear=True))
+
+    dseq_record2 = Dseqrecord(Dseq("ACTCTTTCTCTCTCT"))
     assert dseq_record2[6:1].seq == Dseq("")
 
 

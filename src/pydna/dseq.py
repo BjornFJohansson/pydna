@@ -160,13 +160,10 @@ class Dseq(_Seq):
     ValueError: ovhg defined without crick strand!
 
 
-    The shape of the fragment is set by either:
-
-    1. linear   = False, True
-    2. circular = True, False
+    The shape of the fragment is set by circular = True, False
 
     Note that both ends of the DNA fragment has to be compatible to set
-    circular = True (or linear = False).
+    circular = True.
 
 
     >>> Dseq("aaa","ttt")
@@ -185,10 +182,6 @@ class Dseq(_Seq):
     Dseq(-4)
     aaa
      ttt
-    >>> Dseq("aaa", "ttt", linear = False ,ovhg=0)
-    Dseq(o3)
-    aaa
-    ttt
     >>> Dseq("aaa", "ttt", circular = True , ovhg=0)
     Dseq(o3)
     aaa
@@ -240,7 +233,7 @@ class Dseq(_Seq):
     >>> s[::2]
     'gac'
     >>> from pydna.dseq import Dseq
-    >>> d=Dseq(s, linear=True)
+    >>> d=Dseq(s, circular=False)
     >>> d[2:3]
     Dseq(-1)
     a
@@ -302,8 +295,8 @@ class Dseq(_Seq):
                  watson,
                  crick=None,
                  ovhg=None,
-                 linear=None,
-                 circular=None,
+                 # linear=None,
+                 circular=False,
                  pos=0):
 
         if crick is None:
@@ -372,12 +365,13 @@ class Dseq(_Seq):
                     else:
                         self._data = bytes(watson, encoding="ASCII")
 
-        self._circular = (bool(circular)
-                          and bool(linear) ^ bool(circular)
-                          or linear is False
-                          and circular is None)
+        # self._circular = (bool(circular)
+        #                   and bool(linear) ^ bool(circular)
+        #                   or linear is False
+        #                   and circular is None)
 
-        self._linear = not self._circular
+        # self._linear = not self._circular
+        self.circular = circular
         self.watson = _pretty_str(watson)
         self.crick = _pretty_str(crick)
         self.length = len(self._data)
@@ -385,14 +379,19 @@ class Dseq(_Seq):
         self.pos = pos
 
     @classmethod
-    def quick(cls, watson: str, crick: str, ovhg=0,
-              linear=True, circular=False, pos=0):
+    def quick(cls,
+              watson: str,
+              crick: str,
+              ovhg=0,
+              # linear=True,
+              circular=False,
+              pos=0):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(watson)
         obj.crick = _pretty_str(crick)
         obj._ovhg = ovhg
-        obj._circular = circular
-        obj._linear = linear
+        obj.circular = circular
+        # obj._linear = linear
         obj.length = max(len(watson) + max(0, ovhg),
                          len(crick) + max(0, -ovhg))
         obj.pos = pos
@@ -405,13 +404,18 @@ class Dseq(_Seq):
         return obj
 
     @classmethod
-    def from_string(cls, dna: str, *args, linear=True, circular=False, **kwargs):
+    def from_string(cls,
+                    dna: str,
+                    *args,
+                    # linear=True,
+                    circular=False,
+                    **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(dna)
         obj.crick = _pretty_str(_rc(dna))
         obj._ovhg = 0
-        obj._circular = circular
-        obj._linear = linear
+        obj.circular = circular
+        # obj._linear = linear
         obj.length = len(dna)
         obj.pos = 0
         obj._data = bytes(dna, encoding="ASCII")
@@ -427,8 +431,8 @@ class Dseq(_Seq):
         ovhg = obj._ovhg = len(w)-len(w.lstrip()) - (len(c) - len(c.lstrip()))
         watson = obj.watson = _pretty_str(w.strip())
         crick = obj.crick = _pretty_str(c.strip()[::-1])
-        obj._circular = False
-        obj._linear = True
+        obj.circular = False
+        # obj._linear = True
         obj.length = max(len(watson) + max(0, ovhg),
                          len(crick) + max(0, -ovhg))
         obj.pos = 0
@@ -447,17 +451,17 @@ class Dseq(_Seq):
         each other"""
         return self._ovhg
 
-    @property
-    def linear(self):
-        """The linear property can not be set directly.
-        Use an empty slice [:] to create a linear object."""
-        return self._linear
+    # @property
+    # def linear(self):
+    #     """The linear property can not be set directly.
+    #     Use an empty slice [:] to create a linear object."""
+    #     return self._linear
 
-    @property
-    def circular(self):
-        """The circular property can not be set directly.
-        Use :meth:`looped` to create a circular Dseq object"""
-        return self._circular
+    # @property
+    # def circular(self):
+    #     """The circular property can not be set directly.
+    #     Use :meth:`looped` to create a circular Dseq object"""
+    #     return self._circular
 
     def mw(self):
         """This method returns the molecular weight of the DNA molecule
@@ -505,7 +509,7 @@ class Dseq(_Seq):
             self.watson.upper(),
             self.crick.upper(),
             ovhg=self.ovhg,
-            linear=self.linear,
+            # linear=self.linear,
             circular=self.circular,
             pos=self.pos,
         )
@@ -537,7 +541,7 @@ class Dseq(_Seq):
             self.watson.lower(),
             self.crick.lower(),
             ovhg=self.ovhg,
-            linear=self.linear,
+            # linear=self.linear,
             circular=self.circular,
             pos=self.pos,
         )
@@ -581,7 +585,7 @@ class Dseq(_Seq):
         2
         """
 
-        if self.linear:
+        if not self.circular:
             return _Seq.find(self, sub, start, end)
 
         return (_pretty_str(self) + _pretty_str(self)).find(sub, start, end)
@@ -589,7 +593,7 @@ class Dseq(_Seq):
     def __getitem__(self, sl):
         """Returns a subsequence. This method is used by the slice notation"""
 
-        if self.linear:
+        if not self.circular:
 
             x = len(self.crick) - self._ovhg - len(self.watson)
 
@@ -600,14 +604,17 @@ class Dseq(_Seq):
                 (len(sns) - len(sns.lstrip()), -len(asn) + len(asn.lstrip())), key=abs
             )
 
-            return Dseq(sns.strip(), asn[::-1].strip(), ovhg=ovhg, linear=True)
+            return Dseq(sns.strip(), asn[::-1].strip(), ovhg=ovhg,
+                        # linear=True
+                        )
         else:
             sl = slice(sl.start or 0, sl.stop or len(self), sl.step)
             if sl.start > len(self) or sl.stop > len(self):
                 return Dseq("")
             if sl.start < sl.stop:
                 return Dseq(
-                    self.watson[sl], self.crick[::-1][sl][::-1], ovhg=0, linear=True
+                    self.watson[sl], self.crick[::-1][sl][::-1], ovhg=0,
+                    # linear=True
                 )
             else:
                 try:
@@ -626,7 +633,7 @@ class Dseq(_Seq):
                     + self.crick[: len(self) - start : stp]
                 )
 
-                return Dseq(w, c, ovhg=0, linear=True)
+                return Dseq(w, c, ovhg=0) # , linear=True)
 
     def __eq__(self, other):
         """Compare to another Dseq object OR an object that implements
@@ -706,7 +713,7 @@ class Dseq(_Seq):
                 "{klass}({top}{size})\n" "{a}{b}{c}\n" "{d}{e}{f}"
             ).format(
                 klass=self.__class__.__name__,
-                top={True: "-", False: "o"}[self.linear],
+                top={False: "-", True: "o"}[self.circular],
                 size=len(self),
                 a=a,
                 b=b,
@@ -720,7 +727,7 @@ class Dseq(_Seq):
             return _pretty_str(
                 "{}({}{})\n{}\n{}".format(
                     self.__class__.__name__,
-                    {True: "-", False: "o"}[self.linear],
+                    {False: "-", True: "o"}[self.circular],
                     len(self),
                     self._ovhg * " " + self.watson,
                     -self._ovhg * " " + self.crick[::-1],
@@ -753,7 +760,7 @@ class Dseq(_Seq):
             self.crick,
             self.watson,
             ovhg=ovhg,
-            linear=self.linear,
+            # linear=self.linear,
             circular=self.circular,
         )
 
@@ -761,7 +768,7 @@ class Dseq(_Seq):
 
     def shifted(self, shift):
         """Shifted version of a circular Dseq object."""
-        if self.linear:
+        if not self.circular:
             raise TypeError("DNA is not circular.")
         shift = shift % len(self)
         if not shift:
@@ -818,10 +825,10 @@ class Dseq(_Seq):
                 self.watson,
                 self.crick[-self._ovhg :] + self.crick[: -self._ovhg],
                 ovhg=0,
-                linear=False,
+                # linear=False,
                 circular=True,
             )
-            assert len(nseq.crick) == len(nseq.watson)
+            # assert len(nseq.crick) == len(nseq.watson)
             return nseq
         else:
             raise TypeError(
@@ -860,7 +867,7 @@ class Dseq(_Seq):
             "instead of obj.tolinear().",
             _PydnaDeprecationWarning,
         )
-        if self.linear:
+        if not self.circular:
             raise TypeError("DNA is not circular.\n")
         selfcopy = _copy.copy(self)
         selfcopy._linear = True
@@ -1284,7 +1291,7 @@ class Dseq(_Seq):
 
     def cseguid(self):
         """Circular uSEGUID (cSEGUID) for the sequence."""
-        if self.linear:
+        if not self.circular:
             raise TypeError("cseguid is only defined for circular sequences.")
         return _cseg(str(self.watson))
 
@@ -1332,7 +1339,7 @@ class Dseq(_Seq):
         >>> a.isblunt()
         False
         """
-        return self._ovhg == 0 and len(self.watson) == len(self.crick) and self._linear
+        return self._ovhg == 0 and len(self.watson) == len(self.crick) and not self.circular
 
     def cas9(self, RNA: str):
         """docstring."""
@@ -1402,12 +1409,13 @@ class Dseq(_Seq):
 
         pad = "n" * 50
 
-        if self.linear:
-            dsseq = self.mung()
-        else:
+        if self.circular:
             dsseq = Dseq.from_string(self._data.decode("ASCII"),
-                                     linear=True,
+                                     # linear=True,
                                      circular=False)
+        else:
+            dsseq = self.mung()
+
         if len(enzymes) == 1 and hasattr(enzymes[0], "intersection"):
             # argument is probably a RestrictionBatch
             enzymecuts = []
@@ -1434,7 +1442,7 @@ class Dseq(_Seq):
         if not enzymes:
             return ()
 
-        if self.linear:
+        if not self.circular:
             frags = [self]
         else:
             l = len(self)
@@ -1499,22 +1507,15 @@ class Dseq(_Seq):
                         return (wpos-1, cpos-1, enzyme.ovhg)
         return ()
 
-# wpos - max(0, enzyme.ovhg) == len(crick) - cpos + min(0, enzyme.ovhg) + 2
-# cpos == len(self.watson) - wpos + enzyme.ovhg + 2
+
 
 if __name__ == "__main__":
 
-    a = Dseq("aaaaaaaGGTACCggtctcaaaa")
-    from Bio.Restriction import BsaI
-    a._firstcut(BsaI)
+    import os as _os
 
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"] = ""
+    import doctest
 
-
-    # import os as _os
-
-    # cached = _os.getenv("pydna_cached_funcs", "")
-    # _os.environ["pydna_cached_funcs"] = ""
-    # import doctest
-
-    # doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    # _os.environ["pydna_cached_funcs"] = cached
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"] = cached

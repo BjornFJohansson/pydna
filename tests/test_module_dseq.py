@@ -103,7 +103,7 @@ def test_initialization():
 
     assert obj.lseguid() == "bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
 
-    assert obj == Dseq("a", "t", circular=False, linear=True)
+    assert obj == Dseq("a", "t", circular=False)
 
     with pytest.raises(ValueError):
         Dseq("a", ovhg=0)
@@ -116,32 +116,21 @@ def test_initialization():
 
     obj2 = Dseq("gata")
 
-    assert obj2.linear == True
     assert obj2.circular == False
 
     l = Dseq("gt")
     c = l.looped()
 
-    assert l.linear
     assert not l.circular
     assert c.circular
-    assert not c.linear
 
-    assert Dseq("gt", linear=None, circular=None) == l
-    assert Dseq("gt", linear=None, circular=False) == l
-    assert Dseq("gt", linear=None, circular=True) == c
-    assert Dseq("gt", linear=False, circular=None) == c
-    assert Dseq("gt", linear=False, circular=False) == l
-    assert Dseq("gt", linear=False, circular=True) == c
-    assert Dseq("gt", linear=True, circular=None) == l
-    assert Dseq("gt", linear=True, circular=False) == l
-    assert Dseq("gt", linear=True, circular=True) == l
+    assert Dseq("gt",  circular=False) == l
+    assert Dseq("gt",  circular=True) == c
 
-    assert Dseq.from_string("A") == Dseq("A") == Dseq("A", linear=True)
+    assert Dseq.from_string("A") == Dseq("A")
     assert (
-        Dseq.from_string("A", linear=False, circular=True)
+        Dseq.from_string("A", circular=True)
         == Dseq("A", circular=True)
-        == Dseq("A", linear=False)
     )
 
 
@@ -170,7 +159,7 @@ def test_cut_around_and_religate():
     from Bio.Restriction import KpnI, BamHI, Acc65I
 
     def cut_and_religate_Dseq(seq_string, enz, top):
-        ds = Dseq(seq_string, linear=top)
+        ds = Dseq(seq_string, circular = not top)
         frags = list(ds.cut(enz))
         if not frags:
             return
@@ -214,7 +203,6 @@ def test_Dseq_cutting_adding():
         "CCTAGGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCCTAGG"[
             ::-1
         ],
-        linear=True,
         ovhg=0,
     )
 
@@ -233,7 +221,6 @@ def test_Dseq_cutting_adding():
         "nGACGTCagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCTTAAGn"[
             ::-1
         ],
-        linear=True,
         ovhg=0,
     )
 
@@ -253,7 +240,6 @@ def test_Dseq_cutting_adding():
         "nCTTAAGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaGACGTCn"[
             ::-1
         ],
-        linear=True,
         ovhg=0,
     )
 
@@ -535,7 +521,6 @@ def test_dseq():
         "tagcgtagctgtagtatgtgatctggtcta",
         "tagaccagatcacatactacagctacgcta",
         circular=True,
-        linear=False,
     )
     obj2 = Dseq(
         "tagcgtagctgtagtatgtgatctggtcta",
@@ -543,7 +528,9 @@ def test_dseq():
         circular=True,
     )
     obj3 = Dseq(
-        "tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta", linear=False
+        "tagcgtagctgtagtatgtgatctggtcta",
+        "tagaccagatcacatactacagctacgcta",
+        circular=True
     )
 
     assert obj1 == obj2 == obj3
