@@ -1,6 +1,5 @@
 *.prof
 
-prof/
 tests/prof/
 
 src/pydna/_version.py*
