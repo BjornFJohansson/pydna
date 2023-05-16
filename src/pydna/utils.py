@@ -207,9 +207,9 @@ def memorize(filename):
             _module_logger.info("cache filename                   = %s", filename)
             _module_logger.info(
                 "os.environ['pydna_cached_funcs'] = %s",
-                _os.environ["pydna_cached_funcs"],
+                _os.getenv("pydna_cached_funcs", ""),
             )
-            if filename not in _os.environ["pydna_cached_funcs"]:
+            if filename not in _os.getenv("pydna_cached_funcs", ""):
                 _module_logger.info(
                     "cache filename not among cached functions, made it new!"
                 )
