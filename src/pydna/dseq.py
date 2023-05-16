@@ -870,8 +870,7 @@ class Dseq(_Seq):
         if not self.circular:
             raise TypeError("DNA is not circular.\n")
         selfcopy = _copy.copy(self)
-        selfcopy._linear = True
-        selfcopy._circular = False
+        selfcopy.circular = False
         return selfcopy  # self.__class__(self.watson, linear=True)
 
     def five_prime_end(self):
