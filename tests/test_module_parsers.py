@@ -193,6 +193,10 @@ def test_misc_parse():
     assert a.format("gb")[3268:3278] == "2micron 2µ"
 
     x, y = parse("pth1.txt")
+    x.format("gb")
+    y.format("gb")
+    assert x.format()[3268:3278] == "2micron 2µ"
+    assert x.features[13].qualifiers["label"][0] == u"2micron 2µ"
 
     assert "".join(a.format("gb").splitlines()[1:]) == "".join(
         x.format("gb").splitlines()[1:]

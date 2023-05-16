@@ -177,21 +177,21 @@ def test_read_from_unicode():
 def test_read_from_file():
     from pydna.readers import read
     from pydna.parsers import parse
+    from pathlib import Path
 
     a = read("read1.gb")
     b = read("read2.gb")
     c = read("read3.fasta")
     d = read("read4.fasta")
-    x, y = parse("pth1.txt")
+    e = read(Path("read1.gb"))
+
 
     a.format("gb")
     b.format("gb")
     c.format("gb")
     d.format("gb")
-    x.format("gb")
-    y.format("gb")
-    assert x.format()[3268:3278] == "2micron 2µ"
-    assert x.features[13].qualifiers["label"][0] == u"2micron 2µ"
+    e.format("gb")
+
     assert (
         str(a.seq).lower()
         == str(b.seq).lower()
