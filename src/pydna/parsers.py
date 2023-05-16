@@ -122,7 +122,7 @@ def parse(data, ds=True):
 
         return result_list
 
-    if isinstance(data, (str, bytes)):  # data is probably a string
+    if not hasattr(data, "__iter__") or isinstance(data, (str, bytes)):
         data = (data,)
 
     sequences = []
