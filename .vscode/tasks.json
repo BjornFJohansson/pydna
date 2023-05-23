@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks":[
+        {
+            "label": "Python: lint all files",
+            "type": "shell",
+            "command": "flake8 || true",
+            "presentation": {
+                "reveal": "never",
+                "close": true,
+                "revealProblems": "onProblem",
+            },
+            "problemMatcher": {
+                "owner": "python",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+):\\s+(.+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "message": 4
+                }
+            }
+        }
+    ]
+}
