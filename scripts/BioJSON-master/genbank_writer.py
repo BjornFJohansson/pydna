@@ -105,7 +105,7 @@ def toGB(jseqs):
     "parses json jseq data and prints out ApE compatible genbank"
 
     # take first jseq from parsed list
-    if type(jseqs) == type([]):
+    if isinstance(jseqs, list):
         jseq = jseqs[0]
     else:
         jseq = jseqs

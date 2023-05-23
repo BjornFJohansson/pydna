@@ -32,9 +32,6 @@ Table II.  The  optimal  annealing  temperature  (TaOPT)  of  PCR
 20161-24182 4046  2 59.8 (3) 1.71 61.4 1.95 0.62
 20161-31017 10881 2 56.6 (3) 0.47 57.6 0.09 0.00
 """
-
-import pandas as pd
-from io import StringIO
 import math
 
 """

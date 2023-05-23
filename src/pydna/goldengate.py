@@ -24,12 +24,10 @@
 
 """Assembly of sequences by GoldenGate ligation assembly."""
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from copy import deepcopy as _deepcopy
+from Bio.Restriction import BbsI
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-from Bio.Restriction import BsaI, BsmBI, BbsI, FokI
 
 DNA = _Dseqrecord("gatcGAAGACtagagtctgattcg")
 

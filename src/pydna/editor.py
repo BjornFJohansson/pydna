@@ -70,14 +70,14 @@ class Editor:
         seq = _copy.deepcopy(seq_to_open)
         for feature in seq.features:
             qf = feature.qualifiers
-            if not "label" in qf:
+            if "label" not in qf:
                 try:
                     qf["label"] = qf["note"]
                 except KeyError:
                     qf["label"] = ["feat{}".format(len(feature))]
-            if not "ApEinfo_fwdcolor" in qf:
+            if "ApEinfo_fwdcolor" not in qf:
                 qf["ApEinfo_fwdcolor"] = "#ffff49"
-            if not "ApEinfo_revcolor" in qf:
+            if "ApEinfo_revcolor" not in qf:
                 qf["ApEinfo_revcolor"] = "#ffe6cc"
 
         seq.features.sort(key=_operator.attrgetter("location.start"))

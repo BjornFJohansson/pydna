@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pydna import Dseqrecord, read, pcr, circular_assembly, sync
+from pydna import read, pcr, circular_assembly, sync
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from Bio.SeqUtils.CheckSum import seguid
 
 
 info = """

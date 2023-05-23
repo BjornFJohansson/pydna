@@ -1,6 +1,5 @@
 #! /usr/bin/python
 import logging
-import test_log
 
 
 def main():

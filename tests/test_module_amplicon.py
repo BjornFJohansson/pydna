@@ -51,7 +51,7 @@ def test_amplicon():
 
     arg = SeqRecord(Seq("aaa"))
 
-    x = Amplicon.from_SeqRecord(arg)
+    Amplicon.from_SeqRecord(arg)
 
 
 def test_amplicon_dbd():

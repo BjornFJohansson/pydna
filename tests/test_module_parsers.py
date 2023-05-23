@@ -72,8 +72,8 @@ def test_parse1():
     correct = """ATGACTGAATTCAAGGCCGGTTCTGCTAAGAAAGGTGCTACACTTTTCAAGACTAGATGTCTACAATGCCACACCGTGGAAAAGGGTGGCCCACATAAGGTTGGTCCAAACTTGCATGGTATCTTTGGCAGACACTCTGGTCAAGCTGAAGGGTATTCGTACACAGATGCCAATATCAAGAAAAACGTGTTGTGGGACGAAAATAACATGTCAGAGTACTTGACTAACCCAAAGAAATATATTCCTGGTACCAAGATGGCCTTTGGTGGGTTGAAGAAGGAAAAAGACAGAAACGACTTAATTACCTACTTGAAAAAAGCCTGTGAGTAA"""
 
     assert str(result.seq) == correct
-    assert result.linear == True
-    assert result.circular == False
+    assert result.linear is True
+    assert result.circular is False
 
     seqs = parse("RefDataBjorn.fas")
 
@@ -81,18 +81,18 @@ def test_parse1():
     assert list(set([len(a) for a in seqs])) == [901]
     pAG25 = read("pAG25.gb")
 
-    assert pAG25.circular == True
-    assert pAG25.linear == False
+    assert pAG25.circular is True
+    assert pAG25.linear is False
 
     pCAPs = read("pCAPs.gb")
 
-    assert pCAPs.circular == True
-    assert pCAPs.linear == False
+    assert pCAPs.circular is True
+    assert pCAPs.linear is False
 
     pUC19 = read("pUC19.gb")
 
-    assert pUC19.circular == True
-    assert pUC19.linear == False
+    assert pUC19.circular is True
+    assert pUC19.linear is False
 
     input = """
     ID   example    standard; DNA; UNC; 3 BP.
@@ -129,7 +129,6 @@ def test_parse1():
 
 def test_parse2():
     from pydna.parsers import parse
-    from pydna.readers import read
 
     seqs = parse("RefDataBjorn.fas")
 
@@ -139,7 +138,7 @@ def test_parse2():
     for i, s in enumerate(seqs):
         a = s.description
         b = a.split()
-        c = "|".join([b[0], b[1], b[3]])
+        # c = "|".join([b[0], b[1], b[3]])
         s.id = b[2].replace(" ", "_") + "_" + str(i)
         s.description = ""
         if b[3] == "Zenion hololepis":
@@ -178,10 +177,10 @@ def test_misc_parse():
     from Bio.SeqIO import read as BPread
     from Bio.SeqIO import parse as BPparse
 
-    q = BPread("read1.gb", "gb")
-    w = BPread("read2.gb", "gb")
-    e = BPread("read3.fasta", "fasta")
-    r = BPread("read4.fasta", "fasta")
+    BPread("read1.gb", "gb")
+    BPread("read2.gb", "gb")
+    BPread("read3.fasta", "fasta")
+    BPread("read4.fasta", "fasta")
 
     with open("pth1.txt", "r", encoding="utf-8") as f:
         a, b = BPparse(f, "gb")

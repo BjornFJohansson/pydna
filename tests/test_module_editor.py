@@ -6,7 +6,6 @@ from unittest import mock
 
 
 def test_editor_wo_features(monkeypatch):
-    import subprocess
     from pydna import editor
 
     Popen = mock.MagicMock(name="subprocess.Popen")
@@ -20,7 +19,6 @@ def test_editor_wo_features(monkeypatch):
 
 
 def test_editor_with_feature_label(monkeypatch):
-    import subprocess
     from pydna import editor
 
     Popen = mock.MagicMock(name="subprocess.Popen")
@@ -35,7 +33,6 @@ def test_editor_with_feature_label(monkeypatch):
 
 
 def test_editor_with_feature_note(monkeypatch):
-    import subprocess
     from pydna import editor
 
     Popen = mock.MagicMock(name="subprocess.Popen")
@@ -51,7 +48,6 @@ def test_editor_with_feature_note(monkeypatch):
 
 
 def test_editor_with_feature_wo_label_and_note(monkeypatch):
-    import subprocess
     from pydna import editor
 
     Popen = mock.MagicMock(name="subprocess.Popen")

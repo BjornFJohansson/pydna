@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import matplotlib
 
 import numpy as _np
-import matplotlib.ticker as _mtick
 from matplotlib import pyplot as _plt
-from matplotlib import cm as _cm
 from matplotlib.ticker import FixedLocator as _FixedLocator
 
 # from mpldatacursor       import datacursor   as _datacursor
@@ -16,7 +13,6 @@ from scipy.optimize import leastsq as _leastsq
 from scipy.optimize import fsolve as _fsolve
 from scipy import stats as _stats
 from io import BytesIO as _BytesIO
-from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 
 
 horizontal_data_table = """
@@ -607,7 +603,7 @@ class Gel:
             if cursor_ovr:
                 for key in cursor_ovr:
                     cursor_args[key] = cursor_ovr[key]
-            if cursor_args["hover"] == True:
+            if cursor_args["hover"] is True:
                 cursor_args["display"] = "single"
             # _datacursor(bands, **cursor_args)
             return _plt

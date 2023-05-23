@@ -45,7 +45,6 @@
 #                   .:^!?JY5555PPPPPPPPPP555555YYJ??7~^:.
 #                            ...............
 
-
 # Cloning with Python
 
 myinsertdna = "gtctgtgttgtt"

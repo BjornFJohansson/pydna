@@ -11,6 +11,8 @@ was written by Romain Brixtel (rbrixtel_at_gmail_dot_com)
 https://code.google.com/p/py-rstr-max
 https://github.com/gip0/py-rstr-max
 the original code was covered by an MIT licence."""
+# this module will be replaced by functions from pydivsufsort
+# flake8: noqa
 
 
 from array import array as _array

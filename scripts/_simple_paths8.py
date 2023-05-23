@@ -48,10 +48,15 @@ def _all_simple_paths_graph(G, source, target, cutoff=None):
 
 
 def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
-    if data == True:
-        edge_data = lambda u, v, n, E, I: (u, v, dict([E[n][I[n]]]))
+    if data is True:
+
+        def edge_data(u, v, n, E, i):
+            return (u, v, dict([E[n][i[n]]]))
+
     else:
-        edge_data = lambda u, v, n, E, I: (u, v)
+
+        def edge_data(u, v, n, E, i):
+            return (u, v)
 
     for path in _all_simple_paths_graph(G, source, target, cutoff=cutoff):
         edges = list(zip(path[:-1], path[1:]))
@@ -61,18 +66,18 @@ def all_simple_paths_edges(G, source, target, cutoff=None, data=False):
             edge_items = list(G[u][v].items())
             E += [edge_items]
             N += [len(edge_items)]
-        I = [0 for n in N]
-        idx = [i for i in reversed(list(range(len(I))))]
+        i_list = [0 for n in N]
+        idx = [i for i in reversed(list(range(len(i_list))))]
         while True:
             path_edges = []
             for n, (u, v) in enumerate(edges):
-                path_edges += [edge_data(u, v, n, E, I)]
+                path_edges += [edge_data(u, v, n, E, i_list)]
             yield path_edges
             for i in idx:
-                I[i] = (I[i] + 1) % N[i]
-                if I[i] != 0:
+                i_list[i] = (i_list[i] + 1) % N[i]
+                if i_list[i] != 0:
                     break
-            if i == 0 and I[0] == 0:
+            if i == 0 and i_list[0] == 0:
                 break
 
 
@@ -83,18 +88,18 @@ def all_circular_paths_edges(G):
         for u, v in edges:
             n = len(G[u][v])
             N += [n]
-        I = [0 for n in N]
-        idx = [i for i in reversed(list(range(len(I))))]
+        i_list = [0 for n in N]
+        idx = [i for i in reversed(list(range(len(i_list))))]
         while True:
             path_edges = []
             for i, (u, v) in enumerate(edges):
-                path_edges += [(u, v, G[u][v][I[i]])]
+                path_edges += [(u, v, G[u][v][i_list[i]])]
             yield path_edges
             for i in idx:
-                I[i] = (I[i] + 1) % N[i]
-                if I[i] != 0:
+                i_list[i] = (i_list[i] + 1) % N[i]
+                if i_list[i] != 0:
                     break
-            if i == 0 and I[0] == 0:
+            if i == 0 and i_list[0] == 0:
                 break
 
 

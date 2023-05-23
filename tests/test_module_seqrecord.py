@@ -63,13 +63,9 @@ def test_add_feature():
 
 
 def test_stamp():
-    from pydna.seq import Seq
     from pydna.seqrecord import SeqRecord
-    from pydna.readers import read
-    from pydna.utils import eq
 
     from Bio.Seq import Seq as bpSeq
-    from Bio.SeqRecord import SeqRecord as bpSecRecord
 
     a = SeqRecord("attt")
     assert a.stamp("useguid") == "ot6JPLeAeMmfztW1736Kc6DAqlo"
@@ -174,7 +170,6 @@ def test_format():
 
 
 def test_seqrecord():
-    import pydna
     from pydna import seqrecord
     from pydna.seq import Seq
 
@@ -273,7 +268,7 @@ def test_seqrecord():
     obj.description = "new456"
     assert obj.definition == obj.description == "new456"
 
-    with pytest.warns(_PydnaWarning, match="truncated") as pdw:
+    with pytest.warns(_PydnaWarning, match="truncated"):
         obj.locus = "12345678901234567"
 
     lf = str(
@@ -291,7 +286,7 @@ def test_seqrecord():
     assert str(exft.seq) == "ATGAAATAA"
     import textwrap
 
-    gbf = textwrap.dedent(
+    textwrap.dedent(
         """LOCUS       1234567890123456          15 bp    DNA              UNK 24-DEC-1970
     DEFINITION  new456.
     ACCESSION   new456
@@ -319,7 +314,7 @@ def test_seqrecord():
 
     # print(obj.__hash__())
 
-    rare_codons = {
+    rare_codons = {  # noqa: F841
         "sce": ["CGA", "CGG", "CGC", "CCG", "CTC", "GCG"],
         "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC", "TCG"],
     }
@@ -341,7 +336,6 @@ def test_seqrecord():
 
 def test_cai():
     pytest.importorskip("cai2")
-    import pydna
     from pydna import seqrecord
     from pydna.seq import Seq
     from pydna.codon import rare_codons

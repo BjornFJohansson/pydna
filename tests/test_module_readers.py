@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-import sys
 
 
 def test_read():
@@ -36,24 +35,20 @@ def test_read_primer():
 def test_pydna_read_test():
     from pydna.readers import read
 
-    # print("sys.getdefaultencoding()", sys.getdefaultencoding())
-    import locale
-
     # print("locale.getpreferredencoding()", locale.getpreferredencoding())
     assert read("pydna_read_test.txt").format("gb")[349:368] == '/label="2micron 2µ"'
 
 
 def test_parse_and_read_with_biopython_and_pydna():
-    from pydna.readers import read
     from pydna.parsers import parse
 
     from Bio.SeqIO import read as BPread
     from Bio.SeqIO import parse as BPparse
 
-    q = BPread("read1.gb", "gb")
-    w = BPread("read2.gb", "gb")
-    e = BPread("read3.fasta", "fasta")
-    r = BPread("read4.fasta", "fasta")
+    BPread("read1.gb", "gb")
+    BPread("read2.gb", "gb")
+    BPread("read3.fasta", "fasta")
+    BPread("read4.fasta", "fasta")
 
     # a, b = BPparse("pth1.txt", "gb")
     with open("pth1.txt", "r", encoding="utf-8") as f:
@@ -163,7 +158,6 @@ def test_read_from_string():
 
 
 def test_read_from_unicode():
-    from pydna.readers import read
     from pydna.parsers import parse
 
     with open("pth1.txt", "r", encoding="utf-8") as f:

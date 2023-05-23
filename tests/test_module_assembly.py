@@ -14,7 +14,7 @@ def test_built(monkeypatch):
     lin = asm.assemble_linear()
     crc = asm.assemble_circular()
 
-    assert [l.seq for l in lin] == [l.seq for l in assembly.linear_results]
+    assert [li.seq for li in lin] == [li.seq for li in assembly.linear_results]
     assert [c.seq for c in crc] == [c.seq for c in assembly.circular_results]
 
 
@@ -22,8 +22,6 @@ def test_new_assembly(monkeypatch):
     monkeypatch.setenv("pydna_cached_funcs", "")
     from pydna.dseqrecord import Dseqrecord
     from pydna import assembly
-    from pydna.parsers import parse
-    from pydna.utils import eq
     from importlib import reload
     from Bio.SeqFeature import SeqFeature
     from Bio.SeqFeature import FeatureLocation
@@ -110,10 +108,10 @@ def test_new_assembly(monkeypatch):
     ]
 
     ln0 = assembly.Assembly((a, b, c), limit=14)
-    l = ln0.assemble_linear()[0]
+    ln = ln0.assemble_linear()[0]
 
     assert (
-        str(l.seq)
+        str(ln.seq)
         == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg"
     )
 
@@ -123,7 +121,7 @@ def test_new_assembly(monkeypatch):
         + [f.extract(c).seq for f in c.features]
     )
 
-    assembled_feature_seqs = [f.extract(l).seq for f in l.features]
+    assembled_feature_seqs = [f.extract(ln).seq for f in ln.features]
     for f1, f2 in zip(feature_seqs, assembled_feature_seqs):
         assert f1 == f2
 
@@ -134,7 +132,7 @@ def test_new_assembly(monkeypatch):
     # --------------
     brc = Dseqrecord("agatacagccagaataAAAAAtagagcacagcaca", name="twoArc35")
     # tgtgctgtgctctaTTTTTtattctggctgtatct
-    brc.add_feature(1, 34, label="scnd")  #   --------------
+    brc.add_feature(1, 34, label="scnd")  # --------------
     # gmfjuQLVSPP4ayjJMPuig1jxxmE
     # tattctggctgtatct 16
     c = Dseqrecord("tattctggctgtatctGGGGGTacgatgctatactgg", name="three37")
@@ -549,7 +547,7 @@ algorithm..: common_sub_strings"""
 |                                /\\
 |                                98-
 |                                   |
- -----------------------------------"""
+ -----------------------------------"""  # noqa: F841
 
     # assert h == candidate.small_figure()
 

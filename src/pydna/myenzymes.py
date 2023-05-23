@@ -37,7 +37,7 @@ except IOError:
     _module_logger.warning(
         "%s found, but could not be read.", _os.environ["pydna_enzymes"]
     )
-except Exception as e:
+except Exception:
     _module_logger.warning(_traceback.format_exc())
 
 myenzymes = _RestrictionBatch(

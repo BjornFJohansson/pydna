@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import warnings
+
+
 def guess_alphabet(sequence):
     """
     guess_alphabet(sequence)

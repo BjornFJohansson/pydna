@@ -484,7 +484,6 @@ def test_smallest_rotation():
 
 
 def test_memorize(monkeypatch):
-    import pytest
     from unittest import mock
 
     from pydna.utils import memorize as _memorize

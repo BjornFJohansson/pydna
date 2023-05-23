@@ -1,6 +1,3 @@
-from functools import partial
-
-
 class memoize(object):
     def __init__(self, fn):
         self.fn = fn

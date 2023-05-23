@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-import sys
 
 from pydna.readers import read
 
@@ -28,7 +27,7 @@ def test_mark_budde():
     'pGREG505'
     >>> a.looped().id
     'pGREG505'
-    >>> 
+    >>>
     """
 
 

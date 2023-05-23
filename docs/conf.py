@@ -5,15 +5,14 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+from importlib.metadata import version
 
 project = "pydna"
 copyright = "2022, Björn F. Johansson"
 author = "Björn F. Johansson"
 
-import sys, os
 
 # contents of docs/conf.py
-from importlib.metadata import version
 
 release = version("pydna")
 # for example take major/minor

@@ -35,20 +35,10 @@ import time as _time
 import datetime as _datetime
 import pyperclip
 
+from IPython.display import display_html as _display_html
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-
-try:
-    from IPython.display import display as _display
-except ImportError:
-
-    def _display_html(item, raw=None):
-        return item
-
-else:
-    from IPython.display import display_html as _display_html
 
 
 class Dseqrecord(_SeqRecord):
@@ -748,7 +738,7 @@ class Dseqrecord(_SeqRecord):
             except ValueError:
                 pass
         oh = self.seq.ovhg if self.seq.ovhg > 0 else 0
-        if start == None:
+        if start is None:
             return None  # TODO return an emoty slice or False...?
         else:
             return slice(frame + start * 3 + oh, frame + (start + len(other)) * 3 + oh)
@@ -1323,8 +1313,6 @@ class Dseqrecord(_SeqRecord):
 
 
         """
-        from Bio.SeqFeature import SimpleLocation as _sl
-        from Bio.SeqFeature import CompoundLocation as _cl
         from pydna.utils import shift_location
 
         features = _copy.deepcopy(self.features)

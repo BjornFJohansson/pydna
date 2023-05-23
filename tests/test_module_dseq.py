@@ -114,8 +114,8 @@ def test_initialization():
 
     obj2 = Dseq("gata")
 
-    assert obj2.linear == True
-    assert obj2.circular == False
+    assert obj2.linear is True
+    assert obj2.circular is False
 
     l = Dseq("gt")
     c = l.looped()
@@ -603,11 +603,6 @@ def test_dseq():
 
 def test_Dseq_slicing():
     from pydna.dseq import Dseq
-    from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
     from Bio.Restriction import BamHI
 
     a = Dseq("ggatcc", "ggatcc", 0)

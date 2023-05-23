@@ -16,18 +16,7 @@ sequences separating att sites form edges.
 The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
-from Bio.SeqFeature import ExactPosition as _ExactPosition
-from Bio.SeqFeature import SimpleLocation as _SimpleLocation
-from Bio.SeqFeature import CompoundLocation as _CompoundLocation
-from pydna.utils import rc as _rc
 
-from pydna._pretty import pretty_str as _pretty_str
-from pydna.contig import Contig as _Contig
-from pydna.common_sub_strings import common_sub_strings
-from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-import networkx as _nx
-from copy import deepcopy as _deepcopy
-import itertools as _itertools
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)

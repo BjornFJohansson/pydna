@@ -4,7 +4,6 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-from pydna.seqrecord import SeqRecord as _SeqRecord
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 
 

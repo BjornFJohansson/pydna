@@ -3,9 +3,7 @@
 
 import PyPDF2
 import sys
-import subprocess
 import re
-import time
 
 pdf = "SynthesisReport_3931076.pdf"
 

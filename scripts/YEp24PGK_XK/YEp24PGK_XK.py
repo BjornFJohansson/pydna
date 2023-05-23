@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from pydna import read, parse, pcr, sync, Genbank
+from pydna import read, parse, pcr, Genbank
 from Bio.Restriction import BglII, BamHI
 
 print(

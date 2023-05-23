@@ -31,9 +31,6 @@ import subprocess as _subprocess
 
 from pydna.codon import weights as _weights
 from pydna.codon import rare_codons as _rare_codons
-from pydna.codon import n_end as _n_end
-from Bio.SeqUtils import seq3 as _seq3
-from pydna._pretty import PrettyTable as _PrettyTable
 
 from Bio.SeqFeature import SimpleLocation as _sl
 from Bio.SeqFeature import CompoundLocation as _cl
@@ -138,33 +135,34 @@ def express(seq: str, organism="sce"):
 
     **NOT IMPLEMENTED YET**
     """
-    x = _PrettyTable(
-        ["cds", "len", "cai", "gc", "sta", "stp", "n-end"]
-        + _rare_codons[organism]
-        + ["rare"]
-    )
-    val = []
+    # x = _PrettyTable(
+    #     ["cds", "len", "cai", "gc", "sta", "stp", "n-end"]
+    #     + _rare_codons[organism]
+    #     + ["rare"]
+    # )
+    # val = []
 
-    val.append(
-        f"{self._data.upper().decode('ASCII')[:3]}..."
-        f"{self._data.upper().decode('ASCII')[-3:]}"
-    )
-    val.append(len(self) / 3)
-    val.append(cai(organism))
-    val.append(gc())
-    val.append(startcodon())
-    val.append(stopcodon())
-    val.append(_n_end[organism].get(_seq3(self[3:6].translate())))
-    s = self._data.upper().decode("ASCII")
-    trps = [s[i * 3 : i * 3 + 3] for i in range(0, len(s) // 3)]
-    tot = 0
-    for cdn in _rare_codons[organism]:
-        cnt = trps.count(cdn)
-        tot += cnt
-        val.append(cnt)
-    val.append(round(tot / len(trps), 3))
-    x.add_row(val)
-    return x
+    # val.append(
+    #     f"{self._data.upper().decode('ASCII')[:3]}..."
+    #     f"{self._data.upper().decode('ASCII')[-3:]}"
+    # )
+    # val.append(len(self) / 3)
+    # val.append(cai(organism))
+    # val.append(gc())
+    # val.append(startcodon())
+    # val.append(stopcodon())
+    # val.append(_n_end[organism].get(_seq3(self[3:6].translate())))
+    # s = self._data.upper().decode("ASCII")
+    # trps = [s[i * 3 : i * 3 + 3] for i in range(0, len(s) // 3)]
+    # tot = 0
+    # for cdn in _rare_codons[organism]:
+    #     cnt = trps.count(cdn)
+    #     tot += cnt
+    #     val.append(cnt)
+    # val.append(round(tot / len(trps), 3))
+    # x.add_row(val)
+    # return x
+    raise NotImplementedError
 
 
 def open_folder(pth):
@@ -826,8 +824,6 @@ def eq(*args, **kwargs):
 
 
 if __name__ == "__main__":
-    import os as _os
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

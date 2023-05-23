@@ -12,6 +12,8 @@ from pydna.design import circular_assembly_fragments
 from pydna.parsers import parse
 from pydna.primer import Primer
 
+from Bio.Restriction import BamHI
+
 frags = parse(
     """
 >49
@@ -23,7 +25,6 @@ gtagtgaaacatacacgttgctcgggttcaccccggtccgttctgagtcga
 """
 )
 
-from Bio.Restriction import BamHI
 
 bam = Dseqrecord(BamHI.site)
 
@@ -220,28 +221,28 @@ def test_primer_Design_with_linker():
     """test_primer_design"""
 
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
-    l = Dseqrecord("AAATTTCCCGGG")
+    l_ = Dseqrecord("AAATTTCCCGGG")
     c = Dseqrecord("tctgatctactatctgactgtactgatctattgacactgtgatcattctagtgtattactc")
 
-    frags = assembly_fragments((primer_design(b), l, primer_design(c)))
+    frags = assembly_fragments((primer_design(b), l_, primer_design(c)))
 
     asm1 = Assembly(frags)
 
     assert asm1.assemble_linear()[0].useguid(), (
-        b + l + c
+        b + l_ + c
     ).useguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
 
     frags = assembly_fragments(
-        (primer_design(b), l, primer_design(c), primer_design(b))
+        (primer_design(b), l_, primer_design(c), primer_design(b))
     )
 
     b2 = pcr(frags[-1].forward_primer, frags[0].reverse_primer, b)
 
     asm2 = Assembly((b2, frags[1], frags[2]))
 
-    assert (b + l + c).looped().cseguid() == asm2.assemble_circular()[0].cseguid()
+    assert (b + l_ + c).looped().cseguid() == asm2.assemble_circular()[0].cseguid()
 
-    assert (b + l + c).looped().cseguid() == "jdHXfQI5k4Sk2ESiZYfKv4oP2FI"
+    assert (b + l_ + c).looped().cseguid() == "jdHXfQI5k4Sk2ESiZYfKv4oP2FI"
 
 
 def test_primer_Design_given_fw_primer():
@@ -281,7 +282,7 @@ def test_primer_Design_multiple_products():
     from pydna import _PydnaWarning
 
     with pytest.warns(_PydnaWarning):
-        a = primer_design(b)
+        primer_design(b)
 
 
 def test_circular_assembly_fragments():

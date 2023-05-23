@@ -1441,7 +1441,7 @@ class Dseq(_Seq):
         if self.linear:
             frags = [self]
         else:
-            l = len(self)
+            length = len(self)
             for e in enzymes:
                 wpos = [
                     x - len(pad) - 1
@@ -1460,8 +1460,8 @@ class Dseq(_Seq):
                     if w % len(self) == (self.length - c + e.ovhg) % len(self):
                         frags = [
                             Dseq(
-                                self.watson[w % l :] + self.watson[: w % l],
-                                self.crick[c % l :] + self.crick[: c % l],
+                                self.watson[w % length :] + self.watson[: w % length],
+                                self.crick[c % length :] + self.crick[: c % length],
                                 ovhg=e.ovhg,
                                 pos=min(w, len(dsseq) - c),
                             )

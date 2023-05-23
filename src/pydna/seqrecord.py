@@ -476,7 +476,7 @@ class SeqRecord(_SeqRecord):
             old_stamp = oldstamp.group(0)
             old_algorithm = oldstamp.group("algorithm")
             old_chksum = oldstamp.group("sha1")
-            old_iso = oldstamp.group("iso")
+            old_iso = oldstamp.group("iso")  # noqa: F841
             if chksum == old_chksum and algorithm == old_algorithm:
                 return _pretty_str(oldstamp.group(0))
             else:

@@ -189,7 +189,7 @@ def AgaroseGel(samples, *args, **kwargs):
     for i, sample in enumerate(samples):
         try:
             sample = [(len(x), 100) for x in sample]
-        except:
+        except Exception:
             pass
         myGel.loadSample(1 + i, sample)
 
@@ -210,7 +210,7 @@ def AgaroseGel(samples, *args, **kwargs):
 
 
 if __name__ == "__main__":
-    from pydna import *
+    from pydna import read
 
     lambda_ = read("../tests/lambda.gb")
     from Bio.Restriction import PstI

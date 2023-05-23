@@ -21,6 +21,64 @@ from Bio.SeqFeature import SeqFeature as _SeqFeature
 import xml.etree.ElementTree as _et
 
 
+def embl_gb_fasta(raw, ds, path=None):
+    # regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
+    regex = (
+        r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|"
+        r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
+    )
+
+    result_list = []
+
+    rawseqs = _re.findall(
+        regex, _textwrap.dedent(str(raw) + "\n\n"), flags=_re.MULTILINE
+    )
+    for rawseq in rawseqs:
+        handle = _io.StringIO(rawseq)
+        circular = False
+        try:
+            parsed = _SeqIO.read(handle, "embl")
+        except ValueError:
+            handle.seek(0)
+            try:
+                parsed = _SeqIO.read(handle, "genbank")
+                if "circular" in str(parsed.annotations.get("topology")).lower():
+                    circular = True
+            except ValueError:
+                handle.seek(0)
+                try:
+                    parsed = _SeqIO.read(handle, "fasta")
+                except ValueError:
+                    parsed = ""
+        handle.close()
+        if "circular" in rawseq.splitlines()[0].lower().split():
+            # hack to pick up topology from malformed files
+            circular = True
+        if parsed:
+            # TODO: clean up !
+            nfs = [_SeqFeature() for f in parsed.features]
+            for f, nf in zip(parsed.features, nfs):
+                nf.__dict__ = _deepcopy(f.__dict__)
+            parsed.features = nfs
+            if ds and path:
+                result_list.append(
+                    _GenbankFile.from_SeqRecord(
+                        parsed, linear=not circular, circular=circular, path=path
+                    )
+                )
+            elif ds:
+                result_list.append(
+                    _Dseqrecord.from_SeqRecord(
+                        parsed, linear=not circular, circular=circular
+                    )
+                )
+            else:
+                parsed.annotations.update({"molecule_type": "DNA"})
+                result_list.append(parsed)
+
+    return result_list
+
+
 def parse(data, ds=True):
     """Return *all* DNA sequences found in data.
 
@@ -64,63 +122,6 @@ def parse(data, ds=True):
     read
 
     """
-
-    def embl_gb_fasta(raw, ds, path=None):
-        # regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
-        regex = (
-            r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|"
-            r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
-        )
-
-        result_list = []
-
-        rawseqs = _re.findall(
-            regex, _textwrap.dedent(str(raw) + "\n\n"), flags=_re.MULTILINE
-        )
-        for rawseq in rawseqs:
-            handle = _io.StringIO(rawseq)
-            circular = False
-            try:
-                parsed = _SeqIO.read(handle, "embl")
-            except ValueError:
-                handle.seek(0)
-                try:
-                    parsed = _SeqIO.read(handle, "genbank")
-                    if "circular" in str(parsed.annotations.get("topology")).lower():
-                        circular = True
-                except ValueError:
-                    handle.seek(0)
-                    try:
-                        parsed = _SeqIO.read(handle, "fasta")
-                    except ValueError:
-                        parsed = ""
-            handle.close()
-            if "circular" in rawseq.splitlines()[0].lower().split():
-                # hack to pick up topology from malformed files
-                circular = True
-            if parsed:
-                # TODO: clean up !
-                nfs = [_SeqFeature() for f in parsed.features]
-                for f, nf in zip(parsed.features, nfs):
-                    nf.__dict__ = _deepcopy(f.__dict__)
-                parsed.features = nfs
-                if ds and path:
-                    result_list.append(
-                        _GenbankFile.from_SeqRecord(
-                            parsed, linear=not circular, circular=circular, path=path
-                        )
-                    )
-                elif ds:
-                    result_list.append(
-                        _Dseqrecord.from_SeqRecord(
-                            parsed, linear=not circular, circular=circular
-                        )
-                    )
-                else:
-                    parsed.annotations.update({"molecule_type": "DNA"})
-                    result_list.append(parsed)
-
-        return result_list
 
     # a string is an iterable datatype but on Python2.x
     # it doesn't have an __iter__ method.
@@ -168,8 +169,6 @@ def parse_assembly_xml(data):
 
 
 if __name__ == "__main__":
-    import os as _os
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

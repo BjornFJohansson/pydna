@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from scipy.interpolate import CubicSpline
+from math import log
+
 from bandwagon import BandsPattern
 from bandwagon import BandsPatternsSet
 from bandwagon import custom_ladder
@@ -42,8 +45,6 @@ ax = patterns_set.plot()
 # ax.figure.savefig("simple_band_patterns.png", bbox_inches="tight", dpi=200)
 
 
-from scipy.interpolate import CubicSpline
-
 ipolatr = CubicSpline(
     [100, 200, 300, 400, 500, 650, 850, 1000, 1650, 2000, 3000, 4000],
     [205, 186, 171, 158, 149, 139, 128, 121, 100, 90, 73, 65],
@@ -54,8 +55,6 @@ ipolatr = CubicSpline(
 for b in [10000, 7750, 4000, 3000, 2000, 1500, 1000, 750, 500]:
     print(ipolatr(b))
 
-
-from math import log
 
 x = 100
 fx = 395 - 39.8 * log(x)

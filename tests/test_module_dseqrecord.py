@@ -64,7 +64,6 @@ def test_initialization():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
-    from pydna.utils import eq
 
     from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord as Srec
@@ -85,10 +84,10 @@ def test_initialization():
         assert str(b.seq) == "attt"
         assert str(b.seq) == "attt"
         assert b.linear == b.seq.linear
-        assert b.linear == True
-        assert b.circular == False
-        assert b.seq.linear == True
-        assert b.seq.circular == False
+        assert b.linear is True
+        assert b.circular is False
+        assert b.seq.linear is True
+        assert b.seq.circular is False
 
     a = []
     a.append(Dseqrecord("attt", circular=True))
@@ -104,10 +103,10 @@ def test_initialization():
         assert str(b.seq) == "attt"
         assert str(b.seq) == "attt"
         assert b.linear == b.seq.linear
-        assert b.linear == False
-        assert b.circular == True
-        assert b.seq.linear == False
-        assert b.seq.circular == True
+        assert b.linear is False
+        assert b.circular is True
+        assert b.seq.linear is False
+        assert b.seq.circular is True
 
     a = []
     a.append(Dseqrecord(Dseq("attt", circular=True), circular=True))
@@ -132,7 +131,7 @@ def test_initialization():
 
     a = []
     ds = Dseq("attt", "taaa")
-    assert ds.linear == True
+    assert ds.linear is True
     assert ds.ovhg == -1
     assert str(ds.watson) == "attt"
     assert str(ds.crick) == "taaa"
@@ -141,14 +140,14 @@ def test_initialization():
     #    aaat
 
     a.append(Dseqrecord(ds, circular=False))
-    assert ds.linear == True
+    assert ds.linear is True
     a.append(Dseqrecord(ds, linear=True))
-    assert ds.linear == True
+    assert ds.linear is True
 
     a.append(Dseqrecord(ds, circular=True))
-    assert ds.linear == True
+    assert ds.linear is True
     a.append(Dseqrecord(ds, linear=False))
-    assert ds.linear == True
+    assert ds.linear is True
 
     circular = [False, False, True, True]
     linear = [True, True, False, False]
@@ -168,23 +167,23 @@ def test_initialization():
 
     a = []
     ds = Dseq("attt", "caaa")
-    assert ds.linear == True
+    assert ds.linear is True
     assert ds.ovhg == -1
 
     a.append(Dseqrecord(ds, circular=False))
-    assert ds.linear == True
+    assert ds.linear is True
     a.append(Dseqrecord(ds, linear=True))
-    assert ds.linear == True
+    assert ds.linear is True
 
     with pytest.raises(TypeError):
         Dseqrecord(ds, circular=True)
 
-    assert ds.linear == True
+    assert ds.linear is True
 
     with pytest.raises(TypeError):
         Dseqrecord(ds, linear=False)
 
-    assert ds.linear == True
+    assert ds.linear is True
 
     with pytest.raises(ValueError):
         b = Dseqrecord([])
@@ -270,52 +269,43 @@ def test_initialization():
 
 
 def test_linear_circular():
-    from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
 
     """ test Dseqrecord linear & circular property"""
     a = Dseqrecord("attt")
     a.stamp("useguid")
     assert a.stamp("useguid")
     a = Dseqrecord("attt", linear=True)
-    assert a.linear == True
-    assert a.circular == False
-    assert a.rc().linear == True
-    assert a.rc().circular == False
-    assert a.seq.linear == True
-    assert a.seq.circular == False
+    assert a.linear is True
+    assert a.circular is False
+    assert a.rc().linear is True
+    assert a.rc().circular is False
+    assert a.seq.linear is True
+    assert a.seq.circular is False
 
     a = Dseqrecord("attt", linear=False)
-    assert a.linear == False
-    assert a.circular == True
-    assert a.rc().linear == False
-    assert a.rc().circular == True
-    assert a.seq.linear == False
-    assert a.seq.circular == True
+    assert a.linear is False
+    assert a.circular is True
+    assert a.rc().linear is False
+    assert a.rc().circular is True
+    assert a.seq.linear is False
+    assert a.seq.circular is True
 
     a = Dseqrecord("attt", circular=True)
-    assert a.linear == False
-    assert a.circular == True
-    assert a.rc().linear == False
-    assert a.rc().circular == True
-    assert a.seq.linear == False
-    assert a.seq.circular == True
+    assert a.linear is False
+    assert a.circular is True
+    assert a.rc().linear is False
+    assert a.rc().circular is True
+    assert a.seq.linear is False
+    assert a.seq.circular is True
 
     a = Dseqrecord("attt", circular=False)
-    assert a.linear == True
-    assert a.circular == False
-    assert a.rc().linear == True
-    assert a.rc().circular == False
-    assert a.seq.linear == True
-    assert a.seq.circular == False
-
-
-import pydna
+    assert a.linear is True
+    assert a.circular is False
+    assert a.rc().linear is True
+    assert a.rc().circular is False
+    assert a.seq.linear is True
+    assert a.seq.circular is False
 
 
 def test_stamp():
@@ -348,13 +338,7 @@ def test_stamp():
 
 
 def test_revcomp():
-    from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
 
     #      ----
     #     attcccgggg
@@ -389,7 +373,7 @@ def test_revcomp():
 
     rc = a.rc()
 
-    assert rc.features[0].strand == None
+    assert rc.features[0].strand is None
 
 
 def test_m():
@@ -422,7 +406,7 @@ def test_find_aa():
 
     s = Dseqrecord("tttGGATCCaaa")
     assert s.find_aa("FGSK") == slice(0, 12, None)
-    assert s.find_aa("MMMM") == None
+    assert s.find_aa("MMMM") is None
 
 
 def test_str():
@@ -511,27 +495,23 @@ def test_write():
 
 
 def test_write_same_seq_to_existing_file(monkeypatch):
-    import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
 
     s = Dseqrecord("Ggatcc", circular=True)
 
     monkeypatch.setattr("pydna.dseqrecord._os.path.isfile", lambda x: True)
     m = mock_open(read_data=s.format())
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         s.write(filename="Ggatcc.gb")
 
 
 def test_write_different_file_to_existing_file(monkeypatch):
-    import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
 
     s = Dseqrecord("Ggatcc", circular=True)
     d = Dseqrecord("Ggatcn", circular=True)
@@ -545,11 +525,9 @@ def test_write_different_file_to_existing_file(monkeypatch):
 
 
 def test_write_different_file_to_stamped_existing_file(monkeypatch):
-    import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
 
     new = Dseqrecord("Ggatcc", circular=True)
     new.stamp("cSEGUID")
@@ -562,23 +540,23 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
     monkeypatch.setattr("pydna.dseqrecord._os.rename", lambda x, y: True)
     m = mock_open(read_data=old.format())
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     new = Dseqrecord("Ggatcc", circular=True)
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     new.description = "cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2018-06-01T05:05:51.778066"
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     new.description = "cSEGUID_N"
 
     m = mock_open(read_data=old.format())
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     assert m.called
@@ -589,11 +567,9 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
 
 
 def test_write_different_file_to_stamped_existing_file2(monkeypatch):
-    import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
 
     new = Dseqrecord("Ggatcc", circular=True)
     new.stamp("cSEGUID")
@@ -606,23 +582,23 @@ def test_write_different_file_to_stamped_existing_file2(monkeypatch):
     monkeypatch.setattr("pydna.dseqrecord._os.rename", lambda x, y: True)
     m = mock_open(read_data=old.format())
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     new = Dseqrecord("Ggatcc", circular=True)
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     new.description = "cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2018-06-01T05:05:51.778066"
 
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     new.description = "cSEGUID_N"
 
     m = mock_open(read_data=old.format())
-    with patch("builtins.open", m) as d:
+    with patch("builtins.open", m):
         new.write(filename="Ggatcc.gb")
 
     assert m.called
@@ -711,14 +687,7 @@ def test_cut_add():
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
     from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
-
-    from Bio.Seq import Seq
-    from Bio.Restriction import BamHI, EcoRI, PstI, EcoRV, SmaI
-
-    from Bio.SeqUtils.CheckSum import seguid
+    from Bio.Restriction import BamHI, EcoRI, PstI, SmaI
 
     a = Dseqrecord(
         "GGATCCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGGATCC"
@@ -731,14 +700,14 @@ def test_cut_add():
 
     pUC19 = read("pUC19.gb")
 
-    assert pUC19.linear == False
+    assert pUC19.linear is False
 
     assert len(pUC19) == 2686
     assert len(pUC19.seq.watson) == 2686
     assert len(pUC19.seq.crick) == 2686
 
-    assert pUC19.seq.circular == True
-    assert pUC19.seq.linear == False
+    assert pUC19.seq.circular is True
+    assert pUC19.seq.linear is False
 
     pUC19_SmaI = pUC19.cut(SmaI)
     assert len(pUC19_SmaI) == 1
@@ -751,13 +720,13 @@ def test_cut_add():
     pUC19_SmaI_a = pUC19_SmaI.seq + a
 
     assert pUC19_SmaI_a.linear
-    assert pUC19_SmaI_a.circular == False
+    assert pUC19_SmaI_a.circular is False
 
     pUC19_SmaI_a = pUC19_SmaI_a.looped()
     assert len(pUC19_SmaI_a) == 2778
 
     assert pUC19_SmaI_a.circular
-    assert pUC19_SmaI_a.linear == False
+    assert pUC19_SmaI_a.linear is False
     assert eq(pUC19_SmaI_a, read("pUC19-SmaI-a.gb"))
 
     """ sticky end cloning """
@@ -774,13 +743,13 @@ def test_cut_add():
 
     assert len(pUC19_BamHI_a.watson) == len(pUC19_BamHI_a.crick) == 2772
 
-    assert pUC19_BamHI_a.circular == False
-    assert pUC19_BamHI_a.linear == True
+    assert pUC19_BamHI_a.circular is False
+    assert pUC19_BamHI_a.linear is True
 
     pUC19_BamHI_a = pUC19_BamHI_a.looped()
 
-    assert pUC19_BamHI_a.circular == True
-    assert pUC19_BamHI_a.linear == False
+    assert pUC19_BamHI_a.circular is True
+    assert pUC19_BamHI_a.linear is False
 
     assert eq(pUC19_BamHI_a, read("pUC19-BamHI-a.gb"))
 
@@ -788,8 +757,8 @@ def test_cut_add():
 
     pUC19_BamHI_a_rc = pUC19_BamHI_a_rc.looped()
 
-    assert pUC19_BamHI_a.circular == True
-    assert pUC19_BamHI_a.linear == False
+    assert pUC19_BamHI_a.circular is True
+    assert pUC19_BamHI_a.linear is False
     assert eq(pUC19_BamHI_a_rc, read("pUC19-BamHI-a-rc.gb"))
 
     """ adding (ligating) dsDNA objects """
@@ -835,11 +804,6 @@ def test_cut_add():
 def test_Dseqrecord_cutting_adding_2():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
 
     a = (
         Dseqrecord(
@@ -875,14 +839,8 @@ def test_Dseqrecord_cutting_adding_2():
 
 
 def test_Dseqrecord_cutting_adding_3():
-    from pydna.dseq import Dseq
-    from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
-    from Bio.Restriction import KpnI, BamHI, Acc65I, NlaIV, EcoRI, EcoRV
+    from Bio.Restriction import Acc65I
 
     a = read(
         """
@@ -985,13 +943,7 @@ ORIGIN
 
 
 def test_Dseqrecord_cutting_adding_4():
-    from pydna.dseq import Dseq
-    from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
     from Bio.Restriction import KpnI, Acc65I, NlaIV, EcoRI, EcoRV
 
     a = read(
@@ -1172,7 +1124,6 @@ def test_features_on_slice():
 
 def test_features_change_ori():
     from pydna.dseq import Dseq
-    from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
     from pydna.utils import eq
 
@@ -1819,7 +1770,6 @@ def test_synced():
 
 
 def test_map_pCR_MCT1_HA46():
-    from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
 
     pCR_MCT1_HA46 = read("pCR_MCT1_HA46.gb")
@@ -2242,11 +2192,6 @@ def test_lower():
 def test_map():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
-    from pydna.readers import read
-    from pydna.utils import eq
-
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
     from Bio.SeqIO import read as abiread
 
     traces = []
@@ -2315,8 +2260,6 @@ def test_assemble_YEp24PGK_XK():
     """
     test YEp24PGK_XK
     """
-    import pytest
-    import sys
 
     from pydna.readers import read
     from pydna.utils import eq

@@ -52,7 +52,6 @@ from pydna.utils import rc as _rc
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
 from pydna.common_sub_strings import common_sub_strings
-from pydna.common_sub_strings import terminal_overlap
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 import networkx as _nx
 from copy import deepcopy as _deepcopy

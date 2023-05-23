@@ -159,7 +159,7 @@ complexSlice = _pp.Forward()
 featLocation = _pp.Group(SimpleSlice | complexSlice)
 
 
-def parseGBLoc(s, l, t):
+def parseGBLoc(s, l_, t):
     """retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences"""
     strand = 1
     locationlist = []
@@ -170,7 +170,7 @@ def parseGBLoc(s, l, t):
             strand = -1
 
     for entry in t[0]:
-        if type(entry) != type("string"):
+        if isinstance(entry, str):
             locationlist.append([entry[0], entry[1]])
 
     # return locationlist and strand spec
@@ -182,12 +182,12 @@ featLocation.setParseAction(parseGBLoc)
 # ==== Genbank Feature Key-Value Pairs
 
 
-def strip_multiline(s, l, t):
+def strip_multiline(s, l_, t):
     whitespace = _re.compile("[\n]{1}[ ]+")
     return whitespace.sub(" ", t[0])
 
 
-def toInt(s, l, t):
+def toInt(s, l_, t):
     return int(t[0])
 
 

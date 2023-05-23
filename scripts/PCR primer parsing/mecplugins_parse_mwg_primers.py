@@ -13,15 +13,6 @@
 
 WIKIDPAD_PLUGIN = (("MenuFunctions", 1), ("ToolbarFunctions", 1))
 
-import mecplugins_ini
-
-from Bio import SeqIO
-from os import linesep
-from cStringIO import StringIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import SingleLetterAlphabet
-
 
 def describeMenuItems(wiki):
     return (

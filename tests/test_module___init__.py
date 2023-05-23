@@ -8,8 +8,6 @@ import shutil
 
 from unittest import mock
 
-import textwrap
-
 
 # def test_makedirs_fail(monkeypatch, caplog):
 
@@ -23,7 +21,7 @@ import textwrap
 #             from importlib import reload
 
 #             reload(pydna)
-#         # assert pmd.called == True
+#         # assert pmd.called is True
 
 #     with patch("pydna._os.path.isdir") as pid, patch("pydna._os.makedirs") as pmd:
 #         pmd.side_effect = IOError()  # OSError()
@@ -125,7 +123,6 @@ def test_with_dependencies():
     pytest.importorskip("scipy")
     pytest.importorskip("numpy")
     import sys
-    import pydna
     from importlib import reload
 
     reload(sys.modules["pydna"])

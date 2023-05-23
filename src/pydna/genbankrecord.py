@@ -20,7 +20,7 @@ class GenbankRecord(_Dseqrecord):
         self.stop = stop
         self.strand = strand
         self._repr = item
-        if self.start != None and self.stop != None:
+        if self.start is not None and self.stop is not None:
             self._repr += " {}-{}".format(self.start, self.stop)
         self._linktemplate = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/{item}?from={start}&to={stop}&strand={strand}' target='_blank'>{text}</a>"
         self.hyperlink = _ps(
@@ -164,8 +164,6 @@ class GenbankRecord(_Dseqrecord):
 
 
 if __name__ == "__main__":
-    import os as _os
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

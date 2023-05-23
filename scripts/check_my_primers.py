@@ -1,7 +1,7 @@
 #!/home/bjorn/anaconda3/envs/bjorn36/bin/python
 # -*- coding: utf8 -*-
 
-
+from collections import defaultdict
 from pydna.myprimers import list_primers
 
 unique = set(str(p.seq).lower() for p in list_primers)
@@ -15,8 +15,6 @@ for i, p in enumerate(list_primers):
         print(i, p.format("tab"))
 
 print("names checked for primer number for ", i + 1, "primers")
-
-from collections import defaultdict
 
 dct = defaultdict(list)
 

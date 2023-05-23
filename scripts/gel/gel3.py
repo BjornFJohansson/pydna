@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 # Notice the 'from PIL' at the start of the line
 import numpy as np
@@ -139,7 +139,6 @@ if __name__ == "__main__":
     im = generate_gel(dna)
     print(im)
     im.show()
-    from IPython.display import display
 
     # display(im)
 

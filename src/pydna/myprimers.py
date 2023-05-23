@@ -36,7 +36,7 @@ primerdict returns a dict where the key is the id of the object.
 
 import os as _os
 import re as _re
-from typing import Iterable
+from typing import Iterable, Union
 from pathlib import Path
 import copy as _copy
 from keyword import iskeyword as _iskeyword
@@ -66,7 +66,7 @@ class PrimerList(_UserList):
     def __init__(
         self,
         initlist: Iterable = None,
-        path: (str, Path) = None,
+        path: Union(str, Path) = None,
         *args,
         identifier: str = "p",
         **kwargs,
@@ -157,7 +157,7 @@ class PrimerList(_UserList):
         err = None
         for p in lst:
             try:
-                i = prstrs.index(str(p.seq).upper())
+                _ = prstrs.index(str(p.seq).upper())
             except ValueError as e:
                 print(f"{p.format('fasta')}")
                 err = e

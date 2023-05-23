@@ -613,7 +613,6 @@ def test_pcr():
 
 def test_shifts():
     from pydna.parsers import parse
-    from pydna.parsers import parse_primers
     from pydna.amplify import pcr
 
     # from pydna.amplify import nopcr

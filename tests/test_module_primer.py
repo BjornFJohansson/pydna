@@ -24,10 +24,7 @@ def test_primer():
     assert type(y) == type(w)
     assert str(y.seq) == "AAAatcatatctatct"
 
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord
-
-    arg = "AAA"
+    # arg = "AAA"
 
     # print(str(x.seq).rjust(20))
     # print(str(x.tail))

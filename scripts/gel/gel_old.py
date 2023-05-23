@@ -1174,7 +1174,7 @@ def gelplot_imshow(
     if cursor_ovr:
         for key in cursor_ovr:
             cursor_args[key] = cursor_ovr[key]
-    if cursor_args["hover"] == True:
+    if cursor_args["hover"] is True:
         cursor_args["display"] = "single"
     # _datacursor(bands, **cursor_args)
     # fig.savefig('example.png', dpi=300)
