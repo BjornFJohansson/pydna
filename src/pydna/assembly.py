@@ -47,6 +47,7 @@ from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.utils import rc as _rc
+
 # from pydna.utils import memorize as _memorize
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
@@ -57,9 +58,11 @@ import networkx as _nx
 from copy import deepcopy as _deepcopy
 import itertools as _itertools
 import logging as _logging
+
 # from func_timeout import func_set_timeout
 # from wrapt_timeout_decorator import timeout
 from pydna.threading_timer_decorator_exit import exit_after
+
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
@@ -391,7 +394,7 @@ class Assembly(object):  # , metaclass=_Memoize):
                 key = ct.upper()
 
                 if key in lps:
-                    continue    # TODO: is this test needed?
+                    continue  # TODO: is this test needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
                 sg.add_nodes_from((n, d) for n, d in G.nodes(data=True) if n in lp)

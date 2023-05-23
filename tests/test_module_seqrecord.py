@@ -1,6 +1,7 @@
 import pytest
 from pydna import _PydnaWarning
 
+
 def test_add_feature():
     from pydna.seq import Seq
     from Bio.SeqRecord import SeqRecord as BSeqRecord
@@ -139,10 +140,12 @@ def test_lcs():
             "ApEinfo_revcolor": ["#DFFDFF"],
         },
     }
-    assert s.lcs("GGATCC").__dict__ == {'location': None,
-                                         'type': '',
-                                         'id': '<unknown id>',
-                                         'qualifiers': OrderedDict() }
+    assert s.lcs("GGATCC").__dict__ == {
+        "location": None,
+        "type": "",
+        "id": "<unknown id>",
+        "qualifiers": OrderedDict(),
+    }
     assert s.lcs("GGATCC", limit=4).__dict__ == expected.__dict__
     assert s.lcs(Seq("GGATCC"), limit=4).__dict__ == expected.__dict__
     assert (
@@ -158,8 +161,6 @@ def test_lcs():
         s.lcs(Dseqrecord("GGATCC", name="sequence"), limit=4).__dict__
         == expected.__dict__
     )
-
-
 
 
 def test_format():
@@ -239,8 +240,10 @@ def test_seqrecord():
 
     assert obj.gc() == 0.067
 
-    assert repr(obj) == ("SeqRecord(seq=Seq('aaaATGAAATAAttt'), id='id', "
-                         "name='name', description='description', dbxrefs=[])")
+    assert repr(obj) == (
+        "SeqRecord(seq=Seq('aaaATGAAATAAttt'), id='id', "
+        "name='name', description='description', dbxrefs=[])"
+    )
 
     obj.annotations = {"date": "24-DEC-1970"}
 
@@ -316,9 +319,10 @@ def test_seqrecord():
 
     # print(obj.__hash__())
 
-    rare_codons = {"sce": ["CGA", "CGG", "CGC", "CCG", "CTC", "GCG"],
-                   "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC",
-                           "TCG"]}
+    rare_codons = {
+        "sce": ["CGA", "CGG", "CGC", "CCG", "CTC", "GCG"],
+        "eco": ["AGG", "AGA", "ATA", "CTA", "CGA", "CGG", "CCC", "TCG"],
+    }
 
     s = Seq("atgCGACGGCGCCCGCTCGCGtaa")
 
@@ -346,41 +350,32 @@ def test_cai():
 
     organism = "sce"
 
-    s = seqrecord.SeqRecord(Seq("atg"+"".join(rare_codons[organism])+"taa"))
+    s = seqrecord.SeqRecord(Seq("atg" + "".join(rare_codons[organism]) + "taa"))
 
     features = s.rarecodons()
 
     for feat in features:
         assert feat.extract(s).seq in s
 
-    lol = [['cds',
-            'len',
-            'cai',
-            'gc',
-            'sta',
-            'stp',
-            'n-end',
-            'CGA',
-            'CGG',
-            'CGC',
-            'CCG',
-            'CTC',
-            'GCG',
-            'rare'],
-           ['ATG...TAA',
-            8.0,
-            0.219,
-            0.708,
-            1.0,
-            0.47,
-            '2 min',
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0.75]]
+    lol = [
+        [
+            "cds",
+            "len",
+            "cai",
+            "gc",
+            "sta",
+            "stp",
+            "n-end",
+            "CGA",
+            "CGG",
+            "CGC",
+            "CCG",
+            "CTC",
+            "GCG",
+            "rare",
+        ],
+        ["ATG...TAA", 8.0, 0.219, 0.708, 1.0, 0.47, "2 min", 1, 1, 1, 1, 1, 1, 0.75],
+    ]
 
     assert s.express().lol() == lol
 

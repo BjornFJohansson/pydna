@@ -191,7 +191,7 @@ def test_read_from_file():
     x.format("gb")
     y.format("gb")
     assert x.format()[3268:3278] == "2micron 2µ"
-    assert x.features[13].qualifiers["label"][0] == u"2micron 2µ"
+    assert x.features[13].qualifiers["label"][0] == "2micron 2µ"
     assert (
         str(a.seq).lower()
         == str(b.seq).lower()

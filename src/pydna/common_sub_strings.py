@@ -19,7 +19,6 @@ from operator import itemgetter as _itemgetter
 
 
 def _kark_sort(s, SA, n, K):
-
     def radixpass(a, b, r, s, n, k):
         c = _array("i", [0] * (k + 1))
         for i in range(n):

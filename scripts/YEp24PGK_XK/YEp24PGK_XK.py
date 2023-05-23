@@ -3,7 +3,8 @@
 from pydna import read, parse, pcr, sync, Genbank
 from Bio.Restriction import BglII, BamHI
 
-print """
+print(
+    """
 YEp24PGK
 ========
 
@@ -25,6 +26,7 @@ Lignocellulosic Hydrolysate, Applied and Environmental Microbiology
 67 4249–4255.
 
 """
+)
 
 raw_input("press return!\n")
 
@@ -33,14 +35,14 @@ gb = Genbank("me@home.org")
 
 if gb.test():
     xks1_gene = gb.nucleotide("Z72979")
-    print "Genbank record Z72979 downloaded from NCBI"
+    print("Genbank record Z72979 downloaded from NCBI")
     YEp24PGK = gb.nucleotide("KC562906")
-    print "Genbank record KC562906 downloaded from NCBI\n"
+    print("Genbank record KC562906 downloaded from NCBI\n")
 else:
     xks1_gene = read("Z72979.gb")
-    print "A local copy of Genbank record Z72979 is used"
+    print("A local copy of Genbank record Z72979 is used")
     YEp24PGK = read("KC562906.gb")
-    print "A local copy of Genbank record KC562906 is used\n"
+    print("A local copy of Genbank record KC562906 is used\n")
 
 raw_input("press return!\n")
 
@@ -60,13 +62,18 @@ YEp24PGK_XK = (YEp24PGK_bgl + xks1_bam.rc()).looped()
 
 YEp24PGK_XK = YEp24PGK_XK.synced(YEp24PGK)
 
-print "The sequence of YEp24PGK_XK was generated"
+print("The sequence of YEp24PGK_XK was generated")
 
-print "Seguid of YEp24PGK_XK is correct", YEp24PGK_XK.seguid() == "HRVpCEKWcFsKhw/W+25ednUfldI"
+print(
+    "Seguid of YEp24PGK_XK is correct",
+    YEp24PGK_XK.seguid() == "HRVpCEKWcFsKhw/W+25ednUfldI",
+)
 
 YEp24PGK_XK.write("YEp24PGK_XK.gb")
 
-print """
+print(
+    """
 done! The file YEp24PGK_XK.gb was written to the current
 working directory
 """
+)

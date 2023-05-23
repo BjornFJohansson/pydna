@@ -27,16 +27,13 @@ bytestring = hashlib.sha1(text.encode("ASCII")).digest()
 b64 = base64.standard_b64encode(bytestring).decode("ASCII")
 
 print("raw data      :", text)
-print("SHA1 (bin)    :", SHA1_bin[:10]+" .. "+SHA1_bin[-10:]+f" ({len(SHA1_bin)} bits)")
+print(
+    "SHA1 (bin)    :",
+    SHA1_bin[:10] + " .. " + SHA1_bin[-10:] + f" ({len(SHA1_bin)} bits)",
+)
 print("SHA1 (dec)    :", SHA1_dec)
 print("SHA1 (hex)    :", SHA1_hex)
 print("SHA1 (base64) :", b64.rstrip("="))
-
-
-
-
-
-
 
 
 text = "The quick brown foxes jump over the lazy dog."
@@ -55,7 +52,7 @@ b64us = base64.urlsafe_b64encode(bytestring).decode("ASCII")
 
 print()
 print("raw data             :", text)
-print("SHA1 (bin)           :", SHA1_bin[:10]+" .. "+SHA1_bin[-10:]+" (160 bits)")
+print("SHA1 (bin)           :", SHA1_bin[:10] + " .. " + SHA1_bin[-10:] + " (160 bits)")
 print("SHA1 (dec)           :", SHA1_dec)
 print("SHA1 (hex)           :", SHA1_hex)
 print("SHA1 (base64)        :", b64.rstrip("="))
@@ -69,21 +66,6 @@ SHA1 (hex)           : b589b517fdceaf32032fe5f4caf0805d536e5d05
 SHA1 (base64)        : tYm1F/3OrzIDL+X0yvCAXVNuXQU
 SHA1 (base64urlsafe) : tYm1F_3OrzIDL-X0yvCAXVNuXQU
 """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 text = "GATTACAGATTACAGATTACA"
@@ -102,15 +84,11 @@ b64us = base64.urlsafe_b64encode(bytestring).decode("ASCII")
 
 print()
 print("raw data             :", text)
-print("SHA1 (bin)           :", SHA1_bin[:10]+" .. "+SHA1_bin[-10:]+" (160 bits)")
+print("SHA1 (bin)           :", SHA1_bin[:10] + " .. " + SHA1_bin[-10:] + " (160 bits)")
 print("SHA1 (dec)           :", SHA1_dec)
 print("SHA1 (hex)           :", SHA1_hex)
 print("SHA1 (base64)        :", b64.rstrip("="))
 print("SHA1 (base64urlsafe) :", b64us.rstrip("="))
-
-
-
-
 
 
 text = "GATTACAGATTACAGATTACA"
@@ -129,14 +107,14 @@ b64us = base64.urlsafe_b64encode(bytestring).decode("ASCII")
 
 print()
 print("raw data               :", text)
-print("SHA256 (bin)           :", SHA256_bin[:10]+" .. "+SHA256_bin[-10:]+f" ({len(SHA256_bin)} bits)")
+print(
+    "SHA256 (bin)           :",
+    SHA256_bin[:10] + " .. " + SHA256_bin[-10:] + f" ({len(SHA256_bin)} bits)",
+)
 print("SHA256 (dec)           :", SHA256_dec)
 print("SHA256 (hex)           :", SHA256_hex)
 print("SHA256 (base64)        :", b64.rstrip("="))
 print("SHA256 (base64urlsafe) :", b64us.rstrip("="))
-
-
-
 
 
 """
@@ -160,17 +138,15 @@ NNNNN  -2      NNN       0       -2NNNNN|NNN       H6qxFiotG_kLdpZDwGJkqc2tExI
 
 from pydna.dseq import Dseq
 
-frags = (("NNN",  "NNNNN", 2),
-         ("NNNN", "NNNNN", 1),
-         ("NNNNN","NNNNN", 0),
-         ("NNNNN","NNNN", -1),
-         ("NNNNN","NNN",  -2))
+frags = (
+    ("NNN", "NNNNN", 2),
+    ("NNNN", "NNNNN", 1),
+    ("NNNNN", "NNNNN", 0),
+    ("NNNNN", "NNNN", -1),
+    ("NNNNN", "NNN", -2),
+)
 
 for frag in frags:
     x = Dseq(*frag)
     print(repr(x))
     print(x.lseguid())
-
-
-
-

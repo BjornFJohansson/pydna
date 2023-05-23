@@ -17,6 +17,7 @@ nicer output in the IPython shell.
 
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
+
 # from pydna.utils import seguid as _seg
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
@@ -49,18 +50,11 @@ class SeqRecord(_SeqRecord):
     nicer output in the IPython shell.
     """
 
-    def __init__(self,
-                 *args,
-                 id="id",
-                 name="name",
-                 description="description",
-                 **kwargs):
+    def __init__(
+        self, *args, id="id", name="name", description="description", **kwargs
+    ):
 
-        super().__init__(*args,
-                         id = id,
-                         name = name,
-                         description = description,
-                         **kwargs)
+        super().__init__(*args, id=id, name=name, description=description, **kwargs)
         self._fix_attributes()
 
     def _fix_attributes(self):
@@ -75,8 +69,9 @@ class SeqRecord(_SeqRecord):
             self.seq = _Seq(self.seq)
 
         self.seq._data = b"".join(self.seq._data.split())  # remove whitespaces
-        self.annotations = {_pretty_str(k): _pretty_str(v) for k, v in
-                            self.annotations.items()}
+        self.annotations = {
+            _pretty_str(k): _pretty_str(v) for k, v in self.annotations.items()
+        }
 
     @classmethod
     def from_Bio_SeqRecord(clc, sr: _SeqRecord):
@@ -98,9 +93,9 @@ class SeqRecord(_SeqRecord):
         if len(value) > 16:
             shortvalue = value[:16]
             _warn(
-                ("locus property {} truncated"
-                 "to 16 chars {}").format(value,
-                                          shortvalue),
+                ("locus property {} truncated" "to 16 chars {}").format(
+                    value, shortvalue
+                ),
                 _PydnaWarning,
                 stacklevel=2,
             )
@@ -223,12 +218,9 @@ class SeqRecord(_SeqRecord):
             f.qualifiers["ApEinfo_fwdcolor"] = [cols[i % len(cols)]]
             f.qualifiers["ApEinfo_revcolor"] = [cols[::-1][i % len(cols)]]
 
-    def add_feature(self,
-                    x=None,
-                    y=None,
-                    seq=None,
-                    type_="misc",
-                    strand=1, *args, **kwargs):
+    def add_feature(
+        self, x=None, y=None, seq=None, type_="misc", strand=1, *args, **kwargs
+    ):
         """Add a feature of type misc to the feature list of the sequence.
 
         Parameters
@@ -279,21 +271,19 @@ class SeqRecord(_SeqRecord):
                 qualifiers["label"] = ["orf{}".format(y - x)]
 
         try:
-            location = _SimpleLocation(x,
-                                       y,
-                                       strand=strand)
+            location = _SimpleLocation(x, y, strand=strand)
         except ValueError as err:
             if self.circular:
                 location = _CompoundLocation(
-                    (_SimpleLocation(x, self.seq.length, strand=strand),
-                     _SimpleLocation(0, y, strand=strand))
-                                              )
+                    (
+                        _SimpleLocation(x, self.seq.length, strand=strand),
+                        _SimpleLocation(0, y, strand=strand),
+                    )
+                )
             else:
                 raise err
 
-        sf = _SeqFeature(location,
-                         type=type_,
-                         qualifiers=qualifiers)
+        sf = _SeqFeature(location, type=type_, qualifiers=qualifiers)
 
         self.features.append(sf)
 
@@ -319,8 +309,7 @@ class SeqRecord(_SeqRecord):
         +-----+---------------+-----+-----+-----+-----+------+------+
         """
         x = _PrettyTable(
-            ["Ft#", "Label or Note", "Dir",
-             "Sta", "End", "Len", "type", "orf?"]
+            ["Ft#", "Label or Note", "Dir", "Sta", "End", "Len", "type", "orf?"]
         )
         x.align["Ft#"] = "r"  # Left align
         x.align["Label or Note"] = "l"  # Left align
@@ -437,12 +426,9 @@ class SeqRecord(_SeqRecord):
         """docstring."""
         return datetime.datetime.now().replace(microsecond=0).isoformat()
 
-    def stamp(self,
-              algorithm,
-              now=datefunction,
-              tool="pydna",
-              separator=" ",
-              comment=""):
+    def stamp(
+        self, algorithm, now=datefunction, tool="pydna", separator=" ", comment=""
+    ):
         """Add a uSEGUID or cSEGUID checksum.
 
         The checksum is stored in object.annotations["comment"].
@@ -472,19 +458,18 @@ class SeqRecord(_SeqRecord):
         """
         oldcomment = self.annotations.get("comment", "")
 
-        algorithm = _re.sub("seguid",
-                            "SEGUID",
-                            algorithm,
-                            flags=_re.IGNORECASE)
+        algorithm = _re.sub("seguid", "SEGUID", algorithm, flags=_re.IGNORECASE)
 
         chksum = getattr(self.seq, algorithm.lower())()
 
-        pattern = (r"(?i)(?P<algorithm>(c|l|u)?SEGUID)"
-                   r"(?:_|\s|:){1,5}(?P<sha1>\S{27})"
-                   r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
-                   r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
-                   r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
-                   r"[0-5][0-9])?)?")
+        pattern = (
+            r"(?i)(?P<algorithm>(c|l|u)?SEGUID)"
+            r"(?:_|\s|:){1,5}(?P<sha1>\S{27})"
+            r"(?P<iso>(?:\s([1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-"
+            r"(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])"
+            r":([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):"
+            r"[0-5][0-9])?)?"
+        )
 
         oldstamp = _re.search(pattern, oldcomment)
 
@@ -496,12 +481,15 @@ class SeqRecord(_SeqRecord):
             if chksum == old_chksum and algorithm == old_algorithm:
                 return _pretty_str(oldstamp.group(0))
             else:
-                _warn(f"Stamp change.\nNew: {algorithm} {chksum}\nOld: {old_stamp}",
-                      _PydnaWarning)
+                _warn(
+                    f"Stamp change.\nNew: {algorithm} {chksum}\nOld: {old_stamp}",
+                    _PydnaWarning,
+                )
 
         # now = datetime.datetime.now().replace(microsecond=0).isoformat()
-        self.annotations["comment"] = (f"{oldcomment}\n"
-                                       f"{tool} {algorithm} {chksum} {now()} {comment}").strip()
+        self.annotations["comment"] = (
+            f"{oldcomment}\n" f"{tool} {algorithm} {chksum} {now()} {comment}"
+        ).strip()
         return _pretty_str(chksum)
 
     def lcs(self, other, *args, limit=25, **kwargs):
@@ -543,9 +531,7 @@ class SeqRecord(_SeqRecord):
         else:
             r = str(other.lower())
 
-        olaps = _common_sub_strings(str(self.seq).lower(),
-                                    r,
-                                    limit=limit or 25)
+        olaps = _common_sub_strings(str(self.seq).lower(), r, limit=limit or 25)
 
         try:
             start_in_self, start_in_other, length = olaps.pop(0)
@@ -577,9 +563,13 @@ class SeqRecord(_SeqRecord):
         sfs = []
         for slc in self.seq.rarecodons(organism):
             cdn = self.seq._data[slc].decode("ASCII")
-            sfs.append(_SeqFeature(_SimpleLocation(slc.start, slc.stop),
-                                   type=f"rare_codon_{organism}",
-                                   qualifiers={"label": [cdn]}))
+            sfs.append(
+                _SeqFeature(
+                    _SimpleLocation(slc.start, slc.stop),
+                    type=f"rare_codon_{organism}",
+                    qualifiers={"label": [cdn]},
+                )
+            )
         return sfs
 
     def startcodon(self, organism="sce"):
@@ -617,8 +607,7 @@ class SeqRecord(_SeqRecord):
     def __eq__(self, other):
         """docstring."""
         try:
-            if (self.seq == other.seq and
-               str(self.__dict__) == str(other.__dict__)):
+            if self.seq == other.seq and str(self.__dict__) == str(other.__dict__):
                 return True
         except AttributeError:
             pass
@@ -630,8 +619,7 @@ class SeqRecord(_SeqRecord):
 
     def __hash__(self):
         """__hash__ must be based on __eq__."""
-        return hash((str(self.seq).lower(),
-                     str(tuple(sorted(self.__dict__.items())))))
+        return hash((str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
 
     def __str__(self):
         """docstring."""
@@ -695,10 +683,11 @@ class SeqRecord(_SeqRecord):
     def dump(self, filename, protocol=None):
         """docstring."""
         from pathlib import Path
+
         pth = Path(filename)
         if not pth.suffix:
             pth = pth.with_suffix(".pickle")
-        with open(pth, 'wb') as f:
+        with open(pth, "wb") as f:
             _pickle.dump(self, f, protocol=protocol)
         return _pretty_str(pth)
 
@@ -710,7 +699,7 @@ if __name__ == "__main__":
     _os.environ["pydna_cached_funcs"] = ""
     import doctest
 
-    doctest.testmod(verbose=True,
-                    optionflags=(doctest.ELLIPSIS |
-                                 doctest.NORMALIZE_WHITESPACE))
+    doctest.testmod(
+        verbose=True, optionflags=(doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
+    )
     _os.environ["pydna_cached_funcs"] = cached

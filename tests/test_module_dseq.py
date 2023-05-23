@@ -3,6 +3,7 @@
 
 import pytest
 
+
 def test_cut1():
     from pydna.dseq import Dseq
 
@@ -21,7 +22,6 @@ def test_cut1():
     """
 
     from Bio.Restriction import Acc65I, Bsp120I, KpnI, ApaI, TaiI, MaeII
-
 
     """
 
@@ -144,23 +144,28 @@ def test_initialization():
         == Dseq("A", linear=False)
     )
 
-
-    obj3 = Dseq.from_representation("""
+    obj3 = Dseq.from_representation(
+        """
                                    GGATCC
                                    CCTAGG
-                                   """)
+                                   """
+    )
     assert obj3.ovhg == 0
 
-    obj3 = Dseq.from_representation("""
+    obj3 = Dseq.from_representation(
+        """
                                    aGGATCC
                                     CCTAGGg
-                                   """)
+                                   """
+    )
     assert obj3.ovhg == -1
 
-    obj3 = Dseq.from_representation("""
+    obj3 = Dseq.from_representation(
+        """
                                     GGATCCg
                                    aCCTAGG
-                                   """)
+                                   """
+    )
     assert obj3.ovhg == 1
 
 
@@ -626,11 +631,18 @@ def test_Dseq_slicing2():
 
     a = Dseq("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
 
-    assert a.cut(EcoRI, BamHI, KpnI,) == a.cut(
-        BamHI,
-        EcoRI,
-        KpnI,
-    )[::-1]
+    assert (
+        a.cut(
+            EcoRI,
+            BamHI,
+            KpnI,
+        )
+        == a.cut(
+            BamHI,
+            EcoRI,
+            KpnI,
+        )[::-1]
+    )
 
 
 def test_Dseq___getitem__():
@@ -811,9 +823,9 @@ def test_transcribe():
 
     x = Dseq("ATGAAATAA")
 
-    assert str(x.transcribe()) == 'AUGAAAUAA'
+    assert str(x.transcribe()) == "AUGAAAUAA"
 
-    assert str(x.reverse_complement().transcribe()) == 'UUAUUUCAU'
+    assert str(x.reverse_complement().transcribe()) == "UUAUUUCAU"
 
 
 def test_translate():
@@ -822,9 +834,9 @@ def test_translate():
 
     x = Dseq("ATGAAATAA")
 
-    assert str(x.translate()) == 'MK*'
+    assert str(x.translate()) == "MK*"
 
-    assert str(x.reverse_complement().translate()) == 'LFH'
+    assert str(x.reverse_complement().translate()) == "LFH"
 
 
 if __name__ == "__main__":

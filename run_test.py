@@ -6,6 +6,7 @@ import logging
 import tempfile
 import pytest
 
+
 def main():
     """docstring."""
 
@@ -34,8 +35,8 @@ def main():
 
     import pstats
 
-    stats = pstats.Stats('./prof/combined.prof')
-    stats.print_stats("pydna", .1)
+    stats = pstats.Stats("./prof/combined.prof")
+    stats.print_stats("pydna", 0.1)
 
     # Or alternatively
     # stats.print_stats("local_path", 20) # Only show 20 of the listings

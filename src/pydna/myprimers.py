@@ -63,12 +63,14 @@ class PrimerList(_UserList):
     property.
     """
 
-    def __init__(self,
-                 initlist: Iterable = None,
-                 path: (str, Path) = None,
-                 *args,
-                 identifier: str = "p",
-                 **kwargs):
+    def __init__(
+        self,
+        initlist: Iterable = None,
+        path: (str, Path) = None,
+        *args,
+        identifier: str = "p",
+        **kwargs,
+    ):
         if initlist:
             self.data = initlist
             self.path = None
@@ -78,8 +80,11 @@ class PrimerList(_UserList):
             self.data = _parse_primers(self.path.read_text())[::-1]
         # super().__init__(*args, **kwargs)
         self.accessed_indices = []
-        if (identifier.isidentifier() and not _iskeyword(identifier)
-           and identifier not in _kw):
+        if (
+            identifier.isidentifier()
+            and not _iskeyword(identifier)
+            and identifier not in _kw
+        ):
             self.identifier = identifier
         else:
             raise ValueError(f"{identifier} is not a valid identifier.")
@@ -95,7 +100,7 @@ class PrimerList(_UserList):
             try:
                 result = self.data[i]
             except IndexError as e:
-                raise(e)
+                raise (e)
             else:
                 if i not in self.accessed_indices:
                     self.accessed_indices.append(i)

@@ -8,7 +8,7 @@ from pydna.readers import read
 
 
 def test_mark_budde():
-    """ test mark budde"""
+    """test mark budde"""
     a = read("pGREG505.gb")
     assert a.name == "pGREG505"
     assert a.looped().name == "pGREG505"

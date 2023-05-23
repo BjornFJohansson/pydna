@@ -59,7 +59,7 @@ cloning in yeast. Gene, 344: 43–51.
 http://www.ncbi.nlm.nih.gov/pubmed/15656971
 """
 
-print info
+print(info)
 
 raw_input("Press any key and wait for the script to finish!")
 
@@ -107,4 +107,4 @@ pGUP1 = sync(pGUP1, pGREG505)
 
 pGUP1.write("pGUP1.gb")
 
-print "done! look at the file pGUP1.gb"
+print("done! look at the file pGUP1.gb")

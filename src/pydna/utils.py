@@ -6,8 +6,7 @@
 # as part of this package.
 """Miscellaneous functions."""
 
-from Bio.Data.IUPACData import (ambiguous_dna_complement as
-                                _ambiguous_dna_complement)
+from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
 from Bio.Seq import _maketrans
 from pydna._pretty import pretty_str as _pretty_str
 from Bio.SeqUtils.CheckSum import seguid as _seguid
@@ -62,8 +61,7 @@ def shift_location(original_location, shift, lim):
         if ns < ne:
             newparts.append(_sl(ns, ne, strand))
         else:
-            parttuple = (_sl(ns, lim, strand),
-                         _sl(0,  ne,  strand))
+            parttuple = (_sl(ns, lim, strand), _sl(0, ne, strand))
             newparts.extend(parttuple if strand == 1 else parttuple[::-1])
     try:
         newloc = _cl(newparts)
@@ -114,21 +112,20 @@ def smallest_rotation(s):
                 return "".join(w * rep)
 
 
-def cai(seq: str,
-        organism: str = "sce",
-        weights: dict = _weights):
+def cai(seq: str, organism: str = "sce", weights: dict = _weights):
     """docstring."""
     from cai2 import CAI as _CAI
+
     return round(_CAI(seq.upper(), weights=weights[organism]), 3)
 
-def rarecodons(seq: str,
-               organism="sce"):
+
+def rarecodons(seq: str, organism="sce"):
     """docstring."""
     rare = _rare_codons[organism]
     s = seq.upper()
     slices = []
-    for i in range(0, len(seq)//3):
-        x, y = i*3, i*3+3
+    for i in range(0, len(seq) // 3):
+        x, y = i * 3, i * 3 + 3
         trip = s[x:y]
         if trip in rare:
             slices.append(slice(x, y, 1))
@@ -141,26 +138,31 @@ def express(seq: str, organism="sce"):
 
     **NOT IMPLEMENTED YET**
     """
-    x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
-                      "n-end"]+_rare_codons[organism]+["rare"])
+    x = _PrettyTable(
+        ["cds", "len", "cai", "gc", "sta", "stp", "n-end"]
+        + _rare_codons[organism]
+        + ["rare"]
+    )
     val = []
 
-    val.append(f"{self._data.upper().decode('ASCII')[:3]}..."
-               f"{self._data.upper().decode('ASCII')[-3:]}")
-    val.append(len(self)/3)
+    val.append(
+        f"{self._data.upper().decode('ASCII')[:3]}..."
+        f"{self._data.upper().decode('ASCII')[-3:]}"
+    )
+    val.append(len(self) / 3)
     val.append(cai(organism))
     val.append(gc())
     val.append(startcodon())
     val.append(stopcodon())
     val.append(_n_end[organism].get(_seq3(self[3:6].translate())))
     s = self._data.upper().decode("ASCII")
-    trps = [s[i*3:i*3+3] for i in range(0, len(s)//3)]
+    trps = [s[i * 3 : i * 3 + 3] for i in range(0, len(s) // 3)]
     tot = 0
     for cdn in _rare_codons[organism]:
         cnt = trps.count(cdn)
         tot += cnt
         val.append(cnt)
-    val.append(round(tot/len(trps), 3))
+    val.append(round(tot / len(trps), 3))
     x.add_row(val)
     return x
 
@@ -279,6 +281,7 @@ def seguid(seq: str) -> _pretty_str:
     """
     return _pretty_str(_seguid(seq.upper()))
 
+
 def useguid(seq: str) -> _pretty_str:
     """Returns the url safe SEGUID checksum for the sequence.
     This is the SEGUID checksum with the '+' and '/' characters of standard
@@ -347,8 +350,7 @@ def lseguid_sticky(watson: str, crick: str, overhang: int) -> _pretty_str:
     if overhang == 0 and lw == lc:
         return lseguid_blunt(watson)
     else:
-        w, c, o = min(((watson, crick, overhang),
-                       (crick, watson, lw - lc + overhang)))
+        w, c, o = min(((watson, crick, overhang), (crick, watson, lw - lc + overhang)))
 
     return useguid(f"{o*chr(32)}{w}\n{-o*chr(32)}{c[::-1]}")
 
@@ -369,8 +371,9 @@ def cseguid(seq: str) -> _pretty_str:
     >>> cseguid("ttta")
     'oopV-6158nHJqedi8lsshIfcqYA'
     """
-    return useguid(min(smallest_rotation(seq.upper()),
-                       smallest_rotation(str(rc(seq)).upper())))
+    return useguid(
+        min(smallest_rotation(seq.upper()), smallest_rotation(str(rc(seq)).upper()))
+    )
 
 
 def flatten(*args):
@@ -383,10 +386,10 @@ def flatten(*args):
     while args:
         top = args.pop()
         if (
-                isinstance(top, _collections.abc.Iterable)
-                and not isinstance(top, (str, bytes, bytearray))
-                and not hasattr(top, "reverse_complement")
-                ):
+            isinstance(top, _collections.abc.Iterable)
+            and not isinstance(top, (str, bytes, bytearray))
+            and not hasattr(top, "reverse_complement")
+        ):
             args.extend(top)
         else:
             output.append(top)
@@ -474,29 +477,34 @@ def parse_text_table(rawtable, tabs=4):
 
     list_of_lists_rc = [list(i) for i in zip(*list_of_lists_cr)]
 
-    formatted = _pretty_str("\n".join(" ".join(cell) for cell in
-                            list_of_lists_rc))
+    formatted = _pretty_str("\n".join(" ".join(cell) for cell in list_of_lists_rc))
 
-    columnsplit = _pretty_str("\n|||\n".join(
-        [
-            "\n".join(
-                [
-                    x.strip()
-                    for x in ["".join(c) for c in zip(*col.strip("\n").splitlines())]
-                ]
-            )
-            for col in cols
-        ]
-    ))
+    columnsplit = _pretty_str(
+        "\n|||\n".join(
+            [
+                "\n".join(
+                    [
+                        x.strip()
+                        for x in [
+                            "".join(c) for c in zip(*col.strip("\n").splitlines())
+                        ]
+                    ]
+                )
+                for col in cols
+            ]
+        )
+    )
 
     rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
     rowsplit = _pretty_str("\n".join(row.strip() for row in rowsplit.splitlines()))
 
-    return (formatted,
-            columnsplit,
-            rowsplit,
-            list_of_lists_rc,
-            list_of_lists_cr,)
+    return (
+        formatted,
+        columnsplit,
+        rowsplit,
+        list_of_lists_rc,
+        list_of_lists_cr,
+    )
 
 
 def join_list_to_table(rawlist):
@@ -516,7 +524,7 @@ def join_list_to_table(rawlist):
 
     for col in cols:
         # print col
-        rows = [row.strip() or "\"" for row in col]
+        rows = [row.strip() or '"' for row in col]
         width = max([len(row) for row in rows])
 
         rows = [row.ljust(width) for row in rows]
@@ -542,15 +550,15 @@ def expandtolist(content):
         text2rep = line.group("item")
         bracket = line.group("brack")
         padding = max(
-            [len(str(x).strip()) for x in re.split(r"\.\.|,",
-                                                   bracket.strip("[ ]"))]
+            [len(str(x).strip()) for x in re.split(r"\.\.|,", bracket.strip("[ ]"))]
         )
         inbracket = [item.strip("[ ]") for item in bracket.split(",")]
         expanded = []
 
         for item in inbracket:
-            if re.match(r"(\d+\.\.\d+)|([a-z]+\.\."
-                        r"[a-z]+)|([A-Z]+\.\.[A-Z]+)", item):
+            if re.match(
+                r"(\d+\.\.\d+)|([a-z]+\.\." r"[a-z]+)|([A-Z]+\.\.[A-Z]+)", item
+            ):
                 low, high = item.split(
                     "..",
                 )
@@ -680,8 +688,7 @@ def randomprot(length, maxlength=None):
     """docstring."""
     if maxlength and maxlength > length:
         length = int(round(random.triangular(length, maxlength)))
-    return "".join([random.choice("ACDEFGHIKLMNPQRSTVWY")
-                    for x in range(length)])
+    return "".join([random.choice("ACDEFGHIKLMNPQRSTVWY") for x in range(length)])
 
 
 def eq(*args, **kwargs):
@@ -783,8 +790,9 @@ def eq(*args, **kwargs):
         if kwargs["circular"] is False:
             topology = "linear"
     else:
-        topology = set([arg.circular if
-                        hasattr(arg, "circular") else None for arg in args])
+        topology = set(
+            [arg.circular if hasattr(arg, "circular") else None for arg in args]
+        )
 
         if len(topology) != 1:
             raise ValueError("sequences have different topologies")
@@ -817,6 +825,7 @@ def eq(*args, **kwargs):
             if not (s1 == s2 or s1 == rc(s2)):
                 same = False
     return same
+
 
 if __name__ == "__main__":
     import os as _os

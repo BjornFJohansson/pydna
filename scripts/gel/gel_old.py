@@ -419,11 +419,11 @@ def contour_length(Nbp, b):
 
 
 def reduced_field(eta, a, mu0, E, kB, T):
-    return eta * a ** 2 * mu0 * E / (kB * T)
+    return eta * a**2 * mu0 * E / (kB * T)
 
 
 def reduced_field_Kuhn(eta, l, mu0, E, kB, T):
-    return eta * l ** 2 * mu0 * E / (kB * T)
+    return eta * l**2 * mu0 * E / (kB * T)
 
 
 # Diffusion coefficient of a blob
@@ -472,7 +472,7 @@ def Nbp_to_N(Nbp, a, b, l):
 
 
 def reptation_equilibrium(Dblob, N):
-    return Dblob / N ** 2
+    return Dblob / N**2
 
 
 def reptation_accelerated(Dblob, epsilon, N):
@@ -498,8 +498,8 @@ def Ogston_Zimm(D0, g):
 Ogston_Rouse = (
     lambda Nbp, kB, T, a, eta, b, l: kB
     * T
-    * a ** 3
-    / (eta * b ** 2 * l ** 2 * Nbp ** 2)
+    * a**3
+    / (eta * b**2 * l**2 * Nbp**2)
 )
 
 # Diffusion regime frontiers (in number of occupied pores)
@@ -564,7 +564,7 @@ def diffusion_coefficient(Nbp, N_lim1, N_lim2, N_lim3, args):
         D = Ogston_Zimm(D0, g)
     elif N < N_lim2:
         # Rouse/Reptation-equilibrium
-        D = Db / N ** 2
+        D = Db / N**2
     elif N > N_lim1:
         # Reptation-plateau (reptation with orientation)
         D = Db * epsilon ** (3 / 2)
@@ -701,7 +701,7 @@ def flatten(List):
 
 # Gaussian function
 def Gaussian(x, hgt, ctr, dev):
-    return hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
+    return hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev**2))
 
 
 def Gauss_hgt(auc, dev):
@@ -1625,7 +1625,7 @@ class Gel:
                     D = Ogston_Zimm(D0, g)  # unit
                 elif N < N_lim2:
                     # Rouse/Reptation-equilibrium
-                    D = Db / N ** 2
+                    D = Db / N**2
                 elif N > N_lim1:
                     # Reptation-plateau (reptation with orientation)
                     D = Db * epsilon ** (3 / 2)

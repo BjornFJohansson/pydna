@@ -15,6 +15,7 @@ correctly."""
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
+
 # from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.amplicon import Amplicon as _Amplicon
@@ -108,11 +109,10 @@ def _annealing_positions(primer, template, limit=15):
         length = len(tail)
         results = []
         for match_start in positions:
-            tm = template[match_start + limit:
-                          match_start + limit + length].lower()
-            footprint = len(list(_itertools.takewhile(lambda x: x[0] == x[1],
-                                                      zip(tail,
-                                                          tm))))
+            tm = template[match_start + limit : match_start + limit + length].lower()
+            footprint = len(
+                list(_itertools.takewhile(lambda x: x[0] == x[1], zip(tail, tm)))
+            )
             results.append((match_start, footprint + limit))
         return results
     return []
@@ -124,7 +124,7 @@ def _annealing_positions(primer, template, limit=15):
 #         return super().__call__(*args, **kwargs)
 
 
-class Anneal(object): # ), metaclass=_Memoize):
+class Anneal(object):  # ), metaclass=_Memoize):
     """The Anneal class has the following important attributes:
 
     Attributes
@@ -323,12 +323,8 @@ class Anneal(object): # ), metaclass=_Memoize):
                     _SeqFeature(
                         _CompoundLocation(
                             [
-                                _SimpleLocation(0,
-                                                 end,
-                                                 strand=-1),
-                                _SimpleLocation(start,
-                                                 len(self.template),
-                                                 strand=-1),
+                                _SimpleLocation(0, end, strand=-1),
+                                _SimpleLocation(start, len(self.template), strand=-1),
                             ],
                         ),
                         type="primer_bind",
@@ -415,7 +411,7 @@ class Anneal(object): # ), metaclass=_Memoize):
                     template=self.template,
                     forward_primer=fp,
                     reverse_primer=rp,
-                    **self.kwargs
+                    **self.kwargs,
                 )
 
                 # amplicon.forward_primer.amplicon = amplicon
@@ -426,7 +422,7 @@ class Anneal(object): # ), metaclass=_Memoize):
         return self._products
 
     def __repr__(self):
-        """ returns a short string representation """
+        """returns a short string representation"""
         return "Reaction(products = {})".format(
             len(self.forward_primers * len(self.reverse_primers))
         )
@@ -439,7 +435,7 @@ class Anneal(object): # ), metaclass=_Memoize):
             name=self.template.name,
             size=len(self.template),
             top={True: "circular", False: "linear"}[self.template.circular],
-            limit=self.limit
+            limit=self.limit,
         )
         if self.forward_primers:
             for p in self.forward_primers:

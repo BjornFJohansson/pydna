@@ -3,6 +3,7 @@
 
 import pytest
 
+
 def test_pydna_gbtext_clean():
 
     pytest.importorskip("pyparsing")

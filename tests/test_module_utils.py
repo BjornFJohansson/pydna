@@ -14,20 +14,19 @@ def test_flatten():
     from pydna.utils import flatten
 
     testtuple = (
-      [1, 2, 3],
-      [bSeq("a"), bSeq("a"), bSeq("a")],
-      [Dseq("a"), Dseq("a"), Dseq("a")],
-      [bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a"))],
-      [SeqRecord(bSeq("a")), SeqRecord(bSeq("a")), SeqRecord(bSeq("a"))],
-      [Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a"))],
-      [Dseqrecord("a"), Dseqrecord("a"), Dseqrecord("a")],
-      ["a", "b", "c"]
-      )
+        [1, 2, 3],
+        [bSeq("a"), bSeq("a"), bSeq("a")],
+        [Dseq("a"), Dseq("a"), Dseq("a")],
+        [bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a"))],
+        [SeqRecord(bSeq("a")), SeqRecord(bSeq("a")), SeqRecord(bSeq("a"))],
+        [Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a"))],
+        [Dseqrecord("a"), Dseqrecord("a"), Dseqrecord("a")],
+        ["a", "b", "c"],
+    )
 
     for t in testtuple:
         assert flatten(t) == t
-    testtuple2 = ( ([1, [2, 3]], [1, 2, 3]),
-    )
+    testtuple2 = (([1, [2, 3]], [1, 2, 3]),)
     for argument, result in testtuple2:
         assert flatten(argument) == result
 
@@ -76,14 +75,10 @@ def test_eq():
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=True)
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=False)
 
-    assert eq(Dseqrecord("AAA", circular=False),
-              Dseqrecord("AAA", circular=False))
-    assert eq(Dseqrecord("AAA", circular=True),
-              Dseqrecord("AAA", circular=True))
-    assert not eq(Dseqrecord("ATA", circular=False),
-                  Dseqrecord("AAT", circular=False))
-    assert eq(Dseqrecord("ATA", circular=True),
-              Dseqrecord("AAT", circular=True))
+    assert eq(Dseqrecord("AAA", circular=False), Dseqrecord("AAA", circular=False))
+    assert eq(Dseqrecord("AAA", circular=True), Dseqrecord("AAA", circular=True))
+    assert not eq(Dseqrecord("ATA", circular=False), Dseqrecord("AAT", circular=False))
+    assert eq(Dseqrecord("ATA", circular=True), Dseqrecord("AAT", circular=True))
 
     with pytest.raises(ValueError):
         eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATA", circular=False))
@@ -309,7 +304,6 @@ def test_join_list_to_table():
         == "one   two   three\nfour  five  six  \nseven eight nine "
     )
 
-
     cs = (
         "one\n"
         "four\n"
@@ -324,7 +318,7 @@ def test_join_list_to_table():
         "nine"
     )
 
-    answer = 'one   two  three\nfour  five six  \nseven \"    nine '
+    answer = 'one   two  three\nfour  five six  \nseven "    nine '
     assert join_list_to_table(cs) == answer
 
     rs = (
@@ -407,19 +401,68 @@ def test_randomORF():
     assert orf.startswith("ATG")
 
     cdns = (
-        "TTT", "TTC", "TTA", "TTG", "TCT",
-        "TCC", "TCA", "TCG", "TAT", "TAC",
-        "TGT", "TGC", "TGG", "CTT", "CTC",
-        "CTA", "CTG", "CCT", "CCC", "CCA",
-        "CCG", "CAT", "CAC", "CAA", "CAG",
-        "CGT", "CGC", "CGA", "CGG", "ATT",
-        "ATC", "ATA", "ATG", "ACT", "ACC",
-        "ACA", "ACG", "AAT", "AAC", "AAA",
-        "AAG", "AGT", "AGC", "AGA", "AGG",
-        "GTT", "GTC", "GTA", "GTG", "GCT",
-        "GCC", "GCA", "GCG", "GAT", "GAC",
-        "GAA", "GAG", "GGT", "GGC", "GGA",
-        "GGG")
+        "TTT",
+        "TTC",
+        "TTA",
+        "TTG",
+        "TCT",
+        "TCC",
+        "TCA",
+        "TCG",
+        "TAT",
+        "TAC",
+        "TGT",
+        "TGC",
+        "TGG",
+        "CTT",
+        "CTC",
+        "CTA",
+        "CTG",
+        "CCT",
+        "CCC",
+        "CCA",
+        "CCG",
+        "CAT",
+        "CAC",
+        "CAA",
+        "CAG",
+        "CGT",
+        "CGC",
+        "CGA",
+        "CGG",
+        "ATT",
+        "ATC",
+        "ATA",
+        "ATG",
+        "ACT",
+        "ACC",
+        "ACA",
+        "ACG",
+        "AAT",
+        "AAC",
+        "AAA",
+        "AAG",
+        "AGT",
+        "AGC",
+        "AGA",
+        "AGG",
+        "GTT",
+        "GTC",
+        "GTA",
+        "GTG",
+        "GCT",
+        "GCC",
+        "GCA",
+        "GCG",
+        "GAT",
+        "GAC",
+        "GAA",
+        "GAG",
+        "GGT",
+        "GGC",
+        "GGA",
+        "GGG",
+    )
 
     assert orf[3:6] in cdns
 

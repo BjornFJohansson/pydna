@@ -149,14 +149,18 @@ SimpleSlice = _pp.Group(gbIndex + SEP + gbIndex) | _pp.Group(gbIndex).setParseAc
 
 # recursive def for nested function syntax:  f( g(), g() )
 complexSlice = _pp.Forward()
-complexSlice << (_pp.Literal("complement") | _pp.Literal("join")) + LPAREN + (
-    _pp.delimitedList(complexSlice) | _pp.delimitedList(SimpleSlice)
-) + RPAREN
+(
+    complexSlice
+    << (_pp.Literal("complement") | _pp.Literal("join"))
+    + LPAREN
+    + (_pp.delimitedList(complexSlice) | _pp.delimitedList(SimpleSlice))
+    + RPAREN
+)
 featLocation = _pp.Group(SimpleSlice | complexSlice)
 
 
 def parseGBLoc(s, l, t):
-    """retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences """
+    """retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences"""
     strand = 1
     locationlist = []
 

@@ -119,7 +119,12 @@ class Genbank(object):
         """
         matches = (
             (1, _re.search(r"(REGION:\s(?P<start>\d+)\.\.(?P<stop>\d+))", item)),
-            (2, _re.search(r"(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))", item),),
+            (
+                2,
+                _re.search(
+                    r"(REGION: complement\((?P<start>\d+)\.\.(?P<stop>\d+)\))", item
+                ),
+            ),
             (1, _re.search(r"(:|\s)(?P<start>\d+)-(?P<stop>\d+)", item)),
             (2, _re.search(r"(:|\s)c(?P<start>\d+)-(?P<stop>\d+)", item)),
         )
@@ -134,12 +139,9 @@ class Genbank(object):
 
         if strand not in [1, 2]:
             try:
-                strand = {"c": 2,
-                          "crick": 2,
-                          "antisense": 2,
-                          "2": 2,
-                          "-": 2,
-                          "-1": 2}[strand.lower()]
+                strand = {"c": 2, "crick": 2, "antisense": 2, "2": 2, "-": 2, "-1": 2}[
+                    strand.lower()
+                ]
             except (KeyError, AttributeError):
                 strand = 1
 
@@ -170,11 +172,8 @@ class Genbank(object):
         _module_logger.info("text[:160]  %s", text[:160])
 
         return _GenbankRecord(
-            _read(text),
-            item=item,
-            start=seq_start,
-            stop=seq_stop,
-            strand=strand)
+            _read(text), item=item, start=seq_start, stop=seq_stop, strand=strand
+        )
 
 
 def genbank(accession: str = "CS570233.1", *args, **kwargs):

@@ -143,7 +143,8 @@ class Amplicon(_Dseqrecord):
             * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp3=" " * (3 + len(self.forward_primer.seq)),
             middle1="...",
-            middle2="..." )
+            middle2="...",
+        )
 
         # type_, watson, rcrick = self.template.figure().splitlines()
         # f2 = (f"{watson}\n"

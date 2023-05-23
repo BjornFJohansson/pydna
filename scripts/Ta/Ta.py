@@ -85,9 +85,9 @@ _____ __|_____         |      |Primer1C 1000µM
 """
 
 gc = 100 * (217 + 255) / 1000  # 1000bp HB6xxN81mL12Nmiq7x4mYhVlk1I
-K = 50/1000  # M
+K = 50 / 1000  # M
 le = 1000  # 1000bp HB6xxN81mL12Nmiq7x4mYhVlk1I
-tmp = 81.5 + 0.41 * gc + 16.6 * math.log10(K) - 675/le
+tmp = 81.5 + 0.41 * gc + 16.6 * math.log10(K) - 675 / le
 Ta_opt = 0.3 * 61.3 + 0.7 * tmp - 14.9
 
 print(Ta_opt, 58.3)

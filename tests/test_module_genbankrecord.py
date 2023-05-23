@@ -32,11 +32,10 @@ def test_genbankfile():
 
     gbr = genbankrecord.GenbankRecord("aaa", start=1, stop=2)
 
-    assert (
-        gbr.hyperlink
-        == ("<a href='https://www.ncbi.nlm.nih.gov/nuccore/"
-            "accession?from=1&to=2&strand=1'"
-            " target='_blank'>accession 1-2</a>")
+    assert gbr.hyperlink == (
+        "<a href='https://www.ncbi.nlm.nih.gov/nuccore/"
+        "accession?from=1&to=2&strand=1'"
+        " target='_blank'>accession 1-2</a>"
     )
 
     gbr_rc = gbr.rc()

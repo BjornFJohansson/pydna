@@ -27,8 +27,8 @@ def describeMenuItems(wiki):
     return (
         (
             mwgtofasta,
-            _(u"mecplugins|DNA Sequence Tools|MWG primers to fasta format") + u"\t",
-            _(u"mwgtofasta"),
+            _("mecplugins|DNA Sequence Tools|MWG primers to fasta format") + "\t",
+            _("mwgtofasta"),
         ),
     )
 

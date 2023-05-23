@@ -185,12 +185,12 @@ Ogston_Zimm = lambda D0, g: D0 * g
 Ogston_Rouse = (
     lambda Nbp, kB, T, a, eta, b, l: kB
     * T
-    * a ** 3
-    / (eta * b ** 2 * l ** 2 * Nbp ** 2)
+    * a**3
+    / (eta * b**2 * l**2 * Nbp**2)
 )
 
 # Gaussian function
-Gaussian = lambda x, hgt, ctr, dev: hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
+Gaussian = lambda x, hgt, ctr, dev: hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev**2))
 
 Gauss_dev = lambda FWHM: FWHM / (2 * _np.sqrt(2 * _np.log(2)))
 Gauss_FWHM = lambda FWTM: FWTM * _np.sqrt(2 * _np.log(2)) / _np.sqrt(2 * _np.log(10))
@@ -330,7 +330,7 @@ class Gel:
         a_fit = a_fit.to("m")  # ##################################
         self.poresize = a
         self.poresize_fit = a_fit
-        reduced_field = lambda eta, a, mu0, E, kB, T: eta * a ** 2 * mu0 * E / (kB * T)
+        reduced_field = lambda eta, a, mu0, E, kB, T: eta * a**2 * mu0 * E / (kB * T)
         epsilon = reduced_field(eta, a, mu0, field * 100, kB, temperature)
         # Diffusion coefficient of a blob
         Dblob = lambda kB, T, eta, a: kB * T / (eta * a)
@@ -383,7 +383,7 @@ class Gel:
                     g = Zimm_g(Nbp, DRouse, qeff, mu0, kB, temperature)  # base
                     D = Ogston_Zimm(D0, g)  # unit
                 elif N < N_lim2:  # Rouse/Reptation-equilibrium
-                    D = Db / N ** 2
+                    D = Db / N**2
                 elif N > N_lim1:  # Reptation-plateau (reptation with orientation)
                     D = Db * epsilon ** (3 / 2)
                 else:  # Accelerated-reptation

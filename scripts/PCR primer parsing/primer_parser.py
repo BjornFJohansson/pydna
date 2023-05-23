@@ -11,14 +11,14 @@ pdf = "SynthesisReport_3931076.pdf"
 
 pdf = PyPDF2.PdfFileReader(open(pdf, "rb"))
 
-text = u""
+text = ""
 
 for i in range(0, pdf.getNumPages()):
-    print str(i)
+    print(str(i))
     extractedText = pdf.getPage(i).extractText()
     text += extractedText
 
-print text
+print(text)
 
 """
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     with open("alunos.txt", "w") as f:
         for m in match:
-            f.write(u"{}   {}\n".format(m[0], m[1]).encode("utf8"))
+            f.write("{}   {}\n".format(m[0], m[1]).encode("utf8"))
 
     from pyparsing import Word, Literal, printables, LineStart, SkipTo, Combine
 

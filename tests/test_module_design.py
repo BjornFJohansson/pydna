@@ -195,7 +195,7 @@ def test_primer_design_one_fragment_flanking_linkers():
 
 
 def test_primer_Design():
-    """ test_primer_design"""
+    """test_primer_design"""
 
     a = Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
     b = Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
@@ -217,7 +217,7 @@ def test_primer_Design():
 
 
 def test_primer_Design_with_linker():
-    """ test_primer_design"""
+    """test_primer_design"""
 
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     l = Dseqrecord("AAATTTCCCGGG")
@@ -249,20 +249,24 @@ def test_primer_Design_given_fw_primer():
     a = primer_design(b, fp=Primer("agctactgactattag"))
     assert str(a.reverse_primer.seq) == "tagatcagtacagtca"
 
+
 def test_primer_Design_given_rv_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     a = primer_design(b, rp=Primer("tagatcagtacagtca"))
     assert str(a.forward_primer.seq) == "agctactgactattag"
+
 
 def test_primer_Design_given_wrong_fw_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
         primer_design(b, fp=Primer("agctactgactattagC"))
 
+
 def test_primer_Design_given_wrong_rv_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
         primer_design(b, rp=Primer("tagatcagtacagtcaC"))
+
 
 def test_primer_Design_given_both_primers():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")

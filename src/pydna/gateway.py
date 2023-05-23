@@ -48,7 +48,8 @@ ambiguous_dna_regex = {
     "D": "[AGTDRWK]",
     "B": "[CGTBSKY]",
     "X": "X",
-    "N": "[ACGTBDHKMNRSVWY]" }
+    "N": "[ACGTBDHKMNRSVWY]",
+}
 
 atts = """
 attP1 AAATAATGATTTTATTTTGACTGATAGTGACCTGTTCGTTGCAACAMATTGATRAGCAATKMTTTYTTATAATGCCMASTTT GTACAAA AAAGYWGAACGAGAAACGTAAAATGATATAAATATCAATATATTAAATTAGATTTTGCATAAAAAACAGACTACATAATRCTGTAAAACACAACATATSCAGTCAYWWTG CMASTWT AAAGYWG
@@ -85,8 +86,6 @@ for line in (line for line in atts.splitlines() if line.strip()):
         part.translate(retable)
 
 
-
-
 class Gateway(object):
     """Assembly of linear DNA fragments into linear or circular constructs.
 
@@ -102,20 +101,7 @@ class Gateway(object):
     """
 
     def __init__(self, molecules=None):
-        self.molecules =molecules
-
-
-
-
-
-
-
-
-
-
-
-
-
+        self.molecules = molecules
 
 
 """
@@ -146,36 +132,6 @@ lox 71	    TACCGTTCGTATA	NNNTANNN	TATACGAAGTTAT
 lox 66	    ATAACTTCGTATA	NNNTANNN	TATACGAACGGTA
 
 """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 """

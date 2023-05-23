@@ -165,8 +165,8 @@ cacagtatagcatcgtaCCCCCgatacagccagaata
 
     assert y.figure() == yfig
     assert y.detailed_figure() == ydfig
-    
-    
+
+
 def test_linear(monkeypatch):
     from pydna._pretty import pretty_str
     from pydna.assembly import Assembly
@@ -182,12 +182,13 @@ def test_linear(monkeypatch):
     c.name = "ccc"
     asm = Assembly((a, b, c), limit=14)
     x = asm.assemble_linear()[0]
-    
-    answer = 'aaa|14\n    \\/\n    /\\\n    14|bbb|15\n           \\/\n           /\\\n           15|ccc'
+
+    answer = "aaa|14\n    \\/\n    /\\\n    14|bbb|15\n           \\/\n           /\\\n           15|ccc"
 
     assert x.figure() == answer.strip()
-    answer = 'acgatgctatactgtgCCNCCtgtgctgtgctcta\n                     TGTGCTGTGCTCTA\n                     tgtgctgtgctctaTTTTTTTtattctggctgtatc\n                                          TATTCTGGCTGTATC\n                                          tattctggctgtatcGGGGGtacgatgctatactgtg\n'
+    answer = "acgatgctatactgtgCCNCCtgtgctgtgctcta\n                     TGTGCTGTGCTCTA\n                     tgtgctgtgctctaTTTTTTTtattctggctgtatc\n                                          TATTCTGGCTGTATC\n                                          tattctggctgtatcGGGGGtacgatgctatactgtg\n"
     assert x.detailed_figure()
-    
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])

@@ -15,4 +15,4 @@ seqlist = [
 ]
 
 
-print fwdp(seqlist)
+print(fwdp(seqlist))

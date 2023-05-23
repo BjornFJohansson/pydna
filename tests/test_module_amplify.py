@@ -356,7 +356,7 @@ def test_circ_pcr():
 
 
 def test_pcr():
-    """ test pcr"""
+    """test pcr"""
 
     raw = []
 
