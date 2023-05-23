@@ -66,7 +66,7 @@ class PrimerList(_UserList):
     def __init__(
         self,
         initlist: Iterable = None,
-        path: Union(str, Path) = None,
+        path: Union[str, Path] = None,
         *args,
         identifier: str = "p",
         **kwargs,

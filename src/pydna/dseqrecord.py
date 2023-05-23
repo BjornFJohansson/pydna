@@ -35,7 +35,14 @@ import time as _time
 import datetime as _datetime
 import pyperclip
 
-from IPython.display import display_html as _display_html
+try:
+    from IPython.display import display_html as _display_html
+except ImportError:
+
+    def _display_html(item, raw=None):
+        return item
+
+
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
