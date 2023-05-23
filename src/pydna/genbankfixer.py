@@ -170,7 +170,7 @@ def parseGBLoc(s, l_, t):
             strand = -1
 
     for entry in t[0]:
-        if isinstance(entry, str):
+        if not isinstance(entry, str):
             locationlist.append([entry[0], entry[1]])
 
     # return locationlist and strand spec
