@@ -52,7 +52,6 @@ class Amplicon(_Dseqrecord):
         reverse_primer=None,
         **kwargs
     ):
-
         super().__init__(record, *args)
         self.template = template
         self.forward_primer = forward_primer

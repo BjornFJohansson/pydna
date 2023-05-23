@@ -457,7 +457,6 @@ def seq31(seq):
 
 
 def parse_text_table(rawtable, tabs=4):
-
     table = textwrap.dedent(rawtable.expandtabs(tabs)).strip()
     max_row_length = max([len(row.strip()) for row in table.splitlines()])
     rows = [row.ljust(max_row_length) for row in table.splitlines()]
@@ -508,7 +507,6 @@ def parse_text_table(rawtable, tabs=4):
 
 
 def join_list_to_table(rawlist):
-
     if "|||\n" in rawlist:
         raw_columns = rawlist.split("|||\n")
         cols = [col.splitlines() for col in raw_columns]

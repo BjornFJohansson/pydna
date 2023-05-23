@@ -122,7 +122,6 @@ class Assembly(object):  # , metaclass=_Memoize):
     """
 
     def __init__(self, frags=None, limit=25, algorithm=common_sub_strings):
-
         # Fragments is a string subclass with some extra properties
         # The order of the fragments has significance
         fragments = []
@@ -164,7 +163,6 @@ class Assembly(object):  # , metaclass=_Memoize):
         # see https://docs.python.org/3.10/library/itertools.html
         # itertools.combinations('ABCD', 2)-->  AB AC AD BC BD CD
         for first, secnd in _itertools.combinations(fragments, 2):
-
             if first["upper"] == secnd["upper"]:
                 continue
 
@@ -233,7 +231,6 @@ class Assembly(object):  # , metaclass=_Memoize):
             f["nodes"] = sorted(set(f["nodes"]))
 
         for f in _itertools.chain(fragments, rcfragments.values()):
-
             # nodes are sorted in place in the order of their position
             # duplicates are removed (same position and sequence)
             # along the fragment since nodes are a tuple (position(int),
@@ -253,7 +250,6 @@ class Assembly(object):  # , metaclass=_Memoize):
                 length2,
                 node2,
             ) in _itertools.combinations(f["nodes"], 2):
-
                 feats = [
                     ft
                     for ft in f["features"]
@@ -287,7 +283,6 @@ class Assembly(object):  # , metaclass=_Memoize):
 
     @exit_after(int(_os.getenv("pydna_assembly_limit")))
     def assemble_linear(self, start=None, end=None, max_nodes=None):
-
         G = _nx.MultiDiGraph(self.G)
 
         G.add_nodes_from(["begin", "begin_rc", "end", "end_rc"], length=0)

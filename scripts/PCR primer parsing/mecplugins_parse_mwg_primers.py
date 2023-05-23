@@ -42,7 +42,6 @@ def describeToolbarItems(wiki):
 
 
 def mwgtofasta(wiki, evt):
-
     from pyparsing import Word, Literal, printables, LineStart, SkipTo, Combine, nums
 
     raw_string = wiki.getActiveEditor().GetSelectedText()

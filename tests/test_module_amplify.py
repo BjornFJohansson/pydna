@@ -12,7 +12,6 @@ from Bio.SeqUtils.CheckSum import seguid
 
 
 def test_set_primer_footprint():
-
     f, r = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
@@ -36,7 +35,6 @@ def test_set_primer_footprint():
 
 
 def test_string_arguments():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
@@ -100,7 +98,6 @@ def test_wrong_argument_type():
 
 
 def test_no_primers_anneal():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctacta
@@ -120,7 +117,6 @@ def test_no_primers_anneal():
 
 
 def test_no_fwdprimer_anneal():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctact
@@ -140,7 +136,6 @@ def test_no_fwdprimer_anneal():
 
 
 def test_no_revprimer_anneal():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -160,7 +155,6 @@ def test_no_revprimer_anneal():
 
 
 def test_Primer_arguments():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -179,7 +173,6 @@ def test_Primer_arguments():
 
 
 def test_feature_label():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -199,7 +192,6 @@ def test_feature_label():
 
 
 def test_feature_note():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -222,7 +214,6 @@ def test_feature_note():
 
 
 def test_Amplicon_argument():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -250,7 +241,6 @@ def test_Amplicon_argument():
 
 
 def test_pcr_not_specific():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -272,7 +262,6 @@ def test_pcr_not_specific():
 
 
 def test_too_short_primers():
-
     f, r = parse_primers(
         """>ForwardPrimer
            gctactacacacgtactgactg

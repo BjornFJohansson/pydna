@@ -131,7 +131,6 @@ class Gel:
         for lane in self.lanes:
             for position in range(len(lane)):
                 if lane[position] > 0:
-
                     brightness = lane[position] * exposure / aperture + c1
                     colour1 = testColour(brightness)
                     colour2 = testColour(brightness * 0.6)
@@ -185,7 +184,6 @@ class Gel:
 
 
 def AgaroseGel(samples, *args, **kwargs):
-
     myGel = Gel(size=(360, len(samples)), agarose=1.0)
 
     for i, sample in enumerate(samples):
@@ -212,7 +210,6 @@ def AgaroseGel(samples, *args, **kwargs):
 
 
 if __name__ == "__main__":
-
     from pydna import *
 
     lambda_ = read("../tests/lambda.gb")

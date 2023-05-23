@@ -74,7 +74,6 @@ def test_cut1():
 
 
 def test_cas9():
-
     from pydna.dseq import Dseq
 
     s = Dseq("gattcatgcatgtagcttacgtagtct")
@@ -85,7 +84,6 @@ def test_cas9():
 
 
 def test_initialization():
-
     import pytest
     from pydna.dseq import Dseq
 
@@ -275,7 +273,6 @@ def test_Dseq_cutting_adding():
 
 
 def test_dseq():
-
     import textwrap
     from pydna.dseq import Dseq
 
@@ -664,14 +661,12 @@ def test_Dseq___getitem__():
 
 
 def test_cut_circular():
-
     from pydna.dseq import Dseq
     from Bio.Restriction import BsaI, KpnI, Acc65I, NotI
 
     test = "aaaaaaGGTACCggtctcaaaa"
 
     for i in range(len(test)):
-
         nt = test[i:] + test[:i]
 
         a = Dseq(nt, circular=True).cut(Acc65I)[0]  # G^GTACC
@@ -775,7 +770,6 @@ def test_shifted():
 
 
 def test_misc():
-
     from pydna.dseq import Dseq
 
     x = Dseq("ctcgGCGGCCGCcagcggccg", circular=True)
@@ -790,7 +784,6 @@ def test_misc():
 
 
 def test_cut_missing_enzyme():
-
     from pydna.dseq import Dseq
 
     x = Dseq("ctcgGCGGCCGCcagcggccg")
@@ -805,7 +798,6 @@ def test_cut_missing_enzyme():
 
 
 def test_cut_with_no_enzymes():
-
     from pydna.dseq import Dseq
 
     x = Dseq("ctcgGCGGCCGCcagcggccg")
@@ -818,7 +810,6 @@ def test_cut_with_no_enzymes():
 
 
 def test_transcribe():
-
     from pydna.dseq import Dseq
 
     x = Dseq("ATGAAATAA")
@@ -829,7 +820,6 @@ def test_transcribe():
 
 
 def test_translate():
-
     from pydna.dseq import Dseq
 
     x = Dseq("ATGAAATAA")

@@ -66,7 +66,6 @@ def run_app(record):
 
 
 if __name__ == "__main__":
-
     t = """
         LOCUS       myDNA                     12 bp    DNA     linear       02-JAN-2023
         DEFINITION  .

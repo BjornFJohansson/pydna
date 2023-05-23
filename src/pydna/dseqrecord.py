@@ -137,7 +137,6 @@ class Dseqrecord(_SeqRecord):
         n=5e-14,  # mol ( = 0.05 pmol)
         **kwargs,
     ):
-
         _module_logger.info("### Dseqrecord initialized ###")
         _module_logger.info("argument linear = %s", linear)
         _module_logger.info("argument circular = %s", circular)
@@ -792,7 +791,6 @@ class Dseqrecord(_SeqRecord):
         matching_reads = []
 
         for read_ in reads:
-
             matches = _common_sub_strings(str(self.seq).lower(), str(read_.seq), limit)
 
             if not matches:

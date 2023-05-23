@@ -736,7 +736,6 @@ def test_MXblaster1(monkeypatch):
 
 
 def test_assemble_pGUP1(monkeypatch):
-
     monkeypatch.setenv("pydna_cached_funcs", "")
 
     from pydna.readers import read
@@ -784,7 +783,6 @@ def test_assemble_pGUP1(monkeypatch):
 
 
 def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
-
     from pydna.readers import read
     from pydna.assembly import Assembly
 
@@ -802,7 +800,6 @@ def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
 
 
 def test_marker_replacement_on_plasmid(monkeypatch):
-
     from pydna.assembly import Assembly
     from pydna.parsers import parse
 

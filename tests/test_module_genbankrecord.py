@@ -5,7 +5,6 @@ import pytest
 
 
 def test_genbankfile():
-
     from pydna import genbankrecord
 
     gbr = genbankrecord.GenbankRecord("aaa")

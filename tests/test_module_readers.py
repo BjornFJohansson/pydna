@@ -44,7 +44,6 @@ def test_pydna_read_test():
 
 
 def test_parse_and_read_with_biopython_and_pydna():
-
     from pydna.readers import read
     from pydna.parsers import parse
 

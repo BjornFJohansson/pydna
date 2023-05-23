@@ -82,7 +82,6 @@ def test_stopcodon():
 
 
 def test_orf():
-
     from pydna.seq import Seq
 
     s = Seq("atgaaattttaa")
@@ -91,7 +90,6 @@ def test_orf():
 
 
 def test_no_orf():
-
     from pydna.seq import Seq
 
     s2 = Seq("aaaaaaaaaaaaaaa")
@@ -100,7 +98,6 @@ def test_no_orf():
 
 
 def test_orfs():
-
     from pydna.dseqrecord import Dseqrecord
 
     s = Dseqrecord(

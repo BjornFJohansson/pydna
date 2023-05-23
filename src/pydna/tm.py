@@ -228,7 +228,6 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
     tmr = tm(amplicon.reverse_primer.footprint)
 
     if tmf >= 69.0 and tmr >= 69.0:
-
         f = _textwrap.dedent(
             r"""
                               |98°C|98°C      |    |tmf:{tmf:.1f}

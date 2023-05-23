@@ -14,7 +14,6 @@ def test_orfs():
 
 
 def test_cas9():
-
     from pydna.dseqrecord import Dseqrecord
 
     s = Dseqrecord("gattcatgcatgtagcttacgtagtct")
@@ -156,7 +155,6 @@ def test_initialization():
     crick = ["taaa", "taaa", "aaat", "aaat"]
     sek = ["attta", "attta", "attt", "attt"]
     for b, ci, li, s, cri in zip(a, circular, linear, sek, crick):
-
         assert type(b.seq) == Dseq
         assert str(b.seq.watson) == "attt"
         assert str(b.seq.crick) == cri
@@ -513,7 +511,6 @@ def test_write():
 
 
 def test_write_same_seq_to_existing_file(monkeypatch):
-
     import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
@@ -530,7 +527,6 @@ def test_write_same_seq_to_existing_file(monkeypatch):
 
 
 def test_write_different_file_to_existing_file(monkeypatch):
-
     import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
@@ -549,7 +545,6 @@ def test_write_different_file_to_existing_file(monkeypatch):
 
 
 def test_write_different_file_to_stamped_existing_file(monkeypatch):
-
     import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
@@ -594,7 +589,6 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
 
 
 def test_write_different_file_to_stamped_existing_file2(monkeypatch):
-
     import builtins
     from unittest.mock import patch
     from unittest.mock import mock_open
@@ -689,14 +683,12 @@ def test_cut_args():
 
 
 def test_cut_circular():
-
     from pydna.dseqrecord import Dseqrecord
     from Bio.Restriction import BsaI, KpnI, Acc65I, NotI
 
     test = "aaaaaaGGTACCggtctcaaaa"
 
     for i in range(len(test)):
-
         nt = test[i:] + test[:i]
 
         a = Dseqrecord(nt, circular=True).cut(Acc65I)[0]
@@ -716,7 +708,6 @@ def test_cut_circular():
 
 
 def test_cut_add():
-
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
     from pydna.utils import eq
@@ -1180,7 +1171,6 @@ def test_features_on_slice():
 
 
 def test_features_change_ori():
-
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
@@ -1296,7 +1286,6 @@ def test_features_change_ori():
     assert s3.features[1].extract(s3).seq == insfeat  # ins
 
     for i in range(1, len(s3)):
-
         b = s3.shifted(i)
 
         assert [
@@ -1324,7 +1313,6 @@ def test_features_change_ori():
     assert str(insfeat).upper() in inseq
 
     for i in range(0, len(s3)):
-
         b = s3.shifted(i)
 
         """        11
@@ -1378,7 +1366,6 @@ def test_amijalis():
 
 
 def test_figure():
-
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
     from Bio.Restriction import Acc65I, KpnI, ApaI, Bsp120I
@@ -1832,7 +1819,6 @@ def test_synced():
 
 
 def test_map_pCR_MCT1_HA46():
-
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
 
@@ -2271,11 +2257,9 @@ def test_map():
         traces.append(abiread(name, "abi"))
 
     for t in traces:
-
         d = Dseqrecord(t.seq)
 
         if "ITVFFKEYPYDVPDYAIEGIFHAT" in d:
-
             tag = "tat cca tat gac gtt cca gac tat gca".replace(" ", "")
             trc = "ata ggt ata ctg caa ggt ctg ata cgt"[::-1].replace(" ", "")
 

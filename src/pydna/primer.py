@@ -17,7 +17,6 @@ class Primer(_SeqRecord):
     def __init__(
         self, record, *args, amplicon=None, position=None, footprint=0, **kwargs
     ):
-
         if hasattr(record, "features"):  # Seqrecord
             self.__dict__.update(record.__dict__)
             self.__dict__.update(kwargs)

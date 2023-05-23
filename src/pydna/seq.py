@@ -134,7 +134,6 @@ class Seq(_Seq):
 
 
 if __name__ == "__main__":
-
     import os as _os
 
     cached = _os.getenv("pydna_cached_funcs", "")

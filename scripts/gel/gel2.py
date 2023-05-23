@@ -148,7 +148,6 @@ dset = _np.genfromtxt(
 
 
 def size_to_mobility(dna_fragment_length, efield, gelconcentration):
-
     muS = dset["muS"] / (100 * 100)  # m**2 to cm**2/V/s
     muL = dset["muL"] / (100 * 100)  # m**2 to cm**2/V/s
     gamma = dset["gamma"] * 1000  # kbp  to bp
@@ -206,7 +205,6 @@ class Gel:
         welly=0.2,  # cm
         wellsep=0.2,
     ):  # cm
-
         self.samples = samples
         self.gel_concentration = gel_concentration
         self.gel_length = gel_length
@@ -232,7 +230,6 @@ class Gel:
         dset_name="vertical",  # 'horizontal'
         replNANs=True,
     ):  # replace NANs by 'nearest' interpolation
-
         max_mob = 0
 
         for i, lane in enumerate(self.samples):

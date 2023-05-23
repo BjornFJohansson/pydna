@@ -23,6 +23,7 @@ from optparse import OptionParser
 #
 # ===============================================================================
 
+
 # ===============================================================================
 # GenBank Formatting Helpers
 def wrapstring(str_, rowstart, rowend, padfirst=True):

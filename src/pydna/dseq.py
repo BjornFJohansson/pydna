@@ -301,7 +301,6 @@ class Dseq(_Seq):
     def __init__(
         self, watson, crick=None, ovhg=None, linear=None, circular=None, pos=0
     ):
-
         if crick is None:
             if ovhg is None:
                 crick = _rc(watson)
@@ -316,7 +315,6 @@ class Dseq(_Seq):
                 raise ValueError("ovhg defined without crick strand!")
         else:  # crick strand given
             if ovhg is None:  # ovhg not given
-
                 olaps = _common_sub_strings(
                     str(watson).lower(),
                     str(_rc(crick).lower()),
@@ -598,7 +596,6 @@ class Dseq(_Seq):
         """Returns a subsequence. This method is used by the slice notation"""
 
         if self.linear:
-
             x = len(self.crick) - self._ovhg - len(self.watson)
 
             sns = (self._ovhg * " " + self.watson + x * " ")[sl]
@@ -659,7 +656,6 @@ class Dseq(_Seq):
         longer than 30 bp"""
 
         if len(self) > Dseq.trunc:
-
             if self._ovhg > 0:
                 d = self.crick[-self._ovhg :][::-1]
                 hej = len(d)
@@ -1447,7 +1443,6 @@ class Dseq(_Seq):
         else:
             l = len(self)
             for e in enzymes:
-
                 wpos = [
                     x - len(pad) - 1
                     for x in e.search(
@@ -1484,7 +1479,6 @@ class Dseq(_Seq):
 
         for enz in enzymes:
             for frag in frags:
-
                 ws = [x - 1 for x in enz.search(_Seq(frag.watson + "n"))]
                 cs = [x - 1 for x in enz.search(_Seq(frag.crick + "n"))]
 
@@ -1538,7 +1532,6 @@ class Dseq(_Seq):
 # cpos == len(self.watson) - wpos + enzyme.ovhg + 2
 
 if __name__ == "__main__":
-
     a = Dseq("aaaaaaaGGTACCggtctcaaaa")
     from Bio.Restriction import BsaI
 

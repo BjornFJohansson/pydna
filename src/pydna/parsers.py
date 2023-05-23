@@ -66,7 +66,6 @@ def parse(data, ds=True):
     """
 
     def embl_gb_fasta(raw, ds, path=None):
-
         # regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
         regex = (
             r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|"

@@ -16,7 +16,6 @@ def requests_mock(request):
 
 
 def test_web(requests_mock, monkeypatch):
-
     from pydna import download
 
     monkeypatch.setenv("pydna_cached_funcs", "")

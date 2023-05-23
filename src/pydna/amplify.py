@@ -334,7 +334,6 @@ class Anneal(object):  # ), metaclass=_Memoize):
 
     @property
     def products(self):
-
         if self._products:
             return self._products
 
@@ -342,7 +341,6 @@ class Anneal(object):  # ), metaclass=_Memoize):
 
         for fp in self.forward_primers:
             for rp in self.reverse_primers:
-
                 if self.template.circular:
                     tmpl = self.template.shifted(fp.position - fp._fp)
                     tmpl = tmpl[:] * 2
@@ -522,7 +520,6 @@ tatcgactgtatcatctgatagcac")
     output = _flatten(args)  # flatten
     new = []
     for s in output:
-
         if hasattr(s, "watson"):
             s = _SeqRecord(_Seq(s.watson))
         elif hasattr(s, "transcribe"):
@@ -555,7 +552,6 @@ tatcgactgtatcatctgatagcac")
 
 
 if __name__ == "__main__":
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

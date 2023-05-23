@@ -47,7 +47,6 @@ class Genbank(object):
     """
 
     def __init__(self, users_email: str, *args, tool="pydna", **kwargs):
-
         if not _re.match(
             r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}", users_email, _re.IGNORECASE
         ):
@@ -70,7 +69,6 @@ class Genbank(object):
 
     @_memorize("pydna.genbank.Genbank.nucleotide")
     def nucleotide(self, item: str, seq_start=None, seq_stop=None, strand=1):
-
         """This method downloads a genbank nuclotide record from genbank. This method is
         cached by default. This can be controlled by editing the **pydna_cached_funcs** environment
         variable. The best way to do this permanently is to edit the edit the

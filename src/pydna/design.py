@@ -630,7 +630,6 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     tail_length = _math.ceil(overlap / 2)
 
     for i in range(len(f) - 1):
-
         first = f[i]
         secnd = f[i + 1]
 
@@ -729,7 +728,6 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
 
 def circular_assembly_fragments(f, overlap=35, maxlink=40):
-
     fragments = assembly_fragments(f + f[0:1], overlap=overlap, maxlink=maxlink)
 
     if hasattr(fragments[0], "template"):

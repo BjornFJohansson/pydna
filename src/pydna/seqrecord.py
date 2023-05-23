@@ -53,7 +53,6 @@ class SeqRecord(_SeqRecord):
     def __init__(
         self, *args, id="id", name="name", description="description", **kwargs
     ):
-
         super().__init__(*args, id=id, name=name, description=description, **kwargs)
         self._fix_attributes()
 

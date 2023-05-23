@@ -14,7 +14,6 @@ class GenbankRecord(_Dseqrecord):
     def __init__(
         self, record, *args, item="accession", start=None, stop=None, strand=1, **kwargs
     ):
-
         super().__init__(record, *args, **kwargs)
         self.item = item
         self.start = start
@@ -132,7 +131,6 @@ class GenbankRecord(_Dseqrecord):
             f"seq = gb.nucleotide('{self.item}'"
         )
         if self.start and self.start:
-
             code += (
                 ",\n"
                 f"                    seq_start={self.start},\n"
@@ -153,7 +151,6 @@ class GenbankRecord(_Dseqrecord):
             f"seq = gb.nucleotide('{self.item}'"
         )
         if self.start and self.start:
-
             code += (
                 ",\n"
                 f"                    seq_start={self.start},\n"

@@ -5,7 +5,6 @@ import pytest
 
 
 def test_flatten():
-
     from Bio.Seq import Seq as bSeq
     from pydna.dseq import Dseq
     from Bio.SeqRecord import SeqRecord as bSeqRecord
@@ -32,7 +31,6 @@ def test_flatten():
 
 
 def test_eq():
-
     from pydna.dseqrecord import Dseqrecord
 
     from pydna.utils import eq
@@ -210,7 +208,6 @@ def test_lseguid():
 
 
 def test_rc():
-
     from pydna.utils import rc
 
     assert rc("gattc") == "gaatc"
@@ -218,7 +215,6 @@ def test_rc():
 
 
 def test_complement():
-
     from pydna.utils import complement
 
     assert complement("gattc") == "ctaag"
@@ -282,7 +278,6 @@ def test_parse_text_table():
 
 
 def test_join_list_to_table():
-
     from pydna.utils import join_list_to_table
 
     cs = (

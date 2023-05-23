@@ -2,7 +2,6 @@ import pytest
 
 
 def test_fakeseq():
-
     from pydna.fakeseq import FakeSeq
 
     fs = FakeSeq(1000)

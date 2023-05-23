@@ -128,7 +128,6 @@ def test_parse1():
 
 
 def test_parse2():
-
     from pydna.parsers import parse
     from pydna.readers import read
 

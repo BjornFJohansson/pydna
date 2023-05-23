@@ -36,7 +36,6 @@ import textwrap
 
 
 def test_default_env(monkeypatch):
-
     pydna_base_dir = os.path.join(tempfile.gettempdir(), "pydna_test")
 
     try:

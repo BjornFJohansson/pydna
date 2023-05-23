@@ -302,13 +302,11 @@ def concat_dict(dlist):
 
 
 def toJSON(gbkstring):
-
     parsed = multipleGB.parseString(gbkstring)
 
     jseqlist = []
 
     for seq in parsed:
-
         # for item in seq.asList():
         #    print(item)
 
