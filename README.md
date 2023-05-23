@@ -1,7 +1,7 @@
 # ![icon](https://raw.githubusercontent.com/bjornFJohansson/pydna/master/docs/pics/pydna.resized.png) pydna
 
 | [![Tests & Coverage](https://github.com/BjornFJohansson/pydna/actions/workflows/pydna_test_and_coverage_workflow.yml/badge.svg?branch=dev_bjorn)](https://github.com/BjornFJohansson/pydna/actions/workflows/pydna_test_and_coverage_workflow.yml) | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/master/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna/branch/master) | [![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)                                                  | [![Google group : pydna](https://img.shields.io/badge/Google%20Group-pydna-blue.svg)](https://groups.google.com/g/pydna)              |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)                                                                                                                 | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna) | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers) |
 
 
@@ -191,7 +191,7 @@ Biopython has c-extensions, but the other modules are pure python.
 If the modules listed below in the first column are installed, they will provide the functionality listed in the second column.
 
 | Dependency                                                  | Function in pydna                                      |
-|-------------------------------------------------------------|--------------------------------------------------------|
+| ----------------------------------------------------------- | ------------------------------------------------------ |
 | [scipy >=1.8.0](https://www.scipy.org)                      | gel simulation with pydna.gel                          |
 | [matplotlib >=3.4.3](http://matplotlib.org)                 | “                                                      |
 | [pillow >=8.4.0](https://github.com/python-pillow/Pillow)   | “                                                      |
@@ -212,6 +212,16 @@ If the modules listed below in the first column are installed, they will provide
 - [requests-mock](https://pypi.org/project/requests-mock)
 
 ![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+
+## Developping on pydna
+
+1. Add the pre-commit hook to your local git repository to run tests and code coverage before each commit.
+
+```
+pre-commit install
+```
+
+2. Test before push using `pytest`
 
 ## Releases
 
