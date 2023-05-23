@@ -61,7 +61,7 @@ http://www.ncbi.nlm.nih.gov/pubmed/15656971
 
 print(info)
 
-raw_input("Press any key and wait for the script to finish!")
+input("Press any key and wait for the script to finish!")
 
 # Establish the two primers. These sequences can be found in (1)
 GUP1rec1sens = SeqRecord(Seq("gaattcgatatcaagcttatcgataccgatgtcgctgatcagcatcctgtctcc"))

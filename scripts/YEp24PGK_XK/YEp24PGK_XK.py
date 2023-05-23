@@ -28,7 +28,7 @@ Lignocellulosic Hydrolysate, Applied and Environmental Microbiology
 """
 )
 
-raw_input("press return!\n")
+input("press return!\n")
 
 
 gb = Genbank("me@home.org")
@@ -44,7 +44,7 @@ else:
     YEp24PGK = read("KC562906.gb")
     print("A local copy of Genbank record KC562906 is used\n")
 
-raw_input("press return!\n")
+input("press return!\n")
 
 primers = """
 >primer1

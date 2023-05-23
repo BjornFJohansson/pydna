@@ -27,4 +27,4 @@ for i in range(1, len(primer)):
     if not eq(primer[i], fprimer[i]):
         print(i)
         print(primer[i].id, fprimer[i].id)
-        raw_input()
+        input()
