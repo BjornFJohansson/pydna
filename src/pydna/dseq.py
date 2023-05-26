@@ -832,7 +832,8 @@ class Dseq(_Seq):
             return nseq
         else:
             raise TypeError(
-                "DNA cannot be circularized.\n" "5' and 3' sticky ends not compatible!"
+                "DNA cannot be circularized.\n"
+                "5' and 3' sticky ends not compatible!"
             )
 
     def tolinear(self):  # pragma: no cover
