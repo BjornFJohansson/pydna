@@ -1,5 +1,7 @@
 src/pydna/_version.py*
 
+/prof/
+/tests/prof/
 
 .pytest_cache
 
