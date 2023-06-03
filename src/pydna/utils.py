@@ -71,45 +71,49 @@ def shift_location(original_location, shift, lim):
     return newloc
 
 
+# def smallest_rotation(s):
+#     """Smallest rotation of a string.
+
+#     Algorithm described in Pierre Duval, Jean. 1983. Factorizing Words
+#     over an Ordered Alphabet. Journal of Algorithms & Computational Technology
+#     4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
+#     on Lyndon words, David Eppstein 2011.
+#     https://gist.github.com/dvberkel/1950267
+
+#     Examples
+#     --------
+#     >>> from pydna.utils import smallest_rotation
+#     >>> smallest_rotation("taaa")
+#     'aaat'
+
+#     """
+#     prev, rep = None, 0
+#     ds = _array("u", 2 * s)
+#     lens, lends = len(s), len(ds)
+#     old = 0
+#     k = 0
+#     w = ""
+#     while k < lends:
+#         i, j = k, k + 1
+#         while j < lends and ds[i] <= ds[j]:
+#             i = (ds[i] == ds[j]) and i + 1 or k
+#             j += 1
+#         while k < i + 1:
+#             k += j - i
+#             prev = w
+#             w = ds[old:k]
+#             old = k
+#             if w == prev:
+#                 rep += 1
+#             else:
+#                 prev, rep = w, 1
+#             if len(w) * rep == lens:
+#                 return "".join(w * rep)
+
 def smallest_rotation(s):
-    """Smallest rotation of a string.
-
-    Algorithm described in Pierre Duval, Jean. 1983. Factorizing Words
-    over an Ordered Alphabet. Journal of Algorithms & Computational Technology
-    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
-    on Lyndon words, David Eppstein 2011.
-    https://gist.github.com/dvberkel/1950267
-
-    Examples
-    --------
-    >>> from pydna.utils import smallest_rotation
-    >>> smallest_rotation("taaa")
-    'aaat'
-
-    """
-    prev, rep = None, 0
-    ds = _array("u", 2 * s)
-    lens, lends = len(s), len(ds)
-    old = 0
-    k = 0
-    w = ""
-    while k < lends:
-        i, j = k, k + 1
-        while j < lends and ds[i] <= ds[j]:
-            i = (ds[i] == ds[j]) and i + 1 or k
-            j += 1
-        while k < i + 1:
-            k += j - i
-            prev = w
-            w = ds[old:k]
-            old = k
-            if w == prev:
-                rep += 1
-            else:
-                prev, rep = w, 1
-            if len(w) * rep == lens:
-                return "".join(w * rep)
-
+    from pydivsufsort import min_rotation
+    k = min_rotation(s)
+    return s[k:] + s[:k]
 
 def cai(seq: str, organism: str = "sce", weights: dict = _weights):
     """docstring."""
