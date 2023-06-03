@@ -5,6 +5,7 @@ import os
 import logging
 import tempfile
 import pytest
+import pathlib
 
 def main():
     """docstring."""
@@ -48,6 +49,9 @@ def main():
         "--profile",  # profiling
     ]
 
+    pth = pathlib.Path("prof/combined.prof")
+    pth.parent.mkdir(parents=True, exist_ok=True)
+    pth.write_bytes(b"")
     return_value_unit_tests = pytest.main(args)
 
 
