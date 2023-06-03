@@ -27,17 +27,20 @@ import threading
 from time import sleep
 import _thread as thread
 
+
 def cdquit(fn_name):
     # print to stderr, unbuffered in Python 2.
     print('{0} took too long'.format(fn_name), file=sys.stderr)
-    sys.stderr.flush() # Python 3 stderr is likely buffered.
-    thread.interrupt_main() # raises KeyboardInterrupt
+    sys.stderr.flush()  # Python 3 stderr is likely buffered.
+    thread.interrupt_main()  # raises KeyboardInterrupt
+
 
 def exit_after(s):
     '''
     use as decorator to exit process if
     function takes longer than s seconds
     '''
+
     def outer(fn):
         def inner(*args, **kwargs):
             timer = threading.Timer(s, cdquit, args=[fn.__name__])
@@ -47,22 +50,28 @@ def exit_after(s):
             finally:
                 timer.cancel()
             return result
+
         return inner
+
     return outer
+
 
 @exit_after(1)
 def a():
     print('a')
+
 
 @exit_after(2)
 def b():
     print('b')
     sleep(1)
 
+
 @exit_after(3)
 def c():
     print('c')
     sleep(2)
+
 
 @exit_after(4)
 def d():
@@ -71,6 +80,7 @@ def d():
         sleep(1)
         print(i)
 
+
 @exit_after(5)
 def countdown(n):
     print('countdown started', flush=True)
@@ -78,6 +88,7 @@ def countdown(n):
         print(i, end=', ', flush=True)
         sleep(1)
     print('countdown finished')
+
 
 def main():
     a()

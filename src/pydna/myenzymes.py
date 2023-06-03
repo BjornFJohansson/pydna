@@ -34,15 +34,11 @@ except FileNotFoundError:
 except IsADirectoryError:
     _module_logger.warning("%s is a directory.", _os.environ["pydna_enzymes"])
 except IOError:
-    _module_logger.warning(
-        "%s found, but could not be read.", _os.environ["pydna_enzymes"]
-    )
+    _module_logger.warning("%s found, but could not be read.", _os.environ["pydna_enzymes"])
 except Exception as e:
     _module_logger.warning(_traceback.format_exc())
 
-myenzymes = _RestrictionBatch(
-    [e for e in _AllEnzymes if str(e).lower() in _text.lower()]
-)
+myenzymes = _RestrictionBatch([e for e in _AllEnzymes if str(e).lower() in _text.lower()])
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")

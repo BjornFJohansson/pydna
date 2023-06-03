@@ -16,16 +16,18 @@ def empty_copy(obj):
     class Empty(obj.__class__):
         def __init__(self):
             pass
+
     newcopy = Empty()
     newcopy.__class__ = obj.__class__
     return newcopy
+
 
 # https://stackoverflow.com/questions/57181829/deepcopy-override-clarification
 # https://stackoverflow.com/questions/1500718/how-to-override-the-copy-deepcopy-operations-for-a-python-object
 # https://stackoverflow.com/questions/24756712/deepcopy-is-extremely-slow
 
-class ExactPosition(_ExactPosition):
 
+class ExactPosition(_ExactPosition):
     def __copy__(self):
         c = empty_copy(self)
         c.__dict__ = self.__dict__
@@ -54,7 +56,6 @@ class ExactPosition(_ExactPosition):
 
 
 class SimpleLocation(_SimpleLocation):
-
     def __copy__(self):
         c = empty_copy(self)
         c.__dict__ = self.__dict__
@@ -68,8 +69,8 @@ class SimpleLocation(_SimpleLocation):
             setattr(result, k, _deepcopy(v, memo))
         return result
 
-class SeqFeature(_SeqFeature):
 
+class SeqFeature(_SeqFeature):
     def __copy__(self):
         return 123
 

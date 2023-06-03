@@ -19,7 +19,6 @@ from operator import itemgetter as _itemgetter
 
 
 def _kark_sort(s, SA, n, K):
-
     def radixpass(a, b, r, s, n, k):
         c = _array("i", [0] * (k + 1))
         for i in range(n):
@@ -81,15 +80,9 @@ def _kark_sort(s, SA, n, K):
         j = SA0[p] if p < n0 else 0
 
         if SA12[t] < n0:
-            test = (
-                (s12[SA12[t] + n0] <= s12[j // 3]) if (s[i] == s[j]) else (s[i] < s[j])
-            )
+            test = (s12[SA12[t] + n0] <= s12[j // 3]) if (s[i] == s[j]) else (s[i] < s[j])
         elif s[i] == s[j]:
-            test = (
-                s12[SA12[t] - n0 + 1] <= s12[j // 3 + n0]
-                if (s[i + 1] == s[j + 1])
-                else s[i + 1] < s[j + 1]
-            )
+            test = s12[SA12[t] - n0 + 1] <= s12[j // 3 + n0] if (s[i + 1] == s[j + 1]) else s[i + 1] < s[j + 1]
         else:
             test = s[i] < s[j]
         if test:
@@ -107,9 +100,7 @@ def _kark_sort(s, SA, n, K):
             if p == n0:
                 k += 1
                 while t < n02:
-                    SA[k] = (
-                        (SA12[t] * 3) + 1 if SA12[t] < n0 else ((SA12[t] - n0) * 3) + 2
-                    )
+                    SA[k] = (SA12[t] * 3) + 1 if SA12[t] < n0 else ((SA12[t] - n0) * 3) + 2
                     t += 1
                     k += 1
         k += 1
@@ -244,10 +235,6 @@ class _Rstr_max:
         return self._step3_rstr()
 
 
-
-
-
-
 def common_sub_strings(stringx: str, stringy: str, limit=25):
     """Finds all common substrings between stringx and stringy
     longer than limit. This function is case sensitive.
@@ -325,8 +312,10 @@ def common_sub_strings(stringx: str, stringy: str, limit=25):
 
     return match
 
+
 def common_sub_strings(stringx: str, stringy: str, limit=25):
     from pydivsufsort import common_substrings
+
     match = common_substrings(stringx, stringy, limit=limit)
     match.sort()
     match.sort(key=_itemgetter(2), reverse=True)
@@ -378,8 +367,7 @@ def terminal_overlap(stringx: str, stringy: str, limit=15):
     return [
         m
         for m in common_sub_strings(stringx, stringy, limit)
-        if (m[0] == 0 and m[1] + m[2] == len(stringy))
-        or (m[1] == 0 and m[0] + m[2] == len(stringx))
+        if (m[0] == 0 and m[1] + m[2] == len(stringy)) or (m[1] == 0 and m[0] + m[2] == len(stringx))
     ]
 
 

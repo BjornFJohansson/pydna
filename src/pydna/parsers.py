@@ -20,6 +20,7 @@ from copy import deepcopy as _deepcopy
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 import xml.etree.ElementTree as _et
 
+
 def parse(data, ds=True):
     """Return *all* DNA sequences found in data.
 
@@ -65,15 +66,12 @@ def parse(data, ds=True):
     """
 
     def embl_gb_fasta(raw, ds, path=None):
-
         # regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
-        regex = (r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|"
-                 r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)")
+        regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|" r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
 
         result_list = []
 
-        rawseqs = _re.findall(regex, _textwrap.dedent(str(raw) + "\n\n"),
-                              flags=_re.MULTILINE)
+        rawseqs = _re.findall(regex, _textwrap.dedent(str(raw) + "\n\n"), flags=_re.MULTILINE)
         for rawseq in rawseqs:
             handle = _io.StringIO(rawseq)
             circular = False
@@ -102,20 +100,9 @@ def parse(data, ds=True):
                     nf.__dict__ = _deepcopy(f.__dict__)
                 parsed.features = nfs
                 if ds and path:
-                    result_list.append(
-                        _GenbankFile.from_SeqRecord(
-                            parsed,
-                            circular=circular,
-                            path=path
-                        )
-                    )
+                    result_list.append(_GenbankFile.from_SeqRecord(parsed, circular=circular, path=path))
                 elif ds:
-                    result_list.append(
-                        _Dseqrecord.from_SeqRecord(
-                            parsed,
-                            circular=circular
-                        )
-                    )
+                    result_list.append(_Dseqrecord.from_SeqRecord(parsed, circular=circular))
                 else:
                     parsed.annotations.update({"molecule_type": "DNA"})
                     result_list.append(parsed)
@@ -156,10 +143,7 @@ def parse_assembly_xml(data):
     for child in root:
         if child.tag == "amplicon":
             fp, rp, tmpl, *rest = parse(child.text)
-            results.append(_pcr(_Primer(fp),
-                                _Primer(rp),
-                                tmpl,
-                                limit=min((len(fp), len(rp)))))
+            results.append(_pcr(_Primer(fp), _Primer(rp), tmpl, limit=min((len(fp), len(rp)))))
         elif child.tag == "fragment":
             f, *rest = parse(child.text)
             results.append(f)
@@ -175,7 +159,6 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
-
 
     data = """\
     <assembly topology="circular">
@@ -206,7 +189,6 @@ if __name__ == "__main__":
     </assembly>
     """
 
-
     data = """\
     <assembly topology="circular">
     <amplicon>
@@ -234,7 +216,6 @@ if __name__ == "__main__":
 
     example = parse_assembly_xml(data)
 
-
     # #!/usr/bin/env python3
     # # -*- coding: utf-8 -*-
     # """
@@ -245,9 +226,7 @@ if __name__ == "__main__":
 
     # import xml.dom.minidom as minidom
 
-
     # from lxml import etree
-
 
     # ng = """\
     # <element name="assembly" xmlns="http://relaxng.org/ns/structure/1.0">
@@ -270,7 +249,6 @@ if __name__ == "__main__":
     # relaxng_doc = etree.parse(f)
     # relaxng = etree.RelaxNG(relaxng_doc)
 
-
     # xml = StringIO("""\
     # <assembly topology="circular">
     # <amplicon>1</amplicon>
@@ -289,9 +267,6 @@ if __name__ == "__main__":
 
     # for item in items:
     #     print(item.childNodes[0].data)
-
-
-
 
     # import xml.etree.ElementTree as ET
     # xml = """\

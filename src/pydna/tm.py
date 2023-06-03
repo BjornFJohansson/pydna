@@ -119,15 +119,11 @@ def tm_product(seq: str, K=0.050):
     ing temperature for DNA amplification in vitro
     http://www.ncbi.nlm.nih.gov/pubmed/2243783
     """
-    tmp = 81.5 + 0.41 * _GC(seq) * 100 + 16.6 * _math.log10(K) - 675/len(seq)
+    tmp = 81.5 + 0.41 * _GC(seq) * 100 + 16.6 * _math.log10(K) - 675 / len(seq)
     return tmp
 
 
-def ta_default(fp: str,
-               rp: str,
-               seq: str,
-               tm=tm_default,
-               tm_product=tm_product):
+def ta_default(fp: str, rp: str, seq: str, tm=tm_default, tm_product=tm_product):
     """Ta calculation.
 
     according to:
@@ -161,7 +157,7 @@ def program(amplicon, tm=tm_default, ta=ta_default):
     """
 
     taq_extension_rate = 45  # seconds/kB PCR product length (1min/kb)
-    extension_time_taq = max(30, int(taq_extension_rate*len(amplicon)/1000))
+    extension_time_taq = max(30, int(taq_extension_rate * len(amplicon) / 1000))
     # seconds
 
     f = _textwrap.dedent(
@@ -184,9 +180,10 @@ def program(amplicon, tm=tm_default, ta=ta_default):
             ),
             tmf=tm(amplicon.forward_primer.footprint),
             tmr=tm(amplicon.reverse_primer.footprint),
-            GC=int(amplicon.gc()*100),
+            GC=int(amplicon.gc() * 100),
             *map(int, divmod(extension_time_taq, 60)),
-        )).strip()
+        )
+    ).strip()
 
     return _pretty_str(f)
 
@@ -216,9 +213,7 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
 
     """
     PfuSso7d_extension_rate = 15  # seconds/kB PCR product
-    extension_time_PfuSso7d = max(10,
-                                  int(PfuSso7d_extension_rate
-                                      * len(amplicon)/1000))  # seconds
+    extension_time_PfuSso7d = max(10, int(PfuSso7d_extension_rate * len(amplicon) / 1000))  # seconds
 
     # The program returned is eaither a two step or three step progrem
     # This depends on the tm and length of the primers in the
@@ -231,8 +226,8 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
     tmr = tm(amplicon.reverse_primer.footprint)
 
     if tmf >= 69.0 and tmr >= 69.0:
-
-        f = _textwrap.dedent(r"""
+        f = _textwrap.dedent(
+            r"""
                               |98°C|98°C      |    |tmf:{tmf:.1f}
                               |____|____      |    |tmr:{tmr:.1f}
                               |30s |10s \ 72°C|72°C|{rate}s/kb
@@ -242,9 +237,11 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
                 rate=PfuSso7d_extension_rate,
                 tmf=tmf,
                 tmr=tmr,
-                GC_prod=int(amplicon.gc()*100),
+                GC_prod=int(amplicon.gc() * 100),
                 size=len(amplicon.seq),
-                *map(int, divmod(extension_time_PfuSso7d, 60)))).strip()
+                *map(int, divmod(extension_time_PfuSso7d, 60)),
+            )
+        ).strip()
     else:
         f = _textwrap.dedent(
             r"""
@@ -254,18 +251,22 @@ def dbd_program(amplicon, tm=tm_dbd, ta=ta_dbd):
              |    |      \______/{0:2}:{1:0>2}|5min|GC {GC}%
              |    |       10s         |    |{size}bp
              """.format(
-             rate=PfuSso7d_extension_rate,
-             size=len(amplicon.seq),
-             ta=round(
-              ta(amplicon.forward_primer.footprint,
-                 amplicon.reverse_primer.footprint,
-                 amplicon.seq,),
-                 1,
+                rate=PfuSso7d_extension_rate,
+                size=len(amplicon.seq),
+                ta=round(
+                    ta(
+                        amplicon.forward_primer.footprint,
+                        amplicon.reverse_primer.footprint,
+                        amplicon.seq,
+                    ),
+                    1,
                 ),
                 tmf=tmf,
                 tmr=tmr,
-                GC=int(amplicon.gc()*100),
-                *map(int, divmod(extension_time_PfuSso7d, 60)))).strip()
+                GC=int(amplicon.gc() * 100),
+                *map(int, divmod(extension_time_PfuSso7d, 60)),
+            )
+        ).strip()
 
     return _pretty_str(f)
 
@@ -323,10 +324,7 @@ def tmbresluc(primer: str, *args, primerc=500.0, saltc=50, **kwargs):
         dH += _thermodynamic_data.dHBr[n1 - 97][n2 - 97]
         dS += _thermodynamic_data.dSBr[n1 - 97][n2 - 97]
 
-    tm = (
-        dH / (1.9872 * _math.log(pri / 1600) + dS)
-        + (16.6 * _math.log(saltc)) / _math.log(10)
-    ) - 273.15
+    tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
 
     return tm
 

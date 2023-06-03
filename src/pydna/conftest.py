@@ -1,9 +1,9 @@
 """conftest.py"""
 
-#import pathlib
-#import os
+# import pathlib
+# import os
 
-#cwd = pathlib.Path(__file__).parent
+# cwd = pathlib.Path(__file__).parent
 
 # def pytest_runtest_setup(item):
 #     # called for running each test in 'a' directory
@@ -11,7 +11,7 @@
 #     pass
 
 
-#def pytest_configure(config):
+# def pytest_configure(config):
 #    """
 #    Allows plugins and conftest files to perform initial configuration.
 #    This hook is called for every plugin and initial conftest

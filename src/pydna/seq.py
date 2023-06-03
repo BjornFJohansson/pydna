@@ -40,6 +40,7 @@ class Seq(_Seq):
     def cai(self, organism="sce"):
         """docstring."""
         from pydna.utils import cai as _cai
+
         return _cai(self._data.upper().decode("ASCII"), organism=organism)
 
     def rarecodons(self, organism="sce"):
@@ -47,8 +48,8 @@ class Seq(_Seq):
         rare = _rare_codons[organism]
         s = self._data.upper().decode("ASCII")
         slices = []
-        for i in range(0, len(self)//3):
-            x, y = i*3, i*3+3
+        for i in range(0, len(self) // 3):
+            x, y = i * 3, i * 3 + 3
             trip = s[x:y]
             if trip in rare:
                 slices.append(slice(x, y, 1))
@@ -64,33 +65,30 @@ class Seq(_Seq):
 
     def express(self, organism="sce"):
         """docstring."""
-        x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp",
-                          "n-end"]+_rare_codons[organism]+["rare"])
+        x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp", "n-end"] + _rare_codons[organism] + ["rare"])
         val = []
 
-        val.append(f"{self._data.upper().decode('ASCII')[:3]}..."
-                   f"{self._data.upper().decode('ASCII')[-3:]}")
-        val.append(len(self)/3)
+        val.append(f"{self._data.upper().decode('ASCII')[:3]}..." f"{self._data.upper().decode('ASCII')[-3:]}")
+        val.append(len(self) / 3)
         val.append(self.cai(organism))
         val.append(self.gc())
         val.append(self.startcodon())
         val.append(self.stopcodon())
         val.append(_n_end[organism].get(_seq3(self[3:6].translate())))
         s = self._data.upper().decode("ASCII")
-        trps = [s[i*3:i*3+3] for i in range(0, len(s)//3)]
+        trps = [s[i * 3 : i * 3 + 3] for i in range(0, len(s) // 3)]
         tot = 0
         for cdn in _rare_codons[organism]:
             cnt = trps.count(cdn)
             tot += cnt
             val.append(cnt)
-        val.append(round(tot/len(trps), 3))
+        val.append(round(tot / len(trps), 3))
         x.add_row(val)
         return x
 
     def orfs(self, minsize=30):
         """docstring."""
-        orf = _re.compile(f"ATG(?:...){{{minsize},}}?(?:TAG|TAA|TGA)",
-                          flags=_re.IGNORECASE)
+        orf = _re.compile(f"ATG(?:...){{{minsize},}}?(?:TAG|TAA|TGA)", flags=_re.IGNORECASE)
         start = 0
         matches = []
         s = self._data.decode("ASCII")
@@ -125,8 +123,8 @@ class Seq(_Seq):
         """
         return _useg(self._data)
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     import os as _os
 
     cached = _os.getenv("pydna_cached_funcs", "")
