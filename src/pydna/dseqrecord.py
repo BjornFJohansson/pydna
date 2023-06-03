@@ -129,35 +129,35 @@ class Dseqrecord(_SeqRecord):
     def __init__(self,
                  record,
                  *args,
-                 linear=None,
+                 # linear=None,
                  circular=None,
                  n=5e-14,  # mol ( = 0.05 pmol)
                  **kwargs):
 
         _module_logger.info("### Dseqrecord initialized ###")
-        _module_logger.info("argument linear = %s", linear)
+        # _module_logger.info("argument linear = %s", linear)
         _module_logger.info("argument circular = %s", circular)
 
-        if not (linear is None and circular is None):
-            circular = (bool(circular) and bool(linear) ^ bool(circular)
-                        or linear is False and circular is None)
-            linear = not circular
+        # if not (linear is None and circular is None):
+        #     circular = (bool(circular) and bool(linear) ^ bool(circular)
+        #                 or linear is False and circular is None)
+        #     linear = not circular
 
-        _module_logger.info("linear = %s", linear)
+        # _module_logger.info("linear = %s", linear)
         _module_logger.info("circular = %s", circular)
 
         if isinstance(record, str):
             _module_logger.info("record is a string")
             super().__init__(_Dseq(record,
-                                   linear=linear,
-                                   circular=circular),
+                                   # linear=linear,
+                                   circular=bool(circular)),
                                    *args, **kwargs)
 
         # record is a Dseq object ?
         elif hasattr(record, "watson"):
-            if record.circular and linear:
+            if circular == False:
                 record = record[:]
-            elif record.linear and circular:
+            elif circular == True:
                 record = record.looped()
             _module_logger.info("record is a Dseq object")
             super().__init__(record, *args, **kwargs)
@@ -166,7 +166,9 @@ class Dseqrecord(_SeqRecord):
         elif hasattr(record, "transcribe"):
             _module_logger.info("record is a Seq object")
             super().__init__(
-                _Dseq(str(record), linear=linear, circular=circular),
+                _Dseq(str(record),
+                      # linear=linear,
+                      circular=bool(circular)),
                 *args, **kwargs)
 
         # record is a Bio.SeqRecord or Dseqrecord object ?
@@ -174,19 +176,20 @@ class Dseqrecord(_SeqRecord):
             _module_logger.info("record is a Bio.SeqRecord or Dseqrecord object")
             for key, value in list(record.__dict__.items()):
                 setattr(self, key, value)
-            record.letter_annotations = {}
+            self.letter_annotations = {}
             # record.seq is a Dseq object ?
             if hasattr(record.seq, "watson"):
                 new_seq = _copy.copy(record.seq)
-                if new_seq.circular and linear:
+                if circular is False:
                     new_seq = new_seq[:]
-                elif new_seq.linear and circular:
+                elif circular is True:
                     new_seq = new_seq.looped()
                 self.seq = new_seq
             # record.seq is Bio.SeqRecord object ?
             else:
-                self.seq = _Dseq(str(self.seq), linear=linear,
-                                 circular=circular)
+                self.seq = _Dseq(str(record.seq),
+                                 # linear=linear,
+                                 circular=bool(circular))
         else:
             raise ValueError("don't know what to do with {}".format(record))
 
@@ -198,7 +201,7 @@ class Dseqrecord(_SeqRecord):
     def from_string(cls,
                     record: str = "",
                     *args,
-                    linear=True,
+                    # linear=True,
                     circular=False,
                     n=5e-14,
                     **kwargs):
@@ -206,17 +209,17 @@ class Dseqrecord(_SeqRecord):
         # def from_string(cls, record:str="", *args,
         # linear=True, circular=False, n = 5E-14, **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
-        obj._seq = _Dseq.quick(record,
-                               _rc(record),
-                               ovhg=0,
-                               linear=linear,
-                               circular=circular)
+        obj._per_letter_annotations = {}
+        obj.seq = _Dseq.quick(record,
+                              _rc(record),
+                              ovhg=0,
+                              # linear=linear,
+                              circular=circular)
         obj.id = _pretty_str("id")
         obj.name = _pretty_str("name")
         obj.description = _pretty_str("description")
         obj.dbxrefs = []
         obj.annotations = {"molecule_type": "DNA"}
-        obj._per_letter_annotations = {}
         obj.features = []
         obj.map_target = None
         obj.n = n
@@ -224,15 +227,20 @@ class Dseqrecord(_SeqRecord):
         return obj
 
     @classmethod
-    def from_SeqRecord(
-        cls, record: _SeqRecord, *args, linear=True, circular=False, n=5e-14, **kwargs
-    ):
+    def from_SeqRecord(cls,
+                       record: _SeqRecord,
+                       *args,
+                       # linear=True,
+                       circular=False,
+                       n=5e-14,
+                       **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
-        obj._seq = _Dseq.quick(
+        obj._per_letter_annotations = record._per_letter_annotations
+        obj.seq = _Dseq.quick(
             str(record.seq),
             _rc(str(record.seq)),
             ovhg=0,
-            linear=linear,
+            # linear=linear,
             circular=circular,
         )
         obj.id = record.id
@@ -241,22 +249,21 @@ class Dseqrecord(_SeqRecord):
         obj.dbxrefs = record.dbxrefs
         obj.annotations = {"molecule_type": "DNA"}
         obj.annotations.update(record.annotations)
-        obj._per_letter_annotations = record._per_letter_annotations
         obj.features = record.features
         obj.map_target = None
         obj.n = n
         return obj
 
-    @property
-    def linear(self):
-        """The linear property can not be set directly.
-        Use :meth:`looped` or :meth:`tolinear`"""
-        return self.seq.linear
+    # @property
+    # def linear(self):
+    #     """The linear property can not be set directly.
+    #     Use :meth:`looped` or :meth:`tolinear`"""
+    #     return self.seq.linear
 
     @property
     def circular(self):
         """The circular property can not be set directly.
-        Use :meth:`looped` or :meth:`tolinear`"""
+        Use :meth:`looped`"""
         return self.seq.circular
 
     def m(self):
@@ -388,7 +395,7 @@ class Dseqrecord(_SeqRecord):
         'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
 
         """
-        if self.linear:
+        if not self.circular:
             raise TypeError("cseguid is only defined for circular sequences.")
         return self.seq.cseguid()
 
@@ -684,7 +691,7 @@ class Dseqrecord(_SeqRecord):
         # TODO add tests and docstring for this method
         o = str(other.seq).upper()
 
-        if self.linear:
+        if not self.circular:
             s = str(self.seq).upper()
         else:
             s = (
@@ -836,12 +843,12 @@ class Dseqrecord(_SeqRecord):
 
     def __repr__(self):
         return "Dseqrecord({}{})".format(
-            {True: "-", False: "o"}[self.linear], len(self)
+            {True: "-", False: "o"}[not self.circular], len(self)
         )
 
     def _repr_pretty_(self, p, cycle):
         p.text(
-            "Dseqrecord({}{})".format({True: "-", False: "o"}[self.linear], len(self))
+            "Dseqrecord({}{})".format({True: "-", False: "o"}[not self.circular], len(self))
         )
 
     def __add__(self, other):
@@ -890,7 +897,7 @@ class Dseqrecord(_SeqRecord):
         sl_start = sl.start or 0  # 6
         sl_stop = sl.stop or len(answer.seq)  # 1
 
-        if self.linear or sl_start < sl_stop:
+        if not self.circular or sl_start < sl_stop:
             answer.features = super().__getitem__(sl).features
         elif self.circular and sl_start > sl_stop:
             answer.features = self.shifted(sl_start).features
@@ -937,7 +944,7 @@ class Dseqrecord(_SeqRecord):
         Throws an exception if there is not excactly one cut
         i.e. none or more than one digestion products.
         """
-        if self.seq._linear:
+        if not self.seq.circular:
             raise TypeError("Can only linearize circular molecules!")
         fragments = self.cut(*enzymes)
         if len(fragments) > 1:
@@ -1016,8 +1023,8 @@ class Dseqrecord(_SeqRecord):
         answer.name = "{}_rc".format(self.name[:13])
         answer.description = self.description + "_rc"
         answer.id = self.id + "_rc"
-        answer.seq._circular = self.seq.circular
-        answer.seq._linear = self.seq.linear
+        answer.seq.circular = self.seq.circular
+        # answer.seq._linear = self.seq.linear
         return answer
 
     rc = reverse_complement
@@ -1060,7 +1067,7 @@ class Dseqrecord(_SeqRecord):
 
         """
 
-        if self.linear:
+        if not self.circular:
             raise TypeError("Only circular DNA can be synced!")
 
         newseq = _copy.copy(self)
@@ -1107,7 +1114,7 @@ class Dseqrecord(_SeqRecord):
         else:
             result = newseq.shifted(start)
         _module_logger.info("synced")
-        return Dseqrecord(result)
+        return result
 
     def upper(self):
         """Returns an uppercase copy.
@@ -1221,7 +1228,7 @@ class Dseqrecord(_SeqRecord):
             wof.append(s1[f.end:s.start])
         wof.append(s1[locations[-1].end:len(self)])
 
-        topology = {True: '-', False: 'o'}[self.linear]
+        topology = {True: '-', False: 'o'}[not self.circular]
         result = f"{self.__class__.__name__}({topology}{len(self)})\n"
 
         s1 = "".join(f+s for f, s in zip(wof, wfe))
@@ -1276,7 +1283,7 @@ class Dseqrecord(_SeqRecord):
         ttat
 
         """
-        if self.linear:
+        if not self.circular:
             raise TypeError("Sequence is linear, origin can only be "
                             "shifted for circular sequences.\n")
         ln = len(self)
@@ -1365,7 +1372,7 @@ class Dseqrecord(_SeqRecord):
                 return ()
         dsfs = []
         for fr in frags:
-            dsf = Dseqrecord(fr, linear=True, n=self.n)
+            dsf = Dseqrecord(fr, n=self.n)
             start = fr.pos
             end = fr.pos + fr.length
             dsf.features = [_copy.deepcopy(fe)
@@ -1384,4 +1391,4 @@ if __name__ == "__main__":
     import doctest
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
-    _os.environ["pydna_cache"] = cache
+    # _os.environ["pydna_cache"] = cache

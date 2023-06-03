@@ -104,7 +104,7 @@ def parse(data, ds=True):
                 if ds and path:
                     result_list.append(
                         _GenbankFile.from_SeqRecord(
-                            parsed, linear=not circular,
+                            parsed,
                             circular=circular,
                             path=path
                         )
@@ -112,7 +112,8 @@ def parse(data, ds=True):
                 elif ds:
                     result_list.append(
                         _Dseqrecord.from_SeqRecord(
-                            parsed, linear=not circular, circular=circular
+                            parsed,
+                            circular=circular
                         )
                     )
                 else:
@@ -121,8 +122,6 @@ def parse(data, ds=True):
 
         return result_list
 
-    # a string is an iterable datatype but on Python2.x
-    # it doesn't have an __iter__ method.
     if not hasattr(data, "__iter__") or isinstance(data, (str, bytes)):
         data = (data,)
 

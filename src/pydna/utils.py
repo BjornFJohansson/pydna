@@ -196,7 +196,7 @@ def complement(sequence: str):
 def memorize(filename):
     """Cache functions and classes.
 
-    see pydna.download and pydna.Assembly for use
+    see pydna.download
     """
 
     def decorator(f):
@@ -205,7 +205,7 @@ def memorize(filename):
             _module_logger.info("cache filename                   = %s", filename)
             _module_logger.info(
                 "os.environ['pydna_cached_funcs'] = %s",
-                _os.environ["pydna_cached_funcs"],
+                _os.getenv("pydna_cached_funcs", ""),
             )
             if filename not in _os.environ["pydna_cached_funcs"]:
                 _module_logger.info(

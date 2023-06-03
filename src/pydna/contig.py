@@ -31,11 +31,11 @@ class Contig(_Dseqrecord):
         return obj
 
     def __repr__(self):
-        return "Contig({}{})".format({True: "-", False: "o"}[self.linear], len(self))
+        return "Contig({}{})".format({True: "-", False: "o"}[not self.circular], len(self))
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
-        p.text("Contig({}{})".format({True: "-", False: "o"}[self.linear], len(self)))
+        p.text("Contig({}{})".format({True: "-", False: "o"}[not self.circular], len(self)))
 
     def _repr_html_(self):
         return "<pre>" + self.figure() + "</pre>"
@@ -166,7 +166,7 @@ class Contig(_Dseqrecord):
         nodes = list(self.graph.nodes(data=True))
         edges = list(self.graph.edges(data=True))
 
-        if self.linear:
+        if not self.circular:
             r"""
             frag20| 6
                    \/

@@ -228,12 +228,12 @@ class Anneal(object): # ), metaclass=_Memoize):
         twl = len(self.template.seq.watson)
         tcl = len(self.template.seq.crick)
 
-        if self.template.linear:
-            tw = self.template.seq.watson
-            tc = self.template.seq.crick
-        else:
+        if self.template.circular:
             tw = self.template.seq.watson + self.template.seq.watson
             tc = self.template.seq.crick + self.template.seq.crick
+        else:
+            tw = self.template.seq.watson
+            tc = self.template.seq.crick
 
         for p in self.primers:
             self.forward_primers.extend(

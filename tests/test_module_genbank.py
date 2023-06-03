@@ -148,7 +148,6 @@ def test_pydna_Genbank_fresh_circular(urlopenMock, monkeypatch):
     canned = SeqIO.read("pUC19.gb", "genbank")
     assert str(result.seq) == str(canned.seq)
     assert result.circular
-    assert not result.linear
 
 
 @mock.patch("Bio.Entrez.urlopen")

@@ -103,7 +103,7 @@ class GenbankRecord(_Dseqrecord):
 
     def __repr__(self):
         """returns a short string representation of the object"""
-        return "Gbnk({}{} {})".format({True: "-", False: "o"}[self.linear],
+        return "Gbnk({}{} {})".format({True: "-", False: "o"}[not self.circular],
                                        len(self),
                                        self._repr)
 

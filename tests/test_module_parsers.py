@@ -45,7 +45,7 @@ def test_parse1():
     ]
 
     assert [str(s.seq) for s in result] == correct
-    assert [s.linear for s in result] == [True, True, True]
+    assert [s.circular for s in result] == [False, False, False]
 
     input = """
             LOCUS       ScCYC1                   330 bp    DNA              UNK 01-JAN-1980
@@ -72,7 +72,6 @@ def test_parse1():
     correct = """ATGACTGAATTCAAGGCCGGTTCTGCTAAGAAAGGTGCTACACTTTTCAAGACTAGATGTCTACAATGCCACACCGTGGAAAAGGGTGGCCCACATAAGGTTGGTCCAAACTTGCATGGTATCTTTGGCAGACACTCTGGTCAAGCTGAAGGGTATTCGTACACAGATGCCAATATCAAGAAAAACGTGTTGTGGGACGAAAATAACATGTCAGAGTACTTGACTAACCCAAAGAAATATATTCCTGGTACCAAGATGGCCTTTGGTGGGTTGAAGAAGGAAAAAGACAGAAACGACTTAATTACCTACTTGAAAAAAGCCTGTGAGTAA"""
 
     assert str(result.seq) == correct
-    assert result.linear == True
     assert result.circular == False
 
     seqs = parse("RefDataBjorn.fas")
@@ -82,17 +81,17 @@ def test_parse1():
     pAG25 = read("pAG25.gb")
 
     assert pAG25.circular == True
-    assert pAG25.linear == False
+
 
     pCAPs = read("pCAPs.gb")
 
     assert pCAPs.circular == True
-    assert pCAPs.linear == False
+
 
     pUC19 = read("pUC19.gb")
 
     assert pUC19.circular == True
-    assert pUC19.linear == False
+
 
     input = """
     ID   example    standard; DNA; UNC; 3 BP.
@@ -194,6 +193,10 @@ def test_misc_parse():
     assert a.format("gb")[3268:3278] == "2micron 2µ"
 
     x, y = parse("pth1.txt")
+    x.format("gb")
+    y.format("gb")
+    assert x.format()[3268:3278] == "2micron 2µ"
+    assert x.features[13].qualifiers["label"][0] == u"2micron 2µ"
 
     assert "".join(a.format("gb").splitlines()[1:]) == "".join(
         x.format("gb").splitlines()[1:]
