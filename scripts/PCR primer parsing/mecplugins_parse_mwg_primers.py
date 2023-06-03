@@ -42,17 +42,12 @@ def describeToolbarItems(wiki):
 
 
 def mwgtofasta(wiki, evt):
-
     from pyparsing import Word, Literal, printables, LineStart, SkipTo, Combine, nums
 
     raw_string = wiki.getActiveEditor().GetSelectedText()
     start, end = wiki.getActiveEditor().GetSelection()
 
-    fastaheader = Combine(
-        Literal(">").suppress()
-        + Word(nums).setResultsName("number")
-        + Literal("_").suppress()
-    )
+    fastaheader = Combine(Literal(">").suppress() + Word(nums).setResultsName("number") + Literal("_").suppress())
     try:
         data, dataStart, dataEnd = fastaheader.scanString(raw_string).next()
     except StopIteration:

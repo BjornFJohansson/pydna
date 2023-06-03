@@ -7,6 +7,7 @@ import tempfile
 import pytest
 import pathlib
 
+
 def main():
     """docstring."""
 
@@ -16,7 +17,7 @@ def main():
     os.environ["pydna_loglevel"] = str(logging.DEBUG)
 
     args = [
-        "src",                # doctestdir
+        "src",  # doctestdir
         "--cov=pydna",
         "--cov-append",
         "--cov-report=html",
@@ -33,7 +34,7 @@ def main():
     return_value_doc_tests = pytest.main(args)
 
     args = [
-        "tests",             # test suite
+        "tests",  # test suite
         "--cov=pydna",
         "--cov-append",
         "--cov-report=html",
@@ -53,7 +54,6 @@ def main():
     pth.parent.mkdir(parents=True, exist_ok=True)
     pth.write_bytes(b"")
     return_value_unit_tests = pytest.main(args)
-
 
     # import pstats
     # stats = pstats.Stats('./prof/combined.prof')

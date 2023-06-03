@@ -82,16 +82,13 @@ def test_parse1():
 
     assert pAG25.circular == True
 
-
     pCAPs = read("pCAPs.gb")
 
     assert pCAPs.circular == True
 
-
     pUC19 = read("pUC19.gb")
 
     assert pUC19.circular == True
-
 
     input = """
     ID   example    standard; DNA; UNC; 3 BP.
@@ -127,7 +124,6 @@ def test_parse1():
 
 
 def test_parse2():
-
     from pydna.parsers import parse
     from pydna.readers import read
 
@@ -198,16 +194,13 @@ def test_misc_parse():
     assert x.format()[3268:3278] == "2micron 2µ"
     assert x.features[13].qualifiers["label"][0] == u"2micron 2µ"
 
-    assert "".join(a.format("gb").splitlines()[1:]) == "".join(
-        x.format("gb").splitlines()[1:]
-    )
-    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(
-        y.format("gb").splitlines()[4:]
-    )
+    assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
+    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(y.format("gb").splitlines()[4:])
 
 
 def test_dna2949():
     from pydna.parsers import parse
+
     with open("dna2943.gb") as f:
         f.read()
     seqlist = parse("dna2943.gb", ds=True)

@@ -1,5 +1,3 @@
-
-
 import numpy as np
 from pydivsufsort import divsufsort, kasai
 
@@ -10,9 +8,7 @@ print(string_suffix_array, string_lcp_array)
 # [6 5 3 1 0 4 2] [0 1 3 0 0 2 0]
 
 
-
-
-from SuffixAutomaton import SuffixAutomaton,lcs1,lcs2
+from SuffixAutomaton import SuffixAutomaton, lcs1, lcs2
 
 poet = " "
 doc = poet.split()

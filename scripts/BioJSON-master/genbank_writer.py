@@ -23,6 +23,7 @@ from optparse import OptionParser
 #
 # ===============================================================================
 
+
 # ===============================================================================
 # GenBank Formatting Helpers
 def wrapstring(str_, rowstart, rowend, padfirst=True):
@@ -47,9 +48,7 @@ def wrapstring(str_, rowstart, rowend, padfirst=True):
         if linenum == 0 and not padfirst:
             wrappedstr += str[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
         else:
-            wrappedstr += (
-                " " * leftpad + str_[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
-            )
+            wrappedstr += " " * leftpad + str_[linenum * rowlen : (linenum + 1) * rowlen] + "\n"
     #    if str_.startswith("/translation="):
     #        print(str_)
     #        print(wrappedstr)
@@ -176,9 +175,7 @@ def toGB(jseqs):
                     fstr += wrapstring("/" + str(k) + "=" + str(feat[k]), 21, 80)
                 # standard: wrap val in quotes
                 else:
-                    fstr += wrapstring(
-                        "/" + str(k) + "=" + '"' + str(feat[k]) + '"', 21, 80
-                    )
+                    fstr += wrapstring("/" + str(k) + "=" + '"' + str(feat[k]) + '"', 21, 80)
         featuresstr += fstr
 
     # the spaced, numbered sequence

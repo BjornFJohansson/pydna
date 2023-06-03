@@ -2,7 +2,6 @@ import pytest
 
 
 def test_amplicon():
-
     from pydna.amplify import Anneal
     from pydna.dseqrecord import Dseqrecord
     from pydna.primer import Primer
@@ -56,17 +55,12 @@ def test_amplicon():
 
 
 def test_amplicon_dbd():
-
     from pydna.amplify import Anneal
     from pydna.dseqrecord import Dseqrecord
     from pydna.primer import Primer
     from textwrap import dedent
 
-    template = Dseqrecord(
-        "GCGTCCAGCGGCTGCCCGAGGCGCCAAGTG" +
-        "GATC"*360 +
-        "CCCGGGCCGAGCCCGCATCTGAGGCCGCCGCGGGC"
-    )
+    template = Dseqrecord("GCGTCCAGCGGCTGCCCGAGGCGCCAAGTG" + "GATC" * 360 + "CCCGGGCCGAGCCCGCATCTGAGGCCGCCGCGGGC")
 
     p1 = Primer("GCGTCCAGCGGCTGCCCGAGG")
     p2 = Primer("GCCCGCGGCGGCCTCAGATGCGG")
@@ -98,18 +92,13 @@ def test_amplicon_dbd():
     assert str(prod.dbd_program()) == fig
 
 
-
-
 def test_amplicon_dbd_low_gc():
-
     from pydna.amplify import Anneal
     from pydna.dseqrecord import Dseqrecord
     from pydna.primer import Primer
     from textwrap import dedent
 
-    template = Dseqrecord("AAAATATTTTTATACAT" +
-                          "GAAA"*370 +
-                          "ATAAAAAATACGTCATC")
+    template = Dseqrecord("AAAATATTTTTATACAT" + "GAAA" * 370 + "ATAAAAAATACGTCATC")
 
     p1 = Primer("AAAATATTTTTATACAT")
     p2 = Primer("GATGACGTATTTTTTAT")

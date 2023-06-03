@@ -18,12 +18,12 @@ def SmallestRotation(s):
         indexing rather than Duval's choice of 1-based indexing."""
         k = 0
         while k < len(s):
-            i,j = k,k+1
+            i, j = k, k + 1
             while j < len(s) and s[i] <= s[j]:
-                i = (s[i] == s[j]) and i+1 or k     # Python cond?yes:no syntax
+                i = (s[i] == s[j]) and i + 1 or k  # Python cond?yes:no syntax
                 j += 1
-            while k < i+1:
-                k += j-i
+            while k < i + 1:
+                k += j - i
                 yield k
 
     def ChenFoxLyndon(s):
@@ -35,21 +35,12 @@ def SmallestRotation(s):
             yield s[old:k]
             old = k
 
-
-    prev,rep = None,0
-    for w in ChenFoxLyndon(s+s):
+    prev, rep = None, 0
+    for w in ChenFoxLyndon(s + s):
         if w == prev:
             rep += 1
         else:
-            prev,rep = w,1
-        if len(w)*rep == len(s):
-            return w*rep
+            prev, rep = w, 1
+        if len(w) * rep == len(s):
+            return w * rep
     raise Exception("Reached end of factorization with no shortest rotation")
-
-
-
-
-
-
-
-

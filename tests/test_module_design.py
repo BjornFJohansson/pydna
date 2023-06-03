@@ -195,7 +195,7 @@ def test_primer_design_one_fragment_flanking_linkers():
 
 
 def test_primer_Design():
-    """ test_primer_design"""
+    """test_primer_design"""
 
     a = Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
     b = Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
@@ -217,7 +217,7 @@ def test_primer_Design():
 
 
 def test_primer_Design_with_linker():
-    """ test_primer_design"""
+    """test_primer_design"""
 
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     l = Dseqrecord("AAATTTCCCGGG")
@@ -227,13 +227,9 @@ def test_primer_Design_with_linker():
 
     asm1 = Assembly(frags)
 
-    assert asm1.assemble_linear()[0].useguid(), (
-        b + l + c
-    ).useguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
+    assert asm1.assemble_linear()[0].useguid(), (b + l + c).useguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
 
-    frags = assembly_fragments(
-        (primer_design(b), l, primer_design(c), primer_design(b))
-    )
+    frags = assembly_fragments((primer_design(b), l, primer_design(c), primer_design(b)))
 
     b2 = pcr(frags[-1].forward_primer, frags[0].reverse_primer, b)
 
@@ -249,20 +245,24 @@ def test_primer_Design_given_fw_primer():
     a = primer_design(b, fp=Primer("agctactgactattag"))
     assert str(a.reverse_primer.seq) == "tagatcagtacagtca"
 
+
 def test_primer_Design_given_rv_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     a = primer_design(b, rp=Primer("tagatcagtacagtca"))
     assert str(a.forward_primer.seq) == "agctactgactattag"
+
 
 def test_primer_Design_given_wrong_fw_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
         primer_design(b, fp=Primer("agctactgactattagC"))
 
+
 def test_primer_Design_given_wrong_rv_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
         primer_design(b, rp=Primer("tagatcagtacagtcaC"))
+
 
 def test_primer_Design_given_both_primers():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
@@ -271,9 +271,7 @@ def test_primer_Design_given_both_primers():
 
 
 def test_primer_Design_multiple_products():
-    b = Dseqrecord(
-        "agctactgactattaggggttaagctactgactattaggggtttctgatcatctgatctactatctgactgtactgatcta"
-    )
+    b = Dseqrecord("agctactgactattaggggttaagctactgactattaggggtttctgatcatctgatctactatctgactgtactgatcta")
     from pydna import _PydnaWarning
 
     with pytest.warns(_PydnaWarning):

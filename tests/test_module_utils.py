@@ -5,7 +5,6 @@ import pytest
 
 
 def test_flatten():
-
     from Bio.Seq import Seq as bSeq
     from pydna.dseq import Dseq
     from Bio.SeqRecord import SeqRecord as bSeqRecord
@@ -14,26 +13,24 @@ def test_flatten():
     from pydna.utils import flatten
 
     testtuple = (
-      [1, 2, 3],
-      [bSeq("a"), bSeq("a"), bSeq("a")],
-      [Dseq("a"), Dseq("a"), Dseq("a")],
-      [bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a"))],
-      [SeqRecord(bSeq("a")), SeqRecord(bSeq("a")), SeqRecord(bSeq("a"))],
-      [Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a"))],
-      [Dseqrecord("a"), Dseqrecord("a"), Dseqrecord("a")],
-      ["a", "b", "c"]
-      )
+        [1, 2, 3],
+        [bSeq("a"), bSeq("a"), bSeq("a")],
+        [Dseq("a"), Dseq("a"), Dseq("a")],
+        [bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a")), bSeqRecord(bSeq("a"))],
+        [SeqRecord(bSeq("a")), SeqRecord(bSeq("a")), SeqRecord(bSeq("a"))],
+        [Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a")), Dseqrecord(bSeq("a"))],
+        [Dseqrecord("a"), Dseqrecord("a"), Dseqrecord("a")],
+        ["a", "b", "c"],
+    )
 
     for t in testtuple:
         assert flatten(t) == t
-    testtuple2 = ( ([1, [2, 3]], [1, 2, 3]),
-    )
+    testtuple2 = (([1, [2, 3]], [1, 2, 3]),)
     for argument, result in testtuple2:
         assert flatten(argument) == result
 
 
 def test_eq():
-
     from pydna.dseqrecord import Dseqrecord
 
     from pydna.utils import eq
@@ -76,14 +73,10 @@ def test_eq():
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=True)
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=False)
 
-    assert eq(Dseqrecord("AAA", circular=False),
-              Dseqrecord("AAA", circular=False))
-    assert eq(Dseqrecord("AAA", circular=True),
-              Dseqrecord("AAA", circular=True))
-    assert not eq(Dseqrecord("ATA", circular=False),
-                  Dseqrecord("AAT", circular=False))
-    assert eq(Dseqrecord("ATA", circular=True),
-              Dseqrecord("AAT", circular=True))
+    assert eq(Dseqrecord("AAA", circular=False), Dseqrecord("AAA", circular=False))
+    assert eq(Dseqrecord("AAA", circular=True), Dseqrecord("AAA", circular=True))
+    assert not eq(Dseqrecord("ATA", circular=False), Dseqrecord("AAT", circular=False))
+    assert eq(Dseqrecord("ATA", circular=True), Dseqrecord("AAT", circular=True))
 
     with pytest.raises(ValueError):
         eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATA", circular=False))
@@ -92,9 +85,7 @@ def test_eq():
 
     assert eq(Dseqrecord("ATA"), Dseqrecord("ATA"), circular=True)
     assert not eq(Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True)
-    assert not eq(
-        Dseqrecord("ATA"), Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True
-    )
+    assert not eq(Dseqrecord("ATA"), Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True)
 
 
 # def test_shift_origin():
@@ -194,28 +185,17 @@ def test_cseguid():
     from pydna.utils import cseguid
 
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-    assert (
-        cseguid(x)
-        == cseguid(x.upper())
-        == cseguid(x.lower())
-        == "naaZmDzyMa58OsNXROe5SvjC7WU"
-    )
+    assert cseguid(x) == cseguid(x.upper()) == cseguid(x.lower()) == "naaZmDzyMa58OsNXROe5SvjC7WU"
 
 
 def test_lseguid():
     from pydna.utils import lseguid_blunt
 
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-    assert (
-        lseguid_blunt(x)
-        == lseguid_blunt(x.upper())
-        == lseguid_blunt(x.lower())
-        == "bHrqalTJ793oAigMQ5_qCttJRTk"
-    )
+    assert lseguid_blunt(x) == lseguid_blunt(x.upper()) == lseguid_blunt(x.lower()) == "bHrqalTJ793oAigMQ5_qCttJRTk"
 
 
 def test_rc():
-
     from pydna.utils import rc
 
     assert rc("gattc") == "gaatc"
@@ -223,7 +203,6 @@ def test_rc():
 
 
 def test_complement():
-
     from pydna.utils import complement
 
     assert complement("gattc") == "ctaag"
@@ -233,10 +212,7 @@ def test_complement():
 def test_seq31():
     from pydna.utils import seq31
 
-    assert (
-        seq31("MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer")
-        == "M  A  I  V  M  G  R  W  K  G  A  R  *"
-    )
+    assert seq31("MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer") == "M  A  I  V  M  G  R  W  K  G  A  R  *"
 
 
 def test_parse_text_table():
@@ -253,98 +229,30 @@ def test_parse_text_table():
 
     assert formatted == "one   two   three\nfour  five  six  \nseven eight nine "
 
-    cs = (
-        "one\n"
-        "four\n"
-        "seven\n"
-        "|||\n"
-        "two\n"
-        "five\n"
-        "eight\n"
-        "|||\n"
-        "three\n"
-        "six\n"
-        "nine"
-    )
+    cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
 
     assert cs == columnsplit
 
-    rs = (
-        "one\n"
-        "two\n"
-        "three\n"
-        "---\n"
-        "four\n"
-        "five\n"
-        "six\n"
-        "---\n"
-        "seven\n"
-        "eight\n"
-        "nine"
-    )
+    rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
 
     assert rs == rowsplit
 
 
 def test_join_list_to_table():
-
     from pydna.utils import join_list_to_table
 
-    cs = (
-        "one\n"
-        "four\n"
-        "seven\n"
-        "|||\n"
-        "two\n"
-        "five\n"
-        "eight\n"
-        "|||\n"
-        "three\n"
-        "six\n"
-        "nine"
-    )
+    cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
 
-    assert (
-        join_list_to_table(cs)
-        == "one   two   three\nfour  five  six  \nseven eight nine "
-    )
+    assert join_list_to_table(cs) == "one   two   three\nfour  five  six  \nseven eight nine "
 
-
-    cs = (
-        "one\n"
-        "four\n"
-        "seven\n"
-        "|||\n"
-        "two\n"
-        "five\n"
-        "\n"
-        "|||\n"
-        "three\n"
-        "six\n"
-        "nine"
-    )
+    cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "\n" "|||\n" "three\n" "six\n" "nine"
 
     answer = 'one   two  three\nfour  five six  \nseven \"    nine '
     assert join_list_to_table(cs) == answer
 
-    rs = (
-        "one\n"
-        "two\n"
-        "three\n"
-        "---\n"
-        "four\n"
-        "five\n"
-        "six\n"
-        "---\n"
-        "seven\n"
-        "eight\n"
-        "nine"
-    )
+    rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
 
-    assert (
-        join_list_to_table(rs)
-        == "one   two   three\nfour  five  six  \nseven eight nine "
-    )
+    assert join_list_to_table(rs) == "one   two   three\nfour  five  six  \nseven eight nine "
 
     assert join_list_to_table("somestring") is None
 
@@ -359,9 +267,7 @@ def test_expandtolist():
     samples = "Sample [1..3] prepared according to [A..C]"
 
     result = (
-        "Sample 1 prepared according to A\n"
-        "Sample 2 prepared according to B\n"
-        "Sample 3 prepared according to C\n"
+        "Sample 1 prepared according to A\n" "Sample 2 prepared according to B\n" "Sample 3 prepared according to C\n"
     )
 
     assert result == expandtolist(samples)
@@ -407,19 +313,68 @@ def test_randomORF():
     assert orf.startswith("ATG")
 
     cdns = (
-        "TTT", "TTC", "TTA", "TTG", "TCT",
-        "TCC", "TCA", "TCG", "TAT", "TAC",
-        "TGT", "TGC", "TGG", "CTT", "CTC",
-        "CTA", "CTG", "CCT", "CCC", "CCA",
-        "CCG", "CAT", "CAC", "CAA", "CAG",
-        "CGT", "CGC", "CGA", "CGG", "ATT",
-        "ATC", "ATA", "ATG", "ACT", "ACC",
-        "ACA", "ACG", "AAT", "AAC", "AAA",
-        "AAG", "AGT", "AGC", "AGA", "AGG",
-        "GTT", "GTC", "GTA", "GTG", "GCT",
-        "GCC", "GCA", "GCG", "GAT", "GAC",
-        "GAA", "GAG", "GGT", "GGC", "GGA",
-        "GGG")
+        "TTT",
+        "TTC",
+        "TTA",
+        "TTG",
+        "TCT",
+        "TCC",
+        "TCA",
+        "TCG",
+        "TAT",
+        "TAC",
+        "TGT",
+        "TGC",
+        "TGG",
+        "CTT",
+        "CTC",
+        "CTA",
+        "CTG",
+        "CCT",
+        "CCC",
+        "CCA",
+        "CCG",
+        "CAT",
+        "CAC",
+        "CAA",
+        "CAG",
+        "CGT",
+        "CGC",
+        "CGA",
+        "CGG",
+        "ATT",
+        "ATC",
+        "ATA",
+        "ATG",
+        "ACT",
+        "ACC",
+        "ACA",
+        "ACG",
+        "AAT",
+        "AAC",
+        "AAA",
+        "AAG",
+        "AGT",
+        "AGC",
+        "AGA",
+        "AGG",
+        "GTT",
+        "GTC",
+        "GTA",
+        "GTG",
+        "GCT",
+        "GCC",
+        "GCA",
+        "GCG",
+        "GAT",
+        "GAC",
+        "GAA",
+        "GAG",
+        "GGT",
+        "GGC",
+        "GGA",
+        "GGG",
+    )
 
     assert orf[3:6] in cdns
 

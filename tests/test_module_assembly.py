@@ -47,75 +47,36 @@ def test_new_assembly(monkeypatch):
     # ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg
 
     a.features = [
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(34), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(33), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(20), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(20), ExactPosition(33), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(21), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(19), ExactPosition(34), strand=1), type="misc"
-        ),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(34), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(33), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(20), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(20), ExactPosition(33), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(21), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(19), ExactPosition(34), strand=1), type="misc"),
     ]
 
     b.features = [
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(35), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(34), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(19), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(19), ExactPosition(35), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(20), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(18), ExactPosition(35), strand=1), type="misc"
-        ),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(35), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(34), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(19), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(19), ExactPosition(35), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(20), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(18), ExactPosition(35), strand=1), type="misc"),
     ]
 
     c.features = [
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(37), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(36), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(16), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(16), ExactPosition(37), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(17), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(15), ExactPosition(37), strand=1), type="misc"
-        ),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(37), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(36), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(16), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(16), ExactPosition(37), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(17), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(15), ExactPosition(37), strand=1), type="misc"),
     ]
 
     ln0 = assembly.Assembly((a, b, c), limit=14)
     l = ln0.assemble_linear()[0]
 
-    assert (
-        str(l.seq)
-        == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg"
-    )
+    assert str(l.seq) == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg"
 
     feature_seqs = (
         [f.extract(a).seq for f in a.features]
@@ -159,14 +120,8 @@ def test_new_assembly(monkeypatch):
     c.add_feature(1, 36, label="third")
     ln2 = assembly.Assembly((a, b2, b3, c), limit=14)
     linprods = ln2.assemble_linear()
-    assert (
-        str(linprods[0].seq)
-        == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg"
-    )
-    assert (
-        str(linprods[1].seq)
-        == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGTacgatgctatactgg"
-    )
+    assert str(linprods[0].seq) == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGTacgatgctatactgg"
+    assert str(linprods[1].seq) == "ACTACGGCCTTCTCTCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGTacgatgctatactgg"
 
     # acgatgctatactgg 15
     a = Dseqrecord("acgatgctatactggCCCCCtgtgctgtgctctaGG", name="one36")
@@ -176,74 +131,35 @@ def test_new_assembly(monkeypatch):
     c = Dseqrecord("tattctggctgtatctGGGGGTacgatgctatactgg", name="three37")
     # acgatgctatactgg 15
     a.features = [
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(34), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(33), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(20), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(20), ExactPosition(34), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(21), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(19), ExactPosition(34), strand=1), type="misc"
-        ),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(34), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(33), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(20), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(20), ExactPosition(34), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(21), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(19), ExactPosition(34), strand=1), type="misc"),
     ]
 
     b.features = [
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(35), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(34), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(19), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(19), ExactPosition(35), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(20), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(18), ExactPosition(35), strand=1), type="misc"
-        ),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(35), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(34), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(19), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(19), ExactPosition(35), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(20), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(18), ExactPosition(35), strand=1), type="misc"),
     ]
 
     c.features = [
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(37), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(1), ExactPosition(36), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(16), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(16), ExactPosition(37), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(0), ExactPosition(17), strand=1), type="misc"
-        ),
-        SeqFeature(
-            FeatureLocation(ExactPosition(15), ExactPosition(37), strand=1), type="misc"
-        ),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(37), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(36), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(16), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(16), ExactPosition(37), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(17), strand=1), type="misc"),
+        SeqFeature(FeatureLocation(ExactPosition(15), ExactPosition(37), strand=1), type="misc"),
     ]
     c1 = assembly.Assembly((a, b, c), limit=14)
     result = c1.assemble_circular()[0]
     assert result.cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
-    assert (
-        str(result.seq)
-        == "acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT"
-    )
+    assert str(result.seq) == "acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT"
     # acgatgctatactggCCCCCtgtgctgtgctctaGG
     feature_seqs = (
         [f.extract(a).seq for f in a.features]
@@ -276,14 +192,8 @@ def test_new_assembly(monkeypatch):
     assert circprods[1].cseguid() == "t3mIjxv3Q5GK9SWpXD-UfyefANc"
     assert circprods[2].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
     assert circprods[3].cseguid() == "k9ztaDj9HsQYZvxzvkUWn6SY5Ks"
-    assert (
-        str(circprods[0].seq)
-        == "acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT"
-    )
-    assert (
-        str(circprods[2].seq)
-        == "acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT"
-    )
+    assert str(circprods[0].seq) == "acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT"
+    assert str(circprods[2].seq) == "acgatgctatactggCCCCCtgtgctgtgctctaCCtattctggctgtatctGGGGGT"
 
     # VJtsIfDO2DkKXbW-sLF3nJ-AEe4
     # acgatgctatactgg 15
@@ -300,10 +210,7 @@ def test_new_assembly(monkeypatch):
     # acgatgctatactgg 15
 
     c3 = assembly.Assembly((a, b, c), limit=14)
-    assert (
-        str(c3.assemble_circular()[0].seq)
-        == "acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT"
-    )
+    assert str(c3.assemble_circular()[0].seq) == "acgatgctatactggCCCCCtgtgctgtgctctaTTTTTtattctggctgtatctGGGGGT"
 
     from pydna.parsers import parse
     from pydna.utils import eq
@@ -644,9 +551,7 @@ def test_MXblaster1(monkeypatch):
     B_gal1_ISceI_c = pcr([primer[467], primer[468]], pCAPs_PCR_prod_gal1_ISceI_2)
     C_AgTEFt_d = pcr([primer[568], primer[166]], pCAPs_EcoRV_AgTEFt)
 
-    a = assembly.Assembly(
-        (pCAPs_pSU0_E_Z, A_KlLEU2tt_b, B_gal1_ISceI_c, C_AgTEFt_d), limit=25
-    )
+    a = assembly.Assembly((pCAPs_pSU0_E_Z, A_KlLEU2tt_b, B_gal1_ISceI_c, C_AgTEFt_d), limit=25)
     candidate = a.assemble_circular()[0]
     assert candidate.cseguid() == "ZHJqzSnqRxJsdKN5Pu5KP6coR6o"
     assert len(candidate) == 8099
@@ -663,13 +568,9 @@ def test_MXblaster1(monkeypatch):
         for f in x.features:
             oldfeats[f.qualifiers["label"][0]] = f.extract(x).seq
 
-    KlLEU2tt_gal1_ISceI_AgTEFt_2 = pcr(
-        primer[166], primer[167], YPK0_KlLEU2tt_gal1_ISceI_AgTEFt
-    )
+    KlLEU2tt_gal1_ISceI_AgTEFt_2 = pcr(primer[166], primer[167], YPK0_KlLEU2tt_gal1_ISceI_AgTEFt)
 
-    a = assembly.Assembly(
-        (AgTEFp_hph_KlLEU2tt_2, KlLEU2tt_gal1_ISceI_AgTEFt_2, pCAPs_pSU0_E_Z), limit=61
-    )
+    a = assembly.Assembly((AgTEFp_hph_KlLEU2tt_2, KlLEU2tt_gal1_ISceI_AgTEFt_2, pCAPs_pSU0_E_Z), limit=61)
     candidate = a.assemble_circular()[0]
     assert len(candidate) == 9772
     assert candidate.cseguid() == "QnsJ7ATZXSy2QuN4hy51SZw_aU0"
@@ -683,9 +584,7 @@ def test_MXblaster1(monkeypatch):
 
     AX023560 = read("AX023560.gb")
 
-    GAL10prom_slice = slice(
-        AX023560.features[1].location.start, AX023560.features[1].location.end
-    )
+    GAL10prom_slice = slice(AX023560.features[1].location.start, AX023560.features[1].location.end)
 
     GAL10prom = AX023560[GAL10prom_slice]
 
@@ -736,7 +635,6 @@ def test_MXblaster1(monkeypatch):
 
 
 def test_assemble_pGUP1(monkeypatch):
-
     monkeypatch.setenv("pydna_cached_funcs", "")
 
     from pydna.readers import read
@@ -784,7 +682,6 @@ def test_assemble_pGUP1(monkeypatch):
 
 
 def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
-
     from pydna.readers import read
     from pydna.assembly import Assembly
 
@@ -802,7 +699,6 @@ def test_pYPK7_TDH3_GAL2_PGI1(monkeypatch):
 
 
 def test_marker_replacement_on_plasmid(monkeypatch):
-
     from pydna.assembly import Assembly
     from pydna.parsers import parse
 
@@ -837,10 +733,7 @@ def test_marker_replacement_on_plasmid(monkeypatch):
     candidate, other = asm_hyg.assemble_linear()
 
     # AmpR feature
-    assert (
-        pMEC1135.features[-1].extract(pMEC1135).seq
-        == candidate.features[-1].extract(candidate).seq
-    )
+    assert pMEC1135.features[-1].extract(pMEC1135).seq == candidate.features[-1].extract(candidate).seq
 
 
 if __name__ == "__main__":

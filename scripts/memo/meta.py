@@ -10,7 +10,6 @@ class AutoPickleMeta(type):
         if os.path.exists(fn):
             # File exists, so load the cPickle and return
             with open(fn, "rb") as f:
-
                 try:
                     return pickle.load(f)
 

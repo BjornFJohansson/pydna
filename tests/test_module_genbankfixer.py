@@ -3,8 +3,8 @@
 
 import pytest
 
-def test_pydna_gbtext_clean():
 
+def test_pydna_gbtext_clean():
     pytest.importorskip("pyparsing")
 
     from pydna.readers import read
@@ -35,7 +35,6 @@ def test_pydna_gbtext_clean():
 
 
 def test_wrapstring():
-
     pytest.importorskip("pyparsing")
 
     from pydna.genbankfixer import wrapstring

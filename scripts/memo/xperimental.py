@@ -11,12 +11,8 @@
 import pydna
 
 a = pydna.Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
-b = pydna.Dseqrecord(
-    "ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc"
-)
-c = pydna.Dseqrecord(
-    "tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt"
-)
+b = pydna.Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
+c = pydna.Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
 primer_pairs = pydna.assembly_primers([a, b, c], circular=True)
 p = []
 for t, (f, r) in zip([a, b, c], primer_pairs):
