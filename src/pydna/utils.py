@@ -110,10 +110,13 @@ def shift_location(original_location, shift, lim):
 #             if len(w) * rep == lens:
 #                 return "".join(w * rep)
 
+
 def smallest_rotation(s):
     from pydivsufsort import min_rotation
+
     k = min_rotation(s)
     return s[k:] + s[:k]
+
 
 def cai(seq: str, organism: str = "sce", weights: dict = _weights):
     """docstring."""
