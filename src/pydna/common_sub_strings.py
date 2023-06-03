@@ -284,7 +284,6 @@ def common_sub_strings(stringx: str, stringy: str, limit=25):
            ===---        +++
 
     """
-
     rstr = _Rstr_max()
     rstr.add_str("&".join((stringx, stringy)))
     r = rstr.go()
