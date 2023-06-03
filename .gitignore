@@ -1,4 +1,6 @@
-tests/prof/
+/tests/prof/
+
+/prof/
 
 src/pydna/_version.py*
 
