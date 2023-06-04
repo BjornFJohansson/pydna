@@ -274,7 +274,7 @@ class Assembly(object):  # , metaclass=_Memoize):
         self.rcfragments = rcfragments
         self.algorithm = algorithm
 
-    @exit_after(int(_os.getenv("pydna_assembly_limit")))
+    @exit_after(int(_os.getenv("pydna_assembly_limit", 10)))
     def assemble_linear(self, start=None, end=None, max_nodes=None):
         G = _nx.MultiDiGraph(self.G)
 
@@ -396,7 +396,7 @@ class Assembly(object):  # , metaclass=_Memoize):
             reverse=True,
         )
 
-    @exit_after(int(_os.getenv("pydna_assembly_limit")))
+    @exit_after(int(_os.getenv("pydna_assembly_limit", 10)))
     def assemble_circular(self):
         cps = {}  # circular assembly
         cpsrc = {}

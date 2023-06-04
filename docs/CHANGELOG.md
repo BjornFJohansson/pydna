@@ -30,12 +30,10 @@ was a violation of zen#13 ("There should be one-- and preferably only one...") T
 hence the bump of major version number.
 
 
-Code formatting with Black (also suggested by @louisabraham). I now use a git precommit hook for this, so formatting should be
-more standardized.
+Code formatting with Black (also suggested by @louisabraham). I now use a git pre-commit hook for this, so formatting should be more standardized.
 
 
-Removed cache for all but download and genbank. Several functions and methods could previously be cached, something that
-saw very little use. The cache for genbank and download remain as this reduces the load on Genbank servers and also speed things up.
+Removed cache for all but download and genbank. Several functions and methods could previously be cached, something that saw very little use. The cache for genbank and download remain as this reduces the load on Genbank servers and also speed things up.
 
 
 Environment variable `pydna_assembly_limit` sets the execution time in seconds (default 10) for

@@ -16,7 +16,7 @@ from Bio.Restriction import CommOnly
 from pydna.dseq import Dseq as _Dseq
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
-from pydna.utils import memorize as _memorize
+# from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.utils import shift_location as _shift_location
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
@@ -883,9 +883,9 @@ class Dseqrecord(_SeqRecord):
         answer = Dseqrecord(_copy.copy(self))
         answer.seq = self.seq.__getitem__(sl)
         # answer.seq.alphabet = self.seq.alphabet
-
+        # breakpoint()
         sl_start = sl.start or 0  # 6
-        sl_stop = sl.stop or len(answer.seq)  # 1
+        sl_stop = sl.stop or len(self.seq)  # 1
 
         if not self.circular or sl_start < sl_stop:
             answer.features = super().__getitem__(sl).features
@@ -1012,7 +1012,7 @@ class Dseqrecord(_SeqRecord):
 
     rc = reverse_complement
 
-    @_memorize("pydna.dseqrecord.Dseqrecord.synced")
+    # @_memorize("pydna.dseqrecord.Dseqrecord.synced")
     def synced(self, ref, limit=25):
         """This method returns a new circular sequence (Dseqrecord object), which has been rotated
         in such a way that there is maximum overlap between the sequence and
@@ -1027,7 +1027,7 @@ class Dseqrecord(_SeqRecord):
         --------
 
         >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("gaat",circular=True)
+        >>> a=Dseqrecord("gaat", circular=True)
         >>> a.seq
         Dseq(o4)
         gaat
