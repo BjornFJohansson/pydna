@@ -2,6 +2,8 @@ name: Build for PyPI
 on:
   release:
     types: [published]
+    branches:
+      - master
 jobs:
   build:
     name: Build
