@@ -216,7 +216,7 @@ _logger.info("Environmental variable pydna_email        = %s", _os.environ["pydn
 _logger.info("Environmental variable pydna_log_dir      = %s", _os.environ["pydna_log_dir"])
 _logger.info("Environmental variable pydna_loglevel     = %s", _os.environ["pydna_loglevel"])
 _logger.info("Environmental variable pydna_primers      = %s", _os.environ["pydna_primers"])
-_logger.info("Environmental variable pydna_assembly_limit = %s",_os.environ["pydna_assembly_limit"])
+_logger.info("Environmental variable pydna_assembly_limit = %s", _os.environ["pydna_assembly_limit"])
 
 # create cache directory if not present
 

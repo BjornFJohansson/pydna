@@ -16,6 +16,7 @@ from Bio.Restriction import CommOnly
 from pydna.dseq import Dseq as _Dseq
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
+
 # from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.utils import shift_location as _shift_location
