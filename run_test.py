@@ -55,9 +55,10 @@ def main():
     pth.write_bytes(b"")
     return_value_unit_tests = pytest.main(args)
 
-    # import pstats
-    # stats = pstats.Stats('./prof/combined.prof')
-    # stats.print_stats("pydna", .1)
+    import pstats
+    stats = pstats.Stats('./prof/combined.prof')
+    stats.sort_stats('cumulative')
+    stats.print_stats("pydna/src", .1)
 
     # Or alternatively
     # stats.print_stats("local_path", 20) # Only show 20 of the listings

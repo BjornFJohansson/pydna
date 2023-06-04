@@ -131,19 +131,23 @@ class GenbankRecord(_Dseqrecord):
         """docstring."""  # FIXME
 
         code = (
-            "from Bio.genbank import Genbank\n"
-            f"gb = Genbank('{_os.environ['pydna_email']}')\n"
-            f"seq = gb.nucleotide('{self.item}'"
-        )
-        if self.start and self.start:
+            "from Bio import Entrez, SeqIO\n"
+            f"Entrez.email = '{_os.environ['pydna_email']}'\n"
+             "handle = Entrez.efetch(db='nuccore',\n"
+            f"                       id='{self.item}',\n"
+             "                       rettype='gbwithparts',\n"
+             "                       retmode='text',")
+        if self.start and self.stop:
             code += (
-                ",\n"
-                f"                    seq_start={self.start},\n"
-                f"                    seq_stop={self.stop},\n"
-                f"                    strand={self.strand})"
+                "\n"
+                f"                       seq_start={self.start},\n"
+                f"                       seq_stop={self.stop},\n"
+                f"                       strand={self.strand})\n"
             )
         else:
-            code += ")"
+            code += ")\n"
+
+        code += "record = SeqIO.read(handle, 'genbank')"
 
         return _ps(code)
 

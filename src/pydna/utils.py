@@ -112,8 +112,21 @@ def shift_location(original_location, shift, lim):
 
 
 def smallest_rotation(s):
-    from pydivsufsort import min_rotation
+    """Smallest rotation of a string.
 
+    Algorithm described in Pierre Duval, Jean. 1983. Factorizing Words
+    over an Ordered Alphabet. Journal of Algorithms & Computational Technology
+    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
+    on Lyndon words, David Eppstein 2011.
+    https://gist.github.com/dvberkel/1950267
+
+    Examples
+    --------
+    >>> from pydna.utils import smallest_rotation
+    >>> smallest_rotation("taaa")
+    'aaat'
+    """
+    from pydivsufsort import min_rotation
     k = min_rotation(s)
     return s[k:] + s[:k]
 

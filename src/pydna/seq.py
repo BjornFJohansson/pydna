@@ -30,9 +30,6 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 class Seq(_Seq):
     """docstring."""
 
-    def __init__(self, data, length=None):
-        super().__init__(data, length=None)
-
     def gc(self):
         """Return GC content."""
         return round(_GC(self._data.upper().decode("ASCII")), 3)
