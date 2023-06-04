@@ -1,14 +1,13 @@
 lussekatt
 pepparkaka
+maräng
 
-        	risboll
+            kanelbulle
 
-						maräng
-						prinsesstårta
+                        risboll
+                        prinsesstårta
 						chokladboll
-
-						kanelbulle
-						semla
+                        semla
 						jordgubbstårta
 						petit-choux
 						Napoleonbakelse
