@@ -127,6 +127,7 @@ def smallest_rotation(s):
     'aaat'
     """
     from pydivsufsort import min_rotation
+
     k = min_rotation(s)
     return s[k:] + s[:k]
 

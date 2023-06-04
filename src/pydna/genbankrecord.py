@@ -133,10 +133,11 @@ class GenbankRecord(_Dseqrecord):
         code = (
             "from Bio import Entrez, SeqIO\n"
             f"Entrez.email = '{_os.environ['pydna_email']}'\n"
-             "handle = Entrez.efetch(db='nuccore',\n"
+            "handle = Entrez.efetch(db='nuccore',\n"
             f"                       id='{self.item}',\n"
-             "                       rettype='gbwithparts',\n"
-             "                       retmode='text',")
+            "                       rettype='gbwithparts',\n"
+            "                       retmode='text',"
+        )
         if self.start and self.stop:
             code += (
                 "\n"
