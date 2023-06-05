@@ -224,9 +224,7 @@ def memorize(filename):
                 _os.getenv("pydna_cached_funcs", ""),
             )
             if filename not in _os.getenv("pydna_cached_funcs", ""):
-                _module_logger.info(
-                    "cache filename not among cached functions, made it new!"
-                )
+                _module_logger.info("cache filename not among cached functions, made it new!")
                 return f(*args, **kwargs)
             key = _base64.urlsafe_b64encode(_hashlib.sha1(_pickle.dumps((args, kwargs))).digest()).decode("ascii")
             _module_logger.info("key = %s", key)
