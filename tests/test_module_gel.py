@@ -1,7 +1,7 @@
 import pytest
 
-def test_gel():
 
+def test_gel():
     pytest.importorskip("PIL")
 
     import numpy as np
@@ -18,7 +18,7 @@ def test_gel():
 
     from pydna.dseqrecord import Dseqrecord
 
-    mygel = gel([PennStateLadder, [Dseqrecord("A"*2000)]])
+    mygel = gel([PennStateLadder, [Dseqrecord("A" * 2000)]])
 
     im = Image.open("pydna_gel.png")
 
@@ -29,7 +29,7 @@ def test_gel():
 
     ip = interpolator(HI_LO_DNA_MARKER)
 
-    x = Dseqrecord("A"*50)
+    x = Dseqrecord("A" * 50)
 
     x.n *= 10
 

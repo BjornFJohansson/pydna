@@ -44,7 +44,6 @@ def test_pydna_read_test():
 
 
 def test_parse_and_read_with_biopython_and_pydna():
-
     from pydna.readers import read
     from pydna.parsers import parse
 
@@ -68,12 +67,8 @@ def test_parse_and_read_with_biopython_and_pydna():
 
     x, y = parse("pth1.txt")
 
-    assert "".join(a.format("gb").splitlines()[1:]) == "".join(
-        x.format("gb").splitlines()[1:]
-    )
-    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(
-        y.format("gb").splitlines()[4:]
-    )
+    assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
+    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(y.format("gb").splitlines()[4:])
 
 
 def test_read_from_string():
@@ -177,27 +172,21 @@ def test_read_from_unicode():
 def test_read_from_file():
     from pydna.readers import read
     from pydna.parsers import parse
+    from pathlib import Path
 
     a = read("read1.gb")
     b = read("read2.gb")
     c = read("read3.fasta")
     d = read("read4.fasta")
-    x, y = parse("pth1.txt")
+    e = read(Path("read1.gb"))
 
     a.format("gb")
     b.format("gb")
     c.format("gb")
     d.format("gb")
-    x.format("gb")
-    y.format("gb")
-    assert x.format()[3268:3278] == "2micron 2µ"
-    assert x.features[13].qualifiers["label"][0] == u"2micron 2µ"
-    assert (
-        str(a.seq).lower()
-        == str(b.seq).lower()
-        == str(c.seq).lower()
-        == str(d.seq).lower()
-    )
+    e.format("gb")
+
+    assert str(a.seq).lower() == str(b.seq).lower() == str(c.seq).lower() == str(d.seq).lower()
 
 
 def test_read_with_feature_spanning_ori():

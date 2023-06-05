@@ -43,16 +43,7 @@ class Amplicon(_Dseqrecord):
 
     """
 
-    def __init__(
-        self,
-        record,
-        *args,
-        template=None,
-        forward_primer=None,
-        reverse_primer=None,
-        **kwargs
-    ):
-
+    def __init__(self, record, *args, template=None, forward_primer=None, reverse_primer=None, **kwargs):
         super().__init__(record, *args)
         self.template = template
         self.forward_primer = forward_primer
@@ -137,13 +128,12 @@ class Amplicon(_Dseqrecord):
             raz=self.reverse_primer.footprint.reverse_complement(),
             fzc=self.forward_primer.footprint.complement(),
             rzc=self.reverse_primer.footprint[::-1],
-            sp1=" "
-            * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
-            sp2=" "
-            * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
+            sp1=" " * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
+            sp2=" " * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp3=" " * (3 + len(self.forward_primer.seq)),
             middle1="...",
-            middle2="..." )
+            middle2="...",
+        )
 
         # type_, watson, rcrick = self.template.figure().splitlines()
         # f2 = (f"{watson}\n"
@@ -153,14 +143,10 @@ class Amplicon(_Dseqrecord):
         return _pretty_str(_textwrap.dedent(f).strip("\n"))
 
     def set_forward_primer_footprint(self, length):
-        self.forward_primer = _Primer(
-            self.forward_primer.tail + self.seq[:length], footprint=length
-        )
+        self.forward_primer = _Primer(self.forward_primer.tail + self.seq[:length], footprint=length)
 
     def set_reverse_primer_footprint(self, length):
-        self.reverse_primer = _Primer(
-            self.reverse_primer.tail + self.seq[:length], footprint=length
-        )
+        self.reverse_primer = _Primer(self.reverse_primer.tail + self.seq[:length], footprint=length)
 
     def program(self):
         return _program(self)

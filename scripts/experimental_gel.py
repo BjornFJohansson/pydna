@@ -34,7 +34,7 @@ def gamma(x, t, k=1):
 
 
 def testColour(c):
-    """ Convert integer to colour, which saturates if > 255 """
+    """Convert integer to colour, which saturates if > 255"""
 
     if c <= 255:
         return (c, c, c)
@@ -66,18 +66,10 @@ class Gel:
 
     def __init__(self, size, agarose=1):
         self.y = size[0]
-        self.x = (
-            2 * Gel.BORDER
-            + size[1] * (Gel.LANE_WIDTH + Gel.LANE_MARGIN)
-            - Gel.LANE_MARGIN
-        )
+        self.x = 2 * Gel.BORDER + size[1] * (Gel.LANE_WIDTH + Gel.LANE_MARGIN) - Gel.LANE_MARGIN
 
-        self.agarose = (
-            agarose  # Should test whether value is reasonable (say, 0.5% - 3%)
-        )
-        self.optimum_DNA_length = (
-            2000 / agarose ** 3
-        )  # Best separate based on agarose hole size
+        self.agarose = agarose  # Should test whether value is reasonable (say, 0.5% - 3%)
+        self.optimum_DNA_length = 2000 / agarose**3  # Best separate based on agarose hole size
 
         self.samples = []
         self.lanes = []
@@ -91,7 +83,7 @@ class Gel:
                 lane.append(0.0)
 
     def loadSample(self, lane, sample):
-        """Add list containing tuple of DNA length and concentrations to lane in gel. """
+        """Add list containing tuple of DNA length and concentrations to lane in gel."""
 
         for dna in sample:
             strand = {
@@ -102,7 +94,7 @@ class Gel:
             self.samples[lane - 1].append(strand)
 
     def run(self, time=30.0, voltage=20.0):
-        """ Move loaded DNA down the gel at a rate dependent on voltage, DNA length and agarose concentration. """
+        """Move loaded DNA down the gel at a rate dependent on voltage, DNA length and agarose concentration."""
 
         max_dist = 0.25 * time * voltage
         for sample in self.samples:
@@ -131,7 +123,6 @@ class Gel:
         for lane in self.lanes:
             for position in range(len(lane)):
                 if lane[position] > 0:
-
                     brightness = lane[position] * exposure / aperture + c1
                     colour1 = testColour(brightness)
                     colour2 = testColour(brightness * 0.6)
@@ -158,9 +149,7 @@ class Gel:
                     )
 
             # draw well
-            pygame.draw.rect(
-                edges, edge_colour, (x, Gel.BORDER, Gel.LANE_WIDTH, Gel.LANE_HEIGHT), 1
-            )
+            pygame.draw.rect(edges, edge_colour, (x, Gel.BORDER, Gel.LANE_WIDTH, Gel.LANE_HEIGHT), 1)
             x += Gel.LANE_WIDTH + Gel.LANE_MARGIN
 
         image.blit(edges, (0, 0))
@@ -185,7 +174,6 @@ class Gel:
 
 
 def AgaroseGel(samples, *args, **kwargs):
-
     myGel = Gel(size=(360, len(samples)), agarose=1.0)
 
     for i, sample in enumerate(samples):
@@ -212,7 +200,6 @@ def AgaroseGel(samples, *args, **kwargs):
 
 
 if __name__ == "__main__":
-
     from pydna import *
 
     lambda_ = read("../tests/lambda.gb")

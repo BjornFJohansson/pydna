@@ -1,17 +1,17 @@
 LOCUS       name                   11452 bp    DNA     circular UNK 01-JAN-1980
 DEFINITION  description.
-ACCESSION   <unknown id>
-VERSION     <unknown id>
+ACCESSION   id
+VERSION     id
 KEYWORDS    .
 SOURCE      .
   ORGANISM  .
             .
 FEATURES             Location/Qualifiers
-     rep_origin      526..1686
+     rep_origin      530..1690
                      /note="2 micron origin"
-     gene            2503..3306
+     gene            2507..3310
                      /gene="URA3"
-     CDS             2503..3306
+     CDS             2507..3310
                      /gene="URA3"
                      /codon_start=1
                      /transl_table=11
@@ -22,23 +22,27 @@ FEATURES             Location/Qualifiers
                      YSAGVYRIAEWADITNAHGVVGPGIVSGLKQAAEEVTKEPRGLLMLAELSCKGSLSTGE
                      YTKGTVDIAKSDKDFVIGFIAQRDMGGRDEGYDWLIMTPGVGLDDKGDALGQQYRTVDD
                      VVSTGSDIIIVGRGLFAKGRDAKVEGERYRKAGWEAYLRRCGQQN"
-     regulatory      3448..4930
+     regulatory      3452..4934
                      /regulatory_class="promoter"
                      /note="from Saccharomyces cerevisiae PGK1"
-     primer_bind     4949..4963
+     primer_bind     4953..4967
                      /label="primer1"
+                     /PCR_conditions="primer
+                     sequence:GCGGATCCTCTAGAATGGTTTGTTCAGTAATTCAG"
                      /ApEinfo_fwdcolor="#baffa3"
                      /ApEinfo_revcolor="#ffbaba"
-     primer_bind     complement(6725..6745)
+     primer_bind     complement(6729..6749)
                      /label="primer3"
+                     /PCR_conditions="primer
+                     sequence:AGATCTGGATCCTTAGATGAGAGTCTTTTCCAG"
                      /ApEinfo_fwdcolor="#baffa3"
                      /ApEinfo_revcolor="#ffbaba"
-     regulatory      6752..7116
+     regulatory      6756..7120
                      /regulatory_class="terminator"
                      /note="from Saccharomyces cerevisiae PGK1"
-     gene            7174..8364
+     gene            7178..8368
                      /gene="tet"
-     CDS             7174..8364
+     CDS             7178..8368
                      /gene="tet"
                      /note="pBR322 marker"
                      /codon_start=1
@@ -52,9 +56,9 @@ FEATURES             Location/Qualifiers
                      QLVGQVPAALWVIFGEDRFRWSATMIGLSLAVFGILHALAQAFVTGPATKRFGEKQAII
                      AGMAADALGYVLLAFATRGWMAFPIMILLASGGIGMPALQAMLSRQVDDDHQGQLQGSL
                      AALTSLTSITGPLIVTAIYAASASTWNGLAWIVGAALYLVCLPALRRGAWSRATST"
-     gene            complement(10383..11243)
+     gene            complement(10387..11247)
                      /gene="bla"
-     CDS             complement(10383..11243)
+     CDS             complement(10387..11247)
                      /gene="bla"
                      /note="ampicillin resistance protein"
                      /codon_start=1

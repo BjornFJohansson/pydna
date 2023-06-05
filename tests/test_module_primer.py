@@ -2,7 +2,6 @@ import pytest
 
 
 def test_primer():
-
     from pydna import primer
 
     x = primer.Primer("gtatcatatctatctatcta", footprint=12)

@@ -18,6 +18,11 @@ classifiers=["Development Status :: 4 - Beta",
              "Programming Language :: Python :: 3.11",
              "Topic :: Education",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
+[project.urls]
+homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
+documentation = "https://pydna.readthedocs.io/?badge=latest"
+repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
+changelog = "https://github.com/BjornFJohansson/pydna/blob/master/docs/CHANGELOG.md#changelog"
 [tool.poetry]
 name = "pydna"
 version = "5.2.0-a.15"
@@ -30,10 +35,10 @@ python = ">=3.8"
 appdirs = ">=1.4.4"
 biopython = ">=1.80"
 networkx = ">=2.8.8"
+pydivsufsort = ">=0.0.11"
 prettytable = ">=3.5.0"
 pyperclip = ">=1.8.2"
 pyfiglet = ">=0.8.post1"
-
 scipy = { version = ">=1.8.0", optional = true }
 matplotlib = { version = ">=3.4.3", optional = true }
 pillow = { version = ">=8.4.0", optional = true }
@@ -59,13 +64,14 @@ style = "semver"
 folders = [
   { path = "src"}
 ]
-[tool.poetry.group.test]  # This part can be left out
+[tool.poetry.group.test] # This part can be left out
 [tool.poetry.group.test.dependencies]
 pytest = ">=7.2.0"
-pytest-cov =  ">=4.0.0"
-pytest-doctestplus =  ">=0.12.1"
-coverage =  ">=7.1.0"
-nbval =  ">=0.9.6"
+pytest-cov = ">=4.0.0"
+pytest-doctestplus = ">=0.12.1"
+pytest-profiling = ">=1.7.0"
+coverage = ">=7.1.0"
+nbval = ">=0.9.6"
 requests-mock = ">=1.10.0"
 pyparsing = ">=2.4.7"
 [tool.pytest.ini_options]

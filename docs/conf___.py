@@ -37,7 +37,7 @@ extensions = [
 # Add mappings https://kev.inburke.com/kevin/sphinx-interlinks
 intersphinx_mapping = {
     "biopython": ("https://biopython.org/docs/latest/api/", None),
-    "python":    ("http://docs.python.org/3.8", None),
+    "python": ("http://docs.python.org/3.8", None),
 }
 
 numpydoc_show_class_members = False
@@ -106,18 +106,12 @@ master_doc = "index"
 # version = ".".join(release.split(".")[:3])
 
 
-
-
-
-
 # contents of docs/conf.py
 from importlib.metadata import version
+
 release = version('pydna')
 # for example take major/minor
 version = '.'.join(release.split('.')[:3])
-
-
-
 
 
 # The full version, including alpha/beta/rc tags.

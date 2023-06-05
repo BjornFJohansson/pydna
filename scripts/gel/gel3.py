@@ -14,7 +14,7 @@ def add_band(lane, bases, mass):
     max_intensity = 256
     log = math.log(bases, 10)
     # logartigmic-exponential fitting
-    peak_centre = int(-240.52 * log ** 2 + 717.16 * log + 224.7) * 2.0 / 3.0
+    peak_centre = int(-240.52 * log**2 + 717.16 * log + 224.7) * 2.0 / 3.0
     height = mass / (80 * 30.0 * log)
     max_spread = 10
     # handle primers
@@ -32,7 +32,7 @@ def add_band(lane, bases, mass):
 
 # a is peak height, b is peak centre and c is peak spread:
 def gaussian(x, a, b, c):
-    frac = float(((x - b) ** 2)) / (2 * (c ** 2))
+    frac = float(((x - b) ** 2)) / (2 * (c**2))
     return a * math.exp(-frac)
 
 
@@ -63,7 +63,7 @@ def draw_lanes(draw):
 
 def draw_label(draw, bases):
     log = math.log(bases, 10)
-    peak_centre = int(-240.52 * log ** 2 + 717.16 * log + 220) * 2.0 / 3.0
+    peak_centre = int(-240.52 * log**2 + 717.16 * log + 220) * 2.0 / 3.0
     label = str(bases) + " -"
     label = label if len(label) >= 6 else str(" " * (6 - len(label))) + label
     # font = ImageFont.truetype("arial.ttf", 16)

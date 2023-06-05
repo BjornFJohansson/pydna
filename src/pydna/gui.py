@@ -45,13 +45,16 @@ class SequenceWindow(QMainWindow):
         text = str(record.seq)
         html = ""
         for fl in record.features[0].location.parts:
-            html = (f"{text[:fl.start]}<span style='background-color:#ffff00;'>"
-                    f"{text[fl.start:fl.end]}</span>"
-                    f"{text[fl.end:]}")
+            html = (
+                f"{text[:fl.start]}<span style='background-color:#ffff00;'>"
+                f"{text[fl.start:fl.end]}</span>"
+                f"{text[fl.end:]}"
+            )
 
         textw.appendHtml(html)
         textw.setReadOnly(True)
         gridLayout.addWidget(textw, 0, 0)
+
 
 def run_app(record):
     if os.fork() != 0:
@@ -63,7 +66,6 @@ def run_app(record):
 
 
 if __name__ == '__main__':
-
     t = """
         LOCUS       myDNA                     12 bp    DNA     linear       02-JAN-2023
         DEFINITION  .

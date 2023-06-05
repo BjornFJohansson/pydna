@@ -33,9 +33,9 @@ from Bio.Restriction import BsaI, BsmBI, BbsI, FokI
 
 DNA = _Dseqrecord("gatcGAAGACtagagtctgattcg")
 
-a,b = DNA.cut(BbsI)
+a, b = DNA.cut(BbsI)
 
-assert a+b == DNA
+assert a + b == DNA
 
 
 # MoClo

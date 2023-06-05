@@ -32,11 +32,7 @@ def guess_alphabet(sequence):
     else:
         if not isinstance(sequence, str):
             warnings.warn(
-                (
-                    "Input is {}, expected string, "
-                    "unicode string, Seq or SeqRecord "
-                    "objects!"
-                ).format(type(sequence))
+                ("Input is {}, expected string, " "unicode string, Seq or SeqRecord " "objects!").format(type(sequence))
             )
         sequence = str(sequence)
 
@@ -115,9 +111,7 @@ def guess_alphabet(sequence):
             "XLE",
         ]
         tc = set(threecode)
-        three_letter_alphabet = set(
-            [sequence[i : i + 3] for i in range(0, len(sequence), 3)]
-        )
+        three_letter_alphabet = set([sequence[i : i + 3] for i in range(0, len(sequence), 3)])
         if not three_letter_alphabet - tc:
             alphabet = "three letter code"
         elif sequence_chars - pr:

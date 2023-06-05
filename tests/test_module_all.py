@@ -5,7 +5,6 @@ import pytest
 
 
 def test_repr():
-
     pytest.importorskip("requests")
 
     from pydna import all

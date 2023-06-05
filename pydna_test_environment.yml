@@ -7,7 +7,7 @@ channels:
 dependencies:
 
 - appdirs
-- biopython=1.80
+- biopython>=1.80
 - prettytable
 - networkx
 - pyperclip
@@ -25,6 +25,7 @@ dependencies:
 - pytest-cov
 - pytest-mock
 - pytest-doctestplus
+- pytest-profiling
 - coverage
 - nbval
 - requests-mock
@@ -32,3 +33,4 @@ dependencies:
 - poetry
 - pip:
     - poetry-dynamic-versioning
+    - pydivsufsort

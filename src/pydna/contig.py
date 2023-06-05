@@ -31,11 +31,11 @@ class Contig(_Dseqrecord):
         return obj
 
     def __repr__(self):
-        return "Contig({}{})".format({True: "-", False: "o"}[self.linear], len(self))
+        return "Contig({}{})".format({True: "-", False: "o"}[not self.circular], len(self))
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
-        p.text("Contig({}{})".format({True: "-", False: "o"}[self.linear], len(self)))
+        p.text("Contig({}{})".format({True: "-", False: "o"}[not self.circular], len(self)))
 
     def _repr_html_(self):
         return "<pre>" + self.figure() + "</pre>"
@@ -44,22 +44,14 @@ class Contig(_Dseqrecord):
         answer = type(self)(super().reverse_complement())
         g = _nx.DiGraph()
         nm = self.nodemap
-        g.add_edges_from(
-            [(nm[v], nm[u], d) for u, v, d in list(self.graph.edges(data=True))[::-1]]
-        )
+        g.add_edges_from([(nm[v], nm[u], d) for u, v, d in list(self.graph.edges(data=True))[::-1]])
         g.add_nodes_from((nm[n], d) for n, d in list(self.graph.nodes(data=True))[::-1])
         for u, v, ed in g.edges(data=True):
-            ed["name"] = (
-                ed["name"][:-3]
-                if ed["name"].endswith("_rc")
-                else "{}_rc".format(ed["name"])[:13]
-            )
+            ed["name"] = ed["name"][:-3] if ed["name"].endswith("_rc") else "{}_rc".format(ed["name"])[:13]
             ed["seq"] = _rc(ed["seq"])
             ln = len(ed["seq"])
             start, stop = ed["piece"].start, ed["piece"].stop
-            ed["piece"] = slice(
-                ln - stop - g.nodes[u]["length"], ln - start - g.nodes[v]["length"]
-            )
+            ed["piece"] = slice(ln - stop - g.nodes[u]["length"], ln - start - g.nodes[v]["length"])
             ed["features"] = [f._flip(ln) for f in ed["features"]]
         answer.graph = g
         answer.nodemap = {v: k for k, v in self.nodemap.items()}
@@ -166,7 +158,7 @@ class Contig(_Dseqrecord):
         nodes = list(self.graph.nodes(data=True))
         edges = list(self.graph.edges(data=True))
 
-        if self.linear:
+        if not self.circular:
             r"""
             frag20| 6
                    \/
@@ -187,16 +179,10 @@ class Contig(_Dseqrecord):
             space = space2  # len(f.name)
 
             for i, f in enumerate(edges[1:-1]):
-                name = "{o1:>2}|{name}|".format(
-                    o1=nodes[i + 1][1]["length"], name=f[2]["name"]
-                )
+                name = "{o1:>2}|{name}|".format(o1=nodes[i + 1][1]["length"], name=f[2]["name"])
                 space2 = len(name)
 
-                fig += (
-                    "{space} {name}{o2:>2}\n"
-                    "{space} {space2}\\/\n"
-                    "{space} {space2}/\\\n"
-                ).format(
+                fig += ("{space} {name}{o2:>2}\n" "{space} {space2}\\/\n" "{space} {space2}/\\\n").format(
                     name=name,
                     o2=nodes[i + 2][1]["length"],
                     space=" " * space,
@@ -206,9 +192,7 @@ class Contig(_Dseqrecord):
                 space += space2
 
             f = edges[-1]
-            fig += ("{space} {o1:>2}|{name}").format(
-                name=f[2]["name"], o1=nodes[-2][1]["length"], space=" " * (space)
-            )
+            fig += ("{space} {o1:>2}|{name}").format(name=f[2]["name"], o1=nodes[-2][1]["length"], space=" " * (space))
 
         else:  # circular
             r"""
@@ -236,15 +220,9 @@ class Contig(_Dseqrecord):
             )
 
             for i, f in enumerate(edges[1:]):
-                name = "{o1:>2}|{name}|".format(
-                    o1=nodes[i + 1][1]["length"], name=f[2]["name"]
-                )
+                name = "{o1:>2}|{name}|".format(o1=nodes[i + 1][1]["length"], name=f[2]["name"])
                 space2 = len(name)
-                fig += (
-                    "|{space}{name}{o2:>2}\n"
-                    "|{space}{space2}\\/\n"
-                    "|{space}{space2}/\\\n"
-                ).format(
+                fig += ("|{space}{name}{o2:>2}\n" "|{space}{space2}\\/\n" "|{space}{space2}/\\\n").format(
                     o2=nodes[i + 2][1]["length"],
                     name=name,
                     space=" " * space,
@@ -252,9 +230,7 @@ class Contig(_Dseqrecord):
                 )
                 space += space2
 
-            fig += "|{space}{o1:>2}-\n".format(
-                space=" " * (space), o1=nodes[0][1]["length"]
-            )
+            fig += "|{space}{o1:>2}-\n".format(space=" " * (space), o1=nodes[0][1]["length"])
             fig += "|{space}   |\n".format(space=" " * (space))
             fig += " {space}".format(space="-" * (space + 3))
         return _pretty_str(_textwrap.dedent(fig))

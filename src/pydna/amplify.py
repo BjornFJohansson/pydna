@@ -15,7 +15,8 @@ correctly."""
 
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
-from pydna.utils import memorize as _memorize
+
+# from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.amplicon import Amplicon as _Amplicon
 from pydna.primer import Primer as _Primer
@@ -99,32 +100,27 @@ def _annealing_positions(primer, template, limit=15):
     for key in table:
         head = head.replace(key, table[key])
 
-    positions = [
-        m.start() for m in _re.finditer("(?={})".format(head), template, _re.I)
-    ]
+    positions = [m.start() for m in _re.finditer("(?={})".format(head), template, _re.I)]
 
     if positions:
         tail = prc[limit:].lower()
         length = len(tail)
         results = []
         for match_start in positions:
-            tm = template[match_start + limit:
-                          match_start + limit + length].lower()
-            footprint = len(list(_itertools.takewhile(lambda x: x[0] == x[1],
-                                                      zip(tail,
-                                                          tm))))
+            tm = template[match_start + limit : match_start + limit + length].lower()
+            footprint = len(list(_itertools.takewhile(lambda x: x[0] == x[1], zip(tail, tm))))
             results.append((match_start, footprint + limit))
         return results
     return []
 
 
-class _Memoize(type):
-    @_memorize("pydna.amplify.Anneal")
-    def __call__(cls, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
+# class _Memoize(type):
+#     @_memorize("pydna.amplify.Anneal")
+#     def __call__(cls, *args, **kwargs):
+#         return super().__call__(*args, **kwargs)
 
 
-class Anneal(object, metaclass=_Memoize):
+class Anneal(object):  # ), metaclass=_Memoize):
     """The Anneal class has the following important attributes:
 
     Attributes
@@ -177,7 +173,7 @@ class Anneal(object, metaclass=_Memoize):
         >>> p2 = read(">p2\ngtgctatcagatgatacagtcg", ds = False)
         >>> ann = Anneal((p1, p2), t)
         >>> print(ann.report())
-        Template name 1011 nt linear:
+        Template name 1011 bp linear limit=13:
         p1 anneals forward (--->) at 23
         p2 anneals reverse (<---) at 989
         >>> ann.products
@@ -228,12 +224,12 @@ class Anneal(object, metaclass=_Memoize):
         twl = len(self.template.seq.watson)
         tcl = len(self.template.seq.crick)
 
-        if self.template.linear:
-            tw = self.template.seq.watson
-            tc = self.template.seq.crick
-        else:
+        if self.template.circular:
             tw = self.template.seq.watson + self.template.seq.watson
             tc = self.template.seq.crick + self.template.seq.crick
+        else:
+            tw = self.template.seq.watson
+            tc = self.template.seq.crick
 
         for p in self.primers:
             self.forward_primers.extend(
@@ -274,6 +270,7 @@ class Anneal(object, metaclass=_Memoize):
                         type="primer_bind",
                         qualifiers={
                             "label": [fp.name],
+                            "PCR_conditions": [f"primer sequence:{fp.seq}"],
                             "ApEinfo_fwdcolor": ["#baffa3"],
                             "ApEinfo_revcolor": ["#ffbaba"],
                         },
@@ -292,6 +289,7 @@ class Anneal(object, metaclass=_Memoize):
                     type="primer_bind",
                     qualifiers={
                         "label": [fp.name],
+                        "PCR_conditions": [f"primer sequence:{fp.seq}"],
                         "ApEinfo_fwdcolor": ["#baffa3"],
                         "ApEinfo_revcolor": ["#ffbaba"],
                     },
@@ -308,6 +306,7 @@ class Anneal(object, metaclass=_Memoize):
                         type="primer_bind",
                         qualifiers={
                             "label": [rp.name],
+                            "PCR_conditions": [f"primer sequence:{rp.seq}"],
                             "ApEinfo_fwdcolor": ["#baffa3"],
                             "ApEinfo_revcolor": ["#ffbaba"],
                         },
@@ -320,12 +319,8 @@ class Anneal(object, metaclass=_Memoize):
                     _SeqFeature(
                         _CompoundLocation(
                             [
-                                _SimpleLocation(0,
-                                                 end,
-                                                 strand=-1),
-                                _SimpleLocation(start,
-                                                 len(self.template),
-                                                 strand=-1),
+                                _SimpleLocation(0, end, strand=-1),
+                                _SimpleLocation(start, len(self.template), strand=-1),
                             ],
                         ),
                         type="primer_bind",
@@ -335,7 +330,6 @@ class Anneal(object, metaclass=_Memoize):
 
     @property
     def products(self):
-
         if self._products:
             return self._products
 
@@ -343,7 +337,6 @@ class Anneal(object, metaclass=_Memoize):
 
         for fp in self.forward_primers:
             for rp in self.reverse_primers:
-
                 if self.template.circular:
                     tmpl = self.template.shifted(fp.position - fp._fp)
                     tmpl = tmpl[:] * 2
@@ -356,30 +349,16 @@ class Anneal(object, metaclass=_Memoize):
                                     strand=f.location.strand,
                                 )
                     if fp.position > rp.position:
-                        tmpl = tmpl[
-                            : len(self.template)
-                            - fp.position
-                            + rp.position
-                            + rp._fp
-                            + fp._fp
-                        ]
+                        tmpl = tmpl[: len(self.template) - fp.position + rp.position + rp._fp + fp._fp]
                     else:
                         tmpl = tmpl[: rp.position + rp._fp - (fp.position - fp._fp)]
                 elif fp.position <= rp.position:
                     tmpl = self.template[fp.position - fp._fp : rp.position + rp._fp]
                 else:
                     continue
-                prd = (
-                    _Dseqrecord(fp.tail)
-                    + tmpl
-                    + _Dseqrecord(rp.tail).reverse_complement()
-                )
+                prd = _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement()
 
-                full_tmpl_features = [
-                    f
-                    for f in tmpl.features
-                    if f.location.start == 0 and f.location.end == len(tmpl)
-                ]
+                full_tmpl_features = [f for f in tmpl.features if f.location.start == 0 and f.location.end == len(tmpl)]
 
                 new_identifier = ""
                 if full_tmpl_features:
@@ -403,17 +382,11 @@ class Anneal(object, metaclass=_Memoize):
                     or self.kwargs.get("id")
                     or "{}bp_{}".format(str(len(prd))[:14], prd.useguid())
                 )
-                prd.description = self.kwargs.get(
-                    "description"
-                ) or "pcr_product_{}_{}".format(fp.description, rp.description)
-
-                amplicon = _Amplicon(
-                    prd,
-                    template=self.template,
-                    forward_primer=fp,
-                    reverse_primer=rp,
-                    **self.kwargs
+                prd.description = self.kwargs.get("description") or "pcr_product_{}_{}".format(
+                    fp.description, rp.description
                 )
+
+                amplicon = _Amplicon(prd, template=self.template, forward_primer=fp, reverse_primer=rp, **self.kwargs)
 
                 # amplicon.forward_primer.amplicon = amplicon
                 # amplicon.reverse_primer.amplicon = amplicon
@@ -423,33 +396,28 @@ class Anneal(object, metaclass=_Memoize):
         return self._products
 
     def __repr__(self):
-        """ returns a short string representation """
-        return "Reaction(products = {})".format(
-            len(self.forward_primers * len(self.reverse_primers))
-        )
+        """returns a short string representation"""
+        return "Reaction(products = {})".format(len(self.forward_primers * len(self.reverse_primers)))
 
     def __str__(self):
         """returns a short report describing if or where primer
         anneal on the template."""
 
-        mystring = "Template {name} {size} nt {top}:\n".format(
+        mystring = "Template {name} {size} bp {top} limit={limit}:\n".format(
             name=self.template.name,
             size=len(self.template),
             top={True: "circular", False: "linear"}[self.template.circular],
+            limit=self.limit,
         )
         if self.forward_primers:
             for p in self.forward_primers:
-                mystring += "{name} anneals forward (--->) at {pos}\n".format(
-                    name=p.name, pos=p.position
-                )
+                mystring += "{name} anneals forward (--->) at {pos}\n".format(name=p.name, pos=p.position)
         else:
             mystring += "No forward primers anneal...\n"
         # mystring +="\n"
         if self.reverse_primers:
             for p in self.reverse_primers:
-                mystring += "{name} anneals reverse (<---) at {pos}\n".format(
-                    name=p.name, pos=p.position
-                )
+                mystring += "{name} anneals reverse (<---) at {pos}\n".format(name=p.name, pos=p.position)
         else:
             mystring += "No reverse primers anneal...\n"
         return _pretty_str(mystring.strip())
@@ -522,7 +490,6 @@ tatcgactgtatcatctgatagcac")
     output = _flatten(args)  # flatten
     new = []
     for s in output:
-
         if hasattr(s, "watson"):
             s = _SeqRecord(_Seq(s.watson))
         elif hasattr(s, "transcribe"):
@@ -533,8 +500,7 @@ tatcgactgtatcatctgatagcac")
             pass
         else:
             raise TypeError(
-                "arguments need to be a string, Bio.Seq, SeqRecord"
-                ", Primer, Dseqrecord or Amplicon object"
+                "arguments need to be a string, Bio.Seq, SeqRecord" ", Primer, Dseqrecord or Amplicon object"
             )
         new.append(s)
 
@@ -550,12 +516,11 @@ tatcgactgtatcatctgatagcac")
     if len(anneal_primers.products) == 1:
         return anneal_primers.products[0]
     elif len(anneal_primers.products) == 0:
-        raise ValueError("No PCR product! {}".format(anneal_primers.report()))
-    raise ValueError("PCR not specific! {}".format(anneal_primers.report()))
+        raise ValueError(f"No PCR product! {anneal_primers.report()}")
+    raise ValueError("PCR not specific! {format(anneal_primers.report()}")
 
 
 if __name__ == "__main__":
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

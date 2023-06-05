@@ -5,6 +5,8 @@ Created on %(date)s
 
 @author: %(username)s
 """
+
+
 class PrimerDict(dict):
     """Special dictionary for Primers.
 
@@ -133,15 +135,14 @@ def code_for_literal_primers(primers: list) -> _pretty_str:
     result += "= parse_primers(\"\"\"\n\n"
 
     for p in primerlist:
-        result += p.format("fasta")+"\n"
+        result += p.format("fasta") + "\n"
 
     result += "\"\"\")"
 
     return result
 
 
-def prepend_primerlist(newprimers: list,
-                       oldprimers: list = None) -> _pretty_str:
+def prepend_primerlist(newprimers: list, oldprimers: list = None) -> _pretty_str:
     """docstring."""
     new = []
     found = []

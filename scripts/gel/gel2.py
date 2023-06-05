@@ -148,7 +148,6 @@ dset = _np.genfromtxt(
 
 
 def size_to_mobility(dna_fragment_length, efield, gelconcentration):
-
     muS = dset["muS"] / (100 * 100)  # m**2 to cm**2/V/s
     muL = dset["muL"] / (100 * 100)  # m**2 to cm**2/V/s
     gamma = dset["gamma"] * 1000  # kbp  to bp
@@ -172,9 +171,7 @@ e = 1.602176487e-19  # elementary charge (1.6-19 A.s)
 qeff = 2.2888235528571428e-20  # effective charge per dsDNA base pair (A.s/bp)
 
 # Intrinsic band broadening as function of the diffusion coefficient and time
-radius_gyration = lambda L, lp: (
-    lp * L / 3 * (1 - lp / L + lp / L * _np.exp(-L / lp))
-) ** (1 / 2)
+radius_gyration = lambda L, lp: (lp * L / 3 * (1 - lp / L + lp / L * _np.exp(-L / lp))) ** (1 / 2)
 
 # Relations between basepairs (Nbp), Kuhn segments (NKuhn) and blobs (N)
 Nbp_to_N = lambda Nbp, a, b, l: Nbp * (b / l) * (l / a) ** 2  # number of occupied pores
@@ -182,15 +179,10 @@ Nbp_to_N = lambda Nbp, a, b, l: Nbp * (b / l) * (l / a) ** 2  # number of occupi
 free_solution = lambda kB, T, eta, Rh: kB * T / (6 * _np.pi * eta * Rh)
 Zimm_g = lambda Nbp, DRouse, qeff, mu0, kB, T: DRouse * Nbp * qeff / (mu0 * kB * T)
 Ogston_Zimm = lambda D0, g: D0 * g
-Ogston_Rouse = (
-    lambda Nbp, kB, T, a, eta, b, l: kB
-    * T
-    * a ** 3
-    / (eta * b ** 2 * l ** 2 * Nbp ** 2)
-)
+Ogston_Rouse = lambda Nbp, kB, T, a, eta, b, l: kB * T * a**3 / (eta * b**2 * l**2 * Nbp**2)
 
 # Gaussian function
-Gaussian = lambda x, hgt, ctr, dev: hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
+Gaussian = lambda x, hgt, ctr, dev: hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev**2))
 
 Gauss_dev = lambda FWHM: FWHM / (2 * _np.sqrt(2 * _np.log(2)))
 Gauss_FWHM = lambda FWTM: FWTM * _np.sqrt(2 * _np.log(2)) / _np.sqrt(2 * _np.log(10))
@@ -206,7 +198,6 @@ class Gel:
         welly=0.2,  # cm
         wellsep=0.2,
     ):  # cm
-
         self.samples = samples
         self.gel_concentration = gel_concentration
         self.gel_length = gel_length
@@ -232,7 +223,6 @@ class Gel:
         dset_name="vertical",  # 'horizontal'
         replNANs=True,
     ):  # replace NANs by 'nearest' interpolation
-
         max_mob = 0
 
         for i, lane in enumerate(self.samples):
@@ -252,12 +242,7 @@ class Gel:
         muL0 = 1.0e-4  # cm^2/(V.sec)  ############################################
         gamma0 = 8000  # bp            ############################################
 
-        vWBR = (
-            lambda L, muS, muL, gamma: (
-                1 / muS + (1 / muL - 1 / muS) * (1 - _np.exp(-L / gamma))
-            )
-            ** -1
-        )
+        vWBR = lambda L, muS, muL, gamma: (1 / muS + (1 / muL - 1 / muS) * (1 - _np.exp(-L / gamma))) ** -1
 
         def residuals(pars, L, mu):
             return mu - vWBR(L, *pars)
@@ -317,20 +302,16 @@ class Gel:
             247.8 * (temperature - 140)
         )  # (Pa.s)=(kg/(m.s)) accurate to within 2.5% from 0 °C to 370 °C
 
-        pore_size = lambda gamma, muL, mu0, lp, b: (gamma * muL * lp * b / mu0) ** (
-            1 / 2
-        )
+        pore_size = lambda gamma, muL, mu0, lp, b: (gamma * muL * lp * b / mu0) ** (1 / 2)
 
         pore_size_fit = lambda C: 143 * C ** (-0.59)
 
         a = pore_size(gamma, muL, mu0, lp, b)
-        a_fit = pore_size_fit(
-            self.gel_concentration
-        )  # ##################################
+        a_fit = pore_size_fit(self.gel_concentration)  # ##################################
         a_fit = a_fit.to("m")  # ##################################
         self.poresize = a
         self.poresize_fit = a_fit
-        reduced_field = lambda eta, a, mu0, E, kB, T: eta * a ** 2 * mu0 * E / (kB * T)
+        reduced_field = lambda eta, a, mu0, E, kB, T: eta * a**2 * mu0 * E / (kB * T)
         epsilon = reduced_field(eta, a, mu0, field * 100, kB, temperature)
         # Diffusion coefficient of a blob
         Dblob = lambda kB, T, eta, a: kB * T / (eta * a)
@@ -350,9 +331,7 @@ class Gel:
             DZimm = Ogston_Zimm(D0, g)
             return DZimm - DRouse
 
-        Zimm_Rouse = lambda x0, args: (
-            Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0], args[5], args[6], args[7])
-        )
+        Zimm_Rouse = lambda x0, args: (Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0], args[5], args[6], args[7]))
 
         equil_accel = lambda epsilon: epsilon ** (-2 / 3)
         accel_plateau = lambda epsilon: epsilon ** (-1)
@@ -364,9 +343,7 @@ class Gel:
             [kB, temperature, qeff, eta, mu0, a, b, l, lp],
         )
 
-        N_to_Nbp = (
-            lambda N, a, b, l: N * (l / b) * (a / l) ** 2
-        )  # number of base pairs (bp)
+        N_to_Nbp = lambda N, a, b, l: N * (l / b) * (a / l) ** 2  # number of base pairs (bp)
         self.accel_to_plateau = N_to_Nbp(N_lim1, a, b, l)
         self.equil_to_accel = N_to_Nbp(N_lim2, a, b, l)
         self.Zimm_to_Rouse = N_to_Nbp(N_lim3, a, b, l)
@@ -383,7 +360,7 @@ class Gel:
                     g = Zimm_g(Nbp, DRouse, qeff, mu0, kB, temperature)  # base
                     D = Ogston_Zimm(D0, g)  # unit
                 elif N < N_lim2:  # Rouse/Reptation-equilibrium
-                    D = Db / N ** 2
+                    D = Db / N**2
                 elif N > N_lim1:  # Reptation-plateau (reptation with orientation)
                     D = Db * epsilon ** (3 / 2)
                 else:  # Accelerated-reptation
@@ -422,9 +399,7 @@ class Gel:
 
         # max intensity normalization
         satI = maxI + exposure * (minI - maxI)
-        intensities = [
-            [(1 - back_col) / satI * fragI for fragI in lane] for lane in raw_Is
-        ]
+        intensities = [[(1 - back_col) / satI * fragI for fragI in lane] for lane in raw_Is]
         self.intensities = intensities
 
         # Plot gel
@@ -440,18 +415,14 @@ class Gel:
                 "C = %.1f %%\n"
                 "T = %.2f K\n"
                 "t = %d h %02d m\n"
-                "expo = %.1f"
-                % (field, self.gel_concentration, temperature, hours, mins, exposure)
+                "expo = %.1f" % (field, self.gel_concentration, temperature, hours, mins, exposure)
             )
 
             gel_width = len(samples) * (self.wellx + self.wellsep) + self.wellsep  # cm
 
             pxl_x = int(gel_width * res)
             pxl_y = int(gel_len * res)
-            lane_centers = [
-                (l + 1) * self.wellsep + sum(wellx[:l]) + 0.5 * wellx[l]
-                for l in range(nlanes)
-            ]
+            lane_centers = [(l + 1) * self.wellsep + sum(wellx[:l]) + 0.5 * wellx[l] for l in range(nlanes)]
             rgb_arr = _np.zeros(shape=(pxl_y, pxl_x, 3), dtype=_np.float32)
             bandlengths = wellx
             bands_pxlXYmid = []
@@ -502,9 +473,7 @@ class Gel:
             if noise is None or noise <= 0:
                 rgb_arr += back_col
             else:
-                bckg = _np.random.normal(
-                    back_col, noise, (len(rgb_arr), len(rgb_arr[0]))
-                )
+                bckg = _np.random.normal(back_col, noise, (len(rgb_arr), len(rgb_arr[0])))
                 rgb_arr += bckg[:, :, _np.newaxis]
             # Saturation
             rgb_arr[rgb_arr > 1] = 1
@@ -531,20 +500,14 @@ class Gel:
             # _plt.xticks(lane_centers, names)
             majorLocator = _FixedLocator(list(range(int(gel_len + 1))))
             minorLocator = _FixedLocator(
-                [
-                    j / 10.0
-                    for k in range(0, int(gel_len + 1) * 10, 10)
-                    for j in range(1 + k, 10 + k, 1)
-                ]
+                [j / 10.0 for k in range(0, int(gel_len + 1) * 10, 10) for j in range(1 + k, 10 + k, 1)]
             )
             ax1.yaxis.set_major_locator(majorLocator)
             ax1.yaxis.set_minor_locator(minorLocator)
             ax1.tick_params(axis="x", which="both", top="off")
 
             # Gel image
-            bands_plt = ax1.imshow(
-                bands_arr, extent=[0, gel_width, gel_len, 0], interpolation="none"
-            )
+            bands_plt = ax1.imshow(bands_arr, extent=[0, gel_width, gel_len, 0], interpolation="none")
             # Draw wells
 
             for i in range(nlanes):

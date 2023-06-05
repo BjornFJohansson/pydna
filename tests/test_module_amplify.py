@@ -12,7 +12,6 @@ from Bio.SeqUtils.CheckSum import seguid
 
 
 def test_set_primer_footprint():
-
     f, r = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
@@ -36,7 +35,6 @@ def test_set_primer_footprint():
 
 
 def test_string_arguments():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                             gctactacacacgtactgactg
@@ -100,7 +98,6 @@ def test_wrong_argument_type():
 
 
 def test_no_primers_anneal():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctacta
@@ -120,7 +117,6 @@ def test_no_primers_anneal():
 
 
 def test_no_fwdprimer_anneal():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctact
@@ -140,7 +136,6 @@ def test_no_fwdprimer_anneal():
 
 
 def test_no_revprimer_anneal():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -160,7 +155,6 @@ def test_no_revprimer_anneal():
 
 
 def test_Primer_arguments():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -179,7 +173,6 @@ def test_Primer_arguments():
 
 
 def test_feature_label():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -199,7 +192,6 @@ def test_feature_label():
 
 
 def test_feature_note():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -222,7 +214,6 @@ def test_feature_note():
 
 
 def test_Amplicon_argument():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -243,14 +234,10 @@ def test_Amplicon_argument():
 
     amplicon_from_amplicon = pcr(ampl)
 
-    assert (
-        str(amplicon_from_amplicon.seq)
-        == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
-    )
+    assert str(amplicon_from_amplicon.seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_pcr_not_specific():
-
     f0, r0 = parse_primers(
         """>ForwardPrimer
                              gctactacacacgtactgactg
@@ -259,9 +246,7 @@ def test_pcr_not_specific():
                              tgtggttactgactctatcttg"""
     )
 
-    t0 = Dseqrecord(
-        "gctactacacacgtactgactgtgctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
-    )
+    t0 = Dseqrecord("gctactacacacgtactgactgtgctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
 
     f = f0
     r = r0
@@ -272,7 +257,6 @@ def test_pcr_not_specific():
 
 
 def test_too_short_primers():
-
     f, r = parse_primers(
         """>ForwardPrimer
            gctactacacacgtactgactg
@@ -286,7 +270,7 @@ def test_too_short_primers():
     ann = Anneal((f, r), t, limit=22)
 
     assert ann.report() == (
-        "Template name 48 nt linear:\n"
+        "Template name 48 bp linear limit=22:\n"
         "ForwardPrimer anneals forward (--->) at 22\n"
         "ReversePrimer anneals reverse (<---) at 26"
     )
@@ -302,9 +286,7 @@ def test_too_short_primers():
     assert ann.products == []
 
     assert ann.report() == (
-        "Template name 48 nt linear:\n"
-        "No forward primers anneal...\n"
-        "No reverse primers anneal..."
+        "Template name 48 bp linear limit=23:\n" "No forward primers anneal...\n" "No reverse primers anneal..."
     )
     assert repr(ann) == "Reaction(products = 0)"
 
@@ -356,7 +338,7 @@ def test_circ_pcr():
 
 
 def test_pcr():
-    """ test pcr"""
+    """test pcr"""
 
     raw = []
 

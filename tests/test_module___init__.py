@@ -36,7 +36,6 @@ import textwrap
 
 
 def test_default_env(monkeypatch):
-
     pydna_base_dir = os.path.join(tempfile.gettempdir(), "pydna_test")
 
     try:
@@ -104,16 +103,20 @@ def test_default_env(monkeypatch):
 
 def test_read_ini_file():
     import pydna
+
     pydna
 
 
 def test_without_dependency():
     import sys
     from unittest.mock import patch
+
     with patch.dict(sys.modules, {'PIL': None}):
         from importlib import reload
+
         reload(sys.modules['pydna'])
         import pydna
+
         assert 'PIL' in pydna._missing
 
 
@@ -124,8 +127,10 @@ def test_with_dependencies():
     import sys
     import pydna
     from importlib import reload
+
     reload(sys.modules['pydna'])
     import pydna
+
     assert pydna._missing == []
 
 

@@ -7,7 +7,6 @@ monkeypatch = pytest.MonkeyPatch()
 
 
 def test_PrimerList_init(monkeypatch):
-
     monkeypatch.setenv("pydna_primers", "primers_linux_line_endings.txt")
 
     from pydna.parsers import parse_primers
@@ -32,24 +31,27 @@ def test_PrimerList_init(monkeypatch):
 
     assert pl1 == pl2 == pl3
 
-    newlist = parse_primers("""
+    newlist = parse_primers(
+        """
                             >abc
                             aaa
                             >efg
                             ttt
-                            """)
+                            """
+    )
 
     np = pl1.assign_numbers(newlist)
 
-    assert [s.name for s in parse_primers(np)] == ["5_abc",
-                                                   "4_efg"]
+    assert [s.name for s in parse_primers(np)] == ["5_abc", "4_efg"]
 
-    newlist = parse_primers("""
+    newlist = parse_primers(
+        """
                             >abc
                             aaa
                             >efg
                             tttttttt
-                            """)
+                            """
+    )
 
     np = pl1.assign_numbers(newlist)
 
@@ -60,7 +62,8 @@ def test_PrimerList_init(monkeypatch):
 
     import textwrap
 
-    code = textwrap.dedent("""\
+    code = textwrap.dedent(
+        """\
     from pydna.parsers import parse_primers
 
     p = {}
@@ -79,7 +82,8 @@ def test_PrimerList_init(monkeypatch):
     >3_primer
     aaaaaaaa
 
-    ''')""")
+    ''')"""
+    )
 
     assert pl1.pydna_code_from_list(pl1) == code
 
@@ -121,18 +125,21 @@ def test_PrimerList_init(monkeypatch):
 
 def test_check_primer_numbers(monkeypatch):
     from pydna import myprimers
+
     pl = myprimers.PrimerList(path="primers_linux_line_endings_not_unique.txt")
     assert myprimers.check_primer_numbers(pl) == [pl[5]]
 
 
 def test_undefined_sequence(monkeypatch):
     from pydna import myprimers
+
     pl = myprimers.PrimerList(path="primers_linux_line_endings_not_unique.txt")
     assert myprimers.undefined_sequence(pl) == [pl[2]]
 
 
 def test_find_duplicate_primers(monkeypatch):
     from pydna import myprimers
+
     pl = myprimers.PrimerList(path="primers_linux_line_endings_not_unique.txt")
     assert myprimers.find_duplicate_primers(pl) == [[pl[1], pl[3]]]
 

@@ -10,10 +10,7 @@
 class FakeSeq(object):
     """docstring."""
 
-    def __init__(self,
-                 length,
-                 n=50e-15,  # 50 fmol = 0.05 pmol
-                 rf=0):
+    def __init__(self, length, n=50e-15, rf=0):  # 50 fmol = 0.05 pmol
         self._length = int(length)
         self.n = n
         self.rf = rf

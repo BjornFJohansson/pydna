@@ -9,17 +9,9 @@ from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna._pretty import pretty_str as _ps
 import os as _os
 
+
 class GenbankRecord(_Dseqrecord):
-
-    def __init__(self,
-                 record,
-                 *args,
-                 item="accession",
-                 start=None,
-                 stop=None,
-                 strand=1,
-                 **kwargs):
-
+    def __init__(self, record, *args, item="accession", start=None, stop=None, strand=1, **kwargs):
         super().__init__(record, *args, **kwargs)
         self.item = item
         self.start = start
@@ -40,14 +32,7 @@ class GenbankRecord(_Dseqrecord):
         )
 
     @classmethod
-    def from_string(cls,
-                    record: str = "",
-                    *args,
-                    item="accession",
-                    start=None,
-                    stop=None,
-                    strand=1,
-                    **kwargs):
+    def from_string(cls, record: str = "", *args, item="accession", start=None, stop=None, strand=1, **kwargs):
         """docstring."""
         obj = super().from_string(record, *args, **kwargs)
         obj.item = item
@@ -70,9 +55,7 @@ class GenbankRecord(_Dseqrecord):
         return obj
 
     @classmethod
-    def from_SeqRecord(
-        cls, record, *args, item="accession", start=None, stop=None, strand=1, **kwargs
-    ):
+    def from_SeqRecord(cls, record, *args, item="accession", start=None, stop=None, strand=1, **kwargs):
         obj = super().from_SeqRecord(record, *args, **kwargs)
         obj.item = item
         obj.start = start
@@ -103,9 +86,7 @@ class GenbankRecord(_Dseqrecord):
 
     def __repr__(self):
         """returns a short string representation of the object"""
-        return "Gbnk({}{} {})".format({True: "-", False: "o"}[self.linear],
-                                       len(self),
-                                       self._repr)
+        return "Gbnk({}{} {})".format({True: "-", False: "o"}[not self.circular], len(self), self._repr)
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
@@ -129,15 +110,18 @@ class GenbankRecord(_Dseqrecord):
     def pydna_code(self):
         """docstring."""  # FIXME
 
-        code = ("from pydna.genbank import Genbank\n"
-                f"gb = Genbank('{_os.environ['pydna_email']}')\n"
-                f"seq = gb.nucleotide('{self.item}'")
+        code = (
+            "from pydna.genbank import Genbank\n"
+            f"gb = Genbank('{_os.environ['pydna_email']}')\n"
+            f"seq = gb.nucleotide('{self.item}'"
+        )
         if self.start and self.start:
-
-            code += (",\n"
-                     f"                    seq_start={self.start},\n"
-                     f"                    seq_stop={self.stop},\n"
-                     f"                    strand={self.strand})")
+            code += (
+                ",\n"
+                f"                    seq_start={self.start},\n"
+                f"                    seq_stop={self.stop},\n"
+                f"                    strand={self.strand})"
+            )
         else:
             code += ")"
 
@@ -146,17 +130,25 @@ class GenbankRecord(_Dseqrecord):
     def biopython_code(self):
         """docstring."""  # FIXME
 
-        code = ("from Bio.genbank import Genbank\n"
-                f"gb = Genbank('{_os.environ['pydna_email']}')\n"
-                f"seq = gb.nucleotide('{self.item}'")
-        if self.start and self.start:
-
-            code += (",\n"
-                     f"                    seq_start={self.start},\n"
-                     f"                    seq_stop={self.stop},\n"
-                     f"                    strand={self.strand})")
+        code = (
+            "from Bio import Entrez, SeqIO\n"
+            f"Entrez.email = '{_os.environ['pydna_email']}'\n"
+            "handle = Entrez.efetch(db='nuccore',\n"
+            f"                       id='{self.item}',\n"
+            "                       rettype='gbwithparts',\n"
+            "                       retmode='text',"
+        )
+        if self.start and self.stop:
+            code += (
+                "\n"
+                f"                       seq_start={self.start},\n"
+                f"                       seq_stop={self.stop},\n"
+                f"                       strand={self.strand})\n"
+            )
         else:
-            code += ")"
+            code += ")\n"
+
+        code += "record = SeqIO.read(handle, 'genbank')"
 
         return _ps(code)
 

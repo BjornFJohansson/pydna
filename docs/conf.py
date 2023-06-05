@@ -14,6 +14,7 @@ import sys, os
 
 # contents of docs/conf.py
 from importlib.metadata import version
+
 release = version('pydna')
 # for example take major/minor
 version = '.'.join(release.split('.')[:3])
@@ -33,7 +34,7 @@ extensions = [
 # Add mappings https://kev.inburke.com/kevin/sphinx-interlinks
 intersphinx_mapping = {
     "biopython": ("https://biopython.org/docs/latest/api/", None),
-    "python":    ("http://docs.python.org/3.8", None),
+    "python": ("http://docs.python.org/3.8", None),
 }
 
 templates_path = ['_templates']

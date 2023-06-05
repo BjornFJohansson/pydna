@@ -152,31 +152,33 @@ __status__ = "Development"  # "Production" #"Prototype"
 __version__ = "5.2.0-a.15"
 
 # create config directory
-_os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir",
-                                             _appdirs.user_config_dir("pydna"))
+_os.environ["pydna_config_dir"] = _os.getenv("pydna_config_dir", _appdirs.user_config_dir("pydna"))
 config_dir = _Path(_os.environ["pydna_config_dir"])
 config_dir.mkdir(parents=True, exist_ok=True)
 
 # set path for the pydna.ini file
-_ini_path = config_dir/"pydna.ini"
+_ini_path = config_dir / "pydna.ini"
 
 # define user_data_dir
 user_data_dir = _Path(_appdirs.user_data_dir("pydna"))
 
-default_ini = {"ape": "put/path/to/ape/here",
-               "cached_funcs": "pydna.genbank.genbank.nucleotide",
-               "data_dir": str(user_data_dir),
-               "email": "someone@example.com",
-               "enzymes": str(user_data_dir/"enzymes.md"),
-               "log_dir": _appdirs.user_log_dir("pydna"),
-               "loglevel": str(_logging.WARNING),
-               "primers": str(user_data_dir/"primers.md")}
+default_ini = {
+    "ape": "put/path/to/ape/here",
+    "cached_funcs": "pydna.genbank.genbank.nucleotide",
+    "data_dir": str(user_data_dir),
+    "email": "someone@example.com",
+    "enzymes": str(user_data_dir / "enzymes.md"),
+    "log_dir": _appdirs.user_log_dir("pydna"),
+    "loglevel": str(_logging.WARNING),
+    "primers": str(user_data_dir / "primers.md"),
+    "assembly_limit": str(10),
+}
 
 # initiate a config parser instance
 _parser = _configparser.ConfigParser()
 
 # if a pydna.ini exists, it is read
-if _os.path.exists(_ini_path):
+if _ini_path.exists():
     _parser.read(_ini_path)
 else:  # otherwise it is created with default settings
     _parser["main"] = default_ini
@@ -188,9 +190,7 @@ else:  # otherwise it is created with default settings
 _main = _parser["main"]
 
 for key in default_ini:
-    _os.environ[f"pydna_{key}"] = _os.getenv(f"pydna_{key}",
-                                             _main.get(key,
-                                                       default_ini[key]))
+    _os.environ[f"pydna_{key}"] = _os.getenv(f"pydna_{key}", _main.get(key, default_ini[key]))
 
 logdir = _Path(_os.environ["pydna_log_dir"])
 
@@ -201,43 +201,23 @@ _logmsg = "Log directory {}".format(logdir)
 # create logger
 _logger = _logging.getLogger("pydna")
 _logger.setLevel(int(_os.environ["pydna_loglevel"]))
-_hdlr = _handlers.RotatingFileHandler(logdir/"pydna.log",
-                                      mode="a",
-                                      maxBytes=10 * 1024 * 1024,
-                                      backupCount=10,
-                                      encoding="utf-8")
+_hdlr = _handlers.RotatingFileHandler(
+    logdir / "pydna.log", mode="a", maxBytes=10 * 1024 * 1024, backupCount=10, encoding="utf-8"
+)
 
-_formatter = _logging.Formatter(("%(asctime)s %(levelname)s"
-                                 " %(funcName)s %(message)s"))
+_formatter = _logging.Formatter(("%(asctime)s %(levelname)s" " %(funcName)s %(message)s"))
 _hdlr.setFormatter(_formatter)
 _logger.addHandler(_hdlr)
 _logger.info(_logmsg)
-_logger.info("Environmental variable pydna_ape          = %s",
-             _os.environ["pydna_ape"])
-_logger.info(
-    "Environmental variable pydna_cached_funcs = %s",
-    _os.environ["pydna_cached_funcs"]
-)
-_logger.info(
-    "Environmental variable pydna_data_dir     = %s",
-    _os.environ["pydna_data_dir"]
-)
-_logger.info(
-    "Environmental variable pydna_email        = %s",
-    _os.environ["pydna_email"]
-)
-_logger.info(
-    "Environmental variable pydna_log_dir      = %s",
-    _os.environ["pydna_log_dir"]
-)
-_logger.info(
-    "Environmental variable pydna_loglevel     = %s",
-    _os.environ["pydna_loglevel"]
-)
-_logger.info(
-    "Environmental variable pydna_primers      = %s",
-    _os.environ["pydna_primers"]
-)
+_logger.info("Environmental variable pydna_ape          = %s", _os.environ["pydna_ape"])
+_logger.info("Environmental variable pydna_cached_funcs = %s", _os.environ["pydna_cached_funcs"])
+_logger.info("Environmental variable pydna_data_dir     = %s", _os.environ["pydna_data_dir"])
+_logger.info("Environmental variable pydna_email        = %s", _os.environ["pydna_email"])
+_logger.info("Environmental variable pydna_log_dir      = %s", _os.environ["pydna_log_dir"])
+_logger.info("Environmental variable pydna_loglevel     = %s", _os.environ["pydna_loglevel"])
+_logger.info("Environmental variable pydna_primers      = %s", _os.environ["pydna_primers"])
+_logger.info("Environmental variable pydna_assembly_limit = %s", _os.environ["pydna_assembly_limit"])
+
 # create cache directory if not present
 
 _Path(_os.environ["pydna_data_dir"]).mkdir(parents=True, exist_ok=True)
@@ -260,13 +240,9 @@ def _missing_modules_for_gel():
 _missing = _missing_modules_for_gel()
 
 if _missing:
-    _logger.warning(
-        "gel simulation will NOT be available."
-        " Missing modules: %s", ", ".join(_missing)
-    )
+    _logger.warning("gel simulation will NOT be available." " Missing modules: %s", ", ".join(_missing))
 else:
-    _logger.info("gel simulation is available,"
-                 " optional dependencies were found.")
+    _logger.info("gel simulation is available," " optional dependencies were found.")
 
 
 _logger.info("__version__ = %s", __version__)
@@ -399,6 +375,7 @@ def logo():
     """Ascii-art logotype of pydna."""
     from pydna._pretty import pretty_str as _pretty_str
     from pyfiglet import Figlet
+
     f = Figlet()
     return _pretty_str(f.renderText(f'pydna {__version__}'))
 

@@ -21,17 +21,11 @@ class GenbankFile(_Dseqrecord):
 
     def __repr__(self):
         """returns a short string representation of the object"""
-        return "File({})({}{})".format(
-            self.id, {True: "-", False: "o"}[self.linear], len(self)
-        )
+        return "File({})({}{})".format(self.id, {True: "-", False: "o"}[not self.circular], len(self))
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
-        p.text(
-            "File({})({}{})".format(
-                self.id, {True: "-", False: "o"}[self.linear], len(self)
-            )
-        )
+        p.text("File({})({}{})".format(self.id, {True: "-", False: "o"}[not self.circular], len(self)))
 
     def _repr_html_(self):
         return "<a href='{path}' target='_blank'>{path}</a><br>".format(path=self.path)

@@ -43,9 +43,7 @@ slc = MySeq2[2:-2]
 assert slc.name == slc.id == "MySeq2"
 
 
-MySeq = Dseqrecord(
-    "atgtcgtATGaaaccgttatcgatcatatgtGcgaaatgtcgcgcgtcatctacgtatcatcgatctactTAAacgtgta"
-)
+MySeq = Dseqrecord("atgtcgtATGaaaccgttatcgatcatatgtGcgaaatgtcgcgcgtcatctacgtatcatcgatctactTAAacgtgta")
 
 # LOCUS       name                      80 bp    DNA     linear   UNK 18-APR-2018
 # DEFINITION  description.

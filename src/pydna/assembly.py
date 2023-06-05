@@ -42,11 +42,13 @@ sequences separating the overlapping regions form edges.
 The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
+import os as _os
 from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
 from pydna.utils import rc as _rc
-from pydna.utils import memorize as _memorize
+
+# from pydna.utils import memorize as _memorize
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
 from pydna.common_sub_strings import common_sub_strings
@@ -57,6 +59,10 @@ from copy import deepcopy as _deepcopy
 import itertools as _itertools
 import logging as _logging
 
+# from func_timeout import func_set_timeout
+# from wrapt_timeout_decorator import timeout
+from pydna.threading_timer_decorator_exit import exit_after
+
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
@@ -64,13 +70,13 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 # TODO remove maxnodes for init
 
 
-class _Memoize(type):
-    @_memorize("pydna.assembly.Assembly")
-    def __call__(cls, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
+# class _Memoize(type):
+#     @_memorize("pydna.assembly.Assembly")
+#     def __call__(cls, *args, **kwargs):
+#         return super().__call__(*args, **kwargs)
 
 
-class Assembly(object, metaclass=_Memoize):
+class Assembly(object):  # , metaclass=_Memoize):
     """Assembly of a list of linear DNA fragments into linear or circular
     constructs. The Assembly is meant to replace the Assembly method as it
     is easier to use. Accepts a list of Dseqrecords (source fragments) to
@@ -116,7 +122,6 @@ class Assembly(object, metaclass=_Memoize):
     """
 
     def __init__(self, frags=None, limit=25, algorithm=common_sub_strings):
-
         # Fragments is a string subclass with some extra properties
         # The order of the fragments has significance
         fragments = []
@@ -158,7 +163,6 @@ class Assembly(object, metaclass=_Memoize):
         # see https://docs.python.org/3.10/library/itertools.html
         # itertools.combinations('ABCD', 2)-->  AB AC AD BC BD CD
         for first, secnd in _itertools.combinations(fragments, 2):
-
             if first["upper"] == secnd["upper"]:
                 continue
 
@@ -227,7 +231,6 @@ class Assembly(object, metaclass=_Memoize):
             f["nodes"] = sorted(set(f["nodes"]))
 
         for f in _itertools.chain(fragments, rcfragments.values()):
-
             # nodes are sorted in place in the order of their position
             # duplicates are removed (same position and sequence)
             # along the fragment since nodes are a tuple (position(int),
@@ -236,9 +239,7 @@ class Assembly(object, metaclass=_Memoize):
             before = G.order()
             G.add_nodes_from(
                 (node, {"order": order + od, "length": length})
-                for od, (start, length, node) in enumerate(
-                    n for n in f["nodes"] if n[2] not in G
-                )
+                for od, (start, length, node) in enumerate(n for n in f["nodes"] if n[2] not in G)
             )
             order += G.order() - before
 
@@ -247,12 +248,10 @@ class Assembly(object, metaclass=_Memoize):
                 length2,
                 node2,
             ) in _itertools.combinations(f["nodes"], 2):
-
                 feats = [
                     ft
                     for ft in f["features"]
-                    if start1 <= ft.location.start
-                    and start2 + G.nodes[node2]["length"] >= ft.location.end
+                    if start1 <= ft.location.start and start2 + G.nodes[node2]["length"] >= ft.location.end
                 ]
 
                 for feat in feats:
@@ -268,19 +267,15 @@ class Assembly(object, metaclass=_Memoize):
                 )  # string
 
         self.G = _nx.create_empty_copy(G)
-        self.G.add_edges_from(
-            sorted(
-                G.edges(data=True), key=lambda t: len(t[2].get("seq", 1)), reverse=True
-            )
-        )
+        self.G.add_edges_from(sorted(G.edges(data=True), key=lambda t: len(t[2].get("seq", 1)), reverse=True))
         self.nodemap = {**nodemap, **{nodemap[i]: i for i in nodemap}}
         self.limit = limit
         self.fragments = fragments
         self.rcfragments = rcfragments
         self.algorithm = algorithm
 
+    @exit_after(int(_os.getenv("pydna_assembly_limit", 10)))
     def assemble_linear(self, start=None, end=None, max_nodes=None):
-
         G = _nx.MultiDiGraph(self.G)
 
         G.add_nodes_from(["begin", "begin_rc", "end", "end_rc"], length=0)
@@ -293,11 +288,7 @@ class Assembly(object, metaclass=_Memoize):
                 "begin",
                 node,
                 piece=slice(0, start),
-                features=[
-                    f
-                    for f in firstfragment["features"]
-                    if start + length >= f.location.end
-                ],
+                features=[f for f in firstfragment["features"] if start + length >= f.location.end],
                 seq=firstfragment["mixed"],
                 name=firstfragment["name"],
             )
@@ -310,11 +301,7 @@ class Assembly(object, metaclass=_Memoize):
                 "begin_rc",
                 node,
                 piece=slice(0, start),
-                features=[
-                    f
-                    for f in firstfragmentrc["features"]
-                    if start + length >= f.location.end
-                ],
+                features=[f for f in firstfragmentrc["features"] if start + length >= f.location.end],
                 seq=firstfragmentrc["mixed"],
                 name=firstfragmentrc["name"],
             )
@@ -326,9 +313,7 @@ class Assembly(object, metaclass=_Memoize):
                 node,
                 "end",
                 piece=slice(start, len(lastfragment["mixed"])),
-                features=[
-                    f for f in lastfragment["features"] if start <= f.location.end
-                ],
+                features=[f for f in lastfragment["features"] if start <= f.location.end],
                 seq=lastfragment["mixed"],
                 name=lastfragment["name"],
             )
@@ -340,9 +325,7 @@ class Assembly(object, metaclass=_Memoize):
                 node,
                 "end_rc",
                 piece=slice(start, len(lastfragmentrc["mixed"])),
-                features=[
-                    f for f in lastfragmentrc["features"] if start <= f.location.end
-                ],
+                features=[f for f in lastfragmentrc["features"] if start <= f.location.end],
                 seq=lastfragmentrc["mixed"],
                 name=lastfragmentrc["name"],
             )
@@ -352,15 +335,9 @@ class Assembly(object, metaclass=_Memoize):
         linearpaths = list(
             _itertools.chain(
                 _nx.all_simple_paths(_nx.DiGraph(G), "begin", "end", cutoff=max_nodes),
-                _nx.all_simple_paths(
-                    _nx.DiGraph(G), "begin", "end_rc", cutoff=max_nodes
-                ),
-                _nx.all_simple_paths(
-                    _nx.DiGraph(G), "begin_rc", "end", cutoff=max_nodes
-                ),
-                _nx.all_simple_paths(
-                    _nx.DiGraph(G), "begin_rc", "end_rc", cutoff=max_nodes
-                ),
+                _nx.all_simple_paths(_nx.DiGraph(G), "begin", "end_rc", cutoff=max_nodes),
+                _nx.all_simple_paths(_nx.DiGraph(G), "begin_rc", "end", cutoff=max_nodes),
+                _nx.all_simple_paths(_nx.DiGraph(G), "begin_rc", "end_rc", cutoff=max_nodes),
             )
         )
 
@@ -387,7 +364,7 @@ class Assembly(object, metaclass=_Memoize):
                 key = ct.upper()
 
                 if key in lps:
-                    continue    # TODO: is this test needed?
+                    continue  # TODO: is this test needed?
                 sg = _nx.DiGraph()
                 sg.add_edges_from(edges)
                 sg.add_nodes_from((n, d) for n, d in G.nodes(data=True) if n in lp)
@@ -419,6 +396,7 @@ class Assembly(object, metaclass=_Memoize):
             reverse=True,
         )
 
+    @exit_after(int(_os.getenv("pydna_assembly_limit", 10)))
     def assemble_circular(self):
         cps = {}  # circular assembly
         cpsrc = {}
@@ -433,9 +411,7 @@ class Assembly(object, metaclass=_Memoize):
         for (
             _,
             cp,
-        ) in (
-            cpaths_sorted
-        ):  # cpaths is a list of nodes representing a circular assembly
+        ) in cpaths_sorted:  # cpaths is a list of nodes representing a circular assembly
             edgelol = []  # edgelol is a list of lists of all edges along cp
             cp += cp[0:1]
             for u, v in zip(cp, cp[1:]):
@@ -475,12 +451,8 @@ class Assembly(object, metaclass=_Memoize):
                         elif f.location.end > len(ct):
                             f.location = _CompoundLocation(
                                 (
-                                    _SimpleLocation(
-                                        f.location.start, _ExactPosition(len(ct))
-                                    ),
-                                    _SimpleLocation(
-                                        _ExactPosition(0), f.location.end - len(ct)
-                                    ),
+                                    _SimpleLocation(f.location.start, _ExactPosition(len(ct))),
+                                    _SimpleLocation(_ExactPosition(0), f.location.end - len(ct)),
                                 )
                             )
 
@@ -516,9 +488,7 @@ class Assembly(object, metaclass=_Memoize):
             "limit(bp)..: {limit}\n"
             "G.nodes....: {nodes}\n"
             "algorithm..: {al}".format(
-                sequences=" ".join(
-                    "{}bp".format(len(x["mixed"])) for x in self.fragments
-                ),
+                sequences=" ".join("{}bp".format(len(x["mixed"])) for x in self.fragments),
                 limit=self.limit,
                 nodes=self.G.order(),
                 al=self.algorithm.__name__,

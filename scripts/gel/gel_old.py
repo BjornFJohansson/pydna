@@ -419,11 +419,11 @@ def contour_length(Nbp, b):
 
 
 def reduced_field(eta, a, mu0, E, kB, T):
-    return eta * a ** 2 * mu0 * E / (kB * T)
+    return eta * a**2 * mu0 * E / (kB * T)
 
 
 def reduced_field_Kuhn(eta, l, mu0, E, kB, T):
-    return eta * l ** 2 * mu0 * E / (kB * T)
+    return eta * l**2 * mu0 * E / (kB * T)
 
 
 # Diffusion coefficient of a blob
@@ -472,7 +472,7 @@ def Nbp_to_N(Nbp, a, b, l):
 
 
 def reptation_equilibrium(Dblob, N):
-    return Dblob / N ** 2
+    return Dblob / N**2
 
 
 def reptation_accelerated(Dblob, epsilon, N):
@@ -495,20 +495,13 @@ def Ogston_Zimm(D0, g):
     return D0 * g
 
 
-Ogston_Rouse = (
-    lambda Nbp, kB, T, a, eta, b, l: kB
-    * T
-    * a ** 3
-    / (eta * b ** 2 * l ** 2 * Nbp ** 2)
-)
+Ogston_Rouse = lambda Nbp, kB, T, a, eta, b, l: kB * T * a**3 / (eta * b**2 * l**2 * Nbp**2)
 
 # Diffusion regime frontiers (in number of occupied pores)
 
 
 def Zimm_Rouse(x0, args):
-    return Nbp_to_N(
-        _fsolve(diff_Zimm_Rouse, x0, args)[0] * ureg.bp, args[5], args[6], args[7]
-    )
+    return Nbp_to_N(_fsolve(diff_Zimm_Rouse, x0, args)[0] * ureg.bp, args[5], args[6], args[7])
 
 
 def equil_accel(epsilon):
@@ -564,7 +557,7 @@ def diffusion_coefficient(Nbp, N_lim1, N_lim2, N_lim3, args):
         D = Ogston_Zimm(D0, g)
     elif N < N_lim2:
         # Rouse/Reptation-equilibrium
-        D = Db / N ** 2
+        D = Db / N**2
     elif N > N_lim1:
         # Reptation-plateau (reptation with orientation)
         D = Db * epsilon ** (3 / 2)
@@ -671,9 +664,7 @@ def gen_sample(sizes, quantities):
 
 
 def weight_standard_sample(key, qty=Q_(500, "ng")):
-    assert key in weight_standards, "Key not recognized. Choose from: %s" % list(
-        weight_standards.keys()
-    )
+    assert key in weight_standards, "Key not recognized. Choose from: %s" % list(weight_standards.keys())
     qty = to_units(qty, Vars["quantities"]["units"], var_name="qty")
     sizes = weight_standards[key]["sizes"]
     fracs = weight_standards[key]["percent"]
@@ -701,7 +692,7 @@ def flatten(List):
 
 # Gaussian function
 def Gaussian(x, hgt, ctr, dev):
-    return hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev ** 2))
+    return hgt * _np.exp(-((x - ctr) ** 2) / (2 * dev**2))
 
 
 def Gauss_hgt(auc, dev):
@@ -765,9 +756,7 @@ def dim_or_units(quantity, reference):
     if not isinstance(quantity, Q_):
         quantity = to_units(quantity, reference.units)
     else:
-        assert (
-            quantity.dimensionality == reference.dimensionality
-        ), "Dimension mismatch: (%s) != (%s)" % (
+        assert quantity.dimensionality == reference.dimensionality, "Dimension mismatch: (%s) != (%s)" % (
             quantity.dimensionality,
             reference.dimensionality,
         )
@@ -829,9 +818,7 @@ def size_to_mobility(
     method="linear",
     replNANs=True,
 ):
-    mobility = _griddata(
-        (dataset["E"], dataset["T"]), mu_func(dna_len), (field, percentage), method
-    )
+    mobility = _griddata((dataset["E"], dataset["T"]), mu_func(dna_len), (field, percentage), method)
     if replNANs and _np.isnan(mobility):
         # Replace NANs by 'nearest' interpolation
         print("WARNING: NAN replaced by 'nearest' interpolation.")  # #### ! ###
@@ -855,16 +842,9 @@ def vWBRfit(
     plot=True,
 ):
     mu = _np.zeros(len(DNAvals))
-    vWBR = (
-        lambda L, muS, muL, gamma: (
-            1 / muS + (1 / muL - 1 / muS) * (1 - _np.exp(-L / gamma))
-        )
-        ** -1
-    )
+    vWBR = lambda L, muS, muL, gamma: (1 / muS + (1 / muL - 1 / muS) * (1 - _np.exp(-L / gamma))) ** -1
     for i, Li in enumerate(DNAvals):
-        mu[i] = size_to_mobility(
-            Li, field, percentage, mu_func, dataset, method, replNANs
-        )
+        mu[i] = size_to_mobility(Li, field, percentage, mu_func, dataset, method, replNANs)
 
     def residuals(pars, L, mu):
         return mu - vWBR(L, *pars)
@@ -872,9 +852,7 @@ def vWBRfit(
     muS0 = 3.5e-4  # cm^2/(V.sec)  ############################################
     muL0 = 1.0e-4  # cm^2/(V.sec)  ############################################
     gamma0 = 8000  # bp            ############################################
-    pars, cov, infodict, mesg, ier = _leastsq(
-        residuals, [muS0, muL0, gamma0], args=(DNAvals, mu), full_output=True
-    )
+    pars, cov, infodict, mesg, ier = _leastsq(residuals, [muS0, muL0, gamma0], args=(DNAvals, mu), full_output=True)
     muS, muL, gamma = pars
     # print ('E=%.2f V/cm, T=%.1f %%, muS=%.3e, muL=%.3e cm^2/(V.s), '
     #        'gamma=%s bp' % (field, percentage, muS, muL, gamma))
@@ -898,10 +876,7 @@ def vWBRfit(
         ax.tick_params(which="both", top="off", right="off")
         ax.set_xlabel(r"$\mathrm{DNA\,length\,(bp)}$", fontsize=14)
         ax.set_ylabel(r"$\mu\times{10^{8}}\,(\mathrm{m^{2}/V\cdot s})$", fontsize=14)
-        ax.set_title(
-            r"$\mu_S=%.2e,\,\mu_L=%.2e\,\mathrm{cm^2/(V.s)},\,"
-            r"\gamma=%d \mathrm{bp}$" % (muS, muL, gamma)
-        )
+        ax.set_title(r"$\mu_S=%.2e,\,\mu_L=%.2e\,\mathrm{cm^2/(V.s)},\," r"\gamma=%d \mathrm{bp}$" % (muS, muL, gamma))
         ax.legend().draggable()
         _plt.show()
     return pars, cov, infodict, mesg, ier
@@ -941,9 +916,7 @@ def ferguson_to_mu0(
         not_nan = _np.logical_not(_np.isnan(ln_mu_LxT[l]))
         if sum(not_nan) > 1:
             # (enough points for linear regression)
-            gradient, intercept, r_value, p_value, std_err = _stats.linregress(
-                Tvals[not_nan], ln_mu_LxT[l][not_nan]
-            )
+            gradient, intercept, r_value, p_value, std_err = _stats.linregress(Tvals[not_nan], ln_mu_LxT[l][not_nan])
             lregr_stats.append((gradient, intercept, r_value, p_value, std_err))
             exclude.append(False)
         else:
@@ -1014,9 +987,7 @@ def gelplot_imshow(
     res = res.to("px/cm")
     pxl_x = int(round((gel_width * res).magnitude))
     pxl_y = int(round((gel_len * res).magnitude))
-    lane_centers = [
-        (l + 1) * wellsep + sum(wellx[:l]) + 0.5 * wellx[l] for l in range(nlanes)
-    ]
+    lane_centers = [(l + 1) * wellsep + sum(wellx[:l]) + 0.5 * wellx[l] for l in range(nlanes)]
     rgb_arr = _np.zeros(shape=(pxl_y, pxl_x, 3), dtype=_np.float32)
     bandlengths = wellx
     bands_pxlXYmid = []
@@ -1097,19 +1068,13 @@ def gelplot_imshow(
     _plt.xticks(lane_centers, names)
     majorLocator = _FixedLocator(list(range(int(gel_len + 1))))
     minorLocator = _FixedLocator(
-        [
-            j / 10.0
-            for k in range(0, int(gel_len + 1) * 10, 10)
-            for j in range(1 + k, 10 + k, 1)
-        ]
+        [j / 10.0 for k in range(0, int(gel_len + 1) * 10, 10) for j in range(1 + k, 10 + k, 1)]
     )
     ax1.yaxis.set_major_locator(majorLocator)
     ax1.yaxis.set_minor_locator(minorLocator)
     ax1.tick_params(axis="x", which="both", top="off")
     # Gel image
-    bands_plt = ax1.imshow(
-        bands_arr, extent=[0, gel_width, gel_len, 0], interpolation="none"
-    )
+    bands_plt = ax1.imshow(bands_arr, extent=[0, gel_width, gel_len, 0], interpolation="none")
     # Draw wells
     for i in range(nlanes):
         ctr = lane_centers[i]
@@ -1271,9 +1236,7 @@ class Gel:
 
         self.samples = samples
 
-        self.names = (
-            names if names else [str(i) for i in range(1, len(samples) + 1)]  #
-        )  #
+        self.names = names if names else [str(i) for i in range(1, len(samples) + 1)]  #  #
         self.percent = to_units(percentgel, "(g/(100 mL))*100", "percentgel")
         self.field = to_units(electrfield, "V/cm", "electrfield")
         self.temperature = to_units(temperature, "K", "temperature")
@@ -1492,13 +1455,9 @@ class Gel:
         DNAspace_mu0 = self.DNAspace_for_mu0
         DNAspace_vWBRfit = self.DNAspace_for_vWBRfit
         if self.Tvals_for_mu0 == []:
-            self.Tvals_for_mu0 = Q_(dataset["T"], dataset["T"].units).to(
-                "(g/(100 mL))*100"
-            )
+            self.Tvals_for_mu0 = Q_(dataset["T"], dataset["T"].units).to("(g/(100 mL))*100")
         else:
-            self.Tvals_for_mu0 = to_units(
-                self.Tvals_for_mu0, "(g/(100 mL))*100", "Tvals_for_mu0"
-            )
+            self.Tvals_for_mu0 = to_units(self.Tvals_for_mu0, "(g/(100 mL))*100", "Tvals_for_mu0")
         Tvals = self.Tvals_for_mu0
         nlanes = len(lanes)
         exposure = 0 if exposure < 0 else 1 if exposure > 1 else exposure  # ##
@@ -1521,9 +1480,7 @@ class Gel:
             lane_mobs = []
             for dna_frag in lane:
                 dna_size = len(dna_frag) * ureg.bp  # bp assumption ###### ! ##
-                frag_mob = size_to_mobility(
-                    dna_size, field, percentage, mu_func, dataset, interpol, replNANs
-                )
+                frag_mob = size_to_mobility(dna_size, field, percentage, mu_func, dataset, interpol, replNANs)
                 lane_mobs.append(frag_mob)
             self.mobilities.append(lane_mobs * ureg("cm**2/V/s"))  # ##########
         # self.mobilities = Q_(self.mobilities, 'cm**2/V/s')
@@ -1563,9 +1520,7 @@ class Gel:
         self.distances = distances
 
         # Free solution mobility estimate
-        mu0 = ferguson_to_mu0(
-            field, Tvals, DNAspace_mu0, dataset, mu_func, interpol, replNANs, plot=False
-        )
+        mu0 = ferguson_to_mu0(field, Tvals, DNAspace_mu0, dataset, mu_func, interpol, replNANs, plot=False)
         mu0 = Q_(mu0, "cm**2/V/s")  # #########################################
         self.freesol_mob = mu0
 
@@ -1625,7 +1580,7 @@ class Gel:
                     D = Ogston_Zimm(D0, g)  # unit
                 elif N < N_lim2:
                     # Rouse/Reptation-equilibrium
-                    D = Db / N ** 2
+                    D = Db / N**2
                 elif N > N_lim1:
                     # Reptation-plateau (reptation with orientation)
                     D = Db * epsilon ** (3 / 2)
@@ -1638,10 +1593,7 @@ class Gel:
         bandwidthsI = self.bandwidthsI
 
         # Total bandwidths
-        bandwidths = [
-            [bandwidths0[i][j] + bandwidthsI[i][j] for j in range(len(lanes[i]))]
-            for i in range(nlanes)
-        ]
+        bandwidths = [[bandwidths0[i][j] + bandwidthsI[i][j] for j in range(len(lanes[i]))] for i in range(nlanes)]
         self.bandwidths = bandwidths
         if bandwidth == 0:
             bandwidths = self.bandwidths0
@@ -1673,9 +1625,7 @@ class Gel:
 
         # max intensity normalization
         satI = maxI + exposure * (minI - maxI)
-        intensities = [
-            [(1 - back_col) / satI * fragI for fragI in lane] for lane in raw_Is
-        ]
+        intensities = [[(1 - back_col) / satI * fragI for fragI in lane] for lane in raw_Is]
         self.intensities = intensities
 
         # Plot gel
@@ -1803,15 +1753,11 @@ if __name__ == "__main__":
     Evals = sorted(list(set(datasets[dset_name]["E"])))  # why sort and list?
     minE = min(Evals)
     maxE = max(Evals)
-    E_space = list(_np.linspace(minE.magnitude, maxE.magnitude, divsE)) * ureg(
-        str(minE.units)
-    )
+    E_space = list(_np.linspace(minE.magnitude, maxE.magnitude, divsE)) * ureg(str(minE.units))
     Tvals = sorted(list(set(datasets[dset_name]["T"])))
     minT = min(Tvals)
     maxT = max(Tvals)
-    T_space = list(_np.linspace(minT.magnitude, maxT.magnitude, divsT)) * ureg(
-        str(minT.units)
-    )
+    T_space = list(_np.linspace(minT.magnitude, maxT.magnitude, divsT)) * ureg(str(minT.units))
 
     if test_gel:
         # ### Instantiate Gel ###
@@ -1873,9 +1819,7 @@ if __name__ == "__main__":
     if test_vWBRfit:
         # ### Test <vWBRfit> ### ----------------------------------------------
         print("\n" + 80 * "#")
-        print(
-            ("( Non-linear Least Squares Fitting" " with vWBR's Eq. )".center(80, "#"))
-        )
+        print(("( Non-linear Least Squares Fitting" " with vWBR's Eq. )".center(80, "#")))
         print(80 * "#" + "\n")
         plot = True
         output = vWBRfit(
@@ -1893,12 +1837,7 @@ if __name__ == "__main__":
     if test_vWBRfit_comprehensive:
         # ### Test <vWBRfit comprehensively> ### ------------------------------
         print("\n" + 80 * "#")
-        print(
-            (
-                "( Non-linear Least Squares Fitting with vWBR's Eq."
-                "- comprehensive )".center(80, "#")
-            )
-        )
+        print(("( Non-linear Least Squares Fitting with vWBR's Eq." "- comprehensive )".center(80, "#")))
         print(80 * "#" + "\n")
         for Ei in E_space:
             for Ti in T_space:
@@ -1929,9 +1868,7 @@ if __name__ == "__main__":
             ns = Q_([seqrec.n for seqrec in ladder], "mol").to("pmol")
             [store_n.append(n.to("pmol").magnitude) for n in ns]
             [store_m.append(m.to("ng").magnitude) for m in masses]
-            assert len(sizes) == len(fracs), (
-                "ladder: %s, len(sizes)" " != len(percent)" % k
-            )
+            assert len(sizes) == len(fracs), "ladder: %s, len(sizes)" " != len(percent)" % k
             assert round(sum(fracs), 5) == 1, "ladder: %s, sum(percent)" " != 1" % k
             print("\n", k, "\n", "-" * 80)
             print("size \t\t mass/%s \t fraction \t n/pmol" % total)

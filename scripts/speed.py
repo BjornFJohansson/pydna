@@ -9,11 +9,11 @@ timeit.timeit(stmt=s, number=10000000)
 
 setup = """\
 from pydna.dseqrecord import Dseqrecord
-from pydna.assembly import _Fragment
+from pydna.contig import Contig
 """
 
 s = """\
-a=_Fragment(Dseqrecord("aaa"))
+a=Contig(Dseqrecord("aaa"))
 """
 timeit.timeit(stmt=s, setup=setup, number=10000000)
 

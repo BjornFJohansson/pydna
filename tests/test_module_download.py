@@ -6,6 +6,7 @@ import requests_mock as rm_module
 
 pytest.importorskip("requests")
 
+
 @pytest.fixture
 def requests_mock(request):
     m = rm_module.Mocker()
@@ -15,7 +16,6 @@ def requests_mock(request):
 
 
 def test_web(requests_mock, monkeypatch):
-
     from pydna import download
 
     monkeypatch.setenv("pydna_cached_funcs", "")
@@ -28,7 +28,7 @@ def test_web(requests_mock, monkeypatch):
         "http://www.fake.com/hej.txt",
         headers={
             "last-modified": "Mon, 01 Jan 2001 00:00:00 GMT",  # 978307200
-            "content-length": "100",
+            "content-length": "14",
         },
         body=flo,
     )
