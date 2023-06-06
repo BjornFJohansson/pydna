@@ -45,7 +45,7 @@ For more elaborate use, look at some assembly strategies of D-xylose metabolic p
 
 
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 
 
@@ -88,7 +88,7 @@ for further information.
 
 Feedback & suggestions are very welcome! Please post a message in the [google group](https://groups.google.com/d/forum/pydna) for pydna if you need help or have problems, questions or comments :sos:.
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 
 ## Who is using pydna?
@@ -110,7 +110,7 @@ In Cold Spring Harbor Laboratory (p. 2021.01.17.427048). [DOI](https://doi.org/1
 
 and other projects on [github](https://github.com/BjornFJohansson/pydna/network/dependents?package_id=UGFja2FnZS01MjQ2MjYzNQ%3D%3D)
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 There is an open access paper in BMC Bioinformatics describing pydna:
 
@@ -124,7 +124,7 @@ Pereira, F., Azevedo, F., Carvalho, Â., Ribeiro, G. F., Budde, M. W., & Johanss
 
 When using pydna.
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## Documentation
 
@@ -133,7 +133,7 @@ in the code and displayed at readthedocs [![Documentation Status](https://readth
 
 The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## Installation using pip
 
@@ -164,61 +164,81 @@ By default python and pip are not on the PATH. You can re-install Python and sel
 
     C:\Python37\Scripts\pip install pydna
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## Source Code
 
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octocat:.
+I am happy to collaborate on new features or bugfixes.
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## Minimal installation dependencies
 
-Pydna versions before 1.0.0 were compatible with python 2.7 only.
 The list below is the minimal requirements for installing pydna.
-Biopython has c-extensions, but the other modules are pure python.
+Biopython and pydivsufsort has c-extensions, but the other modules are pure python.
 
 - [Python 3.8, 3.9, 3.10 or 3.11](http://www.python.org)
-- [appdirs >=1.4.4](https://pypi.python.org/pypi/appdirs)
-- [biopython >= 1.80](http://pypi.python.org/pypi/biopython)
-- [networkx >=2.8.8](http://pypi.python.org/pypi/networkx)
-- [prettytable >=3.5.0](https://pypi.python.org/pypi/PrettyTable)
-- [pyperclip >=1.8.2](https://pypi.python.org/pypi/PrettyTable)
-- [pyfiglet >=0.8.post1](https://pypi.python.org/pypi/PrettyTable)
+- [appdirs](https://pypi.python.org/pypi/appdirs)
+- [biopython](http://pypi.python.org/pypi/biopython)
+- [networkx](http://pypi.python.org/pypi/networkx)
+- [prettytable](https://pypi.python.org/pypi/PrettyTable)
+- [pydivsufsort](https://pypi.python.org/pypi/pydivsufsort)
 
+The above modules are installed as well as pyperclip and pyfiglet.
+Pydna is importable even without these two modules.
 
 ## Optional dependencies
 
 If the modules listed below in the first column are installed, they will provide the functionality listed in the second column.
 
-| Dependency                                                  | Function in pydna                                      |
-|-------------------------------------------------------------|--------------------------------------------------------|
-| [scipy >=1.8.0](https://www.scipy.org)                      | gel simulation with pydna.gel                          |
-| [matplotlib >=3.4.3](http://matplotlib.org)                 | “                                                      |
-| [pillow >=8.4.0](https://github.com/python-pillow/Pillow)   | “                                                      |
-| [numpy](http://www.numpy.org)                               | "                                                      |
-| [pyparsing >=2.4.7](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
-| [requests >=2.26.0](https://pypi.org/project/requests)      | download sequences with pydna.download                 |
-| [cai2 >=1.0.5](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
-| [pyqt5 >=5.15.0](https://pypi.python.org/pypi/pyqt5)        | codon adaptation index calculations in several modules |
+| Dependency                                          | Function in pydna                                      |
+|-----------------------------------------------------|--------------------------------------------------------|
+| [scipy](https://www.scipy.org)                      | gel simulation with pydna.gel                          |
+| [matplotlib](http://matplotlib.org)                 | “                                                      |
+| [pillow](https://github.com/python-pillow/Pillow)   | “                                                      |
+| [numpy](http://www.numpy.org)                       | "                                                      |
+| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
+| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
+| [cai2](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
+| [pyqt5](https://pypi.python.org/pypi/pyqt5)         | future plan for gui                                    |
+| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard                             |
+| [pyfiglet](https://pypi.python.org/pypi/pyfiglet)   | print nice logotype (pydna.logo()                      |
 
-
-## Requirements for running tests and analyzing code coverage
+## Requirements for running tests, coverage and profiling
 
 - [pytest](https://pypi.org/project/pytest)
 - [pytest-cov](https://pypi.org/project/pytest-cov)
 - [pytest-doctestplus](https://pypi.org/project/pytest-doctestplus)
+- [pytest-profiling](https://pypi.org/project/pytest-profiling)
 - [coverage](https://pypi.org/project/coverage)
 - [nbval](https://pypi.org/project/nbval)
 - [requests-mock](https://pypi.org/project/requests-mock)
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+for instance by `pip install pytest pytest-cov pytest-doctestplus pytest-profiling coverage nbval requests-mock`
+
+Running the antire test suite also require:
+
+- scipy
+- matplotlib
+- pillow
+- pyparsing
+- requests
+- cai2
+- pyqt5
+
+That can be installed by `pip install pydna[gel,gui,download,express]`
+
+or by `pip install scipy matplotlib pillow pyparsing requests cai2 pyqt5`
+
+
+![----]( http://bit.ly/coloredline)
 
 ## Releases
 
 See the [releases](https://github.com/BjornFJohansson/pydna/releases) for changes and releases.
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## Automatic testing & Release process
 
@@ -235,7 +255,7 @@ The other workflow builds a PyPI packages using poetry on
 
 These are triggered by publishing a github release manually from the github interface.
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## Building a PyPI package with [Poetry](https://pypi.org/project/poetry)
 
@@ -262,7 +282,7 @@ These are triggered by publishing a github release manually from the github inte
 
         poetry publish
 
-![----](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)
+![----]( http://bit.ly/coloredline)
 
 ## History
 
