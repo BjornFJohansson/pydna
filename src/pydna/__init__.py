@@ -366,7 +366,7 @@ def get_env():
     _table.align["Value"] = "l"  # Left align
     _table.padding_width = 1  # One space between column edges and contents
     for k, v in sorted(_os.environ.items()):
-        if k.startswith("pydna"):
+        if k.lower().startswith("pydna"):
             _table.add_row([k, v])
     return _table
 
