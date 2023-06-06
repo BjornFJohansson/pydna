@@ -34,7 +34,7 @@ import os as _os
 import re as _re
 import time as _time
 import datetime as _datetime
-import pyperclip
+
 
 import logging as _logging
 
@@ -1167,7 +1167,9 @@ class Dseqrecord(_SeqRecord):
 
     def _copy_to_clipboard(self, sequence_format):
         """docstring."""
-        pyperclip.copy(self.format(sequence_format))
+        from pyperclip import copy
+
+        copy(self.format(sequence_format))
         return None
 
     def copy_gb_to_clipboard(self):
