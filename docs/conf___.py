@@ -109,9 +109,9 @@ master_doc = "index"
 # contents of docs/conf.py
 from importlib.metadata import version
 
-release = version('pydna')
+release = version("pydna")
 # for example take major/minor
-version = '.'.join(release.split('.')[:3])
+version = ".".join(release.split(".")[:3])
 
 
 # The full version, including alpha/beta/rc tags.

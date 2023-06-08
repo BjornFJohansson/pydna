@@ -1,5 +1,5 @@
 LOCUS       pAG32                   4160 bp ds-DNA     circular     26-NOV-2012
-DEFINITION  
+DEFINITION
 ACCESSION   pAG32
 VERSION     pAG32
 KEYWORDS    .
@@ -8,7 +8,7 @@ SOURCE      Unknown
 REFERENCE   1  (bases 1 to 4160)
   AUTHORS   Self
   JOURNAL   Unpublished.
-COMMENT     
+COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      misc_feature    91..458
@@ -113,5 +113,5 @@ ORIGIN
      3961 tctgtaagcg gatgccggga gcagacaagc ccgtcagggc gcgtcagcgg gtgttggcgg
      4021 gtgtcggggc tggcttaact atgcggcatc agagcagatt gtactgagag tgcaccatat
      4081 ggacatattg tcgttagaac gcggctacaa ttaatacata accttatgta tcatacacat
-     4141 acgatttagg tgacactata    
+     4141 acgatttagg tgacactata
 //

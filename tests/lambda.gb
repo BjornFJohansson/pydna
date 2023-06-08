@@ -2467,7 +2467,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:2703534"
                      /translation="MNKEQSADDPSVDLIRVKNMLNSTISMSYPDVVIACIEHKVSLE
                      AFRAIEAALVKHDNNMKDYSLVVD"
-ORIGIN      
+ORIGIN
         1 gggcggcgac ctcgcgggtt ttcgctattt atgaaaattt tccggtttaa ggcgtttccg
        61 ttcttcttcg tcataactta atgtttttat ttaaaatacc ctctgaaaag aaaggaaacg
       121 acaggtgctg aaagcgaggc tttttggcct ctgtcgtttc ctttctctgt ttttgtccgt
@@ -3278,4 +3278,3 @@ ORIGIN
     48421 gatggcctcc acgcacgttg tgatatgtag atgataatca ttatcacttt acgggtcctt
     48481 tccggtgatc cgacaggtta cg
 //
-

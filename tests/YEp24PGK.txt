@@ -69,7 +69,7 @@ FEATURES             Location/Qualifiers
                      DRWEPELNEAIPNDERDTTMPAAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPL
                      LRSALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIA
                      EIGASLIKHW"
-ORIGIN      
+ORIGIN
         1 gaattctgaa ccagtcctaa aacgagtaaa taggaccggc aattcttcaa gcaataaaca
        61 ggaataccaa ttattaaaag ataacttagt cagatcgtac aataaagcta gctttgaaga
       121 aaaatgcgcc ttattcaatc tttgctataa aaaatggccc aaaatctcac attggaagac
@@ -232,4 +232,3 @@ ORIGIN
      9541 atttccccga aaagtgccac ctgacgtcta agaaaccatt attatcatga cattaaccta
      9601 taaaaatagg cgtatcacga ggccctttcg tcttcaa
 //
-

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 
 
@@ -22,13 +23,43 @@ def test_rare_codons():
     lol = {}
 
     lol["sce"] = [
-        ['cds', 'len', 'cai', 'gc', 'sta', 'stp', 'n-end', 'CGA', 'CGG', 'CGC', 'CCG', 'CTC', 'GCG', 'rare'],
-        ['ATG...TAA', 8.0, 0.219, 0.708, 1.0, 0.47, '2 min', 1, 1, 1, 1, 1, 1, 0.75],
+        [
+            "cds",
+            "len",
+            "cai",
+            "gc",
+            "sta",
+            "stp",
+            "n-end",
+            "CGA",
+            "CGG",
+            "CGC",
+            "CCG",
+            "CTC",
+            "GCG",
+            "rare",
+        ],
+        ["ATG...TAA", 8.0, 0.219, 0.708, 1.0, 0.47, "2 min", 1, 1, 1, 1, 1, 1, 0.75],
     ]
 
     lol["eco"] = [
-        ['cds', 'len', 'cai', 'gc', 'sta', 'stp', 'n-end', 'CGA', 'CGG', 'CGC', 'CCG', 'CTC', 'GCG', 'rare'],
-        ['ATG...TAA', 10.0, 0.387, 0.5, 1.0, 0.47, '2 min', 1, 1, 0, 0, 0, 0, 0.2],
+        [
+            "cds",
+            "len",
+            "cai",
+            "gc",
+            "sta",
+            "stp",
+            "n-end",
+            "CGA",
+            "CGG",
+            "CGC",
+            "CCG",
+            "CTC",
+            "GCG",
+            "rare",
+        ],
+        ["ATG...TAA", 10.0, 0.387, 0.5, 1.0, 0.47, "2 min", 1, 1, 0, 0, 0, 0, 0.2],
     ]
 
     for organism, codons in rare_codons.items():
@@ -56,7 +87,7 @@ def test_orf():
 
     s = Seq("atgaaattttaa")
 
-    assert s.orfs(2) == [Seq('atgaaattttaa')]
+    assert s.orfs(2) == [Seq("atgaaattttaa")]
 
 
 def test_no_orf():

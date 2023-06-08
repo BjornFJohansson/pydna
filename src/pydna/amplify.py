@@ -386,7 +386,13 @@ class Anneal(object):  # ), metaclass=_Memoize):
                     fp.description, rp.description
                 )
 
-                amplicon = _Amplicon(prd, template=self.template, forward_primer=fp, reverse_primer=rp, **self.kwargs)
+                amplicon = _Amplicon(
+                    prd,
+                    template=self.template,
+                    forward_primer=fp,
+                    reverse_primer=rp,
+                    **self.kwargs,
+                )
 
                 # amplicon.forward_primer.amplicon = amplicon
                 # amplicon.reverse_primer.amplicon = amplicon

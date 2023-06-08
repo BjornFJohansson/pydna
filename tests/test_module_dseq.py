@@ -495,7 +495,11 @@ def test_dseq():
         "tagaccagatcacatactacagctacgcta",
         circular=True,
     )
-    obj3 = Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta", circular=True)
+    obj3 = Dseq(
+        "tagcgtagctgtagtatgtgatctggtcta",
+        "tagaccagatcacatactacagctacgcta",
+        circular=True,
+    )
 
     assert obj1 == obj2 == obj3
 
@@ -749,9 +753,9 @@ def test_transcribe():
 
     x = Dseq("ATGAAATAA")
 
-    assert str(x.transcribe()) == 'AUGAAAUAA'
+    assert str(x.transcribe()) == "AUGAAAUAA"
 
-    assert str(x.reverse_complement().transcribe()) == 'UUAUUUCAU'
+    assert str(x.reverse_complement().transcribe()) == "UUAUUUCAU"
 
 
 def test_translate():
@@ -759,9 +763,9 @@ def test_translate():
 
     x = Dseq("ATGAAATAA")
 
-    assert str(x.translate()) == 'MK*'
+    assert str(x.translate()) == "MK*"
 
-    assert str(x.reverse_complement().translate()) == 'LFH'
+    assert str(x.reverse_complement().translate()) == "LFH"
 
 
 if __name__ == "__main__":

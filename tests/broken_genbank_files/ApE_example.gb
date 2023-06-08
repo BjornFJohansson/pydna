@@ -1,10 +1,10 @@
 LOCUS                  New_DNA        2963 bp ds-DNA   linear       13-JAN-2011
 DEFINITION  .
-ACCESSION   
-VERSION     
+ACCESSION
+VERSION
 SOURCE      .
   ORGANISM  .
-COMMENT     
+COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      source          complement(1..2963)
@@ -121,5 +121,5 @@ ORIGIN
      2761 ggctgccctg gagaaagatt atgaggaggt tggagctgag agtgtggaag gagaagatga
      2821 gggtgaggaa tattagaaat gctgcctgct gtgtttcctg tccattgtca tatttttgtg
      2881 ttctattata actttccagt tgtcaactgg ctaaaaggtc aatccttgcg acacttttag
-     2941 aaaaaataaa attttgcaac atg   
+     2941 aaaaaataaa attttgcaac atg
 //

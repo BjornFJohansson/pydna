@@ -63,7 +63,14 @@ class PrimerList(_UserList):
     property.
     """
 
-    def __init__(self, initlist: Iterable = None, path: (str, Path) = None, *args, identifier: str = "p", **kwargs):
+    def __init__(
+        self,
+        initlist: Iterable = None,
+        path: (str, Path) = None,
+        *args,
+        identifier: str = "p",
+        **kwargs,
+    ):
         if initlist:
             self.data = initlist
             self.path = None

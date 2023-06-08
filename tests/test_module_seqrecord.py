@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 from pydna import _PydnaWarning
 
@@ -140,7 +141,12 @@ def test_lcs():
             "ApEinfo_revcolor": ["#DFFDFF"],
         },
     }
-    assert s.lcs("GGATCC").__dict__ == {'location': None, 'type': '', 'id': '<unknown id>', 'qualifiers': OrderedDict()}
+    assert s.lcs("GGATCC").__dict__ == {
+        "location": None,
+        "type": "",
+        "id": "<unknown id>",
+        "qualifiers": OrderedDict(),
+    }
     assert s.lcs("GGATCC", limit=4).__dict__ == expected.__dict__
     assert s.lcs(Seq("GGATCC"), limit=4).__dict__ == expected.__dict__
     assert s.lcs(BSeqRecord(Seq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
@@ -343,8 +349,23 @@ def test_cai():
         assert feat.extract(s).seq in s
 
     lol = [
-        ['cds', 'len', 'cai', 'gc', 'sta', 'stp', 'n-end', 'CGA', 'CGG', 'CGC', 'CCG', 'CTC', 'GCG', 'rare'],
-        ['ATG...TAA', 8.0, 0.219, 0.708, 1.0, 0.47, '2 min', 1, 1, 1, 1, 1, 1, 0.75],
+        [
+            "cds",
+            "len",
+            "cai",
+            "gc",
+            "sta",
+            "stp",
+            "n-end",
+            "CGA",
+            "CGG",
+            "CGC",
+            "CCG",
+            "CTC",
+            "GCG",
+            "rare",
+        ],
+        ["ATG...TAA", 8.0, 0.219, 0.708, 1.0, 0.47, "2 min", 1, 1, 1, 1, 1, 1, 0.75],
     ]
 
     assert s.express().lol() == lol

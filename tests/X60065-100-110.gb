@@ -43,7 +43,6 @@ FEATURES             Location/Qualifiers
                      /translation="LKRT"
      mat_peptide     <1..>11
                      /product="beta-2-glycoprotein I"
-ORIGIN      
+ORIGIN
         1 ctgaaacgga c
 //
-

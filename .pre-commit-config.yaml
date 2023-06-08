@@ -2,6 +2,8 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.4.0
   hooks:
+  - id: no-commit-to-branch
+    args: [--branch, master]
   - id: check-yaml
   - id: end-of-file-fixer
   - id: trailing-whitespace
@@ -12,6 +14,7 @@ repos:
   rev: 23.3.0
   hooks:
   - id: black
+    args: [-l 120, -S, .]
 - repo: https://github.com/PyCQA/flake8
   rev: 6.0.0
   hooks:

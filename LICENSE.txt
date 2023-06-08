@@ -107,13 +107,13 @@ This file is a part of the SeqTrace software which can be found here>
 
 https://code.google.com/p/seqtrace/
 
-It provides funtionality for reading abi, ztr and scr trace files. SeqTrace is 
+It provides funtionality for reading abi, ztr and scr trace files. SeqTrace is
 described here:
 
-Stucky, B.J. 2012. SeqTrace: A Graphical Tool for Rapidly Processing 
+Stucky, B.J. 2012. SeqTrace: A Graphical Tool for Rapidly Processing
 DNA Sequencing Chromatograms. Journal of Biomolecular Techniques 23: 90-93.
 
-https://code.google.com/p/seqtrace/wiki/About 
+https://code.google.com/p/seqtrace/wiki/About
 
 # Copyright (C) 2014 Brian J. Stucky
 #
@@ -129,4 +129,3 @@ https://code.google.com/p/seqtrace/wiki/About
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-

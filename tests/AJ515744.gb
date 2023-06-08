@@ -25,7 +25,6 @@ FEATURES             Location/Qualifiers
      misc_feature    1..23
                      /note="locus Sh2p 3' primer for Sarcophilus laniarius
                      microsatellite PCR analysis"
-ORIGIN      
+ORIGIN
         1 gcaatcctgg tcatgatgta gtc
 //
-

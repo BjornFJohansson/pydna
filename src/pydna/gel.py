@@ -20,7 +20,10 @@ from pydna.ladders import GeneRuler_1kb_plus as _mwstd
 def interpolator(mwstd):
     """docstring."""
     interpolator = _CubicSpline(
-        [len(fr) for fr in mwstd[::-1]], [fr.rf for fr in mwstd[::-1]], bc_type="natural", extrapolate=False
+        [len(fr) for fr in mwstd[::-1]],
+        [fr.rf for fr in mwstd[::-1]],
+        bc_type="natural",
+        extrapolate=False,
     )
     interpolator.mwstd = mwstd
     return interpolator

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ####### License: MIT
 """MIT License
 
@@ -30,16 +31,16 @@ import _thread as thread
 
 def cdquit(fn_name):  # pragma: no cover
     # print to stderr, unbuffered in Python 2.
-    print('{0} took too long'.format(fn_name), file=sys.stderr)
+    print("{0} took too long".format(fn_name), file=sys.stderr)
     sys.stderr.flush()  # Python 3 stderr is likely buffered.
     thread.interrupt_main()  # raises KeyboardInterrupt
 
 
 def exit_after(s):
-    '''
+    """
     use as decorator to exit process if
     function takes longer than s seconds
-    '''
+    """
 
     def outer(fn):
         def inner(*args, **kwargs):
@@ -58,24 +59,24 @@ def exit_after(s):
 
 @exit_after(1)
 def a():  # pragma: no cover
-    print('a')
+    print("a")
 
 
 @exit_after(2)
 def b():  # pragma: no cover
-    print('b')
+    print("b")
     sleep(1)
 
 
 @exit_after(3)
 def c():  # pragma: no cover
-    print('c')
+    print("c")
     sleep(2)
 
 
 @exit_after(4)
 def d():  # pragma: no cover
-    print('d started')
+    print("d started")
     for i in range(10):
         sleep(1)
         print(i)
@@ -83,11 +84,11 @@ def d():  # pragma: no cover
 
 @exit_after(5)
 def countdown(n):  # pragma: no cover
-    print('countdown started', flush=True)
+    print("countdown started", flush=True)
     for i in range(n, -1, -1):
-        print(i, end=', ', flush=True)
+        print(i, end=", ", flush=True)
         sleep(1)
-    print('countdown finished')
+    print("countdown finished")
 
 
 def main():  # pragma: no cover
@@ -97,12 +98,12 @@ def main():  # pragma: no cover
     try:
         d()
     except KeyboardInterrupt as error:
-        print('d should not have finished, printing error as expected:')
+        print("d should not have finished, printing error as expected:")
         print(error)
     countdown(3)
     countdown(10)
-    print('This should not print!!!')
+    print("This should not print!!!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

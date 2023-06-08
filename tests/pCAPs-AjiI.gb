@@ -20,7 +20,7 @@ REFERENCE   2  (bases 1 to 3128)
   TITLE     Direct Submission
   JOURNAL   Submitted (15-SEP-1997) Schlieper D., Institute of Genetics,
             University of Cologne, Weyertal 121, Cologne, 50931, GERMANY
-COMMENT     
+COMMENT
             ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      gene            complement(315..947)

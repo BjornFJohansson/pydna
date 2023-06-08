@@ -28,7 +28,7 @@ def test_mark_budde():
     'pGREG505'
     >>> a.looped().id
     'pGREG505'
-    >>> 
+    >>>
     """
 
 

@@ -3,10 +3,10 @@ DEFINITION  .
 ACCESSION   New_DNA
 VERSION     New_DNA
 KEYWORDS    .
-SOURCE      
+SOURCE
   ORGANISM  .
             .
-COMMENT     
+COMMENT
             ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      misc_feature    complement(join(4..6,9..12))

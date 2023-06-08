@@ -351,7 +351,10 @@ class Dseqrecord(_SeqRecord):
         qualifiers.update(kwargs)
 
         location = _CompoundLocation(
-            (_SimpleLocation(x, self.seq.length, strand=strand), _SimpleLocation(0, y, strand=strand))
+            (
+                _SimpleLocation(x, self.seq.length, strand=strand),
+                _SimpleLocation(0, y, strand=strand),
+            )
         )
 
         sf = _SeqFeature(location, type=type_, qualifiers=qualifiers)
@@ -1211,7 +1214,7 @@ class Dseqrecord(_SeqRecord):
             wof.append(s1[f.end : s.start])
         wof.append(s1[locations[-1].end : len(self)])
 
-        topology = {True: '-', False: 'o'}[not self.circular]
+        topology = {True: "-", False: "o"}[not self.circular]
         result = f"{self.__class__.__name__}({topology}{len(self)})\n"
 
         s1 = "".join(f + s for f, s in zip(wof, wfe))
@@ -1331,7 +1334,11 @@ class Dseqrecord(_SeqRecord):
                 x, y, oh = self.seq._firstcut(*enzymes)
             except ValueError:
                 return ()
-            dsr = _Dseq(self.seq.watson[x:] + self.seq.watson[:x], self.seq.crick[y:] + self.seq.crick[:y], oh)
+            dsr = _Dseq(
+                self.seq.watson[x:] + self.seq.watson[:x],
+                self.seq.crick[y:] + self.seq.crick[:y],
+                oh,
+            )
             newstart = min(x, (self.seq.length - y))
             for f in features:
                 f.location = shift_location(f.location, -newstart, self.seq.length)

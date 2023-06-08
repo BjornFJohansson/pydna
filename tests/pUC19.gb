@@ -107,7 +107,7 @@ FEATURES             Location/Qualifiers
                      /organism="Cloning vector pUC19c"
                      /mol_type="genomic DNA"
                      /db_xref="taxon:174689"
-ORIGIN      
+ORIGIN
         1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
        61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
       121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc

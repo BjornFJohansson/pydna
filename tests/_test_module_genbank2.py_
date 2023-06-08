@@ -4,7 +4,7 @@ from unittest import mock
 
 """
 handle
-Out[8]: <http.client.HTTPResponse at 0x7f257a402fd0> 
+Out[8]: <http.client.HTTPResponse at 0x7f257a402fd0>
 handle
 Out[14]: <_io.TextIOWrapper encoding='UTF-8'>
 """
@@ -25,14 +25,14 @@ Out[14]: <_io.TextIOWrapper encoding='UTF-8'>
 #     HTTPResponse.url = "url"
 #     HTTPResponse.headers = mock.MagicMock(spec=http.client.HTTPMessage)
 #     HTTPResponse.headers.get_content_subtype.return_value="plain"
-#     mock_urlopen.return_value = HTTPResponse 
+#     mock_urlopen.return_value = HTTPResponse
 #     Entrez.email = "bjornjobb@gmail.com"
 #     Entrez.tool  = "pydna"
 #     handle = Entrez.efetch(db="nuccore",
 #                            id="X60065.1",
 #                            rettype="gb",
 #                            retmode="text")
-    
+
 #     result = SeqIO.read(handle, "genbank")
 #     assert str(result.seq) == str(SeqIO.read("X60065.gb", "gb").seq)
 @mock.patch('Bio.Entrez.urlopen')                                 # This works!
@@ -72,12 +72,12 @@ def test_biopython_Entrez_efetch_whole(urlopenMock):
     result = SeqIO.read(handle, "genbank")        # handle.readline() is called
     canned = SeqIO.read("X60065.gb", "genbank")
     assert str(result.seq) == str(canned.seq)
-    
+
 test_biopython_Entrez_efetch_whole()
 
 
 @mock.patch('Bio.Entrez.urlopen')
-def openPatch(urlopenMock): 
+def openPatch(urlopenMock):
     import Bio
     from Bio import Entrez
     from Bio.Entrez import urlopen
@@ -154,7 +154,7 @@ def test_biopython_Entrez_efetch_whole(mock_urlopen):
     HTTPResponse.url = "url"
     HTTPResponse.headers = mock.MagicMock(spec=http.client.HTTPMessage)
     HTTPResponse.headers.get_content_subtype.return_value="plain"
-    mock_urlopen.return_value = HTTPResponse 
+    mock_urlopen.return_value = HTTPResponse
     Entrez.email = "bjornjobb@gmail.com"
     Entrez.tool  = "pydna"
     handle = Entrez.efetch(db="nuccore",
@@ -182,14 +182,14 @@ def test_biopython_Entrez_efetch_whole(mock_urlopen):
     HTTPResponse.url = "url"
     HTTPResponse.headers = mock.MagicMock(spec=http.client.HTTPMessage)
     HTTPResponse.headers.get_content_subtype.return_value="plain"
-    mock_urlopen.return_value = HTTPResponse 
+    mock_urlopen.return_value = HTTPResponse
     Entrez.email = "bjornjobb@gmail.com"
     Entrez.tool  = "pydna"
     handle = Entrez.efetch(db="nuccore",
                            id="X60065.1",
                            rettype="gb",
                            retmode="text")
-    
+
     result = SeqIO.read(handle, "genbank")
     assert str(result.seq) == str(SeqIO.read("X60065.gb", "gb").seq)
 
@@ -213,14 +213,14 @@ def test_biopython_Entrez_efetch_whole(mock_urlopen):
     HTTPResponse.url = "url"
     HTTPResponse.headers = mock.MagicMock(spec=http.client.HTTPMessage)
     HTTPResponse.headers.get_content_subtype.return_value="plain"
-    mock_urlopen.return_value = HTTPResponse 
+    mock_urlopen.return_value = HTTPResponse
     Entrez.email = "bjornjobb@gmail.com"
     Entrez.tool  = "pydna"
     handle = Entrez.efetch(db="nuccore",
                            id="X60065.1",
                            rettype="gb",
                            retmode="text")
-    
+
     result = SeqIO.read(handle, "genbank")
     assert str(result.seq) == str(SeqIO.read("X60065.gb", "gb").seq)
 
@@ -233,7 +233,7 @@ test_biopython_Entrez_efetch_whole()
 
 
 
-""" 
+"""
 Old code:
 
 in Bio.Entrez:
@@ -245,7 +245,7 @@ in Bio._py3k
 Hence, _urlopen is really request.urlopen
 
 New code:
-    
+
 in Bio.Entrez:
     from urllib.request import urlopen
 
@@ -258,7 +258,7 @@ Old code:
        handle = _urlopen(cgi)
        ...
        return _binary_to_string_handle(handle)
-       
+
      in  _binary_to_string_handle
        wrapped = io.TextIOWrapper(io.BufferedReader(handle), encoding=encoding)
        return wrapped
@@ -274,6 +274,6 @@ New code:
         handle.url = url
     return handle
 
-    
-    
-""" 
+
+
+"""

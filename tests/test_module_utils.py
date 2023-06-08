@@ -247,7 +247,7 @@ def test_join_list_to_table():
 
     cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "\n" "|||\n" "three\n" "six\n" "nine"
 
-    answer = 'one   two  three\nfour  five six  \nseven \"    nine '
+    answer = 'one   two  three\nfour  five six  \nseven "    nine '
     assert join_list_to_table(cs) == answer
 
     rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"

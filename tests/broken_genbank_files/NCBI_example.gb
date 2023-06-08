@@ -50,7 +50,7 @@ COMMENT     Contact: MGC help desk
             Contact:  (Dickson, Mark) mcd@paxil.stanford.edu
             Dickson, M., Schmutz, J., Grimwood, J., Rodriquez, A., and Myers,
             R. M.
-            
+
             Clone distribution: MGC clone distribution information can be found
             through the I.M.A.G.E. Consortium/LLNL at: http://image.llnl.gov
             Series: IRAK Plate: 165 Row: c Column: 3
@@ -91,7 +91,7 @@ FEATURES             Location/Qualifiers
                      /translation="MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNP
                      TEAELQDMINEVDADGNGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYIS
                      AAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTAK"
-ORIGIN      
+ORIGIN
         1 gtggactgtt gttctgtgtg gaaatacatc tgctaaaaca gcgcgatggc tgaccagttg
        61 acagaagagc agatcgccga attcaaagag gctttctcac tctttgataa agacggtgat
       121 ggtacaatta ctaccaaaga gttaggtact gtcatgcgct cacttgggca gaatcccaca
@@ -118,4 +118,3 @@ ORIGIN
      1381 aggatagcac tgggatgaga cctctgtcaa taaaactaaa gttaattaaa gttctcttga
      1441 atgacaaaaa aaaaaaaaaa aaaaaa
 //
-

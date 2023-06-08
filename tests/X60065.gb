@@ -57,7 +57,7 @@ FEATURES             Location/Qualifiers
                      /gene="beta-2-gpI"
      polyA_site      1130
                      /gene="beta-2-gpI"
-ORIGIN      
+ORIGIN
         1 ccagcgctcg tcttgctgtt ggggtttctc tgccacgttg ctatcgcagg acgaacctgc
        61 cccaagccag atgagctacc gttttccacg gtggttccac tgaaacggac ctatgagccc
       121 ggggagcaga tagtcttctc ctgccagccg ggctacgtgt cccggggagg gatccggcgg
@@ -78,4 +78,3 @@ ORIGIN
      1021 ccatgctaag ctggttttca cactgaaaat taaatgtcat gcttatatgt gtctgtctga
      1081 gaatctgatg gaaacggaaa aataaagaga ctgaatttac cgtgtcaaga aaaaaa
 //
-

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 
 
@@ -177,10 +178,10 @@ def test_linear(monkeypatch):
     asm = Assembly((a, b, c), limit=14)
     x = asm.assemble_linear()[0]
 
-    answer = 'aaa|14\n    \\/\n    /\\\n    14|bbb|15\n           \\/\n           /\\\n           15|ccc'
+    answer = "aaa|14\n    \\/\n    /\\\n    14|bbb|15\n           \\/\n           /\\\n           15|ccc"
 
     assert x.figure() == answer.strip()
-    answer = 'acgatgctatactgtgCCNCCtgtgctgtgctcta\n                     TGTGCTGTGCTCTA\n                     tgtgctgtgctctaTTTTTTTtattctggctgtatc\n                                          TATTCTGGCTGTATC\n                                          tattctggctgtatcGGGGGtacgatgctatactgtg\n'
+    answer = "acgatgctatactgtgCCNCCtgtgctgtgctcta\n                     TGTGCTGTGCTCTA\n                     tgtgctgtgctctaTTTTTTTtattctggctgtatc\n                                          TATTCTGGCTGTATC\n                                          tattctggctgtatcGGGGGtacgatgctatactgtg\n"
     assert x.detailed_figure()
 
 

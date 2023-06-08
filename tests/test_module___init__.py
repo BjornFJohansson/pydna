@@ -111,13 +111,13 @@ def test_without_dependency():
     import sys
     from unittest.mock import patch
 
-    with patch.dict(sys.modules, {'PIL': None}):
+    with patch.dict(sys.modules, {"PIL": None}):
         from importlib import reload
 
-        reload(sys.modules['pydna'])
+        reload(sys.modules["pydna"])
         import pydna
 
-        assert 'PIL' in pydna._missing
+        assert "PIL" in pydna._missing
 
 
 def test_with_dependencies():
@@ -128,7 +128,7 @@ def test_with_dependencies():
     import pydna
     from importlib import reload
 
-    reload(sys.modules['pydna'])
+    reload(sys.modules["pydna"])
     import pydna
 
     assert pydna._missing == []

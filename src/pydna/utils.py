@@ -514,7 +514,7 @@ def join_list_to_table(rawlist):
 
     for col in cols:
         # print col
-        rows = [row.strip() or "\"" for row in col]
+        rows = [row.strip() or '"' for row in col]
         width = max([len(row) for row in rows])
 
         rows = [row.ljust(width) for row in rows]

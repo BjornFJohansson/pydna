@@ -71,7 +71,7 @@ COMMENT     On Apr 11, 2002 this sequence version replaced gi:209213. These
             HindIII-SphI-PstI-SalI-XbaI-BamHI-SmaI-KpnI-SacI-EcoRI SELECTION
             #resistance  Ap    #indicator beta-galactosidase SUMMARY  pUC19c
             #length 2686   #checksum 4465.
-COMMENT     
+COMMENT
 COMMENT     ApEinfo:methylated:1
 ORIGIN
         1 ggggatcctc tagagtcgac ctgcaggcat gcaagcttgg cgtaatcatg gtcatagctg
@@ -180,5 +180,5 @@ ORIGIN
      6181 TGAAGAAAGA AAATCATGGA ACATTAGATT TACAAAAATT TAACCACCGC TGATTAACGA
      6241 TTAGACCGTT AAGCGCACAA CAGGTTATTA GTACAGAGAA AGCATTCTGT GGTGTTGCCC
      6301 CGGACTTTCT TTTGCGACAT AGGTAAATCG AATACCATCA TACTATCTTT TCCAATGACT
-     6361 CCCTAAAGAA AGACTCTTCT TCGATGTTG   
+     6361 CCCTAAAGAA AGACTCTTCT TCGATGTTG
 //

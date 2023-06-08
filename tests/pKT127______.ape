@@ -8,11 +8,11 @@ SOURCE      Unknown.
 REFERENCE   1  (bases 1 to 4894)
   AUTHORS   Self
   JOURNAL   Unpublished.
-COMMENT     SECNOTES|Mark A. Sheff and Kurt S. Thorn. 
-            Optimized cassettes for fluorescent protein tagging in 
-            Saccharomyces cerevisiae. 
+COMMENT     SECNOTES|Mark A. Sheff and Kurt S. Thorn.
+            Optimized cassettes for fluorescent protein tagging in
+            Saccharomyces cerevisiae.
             Yeast 21 (2004) 661-670
-            
+
 FEATURES             Location/Qualifiers
      CDS             5..721
                      /gene="yEGFP"
@@ -39,7 +39,7 @@ FEATURES             Location/Qualifiers
                      /gene="linker"
                      /product="opitimized linker"
 BASE COUNT     1312 a   1101 c   1115 g   1366 t
-ORIGIN      
+ORIGIN
         1 taacatgtct aaaggtgaag aattattcac tggtgttgtc ccaattttgg ttgaattaga
        61 tggtgatgtt aatggtcaca aattttctgt ctccggtgaa ggtgaaggtg atgctactta
       121 cggtaaattg accttaaaat ttatttgtac tactggtaaa ttgccagttc catggccaac

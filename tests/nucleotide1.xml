@@ -20,19 +20,19 @@
 
   <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/frameworks-1c2c316b7a17f15536c6a26ed744654fc228a24658a7ae395cdcbf8329c8406b.css" integrity="sha256-HCwxa3oX8VU2xqJu10RlT8IookZYp645XNy/gynIQGs=" media="all" rel="stylesheet" />
   <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github-8100b9bf1eb6ed8b38eaad2fe7ba51d1895aa0602aafe4a87068d444e07e8c5c.css" integrity="sha256-gQC5vx627Ys46q0v57pR0YlaoGAqr+SocGjUROB+jFw=" media="all" rel="stylesheet" />
-  
-  
-  
-  
+
+
+
+
 
   <meta name="viewport" content="width=device-width">
-  
+
   <title>biopython/nucleotide1.xml at master · biopython/biopython</title>
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
   <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
   <meta property="fb:app_id" content="1401488693436528">
 
-    
+
     <meta content="https://avatars2.githubusercontent.com/u/54555?s=400&amp;v=4" property="og:image" /><meta content="GitHub" property="og:site_name" /><meta content="object" property="og:type" /><meta content="biopython/biopython" property="og:title" /><meta content="https://github.com/biopython/biopython" property="og:url" /><meta content="biopython - Official git repository for Biopython (converted from CVS)" property="og:description" />
 
   <link rel="assets" href="https://assets-cdn.github.com/">
@@ -40,7 +40,7 @@
   <meta name="pjax-timeout" content="1000">
   <link rel="sudo-modal" href="/sessions/sudo_modal">
   <meta name="request-id" content="DB4E:3540:B1ED7EB:12EAFBD9:5A48D8A3" data-pjax-transient>
-  
+
 
   <meta name="selected-link" value="repo_source" data-pjax-transient>
 
@@ -58,7 +58,7 @@
   <meta class="js-ga-set" name="dimension1" content="Logged In">
 
 
-  
+
 
       <meta name="hostname" content="github.com">
   <meta name="user-login" content="BjornFJohansson">
@@ -71,7 +71,7 @@
   <meta name="html-safe-nonce" content="2d804815a26551044dbccb7ef0ced8d655231b66">
 
   <meta http-equiv="x-pjax-version" content="e6dbf537b2eb3990c0cae54500f32daf">
-  
+
 
       <link href="https://github.com/biopython/biopython/commits/master.atom" rel="alternate" title="Recent Commits to biopython:master" type="application/atom+xml">
 
@@ -99,20 +99,20 @@
   </head>
 
   <body class="logged-in env-production page-blob">
-    
+
 
   <div class="position-relative js-header-wrapper ">
     <a href="#start-of-content" tabindex="1" class="bg-black text-white p-3 show-on-focus js-skip-to-content">Skip to content</a>
     <div id="js-pjax-loader-bar" class="pjax-loader-bar"><div class="progress"></div></div>
 
-    
-    
-    
-      
 
 
 
-        
+
+
+
+
+
 <header class="Header  f5" role="banner">
   <div class="d-flex px-3 flex-justify-between container-lg">
     <div class="d-flex flex-justify-between">
@@ -167,11 +167,11 @@
       </div>
 
       <div class="d-flex">
-        
+
 <ul class="user-nav d-flex flex-items-center list-style-none" id="user-links">
   <li class="dropdown js-menu-container">
     <span class="d-inline-block  px-2">
-      
+
     <a href="/notifications" aria-label="You have no unread notifications" class="notification-indicator tooltipped tooltipped-s  js-socket-channel js-notification-indicator" data-channel="notification-changed:9726401" data-ga-click="Header, go to notifications, icon:read" data-hotkey="g n">
         <span class="mail-status "></span>
         <svg aria-hidden="true" class="octicon octicon-bell" height="16" version="1.1" viewBox="0 0 14 16" width="14"><path fill-rule="evenodd" d="M14 12v1H0v-1l.73-.58c.77-.77.81-2.55 1.19-4.42C2.69 3.23 6 2 6 2c0-.55.45-1 1-1s1 .45 1 1c0 0 3.39 1.23 4.16 5 .38 1.88.42 3.66 1.19 4.42l.66.58H14zm-7 4c1.11 0 2-.89 2-2H5c0 1.11.89 2 2 2z"/></svg>
@@ -189,7 +189,7 @@
       </summary>
 
       <ul class="dropdown-menu dropdown-menu-sw">
-        
+
 <a class="dropdown-item" href="/new" data-ga-click="Header, create new repository">
   New repository
 </a>
@@ -276,7 +276,7 @@
 </header>
 
 
-      
+
 
   </div>
 
@@ -290,11 +290,11 @@
   <div role="main">
         <div itemscope itemtype="http://schema.org/SoftwareSourceCode">
     <div id="js-repo-pjax-container" data-pjax-container>
-      
 
 
 
-  
+
+
 
 
 
@@ -381,7 +381,7 @@
   </li>
 
   <li>
-    
+
   <div class="js-toggler-container js-social-container starring-container on">
     <!-- '"` --><!-- </textarea></xmp> --></option></form><form accept-charset="UTF-8" action="/biopython/biopython/unstar" class="starred js-social-form" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="RmrHyYGUNlHwPeL+jCKCQMeh5as0H21mUmcrH5kk8Xj1MqDaHpK47OUKI7o+21IFauGwti0hVYhzSy1M+3aoqQ==" /></div>
       <input type="hidden" name="context" value="repository"></input>
@@ -451,7 +451,7 @@
 </h1>
 
     </div>
-    
+
 <nav class="reponav js-repo-nav js-sidenav-container-pjax container"
      itemscope
      itemtype="http://schema.org/BreadcrumbList"
@@ -497,16 +497,16 @@
 <div class="container new-discussion-timeline experiment-repo-nav">
   <div class="repository-content">
 
-    
+
   <a href="/biopython/biopython/blob/4e359e2aa9255aa8b420ad512d3c4cbe15c07a35/Tests/Entrez/nucleotide1.xml" class="d-none js-permalink-shortcut" data-hotkey="y">Permalink</a>
 
   <!-- blob contrib key: blob_contributors:v21:007dbd40a8c17e3ca72cd01ee695aa59 -->
 
   <div class="file-navigation js-zeroclipboard-container">
-    
+
 <div class="select-menu branch-select-menu js-menu-container js-select-menu float-left">
   <button class=" btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w"
-    
+
     type="button" aria-label="Switch branches or tags" aria-expanded="false" aria-haspopup="true">
       <i>Branch:</i>
       <span class="js-select-button css-truncate-target">master</span>
@@ -1114,7 +1114,7 @@
   </div>
 
 
-  
+
   <div class="commit-tease">
       <span class="float-right">
         <a class="commit-tease-sha" href="/biopython/biopython/commit/f8bc10b88007e29c4f7d875890ccb74a4d9944a3" data-pjax>
@@ -1133,7 +1133,7 @@
         <strong>0</strong>
          contributors
       </button>
-      
+
     </div>
 
     <div id="blob_contributors_box" style="display:none">
@@ -1174,7 +1174,7 @@
   </div>
 </div>
 
-    
+
 
   <div itemprop="text" class="blob-wrapper data type-xml">
       <table class="highlight tab-size js-file-line-container" data-tab-size="8">
@@ -2123,7 +2123,7 @@
 
   </div>
 
-      
+
 <div class="footer container-lg px-3" role="contentinfo">
   <div class="position-relative d-flex flex-justify-between py-6 mt-6 f6 text-gray border-top border-gray-light ">
     <ul class="list-style-none d-flex flex-wrap ">
@@ -2161,14 +2161,14 @@
   </div>
 
 
-    
+
     <script crossorigin="anonymous" integrity="sha256-OQfZqtgSuMlBR8iBZctKlpPFfPmfDo4BBT/Hneep2RE=" src="https://assets-cdn.github.com/assets/frameworks-3907d9aad812b8c94147c88165cb4a9693c57cf99f0e8e01053fc79de7a9d911.js"></script>
-    
+
     <script async="async" crossorigin="anonymous" integrity="sha256-wbENoh8ZMqQXP8+2BnbirTLlFfeud1Y922WPBM0mNo0=" src="https://assets-cdn.github.com/assets/github-c1b10da21f1932a4173fcfb60676e2ad32e515f7ae77563ddb658f04cd26368d.js"></script>
-    
-    
-    
-    
+
+
+
+
   <div class="js-stale-session-flash stale-session-flash flash flash-warn flash-banner d-none">
     <svg aria-hidden="true" class="octicon octicon-alert" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M8.865 1.52c-.18-.31-.51-.5-.87-.5s-.69.19-.87.5L.275 13.5c-.18.31-.18.69 0 1 .19.31.52.5.87.5h13.7c.36 0 .69-.19.86-.5.17-.31.18-.69.01-1L8.865 1.52zM8.995 13h-2v-2h2v2zm0-3h-2V6h2v4z"/></svg>
     <span class="signed-in-tab-flash">You signed in with another tab or window. <a href="">Reload</a> to refresh your session.</span>
@@ -2187,4 +2187,3 @@
 
   </body>
 </html>
-

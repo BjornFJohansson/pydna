@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import textwrap as _textwrap
 import networkx as _nx
 from pydna._pretty import pretty_str as _pretty_str

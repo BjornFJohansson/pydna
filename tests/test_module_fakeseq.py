@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 
 
@@ -10,7 +11,7 @@ def test_fakeseq():
 
     assert len(fs) == 1000
 
-    assert str(fs) == repr(fs) == 'FakeSeq(1.0e+03)'
+    assert str(fs) == repr(fs) == "FakeSeq(1.0e+03)"
 
     assert fs > FakeSeq(999)
 

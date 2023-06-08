@@ -5,7 +5,7 @@ VERSION     pGREG505
 KEYWORDS    .
 SOURCE      .
   ORGANISM  . .
-COMMENT     
+COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      primer_bind     9444..9463
@@ -263,5 +263,5 @@ ORIGIN
      9241 cgattcatta atgcagctgg cacgacaggt ttcccgactg gaaagcgggc agtgagcgca
      9301 acgcaattaa tgtgagttac ctcactcatt aggcacccca ggctttacac tttatgcttc
      9361 cggctcctat gttgtgtgga attgtgagcg gataacaatt tcacacagga aacagctatg
-     9421 accatgatta cgccaagcgc gcaattaacc ctcactaaag ggaac 
+     9421 accatgatta cgccaagcgc gcaattaacc ctcactaaag ggaac
 //

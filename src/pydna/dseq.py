@@ -343,7 +343,10 @@ class Dseq(_Seq):
                     elif len(watson) > len(crick):
                         self._data = bytes(watson, encoding="ASCII")
                     else:
-                        self._data = bytes(watson + _rc(crick[: len(crick) - len(watson)]), encoding="ASCII")
+                        self._data = bytes(
+                            watson + _rc(crick[: len(crick) - len(watson)]),
+                            encoding="ASCII",
+                        )
                 elif ovhg > 0:
                     if ovhg + len(watson) > len(crick):
                         self._data = bytes(_rc(crick[-ovhg:]) + watson, encoding="ASCII")
@@ -354,7 +357,10 @@ class Dseq(_Seq):
                         )
                 else:  # ovhg < 0
                     if -ovhg + len(crick) > len(watson):
-                        self._data = bytes(watson + _rc(crick[: -ovhg + len(crick) - len(watson)]), encoding="ASCII")
+                        self._data = bytes(
+                            watson + _rc(crick[: -ovhg + len(crick) - len(watson)]),
+                            encoding="ASCII",
+                        )
                     else:
                         self._data = bytes(watson, encoding="ASCII")
 

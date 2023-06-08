@@ -27,7 +27,6 @@ FEATURES             Location/Qualifiers
      misc_feature    1..24
                      /note="PsnRT_F primer for Pseudomonas savastanoi pv. nerii
                      isolate ITM204 PCR detection"
-ORIGIN      
+ORIGIN
         1 gctcattcgc ttgttatcac ttca
 //
-

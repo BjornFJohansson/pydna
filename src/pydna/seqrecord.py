@@ -266,7 +266,10 @@ class SeqRecord(_SeqRecord):
         except ValueError as err:
             if self.circular:
                 location = _CompoundLocation(
-                    (_SimpleLocation(x, self.seq.length, strand=strand), _SimpleLocation(0, y, strand=strand))
+                    (
+                        _SimpleLocation(x, self.seq.length, strand=strand),
+                        _SimpleLocation(0, y, strand=strand),
+                    )
                 )
             else:
                 raise err
@@ -464,7 +467,10 @@ class SeqRecord(_SeqRecord):
             if chksum == old_chksum and algorithm == old_algorithm:
                 return _pretty_str(oldstamp.group(0))
             else:
-                _warn(f"Stamp change.\nNew: {algorithm} {chksum}\nOld: {old_stamp}", _PydnaWarning)
+                _warn(
+                    f"Stamp change.\nNew: {algorithm} {chksum}\nOld: {old_stamp}",
+                    _PydnaWarning,
+                )
 
         # now = datetime.datetime.now().replace(microsecond=0).isoformat()
         self.annotations["comment"] = (f"{oldcomment}\n" f"{tool} {algorithm} {chksum} {now()} {comment}").strip()
@@ -543,7 +549,9 @@ class SeqRecord(_SeqRecord):
             cdn = self.seq._data[slc].decode("ASCII")
             sfs.append(
                 _SeqFeature(
-                    _SimpleLocation(slc.start, slc.stop), type=f"rare_codon_{organism}", qualifiers={"label": [cdn]}
+                    _SimpleLocation(slc.start, slc.stop),
+                    type=f"rare_codon_{organism}",
+                    qualifiers={"label": [cdn]},
                 )
             )
         return sfs
@@ -663,7 +671,7 @@ class SeqRecord(_SeqRecord):
         pth = Path(filename)
         if not pth.suffix:
             pth = pth.with_suffix(".pickle")
-        with open(pth, 'wb') as f:
+        with open(pth, "wb") as f:
             _pickle.dump(self, f, protocol=protocol)
         return _pretty_str(pth)
 

@@ -202,7 +202,11 @@ _logmsg = "Log directory {}".format(logdir)
 _logger = _logging.getLogger("pydna")
 _logger.setLevel(int(_os.environ["pydna_loglevel"]))
 _hdlr = _handlers.RotatingFileHandler(
-    logdir / "pydna.log", mode="a", maxBytes=10 * 1024 * 1024, backupCount=10, encoding="utf-8"
+    logdir / "pydna.log",
+    mode="a",
+    maxBytes=10 * 1024 * 1024,
+    backupCount=10,
+    encoding="utf-8",
 )
 
 _formatter = _logging.Formatter(("%(asctime)s %(levelname)s" " %(funcName)s %(message)s"))
@@ -216,7 +220,10 @@ _logger.info("Environmental variable pydna_email        = %s", _os.environ["pydn
 _logger.info("Environmental variable pydna_log_dir      = %s", _os.environ["pydna_log_dir"])
 _logger.info("Environmental variable pydna_loglevel     = %s", _os.environ["pydna_loglevel"])
 _logger.info("Environmental variable pydna_primers      = %s", _os.environ["pydna_primers"])
-_logger.info("Environmental variable pydna_assembly_limit = %s", _os.environ["pydna_assembly_limit"])
+_logger.info(
+    "Environmental variable pydna_assembly_limit = %s",
+    _os.environ["pydna_assembly_limit"],
+)
 
 # create cache directory if not present
 
@@ -240,7 +247,10 @@ def _missing_modules_for_gel():
 _missing = _missing_modules_for_gel()
 
 if _missing:
-    _logger.warning("gel simulation will NOT be available." " Missing modules: %s", ", ".join(_missing))
+    _logger.warning(
+        "gel simulation will NOT be available." " Missing modules: %s",
+        ", ".join(_missing),
+    )
 else:
     _logger.info("gel simulation is available," " optional dependencies were found.")
 
@@ -377,7 +387,7 @@ def logo():
     from pyfiglet import Figlet
 
     f = Figlet()
-    return _pretty_str(f.renderText(f'pydna {__version__}'))
+    return _pretty_str(f.renderText(f"pydna {__version__}"))
 
 
 if __name__ == "__main__":

@@ -11,8 +11,8 @@ REFERENCE   1  (bases 1 to 9637)
   TITLE     Direct Submission
   JOURNAL   Submitted (01-FEB-2013) Department of Biology, University of Minho,
             Campus de Gualtar, Braga 4710-051, Portugal
-COMMENT     
-COMMENT     
+COMMENT
+COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      source          4703..9637

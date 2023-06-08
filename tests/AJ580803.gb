@@ -31,7 +31,6 @@ FEATURES             Location/Qualifiers
      misc_feature    1..20
                      /note="forward primer designed against the standard strain
                      of Coxsackievirus A24 VP-3 to VP-1 region"
-ORIGIN      
+ORIGIN
         1 gcctgcccag atttcagtgt
 //
-

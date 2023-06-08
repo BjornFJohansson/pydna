@@ -1,7 +1,7 @@
 LOCUS       New_DNA                    6 bp ds-DNA     linear       14-MAR-2015
 DEFINITION  oooo
-ACCESSION   
-VERSION     
+ACCESSION
+VERSION
 SOURCE      oooo
   ORGANISM  oooo
 COMMENT     oooo
@@ -14,5 +14,5 @@ FEATURES             Location/Qualifiers
                      /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
                      width 5 offset 0
 ORIGIN
-        1 aaaaaa     
+        1 aaaaaa
 //

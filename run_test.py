@@ -60,8 +60,8 @@ def main():
 
     import pstats
 
-    stats = pstats.Stats('./prof/combined.prof')
-    stats.sort_stats('cumulative')
+    stats = pstats.Stats("./prof/combined.prof")
+    stats.sort_stats("cumulative")
     stats.print_stats("pydna/src", 0.1)
 
     # Or alternatively

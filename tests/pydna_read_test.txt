@@ -1,11 +1,11 @@
 LOCUS       pydna_read_test            3 bp ds-DNA     linear       16-APR-2015
 DEFINITION  .
-ACCESSION   
-VERSION     
+ACCESSION
+VERSION
 SOURCE      .
   ORGANISM  .
-COMMENT     
-COMMENT     
+COMMENT
+COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      misc_feature    2..2
@@ -15,5 +15,5 @@ FEATURES             Location/Qualifiers
                      /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
                      width 5 offset 0
 ORIGIN
-        1 aaa     
+        1 aaa
 //

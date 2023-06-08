@@ -32,7 +32,16 @@ class GenbankRecord(_Dseqrecord):
         )
 
     @classmethod
-    def from_string(cls, record: str = "", *args, item="accession", start=None, stop=None, strand=1, **kwargs):
+    def from_string(
+        cls,
+        record: str = "",
+        *args,
+        item="accession",
+        start=None,
+        stop=None,
+        strand=1,
+        **kwargs,
+    ):
         """docstring."""
         obj = super().from_string(record, *args, **kwargs)
         obj.item = item

@@ -2,7 +2,7 @@ LOCUS       pUC19_a                 2772 bp ds-DNA     circular     17-OCT-2012
 DEFINITION  .
 SOURCE      .
   ORGANISM  .
-COMMENT     
+COMMENT
 COMMENT     ApEinfo:methylated:1
 ORIGIN
         1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
@@ -51,5 +51,5 @@ ORIGIN
      2581 tttttcaata ttattgaagc atttatcagg gttattgtct catgagcgga tacatatttg
      2641 aatgtattta gaaaaataaa caaatagggg ttccgcgcac atttccccga aaagtgccac
      2701 ctgacgtcta agaaaccatt attatcatga cattaaccta taaaaatagg cgtatcacga
-     2761 ggccctttcg tc    
+     2761 ggccctttcg tc
 //
