@@ -1,10 +1,19 @@
 repos:
--   repo: https://github.com/ambv/black
-    rev: stable
-    hooks:
-    - id: black
-      language_version: python3.6
--   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.9
-    hooks:
-    - id: flake8
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: debug-statements
+  - id: fix-encoding-pragma
+  - id: mixed-line-ending
+- repo: https://github.com/ambv/black
+  rev: 23.3.0
+  hooks:
+  - id: black
+- repo: https://github.com/PyCQA/flake8
+  rev: 6.0.0
+  hooks:
+  - id: flake8
+exclude: scripts/
