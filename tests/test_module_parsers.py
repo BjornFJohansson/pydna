@@ -194,8 +194,16 @@ def test_misc_parse():
     assert x.format()[3268:3278] == "2micron 2µ"
     assert x.features[13].qualifiers["label"][0] == "2micron 2µ"
 
-    assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
-    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(y.format("gb").splitlines()[4:])
+    assert "".join(
+        a.format("gb").splitlines()[
+            1:]) == "".join(
+        x.format("gb").splitlines()[
+            1:])
+    assert "".join(
+        b.format("gb").strip().splitlines()[
+            4:]) == "".join(
+        y.format("gb").splitlines()[
+            4:])
 
 
 def test_dna2949():

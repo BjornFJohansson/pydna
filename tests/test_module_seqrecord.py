@@ -149,10 +149,16 @@ def test_lcs():
     }
     assert s.lcs("GGATCC", limit=4).__dict__ == expected.__dict__
     assert s.lcs(Seq("GGATCC"), limit=4).__dict__ == expected.__dict__
-    assert s.lcs(BSeqRecord(Seq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
+    assert s.lcs(BSeqRecord(Seq("GGATCC"), name="sequence"),
+                 limit=4).__dict__ == expected.__dict__
     assert s.lcs(Dseq("GGATCC"), limit=4).__dict__ == expected.__dict__
-    assert s.lcs(Dseqrecord(Dseq("GGATCC"), name="sequence"), limit=4).__dict__ == expected.__dict__
-    assert s.lcs(Dseqrecord("GGATCC", name="sequence"), limit=4).__dict__ == expected.__dict__
+    assert s.lcs(
+        Dseqrecord(
+            Dseq("GGATCC"),
+            name="sequence"),
+        limit=4).__dict__ == expected.__dict__
+    assert s.lcs(Dseqrecord("GGATCC", name="sequence"),
+                 limit=4).__dict__ == expected.__dict__
 
 
 def test_format():
@@ -341,7 +347,8 @@ def test_cai():
 
     organism = "sce"
 
-    s = seqrecord.SeqRecord(Seq("atg" + "".join(rare_codons[organism]) + "taa"))
+    s = seqrecord.SeqRecord(
+        Seq("atg" + "".join(rare_codons[organism]) + "taa"))
 
     features = s.rarecodons()
 
@@ -365,7 +372,8 @@ def test_cai():
             "GCG",
             "rare",
         ],
-        ["ATG...TAA", 8.0, 0.219, 0.708, 1.0, 0.47, "2 min", 1, 1, 1, 1, 1, 1, 0.75],
+        ["ATG...TAA", 8.0, 0.219, 0.708, 1.0,
+            0.47, "2 min", 1, 1, 1, 1, 1, 1, 0.75],
     ]
 
     assert s.express().lol() == lol

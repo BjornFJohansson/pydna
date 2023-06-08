@@ -397,7 +397,7 @@ class Dseq(_Seq):
         obj.pos = pos
         wb = bytes(watson, encoding="ASCII")
         cb = bytes(crick, encoding="ASCII")
-        obj._data = _rc(cb[-max(0, ovhg) or len(cb) :]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
+        obj._data = _rc(cb[-max(0, ovhg) or len(cb):]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
         return obj
 
     @classmethod
@@ -1406,7 +1406,7 @@ class Dseq(_Seq):
         if not self.circular:
             frags = [self]
         else:
-            l = len(self)
+            ln = len(self)
             for e in enzymes:
                 wpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.watson + self.watson[: e.size - 1]) + pad)][
                     ::-1
@@ -1419,8 +1419,8 @@ class Dseq(_Seq):
                     if w % len(self) == (self.length - c + e.ovhg) % len(self):
                         frags = [
                             Dseq(
-                                self.watson[w % l :] + self.watson[: w % l],
-                                self.crick[c % l :] + self.crick[: c % l],
+                                self.watson[w % ln :] + self.watson[: w % ln],
+                                self.crick[c % ln :] + self.crick[: c % ln],
                                 ovhg=e.ovhg,
                                 pos=min(w, len(dsseq) - c),
                             )

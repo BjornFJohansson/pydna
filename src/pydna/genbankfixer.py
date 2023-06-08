@@ -135,9 +135,9 @@ RPAREN = _pp.Suppress(")")
 SEP = _pp.Suppress(_pp.Literal(".."))
 
 # recognize numbers w. < & > uncertainty specs, then strip the <> chars to make it fixed
-gbIndex = _pp.Word(_pp.nums + "<>").setParseAction(lambda s, l, t: int(t[0].replace("<", "").replace(">", "")))
+gbIndex = _pp.Word(_pp.nums + "<>").setParseAction(lambda s, l_, t: int(t[0].replace("<", "").replace(">", "")))
 SimpleSlice = _pp.Group(gbIndex + SEP + gbIndex) | _pp.Group(gbIndex).setParseAction(
-    lambda s, l, t: [[t[0][0], t[0][0]]]
+    lambda s, l_, t: [[t[0][0], t[0][0]]]
 )
 
 # recursive def for nested function syntax:  f( g(), g() )
@@ -152,7 +152,7 @@ complexSlice = _pp.Forward()
 featLocation = _pp.Group(SimpleSlice | complexSlice)
 
 
-def parseGBLoc(s, l, t):
+def parseGBLoc(s, l_, t):
     """retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences"""
     strand = 1
     locationlist = []
@@ -163,7 +163,7 @@ def parseGBLoc(s, l, t):
             strand = -1
 
     for entry in t[0]:
-        if type(entry) != type("string"):
+        if not isinstance(entry, str):
             locationlist.append([entry[0], entry[1]])
 
     # return locationlist and strand spec
@@ -175,12 +175,12 @@ featLocation.setParseAction(parseGBLoc)
 # ==== Genbank Feature Key-Value Pairs
 
 
-def strip_multiline(s, l, t):
+def strip_multiline(s, l_, t):
     whitespace = _re.compile("[\n]{1}[ ]+")
     return whitespace.sub(" ", t[0])
 
 
-def toInt(s, l, t):
+def toInt(s, l_, t):
     return int(t[0])
 
 
@@ -214,11 +214,11 @@ NumFeaturekeyval = _pp.Group(
 # Key Only KeyVal: /pseudo
 # post-parse convert it into a pair to resemble the structure of the first three cases i.e. [pseudo, True]
 FlagFeaturekeyval = _pp.Group(_pp.Suppress("/") + _pp.Word(_pp.alphas + _pp.nums + "_-")).setParseAction(
-    lambda s, l, t: [[t[0][0], True]]
+    lambda s, l_, t: [[t[0][0], True]]
 )
 
 Feature = _pp.Group(
-    _pp.Word(_pp.alphas + _pp.nums + "_-").setParseAction(lambda s, l, t: [["type", t[0]]])
+    _pp.Word(_pp.alphas + _pp.nums + "_-").setParseAction(lambda s, l_, t: [["type", t[0]]])
     + featLocation.setResultsName("location")
     + _pp.OneOrMore(NumFeaturekeyval | QuoteFeaturekeyval | NoQuoteFeaturekeyval | FlagFeaturekeyval)
 )
@@ -238,7 +238,7 @@ Sequence = _pp.OneOrMore(_pp.Suppress(_pp.Word(_pp.nums)) + _pp.OneOrMore(_pp.Wo
 
 # Group(  ) hides the setResultsName names def'd inside, such that one needs to first access this group and then access the dict of contents inside
 SequenceEntry = _pp.Suppress(_pp.Literal("ORIGIN")) + Sequence.setParseAction(
-    lambda s, l, t: "".join(t)
+    lambda s, l_, t: "".join(t)
 ).setResultsName("sequence")
 
 

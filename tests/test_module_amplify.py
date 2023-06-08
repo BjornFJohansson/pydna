@@ -49,7 +49,8 @@ def test_string_arguments():
     r = str(r0.seq)
     t = str(t0.seq)
 
-    assert str(pcr((f, r), t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        pcr((f, r), t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_Seq_arguments():
@@ -69,7 +70,8 @@ def test_Seq_arguments():
     r = Seq(str(r0.seq))
     t = Seq(str(t0.seq))
 
-    assert str(pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_Dseq_arguments():
@@ -89,7 +91,8 @@ def test_Dseq_arguments():
     r = Dseq(str(r0.seq))
     t = Dseq(str(t0.seq))
 
-    assert str(pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_wrong_argument_type():
@@ -169,7 +172,8 @@ def test_Primer_arguments():
     r = r0
     t = t0
 
-    assert str(pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_feature_label():
@@ -188,7 +192,8 @@ def test_feature_label():
     r = r0
     t = t0
 
-    assert str(pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_feature_note():
@@ -209,7 +214,8 @@ def test_feature_note():
     r = r0
     t = t0
 
-    assert str(pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
     assert pcr(f, r, t).name == "note"
 
 
@@ -234,7 +240,8 @@ def test_Amplicon_argument():
 
     amplicon_from_amplicon = pcr(ampl)
 
-    assert str(amplicon_from_amplicon.seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert str(
+        amplicon_from_amplicon.seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
 
 
 def test_pcr_not_specific():
@@ -246,7 +253,8 @@ def test_pcr_not_specific():
                              tgtggttactgactctatcttg"""
     )
 
-    t0 = Dseqrecord("gctactacacacgtactgactgtgctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
+    t0 = Dseqrecord(
+        "gctactacacacgtactgactgtgctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
 
     f = f0
     r = r0
@@ -648,7 +656,8 @@ def test_shifts():
     gctactacacacgtactgactGcctcCaagatAgagtcagtaaccaca"""
     )
     a = pcr(f, r, t)
-    assert str(a.seq).lower() == "actacacacgtactgactGcctcCaagatAgagtcagtaacc".lower()
+    assert str(a.seq).lower(
+    ) == "actacacacgtactgactGcctcCaagatAgagtcagtaacc".lower()
 
     f, r, t = parse(
         """

@@ -153,7 +153,7 @@ class PrimerList(_UserList):
         err = None
         for p in lst:
             try:
-                i = prstrs.index(str(p.seq).upper())
+                prstrs.index(str(p.seq).upper())
             except ValueError as e:
                 print(f"{p.format('fasta')}")
                 err = e

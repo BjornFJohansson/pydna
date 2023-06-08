@@ -40,7 +40,8 @@ def test_pydna_read_test():
     import locale
 
     # print("locale.getpreferredencoding()", locale.getpreferredencoding())
-    assert read("pydna_read_test.txt").format("gb")[349:368] == '/label="2micron 2µ"'
+    assert read("pydna_read_test.txt").format(
+        "gb")[349:368] == '/label="2micron 2µ"'
 
 
 def test_parse_and_read_with_biopython_and_pydna():
@@ -67,8 +68,16 @@ def test_parse_and_read_with_biopython_and_pydna():
 
     x, y = parse("pth1.txt")
 
-    assert "".join(a.format("gb").splitlines()[1:]) == "".join(x.format("gb").splitlines()[1:])
-    assert "".join(b.format("gb").strip().splitlines()[4:]) == "".join(y.format("gb").splitlines()[4:])
+    assert "".join(
+        a.format("gb").splitlines()[
+            1:]) == "".join(
+        x.format("gb").splitlines()[
+            1:])
+    assert "".join(
+        b.format("gb").strip().splitlines()[
+            4:]) == "".join(
+        y.format("gb").splitlines()[
+            4:])
 
 
 def test_read_from_string():
@@ -164,7 +173,7 @@ def test_read_from_unicode():
 
     with open("pth1.txt", "r", encoding="utf-8") as f:
         text = f.read()
-    assert type(text) == str
+    assert isinstance(text, str)
     x, y = parse(text)
     assert x.format()[3268:3278] == "2micron 2µ"
 
@@ -186,7 +195,11 @@ def test_read_from_file():
     d.format("gb")
     e.format("gb")
 
-    assert str(a.seq).lower() == str(b.seq).lower() == str(c.seq).lower() == str(d.seq).lower()
+    assert str(
+        a.seq).lower() == str(
+        b.seq).lower() == str(
+            c.seq).lower() == str(
+                d.seq).lower()
 
 
 def test_read_with_feature_spanning_ori():

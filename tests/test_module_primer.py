@@ -22,7 +22,7 @@ def test_primer():
 
     y = "AAA" + w
 
-    assert type(y) == type(w)
+    assert isinstance(y, type(w))
     assert str(y.seq) == "AAAatcatatctatct"
 
     from Bio.Seq import Seq
