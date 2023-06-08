@@ -4,6 +4,7 @@ source = pydna
 omit =
     */tests/*
     */_version.py
+    src/pydna/threading_timer_decorator_exit.py
 
 [report]
 exclude_lines =

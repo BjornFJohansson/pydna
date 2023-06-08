@@ -5,6 +5,14 @@ Created on Sun May 21 08:08:03 2023
 
 @author: bjorn
 """
+
+# pragma: no cover
+
+# https://stackoverflow.com/questions/57181829/deepcopy-override-clarification
+# https://stackoverflow.com/questions/1500718/how-to-override-the-copy-deepcopy-operations-for-a-python-object
+# https://stackoverflow.com/questions/24756712/deepcopy-is-extremely-slow
+
+
 from copy import copy as _copy
 from copy import deepcopy as _deepcopy
 from Bio.SeqFeature import SeqFeature as _SeqFeature
@@ -22,24 +30,7 @@ def empty_copy(obj):
     return newcopy
 
 
-# https://stackoverflow.com/questions/57181829/deepcopy-override-clarification
-# https://stackoverflow.com/questions/1500718/how-to-override-the-copy-deepcopy-operations-for-a-python-object
-# https://stackoverflow.com/questions/24756712/deepcopy-is-extremely-slow
-
-
 class ExactPosition(_ExactPosition):
-    def __copy__(self):
-        c = empty_copy(self)
-        c.__dict__ = self.__dict__
-        return c
-
-    def __deepcopy__(self, memo):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            setattr(result, k, _deepcopy(v, memo))
-        return result
 
     def __copy__(self):
         c = empty_copy(self)
@@ -56,6 +47,7 @@ class ExactPosition(_ExactPosition):
 
 
 class SimpleLocation(_SimpleLocation):
+
     def __copy__(self):
         c = empty_copy(self)
         c.__dict__ = self.__dict__
@@ -71,8 +63,16 @@ class SimpleLocation(_SimpleLocation):
 
 
 class SeqFeature(_SeqFeature):
-    def __copy__(self):
-        return 123
 
-    def __deecopy__(self):
-        return 123
+    def __copy__(self):
+        c = empty_copy(self)
+        c.__dict__ = self.__dict__
+        return c
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, _deepcopy(v, memo))
+        return result
