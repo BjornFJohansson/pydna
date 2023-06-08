@@ -702,7 +702,6 @@ def circular_assembly_fragments(f, overlap=35, maxlink=40):
 
 
 if __name__ == "__main__":
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

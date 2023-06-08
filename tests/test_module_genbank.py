@@ -52,11 +52,7 @@ def test_biopython_Entrez_efetch_whole(mock_urlopen):
     mock_urlopen.return_value = make_mock_response("X60065.gb")
     Entrez.email = "bjornjobb@gmail.com"
     Entrez.tool = "pydna"
-    handle = Entrez.efetch(
-        db="nuccore",
-        id="X60065.1",
-        rettype="gb",
-        retmode="text")
+    handle = Entrez.efetch(db="nuccore", id="X60065.1", rettype="gb", retmode="text")
     result = SeqIO.read(handle, "genbank")
     assert str(result.seq) == str(SeqIO.read("X60065.gb", "gb").seq)
 
@@ -80,9 +76,7 @@ def test_pydna_Genbank_from_cache(urlopenMock, monkeypatch):
     from pydna.genbank import Genbank
 
     urlopenMock.return_value = make_mock_response("X60065.gb")
-    monkeypatch.setenv(
-        "pydna_cached_funcs",
-        "pydna.genbank.Genbank.nucleotide")
+    monkeypatch.setenv("pydna_cached_funcs", "pydna.genbank.Genbank.nucleotide")
     gb = Genbank("bjornjobb@gmail.com")
     result = gb.nucleotide("X60065.1")
     from Bio import SeqIO

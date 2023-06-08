@@ -31,6 +31,7 @@ import subprocess as _subprocess
 
 from pydna.codon import weights as _weights
 from pydna.codon import rare_codons as _rare_codons
+
 # from pydna.codon import n_end as _n_end
 # from Bio.SeqUtils import seq3 as _seq3
 # from pydna._pretty import PrettyTable as _PrettyTable
@@ -801,7 +802,6 @@ def eq(*args, **kwargs):
 
 
 if __name__ == "__main__":
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

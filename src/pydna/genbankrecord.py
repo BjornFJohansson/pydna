@@ -11,8 +11,7 @@ import os as _os
 
 
 class GenbankRecord(_Dseqrecord):
-    def __init__(self, record, *args, item="accession",
-                 start=None, stop=None, strand=1, **kwargs):
+    def __init__(self, record, *args, item="accession", start=None, stop=None, strand=1, **kwargs):
         super().__init__(record, *args, **kwargs)
         self.item = item
         self.start = start
@@ -65,8 +64,7 @@ class GenbankRecord(_Dseqrecord):
         return obj
 
     @classmethod
-    def from_SeqRecord(cls, record, *args, item="accession",
-                       start=None, stop=None, strand=1, **kwargs):
+    def from_SeqRecord(cls, record, *args, item="accession", start=None, stop=None, strand=1, **kwargs):
         obj = super().from_SeqRecord(record, *args, **kwargs)
         obj.item = item
         obj.start = start
@@ -97,8 +95,7 @@ class GenbankRecord(_Dseqrecord):
 
     def __repr__(self):
         """returns a short string representation of the object"""
-        return "Gbnk({}{} {})".format({True: "-", False: "o"}
-                                      [not self.circular], len(self), self._repr)
+        return "Gbnk({}{} {})".format({True: "-", False: "o"}[not self.circular], len(self), self._repr)
 
     def _repr_pretty_(self, p, cycle):
         """returns a short string representation of the object"""
@@ -166,7 +163,6 @@ class GenbankRecord(_Dseqrecord):
 
 
 if __name__ == "__main__":
-
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
     import doctest

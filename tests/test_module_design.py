@@ -82,9 +82,7 @@ def test_primer_design_same_first_and_third_Dseqrecord():
     result = z.assemble_circular()[0]
     assert result.cseguid() == (frags[0] + frags[1]).looped().cseguid()
 
-    a = Dseqrecord(
-        "ccaaggacacaatcgagctccgatccgtactgtcgagaaacttgtatcc",
-        name="a")
+    a = Dseqrecord("ccaaggacacaatcgagctccgatccgtactgtcgagaaacttgtatcc", name="a")
     b = Dseqrecord(
         "ctgtcgagaaacttgtatccctctaactagtatggatagccgtgtcttcactgtgctgcggctacccatcccaaggacacaatcgagctc",
         name="b",
@@ -199,12 +197,9 @@ def test_primer_design_one_fragment_flanking_linkers():
 def test_primer_Design():
     """test_primer_design"""
 
-    a = Dseqrecord(
-        "atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
-    b = Dseqrecord(
-        "ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
-    c = Dseqrecord(
-        "tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
+    a = Dseqrecord("atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg")
+    b = Dseqrecord("ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc")
+    c = Dseqrecord("tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt")
 
     frags = assembly_fragments([primer_design(r) for r in (a, b, c)])
 
@@ -218,80 +213,65 @@ def test_primer_Design():
 
     asm = Assembly((a2, frags[1], frags[2]))
 
-    assert asm.assemble_circular()[0].cseguid(
-    ) == "V3Mi8zilejgyoH833UbjJOtDMbc"
+    assert asm.assemble_circular()[0].cseguid() == "V3Mi8zilejgyoH833UbjJOtDMbc"
 
 
 def test_primer_Design_with_linker():
     """test_primer_design"""
 
-    b = Dseqrecord(
-        "agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     l = Dseqrecord("AAATTTCCCGGG")
-    c = Dseqrecord(
-        "tctgatctactatctgactgtactgatctattgacactgtgatcattctagtgtattactc")
+    c = Dseqrecord("tctgatctactatctgactgtactgatctattgacactgtgatcattctagtgtattactc")
 
     frags = assembly_fragments((primer_design(b), l, primer_design(c)))
 
     asm1 = Assembly(frags)
 
-    assert asm1.assemble_linear()[0].useguid(
-    ), (b + l + c).useguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
+    assert asm1.assemble_linear()[0].useguid(), (b + l + c).useguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
 
-    frags = assembly_fragments(
-        (primer_design(b), l, primer_design(c), primer_design(b)))
+    frags = assembly_fragments((primer_design(b), l, primer_design(c), primer_design(b)))
 
     b2 = pcr(frags[-1].forward_primer, frags[0].reverse_primer, b)
 
     asm2 = Assembly((b2, frags[1], frags[2]))
 
-    assert (
-        b
-        + l
-        + c).looped().cseguid() == asm2.assemble_circular()[0].cseguid()
+    assert (b + l + c).looped().cseguid() == asm2.assemble_circular()[0].cseguid()
 
     assert (b + l + c).looped().cseguid() == "jdHXfQI5k4Sk2ESiZYfKv4oP2FI"
 
 
 def test_primer_Design_given_fw_primer():
-    b = Dseqrecord(
-        "agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     a = primer_design(b, fp=Primer("agctactgactattag"))
     assert str(a.reverse_primer.seq) == "tagatcagtacagtca"
 
 
 def test_primer_Design_given_rv_primer():
-    b = Dseqrecord(
-        "agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     a = primer_design(b, rp=Primer("tagatcagtacagtca"))
     assert str(a.forward_primer.seq) == "agctactgactattag"
 
 
 def test_primer_Design_given_wrong_fw_primer():
-    b = Dseqrecord(
-        "agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
         primer_design(b, fp=Primer("agctactgactattagC"))
 
 
 def test_primer_Design_given_wrong_rv_primer():
-    b = Dseqrecord(
-        "agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
         primer_design(b, rp=Primer("tagatcagtacagtcaC"))
 
 
 def test_primer_Design_given_both_primers():
-    b = Dseqrecord(
-        "agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     with pytest.raises(ValueError):
-        primer_design(b, fp=Primer("agctactgactattag"),
-                      rp=Primer("tagatcagtacagtca"))
+        primer_design(b, fp=Primer("agctactgactattag"), rp=Primer("tagatcagtacagtca"))
 
 
 def test_primer_Design_multiple_products():
-    b = Dseqrecord(
-        "agctactgactattaggggttaagctactgactattaggggtttctgatcatctgatctactatctgactgtactgatcta")
+    b = Dseqrecord("agctactgactattaggggttaagctactgactattaggggtttctgatcatctgatctactatctgactgtactgatcta")
     from pydna import _PydnaWarning
 
     with pytest.warns(_PydnaWarning):

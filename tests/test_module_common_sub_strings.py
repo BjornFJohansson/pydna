@@ -33,13 +33,11 @@ def test_fast():
     b = "TATATCATATAAAnnGGGCGCGGGCGG"
     lim = 12
 
-    assert common_sub_strings.terminal_overlap(
-        a, b, lim) == [(16, 0, 13), (0, 15, 12)]
+    assert common_sub_strings.terminal_overlap(a, b, lim) == [(16, 0, 13), (0, 15, 12)]
 
     a, b = b, a
 
-    assert common_sub_strings.terminal_overlap(
-        a, b, lim) == [(0, 16, 13), (15, 0, 12)]
+    assert common_sub_strings.terminal_overlap(a, b, lim) == [(0, 16, 13), (15, 0, 12)]
 
     # x,y,l = terminal_overlap(a, b,lim).pop()
 

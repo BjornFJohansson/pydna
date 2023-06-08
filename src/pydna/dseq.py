@@ -397,7 +397,7 @@ class Dseq(_Seq):
         obj.pos = pos
         wb = bytes(watson, encoding="ASCII")
         cb = bytes(crick, encoding="ASCII")
-        obj._data = _rc(cb[-max(0, ovhg) or len(cb):]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
+        obj._data = _rc(cb[-max(0, ovhg) or len(cb) :]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
         return obj
 
     @classmethod

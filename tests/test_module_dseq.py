@@ -200,8 +200,7 @@ def test_Dseq_cutting_adding():
 
     a = Dseq(
         "GGATCCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGGATCC",
-        "CCTAGGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCCTAGG"[
-            ::-1],
+        "CCTAGGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCCTAGG"[::-1],
         ovhg=0,
     )
 
@@ -211,8 +210,7 @@ def test_Dseq_cutting_adding():
     assert b.crick == "GATCCacgcgcatatatatataattatagagagtaccgatgatgagcagcagaatagatcagtacgctacgatgatagtagatgaG"
     c = Dseq(
         "nCTGCAGtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGAATTCn",
-        "nGACGTCagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCTTAAGn"[
-            ::-1],
+        "nGACGTCagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaCTTAAGn"[::-1],
         ovhg=0,
     )
 
@@ -223,8 +221,7 @@ def test_Dseq_cutting_adding():
 
     e = Dseq(
         "nGAATTCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtCTGCAGn",
-        "nCTTAAGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaGACGTCn"[
-            ::-1],
+        "nCTTAAGagtagatgatagtagcatcgcatgactagataagacgacgagtagtagccatgagagatattaatatatatatacgcgcaGACGTCn"[::-1],
         ovhg=0,
     )
 
@@ -453,15 +450,12 @@ def test_dseq():
     assert frag1.rc().lseguid() == "uTTkMqUMJ524xcTzAKlAPsq6q7g"
     assert frag2.rc().lseguid() == "pXjshRKBvk2SnAZeuVgsMWXmkfE"
 
-    obj = Dseq("tagcgtagctgtagtatgtgatctggtcta",
-               "tagaccagatcacatactacagctacgcta")
-    assert repr(
-        obj) == "Dseq(-30)\ntagcgtagctgtagtatgtgatctggtcta\natcgcatcgacatcatacactagaccagat"
+    obj = Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta")
+    assert repr(obj) == "Dseq(-30)\ntagcgtagctgtagtatgtgatctggtcta\natcgcatcgacatcatacactagaccagat"
 
     obj2 = Dseq("tagcgtagctgtagtatgtgatctggtcta")
 
-    obj3 = obj = Dseq("tagcgtagctgtagtatgtgatctggtcta",
-                      "tagaccagatcacatactacagctacgcta", 0)
+    obj3 = obj = Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta", 0)
 
     assert obj == obj2 == obj3
 
@@ -469,29 +463,23 @@ def test_dseq():
 
     assert obj.find("tgtagta") == 9
 
-    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaa",
-               "ttagaccagatcacatactacagctacgcta")
+    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaa", "ttagaccagatcacatactacagctacgcta")
 
-    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaa",
-               "CCCttagaccagatcacatactacagctacgcta")
+    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaa", "CCCttagaccagatcacatactacagctacgcta")
 
     assert repr(obj) == "Dseq(-34)\ntagc..ctaa   \natcg..gattCCC"
 
-    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaaCCC",
-               "ttagaccagatcacatactacagctacgcta")
+    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaaCCC", "ttagaccagatcacatactacagctacgcta")
 
     assert repr(obj) == "Dseq(-34)\ntagc..ctaaCCC\natcg..gatt   "
 
-    obj = Dseq("agcgtagctgtagtatgtgatctggtctaa",
-               "ttagaccagatcacatactacagctacgcta")
+    obj = Dseq("agcgtagctgtagtatgtgatctggtctaa", "ttagaccagatcacatactacagctacgcta")
     assert repr(obj) == "Dseq(-31)\n agcg..ctaa\natcgc..gatt"
 
-    obj = Dseq("Atagcgtagctgtagtatgtgatctggtctaa",
-               "ttagaccagatcacatactacagctacgcta")
+    obj = Dseq("Atagcgtagctgtagtatgtgatctggtctaa", "ttagaccagatcacatactacagctacgcta")
     assert repr(obj) == "Dseq(-32)\nAtagc..ctaa\n atcg..gatt"
 
-    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaa",
-               "tatcgcatcgacatcatacactagaccagatt"[::-1])
+    obj = Dseq("tagcgtagctgtagtatgtgatctggtctaa", "tatcgcatcgacatcatacactagaccagatt"[::-1])
 
     assert repr(obj) == "Dseq(-32)\n tagc..ctaa\ntatcg..gatt"
 
@@ -519,8 +507,7 @@ def test_dseq():
 
     assert obj1.find("tgtagta") == 9
 
-    assert Dseq("tagcgtagctgtagtatgtgatctggtcta",
-                "tagaccagatcacatactacagctacgcta").looped() == obj1
+    assert Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta").looped() == obj1
 
     from Bio.Restriction import BglII, BamHI
 
@@ -696,18 +683,15 @@ def test_repr():
 
     x = Dseq("gattcgtatgctgatcgtacgtactgaaaa")
 
-    assert repr(
-        x) == "Dseq(-30)\ngattcgtatgctgatcgtacgtactgaaaa\nctaagcatacgactagcatgcatgactttt"
+    assert repr(x) == "Dseq(-30)\ngattcgtatgctgatcgtacgtactgaaaa\nctaagcatacgactagcatgcatgactttt"
 
     y = Dseq("gattcgtatgctgatcgtacgtactgaaaa", "gactagcatgcatgactttt"[::-1])
 
-    assert repr(
-        y) == "Dseq(-30)\ngattcgtatgctgatcgtacgtactgaaaa\n          gactagcatgcatgactttt"
+    assert repr(y) == "Dseq(-30)\ngattcgtatgctgatcgtacgtactgaaaa\n          gactagcatgcatgactttt"
 
     z = Dseq("gattcgtatgctgatcgtacgtactgaaaa", "actagcatgcatgactttt"[::-1])
 
-    assert repr(
-        z) == "Dseq(-30)\ngattcgtatgctgatcgtacgtactgaaaa\n           actagcatgcatgactttt"
+    assert repr(z) == "Dseq(-30)\ngattcgtatgctgatcgtacgtactgaaaa\n           actagcatgcatgactttt"
 
 
 def test_shifted():

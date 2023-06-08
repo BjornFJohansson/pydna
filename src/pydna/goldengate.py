@@ -25,6 +25,7 @@
 """Assembly of sequences by GoldenGate ligation assembly."""
 from Bio.Restriction import BsaI, BsmBI, BbsI, FokI
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
+
 # from copy import deepcopy as _deepcopy
 import logging as _logging
 

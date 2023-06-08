@@ -73,38 +73,19 @@ def test_eq():
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=True)
     assert eq(Seq("AAA"), Dseqrecord("AAA"), linear=False)
 
-    assert eq(
-        Dseqrecord(
-            "AAA", circular=False), Dseqrecord(
-            "AAA", circular=False))
-    assert eq(
-        Dseqrecord(
-            "AAA", circular=True), Dseqrecord(
-            "AAA", circular=True))
-    assert not eq(
-        Dseqrecord(
-            "ATA", circular=False), Dseqrecord(
-            "AAT", circular=False))
-    assert eq(
-        Dseqrecord(
-            "ATA", circular=True), Dseqrecord(
-            "AAT", circular=True))
+    assert eq(Dseqrecord("AAA", circular=False), Dseqrecord("AAA", circular=False))
+    assert eq(Dseqrecord("AAA", circular=True), Dseqrecord("AAA", circular=True))
+    assert not eq(Dseqrecord("ATA", circular=False), Dseqrecord("AAT", circular=False))
+    assert eq(Dseqrecord("ATA", circular=True), Dseqrecord("AAT", circular=True))
 
     with pytest.raises(ValueError):
         eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATA", circular=False))
 
-    assert not eq(
-        Dseqrecord(
-            "ATA", circular=True), Dseqrecord(
-            "ATAA", circular=True))
+    assert not eq(Dseqrecord("ATA", circular=True), Dseqrecord("ATAA", circular=True))
 
     assert eq(Dseqrecord("ATA"), Dseqrecord("ATA"), circular=True)
     assert not eq(Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True)
-    assert not eq(
-        Dseqrecord("ATA"),
-        Dseqrecord("ATA"),
-        Dseqrecord("CCC"),
-        circular=True)
+    assert not eq(Dseqrecord("ATA"), Dseqrecord("ATA"), Dseqrecord("CCC"), circular=True)
 
 
 # def test_shift_origin():
@@ -204,18 +185,14 @@ def test_cseguid():
     from pydna.utils import cseguid
 
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-    assert cseguid(x) == cseguid(
-        x.upper()) == cseguid(
-        x.lower()) == "naaZmDzyMa58OsNXROe5SvjC7WU"
+    assert cseguid(x) == cseguid(x.upper()) == cseguid(x.lower()) == "naaZmDzyMa58OsNXROe5SvjC7WU"
 
 
 def test_lseguid():
     from pydna.utils import lseguid_blunt
 
     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-    assert lseguid_blunt(x) == lseguid_blunt(
-        x.upper()) == lseguid_blunt(
-        x.lower()) == "bHrqalTJ793oAigMQ5_qCttJRTk"
+    assert lseguid_blunt(x) == lseguid_blunt(x.upper()) == lseguid_blunt(x.lower()) == "bHrqalTJ793oAigMQ5_qCttJRTk"
 
 
 def test_rc():
@@ -235,8 +212,7 @@ def test_complement():
 def test_seq31():
     from pydna.utils import seq31
 
-    assert seq31(
-        "MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer") == "M  A  I  V  M  G  R  W  K  G  A  R  *"
+    assert seq31("MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer") == "M  A  I  V  M  G  R  W  K  G  A  R  *"
 
 
 def test_parse_text_table():
@@ -267,8 +243,7 @@ def test_join_list_to_table():
 
     cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
 
-    assert join_list_to_table(
-        cs) == "one   two   three\nfour  five  six  \nseven eight nine "
+    assert join_list_to_table(cs) == "one   two   three\nfour  five  six  \nseven eight nine "
 
     cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "\n" "|||\n" "three\n" "six\n" "nine"
 
@@ -277,8 +252,7 @@ def test_join_list_to_table():
 
     rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
 
-    assert join_list_to_table(
-        rs) == "one   two   three\nfour  five  six  \nseven eight nine "
+    assert join_list_to_table(rs) == "one   two   three\nfour  five  six  \nseven eight nine "
 
     assert join_list_to_table("somestring") is None
 
