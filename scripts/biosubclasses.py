@@ -31,7 +31,6 @@ def empty_copy(obj):
 
 
 class ExactPosition(_ExactPosition):
-
     def __copy__(self):
         c = empty_copy(self)
         c.__dict__ = self.__dict__
@@ -47,7 +46,6 @@ class ExactPosition(_ExactPosition):
 
 
 class SimpleLocation(_SimpleLocation):
-
     def __copy__(self):
         c = empty_copy(self)
         c.__dict__ = self.__dict__
@@ -63,7 +61,6 @@ class SimpleLocation(_SimpleLocation):
 
 
 class SeqFeature(_SeqFeature):
-
     def __copy__(self):
         c = empty_copy(self)
         c.__dict__ = self.__dict__

@@ -8,9 +8,12 @@ import pytest
 import pathlib
 
 
+pathlib.Path("coverage.xml").unlink(missing_ok=True)
+pathlib.Path(".coverage").unlink(missing_ok=True)
+
+
 def main():
     """docstring."""
-
     os.environ["pydna_data_dir"] = tempfile.mkdtemp(prefix="pydna_data_dir_")
     os.environ["pydna_log_dir"] = tempfile.mkdtemp(prefix="pydna_log_dir_")
     os.environ["pydna_config_dir"] = tempfile.mkdtemp(prefix="pydna_config_dir_")
