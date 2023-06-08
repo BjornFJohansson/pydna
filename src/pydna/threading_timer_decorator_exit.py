@@ -28,7 +28,7 @@ from time import sleep
 import _thread as thread
 
 
-def cdquit(fn_name): # pragma: no cover
+def cdquit(fn_name):  # pragma: no cover
     # print to stderr, unbuffered in Python 2.
     print('{0} took too long'.format(fn_name), file=sys.stderr)
     sys.stderr.flush()  # Python 3 stderr is likely buffered.
@@ -57,24 +57,24 @@ def exit_after(s):
 
 
 @exit_after(1)
-def a(): # pragma: no cover
+def a():  # pragma: no cover
     print('a')
 
 
 @exit_after(2)
-def b(): # pragma: no cover
+def b():  # pragma: no cover
     print('b')
     sleep(1)
 
 
 @exit_after(3)
-def c(): # pragma: no cover
+def c():  # pragma: no cover
     print('c')
     sleep(2)
 
 
 @exit_after(4)
-def d(): # pragma: no cover
+def d():  # pragma: no cover
     print('d started')
     for i in range(10):
         sleep(1)
@@ -82,7 +82,7 @@ def d(): # pragma: no cover
 
 
 @exit_after(5)
-def countdown(n): # pragma: no cover
+def countdown(n):  # pragma: no cover
     print('countdown started', flush=True)
     for i in range(n, -1, -1):
         print(i, end=', ', flush=True)
@@ -90,7 +90,7 @@ def countdown(n): # pragma: no cover
     print('countdown finished')
 
 
-def main(): # pragma: no cover
+def main():  # pragma: no cover
     a()
     b()
     c()
