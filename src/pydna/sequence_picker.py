@@ -45,7 +45,7 @@ def genbank_accession(s: str):
     start, stop = sorted((best_hsp.sbjct_start, best_hsp.sbjct_end))
     result = Dseqrecord(
         dbs,
-        linear=True,
+        circular=False,
         id=s.name,
         name=s.name,
         description=(f"{best_alignment.accession} " f"REGION: {start}..{stop}"),
