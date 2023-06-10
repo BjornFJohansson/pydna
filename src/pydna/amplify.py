@@ -35,6 +35,24 @@ import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
+_table = {  # IUPAC Ambiguity Codes for Nucleotide Degeneracy
+    "A": "A",
+    "C": "C",
+    "G": "G",
+    "T": "T",
+    "R": "(A|G)",
+    "Y": "(C|T)",
+    "S": "(G|C)",
+    "W": "(A|T)",
+    "K": "(G|T)",
+    "M": "(A|C)",
+    "B": "(C|G|T)",
+    "D": "(A|G|T)",
+    "H": "(A|C|T)",
+    "V": "(A|C|G)",
+    "N": "(A|G|C|T)",
+}
+
 
 def _annealing_positions(primer, template, limit=15):
     """Finds the annealing position(s) for a primer on a template where the
@@ -82,25 +100,10 @@ def _annealing_positions(primer, template, limit=15):
     # head is minimum part of primer that must anneal
     head = prc[:limit].upper()
 
-    table = {
-        "R": "(A|G)",
-        "Y": "(C|T)",
-        "S": "(G|C)",
-        "W": "(A|T)",
-        "K": "(G|T)",
-        "M": "(A|C)",
-        "B": "(C|G|T)",
-        "D": "(A|G|T)",
-        "H": "(A|C|T)",
-        "V": "(A|C|G)",
-        "N": "(A|G|C|T)",
-    }
-
     # Make regex pattern that reflects extended IUPAC DNA code
-    for key in table:
-        head = head.replace(key, table[key])
+    head = "".join(_table[key] for key in head)
 
-    positions = [m.start() for m in _re.finditer("(?={})".format(head), template, _re.I)]
+    positions = [m.start() for m in _re.finditer(f"(?={head})", template, _re.I)]
 
     if positions:
         tail = prc[limit:].lower()
