@@ -398,10 +398,10 @@ class Assembly(object):  # , metaclass=_Memoize):
         )
 
     @exit_after(int(_os.getenv("pydna_assembly_limit", 10)))
-    def assemble_circular(self):
+    def assemble_circular(self, length_bound=None):
         cps = {}  # circular assembly
         cpsrc = {}
-        cpaths = sorted(_nx.simple_cycles(self.G), key=len)
+        cpaths = sorted(_nx.simple_cycles(self.G, length_bound=length_bound), key=len)
         cpaths_sorted = []
         for cpath in cpaths:
             order, node = min((self.G.nodes[node]["order"], node) for node in cpath)
