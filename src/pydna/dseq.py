@@ -374,7 +374,7 @@ class Dseq(_Seq):
         self.watson = _pretty_str(watson)
         self.crick = _pretty_str(crick)
         self.length = len(self._data)
-        self._ovhg = ovhg
+        self.ovhg = ovhg
         self.pos = pos
 
     @classmethod
@@ -390,7 +390,7 @@ class Dseq(_Seq):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(watson)
         obj.crick = _pretty_str(crick)
-        obj._ovhg = ovhg
+        obj.ovhg = ovhg
         obj.circular = circular
         # obj._linear = linear
         obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
@@ -412,7 +412,7 @@ class Dseq(_Seq):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(dna)
         obj.crick = _pretty_str(_rc(dna))
-        obj._ovhg = 0
+        obj.ovhg = 0
         obj.circular = circular
         # obj._linear = linear
         obj.length = len(dna)
@@ -424,7 +424,7 @@ class Dseq(_Seq):
     def from_representation(cls, dsdna: str, *args, **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
         w, c, *r = [ln for ln in dsdna.splitlines() if ln]
-        ovhg = obj._ovhg = len(w) - len(w.lstrip()) - (len(c) - len(c.lstrip()))
+        ovhg = obj.ovhg = len(w) - len(w.lstrip()) - (len(c) - len(c.lstrip()))
         watson = obj.watson = _pretty_str(w.strip())
         crick = obj.crick = _pretty_str(c.strip()[::-1])
         obj.circular = False
@@ -436,12 +436,12 @@ class Dseq(_Seq):
         obj._data = _rc(cb[-max(0, ovhg) or len(cb) :]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
         return obj
 
-    @property
-    def ovhg(self):
-        """The ovhg property. This cannot be set directly, but is a
-        consequence of how the watson and crick strands anneal to
-        each other"""
-        return self._ovhg
+    # @property
+    # def ovhg(self):
+    #     """The ovhg property. This cannot be set directly, but is a
+    #     consequence of how the watson and crick strands anneal to
+    #     each other"""
+    #     return self._ovhg
 
     # @property
     # def linear(self):
@@ -587,10 +587,10 @@ class Dseq(_Seq):
         """Returns a subsequence. This method is used by the slice notation"""
 
         if not self.circular:
-            x = len(self.crick) - self._ovhg - len(self.watson)
+            x = len(self.crick) - self.ovhg - len(self.watson)
 
-            sns = (self._ovhg * " " + self.watson + x * " ")[sl]
-            asn = (-self._ovhg * " " + self.crick[::-1] + -x * " ")[sl]
+            sns = (self.ovhg * " " + self.watson + x * " ")[sl]
+            asn = (-self.ovhg * " " + self.crick[::-1] + -x * " ")[sl]
 
             ovhg = max((len(sns) - len(sns.lstrip()), -len(asn) + len(asn.lstrip())), key=abs)
 
@@ -634,7 +634,7 @@ class Dseq(_Seq):
             same = (
                 other.watson.lower() == self.watson.lower()
                 and other.crick.lower() == self.crick.lower()
-                and other.ovhg == self._ovhg
+                and other.ovhg == self.ovhg
                 and self.circular == other.circular
             )
             # Also test for alphabet ?
@@ -647,15 +647,15 @@ class Dseq(_Seq):
         longer than 30 bp"""
 
         if len(self) > Dseq.trunc:
-            if self._ovhg > 0:
-                d = self.crick[-self._ovhg :][::-1]
+            if self.ovhg > 0:
+                d = self.crick[-self.ovhg :][::-1]
                 hej = len(d)
                 if len(d) > 10:
                     d = "{}..{}".format(d[:4], d[-4:])
                 a = len(d) * " "
 
-            elif self._ovhg < 0:
-                a = self.watson[: max(0, -self._ovhg)]
+            elif self.ovhg < 0:
+                a = self.watson[: max(0, -self.ovhg)]
                 hej = len(a)
                 if len(a) > 10:
                     a = "{}..{}".format(a[:4], a[-4:])
@@ -665,10 +665,10 @@ class Dseq(_Seq):
                 d = ""
                 hej = 0
 
-            x = self._ovhg + len(self.watson) - len(self.crick)
+            x = self.ovhg + len(self.watson) - len(self.crick)
 
             if x > 0:
-                c = self.watson[len(self.crick) - self._ovhg :]
+                c = self.watson[len(self.crick) - self.ovhg :]
                 y = len(c)
                 if len(c) > 10:
                     c = "{}..{}".format(c[:4], c[-4:])
@@ -685,7 +685,7 @@ class Dseq(_Seq):
                 y = 0
 
             L = len(self) - hej - y
-            x1 = -min(0, self._ovhg)
+            x1 = -min(0, self.ovhg)
             x2 = x1 + L
             x3 = -min(0, x)
             x4 = x3 + L
@@ -715,8 +715,8 @@ class Dseq(_Seq):
                     self.__class__.__name__,
                     {False: "-", True: "o"}[self.circular],
                     len(self),
-                    self._ovhg * " " + self.watson,
-                    -self._ovhg * " " + self.crick[::-1],
+                    self.ovhg * " " + self.watson,
+                    -self.ovhg * " " + self.crick[::-1],
                 )
             )
 
@@ -741,7 +741,7 @@ class Dseq(_Seq):
         >>>
 
         """
-        ovhg = len(self.watson) - len(self.crick) + self._ovhg
+        ovhg = len(self.watson) - len(self.crick) + self.ovhg
         return Dseq.quick(
             self.crick,
             self.watson,
@@ -809,7 +809,7 @@ class Dseq(_Seq):
         if type5 == type3 and str(sticky5) == str(_rc(sticky3)):
             nseq = Dseq.quick(
                 self.watson,
-                self.crick[-self._ovhg :] + self.crick[: -self._ovhg],
+                self.crick[-self.ovhg :] + self.crick[: -self.ovhg],
                 ovhg=0,
                 # linear=False,
                 circular=True,
@@ -894,11 +894,11 @@ class Dseq(_Seq):
             return "5'", self.watson.lower()
         if not self.watson and self.crick:
             return "3'", self.crick.lower()
-        if self._ovhg < 0:
-            sticky = self.watson[: -self._ovhg].lower()
+        if self.ovhg < 0:
+            sticky = self.watson[: -self.ovhg].lower()
             type_ = "5'"
-        elif self._ovhg > 0:
-            sticky = self.crick[-self._ovhg :].lower()
+        elif self.ovhg > 0:
+            sticky = self.crick[-self.ovhg :].lower()
             type_ = "3'"
         else:
             sticky = ""
@@ -939,7 +939,7 @@ class Dseq(_Seq):
 
         """
 
-        ovhg = len(self.watson) - len(self.crick) + self._ovhg
+        ovhg = len(self.watson) - len(self.crick) + self.ovhg
 
         if ovhg < 0:
             sticky = self.crick[:-ovhg].lower()
@@ -983,7 +983,7 @@ class Dseq(_Seq):
         other_type, other_tail = other.five_prime_end()
 
         if self_type == other_type and str(self_tail) == str(_rc(other_tail)):
-            answer = Dseq.quick(self.watson + other.watson, other.crick + self.crick, self._ovhg)
+            answer = Dseq.quick(self.watson + other.watson, other.crick + self.crick, self.ovhg)
         elif not self:
             answer = _copy.copy(other)
         elif not other:
@@ -1011,7 +1011,7 @@ class Dseq(_Seq):
                     stuffer += n
                 else:
                     break
-        return self.crick + stuffer, self._ovhg + len(stuffer)
+        return self.crick + stuffer, self.ovhg + len(stuffer)
 
     def _fill_in_three_prime(self, nucleotides):
         stuffer = ""
@@ -1218,6 +1218,19 @@ class Dseq(_Seq):
 
     t4 = T4  # alias for the T4 method.
 
+    def exo1_front(self, n=1):
+        """5'-3' resection at the start (left side) of the molecule."""
+        d = _copy.deepcopy(self)
+        d.ovhg += n
+        d.watson = d.watson[n:]
+        return d
+
+    def exo1_end(self, n=1):
+        """5'-3' resection at the end (right side) of the molecule."""
+        d = _copy.deepcopy(self)
+        d.crick = d.crick[n:]
+        return d
+
     def no_cutters(self, batch: _RestrictionBatch = None):
         """Enzymes in a RestrictionBatch not cutting sequence."""
         if not batch:
@@ -1307,7 +1320,7 @@ class Dseq(_Seq):
         >>> a.isblunt()
         False
         """
-        return self._ovhg == 0 and len(self.watson) == len(self.crick) and not self.circular
+        return self.ovhg == 0 and len(self.watson) == len(self.crick) and not self.circular
 
     def cas9(self, RNA: str):
         """docstring."""
