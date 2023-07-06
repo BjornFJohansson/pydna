@@ -364,12 +364,6 @@ class Dseq(_Seq):
                     else:
                         self._data = bytes(watson, encoding="ASCII")
 
-        # self._circular = (bool(circular)
-        #                   and bool(linear) ^ bool(circular)
-        #                   or linear is False
-        #                   and circular is None)
-
-        # self._linear = not self._circular
         self.circular = circular
         self.watson = _pretty_str(watson)
         self.crick = _pretty_str(crick)
@@ -383,7 +377,6 @@ class Dseq(_Seq):
         watson: str,
         crick: str,
         ovhg=0,
-        # linear=True,
         circular=False,
         pos=0,
     ):
@@ -392,7 +385,6 @@ class Dseq(_Seq):
         obj.crick = _pretty_str(crick)
         obj.ovhg = ovhg
         obj.circular = circular
-        # obj._linear = linear
         obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
         obj.pos = pos
         wb = bytes(watson, encoding="ASCII")
@@ -741,12 +733,10 @@ class Dseq(_Seq):
         >>>
 
         """
-        ovhg = len(self.watson) - len(self.crick) + self.ovhg
         return Dseq.quick(
             self.crick,
             self.watson,
-            ovhg=ovhg,
-            # linear=self.linear,
+            ovhg=len(self.watson) - len(self.crick) + self.ovhg,
             circular=self.circular,
         )
 

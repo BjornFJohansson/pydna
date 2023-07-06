@@ -67,16 +67,6 @@ from pydna.threading_timer_decorator_exit import exit_after
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
-# TODO use quicker inits for contig
-# TODO remove maxnodes for init
-
-
-# class _Memoize(type):
-#     @_memorize("pydna.assembly.Assembly")
-#     def __call__(cls, *args, **kwargs):
-#         return super().__call__(*args, **kwargs)
-
-
 class Assembly(object):  # , metaclass=_Memoize):
     """Assembly of a list of linear DNA fragments into linear or circular
     constructs. The Assembly is meant to replace the Assembly method as it
