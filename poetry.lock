@@ -1346,11 +1346,13 @@ optional = false
 python-versions = ">=3.6"
 files = [
     {file = "pydivsufsort-0.0.11-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:4639466431b8932b1d0b2ad80e88577332921d1b09052b726cdc6ee29758344c"},
+    {file = "pydivsufsort-0.0.11-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e4a341192e4fd07b6b14558a2af2e96cd66e5a352ea9e82db954cff7d65556e4"},
     {file = "pydivsufsort-0.0.11-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a466e75b07f37cb61e7b39e8299bdbf51ca31d26ff3f55b7d9b0854d02759f0c"},
     {file = "pydivsufsort-0.0.11-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1aec18ebd1f12896baf73977a09e7bc108776b5a8b387240f6d15d1b86346f3d"},
     {file = "pydivsufsort-0.0.11-cp310-cp310-win32.whl", hash = "sha256:a069fb305431d12f612383ac05aec925b500041055f53b146152c45a81f6954c"},
     {file = "pydivsufsort-0.0.11-cp310-cp310-win_amd64.whl", hash = "sha256:49db706d8105531b9cbf44a897a625553dd1ba89b1f405801fd0c5270c37966c"},
     {file = "pydivsufsort-0.0.11-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:e4df25c4004d829dce2d4b43a47c0f89fa45e0edd0d30eeef40e3eaa51acf0e0"},
+    {file = "pydivsufsort-0.0.11-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:a12f8c1f057df28dbf6aafb9a7ecab31d57e58f048a3be081c1e6b685443c52d"},
     {file = "pydivsufsort-0.0.11-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:059e1aba39997aeb55199982fa1423ae46de59f286ee3f5c3da72aa9e85fcd6f"},
     {file = "pydivsufsort-0.0.11-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e0687d1239207a4f0ad23bd89c2e7034ee0762cdc3b314e0cbb5d77438c5587c"},
     {file = "pydivsufsort-0.0.11-cp311-cp311-win32.whl", hash = "sha256:d3b590193c1c6caf6bb400bf3d68a33d8c3698f17be6678f267e9d79e27b9ba2"},
@@ -1366,11 +1368,13 @@ files = [
     {file = "pydivsufsort-0.0.11-cp37-cp37m-win32.whl", hash = "sha256:a39e11850ff19028dc85635311b76f42cbd693755de1179fddcddc673c90b9b2"},
     {file = "pydivsufsort-0.0.11-cp37-cp37m-win_amd64.whl", hash = "sha256:2a06fcb6f26187b8f1c6cd4ecd3fd9a64c73a94c207e3ce0b5c791d7c90f5146"},
     {file = "pydivsufsort-0.0.11-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:da08f1dbee5f9f04ee606934e86369e34d32c753d7121af740b929cf7b558496"},
+    {file = "pydivsufsort-0.0.11-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:f7a8c882929ca91c917f5fd7a11ffa68990838744d18d6c5e0f01edb765309b6"},
     {file = "pydivsufsort-0.0.11-cp38-cp38-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e607b67c620baba9f5cd8b8b44998890c56d2e5916968f20d8b6bedb52e10551"},
     {file = "pydivsufsort-0.0.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3517ea3b12a6e224bec8cd9e284c76d56456327425f1c39ca16dd8c54994c207"},
     {file = "pydivsufsort-0.0.11-cp38-cp38-win32.whl", hash = "sha256:69310e85d0106aceac114d22ece5cb9fe722dfda191ae2c79d74161e405c30c6"},
     {file = "pydivsufsort-0.0.11-cp38-cp38-win_amd64.whl", hash = "sha256:3813a675b4baa3db8911be47dfc47068ee54acc48277b87203a7a9b31f1cb31c"},
     {file = "pydivsufsort-0.0.11-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a24fd3c111dc78ec214836a6b1ab378b525b0675674b6e1455b2ba4a1e9f199b"},
+    {file = "pydivsufsort-0.0.11-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:f33dab83b6e49abd0c6d3ebac61ba130cdd537f95bdf5be025a95a81551949a2"},
     {file = "pydivsufsort-0.0.11-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:60b4d1100a41a4ac23da1b9f0d5af68d1d3b51f26b2816c14af1b5de61aeccff"},
     {file = "pydivsufsort-0.0.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9c9180900cac8ee3080445b9e34518e61199b5a507cb86e8b3c7aea420893b44"},
     {file = "pydivsufsort-0.0.11-cp39-cp39-win32.whl", hash = "sha256:a5f143f01d3b22f1abd3ca61cd71ad00210997d7a9110078b70bcbdb5e20d03d"},
@@ -1570,13 +1574,13 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtuale
 
 [[package]]
 name = "pytest-doctestplus"
-version = "0.12.1"
+version = "1.0.0"
 description = "Pytest plugin with advanced doctest features."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pytest-doctestplus-0.12.1.tar.gz", hash = "sha256:7a979e4be99d9116e07ac066c5f00d45f387677d7d779f3bef30c6ffa8c79181"},
-    {file = "pytest_doctestplus-0.12.1-py3-none-any.whl", hash = "sha256:1046bac8dad27c3abcf370edf8f353b7f5d748d537296d481b0cad2cbb306052"},
+    {file = "pytest-doctestplus-1.0.0.tar.gz", hash = "sha256:f650440dcaede13ed6d7da73bfb4ac585d40a80444ba3542d3e6eecdb275d49f"},
+    {file = "pytest_doctestplus-1.0.0-py3-none-any.whl", hash = "sha256:dcba88e1e38bc4871c355e44b778ccfd49b25e33f6aa5393eed6b56440decb2a"},
 ]
 
 [package.dependencies]
