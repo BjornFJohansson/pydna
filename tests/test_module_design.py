@@ -300,5 +300,14 @@ def test_circular_assembly_fragments2():
     )
 
 
+def test_too_short_template():
+    from pydna.amplicon import Amplicon
+    from pydna.design import primer_design
+    from pydna.dseqrecord import Dseqrecord
+
+    fragment = Dseqrecord("GCCACCATGG")
+    assert primer_design(fragment) == Amplicon("")
+
+
 if __name__ == "__main__":
     pytest.cmdline.main([__file__, "-v", "-s"])

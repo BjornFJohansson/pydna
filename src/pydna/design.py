@@ -18,7 +18,7 @@ from pydna.tm import tm_default as _tm_default
 import math as _math
 import os as _os
 import copy as _copy
-
+from pydna.amplicon import Amplicon as _Amplicon
 from pydna.amplify import Anneal as _Anneal
 from pydna.amplify import pcr as _pcr
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
@@ -121,11 +121,14 @@ def primer_design(template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=
         """returns a string"""
         tmp = 0
         length = limit
+        tlen = len(template)
         p = str(template.seq[:length])
         while tmp < target_tm:
             length += 1
             p = str(template.seq[:length])
             tmp = tm_func(p)
+            if length >= tlen:
+                break
         ps = p[:-1]
         tmps = tm_func(str(ps))
         _module_logger.debug(((p, tmp), (ps, tmps)))
@@ -179,7 +182,7 @@ def primer_design(template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=
 
     ampl = _Anneal((fp, rp), template, limit=limit)
 
-    prod = ampl.products[0]
+    prod = ampl.products[0] if ampl.products else _Amplicon("")
 
     if len(ampl.products) > 1:
         import warnings as _warnings

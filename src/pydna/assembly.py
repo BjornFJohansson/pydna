@@ -245,8 +245,8 @@ class Assembly(object):  # , metaclass=_Memoize):
                     if start1 <= ft.location.start and start2 + G.nodes[node2]["length"] >= ft.location.end
                 ]
 
-                for feat in feats:
-                    feat.location += -start1
+                # for feat in feats:
+                #     feat.location += -start1
 
                 G.add_edge(
                     node1,
@@ -304,10 +304,11 @@ class Assembly(object):  # , metaclass=_Memoize):
                 node,
                 "end",
                 piece=slice(start, len(lastfragment["mixed"])),
-                features=[f for f in lastfragment["features"] if start <= f.location.end],
+                features=[f for f in lastfragment["features"] if start <= f.location.start],
                 seq=lastfragment["mixed"],
                 name=lastfragment["name"],
             )
+            # breakpoint()
 
         # add edges from nodes in last reverse complement sequence to "end_rc"
         lastfragmentrc = self.rcfragments[lastfragment["mixed"]]
@@ -316,7 +317,7 @@ class Assembly(object):  # , metaclass=_Memoize):
                 node,
                 "end_rc",
                 piece=slice(start, len(lastfragmentrc["mixed"])),
-                features=[f for f in lastfragmentrc["features"] if start <= f.location.end],
+                features=[f for f in lastfragmentrc["features"] if start <= f.location.start],
                 seq=lastfragmentrc["mixed"],
                 name=lastfragmentrc["name"],
             )
