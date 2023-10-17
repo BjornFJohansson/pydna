@@ -37,8 +37,8 @@ biopython = ">=1.80"
 networkx = ">=2.8.8"
 pydivsufsort = ">=0.0.11"
 prettytable = ">=3.5.0"
-pyperclip = ">=1.8.2"
 pyfiglet = ">=0.8.post1"
+pyperclip = { version = ">=1.8.2", optional = true }
 scipy = { version = ">=1.8.0", optional = true }
 matplotlib = { version = ">=3.4.3", optional = true }
 pillow = { version = ">=8.4.0", optional = true }
@@ -47,6 +47,7 @@ requests = { version = ">=2.26.0", optional = true }
 cai2 = { version = ">=1.0.5", optional = true }
 pyqt5 = { version = ">=5.15.0", optional = true }
 [tool.poetry.extras]
+clipboard = ["pyperclip"]
 gel = ["scipy", "matplotlib", "pillow"]
 download = ["pyparsing", "requests"]
 gui = ["pyqt5"]
