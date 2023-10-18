@@ -56,11 +56,9 @@ def embl_gb_fasta(raw, ds, path=None):
                 nf.__dict__ = _deepcopy(f.__dict__)
             parsed.features = nfs
             if ds and path:
-                result_list.append(
-                    _GenbankFile.from_SeqRecord(parsed, linear=not circular, circular=circular, path=path)
-                )
+                result_list.append(_GenbankFile.from_SeqRecord(parsed, circular=circular, path=path))
             elif ds:
-                result_list.append(_Dseqrecord.from_SeqRecord(parsed, linear=not circular, circular=circular))
+                result_list.append(_Dseqrecord.from_SeqRecord(parsed, circular=circular))
             else:
                 parsed.annotations.update({"molecule_type": "DNA"})
                 result_list.append(parsed)
