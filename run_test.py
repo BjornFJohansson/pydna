@@ -68,6 +68,7 @@ def main():
     # stats.print_stats("local_path", 20) # Only show 20 of the listings
     # stats.sort_stats('cumulative').print_stats('dir_name', 20) # Sort by cumulative time
 
+    print("run_test.py return code:", int(return_value_doc_tests and return_value_unit_tests))
     return int(return_value_doc_tests and return_value_unit_tests)
 
 
