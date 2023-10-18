@@ -384,10 +384,16 @@ def get_env():
 def logo():
     """Ascii-art logotype of pydna."""
     from pydna._pretty import pretty_str as _pretty_str
-    from pyfiglet import Figlet
 
-    f = Figlet()
-    return _pretty_str(f.renderText(f"pydna {__version__}"))
+    message = f"pydna {__version__}"
+    try:
+        from pyfiglet import Figlet
+    except ModuleNotFoundError:
+        pass
+    else:
+        f = Figlet()
+        message = f.renderText(message)
+    return _pretty_str(message)
 
 
 if __name__ == "__main__":
