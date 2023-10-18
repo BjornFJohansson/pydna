@@ -68,11 +68,11 @@ def main():
     # stats.print_stats("local_path", 20) # Only show 20 of the listings
     # stats.sort_stats('cumulative').print_stats('dir_name', 20) # Sort by cumulative time
 
-    return_value = int(return_value_doc_tests and return_value_unit_tests)
+    return_value = return_value_doc_tests + return_value_unit_tests
 
     print("run_test.py return code:", return_value)
 
-    return return_value + 1
+    return return_value
 
 
 if __name__ == "__main__":
