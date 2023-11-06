@@ -109,22 +109,22 @@ class Dseq(_Seq):
 
     The ovhg parameter controls the stagger at the five prime end::
 
-        dsDNA    ovhg
+        dsDNA       overhang
 
-          XXX    2
-        XXXXX
+          nnn...    2
+        nnnnn...
 
-         XXXX    1
-        XXXXX
+         nnnn...    1
+        nnnnn...
 
-        XXXXX    0
-        XXXXX
+        nnnnn...    0
+        nnnnn...
 
-        XXXXX   -1
-         XXXX
+        nnnnn...   -1
+         nnnn...
 
-        XXXXX   -2
-          XXX
+        nnnnn...   -2
+          nnn...
 
     Example of creating Dseq objects with different amounts of stagger:
 

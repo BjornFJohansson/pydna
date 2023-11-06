@@ -24,6 +24,7 @@ import xml.etree.ElementTree as _et
 def embl_gb_fasta(raw, ds, path=None):
     # regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
     regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|" r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
+    "(?:^>.+\n^(?:^[^>]+?)(?=\n\n|>|^LOCUS|ID))|(?:(?:^LOCUS|ID)(?:(?:.|\n)+?)^//)"
 
     result_list = []
 
