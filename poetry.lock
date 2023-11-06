@@ -83,6 +83,10 @@ files = [
     {file = "biopython-1.81-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a51d9c1d1b4b634447535da74a644fae59bc234fbbf9001e2dc6b6fbabb98019"},
     {file = "biopython-1.81-cp311-cp311-win32.whl", hash = "sha256:2f9cfaf16d55ab80d514e7aebe5710dabe4e4ff47ede851031202e33b3249da3"},
     {file = "biopython-1.81-cp311-cp311-win_amd64.whl", hash = "sha256:e41b55edcfd448630e77bf4de66a7235324a8a149621499891da6bd1d5085b9a"},
+    {file = "biopython-1.81-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:175fcddc9f22a070aa6db54755d60c4b31090cc39f5f5f4b0a9a5d1ae3b45cd7"},
+    {file = "biopython-1.81-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9ec149487f3d1e0cf2b52b6071641c161ed545b0855ff51a71506152e14fc5bb"},
+    {file = "biopython-1.81-cp312-cp312-win32.whl", hash = "sha256:daeab15274bbcc0455cbd378636e14f53bc7c5b1f383e77021d7222e72cc3418"},
+    {file = "biopython-1.81-cp312-cp312-win_amd64.whl", hash = "sha256:22f5741aca91af0a76c0d5617e58e554fd3374bbd16e0c0ac1facf45b107313b"},
     {file = "biopython-1.81-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:3b36ba1bf6395c09a365c53530c9d71f3617763fa2c1d452b3d8948368c0f1de"},
     {file = "biopython-1.81-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7c5c07123ff5f44c9e6b5369df854a38afd3c0c50ef58498a0ae8f7eb799f3e8"},
     {file = "biopython-1.81-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:97cbdbed01b2512471f36c74b91658d1dfbdcbf39bc038f6ce5a41c3e60a8fc6"},
@@ -352,6 +356,7 @@ files = [
     {file = "contourpy-1.1.0-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:18a64814ae7bce73925131381603fff0116e2df25230dfc80d6d690aa6e20b37"},
     {file = "contourpy-1.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:90c81f22b4f572f8a2110b0b741bb64e5a6427e0a198b2cdc1fbaf85f352a3aa"},
     {file = "contourpy-1.1.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:53cc3a40635abedbec7f1bde60f8c189c49e84ac180c665f2cd7c162cc454baa"},
+    {file = "contourpy-1.1.0-cp310-cp310-win32.whl", hash = "sha256:9b2dd2ca3ac561aceef4c7c13ba654aaa404cf885b187427760d7f7d4c57cff8"},
     {file = "contourpy-1.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:1f795597073b09d631782e7245016a4323cf1cf0b4e06eef7ea6627e06a37ff2"},
     {file = "contourpy-1.1.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:0b7b04ed0961647691cfe5d82115dd072af7ce8846d31a5fac6c142dcce8b882"},
     {file = "contourpy-1.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:27bc79200c742f9746d7dd51a734ee326a292d77e7d94c8af6e08d1e6c15d545"},
@@ -360,6 +365,7 @@ files = [
     {file = "contourpy-1.1.0-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:e5cec36c5090e75a9ac9dbd0ff4a8cf7cecd60f1b6dc23a374c7d980a1cd710e"},
     {file = "contourpy-1.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1f0cbd657e9bde94cd0e33aa7df94fb73c1ab7799378d3b3f902eb8eb2e04a3a"},
     {file = "contourpy-1.1.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:181cbace49874f4358e2929aaf7ba84006acb76694102e88dd15af861996c16e"},
+    {file = "contourpy-1.1.0-cp311-cp311-win32.whl", hash = "sha256:edb989d31065b1acef3828a3688f88b2abb799a7db891c9e282df5ec7e46221b"},
     {file = "contourpy-1.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:fb3b7d9e6243bfa1efb93ccfe64ec610d85cfe5aec2c25f97fbbd2e58b531256"},
     {file = "contourpy-1.1.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:bcb41692aa09aeb19c7c213411854402f29f6613845ad2453d30bf421fe68fed"},
     {file = "contourpy-1.1.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:5d123a5bc63cd34c27ff9c7ac1cd978909e9c71da12e05be0231c608048bb2ae"},
@@ -368,6 +374,7 @@ files = [
     {file = "contourpy-1.1.0-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:317267d915490d1e84577924bd61ba71bf8681a30e0d6c545f577363157e5e94"},
     {file = "contourpy-1.1.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d551f3a442655f3dcc1285723f9acd646ca5858834efeab4598d706206b09c9f"},
     {file = "contourpy-1.1.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:e7a117ce7df5a938fe035cad481b0189049e8d92433b4b33aa7fc609344aafa1"},
+    {file = "contourpy-1.1.0-cp38-cp38-win32.whl", hash = "sha256:108dfb5b3e731046a96c60bdc46a1a0ebee0760418951abecbe0fc07b5b93b27"},
     {file = "contourpy-1.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:d4f26b25b4f86087e7d75e63212756c38546e70f2a92d2be44f80114826e1cd4"},
     {file = "contourpy-1.1.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:bc00bb4225d57bff7ebb634646c0ee2a1298402ec10a5fe7af79df9a51c1bfd9"},
     {file = "contourpy-1.1.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:189ceb1525eb0655ab8487a9a9c41f42a73ba52d6789754788d1883fb06b2d8a"},
@@ -376,6 +383,7 @@ files = [
     {file = "contourpy-1.1.0-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:143dde50520a9f90e4a2703f367cf8ec96a73042b72e68fcd184e1279962eb6f"},
     {file = "contourpy-1.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e94bef2580e25b5fdb183bf98a2faa2adc5b638736b2c0a4da98691da641316a"},
     {file = "contourpy-1.1.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:ed614aea8462735e7d70141374bd7650afd1c3f3cb0c2dbbcbe44e14331bf002"},
+    {file = "contourpy-1.1.0-cp39-cp39-win32.whl", hash = "sha256:71551f9520f008b2950bef5f16b0e3587506ef4f23c734b71ffb7b89f8721999"},
     {file = "contourpy-1.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:438ba416d02f82b692e371858143970ed2eb6337d9cdbbede0d8ad9f3d7dd17d"},
     {file = "contourpy-1.1.0-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:a698c6a7a432789e587168573a864a7ea374c6be8d4f31f9d87c001d5a843493"},
     {file = "contourpy-1.1.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:397b0ac8a12880412da3551a8cb5a187d3298a72802b45a3bd1805e204ad8439"},
@@ -1494,42 +1502,45 @@ files = [
 
 [[package]]
 name = "pydivsufsort"
-version = "0.0.11"
+version = "0.0.12"
 description = "String algorithms"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pydivsufsort-0.0.11-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:4639466431b8932b1d0b2ad80e88577332921d1b09052b726cdc6ee29758344c"},
-    {file = "pydivsufsort-0.0.11-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a466e75b07f37cb61e7b39e8299bdbf51ca31d26ff3f55b7d9b0854d02759f0c"},
-    {file = "pydivsufsort-0.0.11-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1aec18ebd1f12896baf73977a09e7bc108776b5a8b387240f6d15d1b86346f3d"},
-    {file = "pydivsufsort-0.0.11-cp310-cp310-win32.whl", hash = "sha256:a069fb305431d12f612383ac05aec925b500041055f53b146152c45a81f6954c"},
-    {file = "pydivsufsort-0.0.11-cp310-cp310-win_amd64.whl", hash = "sha256:49db706d8105531b9cbf44a897a625553dd1ba89b1f405801fd0c5270c37966c"},
-    {file = "pydivsufsort-0.0.11-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:e4df25c4004d829dce2d4b43a47c0f89fa45e0edd0d30eeef40e3eaa51acf0e0"},
-    {file = "pydivsufsort-0.0.11-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:059e1aba39997aeb55199982fa1423ae46de59f286ee3f5c3da72aa9e85fcd6f"},
-    {file = "pydivsufsort-0.0.11-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e0687d1239207a4f0ad23bd89c2e7034ee0762cdc3b314e0cbb5d77438c5587c"},
-    {file = "pydivsufsort-0.0.11-cp311-cp311-win32.whl", hash = "sha256:d3b590193c1c6caf6bb400bf3d68a33d8c3698f17be6678f267e9d79e27b9ba2"},
-    {file = "pydivsufsort-0.0.11-cp311-cp311-win_amd64.whl", hash = "sha256:45064e475ab926df4897bcc6ab48b6399c454637f1ea31bb0758416fdc0f9c65"},
-    {file = "pydivsufsort-0.0.11-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:e4f523f87e4566d58140ea8606dbb890543d85bb03460fde7855ba424511bd17"},
-    {file = "pydivsufsort-0.0.11-cp36-cp36m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:951c3fd651b65b2295965c331c21812f29a973ed2eb89a21ae1f74829f581879"},
-    {file = "pydivsufsort-0.0.11-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9d73b6542cade982e77c7ea7fddb1e1ec77b8f6f1732819ef49dd9a7129cab55"},
-    {file = "pydivsufsort-0.0.11-cp36-cp36m-win32.whl", hash = "sha256:b34c4e7052520cafb9e1f9cce621361d141f8955f7a6c3002a3b6c7652bd972d"},
-    {file = "pydivsufsort-0.0.11-cp36-cp36m-win_amd64.whl", hash = "sha256:f2941b00780469e2a9f239a88f3fb1c73f953a721c245b4b9f1a2f5a1d34189a"},
-    {file = "pydivsufsort-0.0.11-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:de44d437a30c94980464de0c62904d30956e0eab74e4f5de9951931592d7629e"},
-    {file = "pydivsufsort-0.0.11-cp37-cp37m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8b0fd3269104f81ca150e23baec713fc7c7ed2dd02754429b9c8524ececdb83f"},
-    {file = "pydivsufsort-0.0.11-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c9320d14a6878f902d361f5a56e8b9ef6849e4fd2360d6b369ca8bd418be8f2d"},
-    {file = "pydivsufsort-0.0.11-cp37-cp37m-win32.whl", hash = "sha256:a39e11850ff19028dc85635311b76f42cbd693755de1179fddcddc673c90b9b2"},
-    {file = "pydivsufsort-0.0.11-cp37-cp37m-win_amd64.whl", hash = "sha256:2a06fcb6f26187b8f1c6cd4ecd3fd9a64c73a94c207e3ce0b5c791d7c90f5146"},
-    {file = "pydivsufsort-0.0.11-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:da08f1dbee5f9f04ee606934e86369e34d32c753d7121af740b929cf7b558496"},
-    {file = "pydivsufsort-0.0.11-cp38-cp38-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e607b67c620baba9f5cd8b8b44998890c56d2e5916968f20d8b6bedb52e10551"},
-    {file = "pydivsufsort-0.0.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3517ea3b12a6e224bec8cd9e284c76d56456327425f1c39ca16dd8c54994c207"},
-    {file = "pydivsufsort-0.0.11-cp38-cp38-win32.whl", hash = "sha256:69310e85d0106aceac114d22ece5cb9fe722dfda191ae2c79d74161e405c30c6"},
-    {file = "pydivsufsort-0.0.11-cp38-cp38-win_amd64.whl", hash = "sha256:3813a675b4baa3db8911be47dfc47068ee54acc48277b87203a7a9b31f1cb31c"},
-    {file = "pydivsufsort-0.0.11-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a24fd3c111dc78ec214836a6b1ab378b525b0675674b6e1455b2ba4a1e9f199b"},
-    {file = "pydivsufsort-0.0.11-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:60b4d1100a41a4ac23da1b9f0d5af68d1d3b51f26b2816c14af1b5de61aeccff"},
-    {file = "pydivsufsort-0.0.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9c9180900cac8ee3080445b9e34518e61199b5a507cb86e8b3c7aea420893b44"},
-    {file = "pydivsufsort-0.0.11-cp39-cp39-win32.whl", hash = "sha256:a5f143f01d3b22f1abd3ca61cd71ad00210997d7a9110078b70bcbdb5e20d03d"},
-    {file = "pydivsufsort-0.0.11-cp39-cp39-win_amd64.whl", hash = "sha256:4d9c6f414df8cfb9b884572d3c78d85ef02b377dfb623c0104610d47b8ae90e9"},
-    {file = "pydivsufsort-0.0.11.tar.gz", hash = "sha256:cd6cb98c93b8538fb49f6c468a45126825747e5d0e4a694e1c9e22ed0568b377"},
+    {file = "pydivsufsort-0.0.12-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:59b5864d5e25943339cf55058459b2b0ba5bcb190ab055601add9dc70c1c7418"},
+    {file = "pydivsufsort-0.0.12-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:0b47004a16581c511ede92e7dc05997f3dc89b6dcf579c24ca67abfa1feac485"},
+    {file = "pydivsufsort-0.0.12-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2642089d278018fd5eb9768522dcf951822425dac6accce79df0b6b56c815b82"},
+    {file = "pydivsufsort-0.0.12-cp310-cp310-win32.whl", hash = "sha256:94a800ba28aaf52c4f703357ef5cd75a509148e7e15c21168252c81508798b4e"},
+    {file = "pydivsufsort-0.0.12-cp310-cp310-win_amd64.whl", hash = "sha256:d95057b4e79e93f5b983d3a1e76a3cf8d1f5a2f9c0ba36bb44beeeecfd7137d9"},
+    {file = "pydivsufsort-0.0.12-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:2310294f0f5a99b4bcc8a8d0aec488f9f0ae138c2b96bb6f09b4ff26e98dd01c"},
+    {file = "pydivsufsort-0.0.12-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:e5fb15b3ad135438c3820dc762310a39ca8ab3754d6f8b6d6e17727918c9fe3a"},
+    {file = "pydivsufsort-0.0.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1b370c05c5f764c28eb4ed092a22f6547606ef5b0e5dec599309fcaa5e0b4b9f"},
+    {file = "pydivsufsort-0.0.12-cp311-cp311-win32.whl", hash = "sha256:c239c2decbbfb9215c76a1aee56b591ee7e3f6d04a7a444b38d6428b37e7bb7e"},
+    {file = "pydivsufsort-0.0.12-cp311-cp311-win_amd64.whl", hash = "sha256:6be5fadd2c8bdbc44955e55a21304e71a131fcb8182da706b24233c6497b1952"},
+    {file = "pydivsufsort-0.0.12-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:2190103bdd8e6b0a5c5f757844d25ef4dc61a695d95c484a3d6fdb84501e06ba"},
+    {file = "pydivsufsort-0.0.12-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f2c6e622bf41c5d660f8c8e84db2940a85ab10fa3ea4f66a60d39cc2a7a3611f"},
+    {file = "pydivsufsort-0.0.12-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d4abbfbec1804ddee902c3e52327e19e4d874f46e12b67d084853765f8b6509b"},
+    {file = "pydivsufsort-0.0.12-cp312-cp312-win32.whl", hash = "sha256:16814d28194561baccd606b4ddbe2d3fd79cf880f9bc9203f4a349fd429d4056"},
+    {file = "pydivsufsort-0.0.12-cp312-cp312-win_amd64.whl", hash = "sha256:8c0eecf744e6f6b5a8f765d4ce042540178bb0607c3ecad84181c2243528be66"},
+    {file = "pydivsufsort-0.0.12-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:b587b09394882ce37b78e4056ed757c146d6e2a01856533248e098734bab4e93"},
+    {file = "pydivsufsort-0.0.12-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:76fcf4c411ae9de1e93f0dc2881fedf4f3950e8570dd8085bca262d85ab16aa4"},
+    {file = "pydivsufsort-0.0.12-cp36-cp36m-win32.whl", hash = "sha256:bdfa237223e066325cd9f243b4232787fa93594a01a62b4b46583110a914bf2d"},
+    {file = "pydivsufsort-0.0.12-cp36-cp36m-win_amd64.whl", hash = "sha256:2205ac2749e7463767cfc024c36a69a117bb53f35f5095d64efe15710ead4a40"},
+    {file = "pydivsufsort-0.0.12-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:ed436f9a79f9b1b4809fa1114e9bc8d84a04eb6284b4f71bc2ed58266e94036c"},
+    {file = "pydivsufsort-0.0.12-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c9c68cf99b15ceb1da2c913dd2b6e05a1f613d0716ff9f9d58a3624408b5d3ff"},
+    {file = "pydivsufsort-0.0.12-cp37-cp37m-win32.whl", hash = "sha256:a021ed3e1ae6edfcafbd1a3e66228e36c12d3347db27da5130c92c5a06475444"},
+    {file = "pydivsufsort-0.0.12-cp37-cp37m-win_amd64.whl", hash = "sha256:1291d5c137d8f7506b5c9f602640689c02f9ed8492e83f60cd9d7b335e290790"},
+    {file = "pydivsufsort-0.0.12-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:663d871cd881e3b9b24a9bff6d5d4a59cb686b2b2cecbf8d2a3b088c5e6ca0bb"},
+    {file = "pydivsufsort-0.0.12-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:2418daab881b5d9d1995976dd395ddb0c6516f35bae48eab8e1a636bc67445cc"},
+    {file = "pydivsufsort-0.0.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bba6c75f80599225a5e5421770c91ef3f921e078d6fa63b817007af883fa6059"},
+    {file = "pydivsufsort-0.0.12-cp38-cp38-win32.whl", hash = "sha256:71548f32ed0ad40c49344a0e3b5928265840f76d7e6df788d7c53a6b29c34087"},
+    {file = "pydivsufsort-0.0.12-cp38-cp38-win_amd64.whl", hash = "sha256:d459905e055515071dcffc3d860e3a564c5eb7cb7e2ac2c8efd79ad94a37fa62"},
+    {file = "pydivsufsort-0.0.12-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:233353dca35df0f923a109173fb2506991f08ef026bf5255ca579ebfed3024a7"},
+    {file = "pydivsufsort-0.0.12-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:cb4e971c636b8fae63c3d55ebb39f40e4126face9b4351b8b9f1fb477633d735"},
+    {file = "pydivsufsort-0.0.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b025baeaff8128ea708c3285c83c77b93a0336d375cf29cf4767fb9e12c8f58d"},
+    {file = "pydivsufsort-0.0.12-cp39-cp39-win32.whl", hash = "sha256:a4766cc2312da1a601e5044acabe586171e0b759a5f8ee91f64ee2d2b1f88f08"},
+    {file = "pydivsufsort-0.0.12-cp39-cp39-win_amd64.whl", hash = "sha256:d90a0f67c107ab1bf68f024eda4e116680dd27f63a081ec6b1dc8048d6ebb4b4"},
+    {file = "pydivsufsort-0.0.12.tar.gz", hash = "sha256:22097d5be82e3a0be8c0e7608ee855b16746d7e6c2921d44680728a2c019a7da"},
 ]
 
 [package.dependencies]
@@ -1579,7 +1590,7 @@ diagrams = ["jinja2", "railroad-diagrams"]
 name = "pyperclip"
 version = "1.8.2"
 description = "A cross-platform clipboard module for Python. (Only handles plain text for now.)"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "pyperclip-1.8.2.tar.gz", hash = "sha256:105254a8b04934f0bc84e9c24eb360a591aaf6535c9def5f29d92af107a9bf57"},
@@ -1593,6 +1604,7 @@ optional = true
 python-versions = ">=3.7"
 files = [
     {file = "PyQt5-5.15.10-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:93288d62ebd47b1933d80c27f5d43c7c435307b84d480af689cef2474e87e4c8"},
+    {file = "PyQt5-5.15.10-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:862cea3be95b4b0a2b9678003b3a18edf7bd5eafd673860f58820f246d4bf616"},
     {file = "PyQt5-5.15.10-cp37-abi3-manylinux_2_17_x86_64.whl", hash = "sha256:b89478d16d4118664ff58ed609e0a804d002703c9420118de7e4e70fa1cb5486"},
     {file = "PyQt5-5.15.10-cp37-abi3-win32.whl", hash = "sha256:ff99b4f91aa8eb60510d5889faad07116d3340041916e46c07d519f7cad344e1"},
     {file = "PyQt5-5.15.10-cp37-abi3-win_amd64.whl", hash = "sha256:501355f327e9a2c38db0428e1a236d25ebcb99304cd6e668c05d1188d514adec"},
@@ -1611,6 +1623,7 @@ optional = true
 python-versions = "*"
 files = [
     {file = "PyQt5_Qt5-5.15.11-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:109c418d221538751e4d7755a81c978ee31abbd65facb3f1f361dca74a1b758a"},
+    {file = "PyQt5_Qt5-5.15.11-py3-none-macosx_11_0_arm64.whl", hash = "sha256:3cccb21942eb49d21fb0193f28e3e8ae3d35395f158e8a9d4d58e23efa3a2ea7"},
 ]
 
 [[package]]
@@ -2247,6 +2260,7 @@ docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.link
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [extras]
+clipboard = ["pyperclip"]
 download = ["pyparsing", "requests"]
 express = ["cai2"]
 gel = ["matplotlib", "pillow", "scipy"]
@@ -2255,4 +2269,4 @@ gui = ["pyqt5"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8"
-content-hash = "20f97d2d90f1f6e1557e688cfe6ae4b48c0c665e1836df43425cf1e5e77b8504"
+content-hash = "afac04373d3d44604a968b10b0cedf614dcc10e6a1847bdb3e8052ef8c7091ad"
