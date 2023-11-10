@@ -455,7 +455,7 @@ class Dseq(_Seq):
 
         Examples
         --------
-        ```
+
         >>> Dseq.from_full_sequence_and_overhangs('AAAAAA', crick_ovhg=2, watson_ovhg=2)
         Dseq(-6)
           AAAA
@@ -472,7 +472,7 @@ class Dseq(_Seq):
         Dseq(-6)
         AAAA
           TTTT
-        ```
+
         """
         full_sequence_rev = str(Dseq(full_sequence).reverse_complement())
         watson = full_sequence
