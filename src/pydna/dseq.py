@@ -74,7 +74,8 @@ class Dseq(_Seq):
     The most common usage is probably to create a Dseq object as a
     part of a Dseqrecord object (see :class:`pydna.dseqrecord.Dseqrecord`).
 
-    There are three ways of creating a Dseq object directly:
+    There are three ways of creating a Dseq object directly listed below, but you can also
+    use the function Dseq.from_full_sequence_and_overhangs() to create a Dseq:
 
     Only one argument (string):
 
@@ -427,6 +428,70 @@ class Dseq(_Seq):
         cb = bytes(crick, encoding="ASCII")
         obj._data = _rc(cb[-max(0, ovhg) or len(cb) :]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
         return obj
+
+    @classmethod
+    def from_full_sequence_and_overhangs(cls, full_sequence: str, crick_ovhg: int, watson_ovhg: int):
+        """Create a linear Dseq object from a full sequence and the 3' overhangs of each strand.
+
+        The order of the parameters is like this because the 3' overhang of the crick strand is the one
+        on the left side of the sequence.
+
+
+        Parameters
+        ----------
+        full_sequence: str
+            The full sequence of the Dseq object.
+
+        crick_ovhg: int
+            The overhang of the crick strand in the 3' end. Equivalent to Dseq.ovhg.
+
+        watson_ovhg: int
+            The overhang of the watson strand in the 5' end.
+
+        Returns
+        -------
+        Dseq
+            A Dseq object.
+
+        Examples
+        --------
+        ```
+        >>> Dseq.from_full_sequence_and_overhangs('AAAAAA', crick_ovhg=2, watson_ovhg=2)
+        Dseq(-6)
+          AAAA
+        TTTT
+        >>> Dseq.from_full_sequence_and_overhangs('AAAAAA', crick_ovhg=-2, watson_ovhg=2)
+        Dseq(-6)
+        AAAAAA
+          TT
+        >>> Dseq.from_full_sequence_and_overhangs('AAAAAA', crick_ovhg=2, watson_ovhg=-2)
+        Dseq(-6)
+          AA
+        TTTTTT
+        >>> Dseq.from_full_sequence_and_overhangs('AAAAAA', crick_ovhg=-2, watson_ovhg=-2)
+        Dseq(-6)
+        AAAA
+          TTTT
+        ```
+        """
+        full_sequence_rev = str(Dseq(full_sequence).reverse_complement())
+        watson = full_sequence
+        crick = full_sequence_rev
+
+        # If necessary, we trim the left side
+        if crick_ovhg < 0:
+            crick = crick[:crick_ovhg]
+        elif crick_ovhg > 0:
+            watson = watson[crick_ovhg:]
+
+        # If necessary, we trim the right side
+        if watson_ovhg < 0:
+            watson = watson[:watson_ovhg]
+        elif watson_ovhg > 0:
+            crick = crick[watson_ovhg:]
+
+        return Dseq(watson, crick=crick, ovhg=crick_ovhg)
+
 
     # @property
     # def ovhg(self):
@@ -941,6 +1006,10 @@ class Dseq(_Seq):
             sticky = ""
             type_ = "blunt"
         return type_, sticky
+
+    def watson_ovhg(self):
+        """Returns the overhang of the watson strand at the three prime."""
+        return len(self.watson) - len(self.crick) + self.ovhg
 
     def __add__(self, other):
         """Simulates ligation between two DNA fragments.
