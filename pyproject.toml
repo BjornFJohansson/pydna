@@ -11,18 +11,15 @@ classifiers=["Development Status :: 4 - Beta",
              "Intended Audience :: Science/Research",
              "License :: OSI Approved :: BSD License",
              "Operating System :: OS Independent",
-             "Programming Language :: Python :: 3.7",
              "Programming Language :: Python :: 3.8",
              "Programming Language :: Python :: 3.9",
              "Programming Language :: Python :: 3.10",
              "Programming Language :: Python :: 3.11",
+             "Programming Language :: Python :: 3.12",
              "Topic :: Education",
              "Topic :: Scientific/Engineering :: Bio-Informatics", ]
-[project.urls]
-homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
-documentation = "https://pydna.readthedocs.io/?badge=latest"
-repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
-changelog = "https://github.com/BjornFJohansson/pydna/blob/master/docs/CHANGELOG.md#changelog"
+[tool.poetry.urls]
+Changelog = "https://github.com/BjornFJohansson/pydna/blob/master/docs/CHANGELOG.md#changelog"
 [tool.poetry]
 name = "pydna"
 version = "5.2.0-a.15"
@@ -30,6 +27,9 @@ description = "Representing double stranded DNA and functions for simulating clo
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
 readme = "README.md"
+homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
+documentation = "https://pydna.readthedocs.io/?badge=latest"
+repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
 [tool.poetry.dependencies]
 python = ">=3.8"
 appdirs = ">=1.4.4"
@@ -37,9 +37,9 @@ biopython = ">=1.80"
 networkx = ">=2.8.8"
 pydivsufsort = ">=0.0.11"
 prettytable = ">=3.5.0"
-pyfiglet = ">=0.8.post1"
+pyfiglet = "0.8.post1"
 pyperclip = { version = ">=1.8.2", optional = true }
-scipy = { version = ">=1.8.0", optional = true }
+scipy = { version = ">=1.9.3", optional = true }
 matplotlib = { version = ">=3.4.3", optional = true }
 pillow = { version = ">=8.4.0", optional = true }
 pyparsing = { version = ">=2.4.7", optional = true }
