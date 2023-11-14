@@ -40,7 +40,6 @@ jobs:
       - name: 🌍 🔩 Install with Poetry
         run: |
           pip install poetry
-          poetry config virtualenvs.create false
           poetry install
 
       - name: 🔎 python run_test.py
