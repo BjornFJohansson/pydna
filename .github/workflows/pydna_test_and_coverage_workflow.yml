@@ -41,7 +41,7 @@ jobs:
         run: |
           pip install poetry
           poetry config virtualenvs.create false
-          poetry install --only main
+          poetry install
 
       - name: 🔎 python run_test.py
         shell: bash -l {0}
