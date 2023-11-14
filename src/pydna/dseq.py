@@ -1244,8 +1244,7 @@ class Dseq(_Seq):
         return self.n_cutters(n=2, batch=batch)
 
     def n_cutters(self, n=3, batch: _RestrictionBatch = None):
-        """Returns the enzymes in a RestrictionBatch that cut the sequence
-        n times."""
+        """Enzymes in a RestrictionBatch cutting n times."""
         if not batch:
             batch = CommOnly
         ana = batch.search(self)
