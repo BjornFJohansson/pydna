@@ -40,7 +40,7 @@ jobs:
       - name: 🌍 🔩 Install with Poetry
         run: |
           pip install poetry
-          poetry install
+          poetry install --all-extras --with test
 
       - name: 🔎 python run_test.py
         shell: bash -l {0}

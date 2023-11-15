@@ -45,12 +45,10 @@ pillow = { version = ">=8.4.0", optional = true }
 pyparsing = { version = ">=2.4.7", optional = true }
 requests = { version = ">=2.26.0", optional = true }
 cai2 = { version = ">=1.0.5", optional = true }
-pyqt5 = { version = ">=5.15.0", optional = true }
 [tool.poetry.extras]
 clipboard = ["pyperclip"]
 gel = ["scipy", "matplotlib", "pillow"]
 download = ["pyparsing", "requests"]
-gui = ["pyqt5"]
 express = ["cai2"]
 [build-system]
 requires = ["poetry-core",
