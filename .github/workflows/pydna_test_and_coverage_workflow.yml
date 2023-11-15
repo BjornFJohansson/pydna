@@ -29,6 +29,9 @@ jobs:
           python-version: "3.12"
 
     runs-on: ${{ matrix.os }}
+    defaults:
+        run:
+        shell: bash
     steps:
 
       - name: 🛑 Cancel Previous Runs
