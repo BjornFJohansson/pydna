@@ -41,7 +41,7 @@ jobs:
         run: pip install poetry
 
       - name: 🔩 change Poetry setting to use active Python
-        run: poetry config virtualenvs.prefer-active-python false
+        run: poetry config virtualenvs.prefer-active-python true
 
       - name: 🔩 Install with Poetry
         run: poetry install --all-extras --with test
