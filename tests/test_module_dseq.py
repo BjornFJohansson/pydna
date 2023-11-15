@@ -768,5 +768,22 @@ def test_translate():
     assert str(x.reverse_complement().translate()) == "LFH"
 
 
+def test_from_full_sequence_and_overhangs():
+    from pydna.dseq import Dseq
+    test_cases = [
+        (2, 2, "AAAA", "TTTT"),
+        (-2, 2, "AAAAAA", "TT" ),
+        (2, -2, "AA", "TTTTTT"),
+        (-2, -2, "AAAA", "TTTT"),
+        (0, 0, "AAAAAA", "TTTTTT"),
+    ]
+    for crick_ovhg, watson_ovhg, watson, crick in test_cases:
+        dseq_1 = Dseq.from_full_sequence_and_overhangs("AAAAAA", crick_ovhg=crick_ovhg, watson_ovhg=watson_ovhg)
+        dseq_2 = Dseq(watson, crick, ovhg=crick_ovhg, circular=False)
+
+        assert dseq_1 == dseq_2
+        assert dseq_2.watson_ovhg() == watson_ovhg
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
