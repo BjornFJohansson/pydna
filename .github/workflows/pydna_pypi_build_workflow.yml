@@ -4,6 +4,7 @@ on:
     types: [published]
     branches:
       - master
+      - dev_bjorn
 jobs:
   build:
     name: Build
@@ -53,13 +54,9 @@ jobs:
         shell: bash -l {0}
         run: git describe --tags
 
-      - name: 🔩 Build pypi wheel package
-        shell: bash -l {0}
-        run: poetry build
-
-      - name: 🔼 Publish a Python distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v1.17
         with:
-          user: __token__
-          password: ${{ secrets.PYDNA_PYPI_TOKEN }}
-          skip_existing: true
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          repository_name: "testpypi"
+          repository_url: "https://test.pypi.org/legacy/"
