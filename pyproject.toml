@@ -33,7 +33,7 @@ repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
 [tool.poetry.dependencies]
 python = ">=3.8"
 appdirs = ">=1.4.4"
-biopython = ">=1.81"
+biopython = ">=1.80"
 networkx = ">=2.8.8"
 pydivsufsort = ">=0.0.11"
 prettytable = ">=3.5.0"
