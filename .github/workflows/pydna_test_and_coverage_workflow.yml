@@ -44,7 +44,7 @@ jobs:
         run: poetry install --all-extras --with test
 
       - name: 🔎 poetry run python run_test.py
-        run: python run_test.py
+        run: poetry run python run_test.py
 
       - name: 🔼 Upload coverage to Codecov
         if: (matrix.codecov)
