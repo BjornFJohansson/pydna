@@ -255,6 +255,19 @@ or by `pip install scipy matplotlib pillow pyparsing requests cai2 pyqt5`
 3. Add the necessary tests in `tests/`.
 4. Run the tests from the root directory with `python run_test.py`.
 
+#### Building the documentation locally
+
+Below the commands to run a local sphinx server that auto-updated when files are changed.
+
+```
+# Install docs dependency group
+poetry install --with docs
+
+# Start the sphinx server to see docs live by default at http://127.0.0.1:8000/
+sphinx-autobuild --watch src/ docs docs/_build/html
+
+```
+
 ## Releases
 
 See the [releases](https://github.com/BjornFJohansson/pydna/releases) for changes and releases.
