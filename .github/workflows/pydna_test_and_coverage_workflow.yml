@@ -40,6 +40,9 @@ jobs:
       - name: 🔩 Install Poetry
         run: pip install poetry
 
+      - name: 🔩 set Poetry virtualenvs option
+        run: poetry config virtualenvs.create false
+
       - name: 🔩 Install with Poetry
         run: poetry install --all-extras --with test
 
