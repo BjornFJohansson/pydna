@@ -53,10 +53,6 @@ jobs:
       - name: 🔩 list Poetry settings
         run: poetry config --list
 
-      - name: pip install biopython on python 3.12
-        if: (matrix.python-version == "3.12")
-        run: poetry run pip install biopython
-
       - name: 🔩 Install with Poetry
         run: poetry install --all-extras --with test
 
