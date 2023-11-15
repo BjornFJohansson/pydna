@@ -37,10 +37,11 @@ jobs:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
 
-      - name: 🌍 🔩 Install with Poetry
-        run: |
-          pip install poetry
-          poetry install --all-extras --with test
+      - name: 🔩 Install Poetry
+        run: pip install poetry
+
+      - name: 🔩 Install with Poetry
+        run: poetry install --all-extras --with test
 
       - name: 🔎 python run_test.py
         shell: bash -l {0}
