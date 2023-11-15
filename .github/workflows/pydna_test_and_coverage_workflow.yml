@@ -44,7 +44,6 @@ jobs:
         run: poetry install --all-extras --with test
 
       - name: 🔎 python run_test.py
-        shell: bash -l {0}
         run: python run_test.py
 
       - name: 🔼 Upload coverage to Codecov
