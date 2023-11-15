@@ -770,9 +770,10 @@ def test_translate():
 
 def test_from_full_sequence_and_overhangs():
     from pydna.dseq import Dseq
+
     test_cases = [
         (2, 2, "AAAA", "TTTT"),
-        (-2, 2, "AAAAAA", "TT" ),
+        (-2, 2, "AAAAAA", "TT"),
         (2, -2, "AA", "TTTTTT"),
         (-2, -2, "AAAA", "TTTT"),
         (0, 0, "AAAAAA", "TTTTTT"),

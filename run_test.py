@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import sys
 import os
 import logging
 import tempfile
-import pytest
 import pathlib
-
+import pytest
 
 pathlib.Path("coverage.xml").unlink(missing_ok=True)
 pathlib.Path(".coverage").unlink(missing_ok=True)

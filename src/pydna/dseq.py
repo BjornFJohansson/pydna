@@ -492,7 +492,6 @@ class Dseq(_Seq):
 
         return Dseq(watson, crick=crick, ovhg=crick_ovhg)
 
-
     # @property
     # def ovhg(self):
     #     """The ovhg property. This cannot be set directly, but is a
