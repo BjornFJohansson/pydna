@@ -230,30 +230,30 @@ _logger.info(
 _Path(_os.environ["pydna_data_dir"]).mkdir(parents=True, exist_ok=True)
 
 # find out if optional dependecies for gel module are in place
-
-
-def _missing_modules_for_gel():
-    import importlib
-    from importlib import util
-
-    _missing = []
-    for _optm in ["scipy", "PIL", "numpy", "pyparsing", "requests"]:
-        _missing.extend([_optm] if not util.find_spec(_optm) else [])
-    del importlib
-    del util
-    return _missing
-
-
-_missing = _missing_modules_for_gel()
-
-if _missing:
-    _logger.warning(
-        "gel simulation will NOT be available." " Missing modules: %s",
-        ", ".join(_missing),
-    )
-else:
-    _logger.info("gel simulation is available," " optional dependencies were found.")
-
+#
+#
+# def _missing_modules_for_gel():
+#    import importlib
+#    from importlib import util
+#
+#    _missing = []
+#    for _optm in ["scipy", "PIL", "numpy", "pyparsing", "requests"]:
+#        _missing.extend([_optm] if not util.find_spec(_optm) else [])
+#    del importlib
+#    del util
+#    return _missing
+#
+#
+# _missing = _missing_modules_for_gel()
+#
+# if _missing:
+#    _logger.warning(
+#        "gel simulation will NOT be available." " Missing modules: %s",
+#        ", ".join(_missing),
+#    )
+# else:
+#    _logger.info("gel simulation is available," " optional dependencies were found.")
+#
 
 _logger.info("__version__ = %s", __version__)
 

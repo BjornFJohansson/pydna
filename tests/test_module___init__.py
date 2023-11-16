@@ -107,31 +107,31 @@ def test_read_ini_file():
     pydna
 
 
-def test_without_dependency():
-    import sys
-    from unittest.mock import patch
+# def test_without_dependency():
+#     import sys
+#     from unittest.mock import patch
 
-    with patch.dict(sys.modules, {"PIL": None}):
-        from importlib import reload
+#     with patch.dict(sys.modules, {"PIL": None}):
+#         from importlib import reload
 
-        reload(sys.modules["pydna"])
-        import pydna
+#         reload(sys.modules["pydna"])
+#         import pydna
 
-        assert "PIL" in pydna._missing
+#         assert "PIL" in pydna._missing
 
 
-def test_with_dependencies():
-    pytest.importorskip("PIL")
-    pytest.importorskip("scipy")
-    pytest.importorskip("numpy")
-    import sys
-    import pydna
-    from importlib import reload
+# def test_with_dependencies():
+#     pytest.importorskip("PIL")
+#     pytest.importorskip("scipy")
+#     pytest.importorskip("numpy")
+#     import sys
+#     import pydna
+#     from importlib import reload
 
-    reload(sys.modules["pydna"])
-    import pydna
+#     reload(sys.modules["pydna"])
+#     import pydna
 
-    assert pydna._missing == []
+#     assert pydna._missing == []
 
 
 def test_no_xdg_open(monkeypatch):

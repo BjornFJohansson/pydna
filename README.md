@@ -27,7 +27,7 @@ Pydna provides simulation of:
 - Gel electrophoresis of DNA with generation of gel images
 - Homologous recombination
 - Gibson assembly
-- Golden gate assembly
+- Golden gate assembly (in progress)
 
 
 Virtually any sub-cloning experiment can be described in pydna, and its execution yield
@@ -38,12 +38,13 @@ Pydna has been designed with the goal of being understandable for biologists wit
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
 
-To get started, I have compiled some [simple examples](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
+Start by looking at the [cookbook](https://github.com/BjornFJohansson/pydna/blob/master/docs/cookbook/cookbook.ipynb).
+
+Some simple examples can be found  [here](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
+
 For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
 
-
-
-
+See below for documentation.
 
 ![----]( http://bit.ly/coloredline)
 
@@ -80,11 +81,7 @@ DNA sequences are downloaded from Genbank by accession numbers that are guarante
     lin_vector = vector.linearize(EcoRV)
     rec_vec =  ( lin_vector + pcr_prod ).looped()
 
-Pydna can automate the simulation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) experiments using
-python. This is helpful to generate examples for teaching purposes.
-
-Read the documentation (below) or the [cookbook](https://github.com/BjornFJohansson/pydna/blob/master/docs/cookbook/cookbook.ipynb) with example files
-for further information.
+Another use case for pydna in the automatic generation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) examples for teaching purposes. These examples
 
 Feedback & suggestions are very welcome! Please post a message in the [google group](https://groups.google.com/d/forum/pydna) for pydna if you need help or have problems, questions or comments :sos:.
 
@@ -126,11 +123,10 @@ When using pydna.
 
 ![----]( http://bit.ly/coloredline)
 
-## Documentation
+## Documentation :page_with_curl:
 
 Documentation is built using [Sphinx](http://www.sphinx-doc.org/) from [docstrings](https://www.python.org/dev/peps/pep-0257/)
-in the code and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)
-
+in the code and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest).
 The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
 
 ![----]( http://bit.ly/coloredline)
@@ -150,7 +146,7 @@ or use the --pre switch to get the latest version of pydna.
 
 for optional functionality do:
 
-    pip install pydna[gel,download,express,gui]
+    pip install pydna[clipboard,download,express,gel]
 
 Remove options inside the square brackets as required, but be sure not to leave spaces as pip will not recognize the options. See below under "Optional dependencies".
 
@@ -178,32 +174,65 @@ I am happy to collaborate on new features or bugfixes.
 The list below is the minimal requirements for installing pydna.
 Biopython and pydivsufsort has c-extensions, but the other modules are pure python.
 
-- [Python 3.8, 3.9, 3.10 or 3.11](http://www.python.org)
+- [Python 3.8, 3.9, 3.10, 3.11 or 3.12](http://www.python.org)
 - [appdirs](https://pypi.python.org/pypi/appdirs)
 - [biopython](http://pypi.python.org/pypi/biopython)
 - [networkx](http://pypi.python.org/pypi/networkx)
 - [prettytable](https://pypi.python.org/pypi/PrettyTable)
 - [pydivsufsort](https://pypi.python.org/pypi/pydivsufsort)
+- [pyfiglet](https://pypi.python.org/pypi/pyfiglet)
 
-The above modules are installed as well as pyperclip and pyfiglet.
-Pydna is importable even without these two modules.
+Pydna is importable even without pyfiglet.
 
 ## Optional dependencies
 
-If the modules listed below in the first column are installed, they will provide the functionality listed in the second column.
+These can be installed `pip install pydna[clipboard,gel,download,express]`
+where `[clipboard,gel,download,express]` is the list of options available. Any
+combination of the words inside the square brackets are allowed, but no white space.
+
+
+### `clipboard`
+
+Enables the `pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard()` and `pydna.dseqrecord.Dseqrecord.copy_fasta_to_clipboard()`
+
+These methods will put a copy the sequence on the clipboard in either Genbank (gb) or fasta format.
+
+
+| Dependency                                          | Function in pydna                                      |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard                             |
+
+### download
+
+Pyparsing enables the `pydna.genbankfixer.gbtext_clean()` function that can automatically
+correct malformed sequence files in Genbank format. These are often found online, so this option also installs requests to enable the  `pydna.genbankfixer.download.download_text()` function which can be used to get cleaned up text from a URL.
+
+
+| Dependency                                          | Function in pydna                                      |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
+| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
+
+### express
+
+This option enables the `pydna.utils.cai()` function and the `cai()` method
+available from subclasses of `pydna.seqrecord.SeqRecord`, such as
+`pydna.dseqrecord.Dseqrecord`.
+
+| [cai2](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
+
+### gel
+
+Scipy, matplotlib and pillow (PIL) enable the generation of gel images. Numpy is also
+needed, but usually installed as a dependency of biopython.
+
 
 | Dependency                                          | Function in pydna                                      |
 | --------------------------------------------------- | ------------------------------------------------------ |
 | [scipy](https://www.scipy.org)                      | gel simulation with pydna.gel                          |
 | [matplotlib](http://matplotlib.org)                 | “                                                      |
 | [pillow](https://github.com/python-pillow/Pillow)   | “                                                      |
-| [numpy](http://www.numpy.org)                       | "                                                      |
-| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
-| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
-| [cai2](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
-| [pyqt5](https://pypi.python.org/pypi/pyqt5)         | future plan for gui                                    |
-| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard                             |
-| [pyfiglet](https://pypi.python.org/pypi/pyfiglet)   | print nice logotype (pydna.logo()                      |
+
 
 ## Requirements for running tests, coverage and profiling
 
@@ -217,7 +246,7 @@ If the modules listed below in the first column are installed, they will provide
 
 for instance by `pip install pytest pytest-cov pytest-doctestplus pytest-profiling coverage nbval requests-mock`
 
-Running the antire test suite also require:
+Running the entire test suite also require:
 
 - scipy
 - matplotlib
@@ -225,20 +254,22 @@ Running the antire test suite also require:
 - pyparsing
 - requests
 - cai2
-- pyqt5
 
-That can be installed by `pip install pydna[gel,gui,download,express]`
+That can be installed by `pip install pydna[clipboard,gel,download,express]`
 
-or by `pip install scipy matplotlib pillow pyparsing requests cai2 pyqt5`
+or by `pip install pyparsing requests cai2 scipy matplotlib pillow`
 
 
 ![----]( http://bit.ly/coloredline)
 
 ## Contributing
 
+Please direct pull requests towards the `develop` branch.
+
+
 ### Local development
 
-1. Use [Poetry](https://pypi.org/project/poetry) to install depencies and activate virtual environment.
+1. Use [Poetry](https://pypi.org/project/poetry) to install dependencies and activate virtual environment.
 
     ```bash
     # If you want the virtual environment to be created in this folder
@@ -268,26 +299,19 @@ sphinx-autobuild --watch src/ docs docs/_build/html
 
 ```
 
-## Releases
+## Automatic testing & Release process
 
 See the [releases](https://github.com/BjornFJohansson/pydna/releases) for changes and releases.
 
-![----]( http://bit.ly/coloredline)
-
-## Automatic testing & Release process
-
 There are two github actions for this package:
 
-- `pydna_test_and_coverage_workflow.yml`
-- `pydna_pypi_build_workflow.yml`
+- `.github/workflows/pydna_test_and_coverage_workflow.yml`
+- `.github/workflows/pydna_pypi_build_workflow.yml`
 
-The `pydna_test_and_coverage_workflow.yml` is triggered on all pushed commits for all branches.
-This workflow run tests, doctests and a series of Jupyter notebooks using pytest on Linux, Windows and macOS and all
+The test_and_coverage workflow is triggered on all pushed commits for all branches except the `master` branch. This workflow run tests, doctests and a series of Jupyter notebooks using pytest on Linux, Windows and macOS with all
 supported python versions.
 
-The other workflow builds a PyPI packages using poetry on
-
-These are triggered by publishing a github release manually from the github interface.
+The build workflow builds a PyPI packages using poetry. This workflow is triggered by publishing a Github release manually from the Github web interface.
 
 ![----]( http://bit.ly/coloredline)
 
@@ -322,8 +346,6 @@ These are triggered by publishing a github release manually from the github inte
 
 Pydna was made public in 2012 on [Google code](https://code.google.com/archive/p/pydna).
 
-
 :microbe:
-
 
 :portugal:

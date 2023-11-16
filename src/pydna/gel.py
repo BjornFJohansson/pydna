@@ -9,17 +9,15 @@
 
 """docstring."""
 
-from PIL import Image as _Image
-from PIL import ImageDraw as _ImageDraw
-import numpy as _np
 import math as _math
-from scipy.interpolate import CubicSpline as _CubicSpline
 from pydna.ladders import GeneRuler_1kb_plus as _mwstd
 
 
 def interpolator(mwstd):
     """docstring."""
-    interpolator = _CubicSpline(
+    from scipy.interpolate import CubicSpline
+
+    interpolator = CubicSpline(
         [len(fr) for fr in mwstd[::-1]],
         [fr.rf for fr in mwstd[::-1]],
         bc_type="natural",
@@ -30,6 +28,10 @@ def interpolator(mwstd):
 
 
 def gel(samples=None, gel_length=600, margin=50, interpolator=interpolator(mwstd=_mwstd)):
+    import numpy as np
+    from PIL import Image as Image
+    from PIL import ImageDraw as ImageDraw
+
     """docstring."""
     max_intensity = 256
     lane_width = 50
@@ -37,9 +39,9 @@ def gel(samples=None, gel_length=600, margin=50, interpolator=interpolator(mwstd
     start = 10
     samples = samples or [interpolator.mwstd]
     width = int(60 + (lane_width + lanesep) * len(samples))
-    lanes = _np.zeros((len(samples), gel_length), dtype=int)
-    image = _Image.new("RGB", (width, gel_length), "#ddd")
-    draw = _ImageDraw.Draw(image)
+    lanes = np.zeros((len(samples), gel_length), dtype=int)
+    image = Image.new("RGB", (width, gel_length), "#ddd")
+    draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, (width, gel_length)), fill=(0, 0, 0))
     scale = (gel_length - margin) / interpolator(min(interpolator.x))
 
@@ -72,10 +74,10 @@ def gel(samples=None, gel_length=600, margin=50, interpolator=interpolator(mwstd
                         pass
 
     for i, lane in enumerate(lanes):
-        max_intensity = _np.amax(lanes[i])
+        max_intensity = np.amax(lanes[i])
         if max_intensity > 256:
-            lanes[i] = _np.multiply(lanes[i], 256)
-            lanes[i] = _np.divide(lanes[i], max_intensity)
+            lanes[i] = np.multiply(lanes[i], 256)
+            lanes[i] = np.divide(lanes[i], max_intensity)
 
     for i, lane in enumerate(lanes):
         x1 = 50 + i * (lane_width + lanesep)
