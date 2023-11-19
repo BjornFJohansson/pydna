@@ -11,7 +11,7 @@ repos:
   - id: fix-encoding-pragma
   - id: mixed-line-ending
 - repo: https://github.com/ambv/black
-  rev: 23.3.0
+  rev: 23.11.0
   hooks:
   - id: black
     args: [-l 120, -S, .]
