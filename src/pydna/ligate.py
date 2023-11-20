@@ -21,6 +21,9 @@ def ligate(fragments: list):
     """docstring."""
     G = _nx.DiGraph()
     G.add_nodes_from(["begin", "end"])
+    fragments = fragments[:]
+
+    fragments.extend(f.rc() for f in fragments[1:])
 
     for node in fragments:
         G.add_edge("begin", node)
@@ -38,15 +41,20 @@ def ligate(fragments: list):
                 "",
             ) and seq2.seq.five_prime_end() != ("blunt", ""):
                 G.add_edge(seq1, seq2)
-                G.remove_edge("begin", seq2)
-                G.remove_edge(seq1, "end")
+                try:
+                    G.remove_edge("begin", seq2)
+                except _nx.NetworkXError as err:
+                    if "not in graph" not in str(err):
+                        raise
+                try:
+                    G.remove_edge(seq1, "end")
+                except _nx.NetworkXError as err:
+                    if "not in graph" not in str(err):
+                        raise
 
-    cpaths = sorted(_nx.simple_cycles(G), key=len, reverse=True)
-
+    cpaths = [p for p in sorted(_nx.simple_cycles(G), key=len) if len(p) > 1]
     csequences = [reduce(add, x).looped() for x in cpaths]
-
-    lpaths = sorted(_nx.all_simple_paths(G, "begin", "end"), key=len, reverse=True)
-
+    lpaths = [p for p in sorted(_nx.all_simple_paths(G, "begin", "end"), key=len) if len(p) > 3]
     lsequences = [reduce(add, lp[1:-1]) for lp in lpaths]
 
     return csequences, lsequences
@@ -63,38 +71,60 @@ if __name__ == "__main__":
     b = Dseqrecord(
         Dseq.from_representation(
             """
-                                            AAGGanna
-                                                ttntAGGA"""
+                                            AAGGatta
+                                                taatAGGA"""
         )
     )
     c = Dseqrecord(
         Dseq.from_representation(
             """
-                                            TCCTcnnnn
-                                                gnnnnCTAG"""
+                                            TCCTccact
+                                                ggtgaCTAG"""
         )
     )
 
     d = Dseqrecord(
         Dseq.from_representation(
             """
-                                               Tcnnnn
-                                                gnnnnC"""
+                                               Tcgcgc
+                                                gcgcgC"""
         )
     )
 
     e = Dseqrecord(
         Dseq.from_representation(
             """
-                                                Gcnnnn
-                                                 gnnnn"""
+                                                Gcaatt
+                                                 gttaa"""
         )
     )
 
     fragments = [a, b, c, d, e]
+    rcfragments = [a.rc(), b.rc(), c.rc(), d.rc(), e.rc()]
 
-    csequences, lsequences = ligate(fragments)
+    def list_combinations(a, b):
+        N = len(a)
+        combinations = []
+        for i in range(2**N):
+            current = []
+            for j in range(N):
+                if i & (1 << j):
+                    current.append(a[j])
+                else:
+                    current.append(b[j])
+            combinations.append(current)
 
-    for s in csequences + lsequences:
-        print(repr(s.seq))
-        print()
+        return combinations
+
+    # Example usage:
+    combinations = list_combinations(fragments, rcfragments)
+
+    for frgs in combinations:
+        csequences, lsequences = ligate(frgs)
+
+        for cs in csequences:
+            assert cs.cseguid() == "39FCQVitkpoxFJy5XX8ar9YJlsQ"
+            assert len(cs) == 24
+        for ss in lsequences:
+            assert ss.lseguid() == "GI62R7QoGcNolvEQrr4x5GEF-Kk"
+            assert len(ss) == 12
