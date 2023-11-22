@@ -20,3 +20,4 @@ jobs:
           repository_name: "testpypi"
           repository_url: "https://test.pypi.org/legacy/"
           plugins: "poetry-dynamic-versioning[plugin]"
+          package_directory: "pydna"
