@@ -1440,116 +1440,65 @@ class Dseq(_Seq):
 
         """
 
-        pad = "n" * 50
+        cutsites = self.get_cutsites(*enzymes)
+        cutsite_pairs = self.get_cutsite_pairs(cutsites)
+        return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
-        if self.circular:
-            dsseq = Dseq.from_string(
-                self._data.decode("ASCII"),
-                # linear=True,
-                circular=False,
-            )
-        else:
-            dsseq = self.mung()
+    def get_cutsites(self, *enzymes):
+        """Returns a list of cutsites, represented by tuples ((cut_watson, cut_crick), enzyme).
 
-        if len(enzymes) == 1 and hasattr(enzymes[0], "intersection"):
-            # argument is probably a RestrictionBatch
-            enzymecuts = []
-            for e in enzymes[0]:
-                cuts = e.search(
-                    _Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad) if self.circular else dsseq
+        Parameters
+        ----------
+
+        enzymes : Union[_RestrictionBatch,list[_RestrictionType]]
+
+        Returns
+        -------
+        list[tuple[tuple[int,int], _RestrictionType]]
+
+        TODO: check that the cutsite does not fall on the ovhg
+        """
+
+        if len(enzymes) == 1 and isinstance(enzymes[0], _RestrictionBatch):
+                # argument is probably a RestrictionBatch
+                enzymes = [e for e in enzymes[0]]
+
+        enzymes = _flatten(enzymes)
+        out = list()
+        for e in enzymes:
+            # Positions are 1-based, so we subtract 1 to get 0-based positions
+            cuts_watson = [c - 1 for c in e.search(self, linear=(not self.circular))]
+            cuts_crick = [(c - e.ovhg) % len(self) for c in cuts_watson]
+
+            out += [((w, c), e) for w, c in zip(cuts_watson, cuts_crick)]
+
+        return sorted(out)
+
+    def apply_cut(self, left_cut, right_cut):
+
+        left_watson, left_crick = left_cut[0]
+        ovhg = 0 if left_cut[1] is None else left_cut[1].ovhg
+        right_watson, right_crick = right_cut[0]
+        return Dseq(
+                    str(self[left_watson:right_watson]),
+                    _rc(str(self[left_crick:right_crick])),
+                    ovhg=ovhg,
                 )
-                enzymecuts.append((cuts, e))
-            enzymecuts.sort()
-            enzymes = [e for (c, e) in enzymecuts if c]
-        else:
-            # argument is probably a list of restriction enzymes
-            enzymes = [
-                e
-                for e in list(dict.fromkeys(_flatten(enzymes)))
-                if e.search(_Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad) if self.circular else dsseq)
-            ]  # flatten
 
-        if not enzymes:
-            return ()
-
+    def get_cutsite_pairs(self, cutsites):
+        if len(cutsites) == 0:
+            return []
+        if len(cutsites) == 1 and self.circular:
+            return [(cutsites[0], cutsites[0])]
         if not self.circular:
-            frags = [self]
+            cutsites = [((0, 0), None), *cutsites, ((len(self), len(self)), None)]
         else:
-            ln = len(self)
-            for e in enzymes:
-                wpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.watson + self.watson[: e.size - 1]) + pad)][
-                    ::-1
-                ]
-                cpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.crick + self.crick[: e.size - 1]) + pad)][
-                    ::-1
-                ]
+            # Return in the same order as previous pydna versions
+            cutsites = [cutsites[-1]] + cutsites[:-1]
+            # Add the first cutsite at the end, for circular cuts
+            cutsites.append(cutsites[0])
 
-                for w, c in _itertools.product(wpos, cpos):
-                    if w % len(self) == (self.length - c + e.ovhg) % len(self):
-                        frags = [
-                            Dseq(
-                                self.watson[w % ln :] + self.watson[: w % ln],
-                                self.crick[c % ln :] + self.crick[: c % ln],
-                                ovhg=e.ovhg,
-                                pos=min(w, len(dsseq) - c),
-                            )
-                        ]
-                        # breakpoint()
-                        break
-                else:
-                    continue
-                break
-
-        newfrags = []
-
-        # print(repr(frags[0]))
-        # print(frags[0].pos)
-
-        for enz in enzymes:
-            for frag in frags:
-                ws = [x - 1 for x in enz.search(_Seq(frag.watson + "n"))]
-                cs = [x - 1 for x in enz.search(_Seq(frag.crick + "n"))]
-
-                sitepairs = [
-                    (sw, sc)
-                    for sw, sc in _itertools.product(ws, cs[::-1])
-                    if (
-                        sw + max(0, frag.ovhg) - max(0, enz.ovhg)
-                        == len(frag.crick) - sc - min(0, frag.ovhg) + min(0, enz.ovhg)
-                    )
-                ]
-
-                sitepairs.append((self.length, 0))
-
-                w2, c1 = sitepairs[0]
-                newfrags.append(Dseq(frag.watson[:w2], frag.crick[c1:], ovhg=frag.ovhg, pos=frag.pos))
-
-                for (w1, c2), (w2, c1) in zip(sitepairs[:-1], sitepairs[1:]):
-                    newfrags.append(
-                        Dseq(
-                            frag.watson[w1:w2],
-                            frag.crick[c1:c2],
-                            ovhg=enz.ovhg,
-                            pos=frag.pos + w1 - max(0, enz.ovhg) + max(0, frag.ovhg),
-                        )
-                    )
-            frags = newfrags
-            newfrags = []
-
-        return tuple(frags)
-
-    def _firstcut(self, *enzymes):
-        rb = _RestrictionBatch(_flatten(enzymes))
-        watson = _FormattedSeq(_Seq(self.watson), linear=False)
-        crick = _FormattedSeq(_Seq(self.crick), linear=False)
-        enzdict = dict(sorted(rb.search(watson).items(), key=_itemgetter(1)))
-        ln = self.length
-        for enzyme, wposlist in enzdict.items():
-            for cpos in enzyme.search(crick)[::-1]:
-                for wpos in wposlist:
-                    if cpos == (ln - wpos + enzyme.ovhg + 2) or ln:
-                        return (wpos - 1, cpos - 1, enzyme.ovhg)
-        return ()
+        return list(_itertools.pairwise(cutsites))
 
 
 if __name__ == "__main__":
