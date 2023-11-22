@@ -12,13 +12,11 @@ jobs:
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
-      - name: Git tag
-        shell: bash -l {0}
-        run: git describe --tags
+
       - name: Build and publish to pypi
         uses: JRubics/poetry-publish@v1.17
         with:
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          pypi_token: ${{ secrets.TEST_PYPI_TOKEN }}
           repository_name: "testpypi"
           repository_url: "https://test.pypi.org/legacy/"
           plugins: "poetry-dynamic-versioning[plugin]"
