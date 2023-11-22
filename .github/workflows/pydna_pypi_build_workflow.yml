@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
-      - uses: git config --global --add.directory "*"
+
+      - name: Fix ownership
+        run: git config --global --add.directory "*"
 
       - name: Build and publish to pypi
         uses: JRubics/poetry-publish@v1.17
