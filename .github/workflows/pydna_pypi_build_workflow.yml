@@ -7,17 +7,11 @@ on:
       - dev_bjorn
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v3
-
-      - name: Fix ownership
-        run: git config --global --add.directory "*"
-
+      - uses: actions/checkout@v3
       - name: Build and publish to pypi
-        uses: JRubics/poetry-publish@v1.17
+        uses: JRubics/poetry-publish@v1.16
         with:
           pypi_token: ${{ secrets.TEST_PYPI_TOKEN }}
           repository_name: "testpypi"
