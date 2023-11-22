@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@v3
+      - uses: git config --global --add.directory "*"
 
       - name: Build and publish to pypi
         uses: JRubics/poetry-publish@v1.17
@@ -20,4 +21,3 @@ jobs:
           repository_name: "testpypi"
           repository_url: "https://test.pypi.org/legacy/"
           plugins: "poetry-dynamic-versioning[plugin]"
-          package_directory: "pydna"
