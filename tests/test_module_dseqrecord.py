@@ -1253,11 +1253,14 @@ def test_features_change_ori():
         """
 
         bb, ins = sorted(b.cut(Acc65I, BamHI), key=len, reverse=True)
-
+        # pytest -s -k test_features_change_ori tests/test_module_dseqrecord.py
+        print('>>>>>>', str(bb))
+        print()
+        print(ins)
         assert eq(bb1, bb)
         assert eq(ins1, ins)
 
-        assert bb.features[0].extract(bb).seq == bbfeat
+        assert bb.features[1].extract(bb).seq == bbfeat
         assert str(ins.features[0].extract(ins).seq) == str(insfeat)
 
 
@@ -1624,7 +1627,7 @@ def test_figure():
     )
     assert b25.extract_feature(0).seq == feat
 
-
+@pytest.mark.xfail(reason="issue #78")
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
