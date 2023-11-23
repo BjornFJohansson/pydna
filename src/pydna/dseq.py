@@ -22,7 +22,6 @@ import sys as _sys
 import math as _math
 
 from pydna.seq import Seq as _Seq
-from Bio.Restriction import FormattedSeq as _FormattedSeq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
@@ -33,9 +32,10 @@ from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
-from operator import itemgetter as _itemgetter
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
+# Pairwise only exists in normal itertools after python 3.10
+from more_itertools import pairwise as _pairwise
 
 
 class Dseq(_Seq):
@@ -1503,7 +1503,7 @@ class Dseq(_Seq):
             # Add the first cutsite at the end, for circular cuts
             cutsites.append(cutsites[0])
 
-        return list(_itertools.pairwise(cutsites))
+        return list(_pairwise(cutsites))
 
 
 if __name__ == "__main__":

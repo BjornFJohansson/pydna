@@ -550,12 +550,12 @@ def test_dseq():
     assert obj.cut(rb) == obj.cut(BamHI, BglII) == obj.cut(BglII, BamHI)
 
     obj = Dseq("ggatccAGATCT", circular=True)
-
-    assert obj.cut(rb) == obj.cut(BamHI, BglII) != obj.cut(BglII, BamHI)
+    # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
+    assert obj.cut(rb) == obj.cut(BamHI, BglII) == obj.cut(BglII, BamHI)
 
     obj = Dseq("AGATCTggatcc", circular=True)
 
-    assert obj.cut(rb) == obj.cut(BglII, BamHI) != obj.cut(BamHI, BglII)
+    assert obj.cut(rb) == obj.cut(BglII, BamHI) == obj.cut(BamHI, BglII)
 
 
 def test_Dseq_slicing():
@@ -584,7 +584,7 @@ def test_Dseq_slicing2():
     from Bio.Restriction import BamHI, EcoRI, KpnI
 
     a = Dseq("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
-
+    # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
     assert (
         a.cut(
             EcoRI,
@@ -595,7 +595,7 @@ def test_Dseq_slicing2():
             BamHI,
             EcoRI,
             KpnI,
-        )[::-1]
+        )
     )
 
 
