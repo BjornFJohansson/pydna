@@ -45,6 +45,7 @@ pillow = { version = ">=8.4.0", optional = true }
 pyparsing = { version = ">=2.4.7", optional = true }
 requests = { version = ">=2.26.0", optional = true }
 cai2 = { version = ">=1.0.5", optional = true }
+more-itertools = "^10.1.0"
 [tool.poetry.extras]
 clipboard = ["pyperclip"]
 gel = ["scipy", "matplotlib", "pillow"]
