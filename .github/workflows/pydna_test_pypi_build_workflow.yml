@@ -1,9 +1,9 @@
-name: Build for PyPI
+name: Build for TESTPyPI
 on:
   release:
     types: [published]
     branches:
-      - master
+      - dev_bjorn
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,5 +12,7 @@ jobs:
       - name: Build and publish to pypi
         uses: JRubics/poetry-publish@v1.16
         with:
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          pypi_token: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository_name: "testpypi"
+          repository_url: "https://test.pypi.org/legacy/"
           plugins: "poetry-dynamic-versioning[plugin]"
