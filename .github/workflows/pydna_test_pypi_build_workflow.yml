@@ -1,4 +1,4 @@
-name: Build for PyPI
+name: Build for TESTPyPI
 on:
   release:
     types: [published]
