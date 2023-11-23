@@ -728,8 +728,8 @@ def test_misc():
     a, b = x.cut(NotI)
 
     z = (a + b).looped()
-
-    assert z.shifted(5) == x
+    # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
+    assert z.shifted(-6) == x
 
 
 def test_cut_missing_enzyme():

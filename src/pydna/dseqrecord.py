@@ -1284,7 +1284,7 @@ class Dseqrecord(_SeqRecord):
         answer.seq = newseq
         return answer
 
-    def cut(self, *enzymes):
+    def cut2(self, *enzymes):
         """Digest a Dseqrecord object with one or more restriction enzymes.
 
         returns a list of linear Dseqrecords. If there are no cuts, an empty
@@ -1362,6 +1362,15 @@ class Dseqrecord(_SeqRecord):
             dsfs.append(dsf)
         return tuple(dsfs)
 
+    def apply_cut(self, left_cut, right_cut):
+        dseq = self.seq.apply_cut(left_cut, right_cut)
+        features = self[min(left_cut[0]):max(right_cut[0])].features
+        return Dseqrecord(dseq, features=features)
+
+    def cut(self, *enzymes):
+        cutsites = self.seq.get_cutsites(*enzymes)
+        cutsite_pairs = self.seq.get_cutsite_pairs(cutsites)
+        return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")

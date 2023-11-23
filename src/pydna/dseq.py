@@ -1482,8 +1482,6 @@ class Dseq(_Seq):
         left_watson, left_crick = left_cut[0]
         ovhg = 0 if left_cut[1] is None else left_cut[1].ovhg
         right_watson, right_crick = right_cut[0]
-        # TODO: this fills up nucleotides when it should not. It should either use the watson and crick
-        #      sequences as they are, or use the ovhg to shift the start or finish.
         return Dseq(
                     str(self[left_watson:right_watson]),
                     # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case
@@ -1502,7 +1500,7 @@ class Dseq(_Seq):
             cutsites = [left_edge, *cutsites, right_edge]
         else:
             # Return in the same order as previous pydna versions
-            cutsites = [cutsites[-1]] + cutsites[:-1]
+            # cutsites = [cutsites[-1]] + cutsites[:-1]
             # Add the first cutsite at the end, for circular cuts
             cutsites.append(cutsites[0])
 
