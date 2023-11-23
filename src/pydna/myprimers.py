@@ -144,7 +144,7 @@ class PrimerList(_UserList):
                 found.append(self[i])
         new = new[::-1]
         newold = new + found
-        return _pretty_str("\n".join([p.format("fasta") for p in newold]))
+        return _pretty_str("\n".join([p.format("fasta-2line") for p in newold]))
 
     def pydna_code_from_list(self, lst: list):
         """Pydna code for a list of primer objects."""
@@ -155,7 +155,7 @@ class PrimerList(_UserList):
             try:
                 prstrs.index(str(p.seq).upper())
             except ValueError as e:
-                print(f"{p.format('fasta')}")
+                print(f"{p.format('fasta-2line')}")
                 err = e
             else:
                 indices.append(self.data.index(p))
@@ -167,7 +167,7 @@ class PrimerList(_UserList):
         msg += f"{self.identifier} = {curly}\n\n"
         msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
         msg += " = parse_primers('''\n\n"
-        msg += "\n".join(self[i].format("fasta") for i in indices)
+        msg += "\n".join(self[i].format("fasta-2line") for i in indices)
         msg += "\n''')"
         return _pretty_str(msg)
 
