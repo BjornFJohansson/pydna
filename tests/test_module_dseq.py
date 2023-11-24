@@ -166,7 +166,6 @@ def test_cut_around_and_religate():
         if not frags:
             return
         a = frags.pop(0)
-        print(seq_string, enz, top)
 
         for f in frags:
             a += f
@@ -440,12 +439,6 @@ def test_dseq():
 
     frag1 = Dseq("G", "gatcc", 0)
     frag2 = Dseq("GATCCaaa", "g", -4)
-
-    print(obj.__repr__())
-    print(obj.cut(BamHI)[0].__repr__())
-    print(frag1.__repr__())
-    print(obj.cut(BamHI)[1].__repr__())
-    print(frag2.__repr__())
 
     assert obj.cut(BamHI) == (frag1, frag2)
 
