@@ -827,6 +827,10 @@ class Dseqrecord(_SeqRecord):
         sl_stop = sl.stop or len(self.seq)  # 1
 
         if not self.circular or sl_start < sl_stop:
+            # TODO: special case for sl_end == 0 in circular sequences
+            # related to https://github.com/BjornFJohansson/pydna/issues/161
+            if self.circular and sl.stop == 0:
+                sl = slice(sl.start, len(self.seq), sl.step)
             answer.features = super().__getitem__(sl).features
         elif self.circular and sl_start > sl_stop:
             answer.features = self.shifted(sl_start).features
@@ -1306,7 +1310,18 @@ class Dseqrecord(_SeqRecord):
 
     def apply_cut(self, left_cut, right_cut):
         dseq = self.seq.apply_cut(left_cut, right_cut)
-        features = self[min(left_cut[0]):max(right_cut[0])].features
+        # TODO: maybe remove depending on https://github.com/BjornFJohansson/pydna/issues/161
+
+        if left_cut == right_cut:
+            features = self.shifted(min(left_cut[0])).features
+        else:
+            left_watson, left_crick = left_cut[0]
+            right_watson, right_crick = right_cut[0]
+
+            left_edge = left_crick if dseq.ovhg > 0 else left_watson
+            right_edge = right_watson if dseq.watson_ovhg() > 0 else right_crick
+            features = self[left_edge:right_edge].features
+
         return Dseqrecord(dseq, features=features)
 
     def cut(self, *enzymes):

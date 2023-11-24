@@ -801,6 +801,9 @@ def test_Dseqrecord_cutting_adding_2():
     for enz in enzymes:
         for f in a:
             b, c, d = f.cut(enz)
+            print(b.seq.__repr__())
+            print(c.seq.__repr__())
+            print(d.seq.__repr__())
             e = b + c + d
             assert str(e.seq).lower() == str(f.seq).lower()
 
@@ -1253,14 +1256,11 @@ def test_features_change_ori():
         """
 
         bb, ins = sorted(b.cut(Acc65I, BamHI), key=len, reverse=True)
-        # pytest -s -k test_features_change_ori tests/test_module_dseqrecord.py
-        print('>>>>>>', str(bb))
-        print()
-        print(ins)
+
         assert eq(bb1, bb)
         assert eq(ins1, ins)
 
-        assert bb.features[1].extract(bb).seq == bbfeat
+        assert bb.features[0].extract(bb).seq == bbfeat
         assert str(ins.features[0].extract(ins).seq) == str(insfeat)
 
 
