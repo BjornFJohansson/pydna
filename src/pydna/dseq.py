@@ -1480,7 +1480,7 @@ class Dseq(_Seq):
     def apply_cut(self, left_cut, right_cut):
 
         left_watson, left_crick = left_cut[0]
-        ovhg = 0 if left_cut[1] is None else left_cut[1].ovhg
+        ovhg = self.ovhg if left_cut[1] is None else left_cut[1].ovhg
         right_watson, right_crick = right_cut[0]
         return Dseq(
                     str(self[left_watson:right_watson]),
@@ -1495,7 +1495,7 @@ class Dseq(_Seq):
         if len(cutsites) == 1 and self.circular:
             return [(cutsites[0], cutsites[0])]
         if not self.circular:
-            left_edge = ((0 if self.ovhg < 0 else self.ovhg, 0 if self.ovhg < 0 else -self.ovhg), None)
+            left_edge = ((self.ovhg, 0) if self.ovhg > 0 else (0, -self.ovhg), None)
             right_edge = ((left_edge[0][0] + len(self.watson), left_edge[0][1] + len(self.crick)), None)
             cutsites = [left_edge, *cutsites, right_edge]
         else:
