@@ -893,7 +893,12 @@ class Dseqrecord(_SeqRecord):
             answer.features = super().__getitem__(sl).features
         elif self.circular and sl_start > sl_stop:
             answer.features = self.shifted(sl_start).features
-            answer.features = [f for f in answer.features if f.location.parts[-1].end <= answer.seq.length]
+            # origin-spanning features should only be included after shifting
+            # in cases where the slice comprises the entire sequence, but then
+            # sl_start == sl_stop and the second condition is not met
+            answer.features = [f for f in answer.features if (
+                               f.location.parts[-1].end <= answer.seq.length and
+                               f.location.parts[0].start <= f.location.parts[-1].end)]
         else:
             answer = Dseqrecord("")
         identifier = "part_{id}".format(id=self.id)
