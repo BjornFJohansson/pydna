@@ -1445,7 +1445,7 @@ class Dseq(_Seq):
         return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
     def get_cutsites(self, *enzymes):
-        """Returns a list of cutsites, represented by tuples ((cut_watson, cut_crick), enzyme).
+        """Returns a list of cutsites, represented by tuples ((cut_watson, cut_crick), enzyme), sorted by where they cut on the 5' strand.
 
         Parameters
         ----------
@@ -1456,7 +1456,16 @@ class Dseq(_Seq):
         -------
         list[tuple[tuple[int,int], _RestrictionType]]
 
-        TODO: check that the cutsite does not fall on the ovhg
+        Examples
+        --------
+
+        >>> from Bio.Restriction import EcoRI
+        >>> from pydna.dseq import Dseq
+        >>> seq = Dseq('AAGAATTCAAGAATTC')
+        >>> seq.get_cutsites(EcoRI)
+        [((3, 7), EcoRI), ((11, 15), EcoRI)]
+
+        TODO: check that the cutsite does not fall on the ovhg and that cutsites don't crash
         """
 
         if len(enzymes) == 1 and isinstance(enzymes[0], _RestrictionBatch):
@@ -1487,17 +1496,45 @@ class Dseq(_Seq):
                 )
 
     def get_cutsite_pairs(self, cutsites):
+        """ Pairs the cutsites 2 by 2 to render the edges of the resulting fragments.
+
+        Special cases:
+        - Single cutsite on circular sequence: returns a pair where both cutsites are the same
+        - Linear sequence:
+            - creates a new left_cut on the first pair to represent the left edge of the sequence as it is.
+            - creates a new right_cut on the last pair to represent the right edge of the sequence as it is.
+            - In both new cuts, the enzyme is set to None to indicate that the cut is not made by an enzyme.
+
+        Parameters
+        ----------
+        cutsites : list[tuple[tuple[int,int], _RestrictionType]]
+
+        Returns
+        -------
+        list[tuple[tuple[tuple[int,int], _RestrictionType]],tuple[tuple[int,int], _RestrictionType]]
+
+        Examples
+        --------
+
+        >>> from Bio.Restriction import EcoRI
+        >>> from pydna.dseq import Dseq
+        >>> seq = Dseq('AAGAATTCAAGAATTC')
+        >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
+        [(((0, 0), None), ((3, 7), EcoRI)), (((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), ((16, 16), None))]
+        >>> seq = Dseq('AAGAATTCAAGAATTC', circular=True)
+        >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
+        [(((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), ((3, 7), EcoRI))]
+        >>> seq = Dseq('AAGAATTCAA', circular=True)
+        >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
+        [(((3, 7), EcoRI), ((3, 7), EcoRI))]
+        """
         if len(cutsites) == 0:
             return []
-        if len(cutsites) == 1 and self.circular:
-            return [(cutsites[0], cutsites[0])]
         if not self.circular:
             left_edge = ((self.ovhg, 0) if self.ovhg > 0 else (0, -self.ovhg), None)
             right_edge = ((left_edge[0][0] + len(self.watson), left_edge[0][1] + len(self.crick)), None)
             cutsites = [left_edge, *cutsites, right_edge]
         else:
-            # Return in the same order as previous pydna versions
-            # cutsites = [cutsites[-1]] + cutsites[:-1]
             # Add the first cutsite at the end, for circular cuts
             cutsites.append(cutsites[0])
 
