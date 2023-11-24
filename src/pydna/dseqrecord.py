@@ -1230,7 +1230,7 @@ class Dseqrecord(_SeqRecord):
         answer.seq = newseq
         return answer
 
-    def cut2(self, *enzymes):
+    def cut(self, *enzymes):
         """Digest a Dseqrecord object with one or more restriction enzymes.
 
         returns a list of linear Dseqrecords. If there are no cuts, an empty
@@ -1267,46 +1267,10 @@ class Dseqrecord(_SeqRecord):
 
 
         """
-        from pydna.utils import shift_location
 
-        features = _copy.deepcopy(self.features)
-
-        if self.circular:
-            try:
-                x, y, oh = self.seq._firstcut(*enzymes)
-            except ValueError:
-                return ()
-            dsr = _Dseq(
-                self.seq.watson[x:] + self.seq.watson[:x],
-                self.seq.crick[y:] + self.seq.crick[:y],
-                oh,
-            )
-            newstart = min(x, (self.seq.length - y))
-            for f in features:
-                f.location = shift_location(f.location, -newstart, self.seq.length)
-                f.location, *rest = f.location.parts
-                for part in rest:
-                    if 0 in part:
-                        f.location._end = part.end + self.seq.length
-                    else:
-                        f.location += part
-            frags = dsr.cut(enzymes) or [dsr]
-        else:
-            frags = self.seq.cut(enzymes)
-            if not frags:
-                return ()
-        dsfs = []
-        for fr in frags:
-            dsf = Dseqrecord(fr, n=self.n)
-            start = fr.pos
-            end = fr.pos + fr.length
-            dsf.features = [
-                _copy.deepcopy(fe) for fe in features if start <= fe.location.start and end >= fe.location.end
-            ]
-            for feature in dsf.features:
-                feature.location += -start
-            dsfs.append(dsf)
-        return tuple(dsfs)
+        cutsites = self.seq.get_cutsites(*enzymes)
+        cutsite_pairs = self.seq.get_cutsite_pairs(cutsites)
+        return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
     def apply_cut(self, left_cut, right_cut):
         dseq = self.seq.apply_cut(left_cut, right_cut)
@@ -1323,11 +1287,6 @@ class Dseqrecord(_SeqRecord):
             features = self[left_edge:right_edge].features
 
         return Dseqrecord(dseq, features=features)
-
-    def cut(self, *enzymes):
-        cutsites = self.seq.get_cutsites(*enzymes)
-        cutsite_pairs = self.seq.get_cutsite_pairs(cutsites)
-        return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")
