@@ -615,6 +615,14 @@ class SeqRecord(_SeqRecord):
 
     def __format__(self, format):
         """docstring."""
+        if format == "pydnafasta":
+            return _pretty_str(
+                f">{self.name} {len(self)} bp {dict(((True,'circular'),(False,'linear')))[self.seq.circular]}\n{str(self.seq)}\n"
+            )
+        if format == "primer":
+            return _pretty_str(
+                f">{self.name} {len(self)}-mer {self.description.removeprefix(self.id).strip()}\n{str(self.seq)}\n"
+            )
         return _pretty_str(super().__format__(format))
 
     def __add__(self, other):
