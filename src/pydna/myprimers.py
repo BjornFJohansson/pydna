@@ -135,8 +135,9 @@ class PrimerList(_UserList):
                 i = oldstrs.index(str(p.seq).upper())
             except ValueError:
                 i = no + len(new)
-                suffix = p.id.split(str(i))[-1]
-                suffix.lstrip("_")
+                # suffix = p.id.removeprefix(f"{str(i)}_") # use this after removing python 3.8
+                suffix = p.id[len(f"{str(i)}_") :] if p.id.startswith(f"{str(i)}_") else p.id
+                # suffix.lstrip("_")
                 newprimer = _copy.copy(p)
                 newprimer.id = f"{i}_{suffix}"
                 new.append(newprimer)
@@ -144,7 +145,7 @@ class PrimerList(_UserList):
                 found.append(self[i])
         new = new[::-1]
         newold = new + found
-        return _pretty_str("\n".join([p.format("fasta-2line") for p in newold]))
+        return _pretty_str("\n".join([p.format("primer") for p in newold]))
 
     def pydna_code_from_list(self, lst: list):
         """Pydna code for a list of primer objects."""
