@@ -1750,17 +1750,6 @@ version = "0.1.6"
 traitlets = "*"
 
 [[package]]
-description = "More routines for operating on iterables, beyond itertools"
-files = [
-  {file = "more-itertools-10.1.0.tar.gz", hash = "sha256:626c369fa0eb37bac0291bce8259b332fd59ac792fa5497b59837309cd5b114a"},
-  {file = "more_itertools-10.1.0-py3-none-any.whl", hash = "sha256:64e0735fcfdc6f3464ea133afe8ea4483b1c5fe3a3d69852e6503b43a0b222e6"},
-]
-name = "more-itertools"
-optional = false
-python-versions = ">=3.8"
-version = "10.1.0"
-
-[[package]]
 description = "The Jupyter Notebook format"
 files = [
   {file = "nbformat-5.9.2-py3-none-any.whl", hash = "sha256:1c5172d786a41b82bcfd0c23f9e6b6f072e8fb49c39250219e4acfff1efe89e9"},
@@ -3618,5 +3607,6 @@ gel = ["matplotlib", "pillow", "scipy", "scipy"]
 
 [metadata]
 content-hash = "bbe87d96b3360fc1aca076e1d1c33c9a31b5313b2602a4be5ba4fc597e228aea"
+content-hash = "f9116f198349f8f2ea56eed13d222b048cbb2eeeb24363c01ae8a5e469341e14"
 lock-version = "2.0"
 python-versions = ">=3.8"
