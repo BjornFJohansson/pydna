@@ -33,8 +33,6 @@ from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
-# Pairwise only exists in normal itertools after python 3.10
-from more_itertools import pairwise as _pairwise
 
 
 class Dseq(_Seq):
@@ -1541,7 +1539,7 @@ class Dseq(_Seq):
             # Add the first cutsite at the end, for circular cuts
             cutsites.append(cutsites[0])
 
-        return list(_pairwise(cutsites))
+        return list(zip(cutsites, cutsites[1:]))
 
 
 if __name__ == "__main__":
