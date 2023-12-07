@@ -615,13 +615,20 @@ class SeqRecord(_SeqRecord):
 
     def __format__(self, format):
         """docstring."""
+
+        def removeprefix(text, prefix):
+            """Until Python 3.8 is dropped, then use str.removeprefix."""
+            if text.startswith(prefix):
+                return text[len(prefix) :]
+            return text
+
         if format == "pydnafasta":
             return _pretty_str(
                 f">{self.id} {len(self)} bp {dict(((True,'circular'),(False,'linear')))[self.seq.circular]}\n{str(self.seq)}\n"
             )
         if format == "primer":
             return _pretty_str(
-                f">{self.id} {len(self)}-mer {self.description.removeprefix(self.name).strip()}\n{str(self.seq)}\n"
+                f">{self.id} {len(self)}-mer {removeprefix(self.description, self.name).strip()}\n{str(self.seq)}\n"
             )
         return _pretty_str(super().__format__(format))
 
