@@ -70,16 +70,16 @@ def test_PrimerList_init(monkeypatch):
 
     p[0], p[1], p[2], p[3] = parse_primers('''
 
-    >0_primer
+    >0_primer 8-mer
     tttttttt
 
-    >1_primer
+    >1_primer 8-mer
     gggggggg
 
-    >2_primer
+    >2_primer 8-mer
     cccccccc
 
-    >3_primer
+    >3_primer 8-mer
     aaaaaaaa
 
     ''')"""
@@ -145,4 +145,4 @@ def test_find_duplicate_primers(monkeypatch):
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v", "-s"])
+    pytest.main([__file__, "-vvv", "-s"])

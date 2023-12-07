@@ -156,7 +156,7 @@ class PrimerList(_UserList):
             try:
                 prstrs.index(str(p.seq).upper())
             except ValueError as e:
-                print(f"{p.format('fasta-2line')}")
+                print(f"{p.format('primer')}")
                 err = e
             else:
                 indices.append(self.data.index(p))
@@ -168,7 +168,7 @@ class PrimerList(_UserList):
         msg += f"{self.identifier} = {curly}\n\n"
         msg += ", ".join(f"{self.identifier}[{i}]" for i in indices)
         msg += " = parse_primers('''\n\n"
-        msg += "\n".join(self[i].format("fasta-2line") for i in indices)
+        msg += "\n".join(self[i].format("primer") for i in indices)
         msg += "\n''')"
         return _pretty_str(msg)
 
