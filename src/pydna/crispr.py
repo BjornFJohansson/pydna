@@ -16,7 +16,6 @@ The Dseq class support the notion of circular and linear DNA topology.
 
 from abc import ABC, abstractmethod
 import re
-from pydna.dseqrecord import Dseqrecord
 from pydna.utils import rc
 
 
@@ -27,14 +26,22 @@ class _cas(ABC):
     fst5 = 0
     fst3 = 0
 
-    def __init__(self, target):
-        self.target = target
+    def __init__(self, protospacer):
+        self.protospacer = protospacer
         self.compsite = re.compile(
-            f"(?=(?P<watson>{target}{self.pam}))|(?=(?P<crick>{rc(self.pam)}{rc(target)}))", re.UNICODE
+            f"(?=(?P<watson>{protospacer}{self.pam}))|(?=(?P<crick>{rc(self.pam)}{rc(protospacer)}))", re.UNICODE
         )
 
     @abstractmethod
     def search(self, dna, linear=True):
+        """To override in subclass."""
+        pass
+
+    def __repr__(self):
+        return f"{type(self).__name__}({self.protospacer[:3]}..{self.protospacer[-3:]})"
+
+    @abstractmethod
+    def __str__(self):
         """To override in subclass."""
         pass
 
@@ -92,15 +99,20 @@ class cas9(_cas):
                 results.append(mobj.start("crick") + len(self.pam) + 1 - self.fst3)
         return results
 
+    def __str__(self):
+        """docstring."""
+        return f">{type(self).__name__} protospacer scaffold\n{self.protospacer} {self.scaffold}"
 
-def protospacer(target, cas=cas9):
+
+def protospacer(guide_construct, cas=cas9):
     """docstring."""
     in_watson = [
-        mobj.group("ps") for mobj in re.finditer(f"(?P<ps>.{{{cas.size}}})(?:{cas.scaffold})", str(target.seq).upper())
+        mobj.group("ps")
+        for mobj in re.finditer(f"(?P<ps>.{{{cas.size}}})(?:{cas.scaffold})", str(guide_construct.seq).upper())
     ]
     in_crick = [
         rc(mobj.group("ps"))
-        for mobj in re.finditer(f"(?:{rc(cas.scaffold)})(?P<ps>.{{{cas.size}}})", str(target.seq).upper())
+        for mobj in re.finditer(f"(?:{rc(cas.scaffold)})(?P<ps>.{{{cas.size}}})", str(guide_construct.seq).upper())
     ]
     return in_watson + in_crick
 
@@ -114,28 +126,3 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
-
-    t = Dseqrecord("gatcGTTACTTTACCCGACGTCCCgttttagagctagaaatagcaagttaaaataaggctag")
-
-    protospacer(t)
-
-    ch = Dseqrecord("NNGGAAGAGTAATACACTAAAANGGNN")
-
-    wat = ch.seq.watson
-    cri = ch.seq.crick
-
-    mycas = cas9("GGAAGAGTAATACACTAAAA")
-    i, *r = mycas.search(wat)
-    j, *r = mycas.search(cri)
-
-    wat[: i - 1], wat[i - 1 :]
-    cri[: j - 1], cri[j - 1 :]
-
-    f1, f2 = ch.cut(mycas)
-
-    # BamHI.search(Dseq("GGATCC"))
-    # a, b = BamHI.catalyze(Dseq("GGATCC"))
-
-    #
-
-    # ch.cut(mycas)[0].seq
