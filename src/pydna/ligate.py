@@ -4,12 +4,9 @@
 # This code is part of the Python-dna distribution and governed by its
 # license.  Please see the LICENSE.txt file that should have been included
 # as part of this package.
-
-
+"""docstring."""
 from operator import add
 from functools import reduce
-from pydna.dseq import Dseq
-from pydna.dseqrecord import Dseqrecord
 import networkx as _nx
 from itertools import permutations
 import logging as _logging
@@ -61,70 +58,11 @@ def ligate(fragments: list):
 
 
 if __name__ == "__main__":
-    a = Dseqrecord(
-        Dseq.from_representation(
-            """
-                                            GATCaaa
-                                                tttTTCC"""
-        )
-    )
-    b = Dseqrecord(
-        Dseq.from_representation(
-            """
-                                            AAGGatta
-                                                taatAGGA"""
-        )
-    )
-    c = Dseqrecord(
-        Dseq.from_representation(
-            """
-                                            TCCTccact
-                                                ggtgaCTAG"""
-        )
-    )
+    import os as _os
 
-    d = Dseqrecord(
-        Dseq.from_representation(
-            """
-                                               Tcgcgc
-                                                gcgcgC"""
-        )
-    )
+    cached = _os.getenv("pydna_cached_funcs", "")
+    _os.environ["pydna_cached_funcs"] = ""
+    import doctest
 
-    e = Dseqrecord(
-        Dseq.from_representation(
-            """
-                                                Gcaatt
-                                                 gttaa"""
-        )
-    )
-
-    fragments = [a, b, c, d, e]
-    rcfragments = [a.rc(), b.rc(), c.rc(), d.rc(), e.rc()]
-
-    def list_combinations(a, b):
-        N = len(a)
-        combinations = []
-        for i in range(2**N):
-            current = []
-            for j in range(N):
-                if i & (1 << j):
-                    current.append(a[j])
-                else:
-                    current.append(b[j])
-            combinations.append(current)
-
-        return combinations
-
-    # Example usage:
-    combinations = list_combinations(fragments, rcfragments)
-
-    for frgs in combinations:
-        csequences, lsequences = ligate(frgs)
-
-        for cs in csequences:
-            assert cs.cseguid() == "39FCQVitkpoxFJy5XX8ar9YJlsQ"
-            assert len(cs) == 24
-        for ss in lsequences:
-            assert ss.lseguid() == "GI62R7QoGcNolvEQrr4x5GEF-Kk"
-            assert len(ss) == 12
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
+    _os.environ["pydna_cached_funcs"] = cached
