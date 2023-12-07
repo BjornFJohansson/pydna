@@ -1486,9 +1486,9 @@ class Dseq(_Seq):
 
     def apply_cut(self, left_cut, right_cut):
 
-        left_watson, left_crick = left_cut[0]
-        ovhg = self.ovhg if left_cut[1] is None else left_cut[1].ovhg
-        right_watson, right_crick = right_cut[0]
+        left_watson, left_crick = left_cut[0] if left_cut is not None else ((self.ovhg, 0) if self.ovhg > 0 else (0, -self.ovhg))
+        ovhg = self.ovhg if left_cut is None else left_cut[1].ovhg
+        right_watson, right_crick = right_cut[0] if right_cut is not None else (len(self.watson), len(self.crick))
         return Dseq(
                     str(self[left_watson:right_watson]),
                     # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case
@@ -1521,7 +1521,7 @@ class Dseq(_Seq):
         >>> from pydna.dseq import Dseq
         >>> seq = Dseq('AAGAATTCAAGAATTC')
         >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
-        [(((0, 0), None), ((3, 7), EcoRI)), (((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), ((16, 16), None))]
+        [(None, ((3, 7), EcoRI)), (((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), None)]
         >>> seq = Dseq('AAGAATTCAAGAATTC', circular=True)
         >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
         [(((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), ((3, 7), EcoRI))]
@@ -1532,9 +1532,7 @@ class Dseq(_Seq):
         if len(cutsites) == 0:
             return []
         if not self.circular:
-            left_edge = ((self.ovhg, 0) if self.ovhg > 0 else (0, -self.ovhg), None)
-            right_edge = ((left_edge[0][0] + len(self.watson), left_edge[0][1] + len(self.crick)), None)
-            cutsites = [left_edge, *cutsites, right_edge]
+            cutsites = [None, *cutsites, None]
         else:
             # Add the first cutsite at the end, for circular cuts
             cutsites.append(cutsites[0])
