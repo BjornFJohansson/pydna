@@ -1502,8 +1502,8 @@ class Dseq(_Seq):
         Special cases:
         - Single cutsite on circular sequence: returns a pair where both cutsites are the same
         - Linear sequence:
-            - creates a new left_cut on the first pair to represent the left edge of the sequence as it is.
-            - creates a new right_cut on the last pair to represent the right edge of the sequence as it is.
+            - creates a new left_cut on the first pair equal to `None` to represent the left edge of the sequence as it is.
+            - creates a new right_cut on the last pair equal to `None` to represent the right edge of the sequence as it is.
             - In both new cuts, the enzyme is set to None to indicate that the cut is not made by an enzyme.
 
         Parameters
@@ -1512,7 +1512,7 @@ class Dseq(_Seq):
 
         Returns
         -------
-        list[tuple[tuple[tuple[int,int], _RestrictionType]],tuple[tuple[int,int], _RestrictionType]]
+        list[tuple[tuple[tuple[int,int], _RestrictionType]|None],tuple[tuple[int,int], _RestrictionType]|None]
 
         Examples
         --------
