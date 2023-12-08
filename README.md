@@ -137,16 +137,14 @@ Pip is included in recent Python versions and is the
 officially [recommended](http://python-packaging-user-guide.readthedocs.org/en/latest) tool.
 
 Pip installs the minimal installation requirements automatically, but not the optional requirements (see below).
+The --pre switch to get the latest version of pydna.
 
-    pip install pydna
+    pip install --pre --upgrade pydna
 
-or use the --pre switch to get the latest version of pydna.
-
-    pip install pydna --pre
 
 for optional functionality do:
 
-    pip install pydna[clipboard,download,express,gel]
+    pip install --pre --upgrade pydna[clipboard,download,express,gel]
 
 Remove options inside the square brackets as required, but be sure not to leave spaces as pip will not recognize the options. See below under "Optional dependencies".
 
