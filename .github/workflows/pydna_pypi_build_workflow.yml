@@ -5,7 +5,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && contains(github.ref, '/master')
+    if: github.event.release.target_commitish == 'master'
     steps:
       - uses: actions/checkout@v3
       - name: Build and publish to pypi
