@@ -68,3 +68,6 @@ docs/_build/
 target/
 
 .eggs
+
+# mac files
+.DS_Store

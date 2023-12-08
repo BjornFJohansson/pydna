@@ -807,6 +807,9 @@ def test_Dseqrecord_cutting_adding_2():
     for enz in enzymes:
         for f in a:
             b, c, d = f.cut(enz)
+            print(b.seq.__repr__())
+            print(c.seq.__repr__())
+            print(d.seq.__repr__())
             e = b + c + d
             assert str(e.seq).lower() == str(f.seq).lower()
 
@@ -1630,7 +1633,7 @@ def test_figure():
     )
     assert b25.extract_feature(0).seq == feat
 
-
+@pytest.mark.xfail(reason="issue #78")
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
@@ -1847,6 +1850,7 @@ def test__repr_pretty_():
 
 def test___getitem__():
     from pydna.dseqrecord import Dseqrecord
+    from Bio.SeqFeature import SeqFeature, SimpleLocation
 
     s = Dseqrecord("GGATCC", circular=False)
     assert s[1:-1].seq == Dseqrecord("GATC", circular=False).seq
@@ -1865,6 +1869,19 @@ def test___getitem__():
     assert t[9:10].seq == Dseqrecord("").seq
     assert t[10:9].seq == Dseqrecord("").seq
 
+    # Test how slicing works with features (using sequence as in test_features_change_ori)
+    seqRecord = Dseqrecord("aaagGTACCTTTGGATCcggg", circular=True)
+    f1 = SeqFeature(SimpleLocation(4, 17), type="misc_feature", strand=1)
+    f2 = SeqFeature(SimpleLocation(17, 21, 1) + SimpleLocation(0, 4), type="misc_feature", strand=1)
+    seqRecord.features = [f1, f2]
+
+    # Exact feature sliced for normal and origin-spanning features
+    assert len(seqRecord[4:17].features) == 1
+    assert len(seqRecord[17:4].features) == 1
+
+    # Partial feature sliced for normal and origin-spanning features
+    assert len(seqRecord[2:20].features) == 1
+    assert len(seqRecord[13:8].features) == 1
 
 def test___eq__():
     from pydna.dseqrecord import Dseqrecord

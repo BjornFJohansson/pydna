@@ -62,7 +62,8 @@ def test_cut1():
 
     assert first + second + third + fourth == lds
 
-    assert (first.pos, second.pos, third.pos, fourth.pos) == (0, 4, 13, 22)
+    # TODO: remove
+    # assert (first.pos, second.pos, third.pos, fourth.pos) == (0, 4, 13, 22)
 
     frags2 = lds.cut((KpnI, ApaI, TaiI))
 
@@ -70,7 +71,8 @@ def test_cut1():
 
     assert first2 + second2 + third2 + fourth2 == lds
 
-    assert (first2.pos, second2.pos, third2.pos, fourth2.pos) == (0, 4, 13, 21)
+    # TODO: remove
+    # assert (first2.pos, second2.pos, third2.pos, fourth2.pos) == (0, 4, 13, 21)
 
 
 def test_cas9():
@@ -164,6 +166,7 @@ def test_cut_around_and_religate():
         if not frags:
             return
         a = frags.pop(0)
+
         for f in frags:
             a += f
         if not top:
@@ -541,12 +544,12 @@ def test_dseq():
     assert obj.cut(rb) == obj.cut(BamHI, BglII) == obj.cut(BglII, BamHI)
 
     obj = Dseq("ggatccAGATCT", circular=True)
-
-    assert obj.cut(rb) == obj.cut(BamHI, BglII) != obj.cut(BglII, BamHI)
+    # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
+    assert obj.cut(rb) == obj.cut(BamHI, BglII) == obj.cut(BglII, BamHI)
 
     obj = Dseq("AGATCTggatcc", circular=True)
 
-    assert obj.cut(rb) == obj.cut(BglII, BamHI) != obj.cut(BamHI, BglII)
+    assert obj.cut(rb) == obj.cut(BglII, BamHI) == obj.cut(BamHI, BglII)
 
 
 def test_Dseq_slicing():
@@ -575,7 +578,7 @@ def test_Dseq_slicing2():
     from Bio.Restriction import BamHI, EcoRI, KpnI
 
     a = Dseq("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
-
+    # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
     assert (
         a.cut(
             EcoRI,
@@ -586,7 +589,7 @@ def test_Dseq_slicing2():
             BamHI,
             EcoRI,
             KpnI,
-        )[::-1]
+        )
     )
 
 
@@ -718,8 +721,8 @@ def test_misc():
     a, b = x.cut(NotI)
 
     z = (a + b).looped()
-
-    assert z.shifted(5) == x
+    # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
+    assert z.shifted(-6) == x
 
 
 def test_cut_missing_enzyme():

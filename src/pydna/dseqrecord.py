@@ -890,10 +890,19 @@ class Dseqrecord(_SeqRecord):
         sl_stop = sl.stop or len(self.seq)  # 1
 
         if not self.circular or sl_start < sl_stop:
+            # TODO: special case for sl_end == 0 in circular sequences
+            # related to https://github.com/BjornFJohansson/pydna/issues/161
+            if self.circular and sl.stop == 0:
+                sl = slice(sl.start, len(self.seq), sl.step)
             answer.features = super().__getitem__(sl).features
         elif self.circular and sl_start > sl_stop:
             answer.features = self.shifted(sl_start).features
-            answer.features = [f for f in answer.features if f.location.parts[-1].end <= answer.seq.length]
+            # origin-spanning features should only be included after shifting
+            # in cases where the slice comprises the entire sequence, but then
+            # sl_start == sl_stop and the second condition is not met
+            answer.features = [f for f in answer.features if (
+                               f.location.parts[-1].end <= answer.seq.length and
+                               f.location.parts[0].start <= f.location.parts[-1].end)]
         else:
             answer = Dseqrecord("")
         identifier = "part_{id}".format(id=self.id)
@@ -1321,47 +1330,29 @@ class Dseqrecord(_SeqRecord):
 
 
         """
-        from pydna.utils import shift_location
 
-        features = _copy.deepcopy(self.features)
+        cutsites = self.seq.get_cutsites(*enzymes)
+        cutsite_pairs = self.seq.get_cutsite_pairs(cutsites)
+        return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
-        if self.circular:
-            try:
-                x, y, oh = self.seq._firstcut(*enzymes)
-            except ValueError:
-                return ()
-            dsr = _Dseq(
-                self.seq.watson[x:] + self.seq.watson[:x],
-                self.seq.crick[y:] + self.seq.crick[:y],
-                oh,
-            )
-            newstart = min(x, (self.seq.length - y))
-            for f in features:
-                f.location = shift_location(f.location, -newstart, self.seq.length)
-                f.location, *rest = f.location.parts
-                for part in rest:
-                    if 0 in part:
-                        f.location._end = part.end + self.seq.length
-                    else:
-                        f.location += part
-            frags = dsr.cut(enzymes) or [dsr]
+    def apply_cut(self, left_cut, right_cut):
+        dseq = self.seq.apply_cut(left_cut, right_cut)
+        # TODO: maybe remove depending on https://github.com/BjornFJohansson/pydna/issues/161
+
+        if left_cut == right_cut:
+            # Not really a cut, but to handle the general case
+            if left_cut is None:
+                features = self.features
+            features = self.shifted(min(left_cut[0])).features
         else:
-            frags = self.seq.cut(enzymes)
-            if not frags:
-                return ()
-        dsfs = []
-        for fr in frags:
-            dsf = Dseqrecord(fr, n=self.n)
-            start = fr.pos
-            end = fr.pos + fr.length
-            dsf.features = [
-                _copy.deepcopy(fe) for fe in features if start <= fe.location.start and end >= fe.location.end
-            ]
-            for feature in dsf.features:
-                feature.location += -start
-            dsfs.append(dsf)
-        return tuple(dsfs)
+            left_watson, left_crick = left_cut[0] if left_cut is not None else (0, 0)
+            right_watson, right_crick = right_cut[0] if right_cut is not None else (None, None)
 
+            left_edge = left_crick if dseq.ovhg > 0 else left_watson
+            right_edge = right_watson if dseq.watson_ovhg() > 0 else right_crick
+            features = self[left_edge:right_edge].features
+
+        return Dseqrecord(dseq, features=features)
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")
