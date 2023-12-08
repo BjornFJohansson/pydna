@@ -1,11 +1,11 @@
-name: Build for TESTPyPI from testpypi branch
+name: Build for TESTPyPI
 on:
   release:
     types: [published]
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/testpypi'
+    if: github.event_name == 'release' && contains(github.ref, '/testpypi')
     steps:
       - uses: actions/checkout@v3
       - name: Build and publish to pypi

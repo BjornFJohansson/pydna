@@ -1,11 +1,11 @@
-name: Build for PyPI from master branch
+name: Build for PyPI
 on:
   release:
     types: [published]
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.event_name == 'release' && contains(github.ref, '/master')
     steps:
       - uses: actions/checkout@v3
       - name: Build and publish to pypi
