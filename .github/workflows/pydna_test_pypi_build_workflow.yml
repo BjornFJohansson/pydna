@@ -1,3 +1,4 @@
+# Should only run from the testpypi branch
 name: Build for TESTPyPI
 on:
   push:
