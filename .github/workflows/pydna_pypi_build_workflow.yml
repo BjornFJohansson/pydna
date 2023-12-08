@@ -1,4 +1,4 @@
-name: Build for PyPI
+name: Build for PyPI from master branch
 on:
   release:
     types: [published]

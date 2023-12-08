@@ -3,7 +3,8 @@ on:
   push:
     branches:
       - '**'
-      - '!master'   # excludes master
+      - '!master'   # excludes master branch
+      - '!testpypi' # excludes testpypi branch
     tags-ignore:
       - '*.*'
   pull_request: {}
