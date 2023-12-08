@@ -1,9 +1,8 @@
 name: Build for TESTPyPI
 on:
-  release:
-    types: [published]
+  push:
     branches:
-      - dev_bjorn
+      - testpypi
 jobs:
   build:
     runs-on: ubuntu-latest
