@@ -1,0 +1,72 @@
+name: Tests & Coverage
+on:
+  push:
+    branches:
+      - '**'
+      - '!master'   # excludes master branch
+      - '!testpypi' # excludes testpypi branch
+    tags-ignore:
+      - '*.*'
+  pull_request: {}
+jobs:
+  build:
+    name: Test (${{ matrix.python-version }}, ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'macos-latest', 'windows-latest' ]
+        python-version: ["3.12", "3.11", "3.10", "3.9", "3.8"]
+        include:
+        - os: ubuntu-latest
+          python-version: "3.8"
+          codecov: true
+        - os: ubuntu-latest
+          python-version: "3.9"
+        - os: ubuntu-latest
+          python-version: "3.10"
+        - os: ubuntu-latest
+          python-version: "3.11"
+        - os: ubuntu-latest
+          python-version: "3.12"
+    defaults:
+      run:
+        shell: bash
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v3
+
+      - name: 🔩 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 🐍 Display Python version
+        run: python -c "import sys; print(sys.version)"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+           virtualenvs.prefer-active-python: true
+
+      - name: 🔩 list Poetry settings
+        run: poetry config --list
+
+      - name: 🔩 Install with Poetry
+        run: poetry install --all-extras --with test
+
+      - name: 🔎 poetry run python run_test.py
+        run: poetry run python run_test.py
+
+      - name: 🔼 Upload coverage to Codecov
+        if: (matrix.codecov)
+        uses: codecov/codecov-action@v1.0.13
+        with:
+          file: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: true
