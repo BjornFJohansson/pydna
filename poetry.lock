@@ -1810,13 +1810,13 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtuale
 
 [[package]]
 name = "pytest-doctestplus"
-version = "1.0.0"
+version = "1.1.0"
 description = "Pytest plugin with advanced doctest features."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "pytest-doctestplus-1.0.0.tar.gz", hash = "sha256:f650440dcaede13ed6d7da73bfb4ac585d40a80444ba3542d3e6eecdb275d49f"},
-    {file = "pytest_doctestplus-1.0.0-py3-none-any.whl", hash = "sha256:dcba88e1e38bc4871c355e44b778ccfd49b25e33f6aa5393eed6b56440decb2a"},
+    {file = "pytest-doctestplus-1.1.0.tar.gz", hash = "sha256:ea0a710f1b6a3571ed971fb6d6e5db05a2ae6b91b0fbcafe30fb5ea40e9987c4"},
+    {file = "pytest_doctestplus-1.1.0-py3-none-any.whl", hash = "sha256:b98d95b4956a03256c638f1f9f72200160e9885ab1cd40f35c4453bc1d2e32b2"},
 ]
 
 [package.dependencies]
