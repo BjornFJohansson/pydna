@@ -22,7 +22,7 @@ classifiers=["Development Status :: 4 - Beta",
 Changelog = "https://github.com/BjornFJohansson/pydna/blob/master/docs/CHANGELOG.md#changelog"
 [tool.poetry]
 name = "pydna"
-version = "6.0.0-a.15.post.2+a7fcca4448"
+version = "0.0.0"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"

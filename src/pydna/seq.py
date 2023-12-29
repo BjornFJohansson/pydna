@@ -15,6 +15,7 @@ from pydna.codon import start as _start
 from pydna.codon import stop as _stop
 from pydna.codon import n_end as _n_end
 from pydna.utils import useguid as _useg
+from pydna.utils import rc as _rc
 
 from Bio.SeqUtils import seq3 as _seq3
 from Bio.SeqUtils import gc_fraction as _GC
@@ -119,6 +120,16 @@ class Seq(_Seq):
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID
         """
         return _useg(self._data)
+
+    def __getitem__(self, key):
+        result = super().__getitem__(key)
+        result.__class__ = self.__class__
+        return result
+
+    def reverse_complement(self):
+        return self.__class__(_rc(self._data))
+
+    rc = reverse_complement
 
 
 if __name__ == "__main__":

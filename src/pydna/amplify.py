@@ -35,11 +35,12 @@ import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
-_table = {  # IUPAC Ambiguity Codes for Nucleotide Degeneracy
+_table = {  # IUPAC Ambiguity Codes for Nucleotide Degeneracy and U for Uracile
     "A": "A",
     "C": "C",
     "G": "G",
     "T": "T",
+    "U": "A",  # XXX
     "R": "(A|G)",
     "Y": "(C|T)",
     "S": "(G|C)",
@@ -54,7 +55,7 @@ _table = {  # IUPAC Ambiguity Codes for Nucleotide Degeneracy
 }
 
 
-def _annealing_positions(primer, template, limit=15):
+def _annealing_positions(primer, template, limit):
     """Finds the annealing position(s) for a primer on a template where the
     primer anneals perfectly with at least limit nucleotides in the 3' part.
     The primer is the lower strand in the figure below.
@@ -352,17 +353,23 @@ class Anneal(object):  # ), metaclass=_Memoize):
                                     strand=f.location.strand,
                                 )
                     if fp.position > rp.position:
-                        tmpl = tmpl[: len(self.template) - fp.position + rp.position + rp._fp + fp._fp]
+                        tmpl = tmpl[fp._fp : len(self.template) - fp.position + rp.position + rp._fp + fp._fp - fp._fp]
                     else:
-                        tmpl = tmpl[: rp.position + rp._fp - (fp.position - fp._fp)]
+                        tmpl = tmpl[fp._fp : rp.position + rp._fp - (fp.position - fp._fp) - fp._fp]
                 elif fp.position <= rp.position:
-                    tmpl = self.template[fp.position - fp._fp : rp.position + rp._fp]
+                    tmpl = self.template[fp.position : rp.position]
                 else:
                     continue
-                prd = _Dseqrecord(fp.tail) + tmpl + _Dseqrecord(rp.tail).reverse_complement()
-
+                prd = (
+                    _Dseqrecord(fp) + tmpl + _Dseqrecord(rp).reverse_complement()
+                )  # XXX: whole primers, not just tails
+                prd.features = [
+                    f
+                    for f in self.template.features
+                    if f.location.start >= fp.position - fp._fp and f.location.end <= fp.position + rp._fp
+                ]
                 full_tmpl_features = [f for f in tmpl.features if f.location.start == 0 and f.location.end == len(tmpl)]
-
+                # breakpoint()
                 new_identifier = ""
                 if full_tmpl_features:
                     ft = full_tmpl_features[0]

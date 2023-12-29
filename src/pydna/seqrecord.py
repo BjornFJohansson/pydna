@@ -124,6 +124,8 @@ class SeqRecord(_SeqRecord):
         answer = type(self).from_Bio_SeqRecord(answer)
         return answer
 
+    rc = reverse_complement
+
     def isorf(self, table=1):
         """Detect if sequence is an open reading frame (orf) in the 5'-3'.
 

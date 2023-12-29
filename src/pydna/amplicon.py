@@ -124,10 +124,14 @@ class Amplicon(_Dseqrecord):
             fplength=len(self.forward_primer.seq),
             rp=self.reverse_primer.seq[::-1],
             rap="|" * len(self.reverse_primer.footprint),
-            faz=self.forward_primer.footprint,
-            raz=self.reverse_primer.footprint.reverse_complement(),
-            fzc=self.forward_primer.footprint.complement(),
-            rzc=self.reverse_primer.footprint[::-1],
+            faz=self.template.seq[
+                self.forward_primer.position - self.forward_primer._fp : self.forward_primer.position
+            ],
+            raz=self.template.seq[
+                self.reverse_primer.position : self.reverse_primer.position + self.reverse_primer._fp
+            ],
+            fzc=self.template.seq.rc()[len(self.seq.watson) - self.forward_primer.position :][::-1],
+            rzc=self.template.seq.rc()[: len(self.seq.watson) - self.reverse_primer.position][::-1],
             sp1=" " * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp2=" " * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
             sp3=" " * (3 + len(self.forward_primer.seq)),
