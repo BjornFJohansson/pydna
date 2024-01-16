@@ -790,4 +790,4 @@ def test_linear_with_annotations2(monkeypatch):
 
 if __name__ == "__main__":
     # pytest.main([__file__, "-x", "-vv", "-s"])
-    pytest.main([__file__, "-x", "-vv", "-s", "--profile"])
+    pytest.main([__file__, "-x", "-vvv", "-s", "--profile"])

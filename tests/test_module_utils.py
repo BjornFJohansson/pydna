@@ -31,7 +31,6 @@ def test_flatten():
 
 
 def test_eq():
-
     from pydna.dseqrecord import Dseqrecord
     from pydna.utils import eq
     from Bio.Seq import Seq

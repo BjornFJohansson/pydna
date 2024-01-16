@@ -325,7 +325,7 @@ class SeqRecord(_SeqRecord):
                 [
                     i,
                     lbl[:16],
-                    {1: "-->", -1: "<--", 0: "---", None: "---"}[sf.strand],
+                    {1: "-->", -1: "<--", 0: "---", None: "---"}[sf.location.strand],
                     sf.location.start,
                     sf.location.end,
                     len(sf),

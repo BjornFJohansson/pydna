@@ -339,7 +339,7 @@ def test_revcomp():
 
     rc = a.rc()
 
-    assert rc.features[0].strand is None
+    assert rc.features[0].location.strand is None
 
 
 def test_m():
@@ -577,7 +577,7 @@ def test_write_different_file_to_stamped_existing_file2(monkeypatch):
 
     assert m.called
     # m.write().assert_called_once_with(new.format())
-    assert m.call_count == 4 # 6
+    assert m.call_count == 4  # 6
     assert m.mock_calls[0]
     assert m.mock_calls[4]
 
@@ -2008,6 +2008,11 @@ def test_shifted():
 def test_looped():
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
+
+    from Bio import BiopythonDeprecationWarning
+    import warnings
+
+    warnings.simplefilter("always")
 
     a = Dseqrecord("aAAa")
     a.add_feature()
