@@ -31,10 +31,12 @@ def test_flatten():
 
 
 def test_eq():
-    from pydna.dseqrecord import Dseqrecord
 
+    from pydna.dseqrecord import Dseqrecord
     from pydna.utils import eq
     from Bio.Seq import Seq
+    from pydna.seq import Seq as Seq_
+    from pydna.seqrecord import SeqRecord as SeqRecord_
     from Bio.SeqRecord import SeqRecord
 
     assert eq("AAA", "TTT", linear=True)
@@ -53,20 +55,25 @@ def test_eq():
     assert eq("AAA", Seq("AAA"), linear=True)
     assert eq("AAA", Seq("AAA"), linear=False)
 
-    assert eq("ATA", SeqRecord("AAT"), circular=True)
-    assert not eq("ATA", SeqRecord("AAT"), circular=False)
-    assert eq("AAA", SeqRecord("AAA"), linear=True)
-    assert eq("AAA", SeqRecord("AAA"), linear=False)
+    assert eq("ATA", SeqRecord_("AAT"), circular=True)
+    assert not eq("ATA", SeqRecord_("AAT"), circular=False)
+    assert eq("AAA", SeqRecord_("AAA"), linear=True)
+    assert eq("AAA", SeqRecord_("AAA"), linear=False)
+
+    assert eq(Seq_("ATA"), SeqRecord_(Seq_("AAT")), circular=True)
+    assert not eq(Seq_("ATA"), SeqRecord_(Seq_("AAT")), circular=False)
+    assert eq(Seq_("AAA"), SeqRecord_(Seq_("AAA")), linear=True)
+    assert eq(Seq_("AAA"), SeqRecord_(Seq_("AAA")), linear=False)
 
     assert eq("ATA", Dseqrecord("AAT"), circular=True)
     assert not eq("ATA", Dseqrecord("AAT"), circular=False)
     assert eq("AAA", Dseqrecord("AAA"), linear=True)
     assert eq("AAA", Dseqrecord("AAA"), linear=False)
 
-    assert eq(Seq("ATA"), SeqRecord("AAT"), circular=True)
-    assert not eq(Seq("ATA"), SeqRecord("AAT"), circular=False)
-    assert eq(Seq("AAA"), SeqRecord("AAA"), linear=True)
-    assert eq(Seq("AAA"), SeqRecord("AAA"), linear=False)
+    assert eq(Seq("ATA"), SeqRecord(Seq("AAT")), circular=True)
+    assert not eq(Seq("ATA"), SeqRecord(Seq("AAT")), circular=False)
+    assert eq(Seq("AAA"), SeqRecord(Seq("AAA")), linear=True)
+    assert eq(Seq("AAA"), SeqRecord(Seq("AAA")), linear=False)
 
     assert eq(Seq("ATA"), Dseqrecord("AAT"), circular=True)
     assert not eq(Seq("ATA"), Dseqrecord("AAT"), circular=False)
