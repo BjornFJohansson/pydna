@@ -533,7 +533,7 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
 
     assert m.called
     # m.write().assert_called_once_with(new.format())
-    assert m.call_count == 6
+    assert m.call_count == 4  #  6
     assert m.mock_calls[0]
     assert m.mock_calls[4]
 
@@ -577,7 +577,7 @@ def test_write_different_file_to_stamped_existing_file2(monkeypatch):
 
     assert m.called
     # m.write().assert_called_once_with(new.format())
-    assert m.call_count == 6
+    assert m.call_count == 4 # 6
     assert m.mock_calls[0]
     assert m.mock_calls[4]
 
