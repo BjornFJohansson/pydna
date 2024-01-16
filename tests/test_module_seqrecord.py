@@ -5,6 +5,7 @@ from pydna import _PydnaWarning
 
 def test_add_feature():
     from pydna.seq import Seq
+    from Bio.Seq import Seq as BSeq
     from Bio.SeqRecord import SeqRecord as BSeqRecord
     from pydna.dseq import Dseq
     from pydna.dseqrecord import Dseqrecord
@@ -26,7 +27,7 @@ def test_add_feature():
     s.add_feature(seq=SeqRecord("GGATCC"))
     assert s.extract_feature(0).seq == SeqRecord("GGATCC").seq
     s = SeqRecord("tttGGATCCaaa")
-    s.add_feature(seq=BSeqRecord("GGATCC"))
+    s.add_feature(seq=BSeqRecord(BSeq("GGATCC")))
     assert s.extract_feature(0).seq == SeqRecord("GGATCC").seq
     s = SeqRecord("tttGGATCCaaa")
     s.add_feature(seq=Dseqrecord("GGATCC"))
