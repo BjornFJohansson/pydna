@@ -50,8 +50,10 @@ class SeqRecord(_SeqRecord):
     nicer output in the IPython shell.
     """
 
-    def __init__(self, *args, id="id", name="name", description="description", **kwargs):
-        super().__init__(*args, id=id, name=name, description=description, **kwargs)
+    def __init__(self, seq, *args, id="id", name="name", description="description", **kwargs):
+        if isinstance(seq, str):
+            seq = _Seq(seq)
+        super().__init__(seq, *args, id=id, name=name, description=description, **kwargs)
         self._fix_attributes()
 
     def _fix_attributes(self):
