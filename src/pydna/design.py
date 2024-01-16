@@ -83,29 +83,29 @@ def primer_design(template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=
     >>> ampl.forward_primer
     f64 17-mer:5'-atgactgctaacccttc-3'
     >>> ampl.reverse_primer
-    r64 19-mer:5'-catcgtaagtttcgaacga-3'
+    r64 18-mer:5'-catcgtaagtttcgaacg-3'
     >>> print(ampl.figure())
-    5atgactgctaacccttc...tcgttcgaaacttacgatg3
-                         |||||||||||||||||||
-                        3agcaagctttgaatgctac5
+    5atgactgctaacccttc...cgttcgaaacttacgatg3
+                         ||||||||||||||||||
+                        3gcaagctttgaatgctac5
     5atgactgctaacccttc3
      |||||||||||||||||
-    3tactgacgattgggaag...agcaagctttgaatgctac5
+    3tactgacgattgggaag...gcaagctttgaatgctac5
     >>> pf = "GGATCC" + ampl.forward_primer
     >>> pr = "GGATCC" + ampl.reverse_primer
     >>> pf
     f64 23-mer:5'-GGATCCatgactgct..ttc-3'
     >>> pr
-    r64 25-mer:5'-GGATCCcatcgtaag..cga-3'
+    r64 24-mer:5'-GGATCCcatcgtaag..acg-3'
     >>> from pydna.amplify import pcr
     >>> pcr_prod = pcr(pf, pr, t)
     >>> print(pcr_prod.figure())
-          5atgactgctaacccttc...tcgttcgaaacttacgatg3
-                               |||||||||||||||||||
-                              3agcaagctttgaatgctacCCTAGG5
+          5atgactgctaacccttc...cgttcgaaacttacgatg3
+                               ||||||||||||||||||
+                              3gcaagctttgaatgctacCCTAGG5
     5GGATCCatgactgctaacccttc3
            |||||||||||||||||
-          3tactgacgattgggaag...agcaagctttgaatgctac5
+          3tactgacgattgggaag...gcaagctttgaatgctac5
     >>> print(pcr_prod.seq)
     GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGGATCC
     >>> from pydna.primer import Primer
@@ -114,7 +114,7 @@ def primer_design(template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=
     >>> ampl.forward_primer
     myprimer 27-mer:5'-atgactgctaaccct..ttg-3'
     >>> ampl.reverse_primer
-    r64 37-mer:5'-catcgtaagtttcga..gtt-3'
+    r64 32-mer:5'-catcgtaagtttcga..atc-3'
     """
 
     def design(target_tm, template):
