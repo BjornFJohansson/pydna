@@ -427,8 +427,8 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.16,<2.0", markers = "python_version <= \"3.11\""},
     {version = ">=1.26.0rc1,<2.0", markers = "python_version >= \"3.12\""},
+    {version = ">=1.16,<2.0", markers = "python_version <= \"3.11\""},
 ]
 
 [package.extras]
@@ -2610,4 +2610,4 @@ gel = ["matplotlib", "pillow", "scipy", "scipy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8"
-content-hash = "fcf160fa8fdda80071fb09efceb7be30414901db1af6138a3a306418270ab07a"
+content-hash = "298f15e5848789d4d84c5ec4c9d7dea6ffdd1ccbfd13287e423ac6958c05467a"
