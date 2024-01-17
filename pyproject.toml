@@ -31,7 +31,7 @@ homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
 documentation = "https://pydna.readthedocs.io/?badge=latest"
 repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.8, <4"
 appdirs = ">=1.4.4"
 biopython = ">=1.80"
 networkx = ">=2.8.8"
