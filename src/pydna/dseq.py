@@ -1484,11 +1484,43 @@ class Dseq(_Seq):
 
         return sorted(out)
 
+    def left_end_position(self) -> tuple[int, int]:
+        """The index in the global sequence of the watson and crick start positions.
+
+        Global sequence (str(self)) for all three cases is AAA
+
+        ```
+        AAA              AA               AAT
+         TT             TTT               TTT
+        Returns (0, 1)  Returns (1, 0)    Returns (0, 0)
+        ```
+
+        """
+        if self.ovhg > 0:
+            return self.ovhg, 0
+        return 0, -self.ovhg
+
+    def right_end_position(self) -> tuple[int, int]:
+        """The index in the global sequence of the watson and crick end positions.
+
+        Global sequence (str(self)) for all three cases is AAA
+
+        ```
+        AAA               AA                   AAA
+        TT                TTT                  TTT
+        Returns (3, 2)    Returns (2, 3)       Returns (3, 3)
+        ```
+
+        """
+        if self.watson_ovhg() < 0:
+            return len(self) + self.watson_ovhg(), len(self)
+        return len(self), len(self) - self.watson_ovhg()
+
     def apply_cut(self, left_cut, right_cut):
 
-        left_watson, left_crick = left_cut[0] if left_cut is not None else ((self.ovhg, 0) if self.ovhg > 0 else (0, -self.ovhg))
+        left_watson, left_crick = left_cut[0] if left_cut is not None else self.left_end_position()
         ovhg = self.ovhg if left_cut is None else left_cut[1].ovhg
-        right_watson, right_crick = right_cut[0] if right_cut is not None else (len(self.watson), len(self.crick))
+        right_watson, right_crick = right_cut[0] if right_cut is not None else self.right_end_position()
         return Dseq(
                     str(self[left_watson:right_watson]),
                     # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case

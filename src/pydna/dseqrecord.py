@@ -1343,7 +1343,8 @@ class Dseqrecord(_SeqRecord):
             # Not really a cut, but to handle the general case
             if left_cut is None:
                 features = self.features
-            features = self.shifted(min(left_cut[0])).features
+            else:
+                features = self.shifted(min(left_cut[0])).features
         else:
             left_watson, left_crick = left_cut[0] if left_cut is not None else (0, 0)
             right_watson, right_crick = right_cut[0] if right_cut is not None else (None, None)
