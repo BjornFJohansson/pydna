@@ -838,5 +838,18 @@ def test_apply_cut():
     assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=-1)
     assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=-1, crick_ovhg=-4)
 
+    # A repeated cut in a circular molecule opens it up
+    seq = Dseq('aaGAATTCaa', circular=True)
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('AATTCaaaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
+
+    # Two cuts extract a subsequence
+    seq = Dseq('aaGAATTCaaGAATTCaa', circular=True)
+    EcoRI_cut_2 = ((11, 15), type('DynamicClass', (), {'ovhg': -4})())
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
+
+    # TODO: Overlapping cuts should return an error
+    EcoRI_cut_2 = ((4, 8), type('DynamicClass', (), {'ovhg': -4})())
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2)
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])

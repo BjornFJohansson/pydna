@@ -1519,7 +1519,7 @@ class Dseq(_Seq):
     def apply_cut(self, left_cut, right_cut):
 
         left_watson, left_crick = left_cut[0] if left_cut is not None else self.left_end_position()
-        ovhg = self.ovhg if left_cut is None else left_cut[1].ovhg
+        ovhg = left_cut[1].ovhg if left_cut is not None else self.ovhg
         right_watson, right_crick = right_cut[0] if right_cut is not None else self.right_end_position()
         return Dseq(
                     str(self[left_watson:right_watson]),
