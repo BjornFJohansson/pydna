@@ -65,7 +65,7 @@ def shift_location(original_location, shift, lim):
             newparts.append(_sl(ns, ne, strand))
         else:
             parttuple = (_sl(ns, lim, strand), _sl(0, ne, strand))
-            newparts.extend(parttuple if strand == 1 else parttuple[::-1])
+            newparts.extend(parttuple if strand != -1 else parttuple[::-1])
     try:
         newloc = _cl(newparts)
     except ValueError:
