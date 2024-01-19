@@ -800,6 +800,29 @@ def eq(*args, **kwargs):
                 same = False
     return same
 
+def cuts_overlap(left_cut, right_cut, seq_len):
+    # Special cases:
+    if left_cut is None or right_cut is None or left_cut == right_cut:
+        return False
+
+    # This block of code would not be necessary if the cuts were
+    # initially represented like this
+    (left_watson, _), enz1 = left_cut
+    (right_watson, _), enz2 = right_cut
+    left_crick = left_watson - enz1.ovhg
+    right_crick = right_watson - enz2.ovhg
+    if left_crick >= seq_len:
+        left_crick -= seq_len
+        left_watson -= seq_len
+    if right_crick >= seq_len:
+        right_crick -= seq_len
+        right_watson -= seq_len
+
+    # Convert into ranges x and y and see if ranges overlap
+    x = sorted([left_watson, left_crick])
+    y = sorted([right_watson, right_crick])
+    return (x[1] > y[0]) != (y[1] < x[0])
+
 
 if __name__ == "__main__":
     cached = _os.getenv("pydna_cached_funcs", "")

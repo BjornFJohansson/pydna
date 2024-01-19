@@ -29,8 +29,9 @@ from pydna.utils import lseguid_sticky as _lseg
 from pydna.utils import cseguid as _cseg
 from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
-from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
+from pydna.utils import cuts_overlap as _cuts_overlap
 
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 
@@ -1517,7 +1518,8 @@ class Dseq(_Seq):
         return len(self), len(self) - self.watson_ovhg()
 
     def apply_cut(self, left_cut, right_cut):
-
+        if _cuts_overlap(left_cut, right_cut, len(self)):
+            raise ValueError("Cuts overlap")
         left_watson, left_crick = left_cut[0] if left_cut is not None else self.left_end_position()
         ovhg = left_cut[1].ovhg if left_cut is not None else self.ovhg
         right_watson, right_crick = right_cut[0] if right_cut is not None else self.right_end_position()

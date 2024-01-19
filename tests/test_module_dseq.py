@@ -847,9 +847,37 @@ def test_apply_cut():
     EcoRI_cut_2 = ((11, 15), type('DynamicClass', (), {'ovhg': -4})())
     assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
 
-    # TODO: Overlapping cuts should return an error
-    EcoRI_cut_2 = ((4, 8), type('DynamicClass', (), {'ovhg': -4})())
-    assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2)
+    # Overlapping cuts should return an error
+    seq = Dseq('aaGAATTCaa', circular=True)
+    first_cuts = [
+        ((3, 7), type('DynamicClass', (), {'ovhg': -4})()),
+        ((7, 3), type('DynamicClass', (), {'ovhg': 4})()),
+        # Spanning the origin
+        ((9, 8), type('DynamicClass', (), {'ovhg': -8})()),
+        ((8, 9), type('DynamicClass', (), {'ovhg': 8})()),
+        ]
+    overlapping_cuts = [
+        ((4, 8), type('DynamicClass', (), {'ovhg': -4})()),
+        ((2, 6), type('DynamicClass', (), {'ovhg': -4})()),
+        ((2, 8), type('DynamicClass', (), {'ovhg': -4})()),
+        ((8, 4), type('DynamicClass', (), {'ovhg': 4})()),
+        ((6, 2), type('DynamicClass', (), {'ovhg': 4})()),
+        ((8, 2), type('DynamicClass', (), {'ovhg': 4})()),
+        # Spanning the origin
+        ((7, 6), type('DynamicClass', (), {'ovhg': -8})()),
+        ((6, 7), type('DynamicClass', (), {'ovhg': 8})()),
+    ]
+
+    for first_cut in first_cuts:
+        for second_cut in overlapping_cuts:
+            try:
+                seq.apply_cut(first_cut, second_cut)
+            except ValueError as e:
+                assert e.args[0] == 'Cuts overlap'
+            else:
+                print(first_cut, second_cut)
+                assert False, 'Expected ValueError'
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
