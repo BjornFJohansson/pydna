@@ -18,6 +18,7 @@ import hashlib as _hashlib
 import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
+from copy import deepcopy as _deepcopy
 
 import sys as _sys
 import re
@@ -62,6 +63,14 @@ def shift_location(original_location, shift, lim):
         newloc, *n = newparts
     assert len(newloc) == len(original_location)
     return newloc
+
+def shift_feature(feature, shift, lim):
+    """Return a new feature with shifted location."""
+    # TODO: Missing tests
+    new_location = shift_location(feature.location, shift, lim)
+    new_feature = _deepcopy(feature)
+    new_feature.location = new_location
+    return new_feature
 
 
 # def smallest_rotation(s):
@@ -569,6 +578,37 @@ def eq(*args, **kwargs):
             if not (s1 == s2 or s1 == rc(s2)):
                 same = False
     return same
+
+def cuts_overlap(left_cut, right_cut, seq_len):
+    # Special cases:
+    if left_cut is None or right_cut is None or left_cut == right_cut:
+        return False
+
+    # This block of code would not be necessary if the cuts were
+    # initially represented like this
+    (left_watson, _), enz1 = left_cut
+    (right_watson, _), enz2 = right_cut
+    left_crick = left_watson - enz1.ovhg
+    right_crick = right_watson - enz2.ovhg
+    if left_crick >= seq_len:
+        left_crick -= seq_len
+        left_watson -= seq_len
+    if right_crick >= seq_len:
+        right_crick -= seq_len
+        right_watson -= seq_len
+
+    # Convert into ranges x and y and see if ranges overlap
+    x = sorted([left_watson, left_crick])
+    y = sorted([right_watson, right_crick])
+    return (x[1] > y[0]) != (y[1] < x[0])
+
+def location_boundaries(loc: _sl|_cl):
+
+    #TODO: pending on https://github.com/BjornFJohansson/pydna/pull/179
+    if loc.strand != 1:
+        return loc.parts[-1].start, loc.parts[0].end
+    else:
+        return loc.parts[0].start, loc.parts[-1].end
 
 
 if __name__ == "__main__":
