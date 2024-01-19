@@ -75,9 +75,7 @@ def shift_location(original_location, shift, lim):
 def shift_feature(feature, shift, lim):
     """Return a new feature with shifted location."""
     # TODO: Missing tests
-    print(feature.location)
     new_location = shift_location(feature.location, shift, lim)
-    print(new_location)
     new_feature = _deepcopy(feature)
     new_feature.location = new_location
     return new_feature
@@ -833,6 +831,14 @@ def cuts_overlap(left_cut, right_cut, seq_len):
     x = sorted([left_watson, left_crick])
     y = sorted([right_watson, right_crick])
     return (x[1] > y[0]) != (y[1] < x[0])
+
+def location_boundaries(loc: _sl|_cl):
+
+    #TODO: pending on https://github.com/BjornFJohansson/pydna/pull/179
+    if loc.strand != 1:
+        return loc.parts[-1].start, loc.parts[0].end
+    else:
+        return loc.parts[0].start, loc.parts[-1].end
 
 
 if __name__ == "__main__":
