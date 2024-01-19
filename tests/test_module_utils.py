@@ -457,5 +457,11 @@ def test_memorize(monkeypatch):
     assert mf(1, kw=1) == ((1,), {"kw": 1})
 
 
+def test_shift_location():
+    from pydna.utils import shift_location
+
+    # Shifting of locations should be reversible
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])

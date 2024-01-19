@@ -20,6 +20,7 @@ import hashlib as _hashlib
 import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
+from copy import deepcopy as _deepcopy
 
 import sys as _sys
 import re
@@ -70,6 +71,16 @@ def shift_location(original_location, shift, lim):
         newloc, *n = newparts
     assert len(newloc) == len(original_location)
     return newloc
+
+def shift_feature(feature, shift, lim):
+    """Return a new feature with shifted location."""
+    # TODO: Missing tests
+    print(feature.location)
+    new_location = shift_location(feature.location, shift, lim)
+    print(new_location)
+    new_feature = _deepcopy(feature)
+    new_feature.location = new_location
+    return new_feature
 
 
 # def smallest_rotation(s):
