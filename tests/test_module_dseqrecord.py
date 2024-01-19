@@ -2237,6 +2237,30 @@ def test_assemble_YEp24PGK_XK():
     assert YEp24PGK_XK_correct.cseguid() == "t9fs_9UvEuD-Ankyy8XEr1hD5DQ"
     assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
+def test_apply_cut():
+    from pydna.dseqrecord import Dseqrecord
+    from Bio.SeqFeature import SeqFeature, SimpleLocation
+
+    # Single cut case
+    for strand in [1, -1, None]:
+        for cut_coords, cut_ovhg in (((4, 7), -3), ((7, 4), 3)):
+            dummy_cut = (cut_coords, type('DynamicClass', (), {'ovhg': cut_ovhg})())
+            seq = Dseqrecord("acgtATGaatt", circular=True)
+            seq.features.append(SeqFeature(SimpleLocation(4, 7,  strand), id='full_overlap'))
+            seq.features.append(SeqFeature(SimpleLocation(3, 7,  strand), id='left_side'))
+            seq.features.append(SeqFeature(SimpleLocation(4, 8,  strand), id='right_side'))
+            seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
+            open_seq = seq.apply_cut(dummy_cut, dummy_cut)
+            assert len(open_seq.features) == 4
+            new_locs = [str(f.location) for f in open_seq.features]
+            if strand == 1:
+                assert new_locs == ['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)']
+            elif strand == -1:
+                # TODO: change the join{[11:14](-), [10:11](-)} case?
+                assert new_locs == ['[0:3](-)', '[0:4](-)', '[11:14](-)', 'join{[11:14](-), [10:11](-)}']
+            if strand == None:
+                # TODO: pending on https://github.com/BjornFJohansson/pydna/pull/179
+                assert new_locs == ['[0:3]', '[0:4]', '[11:14]', 'join{[11:14], [10:11]}']
 
 if __name__ == "__main__":
     args = [

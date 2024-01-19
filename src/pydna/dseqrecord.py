@@ -15,11 +15,12 @@ from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 from pydna.dseq import Dseq as _Dseq
 from pydna._pretty import pretty_str as _pretty_str
-from pydna.utils import flatten as _flatten
+from pydna.utils import flatten as _flatten, location_boundaries as _location_boundaries
 
 # from pydna.utils import memorize as _memorize
 from pydna.utils import rc as _rc
 from pydna.utils import shift_location as _shift_location
+from pydna.utils import shift_feature as _shift_feature
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 from Bio import SeqIO
@@ -900,6 +901,7 @@ class Dseqrecord(_SeqRecord):
             # origin-spanning features should only be included after shifting
             # in cases where the slice comprises the entire sequence, but then
             # sl_start == sl_stop and the second condition is not met
+            # TODO: _location_boundaries
             answer.features = [f for f in answer.features if (
                                f.location.parts[-1].end <= answer.seq.length and
                                f.location.parts[0].start <= f.location.parts[-1].end)]
@@ -1343,7 +1345,58 @@ class Dseqrecord(_SeqRecord):
             # Not really a cut, but to handle the general case
             if left_cut is None:
                 features = self.features
-            features = self.shifted(min(left_cut[0])).features
+            else:
+                # The features that span the origin if shifting with left_cut, but that do not cross
+                # the cut site should be included, and if there is a feature within the cut site, it should
+                # be duplicated. See https://github.com/BjornFJohansson/pydna/issues/180 for a practical example.
+                #
+                # Let's say we are going to open a circular plasmid like below (| inidicate cuts, numbers indicate
+                # features)
+                #
+                #    3333|3
+                #    1111
+                #     000
+                # XXXXatg|YYY
+                # XXX|tacYYYY
+                #     000
+                #     2222
+                #
+                features = self.shifted(min(left_cut[0])).features
+                # for f in features:
+                #     print(f.id, f.location, _location_boundaries(f.location))
+                # Here, we have done what's shown below (* indicates the origin).
+                # The features 0 and 2 have the right location for the final product:
+                #
+                #    3*3333
+                #    1*111
+                # XXXX*atgYYY
+                # XXXX*tacYYY
+                #      000
+                #      2222
+
+                features_need_transfer = [f for f in features if (_location_boundaries(f.location)[1] <= abs(left_cut[1].ovhg))]
+                features_need_transfer = [_shift_feature(f, -abs(left_cut[1].ovhg), len(self)) for f in features_need_transfer]
+                #                                           ^                       ^^^^^^^^^
+                # Now we have shifted the features that end before the cut (0 and 1, but not 3), as if
+                # they referred to the below sequence (* indicates the origin):
+                #
+                #    1111
+                #     000
+                # XXXXatg*YYY
+                # XXXXtac*YYY
+                #
+                # The features 0 and 1 would have the right location if the final sequence had the same length
+                # as the original one. However, the final product is longer because of the overhang.
+
+                features += [_shift_feature(f, abs(left_cut[1].ovhg), len(dseq)) for f in features_need_transfer]
+                #                             ^                       ^^^^^^^^^
+                # So we shift back by the same amount in the opposite direction, but this time we pass the 
+                # length of the final product.
+                # print(*features, sep='\n')
+                # Features like 3 are removed here
+                features = [f for f in features if (
+                               _location_boundaries(f.location)[1] <= len(dseq) and
+                               _location_boundaries(f.location)[0] <= _location_boundaries(f.location)[1])]
         else:
             left_watson, left_crick = left_cut[0] if left_cut is not None else (0, 0)
             right_watson, right_crick = right_cut[0] if right_cut is not None else (None, None)

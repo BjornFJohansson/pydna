@@ -789,5 +789,95 @@ def test_from_full_sequence_and_overhangs():
         assert dseq_2.watson_ovhg() == watson_ovhg
 
 
+def test_right_end_position():
+
+    from pydna.dseq import Dseq
+
+    test_cases = [
+        ("AAA", "TT", (3, 2)),
+        ("AA", "TTT", (2, 3)),
+        ("AAA", "TTT", (3, 3)),
+    ]
+    for watson, crick, expected in test_cases:
+        dseq = Dseq(watson, crick, ovhg=0, circular=False)
+        assert dseq.right_end_position() == expected
+
+def test_left_end_position():
+
+    from pydna.dseq import Dseq
+
+    test_cases = [
+        ("AAA", "TT", (0, 1), -1),
+        ("AA", "TTT", (1, 0), 1),
+        ("AAT", "TTT", (0, 0), 0),
+    ]
+    for watson, crick, expected, ovhg in test_cases:
+        dseq = Dseq(watson, crick, ovhg=ovhg, circular=False)
+        assert dseq.left_end_position() == expected
+
+
+def test_apply_cut():
+    from pydna.dseq import Dseq
+
+    seq = Dseq('aaGAATTCaa', circular=False)
+
+    # A cut where both sides are None returns the same sequence
+    assert seq.apply_cut(None, None) == seq
+
+    # A cut where one side is None leaves that side intact
+    EcoRI_cut = ((3, 7), type('DynamicClass', (), {'ovhg': -4})())
+    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=0)
+    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=0, crick_ovhg=-4)
+
+    # It respects the original overhang
+    seq = Dseq.from_full_sequence_and_overhangs('aaGAATTCaa', watson_ovhg=1, crick_ovhg=1)
+    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=1)
+    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=1, crick_ovhg=-4)
+
+    seq = Dseq.from_full_sequence_and_overhangs('aaGAATTCaa', watson_ovhg=-1, crick_ovhg=-1)
+    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=-1)
+    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=-1, crick_ovhg=-4)
+
+    # A repeated cut in a circular molecule opens it up
+    seq = Dseq('aaGAATTCaa', circular=True)
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('AATTCaaaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
+
+    # Two cuts extract a subsequence
+    seq = Dseq('aaGAATTCaaGAATTCaa', circular=True)
+    EcoRI_cut_2 = ((11, 15), type('DynamicClass', (), {'ovhg': -4})())
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
+
+    # Overlapping cuts should return an error
+    seq = Dseq('aaGAATTCaa', circular=True)
+    first_cuts = [
+        ((3, 7), type('DynamicClass', (), {'ovhg': -4})()),
+        ((7, 3), type('DynamicClass', (), {'ovhg': 4})()),
+        # Spanning the origin
+        ((9, 8), type('DynamicClass', (), {'ovhg': -8})()),
+        ((8, 9), type('DynamicClass', (), {'ovhg': 8})()),
+        ]
+    overlapping_cuts = [
+        ((4, 8), type('DynamicClass', (), {'ovhg': -4})()),
+        ((2, 6), type('DynamicClass', (), {'ovhg': -4})()),
+        ((2, 8), type('DynamicClass', (), {'ovhg': -4})()),
+        ((8, 4), type('DynamicClass', (), {'ovhg': 4})()),
+        ((6, 2), type('DynamicClass', (), {'ovhg': 4})()),
+        ((8, 2), type('DynamicClass', (), {'ovhg': 4})()),
+        # Spanning the origin
+        ((7, 6), type('DynamicClass', (), {'ovhg': -8})()),
+        ((6, 7), type('DynamicClass', (), {'ovhg': 8})()),
+    ]
+
+    for first_cut in first_cuts:
+        for second_cut in overlapping_cuts:
+            try:
+                seq.apply_cut(first_cut, second_cut)
+            except ValueError as e:
+                assert e.args[0] == 'Cuts overlap'
+            else:
+                print(first_cut, second_cut)
+                assert False, 'Expected ValueError'
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
