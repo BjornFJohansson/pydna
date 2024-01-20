@@ -467,17 +467,17 @@ class Dseqrecord(_SeqRecord):
             elif five_prime[0] == "3'":
                 fn.location = fn.location + (-self.seq.ovhg)
             if fn.location.start < 0:
-                loc1 = _SimpleLocation(len(new) + fn.location.start, len(new), strand=fn.strand)
-                loc2 = _SimpleLocation(0, fn.location.end, strand=fn.strand)
+                loc1 = _SimpleLocation(len(new) + fn.location.start, len(new), strand=fn.location.strand)
+                loc2 = _SimpleLocation(0, fn.location.end, strand=fn.location.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             if fn.location.end > len(new):
-                loc1 = _SimpleLocation(fn.location.start, len(new), strand=fn.strand)
-                loc2 = _SimpleLocation(0, fn.location.end - len(new), strand=fn.strand)
+                loc1 = _SimpleLocation(fn.location.start, len(new), strand=fn.location.strand)
+                loc2 = _SimpleLocation(0, fn.location.end - len(new), strand=fn.location.strand)
                 fn.location = _CompoundLocation([loc1, loc2])
 
             fn.qualifiers = fo.qualifiers
-        # breakpoint()
+
         return new
 
     def tolinear(self):  # pragma: no cover
@@ -1188,7 +1188,7 @@ class Dseqrecord(_SeqRecord):
         if self.features:
             f = self.features[feature]
             locations = sorted(self.features[feature].location.parts, key=_SimpleLocation.start.fget)
-            strand = f.strand
+            strand = f.location.strand
         else:
             locations = [_SimpleLocation(0, 0, 1)]
             strand = 1

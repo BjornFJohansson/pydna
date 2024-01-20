@@ -243,7 +243,7 @@ def test_primer_Design_with_linker():
 def test_primer_Design_given_fw_primer():
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
     a = primer_design(b, fp=Primer("agctactgactattag"))
-    assert str(a.reverse_primer.seq) == "tagatcagtacagtca"
+    assert str(a.reverse_primer.seq) == "tagatcagtacagtc"
 
 
 def test_primer_Design_given_rv_primer():

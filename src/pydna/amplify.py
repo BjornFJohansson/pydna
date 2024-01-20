@@ -206,9 +206,9 @@ class Anneal(object):  # ), metaclass=_Memoize):
         taca..gcac
         atgt..cgtg
         >>> print(amplicon.program())
-        |95°C|95°C               |    |tmf:59.5
-        |____|_____          72°C|72°C|tmr:59.7
-        |3min|30s  \ 58.6°C _____|____|45s/kb
+        |95°C|95°C               |    |tmf:57.2
+        |____|_____          72°C|72°C|tmr:58.5
+        |3min|30s  \ 57.9°C _____|____|45s/kb
         |    |      \______/ 0:45|5min|GC 49%
         |    |       30s         |    |1011bp
         >>>

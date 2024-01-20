@@ -15,7 +15,7 @@ from pydna.tm import program as _program
 from pydna.primer import Primer as _Primer
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
-from Bio.SeqRecord import SeqRecord as _SeqRecord
+from pydna.seqrecord import SeqRecord as _SeqRecord
 import textwrap as _textwrap
 import copy as _copy
 import logging as _logging

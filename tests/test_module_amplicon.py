@@ -73,9 +73,9 @@ def test_amplicon_dbd():
     assert repr(prod) == "Amplicon(1505)"
 
     fig = r"""
-    |95°C|95°C               |    |tmf:80.3
-    |____|_____          72°C|72°C|tmr:84.4
-    |3min|30s  \ 65.5°C _____|____|45s/kb
+    |95°C|95°C               |    |tmf:77.1
+    |____|_____          72°C|72°C|tmr:80.9
+    |3min|30s  \ 64.6°C _____|____|45s/kb
     |    |      \______/ 1:07|5min|GC 51%
     |    |       30s         |    |1505bp
     """

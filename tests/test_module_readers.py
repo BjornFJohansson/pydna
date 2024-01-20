@@ -217,7 +217,7 @@ def test_read_with_feature_spanning_ori():
     a = read(test)
     assert str(a.seq).lower() == "accgggtttt"
     assert str(a.features[0].extract(a).seq) == "TTAC"
-    assert a.features[0].strand == 1
+    assert a.features[0].location.strand == 1
 
     b = a.rc()
 

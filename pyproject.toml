@@ -22,7 +22,7 @@ classifiers=["Development Status :: 4 - Beta",
 Changelog = "https://github.com/BjornFJohansson/pydna/blob/master/docs/CHANGELOG.md#changelog"
 [tool.poetry]
 name = "pydna"
-version = "0.0.0"
+version = "6.0.0-a.24.post.17+b7b559bd66"
 description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 authors = ["BjornFJohansson <bjornjobb@gmail.com>"]
 license = "BSD"
@@ -31,15 +31,22 @@ homepage = "https://github.com/BjornFJohansson/pydna#-pydna"
 documentation = "https://pydna.readthedocs.io/?badge=latest"
 repository = "https://github.com/BjornFJohansson/pydna/tree/dev_bjorn"
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.8, <4"
 appdirs = ">=1.4.4"
 biopython = ">=1.80"
 networkx = ">=2.8.8"
 pydivsufsort = ">=0.0.11"
 prettytable = ">=3.5.0"
 pyfiglet = "0.8.post1"
+numpy = [
+    {version = ">=1.24.4", python = ">=3.8,<3.9"},
+    {version = ">=1.26.3", python = ">=3.9"}
+]
 pyperclip = { version = ">=1.8.2", optional = true }
-scipy = { version = ">=1.9.3", optional = true }
+scipy = [
+    {version = ">=1.9.3", python = ">=3.8,<3.9",  optional = true },
+    {version = ">=1.11.4", python = ">=3.9",  optional = true }
+]
 matplotlib = { version = ">=3.4.3", optional = true }
 pillow = { version = ">=8.4.0", optional = true }
 pyparsing = { version = ">=2.4.7", optional = true }
