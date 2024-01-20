@@ -108,42 +108,26 @@ class Amplicon(_Dseqrecord):
         figure:string
              A string containing a text representation of the primers
              annealing on the template (see example above).
-
         """
 
-        f = """
-            {sp1}5{faz}{middle1}{raz}3
-             {sp3}{rap}
-            {sp3}3{rp}5
-            5{fp}3
-             {fap:>{fplength}}
-            {sp2}3{fzc}{middle2}{rzc}5
-            """.format(
-            fp=self.forward_primer.seq,
-            fap="|" * len(self.forward_primer.footprint),
-            fplength=len(self.forward_primer.seq),
-            rp=self.reverse_primer.seq[::-1],
-            rap="|" * len(self.reverse_primer.footprint),
-            faz=self.template.seq[
-                self.forward_primer.position - self.forward_primer._fp : self.forward_primer.position
-            ],
-            raz=self.template.seq[
-                self.reverse_primer.position : self.reverse_primer.position + self.reverse_primer._fp
-            ],
-            fzc=self.template.seq.rc()[len(self.seq.watson) - self.forward_primer.position :][::-1],
-            rzc=self.template.seq.rc()[: len(self.seq.watson) - self.reverse_primer.position][::-1],
-            sp1=" " * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
-            sp2=" " * (len(self.forward_primer.seq) - len(self.forward_primer.footprint)),
-            sp3=" " * (3 + len(self.forward_primer.seq)),
-            middle1="...",
-            middle2="...",
-        )
-
-        # type_, watson, rcrick = self.template.figure().splitlines()
-        # f2 = (f"{watson}\n"
-
-        #       f"{rcrick}\n")
-        # print(f2)
+        fp = self.forward_primer
+        rp = self.reverse_primer
+        tp = self.template
+        ft = len(fp) - fp._fp  # forward tail length
+        # rt = len(rp) - rp._fp  # reverse tail length
+        faz = tp[fp.position - fp._fp : fp.position].seq
+        raz = tp[rp.position : rp.position + rp._fp].seq
+        sp3 = " " * (len(fp.seq) + 3)
+        fzc = tp.seq.rc()[::-1][: fp.position]
+        rzc = tp.seq.rc()[::-1][rp.position : rp.position + rp._fp]
+        f = f"""
+            {" " *ft}5{faz}...{raz}3
+             {sp3}{"|" * rp._fp}
+            {sp3}3{rp.seq[::-1]}5
+            5{fp.seq}3
+             {"|" *fp._fp:>{len(fp)}}
+            {" " *ft}3{fzc}...{rzc}5
+            """
         return _pretty_str(_textwrap.dedent(f).strip("\n"))
 
     def set_forward_primer_footprint(self, length):
