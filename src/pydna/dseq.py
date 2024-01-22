@@ -400,7 +400,7 @@ class Dseq(_Seq):
         *args,
         # linear=True,
         circular=False,
-        **kwargs
+        **kwargs,
     ):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.watson = _pretty_str(dna)
@@ -1458,7 +1458,9 @@ class Dseq(_Seq):
             # argument is probably a RestrictionBatch
             enzymecuts = []
             for e in enzymes[0]:
-                cuts = e.search(_Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad) if self.circular else dsseq)
+                cuts = e.search(
+                    _Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad) if self.circular else dsseq
+                )
                 enzymecuts.append((cuts, e))
             enzymecuts.sort()
             enzymes = [e for (c, e) in enzymecuts if c]
