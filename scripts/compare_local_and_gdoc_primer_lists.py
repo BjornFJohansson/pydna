@@ -22,14 +22,14 @@ def get_google_doc_text(title, mime="application/vnd.google-apps.document"):
     See instructions at the docs for gdrive
     https://gspread.readthedocs.io/en/latest/oauth2.html
     """
-    JSON_FILE = os.path.join(gspread.auth.get_config_dir(), 'service_account.json')
+    JSON_FILE = os.path.join(gspread.auth.get_config_dir(), "service_account.json")
     gauth = GoogleAuth()
-    scope = ['https://www.googleapis.com/auth/drive']
+    scope = ["https://www.googleapis.com/auth/drive"]
     gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name(JSON_FILE, scope)
-    gauth.auth_method = 'service'
+    gauth.auth_method = "service"
     drive = GoogleDrive(gauth)
 
-    fl = drive.ListFile({'q': f"title = '{title}' and mimeType='{mime}'"}).GetList()
+    fl = drive.ListFile({"q": f"title = '{title}' and mimeType='{mime}'"}).GetList()
 
     return fl.pop(0).GetContentString(mimetype="text/plain")
 

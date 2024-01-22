@@ -14,7 +14,7 @@ repos:
   rev: 23.12.1
   hooks:
   - id: black
-    args: [-l 119, -S, .]
+    args: [-l 119, .]
 - repo: https://github.com/PyCQA/flake8
   rev: 7.0.0
   hooks:

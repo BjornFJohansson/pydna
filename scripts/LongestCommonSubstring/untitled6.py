@@ -15,8 +15,8 @@ doc = poet.split()
 
 import random
 
-a = ''.join(random.choice("ACGTURYKSWHBVDN") for i in range(100000))
-b = ''.join(random.choice("ACGTURYKSWHBVDN") for i in range(100000))
+a = "".join(random.choice("ACGTURYKSWHBVDN") for i in range(100000))
+b = "".join(random.choice("ACGTURYKSWHBVDN") for i in range(100000))
 
 print(lcs1(a, b, 8))
 

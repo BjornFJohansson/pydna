@@ -745,19 +745,19 @@ def test_linear_with_annotations2(monkeypatch):
     from pydna.dseqrecord import Dseqrecord
 
     a = Dseqrecord("acgatgctatactgtgCCNCCtgtgctgtgctcta")
-    a.add_feature(0, 10, label='a_feat')
+    a.add_feature(0, 10, label="a_feat")
     a_feat_seq = a.features[0].extract(a)
     # 12345678901234
     b = Dseqrecord("tgtgctgtgctctaTTTTTTTtattctggctgtatcCCCCCC")
-    b.add_feature(0, 10, label='b_feat')
+    b.add_feature(0, 10, label="b_feat")
     b_feat_seq = b.features[0].extract(b)
 
     # 123456789012345
     c = Dseqrecord("GtattctggctgtatcGGGGGtacgatgctatactgtg")
-    c.add_feature(0, 10, label='c_feat')
+    c.add_feature(0, 10, label="c_feat")
     c_feat_seq = c.features[0].extract(c)
 
-    feature_sequences = {'a_feat': a_feat_seq, 'b_feat': b_feat_seq, 'c_feat': c_feat_seq}
+    feature_sequences = {"a_feat": a_feat_seq, "b_feat": b_feat_seq, "c_feat": c_feat_seq}
 
     a.name = "aaa"  # 1234567890123456
     b.name = "bbb"
@@ -766,19 +766,19 @@ def test_linear_with_annotations2(monkeypatch):
     x = asm.assemble_linear()[0]
     # print(x.features)
     # print(x)
-    answer = 'aaa|14\n    \\/\n    /\\\n    14|bbb|15\n           \\/\n           /\\\n           15|ccc'
+    answer = "aaa|14\n    \\/\n    /\\\n    14|bbb|15\n           \\/\n           /\\\n           15|ccc"
 
     assert x.figure() == answer.strip()
-    answer = 'acgatgctatactgtgCCNCCtgtgctgtgctcta\n                     TGTGCTGTGCTCTA\n                     tgtgctgtgctctaTTTTTTTtattctggctgtatc\n                                          TATTCTGGCTGTATC\n                                          tattctggctgtatcGGGGGtacgatgctatactgtg\n'
+    answer = "acgatgctatactgtgCCNCCtgtgctgtgctcta\n                     TGTGCTGTGCTCTA\n                     tgtgctgtgctctaTTTTTTTtattctggctgtatc\n                                          TATTCTGGCTGTATC\n                                          tattctggctgtatcGGGGGtacgatgctatactgtg\n"
     assert x.detailed_figure()
     for feat in x.features:
         try:
-            assert feat.extract(x).seq == feature_sequences[feat.qualifiers['label']].seq
+            assert feat.extract(x).seq == feature_sequences[feat.qualifiers["label"]].seq
         except AssertionError:
-            print(feat.qualifiers['label'])
-            print(feat.extract(x).seq, 'extracted feat')
-            print(feature_sequences[feat.qualifiers['label']].seq, 'original feat')
-            assert feat.extract(x).seq == feature_sequences[feat.qualifiers['label']].seq
+            print(feat.qualifiers["label"])
+            print(feat.extract(x).seq, "extracted feat")
+            print(feature_sequences[feat.qualifiers["label"]].seq, "original feat")
+            assert feat.extract(x).seq == feature_sequences[feat.qualifiers["label"]].seq
 
 
 # acgatgctatactgtgCCNCCtgtgctgtgctcta

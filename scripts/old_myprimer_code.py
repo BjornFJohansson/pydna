@@ -123,7 +123,7 @@ def code_for_literal_primers(primers: list) -> _pretty_str:
     """docstring."""
     pl = tuple(str(p.seq).upper() for p in primerlist())
     result = "from pydna.parsers import parse_primers\n\n"
-    result += "if not \"p\" in locals(): p = {}\n\n"
+    result += 'if not "p" in locals(): p = {}\n\n'
     result += "new_primers = "
     msg = ""
 
@@ -132,12 +132,12 @@ def code_for_literal_primers(primers: list) -> _pretty_str:
     for name in names:
         result += f"{name}, "
 
-    result += "= parse_primers(\"\"\"\n\n"
+    result += '= parse_primers("""\n\n'
 
     for p in primerlist:
         result += p.format("fasta") + "\n"
 
-    result += "\"\"\")"
+    result += '""")'
 
     return result
 
