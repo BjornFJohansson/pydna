@@ -20,7 +20,7 @@ class Feature(SeqFeature):
             ref=None,
             ref_db=None,
             *args,
-            **kwargs
+            **kwargs,
         )
         self.seq = seq
 
