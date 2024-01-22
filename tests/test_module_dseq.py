@@ -825,7 +825,7 @@ def test_apply_cut():
     assert seq.apply_cut(None, None) == seq
 
     # A cut where one side is None leaves that side intact
-    EcoRI_cut = ((3, 7), type('DynamicClass', (), {'ovhg': -4})())
+    EcoRI_cut = ((3, -4), None)
     assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=0)
     assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=0, crick_ovhg=-4)
 
@@ -844,28 +844,28 @@ def test_apply_cut():
 
     # Two cuts extract a subsequence
     seq = Dseq('aaGAATTCaaGAATTCaa', circular=True)
-    EcoRI_cut_2 = ((11, 15), type('DynamicClass', (), {'ovhg': -4})())
+    EcoRI_cut_2 = ((11, -4), None)
     assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
 
     # Overlapping cuts should return an error
     seq = Dseq('aaGAATTCaa', circular=True)
     first_cuts = [
-        ((3, 7), type('DynamicClass', (), {'ovhg': -4})()),
-        ((7, 3), type('DynamicClass', (), {'ovhg': 4})()),
+        ((3, -4), None),
+        ((7, 4), None),
         # Spanning the origin
-        ((9, 8), type('DynamicClass', (), {'ovhg': -8})()),
-        ((8, 9), type('DynamicClass', (), {'ovhg': 8})()),
+        ((9, -8), None),
+        ((8, 8), None),
         ]
     overlapping_cuts = [
-        ((4, 8), type('DynamicClass', (), {'ovhg': -4})()),
-        ((2, 6), type('DynamicClass', (), {'ovhg': -4})()),
-        ((2, 8), type('DynamicClass', (), {'ovhg': -4})()),
-        ((8, 4), type('DynamicClass', (), {'ovhg': 4})()),
-        ((6, 2), type('DynamicClass', (), {'ovhg': 4})()),
-        ((8, 2), type('DynamicClass', (), {'ovhg': 4})()),
+        ((4, -4), None),
+        ((2, -4), None),
+        ((2, -6), None),
+        ((8, 4), None),
+        ((6, 4), None),
+        ((8, 6), None),
         # Spanning the origin
-        ((7, 6), type('DynamicClass', (), {'ovhg': -8})()),
-        ((6, 7), type('DynamicClass', (), {'ovhg': 8})()),
+        ((7, -8), None),
+        ((6, 8), None),
     ]
 
     for first_cut in first_cuts:

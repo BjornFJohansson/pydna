@@ -1361,7 +1361,8 @@ class Dseqrecord(_SeqRecord):
                 #     000
                 #     2222
                 #
-                features = self.shifted(min(left_cut[0])).features
+                left_watson, left_crick, left_ovhg = self.seq.get_cut_parameters(left_cut, True)
+                features = self.shifted(min(left_watson, left_crick)).features
                 # for f in features:
                 #     print(f.id, f.location, _location_boundaries(f.location))
                 # Here, we have done what's shown below (* indicates the origin).
@@ -1374,8 +1375,8 @@ class Dseqrecord(_SeqRecord):
                 #      000
                 #      2222
 
-                features_need_transfer = [f for f in features if (_location_boundaries(f.location)[1] <= abs(left_cut[1].ovhg))]
-                features_need_transfer = [_shift_feature(f, -abs(left_cut[1].ovhg), len(self)) for f in features_need_transfer]
+                features_need_transfer = [f for f in features if (_location_boundaries(f.location)[1] <= abs(left_ovhg))]
+                features_need_transfer = [_shift_feature(f, -abs(left_ovhg), len(self)) for f in features_need_transfer]
                 #                                           ^                       ^^^^^^^^^
                 # Now we have shifted the features that end before the cut (0 and 1, but not 3), as if
                 # they referred to the below sequence (* indicates the origin):
@@ -1388,7 +1389,7 @@ class Dseqrecord(_SeqRecord):
                 # The features 0 and 1 would have the right location if the final sequence had the same length
                 # as the original one. However, the final product is longer because of the overhang.
 
-                features += [_shift_feature(f, abs(left_cut[1].ovhg), len(dseq)) for f in features_need_transfer]
+                features += [_shift_feature(f, abs(left_ovhg), len(dseq)) for f in features_need_transfer]
                 #                             ^                       ^^^^^^^^^
                 # So we shift back by the same amount in the opposite direction, but this time we pass the 
                 # length of the final product.
@@ -1398,11 +1399,14 @@ class Dseqrecord(_SeqRecord):
                                _location_boundaries(f.location)[1] <= len(dseq) and
                                _location_boundaries(f.location)[0] <= _location_boundaries(f.location)[1])]
         else:
-            left_watson, left_crick = left_cut[0] if left_cut is not None else (0, 0)
-            right_watson, right_crick = right_cut[0] if right_cut is not None else (None, None)
+            left_watson, left_crick, left_ovhg = self.seq.get_cut_parameters(left_cut, True)
+            right_watson, right_crick, right_ovhg = self.seq.get_cut_parameters(right_cut, False)
 
-            left_edge = left_crick if dseq.ovhg > 0 else left_watson
-            right_edge = right_watson if dseq.watson_ovhg() > 0 else right_crick
+            # left_watson, left_crick = left_cut[0] if left_cut is not None else (0, 0)
+            # right_watson, right_crick = right_cut[0] if right_cut is not None else (None, None)
+
+            left_edge = left_crick if left_ovhg > 0 else left_watson
+            right_edge = right_watson if right_ovhg > 0 else right_crick
             features = self[left_edge:right_edge].features
 
         return Dseqrecord(dseq, features=features)

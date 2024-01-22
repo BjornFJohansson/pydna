@@ -1477,11 +1477,11 @@ class Dseq(_Seq):
         enzymes = _flatten(enzymes)
         out = list()
         for e in enzymes:
-            # Positions are 1-based, so we subtract 1 to get 0-based positions
+            # Positions of the cut on the watson strand. They are 1-based, so we subtract
+            # 1 to get 0-based positions
             cuts_watson = [c - 1 for c in e.search(self, linear=(not self.circular))]
-            cuts_crick = [(c - e.ovhg) % len(self) for c in cuts_watson]
 
-            out += [((w, c), e) for w, c in zip(cuts_watson, cuts_crick)]
+            out += [((w, e.ovhg), e) for w in cuts_watson]
 
         return sorted(out)
 
@@ -1517,17 +1517,32 @@ class Dseq(_Seq):
             return len(self) + self.watson_ovhg(), len(self)
         return len(self), len(self) - self.watson_ovhg()
 
+    def get_cut_parameters(self, cut: tuple, is_left: bool):
+        """For a given cut expressed as ((watson_cut, ovhg), enz), returns
+        a tuple (watson_cut, crick_cut, ovhg). The cut can be None if it
+        represents the left or right end of the sequence. That's what the
+        is_left parameter is for."""
+        if cut is not None:
+            watson, ovhg = cut[0]
+            crick = (watson - ovhg) % len(self)
+            return watson, crick, ovhg
+        if is_left:
+            return *self.left_end_position(), self.ovhg
+        return *self.right_end_position(), self.ovhg
+
     def apply_cut(self, left_cut, right_cut):
         if _cuts_overlap(left_cut, right_cut, len(self)):
             raise ValueError("Cuts overlap")
-        left_watson, left_crick = left_cut[0] if left_cut is not None else self.left_end_position()
-        ovhg = left_cut[1].ovhg if left_cut is not None else self.ovhg
-        right_watson, right_crick = right_cut[0] if right_cut is not None else self.right_end_position()
+
+        left_watson, left_crick, ovhg_left = self.get_cut_parameters(left_cut, True)
+        right_watson, right_crick, _ = self.get_cut_parameters(right_cut, False)
+        print(left_watson, left_crick)
+        print(right_watson, right_crick)
         return Dseq(
                     str(self[left_watson:right_watson]),
                     # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case
                     str(self.reverse_complement()[len(self) - right_crick:len(self) - left_crick]),
-                    ovhg=ovhg,
+                    ovhg=ovhg_left,
                 )
 
     def get_cutsite_pairs(self, cutsites):
