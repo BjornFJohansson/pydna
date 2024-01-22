@@ -123,7 +123,10 @@ class Seq(_Seq):
 
     def __getitem__(self, key):
         result = super().__getitem__(key)
-        result.__class__ = self.__class__
+        try:
+            result.__class__ = self.__class__
+        except TypeError:
+            pass
         return result
 
     def reverse_complement(self):
