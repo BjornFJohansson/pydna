@@ -79,11 +79,12 @@ class Amplicon(_Dseqrecord):
         return "Amplicon({})".format(self.__len__())
 
     def reverse_complement(self):
-        answer = type(self)(super().reverse_complement())
-        answer.template = self.template.rc()
-        answer.forward_primer = self.reverse_primer
-        answer.reverse_primer = self.forward_primer
-        return answer
+        r = type(self)(super().reverse_complement())
+        r.template = self.template.rc()
+        r.forward_primer = _copy.copy(self.reverse_primer)
+        r.reverse_primer = _copy.copy(self.forward_primer)
+        r.forward_primer.position, r.reverse_primer.position = r.reverse_primer.position, r.forward_primer.position
+        return r
 
     rc = reverse_complement
 
@@ -118,7 +119,7 @@ class Amplicon(_Dseqrecord):
         faz = tp[fp.position - fp._fp : fp.position].seq
         raz = tp[rp.position : rp.position + rp._fp].seq
         sp3 = " " * (len(fp.seq) + 3)
-        fzc = tp.seq.rc()[::-1][: fp.position]
+        fzc = tp.seq.rc()[::-1][fp.position - fp._fp : fp.position]
         rzc = tp.seq.rc()[::-1][rp.position : rp.position + rp._fp]
         f = f"""
             {" " *ft}5{faz}...{raz}3
@@ -128,6 +129,7 @@ class Amplicon(_Dseqrecord):
              {"|" *fp._fp:>{len(fp)}}
             {" " *ft}3{fzc}...{rzc}5
             """
+        # breakpoint()
         return _pretty_str(_textwrap.dedent(f).strip("\n"))
 
     def set_forward_primer_footprint(self, length):
