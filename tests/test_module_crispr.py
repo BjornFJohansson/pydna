@@ -30,7 +30,10 @@ def test_crispr():
     assert [f.seq for f in target.cut([cas9(ps) for ps in protospacer(containing_sgRNA)])] == [a, b]
     assert [f.seq for f in target.cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [a, b]
     assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA)])] == [b.rc(), a.rc()]
-    assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [b.rc(), a.rc()]
+    assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [
+        b.rc(),
+        a.rc(),
+    ]
 
 
 if __name__ == "__main__":
