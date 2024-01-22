@@ -157,10 +157,10 @@ def test_no_revprimer_anneal():
 def test_Primer_arguments():
     f0, r0 = parse_primers(
         """>ForwardPrimer
-                             gctactacacacgtactgactg
+           gctactacacacgtactgactg
 
-                             >ReversePrimer
-                             tgtggttactgactctatcttg"""
+           >ReversePrimer
+           tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -175,10 +175,10 @@ def test_Primer_arguments():
 def test_feature_label():
     f0, r0 = parse_primers(
         """>ForwardPrimer
-                             gctactacacacgtactgactg
+           gctactacacacgtactgactg
 
-                             >ReversePrimer
-                             tgtggttactgactctatcttg"""
+           >ReversePrimer
+           tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -194,10 +194,10 @@ def test_feature_label():
 def test_feature_note():
     f0, r0 = parse_primers(
         """>ForwardPrimer
-                             gctactacacacgtactgactg
+           gctactacacacgtactgactg
 
-                             >ReversePrimer
-                             tgtggttactgactctatcttg"""
+           >ReversePrimer
+           tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -209,17 +209,18 @@ def test_feature_note():
     r = r0
     t = t0
 
-    assert str(pcr(f, r, t).seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
-    assert pcr(f, r, t).name == "note"
+    obj = pcr(f, r, t)
+    assert str(obj.seq) == "gctactacacacgtactgactgcctccaagatagagtcagtaaccaca"
+    assert obj.name == "note"
 
 
 def test_Amplicon_argument():
     f0, r0 = parse_primers(
         """>ForwardPrimer
-                             gctactacacacgtactgactg
+           gctactacacacgtactgactg
 
-                             >ReversePrimer
-                             tgtggttactgactctatcttg"""
+           >ReversePrimer
+           tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -240,10 +241,10 @@ def test_Amplicon_argument():
 def test_pcr_not_specific():
     f0, r0 = parse_primers(
         """>ForwardPrimer
-                             gctactacacacgtactgactg
+           gctactacacacgtactgactg
 
-                             >ReversePrimer
-                             tgtggttactgactctatcttg"""
+           >ReversePrimer
+           tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgtgctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -292,25 +293,25 @@ def test_too_short_primers():
 
 
 def test_circ_pcr():
+    # A pathological example
+
     """
-    <-----------------------------------------------------58->
+       <-----------------------------------------------------58->
 
-    <----------------------------33->
-      ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggcc
-                                     |||||||||||||||||||||||||
-    TCAGGTGAGGCGGAACCAACCCTCCTGGCCATGggaggggccgtggtggacgagggccccacaggcg-->
-            ||||||||||||||||||||||||||
-            ggcggaaccaaccctcctggccATGgactacaaagacgatgacgacaagcttgcggc
+       <----------------------------33->
+         ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggcc
+                                        |||||||||||||||||||||||||
+    -->TCAGGTGAGGCGGAACCAACCCTCCTGGCCATGggaggggccgtggtggacgagggccccacaggcg-->
+               ||||||||||||||||||||||||||
+               ggcggaaccaaccctcctggccATGgactacaaagacgatgacgacaagcttgcggc
 
-    <----------------------------------------------------------------------42->
-    <-----------------------------------------------------25-><------------17->
-      ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggcc
-                                     |||||||||||||||||||||||||
-                                     ggaggggccgtggtggacgagggccccacaggcgTCAGGTGAGGCGGAACCAACCCTCCTGGCCATG
-                                                                               ||||||||||||||||||||||||||
-                                                                               ggcggaaccaaccctcctggccATGgactacaaagacgatgacgacaagcttgcggc
-
-
+       <----------------------------------------------------------------------42->
+       <-----------------------------------------------------25-><------------17->
+         ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggcc
+                                        |||||||||||||||||||||||||
+                                        ggaggggccgtggtggacgagggccccacaggcgTCAGGTGAGGCGGAACCAACCCTCCTGGCCATG
+                                                                                  ||||||||||||||||||||||||||
+                                                                                  ggcggaaccaaccctcctggccATGgactacaaagacgatgacgacaagcttgcggc
     """
 
     s = parse(
@@ -333,7 +334,7 @@ def test_circ_pcr():
 
     assert (
         str(p.seq).lower()
-        == "ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggccccacaggcgtcaggtgaggcggaaccaaccctcctggccatggactacaaagacgatgacgacaagcttgcggc"
+        == "ccaccaccaccaccaccaccaccaccaccacggaggggccgtggtggacgagggccccacaggcgTCAGGTGAGGCGGAACCAACCCTCCTGGCCATGgactacaaagacgatgacgacaagcttgcggc".lower()
     )
 
 
@@ -586,7 +587,7 @@ def test_pcr():
 
     raw.append(
         (
-            "y6ohCJ4O+8Is012DItz4F4saxNo",
+            "0SgGMgnxkkT6ZoAN6Pk7HFcXfrI",
             parse(
                 """
     >f_Eric_Ma
