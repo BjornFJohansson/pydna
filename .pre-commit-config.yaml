@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
+  rev: v4.5.0
   hooks:
   - id: no-commit-to-branch
     args: [--branch, master]
@@ -14,7 +14,7 @@ repos:
   rev: 23.11.0
   hooks:
   - id: black
-    args: [-l 120, -S, .]
+    args: [-l 119, -S, .]
 - repo: https://github.com/PyCQA/flake8
   rev: 6.0.0
   hooks:
