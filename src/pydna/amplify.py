@@ -342,34 +342,23 @@ class Anneal(object):  # ), metaclass=_Memoize):
         for fp in self.forward_primers:
             for rp in self.reverse_primers:
                 if self.template.circular:
-                    tmpl = self.template.shifted(fp.position - fp._fp)
-                    tmpl = tmpl[:] * 2
-                    for f in tmpl.features:
-                        for x, y in zip(f.location.parts, f.location.parts[1:]):
-                            if x.end == y.start + len(self.template):
-                                f.location = _SimpleLocation(
-                                    x.start,
-                                    y.end + len(self.template),
-                                    strand=f.location.strand,
-                                )
-                    if fp.position > rp.position:
-                        tmpl = tmpl[fp._fp : len(self.template) - fp.position + rp.position + rp._fp + fp._fp - fp._fp]
-                    else:
-                        tmpl = tmpl[fp._fp : rp.position + rp._fp - (fp.position - fp._fp) - fp._fp]
-                elif fp.position <= rp.position:
-                    tmpl = self.template[fp.position : rp.position]
+                    shift = fp.position - fp._fp
+                    tpl = self.template.shifted(shift)  # shift template so that it starts where the fp starts anneling
+                    feats = tpl[: rp.position + rp._fp].features
+                    fp.position = fp._fp  # New position of fp becomes the footprint length
+                    rp.position = (rp.position - shift) % len(self.template)  # Shift the rp position as well
+                elif fp.position <= rp.position:  # pcr products only formed if fp anneals forward of rp
+                    feats = self.template[
+                        fp.position - fp._fp : rp.position + rp._fp
+                    ].features  # Save features covered by primers
+                    tpl = self.template
                 else:
                     continue
-                prd = (
-                    _Dseqrecord(fp) + tmpl + _Dseqrecord(rp).reverse_complement()
-                )  # XXX: whole primers, not just tails
-                prd.features = [
-                    f
-                    for f in self.template.features
-                    if f.location.start >= fp.position - fp._fp and f.location.end <= fp.position + rp._fp
+                prd = _Dseqrecord(fp) + tpl[fp.position : rp.position] + _Dseqrecord(rp).reverse_complement()
+                prd.features = feats
+                full_tmpl_features = [
+                    f for f in self.template.features if f.location.start == 0 and f.location.end == len(self.template)
                 ]
-                full_tmpl_features = [f for f in tmpl.features if f.location.start == 0 and f.location.end == len(tmpl)]
-                # breakpoint()
                 new_identifier = ""
                 if full_tmpl_features:
                     ft = full_tmpl_features[0]
