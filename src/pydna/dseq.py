@@ -1446,6 +1446,51 @@ class Dseq(_Seq):
         cutsite_pairs = self.get_cutsite_pairs(cutsites)
         return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
+    def cutsite_is_valid(self, cutsite):
+        """Returns False if:
+        - Cut positions fall outside the sequence (could be moved to Biopython)
+        - Overhang is not double stranded
+        - Recognition site is not double stranded or is outside the sequence
+        - For enzymes that cut twice, it checks that at least one possibility is valid
+        """
+        enz = cutsite[1]
+        watson, crick, ovhg = self.get_cut_parameters(cutsite, True)
+
+        # The cut positions fall within the sequence
+        # This could go into Biopython
+        if not self.circular and crick < 0 or crick > len(self):
+            return False
+
+        # The overhang is double stranded
+        overhang_dseq = self[watson:crick] if ovhg < 0 else self[crick:watson]
+        if overhang_dseq.ovhg != 0 or overhang_dseq.watson_ovhg() != 0:
+            return False
+
+        # The recognition site is double stranded and within the sequence
+        start_of_recognition_site = watson - enz.fst5
+        if start_of_recognition_site < 0:
+            start_of_recognition_site += len(self)
+        end_of_recognition_site = start_of_recognition_site + enz.size
+        if self.circular:
+            end_of_recognition_site %= len(self)
+        recognition_site = self[start_of_recognition_site:end_of_recognition_site]
+        if len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0:
+            if enz.scd5 is None:
+                return False
+            else:
+                # For enzymes that cut twice, this might be referring to the second one
+                start_of_recognition_site = watson - enz.scd5
+                if start_of_recognition_site < 0:
+                    start_of_recognition_site += len(self)
+                end_of_recognition_site = start_of_recognition_site + enz.size
+                if self.circular:
+                    end_of_recognition_site %= len(self)
+                recognition_site = self[start_of_recognition_site:end_of_recognition_site]
+                if (len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0):
+                    return False
+
+        return True
+
     def get_cutsites(self, *enzymes):
         """Returns a list of cutsites, represented by tuples ((cut_watson, cut_crick), enzyme), sorted by where they cut on the 5' strand.
 
@@ -1483,7 +1528,7 @@ class Dseq(_Seq):
 
             out += [((w, e.ovhg), e) for w in cuts_watson]
 
-        return sorted(out)
+        return sorted([cutsite for cutsite in out if self.cutsite_is_valid(cutsite)])
 
     def left_end_position(self) -> tuple[int, int]:
         """The index in the global sequence of the watson and crick start positions.
@@ -1524,7 +1569,9 @@ class Dseq(_Seq):
         is_left parameter is for."""
         if cut is not None:
             watson, ovhg = cut[0]
-            crick = (watson - ovhg) % len(self)
+            crick = (watson - ovhg)
+            if self.circular:
+                crick %= len(self)
             return watson, crick, ovhg
         if is_left:
             return *self.left_end_position(), self.ovhg
@@ -1536,8 +1583,6 @@ class Dseq(_Seq):
 
         left_watson, left_crick, ovhg_left = self.get_cut_parameters(left_cut, True)
         right_watson, right_crick, _ = self.get_cut_parameters(right_cut, False)
-        print(left_watson, left_crick)
-        print(right_watson, right_crick)
         return Dseq(
                     str(self[left_watson:right_watson]),
                     # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case

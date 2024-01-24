@@ -878,6 +878,71 @@ def test_apply_cut():
                 print(first_cut, second_cut)
                 assert False, 'Expected ValueError'
 
+def test_cutsite_is_valid():
+
+    from pydna.dseq import Dseq
+    from Bio.Restriction import EcoRI, BsaI, PacI, NmeDI, Acc65I, NotI, BamHI, EcoRV
+
+    # Works for circular case
+    seqs = ["GAATTC", "TTAATTAAC", "GATATC"]
+    enzs = [EcoRI, PacI, EcoRV]
+    for seq, enz in zip(seqs, enzs):
+        dseq = Dseq(seq, circular=True)
+        for shift in range(len(seq)):
+            dseq_shifted = dseq.shifted(shift)
+            cutsite, = dseq_shifted.get_cutsites([enz])
+            assert dseq_shifted.cutsite_is_valid(cutsite)
+
+    # Works for overhangs
+    seqs = ["GAATTC", "TTAATTAA", "GATATC"]
+    for seq, enz in zip(seqs, enzs):
+        for ovhg in [-1, 0, 1]:
+            dseq = Dseq.from_full_sequence_and_overhangs(seq, ovhg, 0)
+            if ovhg != 0:
+                assert len(dseq.get_cutsites([enz])) == 0
+            else:
+                assert len(dseq.get_cutsites([enz])) == 1
+
+            dseq = Dseq.from_full_sequence_and_overhangs(seq, 0, ovhg)
+            if ovhg != 0:
+                assert len(dseq.get_cutsites([enz])) == 0
+            else:
+                assert len(dseq.get_cutsites([enz])) == 1
+
+    # Special cases:
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 2
+    # Remove left cutting place
+    assert len(dseq[2:].get_cutsites([NmeDI])) == 1
+    # Remove right cutting place
+    assert len(dseq[:-2].get_cutsites([NmeDI])) == 1
+    # Remove both cutting places
+    assert len(dseq[2:-2].get_cutsites([NmeDI])) == 0
+
+    # overhang left side
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', -2, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 2, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+
+    # overhang right side
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 2)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, -2)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+
+    # overhang both sides
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 2, 2)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', -2, -2)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+
+    # overhang on recognition site removes both cutting places
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 16, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 16)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
