@@ -1402,9 +1402,6 @@ class Dseqrecord(_SeqRecord):
             left_watson, left_crick, left_ovhg = self.seq.get_cut_parameters(left_cut, True)
             right_watson, right_crick, right_ovhg = self.seq.get_cut_parameters(right_cut, False)
 
-            # left_watson, left_crick = left_cut[0] if left_cut is not None else (0, 0)
-            # right_watson, right_crick = right_cut[0] if right_cut is not None else (None, None)
-
             left_edge = left_crick if left_ovhg > 0 else left_watson
             right_edge = right_watson if right_ovhg > 0 else right_crick
             features = self[left_edge:right_edge].features

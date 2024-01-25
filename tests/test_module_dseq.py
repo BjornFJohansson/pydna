@@ -976,7 +976,7 @@ def test_get_cut_parameters():
 
     dseq = Dseq.from_full_sequence_and_overhangs('aaaACGTaaa', 3, 3)
     assert dseq.get_cut_parameters(None, True) == (*dseq.left_end_position(), dseq.ovhg)
-    assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), None)
+    assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), dseq.watson_ovhg())
 
     assert dseq.get_cut_parameters(((4, -2), None), True) == (4, 6, -2)
     assert dseq.get_cut_parameters(((4, -2), None), False) == (4, 6, -2)
@@ -994,7 +994,7 @@ def test_get_cut_parameters():
         assert False, 'Expected AssertionError'
 
     try:
-        assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), None)
+        assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), dseq.watson_ovhg())
     except AssertionError as e:
         assert e.args[0] == 'Circular sequences should not have None cuts'
     else:

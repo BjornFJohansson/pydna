@@ -1619,7 +1619,7 @@ class Dseq(_Seq):
         if is_left:
             return *self.left_end_position(), self.ovhg
         # In the right end, the overhang does not matter
-        return *self.right_end_position(), None
+        return *self.right_end_position(), self.watson_ovhg()
 
     def apply_cut(self, left_cut, right_cut):
         """Extracts a subfragment of the sequence between two cuts.
