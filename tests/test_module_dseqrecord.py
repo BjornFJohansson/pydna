@@ -2246,8 +2246,7 @@ def test_apply_cut():
 
     # Single cut case
     for strand in [1, -1, None]:
-        for cut_coords, cut_ovhg in (((4, 7), -3), ((7, 4), 3)):
-            dummy_cut = (cut_coords, type('DynamicClass', (), {'ovhg': cut_ovhg})())
+        for dummy_cut in (((4, -3), None), ((7, 3), None)):
             seq = Dseqrecord("acgtATGaatt", circular=True)
             seq.features.append(SeqFeature(SimpleLocation(4, 7,  strand), id='full_overlap'))
             seq.features.append(SeqFeature(SimpleLocation(3, 7,  strand), id='left_side'))
