@@ -824,7 +824,7 @@ def test_apply_cut():
     assert seq.apply_cut(None, None) == seq
 
     # A cut where one side is None leaves that side intact
-    EcoRI_cut = ((3, 7), type('DynamicClass', (), {'ovhg': -4})())
+    EcoRI_cut = ((3, -4), None)
     assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=0)
     assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=0, crick_ovhg=-4)
 
@@ -843,28 +843,28 @@ def test_apply_cut():
 
     # Two cuts extract a subsequence
     seq = Dseq('aaGAATTCaaGAATTCaa', circular=True)
-    EcoRI_cut_2 = ((11, 15), type('DynamicClass', (), {'ovhg': -4})())
+    EcoRI_cut_2 = ((11, -4), None)
     assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
 
     # Overlapping cuts should return an error
     seq = Dseq('aaGAATTCaa', circular=True)
     first_cuts = [
-        ((3, 7), type('DynamicClass', (), {'ovhg': -4})()),
-        ((7, 3), type('DynamicClass', (), {'ovhg': 4})()),
+        ((3, -4), None),
+        ((7, 4), None),
         # Spanning the origin
-        ((9, 8), type('DynamicClass', (), {'ovhg': -8})()),
-        ((8, 9), type('DynamicClass', (), {'ovhg': 8})()),
+        ((9, -8), None),
+        ((8, 8), None),
         ]
     overlapping_cuts = [
-        ((4, 8), type('DynamicClass', (), {'ovhg': -4})()),
-        ((2, 6), type('DynamicClass', (), {'ovhg': -4})()),
-        ((2, 8), type('DynamicClass', (), {'ovhg': -4})()),
-        ((8, 4), type('DynamicClass', (), {'ovhg': 4})()),
-        ((6, 2), type('DynamicClass', (), {'ovhg': 4})()),
-        ((8, 2), type('DynamicClass', (), {'ovhg': 4})()),
+        ((4, -4), None),
+        ((2, -4), None),
+        ((2, -6), None),
+        ((8, 4), None),
+        ((6, 4), None),
+        ((8, 6), None),
         # Spanning the origin
-        ((7, 6), type('DynamicClass', (), {'ovhg': -8})()),
-        ((6, 7), type('DynamicClass', (), {'ovhg': 8})()),
+        ((7, -8), None),
+        ((6, 8), None),
     ]
 
     for first_cut in first_cuts:
@@ -876,6 +876,140 @@ def test_apply_cut():
             else:
                 print(first_cut, second_cut)
                 assert False, 'Expected ValueError'
+
+def test_cutsite_is_valid():
+
+    from pydna.dseq import Dseq
+    from Bio.Restriction import EcoRI, BsaI, PacI, NmeDI, Acc65I, NotI, BamHI, EcoRV
+
+    # Works for circular case
+    seqs = ["GAATTC", "TTAATTAAC", "GATATC"]
+    enzs = [EcoRI, PacI, EcoRV]
+    for seq, enz in zip(seqs, enzs):
+        dseq = Dseq(seq, circular=True)
+        for shift in range(len(seq)):
+            dseq_shifted = dseq.shifted(shift)
+            cutsite, = dseq_shifted.get_cutsites([enz])
+            assert dseq_shifted.cutsite_is_valid(cutsite)
+
+    # Works for overhangs
+    seqs = ["GAATTC", "TTAATTAA", "GATATC"]
+    for seq, enz in zip(seqs, enzs):
+        for ovhg in [-1, 0, 1]:
+            dseq = Dseq.from_full_sequence_and_overhangs(seq, ovhg, 0)
+            if ovhg != 0:
+                assert len(dseq.get_cutsites([enz])) == 0
+            else:
+                assert len(dseq.get_cutsites([enz])) == 1
+
+            dseq = Dseq.from_full_sequence_and_overhangs(seq, 0, ovhg)
+            if ovhg != 0:
+                assert len(dseq.get_cutsites([enz])) == 0
+            else:
+                assert len(dseq.get_cutsites([enz])) == 1
+
+    # Special cases:
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 2
+    # Remove left cutting place
+    assert len(dseq[2:].get_cutsites([NmeDI])) == 1
+    # Remove right cutting place
+    assert len(dseq[:-2].get_cutsites([NmeDI])) == 1
+    # Remove both cutting places
+    assert len(dseq[2:-2].get_cutsites([NmeDI])) == 0
+
+    # overhang left side
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', -2, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 2, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+
+    # overhang right side
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 2)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, -2)
+    assert len(dseq.get_cutsites([NmeDI])) == 1
+
+    # overhang both sides
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 2, 2)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', -2, -2)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+
+    # overhang on recognition site removes both cutting places
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 16, 0)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+    dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 16)
+    assert len(dseq.get_cutsites([NmeDI])) == 0
+
+def test_get_cutsite_pairs():
+    from pydna.dseq import Dseq
+
+    # in the test, we replace cuts by integers for clarity.
+
+    dseq = Dseq('A')
+
+    # Empty returns empty list
+    assert dseq.get_cutsite_pairs([]) == []
+
+    # Single cut on linear seq returns two fragments
+    assert dseq.get_cutsite_pairs([1]) == [(None, 1), (1, None)]
+
+    # Two cuts on linear seq return three fragments
+    assert dseq.get_cutsite_pairs([1, 2]) == [(None, 1), (1, 2), (2, None)]
+
+    dseq = Dseq('A', circular=True)
+
+    # Empty returns empty list
+    assert dseq.get_cutsite_pairs([]) == []
+
+    # Single cut on circular seq returns opened molecule
+    assert dseq.get_cutsite_pairs([1]) == [(1, 1)]
+
+    # Two cuts on circular seq return 2 fragments
+    assert dseq.get_cutsite_pairs([1, 2]) == [(1, 2), (2, 1)]
+
+def test_get_cut_parameters():
+
+    from pydna.dseq import Dseq
+
+    dseq = Dseq.from_full_sequence_and_overhangs('aaaACGTaaa', 3, 3)
+    assert dseq.get_cut_parameters(None, True) == (*dseq.left_end_position(), dseq.ovhg)
+    assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), dseq.watson_ovhg())
+
+    assert dseq.get_cut_parameters(((4, -2), None), True) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((4, -2), None), False) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((6, 2), None), True) == (6, 4, 2)
+    assert dseq.get_cut_parameters(((6, 2), None), False) == (6, 4, 2)
+
+    dseq = Dseq('aaaACGTaaa', circular=True)
+
+    # None cannot be used on circular molecules
+    try:
+        assert dseq.get_cut_parameters(None, True) == (*dseq.left_end_position(), dseq.ovhg)
+    except AssertionError as e:
+        assert e.args[0] == 'Circular sequences should not have None cuts'
+    else:
+        assert False, 'Expected AssertionError'
+
+    try:
+        assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), dseq.watson_ovhg())
+    except AssertionError as e:
+        assert e.args[0] == 'Circular sequences should not have None cuts'
+    else:
+        assert False, 'Expected AssertionError'
+
+    # "Normal" cuts
+    assert dseq.get_cut_parameters(((4, -2), None), True) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((4, -2), None), False) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((6, 2), None), True) == (6, 4, 2)
+    assert dseq.get_cut_parameters(((6, 2), None), False) == (6, 4, 2)
+
+    # Origin-spannign cuts
+    assert dseq.get_cut_parameters(((9, -2), None), True) == (9, 1, -2)
+    assert dseq.get_cut_parameters(((9, -2), None), False) == (9, 1, -2)
+    assert dseq.get_cut_parameters(((1, 2), None), True) == (1, 9, 2)
+    assert dseq.get_cut_parameters(((1, 2), None), False) == (1, 9, 2)
 
 
 if __name__ == "__main__":
