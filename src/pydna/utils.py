@@ -21,6 +21,7 @@ import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
 from copy import deepcopy as _deepcopy
+from typing import Union as _Union
 
 import sys as _sys
 import re
@@ -816,10 +817,11 @@ def cuts_overlap(left_cut, right_cut, seq_len):
 
     # This block of code would not be necessary if the cuts were
     # initially represented like this
-    (left_watson, _), enz1 = left_cut
-    (right_watson, _), enz2 = right_cut
-    left_crick = left_watson - enz1.ovhg
-    right_crick = right_watson - enz2.ovhg
+    (left_watson, left_ovhg), _ = left_cut
+    (right_watson, right_ovhg), _ = right_cut
+    # Position of the cut on the crick strands on the left and right
+    left_crick = left_watson - left_ovhg
+    right_crick = right_watson - right_ovhg
     if left_crick >= seq_len:
         left_crick -= seq_len
         left_watson -= seq_len
@@ -832,7 +834,7 @@ def cuts_overlap(left_cut, right_cut, seq_len):
     y = sorted([right_watson, right_crick])
     return (x[1] > y[0]) != (y[1] < x[0])
 
-def location_boundaries(loc: _sl|_cl):
+def location_boundaries(loc: _Union[_sl,_cl]):
 
     #TODO: pending on https://github.com/BjornFJohansson/pydna/pull/179
     if loc.strand != 1:
