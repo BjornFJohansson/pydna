@@ -1453,6 +1453,9 @@ class Dseq(_Seq):
         - Recognition site is not double stranded or is outside the sequence
         - For enzymes that cut twice, it checks that at least one possibility is valid
         """
+
+        assert cutsite != None, "cutsite is None"
+
         enz = cutsite[1]
         watson, crick, ovhg = self.get_cut_parameters(cutsite, True)
 
@@ -1492,7 +1495,18 @@ class Dseq(_Seq):
         return True
 
     def get_cutsites(self, *enzymes):
-        """Returns a list of cutsites, represented by tuples ((cut_watson, cut_crick), enzyme), sorted by where they cut on the 5' strand.
+        """Returns a list of cutsites, represented represented as `((cut_watson, ovhg), enz)`:
+
+        - `cut_watson` is a positive integer contained in `[0,len(seq))`, where `seq` is the sequence
+          that will be cut. It represents the position of the cut on the watson strand, using the full
+          sequence as a reference. By "full sequence" I mean the one you would get from `str(Dseq)`.
+        - `ovhg` is the overhang left after the cut. It has the same meaning as `ovhg` in
+          the `Bio.Restriction` enzyme objects, or pydna's `Dseq` property.
+        - `enz` is the enzyme object. It's not necessary to perform the cut, but can be
+           used to keep track of which enzyme was used.
+
+        Cuts are only returned if the recognition site and overhang are on the double-strand
+        part of the sequence.
 
         Parameters
         ----------
@@ -1510,9 +1524,27 @@ class Dseq(_Seq):
         >>> from pydna.dseq import Dseq
         >>> seq = Dseq('AAGAATTCAAGAATTC')
         >>> seq.get_cutsites(EcoRI)
-        [((3, 7), EcoRI), ((11, 15), EcoRI)]
+        [((3, -4), EcoRI), ((11, -4), EcoRI)]
 
-        TODO: check that the cutsite does not fall on the ovhg and that cutsites don't crash
+        `cut_watson` is defined with respect to the "full sequence", not the
+        watson strand:
+
+        >>> dseq = Dseq.from_full_sequence_and_overhangs('aaGAATTCaa', 1, 0)
+        >>> dseq
+        Dseq(-10)
+         aGAATTCaa
+        ttCTTAAGtt
+        >>> dseq.get_cutsites([EcoRI])
+        [((3, -4), EcoRI)]
+
+        Cuts are only returned if the recognition site and overhang are on the double-strand
+        part of the sequence.
+
+        >>> Dseq('GAATTC').get_cutsites([EcoRI])
+        [((1, -4), EcoRI)]
+        >>> Dseq.from_full_sequence_and_overhangs('GAATTC', -1, 0).get_cutsites([EcoRI])
+        []
+
         """
 
         if len(enzymes) == 1 and isinstance(enzymes[0], _RestrictionBatch):
@@ -1531,9 +1563,9 @@ class Dseq(_Seq):
         return sorted([cutsite for cutsite in out if self.cutsite_is_valid(cutsite)])
 
     def left_end_position(self) -> tuple[int, int]:
-        """The index in the global sequence of the watson and crick start positions.
+        """The index in the full sequence of the watson and crick start positions.
 
-        Global sequence (str(self)) for all three cases is AAA
+        full sequence (str(self)) for all three cases is AAA
 
         ```
         AAA              AA               AAT
@@ -1547,9 +1579,9 @@ class Dseq(_Seq):
         return 0, -self.ovhg
 
     def right_end_position(self) -> tuple[int, int]:
-        """The index in the global sequence of the watson and crick end positions.
+        """The index in the full sequence of the watson and crick end positions.
 
-        Global sequence (str(self)) for all three cases is AAA
+        full sequence (str(self)) for all three cases is AAA
 
         ```
         AAA               AA                   AAA
@@ -1563,21 +1595,87 @@ class Dseq(_Seq):
         return len(self), len(self) - self.watson_ovhg()
 
     def get_cut_parameters(self, cut: tuple, is_left: bool):
-        """For a given cut expressed as ((watson_cut, ovhg), enz), returns
-        a tuple (watson_cut, crick_cut, ovhg). The cut can be None if it
-        represents the left or right end of the sequence. That's what the
-        is_left parameter is for."""
+        """For a given cut expressed as ((cut_watson, ovhg), enz), returns
+        a tuple (cut_watson, cut_crick, ovhg).
+
+        - cut_watson: see get_cutsites docs
+        - cut_crick: equivalent of cut_watson in the crick strand
+        - ovhg: see get_cutsites docs
+
+        The cut can be None if it represents the left or right end of the sequence.
+        Then it will return the position of the watson and crick ends with respect
+        to the "full sequence". The `is_left` parameter is only used in this case.
+
+        """
         if cut is not None:
             watson, ovhg = cut[0]
             crick = (watson - ovhg)
             if self.circular:
                 crick %= len(self)
             return watson, crick, ovhg
+
+        assert not self.circular, 'Circular sequences should not have None cuts'
+
         if is_left:
             return *self.left_end_position(), self.ovhg
-        return *self.right_end_position(), self.ovhg
+        # In the right end, the overhang does not matter
+        return *self.right_end_position(), None
 
     def apply_cut(self, left_cut, right_cut):
+        """Extracts a subfragment of the sequence between two cuts.
+
+        For more detail see the documentation of get_cutsite_pairs.
+
+        Parameters
+        ----------
+        left_cut : Union[tuple[tuple[int,int], _RestrictionType], None]
+        right_cut: Union[tuple[tuple[int,int], _RestrictionType], None]
+
+        Returns
+        -------
+        Dseq
+
+        Examples
+        --------
+        >>> from Bio.Restriction import EcoRI
+        >>> from pydna.dseq import Dseq
+        >>> dseq = Dseq('aaGAATTCaaGAATTCaa')
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((3, -4), EcoRI), ((11, -4), EcoRI)]
+        >>> p1, p2, p3 = dseq.get_cutsite_pairs(cutsites)
+        >>> p1
+        (None, ((3, -4), EcoRI))
+        >>> dseq.apply_cut(*p1)
+        Dseq(-7)
+        aaG
+        ttCTTAA
+        >>> p2
+        (((3, -4), EcoRI), ((11, -4), EcoRI))
+        >>> dseq.apply_cut(*p2)
+        Dseq(-12)
+        AATTCaaG
+            GttCTTAA
+        >>> p3
+        (((11, -4), EcoRI), None)
+        >>> dseq.apply_cut(*p3)
+        Dseq(-7)
+        AATTCaa
+            Gtt
+
+        >>> dseq = Dseq('TTCaaGAA', circular=True)
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((6, -4), EcoRI)]
+        >>> pair = dseq.get_cutsite_pairs(cutsites)[0]
+        >>> pair
+        (((6, -4), EcoRI), ((6, -4), EcoRI))
+        >>> dseq.apply_cut(*pair)
+        Dseq(-12)
+        AATTCaaG
+            GttCTTAA
+
+        """
         if _cuts_overlap(left_cut, right_cut, len(self)):
             raise ValueError("Cuts overlap")
 
@@ -1591,14 +1689,18 @@ class Dseq(_Seq):
                 )
 
     def get_cutsite_pairs(self, cutsites):
-        """ Pairs the cutsites 2 by 2 to render the edges of the resulting fragments.
+        """ Returns pairs of cutsites that render the edges of the resulting fragments.
 
-        Special cases:
-        - Single cutsite on circular sequence: returns a pair where both cutsites are the same
-        - Linear sequence:
-            - creates a new left_cut on the first pair equal to `None` to represent the left edge of the sequence as it is.
-            - creates a new right_cut on the last pair equal to `None` to represent the right edge of the sequence as it is.
-            - In both new cuts, the enzyme is set to None to indicate that the cut is not made by an enzyme.
+        A fragment produced by restriction is represented by a tuple of length 2 that
+        may contain cutsites or `None`:
+
+            - Two cutsites: represents the extraction of a fragment between those two
+              cutsites, in that orientation. To represent the opening of a circular
+              molecule with a single cutsite, we put the same cutsite twice.
+            - `None`, cutsite: represents the extraction of a fragment between the left
+              edge of linear sequence and the cutsite.
+            - cutsite, `None`: represents the extraction of a fragment between the cutsite
+              and the right edge of a linear sequence.
 
         Parameters
         ----------
@@ -1613,15 +1715,19 @@ class Dseq(_Seq):
 
         >>> from Bio.Restriction import EcoRI
         >>> from pydna.dseq import Dseq
-        >>> seq = Dseq('AAGAATTCAAGAATTC')
-        >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
-        [(None, ((3, 7), EcoRI)), (((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), None)]
-        >>> seq = Dseq('AAGAATTCAAGAATTC', circular=True)
-        >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
-        [(((3, 7), EcoRI), ((11, 15), EcoRI)), (((11, 15), EcoRI), ((3, 7), EcoRI))]
-        >>> seq = Dseq('AAGAATTCAA', circular=True)
-        >>> seq.get_cutsite_pairs(seq.get_cutsites(EcoRI))
-        [(((3, 7), EcoRI), ((3, 7), EcoRI))]
+        >>> dseq = Dseq('aaGAATTCaaGAATTCaa')
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((3, -4), EcoRI), ((11, -4), EcoRI)]
+        >>> dseq.get_cutsite_pairs(cutsites)
+        [(None, ((3, -4), EcoRI)), (((3, -4), EcoRI), ((11, -4), EcoRI)), (((11, -4), EcoRI), None)]
+
+        >>> dseq = Dseq('TTCaaGAA', circular=True)
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((6, -4), EcoRI)]
+        >>> dseq.get_cutsite_pairs(cutsites)
+        [(((6, -4), EcoRI), ((6, -4), EcoRI))]
         """
         if len(cutsites) == 0:
             return []

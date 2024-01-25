@@ -943,6 +943,75 @@ def test_cutsite_is_valid():
     dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 16)
     assert len(dseq.get_cutsites([NmeDI])) == 0
 
+def test_get_cutsite_pairs():
+    from pydna.dseq import Dseq
+
+    # in the test, we replace cuts by integers for clarity.
+
+    dseq = Dseq('A')
+
+    # Empty returns empty list
+    assert dseq.get_cutsite_pairs([]) == []
+
+    # Single cut on linear seq returns two fragments
+    assert dseq.get_cutsite_pairs([1]) == [(None, 1), (1, None)]
+
+    # Two cuts on linear seq return three fragments
+    assert dseq.get_cutsite_pairs([1, 2]) == [(None, 1), (1, 2), (2, None)]
+
+    dseq = Dseq('A', circular=True)
+
+    # Empty returns empty list
+    assert dseq.get_cutsite_pairs([]) == []
+
+    # Single cut on circular seq returns opened molecule
+    assert dseq.get_cutsite_pairs([1]) == [(1, 1)]
+
+    # Two cuts on circular seq return 2 fragments
+    assert dseq.get_cutsite_pairs([1, 2]) == [(1, 2), (2, 1)]
+
+def test_get_cut_parameters():
+
+    from pydna.dseq import Dseq
+
+    dseq = Dseq.from_full_sequence_and_overhangs('aaaACGTaaa', 3, 3)
+    assert dseq.get_cut_parameters(None, True) == (*dseq.left_end_position(), dseq.ovhg)
+    assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), None)
+
+    assert dseq.get_cut_parameters(((4, -2), None), True) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((4, -2), None), False) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((6, 2), None), True) == (6, 4, 2)
+    assert dseq.get_cut_parameters(((6, 2), None), False) == (6, 4, 2)
+
+    dseq = Dseq('aaaACGTaaa', circular=True)
+
+    # None cannot be used on circular molecules
+    try:
+        assert dseq.get_cut_parameters(None, True) == (*dseq.left_end_position(), dseq.ovhg)
+    except AssertionError as e:
+        assert e.args[0] == 'Circular sequences should not have None cuts'
+    else:
+        assert False, 'Expected AssertionError'
+
+    try:
+        assert dseq.get_cut_parameters(None, False) == (*dseq.right_end_position(), None)
+    except AssertionError as e:
+        assert e.args[0] == 'Circular sequences should not have None cuts'
+    else:
+        assert False, 'Expected AssertionError'
+
+    # "Normal" cuts
+    assert dseq.get_cut_parameters(((4, -2), None), True) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((4, -2), None), False) == (4, 6, -2)
+    assert dseq.get_cut_parameters(((6, 2), None), True) == (6, 4, 2)
+    assert dseq.get_cut_parameters(((6, 2), None), False) == (6, 4, 2)
+
+    # Origin-spannign cuts
+    assert dseq.get_cut_parameters(((9, -2), None), True) == (9, 1, -2)
+    assert dseq.get_cut_parameters(((9, -2), None), False) == (9, 1, -2)
+    assert dseq.get_cut_parameters(((1, 2), None), True) == (1, 9, 2)
+    assert dseq.get_cut_parameters(((1, 2), None), False) == (1, 9, 2)
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
