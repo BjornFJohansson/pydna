@@ -838,10 +838,9 @@ class Dseqrecord(_SeqRecord):
             # origin-spanning features should only be included after shifting
             # in cases where the slice comprises the entire sequence, but then
             # sl_start == sl_stop and the second condition is not met
-            # TODO: _location_boundaries
             answer.features = [f for f in answer.features if (
-                               f.location.parts[-1].end <= answer.seq.length and
-                               f.location.parts[0].start <= f.location.parts[-1].end)]
+                               _location_boundaries(f.location)[1] <= answer.seq.length and
+                               _location_boundaries(f.location)[0] <= _location_boundaries(f.location)[1])]
         else:
             answer = Dseqrecord("")
         identifier = "part_{id}".format(id=self.id)
@@ -1299,7 +1298,8 @@ class Dseqrecord(_SeqRecord):
                 #     2222
                 #
                 left_watson, left_crick, left_ovhg = self.seq.get_cut_parameters(left_cut, True)
-                features = self.shifted(min(left_watson, left_crick)).features
+                initial_shift = left_watson if left_ovhg < 0 else left_crick
+                features = self.shifted(initial_shift).features
                 # for f in features:
                 #     print(f.id, f.location, _location_boundaries(f.location))
                 # Here, we have done what's shown below (* indicates the origin).
