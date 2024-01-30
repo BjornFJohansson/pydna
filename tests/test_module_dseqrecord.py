@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pydna
 import pytest
 from pydna import _PydnaWarning
 
@@ -2244,28 +2243,36 @@ def test_assemble_YEp24PGK_XK():
     assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
 def test_apply_cut():
+
     from pydna.dseqrecord import Dseqrecord
     from Bio.SeqFeature import SeqFeature, SimpleLocation
+    from pydna.utils import location_boundaries as _location_boundaries
 
-    # Single cut case
+    def find_feature_by_id(f: Dseqrecord, id: str) -> SeqFeature:
+        return next(f for f in f.features if f.id == id)
+    # Single cut case, check that features are transmitted correctly.
     for strand in [1, -1, None]:
-        for dummy_cut in (((4, -3), None), ((7, 3), None)):
-            seq = Dseqrecord("acgtATGaatt", circular=True)
-            seq.features.append(SeqFeature(SimpleLocation(4, 7,  strand), id='full_overlap'))
-            seq.features.append(SeqFeature(SimpleLocation(3, 7,  strand), id='left_side'))
-            seq.features.append(SeqFeature(SimpleLocation(4, 8,  strand), id='right_side'))
-            seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
-            open_seq = seq.apply_cut(dummy_cut, dummy_cut)
-            assert len(open_seq.features) == 4
-            new_locs = [str(f.location) for f in open_seq.features]
-            if strand == 1:
-                assert new_locs == ['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)']
-            elif strand == -1:
-                # TODO: change the join{[11:14](-), [10:11](-)} case?
-                assert new_locs == ['[0:3](-)', '[0:4](-)', '[11:14](-)', 'join{[11:14](-), [10:11](-)}']
-            if strand == None:
-                # TODO: pending on https://github.com/BjornFJohansson/pydna/pull/179
-                assert new_locs == ['[0:3]', '[0:4]', '[11:14]', 'join{[11:14], [10:11]}']
+        seq = Dseqrecord("acgtATGaatt", circular=True)
+        seq.features.append(SeqFeature(SimpleLocation(4, 7,  strand), id='full_overlap'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 7,  strand), id='left_side'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 8,  strand), id='right_side'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
+        for shift in range(len(seq)):
+            seq_shifted = seq.shifted(shift)
+            cut_feature = find_feature_by_id(seq_shifted, 'full_overlap')
+            start, end = _location_boundaries(cut_feature.location)
+            # Cut leaving + and - overhangs in the feature full_overlap
+            for dummy_cut in (((start, -3), None), ((end, 3), None)):
+                open_seq = seq_shifted.apply_cut(dummy_cut, dummy_cut)
+                assert len(open_seq.features) == 4
+                new_locs = sorted(str(f.location) for f in open_seq.features)
+                assert str(open_seq.seq) == 'ATGaattacgtATG'
+                if strand == 1:
+                    assert new_locs == sorted(['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)'])
+                elif strand == -1:
+                    assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
+                if strand == None:
+                    assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
 
 if __name__ == "__main__":
     args = [
