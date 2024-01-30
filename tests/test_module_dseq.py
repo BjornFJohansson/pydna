@@ -709,6 +709,10 @@ def test_shifted():
     with pytest.raises(TypeError):
         b.shifted(1)
 
+    # Shifted with zero gives a copy of the sequence, not the same sequence
+    assert a.shifted(0) == a
+    assert a.shifted(0) is not a
+
 
 def test_misc():
     from pydna.dseq import Dseq
@@ -876,6 +880,24 @@ def test_apply_cut():
             else:
                 print(first_cut, second_cut)
                 assert False, 'Expected ValueError'
+
+    # Rotating the sequence, apply the same cut
+    seq = Dseq('acgtATGaatt', circular=True)
+    for shift in range(len(seq)):
+        seq_shifted = seq.shifted(shift)
+        start = 4 - shift
+        if start < 0:
+            start += len(seq)
+        # Cut with negative ovhg
+        new_cut = (( start, -3), None)
+        out = seq_shifted.apply_cut(new_cut, new_cut)
+        assert str(out) == 'ATGaattacgtATG'
+
+        # Cut with positive ovhg
+        start = (start + 3) % len(seq)
+        new_cut = (( start, 3), None)
+        out = seq_shifted.apply_cut(new_cut, new_cut)
+        assert str(out) == 'ATGaattacgtATG'
 
 def test_cutsite_is_valid():
 

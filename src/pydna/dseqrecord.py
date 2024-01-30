@@ -1219,7 +1219,7 @@ class Dseqrecord(_SeqRecord):
             raise TypeError("Sequence is linear, origin can only be " "shifted for circular sequences.\n")
         ln = len(self)
         if not shift % ln:
-            return self  # shift is a multiple of ln or 0
+            return _copy.deepcopy(self)  # shift is a multiple of ln or 0
         else:
             shift %= ln  # 0<=shift<=ln
         newseq = (self.seq[shift:] + self.seq[:shift]).looped()
@@ -1227,7 +1227,7 @@ class Dseqrecord(_SeqRecord):
         for feature in newfeatures:
             feature.location = _shift_location(feature.location, -shift, ln)
         newfeatures.sort(key=_operator.attrgetter("location.start"))
-        answer = _copy.copy(self)
+        answer = _copy.deepcopy(self)
         answer.features = newfeatures
         answer.seq = newseq
         return answer
@@ -1281,7 +1281,7 @@ class Dseqrecord(_SeqRecord):
         if left_cut == right_cut:
             # Not really a cut, but to handle the general case
             if left_cut is None:
-                features = self.features
+                features = _copy.deepcopy(self.features)
             else:
                 # The features that span the origin if shifting with left_cut, but that do not cross
                 # the cut site should be included, and if there is a feature within the cut site, it should
@@ -1314,7 +1314,7 @@ class Dseqrecord(_SeqRecord):
 
                 features_need_transfer = [f for f in features if (_location_boundaries(f.location)[1] <= abs(left_ovhg))]
                 features_need_transfer = [_shift_feature(f, -abs(left_ovhg), len(self)) for f in features_need_transfer]
-                #                                           ^                       ^^^^^^^^^
+                #                                           ^                ^^^^^^^^^
                 # Now we have shifted the features that end before the cut (0 and 1, but not 3), as if
                 # they referred to the below sequence (* indicates the origin):
                 #
@@ -1327,7 +1327,7 @@ class Dseqrecord(_SeqRecord):
                 # as the original one. However, the final product is longer because of the overhang.
 
                 features += [_shift_feature(f, abs(left_ovhg), len(dseq)) for f in features_need_transfer]
-                #                             ^                       ^^^^^^^^^
+                #                             ^                ^^^^^^^^^
                 # So we shift back by the same amount in the opposite direction, but this time we pass the 
                 # length of the final product.
                 # print(*features, sep='\n')
