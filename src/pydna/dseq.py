@@ -811,7 +811,7 @@ class Dseq(_Seq):
             raise TypeError("DNA is not circular.")
         shift = shift % len(self)
         if not shift:
-            return self
+            return _copy.deepcopy(self)
         else:
             return (self[shift:] + self[:shift]).looped()
 
