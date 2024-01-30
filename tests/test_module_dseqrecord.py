@@ -1867,7 +1867,7 @@ def test___getitem__():
     assert s[1:5].seq == Dseqrecord("GATC", circular=False).seq
     assert s[5:1:-1].seq == Dseqrecord("CCTA", circular=False).seq
 
-    assert t[1:1].seq == Dseqrecord("").seq
+    assert t[1:1].seq == Dseqrecord("GATCCG").seq
     assert t[5:1].seq == Dseqrecord("CG", circular=False).seq
     assert t[9:1].seq == Dseqrecord("").seq
     assert t[1:9].seq == Dseqrecord("").seq
@@ -1876,8 +1876,8 @@ def test___getitem__():
 
     # Test how slicing works with features (using sequence as in test_features_change_ori)
     seqRecord = Dseqrecord("aaagGTACCTTTGGATCcggg", circular=True)
-    f1 = SeqFeature(SimpleLocation(4, 17), type="misc_feature", strand=1)
-    f2 = SeqFeature(SimpleLocation(17, 21, 1) + SimpleLocation(0, 4), type="misc_feature", strand=1)
+    f1 = SeqFeature(SimpleLocation(4, 17, 1), type="misc_feature")
+    f2 = SeqFeature(SimpleLocation(17, 21, 1) + SimpleLocation(0, 4, 1), type="misc_feature")
     seqRecord.features = [f1, f2]
 
     # Exact feature sliced for normal and origin-spanning features
@@ -1887,6 +1887,12 @@ def test___getitem__():
     # Partial feature sliced for normal and origin-spanning features
     assert len(seqRecord[2:20].features) == 1
     assert len(seqRecord[13:8].features) == 1
+
+    # Indexing of full circular molecule (https://github.com/BjornFJohansson/pydna/issues/161)
+    s = Dseqrecord("GGATCC", circular=True)
+    str_seq = str(s.seq)
+    for shift in range(len(s)):
+        assert str(s[shift : shift].seq) == str_seq[shift:] + str_seq[:shift]
 
 def test___eq__():
     from pydna.dseqrecord import Dseqrecord

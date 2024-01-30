@@ -904,6 +904,9 @@ class Dseqrecord(_SeqRecord):
             answer.features = [f for f in answer.features if (
                                _location_boundaries(f.location)[1] <= answer.seq.length and
                                _location_boundaries(f.location)[0] <= _location_boundaries(f.location)[1])]
+        elif self.circular and sl_start == sl_stop:
+            cut = ((sl_start, 0), None)
+            return self.apply_cut(cut, cut)
         else:
             answer = Dseqrecord("")
         identifier = "part_{id}".format(id=self.id)

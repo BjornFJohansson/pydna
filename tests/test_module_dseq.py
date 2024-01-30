@@ -610,6 +610,12 @@ def test_Dseq___getitem__():
     assert s[9:1] == Dseq("")
     assert t[9:1] == Dseq("")
 
+    # Indexing of full circular molecule (https://github.com/BjornFJohansson/pydna/issues/161)
+    s = Dseq("GGATCC", circular=True)
+    str_seq = str(s)
+    for shift in range(len(s)):
+        assert str(s[shift : shift]) == str_seq[shift:] + str_seq[:shift]
+
 
 def test_cut_circular():
     from pydna.dseq import Dseq
@@ -890,15 +896,22 @@ def test_apply_cut():
         if start < 0:
             start += len(seq)
         # Cut with negative ovhg
-        new_cut = (( start, -3), None)
+        new_cut = ((start, -3), None)
         out = seq_shifted.apply_cut(new_cut, new_cut)
         assert str(out) == 'ATGaattacgtATG'
 
         # Cut with positive ovhg
         start = (start + 3) % len(seq)
-        new_cut = (( start, 3), None)
+        new_cut = ((start, 3), None)
         out = seq_shifted.apply_cut(new_cut, new_cut)
         assert str(out) == 'ATGaattacgtATG'
+
+        # A blunt cut
+        start = 4 - shift
+        new_cut = ((start, 0), None)
+        out = seq_shifted.apply_cut(new_cut, new_cut)
+        assert str(out) == 'ATGaattacgt'
+
 
 def test_cutsite_is_valid():
 
