@@ -1107,6 +1107,12 @@ def test_features_change_ori():
     from pydna.readers import read
     from pydna.utils import eq
 
+    # Shifted a sequence by zero returns a copy
+    s = Dseqrecord("GGATCC", circular=True)
+    assert s.shifted(0) == s
+    assert s.shifted(0) is not s
+
+
     s1 = read(
         """
         LOCUS       New_DNA                   13 bp ds-DNA     circular     08-JAN-2018
