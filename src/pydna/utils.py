@@ -50,21 +50,35 @@ def shift_location(original_location, shift, lim):
     """docstring."""
     newparts = []
     strand = original_location.strand
+
     for part in original_location.parts:
-        ns = (part.start + shift) % lim
-        ne = (part.end + shift) % lim or lim
-        oe = newparts[-1].end if newparts else None
+        new_start = (part.start + shift) % lim
+        new_end = (part.end + shift) % lim or lim
+        old_start, old_end = (newparts[-1].start, newparts[-1].end) if len(newparts) else (None, None)
+
+        # The "join with old" cases are for features with multiple parts
+        # in which consecutive parts do not have any bases between them.
+        # This type of feature is generated to represent a feature that
+        # spans the origin of a circular sequence. See more details in
+        # https://github.com/BjornFJohansson/pydna/issues/195
+
         if len(part) == 0:
-            newparts.append(_sl(ns, ns, strand))
+            newparts.append(_sl(new_start, new_start, strand))
             continue
-        elif oe == ns:
+        # Join with old, case 1
+        elif strand != -1 and old_end == new_start:
             part = newparts.pop()
-            part._end = ne
-            ns = part.start
-        if ns < ne:
-            newparts.append(_sl(ns, ne, strand))
+            part._end = new_end
+            new_start = part.start
+        # Join with old, case 2
+        elif strand == -1 and old_start == new_end:
+            part = newparts.pop()
+            part._start = new_start
+            new_end = part.end
+        if new_start < new_end:
+            newparts.append(_sl(new_start, new_end, strand))
         else:
-            parttuple = (_sl(ns, lim, strand), _sl(0, ne, strand))
+            parttuple = (_sl(new_start, lim, strand), _sl(0, new_end, strand))
             newparts.extend(parttuple if strand != -1 else parttuple[::-1])
     try:
         newloc = _cl(newparts)
@@ -836,8 +850,7 @@ def cuts_overlap(left_cut, right_cut, seq_len):
 
 def location_boundaries(loc: _Union[_sl,_cl]):
 
-    #TODO: pending on https://github.com/BjornFJohansson/pydna/pull/179
-    if loc.strand != 1:
+    if loc.strand == -1:
         return loc.parts[-1].start, loc.parts[0].end
     else:
         return loc.parts[0].start, loc.parts[-1].end
