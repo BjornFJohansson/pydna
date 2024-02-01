@@ -5,8 +5,8 @@ import pytest
 
 monkeypatch = pytest.MonkeyPatch()
 
-def test_PrimerList_init(monkeypatch, capsys):
 
+def test_PrimerList_init(monkeypatch, capsys):
     monkeypatch.setenv("pydna_primers", "primers_linux_line_endings.txt")
 
     from pydna.parsers import parse_primers

@@ -412,7 +412,6 @@ def test_seguid():
     assert c.seguid() == "cdseguid-Yis91a4lQjAegmW88b1HuQmDvns"
 
 
-
 def test_format():
     from pydna.dseqrecord import Dseqrecord
 
@@ -667,9 +666,7 @@ def test_cut_add():
 
     a = Dseqrecord("GGATCCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGGATCC").seq
     b = a.cut(BamHI)[1]
-    c = Dseqrecord(
-        "nCTGCAGtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGAATTCn"
-    ).seq
+    c = Dseqrecord("nCTGCAGtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGAATTCn").seq
     f, d, l = c.cut((EcoRI, PstI))
 
     pUC19 = read("pUC19.gb")
@@ -2226,6 +2223,7 @@ def test_assemble_YEp24PGK_XK():
     assert YEp24PGK_XK_correct.seguid() == "cdseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
     assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
+
 if __name__ == "__main__":
     args = [
         __file__,
@@ -2239,5 +2237,6 @@ if __name__ == "__main__":
         "--nbval",
         "--current-env",
         "--doctest-modules",
-        "--capture=no"]
+        "--capture=no",
+    ]
     pytest.main(args)

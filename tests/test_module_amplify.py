@@ -9,6 +9,7 @@ from pydna.dseqrecord import Dseqrecord
 from pydna.parsers import parse, parse_primers
 from pydna.amplify import pcr, Anneal
 
+
 def test_set_primer_footprint():
     f, r = parse_primers(
         """>ForwardPrimer

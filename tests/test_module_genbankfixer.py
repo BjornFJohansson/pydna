@@ -27,6 +27,7 @@ def test_pydna_gbtext_clean():
             infile = f.read()
         if file_ == "hej.txt":
             from Bio import BiopythonParserWarning
+
             with pytest.warns(BiopythonParserWarning):
                 assert read(gbtext_clean(infile).gbtext).seguid() == seg
         else:
