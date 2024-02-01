@@ -187,18 +187,18 @@ def test_eq():
 #    assert [seguid(f.extract(b).seq) for f in b.features] == [seguid_cre,seguid_cre,]
 
 
-def test_cseguid():
-    from pydna.utils import cseguid
+# def test_cseguid():
+#     from pydna.utils import cseguid
 
-    x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-    assert cseguid(x) == cseguid(x.upper()) == cseguid(x.lower()) == "naaZmDzyMa58OsNXROe5SvjC7WU"
+#     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
+#     assert cseguid(x) == cseguid(x.upper()) == cseguid(x.lower()) == "naaZmDzyMa58OsNXROe5SvjC7WU"
 
 
-def test_lseguid():
-    from pydna.utils import lseguid_blunt
+# def test_lseguid():
+#     from pydna.utils import lseguid_blunt
 
-    x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-    assert lseguid_blunt(x) == lseguid_blunt(x.upper()) == lseguid_blunt(x.lower()) == "bHrqalTJ793oAigMQ5_qCttJRTk"
+#     x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
+#     assert lseguid_blunt(x) == lseguid_blunt(x.upper()) == lseguid_blunt(x.lower()) == "bHrqalTJ793oAigMQ5_qCttJRTk"
 
 
 def test_rc():
@@ -221,73 +221,73 @@ def test_seq31():
     assert seq31("MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer") == "M  A  I  V  M  G  R  W  K  G  A  R  *"
 
 
-def test_parse_text_table():
-    from pydna.utils import parse_text_table
+# def test_parse_text_table():
+#     from pydna.utils import parse_text_table
 
-    table1 = "one     two   three\n" "  four   five    six\n" "seven   eight     nine\n"
-    (
-        formatted,
-        columnsplit,
-        rowsplit,
-        list_of_lists_rc,
-        list_of_lists_cr,
-    ) = parse_text_table(table1)
+#     table1 = "one     two   three\n" "  four   five    six\n" "seven   eight     nine\n"
+#     (
+#         formatted,
+#         columnsplit,
+#         rowsplit,
+#         list_of_lists_rc,
+#         list_of_lists_cr,
+#     ) = parse_text_table(table1)
 
-    assert formatted == "one   two   three\nfour  five  six  \nseven eight nine "
+#     assert formatted == "one   two   three\nfour  five  six  \nseven eight nine "
 
-    cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
+#     cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
 
-    assert cs == columnsplit
+#     assert cs == columnsplit
 
-    rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
+#     rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
 
-    assert rs == rowsplit
-
-
-def test_join_list_to_table():
-    from pydna.utils import join_list_to_table
-
-    cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
-
-    assert join_list_to_table(cs) == "one   two   three\nfour  five  six  \nseven eight nine "
-
-    cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "\n" "|||\n" "three\n" "six\n" "nine"
-
-    answer = 'one   two  three\nfour  five six  \nseven "    nine '
-    assert join_list_to_table(cs) == answer
-
-    rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
-
-    assert join_list_to_table(rs) == "one   two   three\nfour  five  six  \nseven eight nine "
-
-    assert join_list_to_table("somestring") is None
-
-    cs = "one\n" "four\n" " \n" "|||\n" "two\n" " \n" "eight"
-
-    assert join_list_to_table(cs) == 'one  two  \nfour "    \n"    eight'
+#     assert rs == rowsplit
 
 
-def test_expandtolist():
-    from pydna.utils import expandtolist
+# def test_join_list_to_table():
+#     from pydna.utils import join_list_to_table
 
-    samples = "Sample [1..3] prepared according to [A..C]"
+#     cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "eight\n" "|||\n" "three\n" "six\n" "nine"
 
-    result = (
-        "Sample 1 prepared according to A\n" "Sample 2 prepared according to B\n" "Sample 3 prepared according to C\n"
-    )
+#     assert join_list_to_table(cs) == "one   two   three\nfour  five  six  \nseven eight nine "
 
-    assert result == expandtolist(samples)
+#     cs = "one\n" "four\n" "seven\n" "|||\n" "two\n" "five\n" "\n" "|||\n" "three\n" "six\n" "nine"
 
-    samples = "Sample [1..4] prepared according to [A..B]"
+#     answer = 'one   two  three\nfour  five six  \nseven "    nine '
+#     assert join_list_to_table(cs) == answer
 
-    result = (
-        "Sample 1 prepared according to A\n"
-        "Sample 2 prepared according to A\n"
-        "Sample 3 prepared according to B\n"
-        "Sample 4 prepared according to B\n"
-    )
+#     rs = "one\n" "two\n" "three\n" "---\n" "four\n" "five\n" "six\n" "---\n" "seven\n" "eight\n" "nine"
 
-    assert result == expandtolist(samples)
+#     assert join_list_to_table(rs) == "one   two   three\nfour  five  six  \nseven eight nine "
+
+#     assert join_list_to_table("somestring") is None
+
+#     cs = "one\n" "four\n" " \n" "|||\n" "two\n" " \n" "eight"
+
+#     assert join_list_to_table(cs) == 'one  two  \nfour "    \n"    eight'
+
+
+# def test_expandtolist():
+#     from pydna.utils import expandtolist
+
+#     samples = "Sample [1..3] prepared according to [A..C]"
+
+#     result = (
+#         "Sample 1 prepared according to A\n" "Sample 2 prepared according to B\n" "Sample 3 prepared according to C\n"
+#     )
+
+#     assert result == expandtolist(samples)
+
+#     samples = "Sample [1..4] prepared according to [A..B]"
+
+#     result = (
+#         "Sample 1 prepared according to A\n"
+#         "Sample 2 prepared according to A\n"
+#         "Sample 3 prepared according to B\n"
+#         "Sample 4 prepared according to B\n"
+#     )
+
+#     assert result == expandtolist(samples)
 
 
 def test_randomRNA():

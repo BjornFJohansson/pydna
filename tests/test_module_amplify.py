@@ -8,8 +8,6 @@ import pytest
 from pydna.dseqrecord import Dseqrecord
 from pydna.parsers import parse, parse_primers
 from pydna.amplify import pcr, Anneal
-from Bio.SeqUtils.CheckSum import seguid
-
 
 def test_set_primer_footprint():
     f, r = parse_primers(
@@ -345,7 +343,7 @@ def test_pcr():
 
     raw.append(
         (
-            "7JOV1MJBZJp2Smja/7KFGhS2SWY",
+            "dlseguid-q4nWrUFRjs0uWGk-byoK2NOpDQs",
             parse(
                 """
     >524_pFA6aF (29-mer)
@@ -361,7 +359,7 @@ def test_pcr():
 
     raw.append(
         (
-            "7pPxy/bQvs4+7CaOgiywQVzUFDc",
+            "dlseguid-1Ih52rBdWeFKdaF2psCkhbn0yoM",
             parse(
                 """
     >lowgc_f
@@ -377,7 +375,7 @@ def test_pcr():
 
     raw.append(
         (
-            "7JOV1MJBZJp2Smja/7KFGhS2SWY",
+            "dlseguid-q4nWrUFRjs0uWGk-byoK2NOpDQs",
             parse(
                 """
     >524_pFA6aF (29-mer)
@@ -393,7 +391,7 @@ def test_pcr():
 
     raw.append(
         (
-            "yshvYTXr9iXCnh3YytWQRDBNQzI",
+            "dlseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
             parse(
                 """
     >ForwardPrimer1
@@ -422,7 +420,7 @@ def test_pcr():
 
     raw.append(
         (
-            "yshvYTXr9iXCnh3YytWQRDBNQzI",
+            "dlseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
             parse(
                 """
     >ForwardPrimer2
@@ -449,7 +447,7 @@ def test_pcr():
     )
     raw.append(
         (
-            "yshvYTXr9iXCnh3YytWQRDBNQzI",
+            "dlseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
             parse(
                 """
     >ForwardPrimer3
@@ -477,7 +475,7 @@ def test_pcr():
 
     raw.append(
         (
-            "yshvYTXr9iXCnh3YytWQRDBNQzI",
+            "dlseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
             parse(
                 """
     >ForwardPrimer4
@@ -505,7 +503,7 @@ def test_pcr():
 
     raw.append(
         (
-            "60meNXeGKO7ahZwcIl5yXHFC3Yg",
+            "dlseguid--7vB-gVadO8mAUViEiYZWdCzPhE",
             parse(
                 """
     >fw1
@@ -532,7 +530,7 @@ def test_pcr():
 
     raw.append(
         (
-            "60meNXeGKO7ahZwcIl5yXHFC3Yg",
+            "dlseguid--7vB-gVadO8mAUViEiYZWdCzPhE",
             parse(
                 """
     >fw2
@@ -560,7 +558,7 @@ def test_pcr():
 
     raw.append(
         (
-            "60meNXeGKO7ahZwcIl5yXHFC3Yg",
+            "dlseguid--7vB-gVadO8mAUViEiYZWdCzPhE",
             parse(
                 """
     >fw3
@@ -587,7 +585,7 @@ def test_pcr():
 
     raw.append(
         (
-            "0SgGMgnxkkT6ZoAN6Pk7HFcXfrI",
+            "dlseguid-IPAo_O5u6Q3-5ToDBIIOLLC_I88",
             parse(
                 """
     >f_Eric_Ma
@@ -602,7 +600,7 @@ def test_pcr():
     )
 
     for key, tst in enumerate(raw):
-        assert tst[0] == seguid(pcr(tst[1:]).seq)
+        assert tst[0] in pcr(tst[1:]).seguid()
 
 
 def test_shifts():

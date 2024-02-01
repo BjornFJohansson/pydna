@@ -332,11 +332,7 @@ class Dseqrecord(_SeqRecord):
         []
         >>> a.add_feature(2,4)
         >>> a.features
-        [SeqFeature(SimpleLocation(ExactPosition(2),
-                                   ExactPosition(4),
-                                   strand=1),
-                    type='misc',
-                    qualifiers=...)]
+        [SeqFeature(SimpleLocation(ExactPosition(2), ExactPosition(4), strand=1), type='misc', qualifiers=...)]
         """
         if x and y and self.circular and x > y:
             pass
@@ -364,7 +360,7 @@ class Dseqrecord(_SeqRecord):
 
         self.features.append(sf)
 
-    def useguid(self):
+    def seguid(self):
         """Url safe SEGUID for the sequence.
 
         This checksum is the same as seguid but with base64.urlsafe
@@ -376,63 +372,11 @@ class Dseqrecord(_SeqRecord):
         --------
         >>> from pydna.dseqrecord import Dseqrecord
         >>> a = Dseqrecord("aa")
-        >>> a.useguid() # useguid is gBw0Jp907Tg_yX3jNgS4qQWttjU
-        'gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        >>> a.seguid()
+        'dlseguid-5u_VqZ0yq_PnodWlwL970EWt6PY'
 
         """
-        return self.seq.useguid()
-
-    def cseguid(self):
-        """Url safe cSEGUID for a circular sequence.
-
-        Only defined for circular sequences.
-        The cSEGUID checksum uniquely identifies a circular
-        sequence regardless of where the origin is set.
-        The two Dseqrecord objects below are circular
-        permutations.
-
-        Examples
-        --------
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("agtatcgtacatg", circular=True)
-        >>> a.cseguid() # cseguid is CTJbs6Fat8kLQxHj+/SC0kGEiYs
-        'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
-
-        >>> a=Dseqrecord("gagtatcgtacat", circular=True)
-        >>> a.cseguid()
-        'CTJbs6Fat8kLQxHj-_SC0kGEiYs'
-
-        """
-        if not self.circular:
-            raise TypeError("cseguid is only defined for circular sequences.")
-        return self.seq.cseguid()
-
-    def lseguid(self):
-        """Url safe lSEGUID for a linear sequence.
-
-        Only defined for linear double stranded sequences.
-
-        The lSEGUID checksum uniquely identifies a linear
-        sequence independent of its representation.
-        The two Dseqrecord objects below are each others
-        reverse complements, so they do in fact refer to
-        the same molecule.
-
-        Examples
-        --------
-        >>> from pydna.dseqrecord import Dseqrecord
-        >>> a=Dseqrecord("agtatcgtacatg")
-        >>> a.lseguid()
-        'DPshMN4KeAjMovEjGEV4Kzj18lU'
-
-        >>> b=Dseqrecord("catgtacgatact")
-        >>> a.lseguid()
-        'DPshMN4KeAjMovEjGEV4Kzj18lU'
-
-        """
-        if self.circular:
-            raise TypeError("lseguid is only defined for linear sequences.")
-        return self.seq.lseguid()
+        return self.seq.seguid()
 
     def looped(self):
         """
@@ -615,8 +559,6 @@ class Dseqrecord(_SeqRecord):
                 tstmp = int(_time.time() * 1_000_000)
                 old_filename = f"{name}_OLD_{tstmp}{ext}"
                 _os.rename(filename, old_filename)
-                newcseguid = self.cseguid() if self.circular else "na"
-                oldcseguid = old_file.cseguid() if old_file.circular else "na"
                 with open(filename, "w", encoding="utf8") as fp:
                     fp.write(self.format(f))
                 newmtime = _datetime.datetime.fromtimestamp(_os.path.getmtime(filename)).isoformat()
@@ -654,21 +596,16 @@ class Dseqrecord(_SeqRecord):
                     <td style="color:#32cb00;border: 1px solid;text-align:left;">{len(old_file)}</td>
                   </tr>
                   <tr style="color:#0000FF;border: 1px solid;text-align:left;">
-                    <td>uSEGUID</td>
-                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{self.useguid()}</td>
-                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{old_file.useguid()}</td>
-                  </tr>
-                  <tr style="color:#0000FF;border: 1px solid;text-align:left;">
-                    <td>cSEGUID</td>
-                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{newcseguid}</td>
-                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{oldcseguid}</td>
+                    <td>SEGUID</td>
+                    <td style="color:#fe0000;border: 1px solid;text-align:left;">{self.seguid()}</td>
+                    <td style="color:#32cb00;border: 1px solid;text-align:left;">{old_file.seguid()}</td>
                   </tr>
                 </tbody>
                 </table>
                 """
-            elif "SEGUID" in old_file.annotations.get("comment", ""):
-                pattern = r"(lSEGUID|cSEGUID|uSEGUID)_(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
-                # cSEGUID_NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
+            elif "seguid" in old_file.annotations.get("comment", ""):
+                pattern = r"(dlseguid|dcseguid)-(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
+                # seguid-NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)
                 newdescription = self.description

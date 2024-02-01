@@ -8,8 +8,6 @@
 
 from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
 from Bio.Seq import _maketrans
-from pydna._pretty import pretty_str as _pretty_str
-from Bio.SeqUtils.CheckSum import seguid as _seguid
 import shelve as _shelve
 import os as _os
 import re as _re
@@ -23,18 +21,12 @@ import itertools as _itertools
 
 import sys as _sys
 import re
-import textwrap
 import itertools
-import math
 import random
 import subprocess as _subprocess
 
 from pydna.codon import weights as _weights
 from pydna.codon import rare_codons as _rare_codons
-
-# from pydna.codon import n_end as _n_end
-# from Bio.SeqUtils import seq3 as _seq3
-# from pydna._pretty import PrettyTable as _PrettyTable
 
 from Bio.SeqFeature import SimpleLocation as _sl
 from Bio.SeqFeature import CompoundLocation as _cl
@@ -271,117 +263,6 @@ def identifier_from_string(s: str) -> str:
     return s
 
 
-def seguid(seq: str) -> _pretty_str:
-    """SEGUID checksum for a string representing a biological sequence.
-
-    This is the SEGUID checksum with the standard Base64
-    encoding that can contain '+' and '/' as originally
-    defined by Babnigg and Giometti:
-
-    Babnigg, Giometti 2006. “A Database of Unique
-    Protein Sequence Identifiers for Proteome Studies.” *Proteomics* 6
-    (16) (August): 4514–4522.
-
-    Examples
-    --------
-    >>> from pydna.utils import seguid
-    >>> seguid("aaa")
-    'YG7G6b2Kj/KtFOX63j8mRHHoIlE'
-    """
-    return _pretty_str(_seguid(seq.upper()))
-
-
-def useguid(seq: str) -> _pretty_str:
-    """Returns the url safe SEGUID checksum for the sequence.
-    This is the SEGUID checksum with the '+' and '/' characters of standard
-    Base64 encoding are respectively replaced by '-' and '_'.
-
-    Examples
-    --------
-    >>> from pydna.utils import useguid
-    >>> useguid("aaa")
-    'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-    """
-    return seguid(seq).replace("+", "-").replace("/", "_")
-
-
-def lseguid_blunt(seq: str) -> _pretty_str:
-    """lSEGUID checksum.
-
-    for a string representing a blunt double stranded DNA molecule.
-
-    Examples
-    --------
-    >>> from pydna.utils import lseguid_blunt
-    >>> lseguid_blunt("ttt")
-    'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-    >>> lseguid_blunt("aaa")
-    'YG7G6b2Kj_KtFOX63j8mRHHoIlE'
-    """
-    return useguid(min(seq.upper(), str(rc(seq)).upper()))
-
-
-def lseguid_sticky(watson: str, crick: str, overhang: int) -> _pretty_str:
-    """Linear SEGUID (lSEGUID) checksum.
-
-    Calculates the lSEGUID checksum for a double stranded DNA sequence
-    described by two strings (watson and crick) representing the two
-    complementary DNA strands and an integer describing the stagger
-    between the two strands in the 5' end.
-
-    The overhang is defined as the amount of 3' overhang in the 5'
-    side of the molecule. A molecule with 5' overhang has a negative
-    value.
-
-        dsDNA    ovhg
-
-          nnn...    2
-        nnnnn...
-
-         nnnn...    1
-        nnnnn...
-
-        nnnnn...    0
-        nnnnn...
-
-        nnnnn...   -1
-         nnnn...
-
-        nnnnn...   -2
-          nnn...
-
-
-    """
-    watson = watson.upper()
-    crick = crick.upper()
-    lw, lc = len(watson), len(crick)
-    if overhang == 0 and lw == lc:
-        return lseguid_blunt(watson)
-    else:
-        w, c, o = min(((watson, crick, overhang), (crick, watson, lw - lc + overhang)))
-
-    return useguid(f"{o*chr(32)}{w}\n{-o*chr(32)}{c[::-1]}")
-
-
-def cseguid(seq: str) -> _pretty_str:
-    """Url safe cSEGUID for a string representing a circular double stranded
-    DNA molecule.
-
-    The cSEGUID is the SEGUID checksum calculated for the lexicographically
-    minimal string rotation of a DNA sequence. Only defined for circular
-    sequences.
-
-    Examples
-    --------
-    >>> from pydna.utils import cseguid
-    >>> cseguid("attt")
-    'oopV-6158nHJqedi8lsshIfcqYA'
-    >>> cseguid("ttta")
-    'oopV-6158nHJqedi8lsshIfcqYA'
-    """
-    return useguid(min(smallest_rotation(seq.upper()), smallest_rotation(str(rc(seq)).upper())))
-
-
 def flatten(*args):
     """Flattens an iterable of iterables.
 
@@ -460,117 +341,6 @@ def seq31(seq):
     sequence = [seq[i * 3 : i * 3 + 3].title() for i in range(nr_of_codons)]
     padding = " " * 2
     return padding.join([threecode.get(aa, "X") for aa in sequence])
-
-
-def parse_text_table(rawtable, tabs=4):
-    table = textwrap.dedent(rawtable.expandtabs(tabs)).strip()
-    max_row_length = max([len(row.strip()) for row in table.splitlines()])
-    rows = [row.ljust(max_row_length) for row in table.splitlines()]
-    table = "\n".join(rows)
-    empty_column_regex = r"(?:\n?\s{%s}\n)+" % len(rows)
-    transposed_table = "\n".join(["".join(c) for c in zip(*rows)])
-    cols = re.split(empty_column_regex, transposed_table)
-    list_of_lists_cr = []
-
-    for col in cols:
-        columnlist = ["".join(c).strip() for c in zip(*[a for a in col.splitlines() if a])]
-        maxlen = max([len(c) for c in columnlist])
-        columnlist = [c.ljust(maxlen) for c in columnlist]
-        list_of_lists_cr.append(columnlist)
-
-    list_of_lists_rc = [list(i) for i in zip(*list_of_lists_cr)]
-
-    formatted = _pretty_str("\n".join(" ".join(cell) for cell in list_of_lists_rc))
-
-    columnsplit = _pretty_str(
-        "\n|||\n".join(
-            ["\n".join([x.strip() for x in ["".join(c) for c in zip(*col.strip("\n").splitlines())]]) for col in cols]
-        )
-    )
-
-    rowsplit = "\n---\n".join(["\n".join(a).strip() for a in zip(*list_of_lists_cr)])
-    rowsplit = _pretty_str("\n".join(row.strip() for row in rowsplit.splitlines()))
-
-    return (
-        formatted,
-        columnsplit,
-        rowsplit,
-        list_of_lists_rc,
-        list_of_lists_cr,
-    )
-
-
-def join_list_to_table(rawlist):
-    if "|||\n" in rawlist:
-        raw_columns = rawlist.split("|||\n")
-        cols = [col.splitlines() for col in raw_columns]
-    elif "---\n" in rawlist:
-        rawrows = rawlist.split("---\n")
-        rows = [row.splitlines() for row in rawrows]
-        cols = list(itertools.zip_longest(*rows, fillvalue=""))
-    else:
-        return None
-
-    number_of_rows = max([len(col) for col in cols])
-    formatted_cols = []
-
-    for col in cols:
-        # print col
-        rows = [row.strip() or '"' for row in col]
-        width = max([len(row) for row in rows])
-
-        rows = [row.ljust(width) for row in rows]
-        rows += [" " * width] * (number_of_rows - len(rows))
-        formatted_cols.append(rows)
-
-    rows = list(zip(*formatted_cols))
-
-    combinedlist = []
-
-    for row in rows:
-        combinedlist.append(" ".join(row))
-
-    new_text = "\n".join(combinedlist)
-
-    return _pretty_str(new_text)
-
-
-def expandtolist(content):
-    """docstring."""
-    resultlist = []
-    for line in re.finditer(r"(?P<item>[^\(\)]*?)(?P<brack>\[.*?\])", content):
-        text2rep = line.group("item")
-        bracket = line.group("brack")
-        padding = max([len(str(x).strip()) for x in re.split(r"\.\.|,", bracket.strip("[ ]"))])
-        inbracket = [item.strip("[ ]") for item in bracket.split(",")]
-        expanded = []
-
-        for item in inbracket:
-            if re.match(r"(\d+\.\.\d+)|([a-z]+\.\." r"[a-z]+)|([A-Z]+\.\.[A-Z]+)", item):
-                low, high = item.split(
-                    "..",
-                )
-                if low.isdigit() and high.isdigit():
-                    r = ["{:{}d}".format(x, padding) for x in range(int(low), 1 + int(high))]
-                if (low.islower() and high.islower()) or (low.isupper() and high.isupper()):
-                    r = [chr(a) for a in range(ord(low), 1 + ord(high))]
-                expanded.extend(r)
-            else:
-                expanded.append(item.strip())
-
-        resultlist.append([text2rep + x for x in expanded])
-
-    ml = max([len(x) for x in resultlist])
-
-    norm = []
-    for r in resultlist:
-        mp = int(math.ceil(float(ml) / float(len(r))))
-        norm.append(list(itertools.chain.from_iterable(list(zip(*(r,) * mp)))))
-
-    rt = ""
-    for a in range(ml):
-        rt += "".join([b[a] for b in norm]) + "\n"
-    return _pretty_str(rt)
 
 
 def randomRNA(length, maxlength=None):

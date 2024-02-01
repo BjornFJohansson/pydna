@@ -80,7 +80,7 @@ def test_primer_design_same_first_and_third_Dseqrecord():
     y = assembly_fragments([frags[0], x[1], frags[0]], 20)
     z = Assembly(y, limit=20)
     result = z.assemble_circular()[0]
-    assert result.cseguid() == (frags[0] + frags[1]).looped().cseguid()
+    assert result.seguid() == (frags[0] + frags[1]).looped().seguid()
 
     a = Dseqrecord("ccaaggacacaatcgagctccgatccgtactgtcgagaaacttgtatcc", name="a")
     b = Dseqrecord(
@@ -96,7 +96,7 @@ def test_primer_design_same_first_and_third_Dseqrecord():
         == "ccaaggacacaatcgagctccgatccgtactgtcgagaaacttgtatccctctaactagtatggatagccgtgtcttcactgtgctgcggctacccatcccaaggacacaatcgagctccgatccgtactgtcgagaaacttgtatcc"
     )
     result = z.assemble_circular()[0]
-    assert result.cseguid() == (frags[0] + frags[1]).looped().cseguid()
+    assert result.seguid() == (frags[0] + frags[1]).looped().seguid()
 
 
 def test_primer_design_linker_first():
@@ -205,7 +205,7 @@ def test_primer_Design():
 
     asm = Assembly(frags)
 
-    assert asm.assemble_linear()[0].useguid() == "1eNv3d_1PqDPP8qJZIVoA45Www8"
+    assert asm.assemble_linear()[0].seguid() == "dlseguid-oXyobB7W4-lC4bEkMtJb0RYTp6A"
 
     frags = assembly_fragments([primer_design(r) for r in (a, b, c, a)])
 
@@ -213,7 +213,7 @@ def test_primer_Design():
 
     asm = Assembly((a2, frags[1], frags[2]))
 
-    assert asm.assemble_circular()[0].cseguid() == "V3Mi8zilejgyoH833UbjJOtDMbc"
+    assert asm.assemble_circular()[0].seguid() == "dcseguid-wK78IpjJH_L7ZuLelQxTniLWJCM"
 
 
 def test_primer_Design_with_linker():
@@ -227,7 +227,7 @@ def test_primer_Design_with_linker():
 
     asm1 = Assembly(frags)
 
-    assert asm1.assemble_linear()[0].useguid(), (b + l + c).useguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
+    assert asm1.assemble_linear()[0].seguid(), (b + l + c).seguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
 
     frags = assembly_fragments((primer_design(b), l, primer_design(c), primer_design(b)))
 
@@ -235,9 +235,9 @@ def test_primer_Design_with_linker():
 
     asm2 = Assembly((b2, frags[1], frags[2]))
 
-    assert (b + l + c).looped().cseguid() == asm2.assemble_circular()[0].cseguid()
+    assert (b + l + c).looped().seguid() == asm2.assemble_circular()[0].seguid()
 
-    assert (b + l + c).looped().cseguid() == "jdHXfQI5k4Sk2ESiZYfKv4oP2FI"
+    assert (b + l + c).looped().seguid() == "dcseguid-MslYwLEOJgzyLGpOmtKow3Vkqhk"
 
 
 def test_primer_Design_given_fw_primer():

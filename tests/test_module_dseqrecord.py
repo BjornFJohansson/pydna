@@ -243,8 +243,8 @@ def test_linear_circular():
 
     """ test Dseqrecord linear & circular property"""
     a = Dseqrecord("attt")
-    a.stamp("useguid")
-    assert a.stamp("useguid")
+    a.stamp()
+    assert a.stamp()
     a = Dseqrecord("attt", circular=False)
     assert a.circular == False
     assert a.rc().circular == False
@@ -272,29 +272,34 @@ def test_stamp():
     from pydna.dseqrecord import Dseqrecord
 
     lin = Dseqrecord("attt")
-    assert lin.stamp("useguid") == "ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert lin.stamp("useguid")[:35] == "uSEGUID ot6JPLeAeMmfztW1736Kc6DAqlo"
+    lin.stamp()
+    first = lin.annotations["comment"]
+    assert "dlseguid-4WaxNpLQfxFy6HOjg07u6EdhH5Q" in first
+    lin.stamp()
+    assert first[:42] == lin.annotations["comment"][:42]
 
     crc = Dseqrecord("attt", circular=True)
-    assert crc.stamp("cseguid") == "oopV-6158nHJqedi8lsshIfcqYA"
-    crc.annotations["comment"] = "cSEGUID_oopV-6158nHJqedi8lsshIfcqYZ"
-    with pytest.warns(_PydnaWarning):
-        crc.stamp("cseguid")
+    crc.stamp()
+    first = crc.annotations["comment"]
+    assert "dcseguid-4WaxNpLQfxFy6HOjg07u6EdhH5Q" in first
+    crc.stamp()
+    assert first[:42] == crc.annotations["comment"][:42]
+    assert len(first) == len(crc.annotations["comment"])
 
     from pydna.dseq import Dseq
 
     blunt = Dseqrecord(Dseq("aa"))
 
-    assert blunt.stamp("useguid") == "gBw0Jp907Tg_yX3jNgS4qQWttjU"
+    assert blunt.stamp()[:42] == "dlseguid-5u_VqZ0yq_PnodWlwL970EWt6PY"
 
     staggered = Dseqrecord(Dseq("aa", "tta"))
-    assert staggered.stamp("lseguid") == "qlQKjCD04EhPHtsdnEQ0DriOr10"
+    assert staggered.stamp()[:42] == "dlseguid-4XNdHr5TsfaY-H9X9loPdW3C5y8"
 
     staggered = Dseqrecord(Dseq("aa", "att"))
-    assert staggered.stamp("lseguid") == "mvhPR1scFLQfgDn3olxegJmckgg"
+    assert staggered.stamp()[:42] == "dlseguid-HzB9mSb-Itg5IDNPXVegeGbGako"
 
     staggered = Dseqrecord(Dseq("aa", "atta"))
-    assert staggered.stamp("lseguid") == "hPVQIzC3k29tDuAu_C5xEgLsFZs"
+    assert staggered.stamp()[:42] == "dlseguid-ShX1Rh4gHuGoMngZMA_jZLuFJDk"
 
 
 def test_revcomp():
@@ -398,24 +403,14 @@ def test___contains__():
     assert "ggatcc" in s
 
 
-def test_cseguid():
+def test_seguid():
     from pydna.dseqrecord import Dseqrecord
 
-    s = Dseqrecord("tttGGATCCaaa")
-    with pytest.raises(TypeError):
-        s.cseguid()
-    s = Dseqrecord("tttGGATCCaaa", circular=True)
-    assert s.cseguid() == "54zt6fixMmNwFTsUVILdrdIRi2U"
+    l = Dseqrecord("tttGGATCCaaa")
+    assert l.seguid() == "dlseguid-W4m4F80UCbvl4gBy2ttK_i0IA04"
+    c = Dseqrecord("tttGGATCCaaa", circular=True)
+    assert c.seguid() == "dcseguid-Yis91a4lQjAegmW88b1HuQmDvns"
 
-
-def test_lseguid():
-    from pydna.dseqrecord import Dseqrecord
-
-    s = Dseqrecord("tttGGATCCaaa", circular=True)
-    with pytest.raises(TypeError):
-        s.lseguid()
-    s = Dseqrecord("tttGGATCCaaa")
-    assert s.lseguid() == "qr7ePrqTrFyQt0fsTsiltN20oEk"
 
 
 def test_format():
@@ -484,7 +479,7 @@ def test_write_different_file_to_existing_file(monkeypatch):
     from pydna.readers import read
 
     s = Dseqrecord("Ggatcc", circular=True)
-    d = Dseqrecord("Ggatcn", circular=True)
+    d = Dseqrecord("GgatcA", circular=True)
 
     monkeypatch.setattr("pydna.dseqrecord._os.path.isfile", lambda x: True)
     monkeypatch.setattr("pydna.dseqrecord._os.rename", lambda x, y: True)
@@ -502,11 +497,11 @@ def test_write_different_file_to_stamped_existing_file(monkeypatch):
     from pydna.readers import read
 
     new = Dseqrecord("Ggatcc", circular=True)
-    new.stamp("cSEGUID")
+    new.stamp()
     old = Dseqrecord("Ggatcc", circular=True)
-    old.stamp("cSEGUID")
+    old.stamp()
 
-    assert new.description[:35] == old.description[:35]
+    assert new.description[:42] == old.description[:42]
 
     monkeypatch.setattr("pydna.dseqrecord._os.path.isfile", lambda x: True)
     monkeypatch.setattr("pydna.dseqrecord._os.rename", lambda x, y: True)
@@ -546,9 +541,9 @@ def test_write_different_file_to_stamped_existing_file2(monkeypatch):
     from pydna.readers import read
 
     new = Dseqrecord("Ggatcc", circular=True)
-    new.stamp("cSEGUID")
+    new.stamp()
     old = Dseqrecord("Ggatcc", circular=True)
-    old.stamp("cSEGUID")
+    old.stamp()
 
     assert new.description[:35] == old.description[:35]
 
@@ -999,13 +994,13 @@ FEATURES             Location/Qualifiers
                      /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
                      width 5 offset 0
 ORIGIN
-        1 GAATTCacan ggtaccnGGT ACCngcgGAT ATC
+        1 GAATTCacag ggtaccaGGT ACCagcgGAT ATC
 //
 
     """
     )
 
-    assert a.lseguid() == "di3hL8t2G4iQQsxlm_CtvnUMBz8"
+    assert a.seguid() == "dlseguid-dpWgD9vlrqN5phPCCAzE7Ki3E6A"
 
     assert [x.qualifiers["label"][0] for x in a.features] == [
         "Acc65I-1",
@@ -1641,14 +1636,14 @@ def test_jan_glx():
     # from pydna.genbank import Genbank
     # gb = Genbank("bjornjobb@gmail.com")
     # puc19 = gb.nucleotide("M77789.2")
-    # assert puc19.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
+    # assert puc19.seguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
     # puc19.write("pUC19_M77789.gb")
     puc19 = read("pUC19_M77789.gb")
-    assert puc19.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
+    assert puc19.seguid() == "dcseguid-zhw8Yrxfo3FO5DDccx4PamBVPCQ"
     insert, bb = puc19.cut(NdeI, BamHI)  # Note the order !
 
     puc19_ = (bb + insert).looped().synced(puc19)
-    assert puc19_.cseguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
+    assert puc19_.seguid() == "dcseguid-zhw8Yrxfo3FO5DDccx4PamBVPCQ"
 
     # print(puc19_.extract_feature(2), "\n")
     # print(puc19.extract_feature(6))
@@ -1675,7 +1670,7 @@ def test_synced():
     pGUP1 = read("pGUP1_correct.gb")
     pGREG505 = read("pGREG505.gb")
     pGUP1_not_synced = read("pGUP1_not_synced.gb")
-    assert pGUP1_not_synced.synced(pGREG505).useguid() == "42wIByERn2kSe_Exn405RYwhffU" == pGUP1.useguid()
+    assert pGUP1_not_synced.synced(pGREG505).seguid() == "dcseguid-5aiMDLWXOfvl0PBCQV-96q9UKqY" == pGUP1.seguid()
 
     bb_ins = Dseqrecord("tcgcgcgtttcgAgtgatgacggtgaA", circular=True)
 
@@ -2216,17 +2211,20 @@ def test_assemble_YEp24PGK_XK():
 
     YEp24PGK_XK = YEp24PGK_BglII + insert
 
+    assert YEp24PGK_XK.seguid() == "dlseguid-TdiKVsYCzZ0dt-4io12ZfKUrAgg"
+
     YEp24PGK_XK = YEp24PGK_XK.looped()
+
+    assert YEp24PGK_XK.seguid() == "dcseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
 
     YEp24PGK_XK = YEp24PGK_XK.synced("gaattctgaaccagtcctaaaacgagtaaataggaccggcaattc")  # YEp24PGK)
 
-    assert YEp24PGK_XK.useguid() == "HRVpCEKWcFsKhw_W-25ednUfldI"
-    assert YEp24PGK_XK.cseguid() == "t9fs_9UvEuD-Ankyy8XEr1hD5DQ"
+    assert YEp24PGK_XK.seguid() == "dcseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
 
     YEp24PGK_XK_correct = read("YEp24PGK_XK_manually_assembled.txt")
-    assert YEp24PGK_XK_correct.cseguid() == "t9fs_9UvEuD-Ankyy8XEr1hD5DQ"
-    assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
+    assert YEp24PGK_XK_correct.seguid() == "dcseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
+    assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
 if __name__ == "__main__":
     args = [
@@ -2241,7 +2239,5 @@ if __name__ == "__main__":
         "--nbval",
         "--current-env",
         "--doctest-modules",
-        "--capture=no",
-        "-vvv",
-    ]
+        "--capture=no"]
     pytest.main(args)

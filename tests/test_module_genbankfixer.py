@@ -11,15 +11,15 @@ def test_pydna_gbtext_clean():
     from pydna.genbankfixer import gbtext_clean
 
     files = [
-        ("sequence.gb", "j2yAlBCZ-txSTCkakAmykAielRI"),
-        ("NCBI_example.gb", "j2yAlBCZ-txSTCkakAmykAielRI"),
-        ("YEplac181.txt", "lbnQtxi5LyDONRswRdG88-l8NF0"),
-        ("pGADT7-Rec.gb", "rhnYE78wGKdqAZWiyVJzQ7HXXys"),
-        ("P30350%20(2013-10-11%2013_49_14).dna.txt", "_aEPoGLctHcOZdQdZIh-KyBt5WY"),
-        ("ApE_example.gb", "c47i2ifiNZVvvnLQbX5anTVVoPE"),
-        ("VectorNTI_example.gb", "bDPbx5P4yigGWh1zK7FiG_SF8qQ"),
-        ("hej.txt", "lbnQtxi5LyDONRswRdG88-l8NF0"),
-        ("fakeGenBankFile.gb", "ATrCXrjheFhltm8HhLJuFNtWXGw"),
+        ("sequence.gb", "dlseguid-iHVblovQ8vMlc6r4I0WtJ7U86FE"),
+        ("NCBI_example.gb", "dlseguid-iHVblovQ8vMlc6r4I0WtJ7U86FE"),
+        ("YEplac181.txt", "dlseguid-Ko6R38rKGk-BM3cW-Yd3oSP1YII"),
+        ("pGADT7-Rec.gb", "dcseguid-uR971QAEetpd7Mptme2A5yybbek"),
+        ("P30350%20(2013-10-11%2013_49_14).dna.txt", "dcseguid-C9vd9PyLFUV4LF8llPM3DgM8sA4"),
+        ("ApE_example.gb", "dlseguid-5v2YtLDJRhA0_O_Ut6HUXr_4EIc"),
+        ("VectorNTI_example.gb", "dcseguid-_nYOPeDWBC7OaB2Arnt5x5fAFZM"),
+        ("hej.txt", "dlseguid-Ko6R38rKGk-BM3cW-Yd3oSP1YII"),
+        ("fakeGenBankFile.gb", "dcseguid-mIbMOKcoiRlnUs7ZaYwBxQnFego"),
     ]
 
     for file_, seg in files:
@@ -27,11 +27,10 @@ def test_pydna_gbtext_clean():
             infile = f.read()
         if file_ == "hej.txt":
             from Bio import BiopythonParserWarning
-
             with pytest.warns(BiopythonParserWarning):
-                assert read(gbtext_clean(infile).gbtext).useguid() == seg
+                assert read(gbtext_clean(infile).gbtext).seguid() == seg
         else:
-            assert read(gbtext_clean(infile).gbtext).useguid() == seg
+            assert read(gbtext_clean(infile).gbtext).seguid() == seg
 
 
 def test_wrapstring():
@@ -51,4 +50,4 @@ def test_wrapstring():
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-x", "-vv", "-s"])
+    pytest.main([__file__, "-x", "-vvv", "-s"])

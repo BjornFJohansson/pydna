@@ -14,7 +14,7 @@ from pydna.codon import rare_codons as _rare_codons
 from pydna.codon import start as _start
 from pydna.codon import stop as _stop
 from pydna.codon import n_end as _n_end
-from pydna.utils import useguid as _useg
+from seguid.chksum import slseguid as _slseguid
 from pydna.utils import rc as _rc
 
 from Bio.SeqUtils import seq3 as _seq3
@@ -100,7 +100,7 @@ class Seq(_Seq):
                 break
         return sorted([self[sl] for sl in matches], key=len, reverse=True)
 
-    def useguid(self):
+    def seguid(self):
         """Url safe SEGUID [#]_ for the sequence.
 
         This checksum is the same as seguid but with base64.urlsafe
@@ -112,14 +112,14 @@ class Seq(_Seq):
         --------
         >>> from pydna.seq import Seq
         >>> a = Seq("aa")
-        >>> a.useguid()
-        'gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        >>> a.seguid()
+        'slseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
 
         References
         ----------
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID
         """
-        return _useg(self._data)
+        return _slseguid(self._data.decode("utf8").upper(), table="{IUPAC}")
 
     def __getitem__(self, key):
         result = super().__getitem__(key)

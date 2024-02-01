@@ -26,8 +26,9 @@ from Bio.Restriction import FormattedSeq as _FormattedSeq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
-from pydna.utils import lseguid_sticky as _lseg
-from pydna.utils import cseguid as _cseg
+from seguid.chksum import dlseguid as _dlseguid
+from seguid.chksum import dcseguid as _dcseguid
+
 from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
@@ -1327,17 +1328,13 @@ class Dseq(_Seq):
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if sitelist}
         return _RestrictionBatch(ncut)
 
-    def cseguid(self):
-        """Circular uSEGUID (cSEGUID) for the sequence."""
-        if not self.circular:
-            raise TypeError("cseguid is only defined for circular sequences.")
-        return _cseg(str(self.watson))
-
-    def lseguid(self):
-        """Linear uSEGUID (lSEGUID) for the sequence."""
+    def seguid(self):
+        """SEGUID checksum for the sequence."""
         if self.circular:
-            raise TypeError("lseguid is only defined for linear sequences.")
-        return _lseg(self.watson, self.crick, self.ovhg)
+            cs = _dcseguid(self.watson.upper(), self.crick.upper(), table="{IUPAC}")
+        else:
+            cs = _dlseguid(self.watson.upper(), self.crick.upper(), self.ovhg, table="{IUPAC}")
+        return cs
 
     def isblunt(self):
         """isblunt.

@@ -197,7 +197,7 @@ class Anneal(object):  # ), metaclass=_Memoize):
         Dseqrecord
         circular: False
         size: 1011
-        ID: 1011bp_8SyDnG-azV61tx-z8PalCWZoVDo
+        ID: 1011bp
         Name: 1011bp_PCR_prod
         Description: pcr_product_p1_p2
         Number of features: 2
@@ -374,13 +374,9 @@ class Anneal(object):  # ), metaclass=_Memoize):
                 prd.name = (
                     _identifier_from_string(new_identifier)[:16]
                     or self.kwargs.get("name")
-                    or "{}bp_PCR_prod".format(len(prd))[:16]
+                    or f"{len(prd)}bp_PCR_prod"[:16]
                 )
-                prd.id = (
-                    _identifier_from_string(new_identifier)[:16]
-                    or self.kwargs.get("id")
-                    or "{}bp_{}".format(str(len(prd))[:14], prd.useguid())
-                )
+                prd.id = _identifier_from_string(new_identifier)[:16] or self.kwargs.get("id") or f"{len(prd)}bp"[:16]
                 prd.description = self.kwargs.get("description") or "pcr_product_{}_{}".format(
                     fp.description, rp.description
                 )

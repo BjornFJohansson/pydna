@@ -557,10 +557,10 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     algorithm....: common_sub_strings
     >>> assemblyobj.assemble_linear()
     [Contig(-231), Contig(-166), Contig(-36)]
-    >>> assemblyobj.assemble_circular()[0].cseguid()
-    'V3Mi8zilejgyoH833UbjJOtDMbc'
-    >>> (a+b+c).looped().cseguid()
-    'V3Mi8zilejgyoH833UbjJOtDMbc'
+    >>> assemblyobj.assemble_circular()[0].seguid()
+    'dcseguid-wK78IpjJH_L7ZuLelQxTniLWJCM'
+    >>> (a+b+c).looped().seguid()
+    'dcseguid-wK78IpjJH_L7ZuLelQxTniLWJCM'
     >>> print(assemblyobj.assemble_circular()[0].figure())
      -|fa|36
     |     \\/
