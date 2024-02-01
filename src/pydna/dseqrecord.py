@@ -373,7 +373,7 @@ class Dseqrecord(_SeqRecord):
         >>> from pydna.dseqrecord import Dseqrecord
         >>> a = Dseqrecord("aa")
         >>> a.seguid()
-        'dlseguid-5u_VqZ0yq_PnodWlwL970EWt6PY'
+        'ldseguid-5u_VqZ0yq_PnodWlwL970EWt6PY'
 
         """
         return self.seq.seguid()
@@ -604,7 +604,7 @@ class Dseqrecord(_SeqRecord):
                 </table>
                 """
             elif "seguid" in old_file.annotations.get("comment", ""):
-                pattern = r"(dlseguid|dcseguid)-(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
+                pattern = r"(ldseguid|cdseguid)-(\S{27})(_[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}){0,1}"
                 # seguid-NNNNNNNNNNNNNNNNNNNNNNNNNNN_2020-10-10T11:11:11.111111
                 oldstamp = _re.search(pattern, old_file.description)
                 newstamp = _re.search(pattern, self.description)

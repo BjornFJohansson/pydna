@@ -26,8 +26,8 @@ from Bio.Restriction import FormattedSeq as _FormattedSeq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
-from seguid.chksum import dlseguid as _dlseguid
-from seguid.chksum import dcseguid as _dcseguid
+from seguid import ldseguid as _ldseguid
+from seguid import cdseguid as _cdseguid
 
 from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
@@ -1331,9 +1331,9 @@ class Dseq(_Seq):
     def seguid(self):
         """SEGUID checksum for the sequence."""
         if self.circular:
-            cs = _dcseguid(self.watson.upper(), self.crick.upper(), table="{IUPAC}")
+            cs = _cdseguid(self.watson.upper(), self.crick.upper(), table="{IUPAC}")
         else:
-            cs = _dlseguid(self.watson.upper(), self.crick.upper(), self.ovhg, table="{IUPAC}")
+            cs = _ldseguid(self.watson.upper(), self.crick.upper(), self.ovhg, table="{IUPAC}")
         return cs
 
     def isblunt(self):

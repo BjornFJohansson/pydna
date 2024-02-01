@@ -398,7 +398,7 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("gattaca")
         >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
-        'slseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8'
+        'lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8'
 
         References
         ----------
@@ -442,9 +442,9 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a = SeqRecord("aa")
         >>> a.stamp()
-        'slseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        'lsseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
         >>> a.annotations["comment"][:41]
-        'pydna slseguid-gBw0Jp907Tg_yX3jNgS4qQWttj'
+        'pydna lsseguid-gBw0Jp907Tg_yX3jNgS4qQWttj'
         """
         chksum = self.seq.seguid()
         oldcomment = self.annotations.get("comment", "")

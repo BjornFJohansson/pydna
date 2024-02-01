@@ -14,7 +14,7 @@ from pydna.codon import rare_codons as _rare_codons
 from pydna.codon import start as _start
 from pydna.codon import stop as _stop
 from pydna.codon import n_end as _n_end
-from seguid.chksum import slseguid as _slseguid
+from seguid import lsseguid as _lsseguid
 from pydna.utils import rc as _rc
 
 from Bio.SeqUtils import seq3 as _seq3
@@ -113,13 +113,13 @@ class Seq(_Seq):
         >>> from pydna.seq import Seq
         >>> a = Seq("aa")
         >>> a.seguid()
-        'slseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        'lsseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
 
         References
         ----------
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID
         """
-        return _slseguid(self._data.decode("utf8").upper(), table="{IUPAC}")
+        return _lsseguid(self._data.decode("utf8").upper(), table="{IUPAC}")
 
     def __getitem__(self, key):
         result = super().__getitem__(key)
