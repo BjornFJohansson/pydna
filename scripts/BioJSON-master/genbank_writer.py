@@ -6,6 +6,7 @@ Given a JSON representation, writes out a GenBank Flatfile (GFF) parseable by Ap
 Copyright (c) 2011 Anselm Levskaya (http://anselmlevskaya.com)
 Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.  
 """
+
 import json
 from optparse import OptionParser
 

@@ -684,14 +684,16 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     f = [item for item in f if len(item)]
 
     return [
-        _pcr(
-            p.forward_primer,
-            p.reverse_primer,
-            p.template,
-            limit=min((p.forward_primer._fp, p.reverse_primer._fp)),
+        (
+            _pcr(
+                p.forward_primer,
+                p.reverse_primer,
+                p.template,
+                limit=min((p.forward_primer._fp, p.reverse_primer._fp)),
+            )
+            if hasattr(p, "template")
+            else p
         )
-        if hasattr(p, "template")
-        else p
         for p in f
     ]
 
