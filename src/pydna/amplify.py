@@ -354,7 +354,10 @@ class Anneal(object):  # ), metaclass=_Memoize):
                     tpl = self.template
                 else:
                     continue
-                prd = _Dseqrecord(fp) + tpl[fp.position : rp.position] + _Dseqrecord(rp).reverse_complement()
+                if tpl.circular and fp.position == rp.position:
+                    prd = _Dseqrecord(fp) + _Dseqrecord(rp).reverse_complement()
+                else:
+                    prd = _Dseqrecord(fp) + tpl[fp.position : rp.position] + _Dseqrecord(rp).reverse_complement()
                 prd.features = feats
                 full_tmpl_features = [
                     f for f in self.template.features if f.location.start == 0 and f.location.end == len(self.template)

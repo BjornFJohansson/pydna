@@ -38,14 +38,16 @@ biopython = ">=1.80"
 cai2 = {version = ">=1.0.5", optional = true}
 matplotlib = {version = ">=3.4.3", optional = true}
 networkx = ">=2.8.8"
-pillow = {version = ">=8.4.0", optional = true}
+pillow = "^8.4.0"
 prettytable = ">=3.5.0"
 pydivsufsort = ">=0.0.11"
 pyfiglet = "0.8.post1"
 pyparsing = {version = ">=2.4.7", optional = true}
 pyperclip = {version = ">=1.8.2", optional = true}
+python = ">=3.8,<4.0"
 requests = {version = ">=2.26.0", optional = true}
 scipy = {version = ">=1.9.3", optional = true}
+seguid = "^0.0.3"
 [tool.poetry.extras]
 clipboard = ["pyperclip"]
 download = ["pyparsing", "requests"]
