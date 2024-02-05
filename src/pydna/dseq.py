@@ -36,6 +36,8 @@ from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 
+from typing import Tuple
+
 
 class Dseq(_Seq):
     """Dseq holds information for a double stranded DNA fragment.
@@ -1559,7 +1561,7 @@ class Dseq(_Seq):
 
         return sorted([cutsite for cutsite in out if self.cutsite_is_valid(cutsite)])
 
-    def left_end_position(self) -> tuple[int, int]:
+    def left_end_position(self) -> Tuple[int, int]:
         """The index in the full sequence of the watson and crick start positions.
 
         full sequence (str(self)) for all three cases is AAA
@@ -1575,7 +1577,7 @@ class Dseq(_Seq):
             return self.ovhg, 0
         return 0, -self.ovhg
 
-    def right_end_position(self) -> tuple[int, int]:
+    def right_end_position(self) -> Tuple[int, int]:
         """The index in the full sequence of the watson and crick end positions.
 
         full sequence (str(self)) for all three cases is AAA
