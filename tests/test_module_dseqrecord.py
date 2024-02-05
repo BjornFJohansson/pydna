@@ -1634,7 +1634,7 @@ def test_figure():
     )
     assert b25.extract_feature(0).seq == feat
 
-@pytest.mark.xfail(reason="issue #78")
+
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
@@ -1652,10 +1652,11 @@ def test_jan_glx():
     puc19_ = (bb + insert).looped().synced(puc19)
     assert puc19_.seguid() == "cdseguid-zhw8Yrxfo3FO5DDccx4PamBVPCQ"
 
-    # print(puc19_.extract_feature(2), "\n")
-    # print(puc19.extract_feature(6))
-
+    # Some features are lost because they spanned the cutting sites in puc19.
+    assert puc19_.extract_feature(0).seq == puc19.extract_feature(2).seq
+    assert puc19_.extract_feature(1).seq == puc19.extract_feature(4).seq
     assert puc19_.extract_feature(2).seq == puc19.extract_feature(6).seq
+    assert puc19_.extract_feature(3).seq == puc19.extract_feature(7).seq
 
 
 def test_synced():
