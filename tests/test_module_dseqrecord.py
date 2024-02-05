@@ -1605,6 +1605,8 @@ def test_figure():
     assert circularDseqrecord.extract_feature(0).seq == feat
 
     a22, b22 = circularDseqrecord.cut(KpnI, Bsp120I)
+
+    # Passes the tests if changed to "Dseqrecord(-18)\n    cgatcgatcG    \ncatg\x1b[48;5;11mgctagctagC\x1b[0mCCGG"
     assert (
         b22.figure()
         == "Dseqrecord(-18)\n    cgatcgatcG    \ncatg\x1b[48;5;11mgctag\x1b[0m\x1b[48;5;11mctagC\x1b[0mCCGG"
