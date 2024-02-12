@@ -2858,13 +2858,13 @@ jeepney = ">=0.6"
 
 [[package]]
 name = "seguid"
-version = "0.0.3"
+version = "0.0.4"
 description = "Python implementation of SEGUID checksums for biological sequences"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.3,<4.0"
 files = [
-    {file = "seguid-0.0.3-py3-none-any.whl", hash = "sha256:d0a16422093ab89a0f8acd861a067c2d8a1136acbfd27ca8683731bc0c3e7a4c"},
-    {file = "seguid-0.0.3.tar.gz", hash = "sha256:681c0e5119aeb50107e5a9faa73daea2ce7f6eea8469ef396d3df629444e53fe"},
+    {file = "seguid-0.0.4-py3-none-any.whl", hash = "sha256:9eb6034c5fe40df0f7344d20386f386553aaf38829501b11c7becd68e78c6f24"},
+    {file = "seguid-0.0.4.tar.gz", hash = "sha256:cab5cb2b6f912ed80dc229bf096b3a5cfeb76ad103905350c57e618e447d4803"},
 ]
 
 [package.extras]
