@@ -22,7 +22,6 @@ import sys as _sys
 import math as _math
 
 from pydna.seq import Seq as _Seq
-from Bio.Restriction import FormattedSeq as _FormattedSeq
 from Bio.Seq import _translate_str
 
 from pydna._pretty import pretty_str as _pretty_str
@@ -31,11 +30,13 @@ from seguid import cdseguid as _cdseguid
 
 from pydna.utils import rc as _rc
 from pydna.utils import flatten as _flatten
-from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
+from pydna.utils import cuts_overlap as _cuts_overlap
 
-from operator import itemgetter as _itemgetter
+from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
+
+from typing import Tuple
 
 
 class Dseq(_Seq):
@@ -813,7 +814,7 @@ class Dseq(_Seq):
             raise TypeError("DNA is not circular.")
         shift = shift % len(self)
         if not shift:
-            return self
+            return _copy.deepcopy(self)
         else:
             return (self[shift:] + self[:shift]).looped()
 
@@ -1440,116 +1441,302 @@ class Dseq(_Seq):
 
         """
 
-        pad = "n" * 50
+        cutsites = self.get_cutsites(*enzymes)
+        cutsite_pairs = self.get_cutsite_pairs(cutsites)
+        return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
+    def cutsite_is_valid(self, cutsite):
+        """Returns False if:
+        - Cut positions fall outside the sequence (could be moved to Biopython)
+        - Overhang is not double stranded
+        - Recognition site is not double stranded or is outside the sequence
+        - For enzymes that cut twice, it checks that at least one possibility is valid
+        """
+
+        assert cutsite is not None, "cutsite is None"
+
+        enz = cutsite[1]
+        watson, crick, ovhg = self.get_cut_parameters(cutsite, True)
+
+        # The cut positions fall within the sequence
+        # This could go into Biopython
+        if not self.circular and crick < 0 or crick > len(self):
+            return False
+
+        # The overhang is double stranded
+        overhang_dseq = self[watson:crick] if ovhg < 0 else self[crick:watson]
+        if overhang_dseq.ovhg != 0 or overhang_dseq.watson_ovhg() != 0:
+            return False
+
+        # The recognition site is double stranded and within the sequence
+        start_of_recognition_site = watson - enz.fst5
+        if start_of_recognition_site < 0:
+            start_of_recognition_site += len(self)
+        end_of_recognition_site = start_of_recognition_site + enz.size
         if self.circular:
-            dsseq = Dseq.from_string(
-                self._data.decode("ASCII"),
-                # linear=True,
-                circular=False,
-            )
-        else:
-            dsseq = self.mung()
+            end_of_recognition_site %= len(self)
+        recognition_site = self[start_of_recognition_site:end_of_recognition_site]
+        if len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0:
+            if enz.scd5 is None:
+                return False
+            else:
+                # For enzymes that cut twice, this might be referring to the second one
+                start_of_recognition_site = watson - enz.scd5
+                if start_of_recognition_site < 0:
+                    start_of_recognition_site += len(self)
+                end_of_recognition_site = start_of_recognition_site + enz.size
+                if self.circular:
+                    end_of_recognition_site %= len(self)
+                recognition_site = self[start_of_recognition_site:end_of_recognition_site]
+                if len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0:
+                    return False
 
-        if len(enzymes) == 1 and hasattr(enzymes[0], "intersection"):
+        return True
+
+    def get_cutsites(self, *enzymes):
+        """Returns a list of cutsites, represented represented as `((cut_watson, ovhg), enz)`:
+
+        - `cut_watson` is a positive integer contained in `[0,len(seq))`, where `seq` is the sequence
+          that will be cut. It represents the position of the cut on the watson strand, using the full
+          sequence as a reference. By "full sequence" I mean the one you would get from `str(Dseq)`.
+        - `ovhg` is the overhang left after the cut. It has the same meaning as `ovhg` in
+          the `Bio.Restriction` enzyme objects, or pydna's `Dseq` property.
+        - `enz` is the enzyme object. It's not necessary to perform the cut, but can be
+           used to keep track of which enzyme was used.
+
+        Cuts are only returned if the recognition site and overhang are on the double-strand
+        part of the sequence.
+
+        Parameters
+        ----------
+
+        enzymes : Union[_RestrictionBatch,list[_RestrictionType]]
+
+        Returns
+        -------
+        list[tuple[tuple[int,int], _RestrictionType]]
+
+        Examples
+        --------
+
+        >>> from Bio.Restriction import EcoRI
+        >>> from pydna.dseq import Dseq
+        >>> seq = Dseq('AAGAATTCAAGAATTC')
+        >>> seq.get_cutsites(EcoRI)
+        [((3, -4), EcoRI), ((11, -4), EcoRI)]
+
+        `cut_watson` is defined with respect to the "full sequence", not the
+        watson strand:
+
+        >>> dseq = Dseq.from_full_sequence_and_overhangs('aaGAATTCaa', 1, 0)
+        >>> dseq
+        Dseq(-10)
+         aGAATTCaa
+        ttCTTAAGtt
+        >>> dseq.get_cutsites([EcoRI])
+        [((3, -4), EcoRI)]
+
+        Cuts are only returned if the recognition site and overhang are on the double-strand
+        part of the sequence.
+
+        >>> Dseq('GAATTC').get_cutsites([EcoRI])
+        [((1, -4), EcoRI)]
+        >>> Dseq.from_full_sequence_and_overhangs('GAATTC', -1, 0).get_cutsites([EcoRI])
+        []
+
+        """
+
+        if len(enzymes) == 1 and isinstance(enzymes[0], _RestrictionBatch):
             # argument is probably a RestrictionBatch
-            enzymecuts = []
-            for e in enzymes[0]:
-                cuts = e.search(
-                    _Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad) if self.circular else dsseq
-                )
-                enzymecuts.append((cuts, e))
-            enzymecuts.sort()
-            enzymes = [e for (c, e) in enzymecuts if c]
-        else:
-            # argument is probably a list of restriction enzymes
-            enzymes = [
-                e
-                for e in list(dict.fromkeys(_flatten(enzymes)))
-                if e.search(_Seq(pad + dsseq.watson + dsseq.watson[: e.size - 1] + pad) if self.circular else dsseq)
-            ]  # flatten
+            enzymes = [e for e in enzymes[0]]
 
-        if not enzymes:
-            return ()
+        enzymes = _flatten(enzymes)
+        out = list()
+        for e in enzymes:
+            # Positions of the cut on the watson strand. They are 1-based, so we subtract
+            # 1 to get 0-based positions
+            cuts_watson = [c - 1 for c in e.search(self, linear=(not self.circular))]
 
+            out += [((w, e.ovhg), e) for w in cuts_watson]
+
+        return sorted([cutsite for cutsite in out if self.cutsite_is_valid(cutsite)])
+
+    def left_end_position(self) -> Tuple[int, int]:
+        """The index in the full sequence of the watson and crick start positions.
+
+        full sequence (str(self)) for all three cases is AAA
+
+        ```
+        AAA              AA               AAT
+         TT             TTT               TTT
+        Returns (0, 1)  Returns (1, 0)    Returns (0, 0)
+        ```
+
+        """
+        if self.ovhg > 0:
+            return self.ovhg, 0
+        return 0, -self.ovhg
+
+    def right_end_position(self) -> Tuple[int, int]:
+        """The index in the full sequence of the watson and crick end positions.
+
+        full sequence (str(self)) for all three cases is AAA
+
+        ```
+        AAA               AA                   AAA
+        TT                TTT                  TTT
+        Returns (3, 2)    Returns (2, 3)       Returns (3, 3)
+        ```
+
+        """
+        if self.watson_ovhg() < 0:
+            return len(self) + self.watson_ovhg(), len(self)
+        return len(self), len(self) - self.watson_ovhg()
+
+    def get_cut_parameters(self, cut: tuple, is_left: bool):
+        """For a given cut expressed as ((cut_watson, ovhg), enz), returns
+        a tuple (cut_watson, cut_crick, ovhg).
+
+        - cut_watson: see get_cutsites docs
+        - cut_crick: equivalent of cut_watson in the crick strand
+        - ovhg: see get_cutsites docs
+
+        The cut can be None if it represents the left or right end of the sequence.
+        Then it will return the position of the watson and crick ends with respect
+        to the "full sequence". The `is_left` parameter is only used in this case.
+
+        """
+        if cut is not None:
+            watson, ovhg = cut[0]
+            crick = watson - ovhg
+            if self.circular:
+                crick %= len(self)
+            return watson, crick, ovhg
+
+        assert not self.circular, "Circular sequences should not have None cuts"
+
+        if is_left:
+            return *self.left_end_position(), self.ovhg
+        # In the right end, the overhang does not matter
+        return *self.right_end_position(), self.watson_ovhg()
+
+    def apply_cut(self, left_cut, right_cut):
+        """Extracts a subfragment of the sequence between two cuts.
+
+        For more detail see the documentation of get_cutsite_pairs.
+
+        Parameters
+        ----------
+        left_cut : Union[tuple[tuple[int,int], _RestrictionType], None]
+        right_cut: Union[tuple[tuple[int,int], _RestrictionType], None]
+
+        Returns
+        -------
+        Dseq
+
+        Examples
+        --------
+        >>> from Bio.Restriction import EcoRI
+        >>> from pydna.dseq import Dseq
+        >>> dseq = Dseq('aaGAATTCaaGAATTCaa')
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((3, -4), EcoRI), ((11, -4), EcoRI)]
+        >>> p1, p2, p3 = dseq.get_cutsite_pairs(cutsites)
+        >>> p1
+        (None, ((3, -4), EcoRI))
+        >>> dseq.apply_cut(*p1)
+        Dseq(-7)
+        aaG
+        ttCTTAA
+        >>> p2
+        (((3, -4), EcoRI), ((11, -4), EcoRI))
+        >>> dseq.apply_cut(*p2)
+        Dseq(-12)
+        AATTCaaG
+            GttCTTAA
+        >>> p3
+        (((11, -4), EcoRI), None)
+        >>> dseq.apply_cut(*p3)
+        Dseq(-7)
+        AATTCaa
+            Gtt
+
+        >>> dseq = Dseq('TTCaaGAA', circular=True)
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((6, -4), EcoRI)]
+        >>> pair = dseq.get_cutsite_pairs(cutsites)[0]
+        >>> pair
+        (((6, -4), EcoRI), ((6, -4), EcoRI))
+        >>> dseq.apply_cut(*pair)
+        Dseq(-12)
+        AATTCaaG
+            GttCTTAA
+
+        """
+        if _cuts_overlap(left_cut, right_cut, len(self)):
+            raise ValueError("Cuts overlap")
+
+        left_watson, left_crick, ovhg_left = self.get_cut_parameters(left_cut, True)
+        right_watson, right_crick, _ = self.get_cut_parameters(right_cut, False)
+        return Dseq(
+            str(self[left_watson:right_watson]),
+            # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case
+            str(self.reverse_complement()[len(self) - right_crick : len(self) - left_crick]),
+            ovhg=ovhg_left,
+        )
+
+    def get_cutsite_pairs(self, cutsites):
+        """Returns pairs of cutsites that render the edges of the resulting fragments.
+
+        A fragment produced by restriction is represented by a tuple of length 2 that
+        may contain cutsites or `None`:
+
+            - Two cutsites: represents the extraction of a fragment between those two
+              cutsites, in that orientation. To represent the opening of a circular
+              molecule with a single cutsite, we put the same cutsite twice.
+            - `None`, cutsite: represents the extraction of a fragment between the left
+              edge of linear sequence and the cutsite.
+            - cutsite, `None`: represents the extraction of a fragment between the cutsite
+              and the right edge of a linear sequence.
+
+        Parameters
+        ----------
+        cutsites : list[tuple[tuple[int,int], _RestrictionType]]
+
+        Returns
+        -------
+        list[tuple[tuple[tuple[int,int], _RestrictionType]|None],tuple[tuple[int,int], _RestrictionType]|None]
+
+        Examples
+        --------
+
+        >>> from Bio.Restriction import EcoRI
+        >>> from pydna.dseq import Dseq
+        >>> dseq = Dseq('aaGAATTCaaGAATTCaa')
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((3, -4), EcoRI), ((11, -4), EcoRI)]
+        >>> dseq.get_cutsite_pairs(cutsites)
+        [(None, ((3, -4), EcoRI)), (((3, -4), EcoRI), ((11, -4), EcoRI)), (((11, -4), EcoRI), None)]
+
+        >>> dseq = Dseq('TTCaaGAA', circular=True)
+        >>> cutsites = dseq.get_cutsites([EcoRI])
+        >>> cutsites
+        [((6, -4), EcoRI)]
+        >>> dseq.get_cutsite_pairs(cutsites)
+        [(((6, -4), EcoRI), ((6, -4), EcoRI))]
+        """
+        if len(cutsites) == 0:
+            return []
         if not self.circular:
-            frags = [self]
+            cutsites = [None, *cutsites, None]
         else:
-            ln = len(self)
-            for e in enzymes:
-                wpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.watson + self.watson[: e.size - 1]) + pad)][
-                    ::-1
-                ]
-                cpos = [x - len(pad) - 1 for x in e.search(_Seq(pad + self.crick + self.crick[: e.size - 1]) + pad)][
-                    ::-1
-                ]
+            # Add the first cutsite at the end, for circular cuts
+            cutsites.append(cutsites[0])
 
-                for w, c in _itertools.product(wpos, cpos):
-                    if w % len(self) == (self.length - c + e.ovhg) % len(self):
-                        frags = [
-                            Dseq(
-                                self.watson[w % ln :] + self.watson[: w % ln],
-                                self.crick[c % ln :] + self.crick[: c % ln],
-                                ovhg=e.ovhg,
-                                pos=min(w, len(dsseq) - c),
-                            )
-                        ]
-                        # breakpoint()
-                        break
-                else:
-                    continue
-                break
-
-        newfrags = []
-
-        # print(repr(frags[0]))
-        # print(frags[0].pos)
-
-        for enz in enzymes:
-            for frag in frags:
-                ws = [x - 1 for x in enz.search(_Seq(frag.watson + "n"))]
-                cs = [x - 1 for x in enz.search(_Seq(frag.crick + "n"))]
-
-                sitepairs = [
-                    (sw, sc)
-                    for sw, sc in _itertools.product(ws, cs[::-1])
-                    if (
-                        sw + max(0, frag.ovhg) - max(0, enz.ovhg)
-                        == len(frag.crick) - sc - min(0, frag.ovhg) + min(0, enz.ovhg)
-                    )
-                ]
-
-                sitepairs.append((self.length, 0))
-
-                w2, c1 = sitepairs[0]
-                newfrags.append(Dseq(frag.watson[:w2], frag.crick[c1:], ovhg=frag.ovhg, pos=frag.pos))
-
-                for (w1, c2), (w2, c1) in zip(sitepairs[:-1], sitepairs[1:]):
-                    newfrags.append(
-                        Dseq(
-                            frag.watson[w1:w2],
-                            frag.crick[c1:c2],
-                            ovhg=enz.ovhg,
-                            pos=frag.pos + w1 - max(0, enz.ovhg) + max(0, frag.ovhg),
-                        )
-                    )
-            frags = newfrags
-            newfrags = []
-
-        return tuple(frags)
-
-    def _firstcut(self, *enzymes):
-        rb = _RestrictionBatch(_flatten(enzymes))
-        watson = _FormattedSeq(_Seq(self.watson), linear=False)
-        crick = _FormattedSeq(_Seq(self.crick), linear=False)
-        enzdict = dict(sorted(rb.search(watson).items(), key=_itemgetter(1)))
-        ln = self.length
-        for enzyme, wposlist in enzdict.items():
-            for cpos in enzyme.search(crick)[::-1]:
-                for wpos in wposlist:
-                    if cpos == (ln - wpos + enzyme.ovhg + 2) or ln:
-                        return (wpos - 1, cpos - 1, enzyme.ovhg)
-        return ()
+        return list(zip(cutsites, cutsites[1:]))
 
 
 if __name__ == "__main__":

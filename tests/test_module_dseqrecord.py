@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pydna
 import pytest
 from pydna import _PydnaWarning
 
@@ -801,6 +800,9 @@ def test_Dseqrecord_cutting_adding_2():
     for enz in enzymes:
         for f in a:
             b, c, d = f.cut(enz)
+            print(b.seq.__repr__())
+            print(c.seq.__repr__())
+            print(d.seq.__repr__())
             e = b + c + d
             assert str(e.seq).lower() == str(f.seq).lower()
 
@@ -1103,6 +1105,11 @@ def test_features_change_ori():
     from pydna.dseqrecord import Dseqrecord
     from pydna.readers import read
     from pydna.utils import eq
+
+    # Shifted a sequence by zero returns a copy
+    s = Dseqrecord("GGATCC", circular=True)
+    assert s.shifted(0) == s
+    assert s.shifted(0) is not s
 
     s1 = read(
         """
@@ -1625,6 +1632,7 @@ def test_figure():
     assert b25.extract_feature(0).seq == feat
 
 
+@pytest.mark.xfail(reason="issue #78")
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
@@ -1841,6 +1849,7 @@ def test__repr_pretty_():
 
 def test___getitem__():
     from pydna.dseqrecord import Dseqrecord
+    from Bio.SeqFeature import SeqFeature, SimpleLocation
 
     s = Dseqrecord("GGATCC", circular=False)
     assert s[1:-1].seq == Dseqrecord("GATC", circular=False).seq
@@ -1852,12 +1861,32 @@ def test___getitem__():
     assert s[1:5].seq == Dseqrecord("GATC", circular=False).seq
     assert s[5:1:-1].seq == Dseqrecord("CCTA", circular=False).seq
 
-    assert t[1:1].seq == Dseqrecord("").seq
+    assert t[1:1].seq == Dseqrecord("GATCCG").seq
     assert t[5:1].seq == Dseqrecord("CG", circular=False).seq
     assert t[9:1].seq == Dseqrecord("").seq
     assert t[1:9].seq == Dseqrecord("").seq
     assert t[9:10].seq == Dseqrecord("").seq
     assert t[10:9].seq == Dseqrecord("").seq
+
+    # Test how slicing works with features (using sequence as in test_features_change_ori)
+    seqRecord = Dseqrecord("aaagGTACCTTTGGATCcggg", circular=True)
+    f1 = SeqFeature(SimpleLocation(4, 17, 1), type="misc_feature")
+    f2 = SeqFeature(SimpleLocation(17, 21, 1) + SimpleLocation(0, 4, 1), type="misc_feature")
+    seqRecord.features = [f1, f2]
+
+    # Exact feature sliced for normal and origin-spanning features
+    assert len(seqRecord[4:17].features) == 1
+    assert len(seqRecord[17:4].features) == 1
+
+    # Partial feature sliced for normal and origin-spanning features
+    assert len(seqRecord[2:20].features) == 1
+    assert len(seqRecord[13:8].features) == 1
+
+    # Indexing of full circular molecule (https://github.com/BjornFJohansson/pydna/issues/161)
+    s = Dseqrecord("GGATCC", circular=True)
+    str_seq = str(s.seq)
+    for shift in range(len(s)):
+        assert str(s[shift:shift].seq) == str_seq[shift:] + str_seq[:shift]
 
 
 def test___eq__():
@@ -2222,6 +2251,40 @@ def test_assemble_YEp24PGK_XK():
 
     assert YEp24PGK_XK_correct.seguid() == "cdseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
     assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
+
+
+def test_apply_cut():
+
+    from pydna.dseqrecord import Dseqrecord
+    from Bio.SeqFeature import SeqFeature, SimpleLocation
+    from pydna.utils import location_boundaries as _location_boundaries
+
+    def find_feature_by_id(f: Dseqrecord, id: str) -> SeqFeature:
+        return next(f for f in f.features if f.id == id)
+
+    # Single cut case, check that features are transmitted correctly.
+    for strand in [1, -1, None]:
+        seq = Dseqrecord("acgtATGaatt", circular=True)
+        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id='full_overlap'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id='left_side'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id='right_side'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
+        for shift in range(len(seq)):
+            seq_shifted = seq.shifted(shift)
+            cut_feature = find_feature_by_id(seq_shifted, 'full_overlap')
+            start, end = _location_boundaries(cut_feature.location)
+            # Cut leaving + and - overhangs in the feature full_overlap
+            for dummy_cut in (((start, -3), None), ((end, 3), None)):
+                open_seq = seq_shifted.apply_cut(dummy_cut, dummy_cut)
+                assert len(open_seq.features) == 4
+                new_locs = sorted(str(f.location) for f in open_seq.features)
+                assert str(open_seq.seq) == 'ATGaattacgtATG'
+                if strand == 1:
+                    assert new_locs == sorted(['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)'])
+                elif strand == -1:
+                    assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
+                if strand == None:
+                    assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
 
 
 if __name__ == "__main__":

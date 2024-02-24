@@ -18,6 +18,8 @@ import hashlib as _hashlib
 import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
+from copy import deepcopy as _deepcopy
+from typing import Union as _Union
 
 import sys as _sys
 import re
@@ -40,28 +42,51 @@ def shift_location(original_location, shift, lim):
     """docstring."""
     newparts = []
     strand = original_location.strand
+
     for part in original_location.parts:
-        ns = (part.start + shift) % lim
-        ne = (part.end + shift) % lim or lim
-        oe = newparts[-1].end if newparts else None
+        new_start = (part.start + shift) % lim
+        new_end = (part.end + shift) % lim or lim
+        old_start, old_end = (newparts[-1].start, newparts[-1].end) if len(newparts) else (None, None)
+
+        # The "join with old" cases are for features with multiple parts
+        # in which consecutive parts do not have any bases between them.
+        # This type of feature is generated to represent a feature that
+        # spans the origin of a circular sequence. See more details in
+        # https://github.com/BjornFJohansson/pydna/issues/195
+
         if len(part) == 0:
-            newparts.append(_sl(ns, ns, strand))
+            newparts.append(_sl(new_start, new_start, strand))
             continue
-        elif oe == ns:
+        # Join with old, case 1
+        elif strand != -1 and old_end == new_start:
             part = newparts.pop()
-            part._end = ne
-            ns = part.start
-        if ns < ne:
-            newparts.append(_sl(ns, ne, strand))
+            part._end = new_end
+            new_start = part.start
+        # Join with old, case 2
+        elif strand == -1 and old_start == new_end:
+            part = newparts.pop()
+            part._start = new_start
+            new_end = part.end
+        if new_start < new_end:
+            newparts.append(_sl(new_start, new_end, strand))
         else:
-            parttuple = (_sl(ns, lim, strand), _sl(0, ne, strand))
-            newparts.extend(parttuple if strand == 1 else parttuple[::-1])
+            parttuple = (_sl(new_start, lim, strand), _sl(0, new_end, strand))
+            newparts.extend(parttuple if strand != -1 else parttuple[::-1])
     try:
         newloc = _cl(newparts)
     except ValueError:
         newloc, *n = newparts
     assert len(newloc) == len(original_location)
     return newloc
+
+
+def shift_feature(feature, shift, lim):
+    """Return a new feature with shifted location."""
+    # TODO: Missing tests
+    new_location = shift_location(feature.location, shift, lim)
+    new_feature = _deepcopy(feature)
+    new_feature.location = new_location
+    return new_feature
 
 
 # def smallest_rotation(s):
@@ -569,6 +594,38 @@ def eq(*args, **kwargs):
             if not (s1 == s2 or s1 == rc(s2)):
                 same = False
     return same
+
+
+def cuts_overlap(left_cut, right_cut, seq_len):
+    # Special cases:
+    if left_cut is None or right_cut is None or left_cut == right_cut:
+        return False
+
+    # This block of code would not be necessary if the cuts were
+    # initially represented like this
+    (left_watson, left_ovhg), _ = left_cut
+    (right_watson, right_ovhg), _ = right_cut
+    # Position of the cut on the crick strands on the left and right
+    left_crick = left_watson - left_ovhg
+    right_crick = right_watson - right_ovhg
+    if left_crick >= seq_len:
+        left_crick -= seq_len
+        left_watson -= seq_len
+    if right_crick >= seq_len:
+        right_crick -= seq_len
+        right_watson -= seq_len
+
+    # Convert into ranges x and y and see if ranges overlap
+    x = sorted([left_watson, left_crick])
+    y = sorted([right_watson, right_crick])
+    return (x[1] > y[0]) != (y[1] < x[0])
+
+
+def location_boundaries(loc: _Union[_sl, _cl]):
+    if loc.strand == -1:
+        return loc.parts[-1].start, loc.parts[0].end
+    else:
+        return loc.parts[0].start, loc.parts[-1].end
 
 
 if __name__ == "__main__":

@@ -463,5 +463,17 @@ def test_memorize(monkeypatch):
     assert mf(1, kw=1) == ((1,), {"kw": 1})
 
 
+def test_shift_location():
+    from pydna.utils import shift_location
+    from Bio.SeqFeature import SimpleLocation
+
+    # TODO: more tests here
+
+    # Shifting of locations should be reversible (https://github.com/BjornFJohansson/pydna/issues/195)
+    for strand in (1, -1, None):
+        loc = SimpleLocation(0, 2, strand)
+        assert shift_location(shift_location(loc, 1, 6), -1, 6) == loc
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
