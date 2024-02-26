@@ -74,24 +74,24 @@ def test_stamp():
     from Bio.SeqRecord import SeqRecord as bpSecRecord
 
     a = SeqRecord("attt")
-    assert a.stamp() == "lsseguid-ot6JPLeAeMmfztW1736Kc6DAqlo"
-    assert "pydna lsseguid-ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
+    assert a.stamp() == "lsseguid=ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert "pydna lsseguid=ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
 
     a = SeqRecord("attt")
     a.annotations["comment"] = "something"
-    assert a.stamp() == "lsseguid-ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp() == "lsseguid=ot6JPLeAeMmfztW1736Kc6DAqlo"
 
     assert "something" in a.annotations["comment"]
 
     a = SeqRecord("attt")
-    assert a.stamp() == "lsseguid-ot6JPLeAeMmfztW1736Kc6DAqlo"
+    assert a.stamp() == "lsseguid=ot6JPLeAeMmfztW1736Kc6DAqlo"
     a.seq = a.seq + "a"
 
     with pytest.warns(_PydnaWarning):
         a.stamp()
 
-    assert "pydna lsseguid-ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
-    assert "pydna lsseguid-sFjwltMUzuIRRD_zch5hCn_8RV8" in a.annotations["comment"]
+    assert "pydna lsseguid=ot6JPLeAeMmfztW1736Kc6DAqlo" in a.annotations["comment"]
+    assert "pydna lsseguid=sFjwltMUzuIRRD_zch5hCn_8RV8" in a.annotations["comment"]
 
     a = SeqRecord(bpSeq("attt"))
     with pytest.raises(AttributeError):

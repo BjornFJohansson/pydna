@@ -68,10 +68,10 @@ def test_ligate():
     for frgs in combinations:
         csequences, lsequences = ligate(frgs)
         for cs in csequences:
-            assert cs.seguid() == "cdseguid-njOxe11HO38GI-jkZzbdLVpx94I"
+            assert cs.seguid() == "cdseguid=ogVOwoSZEk_4kUWnK1NCl5Dv1z4"
             assert len(cs) == 24
         for ss in lsequences:
-            assert ss.seguid() == "ldseguid-vhte2n7-MHr8OyabQtGqlnSb7A8"
+            assert ss.seguid() == "ldseguid=vBQxmszgfR4b84O0wI7d_ya9uDA"
             assert len(ss) == 12
 
 

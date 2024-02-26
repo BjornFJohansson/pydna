@@ -11,15 +11,15 @@ def test_pydna_gbtext_clean():
     from pydna.genbankfixer import gbtext_clean
 
     files = [
-        ("sequence.gb", "ldseguid-iHVblovQ8vMlc6r4I0WtJ7U86FE"),
-        ("NCBI_example.gb", "ldseguid-iHVblovQ8vMlc6r4I0WtJ7U86FE"),
-        ("YEplac181.txt", "ldseguid-Ko6R38rKGk-BM3cW-Yd3oSP1YII"),
-        ("pGADT7-Rec.gb", "cdseguid-uR971QAEetpd7Mptme2A5yybbek"),
-        ("P30350%20(2013-10-11%2013_49_14).dna.txt", "cdseguid-C9vd9PyLFUV4LF8llPM3DgM8sA4"),
-        ("ApE_example.gb", "ldseguid-5v2YtLDJRhA0_O_Ut6HUXr_4EIc"),
-        ("VectorNTI_example.gb", "cdseguid-_nYOPeDWBC7OaB2Arnt5x5fAFZM"),
-        ("hej.txt", "ldseguid-Ko6R38rKGk-BM3cW-Yd3oSP1YII"),
-        ("fakeGenBankFile.gb", "cdseguid-mIbMOKcoiRlnUs7ZaYwBxQnFego"),
+        ("sequence.gb", "ldseguid=_GHnVotdYSxAKX2bAUIa10ZZDhE"),
+        ("NCBI_example.gb", "ldseguid=_GHnVotdYSxAKX2bAUIa10ZZDhE"),
+        ("YEplac181.txt", "ldseguid=ktUgiF4Ah2i6zM8DbWewnTuwmkw"),
+        ("pGADT7-Rec.gb", "cdseguid=L0wFG4Mx6rWMYej1cNpCqSYGOd0"),
+        ("P30350%20(2013-10-11%2013_49_14).dna.txt", "cdseguid=cr9QvaW0QQWgiRNmG3W-ebeCQK0"),
+        ("ApE_example.gb", "ldseguid=2oLvuMsAc-fgAISC7b3XJBuejGI"),
+        ("VectorNTI_example.gb", "cdseguid=fLRW6jTMqqwZCbIFOGyl1TdDbrs"),
+        ("hej.txt", "ldseguid=ktUgiF4Ah2i6zM8DbWewnTuwmkw"),
+        ("fakeGenBankFile.gb", "cdseguid=cJQ-aN4c5sLYq7FcNLKr5ZVSdSM"),
     ]
 
     for file_, seg in files:

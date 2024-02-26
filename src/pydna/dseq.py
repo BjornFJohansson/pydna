@@ -1332,9 +1332,12 @@ class Dseq(_Seq):
     def seguid(self):
         """SEGUID checksum for the sequence."""
         if self.circular:
-            cs = _cdseguid(self.watson.upper(), self.crick.upper(), table="{IUPAC}")
+            cs = _cdseguid(self.watson.upper(), self.crick.upper(), alphabet="{IUPAC}")
         else:
-            cs = _ldseguid(self.watson.upper(), self.crick.upper(), self.ovhg, table="{IUPAC}")
+            """docstring."""
+            w = f"{self.ovhg*'-'}{self.watson}{'-'*(-self.ovhg+len(self.crick)-len(self.watson))}".upper()
+            c = f"{'-'*(self.ovhg+len(self.watson)-len(self.crick))}{self.crick}{-self.ovhg*'-'}".upper()
+            cs = _ldseguid(w, c, alphabet="{IUPAC}")
         return cs
 
     def isblunt(self):

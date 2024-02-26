@@ -344,7 +344,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-q4nWrUFRjs0uWGk-byoK2NOpDQs",
+            "ldseguid=_xW7N-pkaiUBUS4PfolPCPNYvfU",
             parse(
                 """
     >524_pFA6aF (29-mer)
@@ -360,7 +360,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-1Ih52rBdWeFKdaF2psCkhbn0yoM",
+            "ldseguid=rOtNC7KfQwot1eESoSCniVT1uGI",
             parse(
                 """
     >lowgc_f
@@ -376,7 +376,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-q4nWrUFRjs0uWGk-byoK2NOpDQs",
+            "ldseguid=_xW7N-pkaiUBUS4PfolPCPNYvfU",
             parse(
                 """
     >524_pFA6aF (29-mer)
@@ -392,7 +392,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
+            "ldseguid=hgbPTqAEar4aMN21oagM2tLaWfw",
             parse(
                 """
     >ForwardPrimer1
@@ -421,7 +421,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
+            "ldseguid=hgbPTqAEar4aMN21oagM2tLaWfw",
             parse(
                 """
     >ForwardPrimer2
@@ -448,7 +448,7 @@ def test_pcr():
     )
     raw.append(
         (
-            "ldseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
+            "ldseguid=hgbPTqAEar4aMN21oagM2tLaWfw",
             parse(
                 """
     >ForwardPrimer3
@@ -476,7 +476,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-2KtDVV5G_coqA0MkVhPB6FpMnUo",
+            "ldseguid=hgbPTqAEar4aMN21oagM2tLaWfw",
             parse(
                 """
     >ForwardPrimer4
@@ -504,7 +504,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid--7vB-gVadO8mAUViEiYZWdCzPhE",
+            "ldseguid=qCyMMiy6sVdcVsx0SEoBuhh380A",
             parse(
                 """
     >fw1
@@ -531,7 +531,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid--7vB-gVadO8mAUViEiYZWdCzPhE",
+            "ldseguid=qCyMMiy6sVdcVsx0SEoBuhh380A",
             parse(
                 """
     >fw2
@@ -559,7 +559,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid--7vB-gVadO8mAUViEiYZWdCzPhE",
+            "ldseguid=qCyMMiy6sVdcVsx0SEoBuhh380A",
             parse(
                 """
     >fw3
@@ -586,7 +586,7 @@ def test_pcr():
 
     raw.append(
         (
-            "ldseguid-IPAo_O5u6Q3-5ToDBIIOLLC_I88",
+            "ldseguid=SKpJ1b_DhSfuQUKggaHqwURHr6o",
             parse(
                 """
     >f_Eric_Ma
