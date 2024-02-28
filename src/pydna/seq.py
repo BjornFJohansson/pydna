@@ -119,7 +119,7 @@ class Seq(_Seq):
         ----------
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID
         """
-        return _lsseguid(self._data.decode("utf8").upper(), alphabet="{IUPAC}")
+        return _lsseguid(self._data.decode("utf8").upper(), alphabet="{DNA-extended}")
 
     def __getitem__(self, key):
         result = super().__getitem__(key)

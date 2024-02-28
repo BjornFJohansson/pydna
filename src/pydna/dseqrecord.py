@@ -838,9 +838,14 @@ class Dseqrecord(_SeqRecord):
             # origin-spanning features should only be included after shifting
             # in cases where the slice comprises the entire sequence, but then
             # sl_start == sl_stop and the second condition is not met
-            answer.features = [f for f in answer.features if (
-                               _location_boundaries(f.location)[1] <= answer.seq.length and
-                               _location_boundaries(f.location)[0] < _location_boundaries(f.location)[1])]
+            answer.features = [
+                f
+                for f in answer.features
+                if (
+                    _location_boundaries(f.location)[1] <= answer.seq.length
+                    and _location_boundaries(f.location)[0] < _location_boundaries(f.location)[1]
+                )
+            ]
 
         elif self.circular and sl_start == sl_stop:
             cut = ((sl_start, 0), None)
@@ -1316,17 +1321,13 @@ class Dseqrecord(_SeqRecord):
                 #      000
                 #      2222
 
-<<<<<<< HEAD
-                features_need_transfer = [f for f in features if (_location_boundaries(f.location)[1] <= abs(left_ovhg))]
-                features_need_transfer = [_shift_feature(f, -abs(left_ovhg), len(self)) for f in features_need_transfer]
-=======
                 features_need_transfer = [
                     f for f in features if (_location_boundaries(f.location)[1] <= abs(left_ovhg))
                 ]
                 features_need_transfer = [
                     _shift_feature(f, -abs(left_ovhg), len(self)) for f in features_need_transfer
                 ]
->>>>>>> dev_bjorn
+
                 #                                           ^                ^^^^^^^^^
                 # Now we have shifted the features that end before the cut (0 and 1, but not 3), as if
                 # they referred to the below sequence (* indicates the origin):
@@ -1345,19 +1346,24 @@ class Dseqrecord(_SeqRecord):
                 # length of the final product.
                 # print(*features, sep='\n')
                 # Features like 3 are removed here
-                features = [f for f in features if (
-                               _location_boundaries(f.location)[1] <= len(dseq) and
-                               _location_boundaries(f.location)[0] <= _location_boundaries(f.location)[1])]
+                features = [
+                    f
+                    for f in features
+                    if (
+                        _location_boundaries(f.location)[1] <= len(dseq)
+                        and _location_boundaries(f.location)[0] <= _location_boundaries(f.location)[1]
+                    )
+                ]
         else:
             left_watson, left_crick, left_ovhg = self.seq.get_cut_parameters(left_cut, True)
             right_watson, right_crick, right_ovhg = self.seq.get_cut_parameters(right_cut, False)
-
 
             left_edge = left_crick if left_ovhg > 0 else left_watson
             right_edge = right_watson if right_ovhg > 0 else right_crick
             features = self[left_edge:right_edge].features
 
         return Dseqrecord(dseq, features=features)
+
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")

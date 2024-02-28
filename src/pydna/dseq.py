@@ -1332,12 +1332,12 @@ class Dseq(_Seq):
     def seguid(self):
         """SEGUID checksum for the sequence."""
         if self.circular:
-            cs = _cdseguid(self.watson.upper(), self.crick.upper(), alphabet="{IUPAC}")
+            cs = _cdseguid(self.watson.upper(), self.crick.upper(), alphabet="{DNA-extended}")
         else:
             """docstring."""
             w = f"{self.ovhg*'-'}{self.watson}{'-'*(-self.ovhg+len(self.crick)-len(self.watson))}".upper()
             c = f"{'-'*(self.ovhg+len(self.watson)-len(self.crick))}{self.crick}{-self.ovhg*'-'}".upper()
-            cs = _ldseguid(w, c, alphabet="{IUPAC}")
+            cs = _ldseguid(w, c, alphabet="{DNA-extended}")
         return cs
 
     def isblunt(self):
@@ -1492,7 +1492,7 @@ class Dseq(_Seq):
                     end_of_recognition_site %= len(self)
                 recognition_site = self[start_of_recognition_site:end_of_recognition_site]
 
-                if (len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0):
+                if len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0:
                     return False
 
         return True
@@ -1551,9 +1551,8 @@ class Dseq(_Seq):
         """
 
         if len(enzymes) == 1 and isinstance(enzymes[0], _RestrictionBatch):
-
-                # argument is probably a RestrictionBatch
-                enzymes = [e for e in enzymes[0]]
+            # argument is probably a RestrictionBatch
+            enzymes = [e for e in enzymes[0]]
 
         enzymes = _flatten(enzymes)
         out = list()
@@ -1613,12 +1612,12 @@ class Dseq(_Seq):
         """
         if cut is not None:
             watson, ovhg = cut[0]
-            crick = (watson - ovhg)
+            crick = watson - ovhg
             if self.circular:
                 crick %= len(self)
             return watson, crick, ovhg
 
-        assert not self.circular, 'Circular sequences should not have None cuts'
+        assert not self.circular, "Circular sequences should not have None cuts"
 
         if is_left:
             return *self.left_end_position(), self.ovhg
@@ -1686,14 +1685,14 @@ class Dseq(_Seq):
         left_watson, left_crick, ovhg_left = self.get_cut_parameters(left_cut, True)
         right_watson, right_crick, _ = self.get_cut_parameters(right_cut, False)
         return Dseq(
-                    str(self[left_watson:right_watson]),
-                    # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case
-                    str(self.reverse_complement()[len(self) - right_crick:len(self) - left_crick]),
-                    ovhg=ovhg_left,
-                )
+            str(self[left_watson:right_watson]),
+            # The line below could be easier to understand as _rc(str(self[left_crick:right_crick])), but it does not preserve the case
+            str(self.reverse_complement()[len(self) - right_crick : len(self) - left_crick]),
+            ovhg=ovhg_left,
+        )
 
     def get_cutsite_pairs(self, cutsites):
-        """ Returns pairs of cutsites that render the edges of the resulting fragments.
+        """Returns pairs of cutsites that render the edges of the resulting fragments.
 
         A fragment produced by restriction is represented by a tuple of length 2 that
         may contain cutsites or `None`:

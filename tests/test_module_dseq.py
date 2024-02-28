@@ -579,18 +579,14 @@ def test_Dseq_slicing2():
     a = Dseq("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
     # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
 
-    assert (
-        a.cut(
-            EcoRI,
-            BamHI,
-            KpnI,
-        )
-        == a.cut(
-            BamHI,
-            EcoRI,
-            KpnI,
-        )
-
+    assert a.cut(
+        EcoRI,
+        BamHI,
+        KpnI,
+    ) == a.cut(
+        BamHI,
+        EcoRI,
+        KpnI,
     )
 
 
@@ -615,8 +611,7 @@ def test_Dseq___getitem__():
     s = Dseq("GGATCC", circular=True)
     str_seq = str(s)
     for shift in range(len(s)):
-        assert str(s[shift : shift]) == str_seq[shift:] + str_seq[:shift]
-
+        assert str(s[shift:shift]) == str_seq[shift:] + str_seq[:shift]
 
 
 def test_cut_circular():
@@ -814,6 +809,7 @@ def test_right_end_position():
         dseq = Dseq(watson, crick, ovhg=0, circular=False)
         assert dseq.right_end_position() == expected
 
+
 def test_left_end_position():
 
     from pydna.dseq import Dseq
@@ -839,27 +835,42 @@ def test_apply_cut():
     # A cut where one side is None leaves that side intact
     EcoRI_cut = ((3, -4), None)
 
-    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=0)
-    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=0, crick_ovhg=-4)
+    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs(
+        'aaGAATT', watson_ovhg=-4, crick_ovhg=0
+    )
+    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs(
+        'AATTCaa', watson_ovhg=0, crick_ovhg=-4
+    )
 
     # It respects the original overhang
     seq = Dseq.from_full_sequence_and_overhangs('aaGAATTCaa', watson_ovhg=1, crick_ovhg=1)
-    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=1)
-    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=1, crick_ovhg=-4)
+    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs(
+        'aaGAATT', watson_ovhg=-4, crick_ovhg=1
+    )
+    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs(
+        'AATTCaa', watson_ovhg=1, crick_ovhg=-4
+    )
 
     seq = Dseq.from_full_sequence_and_overhangs('aaGAATTCaa', watson_ovhg=-1, crick_ovhg=-1)
-    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=-1)
-    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=-1, crick_ovhg=-4)
+    assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs(
+        'aaGAATT', watson_ovhg=-4, crick_ovhg=-1
+    )
+    assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs(
+        'AATTCaa', watson_ovhg=-1, crick_ovhg=-4
+    )
 
     # A repeated cut in a circular molecule opens it up
     seq = Dseq('aaGAATTCaa', circular=True)
-    assert seq.apply_cut(EcoRI_cut, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('AATTCaaaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs(
+        'AATTCaaaaGAATT', watson_ovhg=-4, crick_ovhg=-4
+    )
 
     # Two cuts extract a subsequence
     seq = Dseq('aaGAATTCaaGAATTCaa', circular=True)
     EcoRI_cut_2 = ((11, -4), None)
-    assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
-
+    assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs(
+        'AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4
+    )
 
     # Overlapping cuts should return an error
     seq = Dseq('aaGAATTCaa', circular=True)
@@ -869,7 +880,7 @@ def test_apply_cut():
         # Spanning the origin
         ((9, -8), None),
         ((8, 8), None),
-        ]
+    ]
 
     overlapping_cuts = [
         ((4, -4), None),
@@ -930,7 +941,7 @@ def test_cutsite_is_valid():
         dseq = Dseq(seq, circular=True)
         for shift in range(len(seq)):
             dseq_shifted = dseq.shifted(shift)
-            cutsite, = dseq_shifted.get_cutsites([enz])
+            (cutsite,) = dseq_shifted.get_cutsites([enz])
 
             assert dseq_shifted.cutsite_is_valid(cutsite)
 
@@ -1054,6 +1065,50 @@ def test_get_cut_parameters():
     assert dseq.get_cut_parameters(((9, -2), None), False) == (9, 1, -2)
     assert dseq.get_cut_parameters(((1, 2), None), True) == (1, 9, 2)
     assert dseq.get_cut_parameters(((1, 2), None), False) == (1, 9, 2)
+
+
+def test_checksums():
+
+    from seguid import ldseguid, cdseguid
+    from pydna.dseq import Dseq
+
+    # AT
+    # TA
+
+    dlDNA_ldseguid = "odgytmQKSOnFEUorGIWK3NDjqUA"
+    truth = f"ldseguid={dlDNA_ldseguid}"
+    assert ldseguid("AT", "AT") == truth == Dseq("AT", "AT").seguid()
+
+    #  -AT
+    #  AT-
+
+    dlDNA2_ldseguid = "-9xkp3UfucL4bSPxYODh8i9KFEE"
+    truth = f"ldseguid={dlDNA2_ldseguid}"
+
+    assert ldseguid("-AT", "-TA") == truth == Dseq("AT", "TA", 1).seguid()
+
+    # TA-
+    # -TA
+
+    dlDNA3_ldseguid = "kI9qYVNRPF8epm2xem0ZUP8J-CI"
+    truth = f"ldseguid={dlDNA3_ldseguid}"
+    assert ldseguid("TA-", "AT-") == truth == Dseq("TA", "AT", -1).seguid()
+
+    # CTATAG
+    # --TA--
+
+    dlDNA4_ldseguid = "ToSxUXWMCIKz-FYdXJ3Qq-bS_8o"
+    truth = f"ldseguid={dlDNA4_ldseguid}"
+    assert ldseguid("CTATAG", "--AT--") == truth == Dseq("CTATAG", "AT", -2).seguid()
+
+    # --AT--
+    # GATATC
+
+    assert ldseguid("--AT--", "CTATAG") == truth == Dseq("AT", "CTATAG", 2).seguid()
+
+    truth = "cdseguid=5fHMG19IbYxn7Yr7_sOCkvaaw7U"
+    assert cdseguid("ACGTT", "AACGT") == truth == Dseq("ACGTT", "AACGT", circular=True).seguid()
+    assert cdseguid("AACGT", "ACGTT") == truth == Dseq("AACGT", "ACGTT", circular=True).seguid()
 
 
 if __name__ == "__main__":

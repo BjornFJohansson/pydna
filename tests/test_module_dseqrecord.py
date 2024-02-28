@@ -1606,31 +1606,19 @@ def test_figure():
     a22, b22 = circularDseqrecord.cut(KpnI, Bsp120I)
 
     # Passes the tests if changed to "Dseqrecord(-18)\n    cgatcgatcG    \ncatg\x1b[48;5;11mgctagctagC\x1b[0mCCGG"
-    assert (
-        b22.figure()
-        == "Dseqrecord(-18)\n    cgatcgatcG    \ncatg\x1b[48;5;11mgctagctagC\x1b[0mCCGG"
-    )
+    assert b22.figure() == "Dseqrecord(-18)\n    cgatcgatcG    \ncatg\x1b[48;5;11mgctagctagC\x1b[0mCCGG"
     assert b22.extract_feature(0).seq == feat
 
     a23, b23 = circularDseqrecord.cut(KpnI, ApaI)
-    assert (
-        b23.figure()
-        == "Dseqrecord(-18)\n    cgatcgatcGGGCC\ncatg\x1b[48;5;11mgctagctagC\x1b[0m    "
-    )
+    assert b23.figure() == "Dseqrecord(-18)\n    cgatcgatcGGGCC\ncatg\x1b[48;5;11mgctagctagC\x1b[0m    "
     assert b23.extract_feature(0).seq == feat
 
     a24, b24 = circularDseqrecord.cut(Acc65I, Bsp120I)
-    assert (
-        b24.figure()
-        == "Dseqrecord(-18)\ngtaccgatcgatcG    \n    \x1b[48;5;11mgctagctagC\x1b[0mCCGG"
-    )
+    assert b24.figure() == "Dseqrecord(-18)\ngtaccgatcgatcG    \n    \x1b[48;5;11mgctagctagC\x1b[0mCCGG"
     assert b24.extract_feature(0).seq == feat
 
     a25, b25 = circularDseqrecord.cut(Acc65I, ApaI)
-    assert (
-        b25.figure()
-        == "Dseqrecord(-18)\ngtaccgatcgatcGGGCC\n    \x1b[48;5;11mgctagctagC\x1b[0m    "
-    )
+    assert b25.figure() == "Dseqrecord(-18)\ngtaccgatcgatcGGGCC\n    \x1b[48;5;11mgctagctagC\x1b[0m    "
     assert b25.extract_feature(0).seq == feat
 
 
@@ -1889,7 +1877,7 @@ def test___getitem__():
     s = Dseqrecord("GGATCC", circular=True)
     str_seq = str(s.seq)
     for shift in range(len(s)):
-        assert str(s[shift : shift].seq) == str_seq[shift:] + str_seq[:shift]
+        assert str(s[shift:shift].seq) == str_seq[shift:] + str_seq[:shift]
 
 
 def test___eq__():
@@ -2255,6 +2243,7 @@ def test_assemble_YEp24PGK_XK():
     assert YEp24PGK_XK_correct.seguid() == "cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I"
     assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
+
 def test_apply_cut():
 
     from pydna.dseqrecord import Dseqrecord
@@ -2263,12 +2252,13 @@ def test_apply_cut():
 
     def find_feature_by_id(f: Dseqrecord, id: str) -> SeqFeature:
         return next(f for f in f.features if f.id == id)
+
     # Single cut case, check that features are transmitted correctly.
     for strand in [1, -1, None]:
         seq = Dseqrecord("acgtATGaatt", circular=True)
-        seq.features.append(SeqFeature(SimpleLocation(4, 7,  strand), id='full_overlap'))
-        seq.features.append(SeqFeature(SimpleLocation(3, 7,  strand), id='left_side'))
-        seq.features.append(SeqFeature(SimpleLocation(4, 8,  strand), id='right_side'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id='full_overlap'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id='left_side'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id='right_side'))
         seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
         for shift in range(len(seq)):
             seq_shifted = seq.shifted(shift)
@@ -2286,6 +2276,7 @@ def test_apply_cut():
                     assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
                 if strand == None:
                     assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
+
 
 def test_apply_cut():
 
