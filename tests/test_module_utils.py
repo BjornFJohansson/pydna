@@ -475,6 +475,5 @@ def test_shift_location():
         assert shift_location(shift_location(loc, 1, 6), -1, 6) == loc
 
 
-
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])

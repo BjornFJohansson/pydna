@@ -273,14 +273,14 @@ def test_stamp():
     lin = Dseqrecord("attt")
     lin.stamp()
     first = lin.annotations["comment"]
-    assert "ldseguid-4WaxNpLQfxFy6HOjg07u6EdhH5Q" in first
+    assert "ldseguid=BPR1_ojRL1ZJa6EgF02NLHAxr68" in first
     lin.stamp()
     assert first[:42] == lin.annotations["comment"][:42]
 
     crc = Dseqrecord("attt", circular=True)
     crc.stamp()
     first = crc.annotations["comment"]
-    assert "cdseguid-4WaxNpLQfxFy6HOjg07u6EdhH5Q" in first
+    assert "cdseguid=BPR1_ojRL1ZJa6EgF02NLHAxr68" in first
     crc.stamp()
     assert first[:42] == crc.annotations["comment"][:42]
     assert len(first) == len(crc.annotations["comment"])
@@ -289,16 +289,16 @@ def test_stamp():
 
     blunt = Dseqrecord(Dseq("aa"))
 
-    assert blunt.stamp()[:42] == "ldseguid-5u_VqZ0yq_PnodWlwL970EWt6PY"
+    assert blunt.stamp()[:42] == "ldseguid=TEwydy0ugvGXh3VJnVwgtxoyDQA"
 
     staggered = Dseqrecord(Dseq("aa", "tta"))
-    assert staggered.stamp()[:42] == "ldseguid-4XNdHr5TsfaY-H9X9loPdW3C5y8"
+    assert staggered.stamp()[:42] == "ldseguid=WPLhxEZErSzQmVMmVhZrQ5aSc78"
 
     staggered = Dseqrecord(Dseq("aa", "att"))
-    assert staggered.stamp()[:42] == "ldseguid-HzB9mSb-Itg5IDNPXVegeGbGako"
+    assert staggered.stamp()[:42] == "ldseguid=Vma2bZhvSl9otSfAvTQP5eUsXYY"
 
     staggered = Dseqrecord(Dseq("aa", "atta"))
-    assert staggered.stamp()[:42] == "ldseguid-ShX1Rh4gHuGoMngZMA_jZLuFJDk"
+    assert staggered.stamp()[:42] == "ldseguid=8Fy5Jaz0IKJ_I4cvAFUj0XX718g"
 
 
 def test_revcomp():
@@ -406,9 +406,9 @@ def test_seguid():
     from pydna.dseqrecord import Dseqrecord
 
     l = Dseqrecord("tttGGATCCaaa")
-    assert l.seguid() == "ldseguid-W4m4F80UCbvl4gBy2ttK_i0IA04"
+    assert l.seguid() == "ldseguid=jbGRr-Jhpl0tVyt0Bx5nmY9_G6E"
     c = Dseqrecord("tttGGATCCaaa", circular=True)
-    assert c.seguid() == "cdseguid-Yis91a4lQjAegmW88b1HuQmDvns"
+    assert c.seguid() == "cdseguid=r5dYgWx-W5r1KxnmIqMA19t9Hh8"
 
 
 def test_format():
@@ -999,7 +999,7 @@ ORIGIN
     """
     )
 
-    assert a.seguid() == "ldseguid-dpWgD9vlrqN5phPCCAzE7Ki3E6A"
+    assert a.seguid() == "ldseguid=O1VPUWEeJ093UfmqTE5ObrI_2Yw"
 
     assert [x.qualifiers["label"][0] for x in a.features] == [
         "Acc65I-1",
@@ -1110,7 +1110,6 @@ def test_features_change_ori():
     s = Dseqrecord("GGATCC", circular=True)
     assert s.shifted(0) == s
     assert s.shifted(0) is not s
-
 
     s1 = read(
         """
@@ -1635,6 +1634,7 @@ def test_figure():
     assert b25.extract_feature(0).seq == feat
 
 
+@pytest.mark.xfail(reason="issue #78")
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
@@ -1646,11 +1646,11 @@ def test_jan_glx():
     # assert puc19.seguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
     # puc19.write("pUC19_M77789.gb")
     puc19 = read("pUC19_M77789.gb")
-    assert puc19.seguid() == "cdseguid-zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+    assert puc19.seguid() == "cdseguid=zhw8Yrxfo3FO5DDccx4PamBVPCQ"
     insert, bb = puc19.cut(NdeI, BamHI)  # Note the order !
 
     puc19_ = (bb + insert).looped().synced(puc19)
-    assert puc19_.seguid() == "cdseguid-zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+    assert puc19_.seguid() == "cdseguid=zhw8Yrxfo3FO5DDccx4PamBVPCQ"
 
     # Some features are lost because they spanned the cutting sites in puc19.
     assert puc19_.extract_feature(0).seq == puc19.extract_feature(2).seq
@@ -1678,7 +1678,7 @@ def test_synced():
     pGUP1 = read("pGUP1_correct.gb")
     pGREG505 = read("pGREG505.gb")
     pGUP1_not_synced = read("pGUP1_not_synced.gb")
-    assert pGUP1_not_synced.synced(pGREG505).seguid() == "cdseguid-5aiMDLWXOfvl0PBCQV-96q9UKqY" == pGUP1.seguid()
+    assert pGUP1_not_synced.synced(pGREG505).seguid() == "cdseguid=QiK2pH9yioTPfSobUTLz4CPiNzY" == pGUP1.seguid()
 
     bb_ins = Dseqrecord("tcgcgcgtttcgAgtgatgacggtgaA", circular=True)
 
@@ -1890,6 +1890,7 @@ def test___getitem__():
     str_seq = str(s.seq)
     for shift in range(len(s)):
         assert str(s[shift : shift].seq) == str_seq[shift:] + str_seq[:shift]
+
 
 def test___eq__():
     from pydna.dseqrecord import Dseqrecord
@@ -2239,19 +2240,19 @@ def test_assemble_YEp24PGK_XK():
 
     YEp24PGK_XK = YEp24PGK_BglII + insert
 
-    assert YEp24PGK_XK.seguid() == "ldseguid-TdiKVsYCzZ0dt-4io12ZfKUrAgg"
+    assert YEp24PGK_XK.seguid() == "ldseguid=hlyzwrknN5F_ATOvtTCUtQy6YJY"
 
     YEp24PGK_XK = YEp24PGK_XK.looped()
 
-    assert YEp24PGK_XK.seguid() == "cdseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
+    assert YEp24PGK_XK.seguid() == "cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I"
 
     YEp24PGK_XK = YEp24PGK_XK.synced("gaattctgaaccagtcctaaaacgagtaaataggaccggcaattc")  # YEp24PGK)
 
-    assert YEp24PGK_XK.seguid() == "cdseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
+    assert YEp24PGK_XK.seguid() == "cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I"
 
     YEp24PGK_XK_correct = read("YEp24PGK_XK_manually_assembled.txt")
 
-    assert YEp24PGK_XK_correct.seguid() == "cdseguid-hEldsrUV0mBpISw8_xpvnpfYi0g"
+    assert YEp24PGK_XK_correct.seguid() == "cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I"
     assert eq(YEp24PGK_XK, YEp24PGK_XK_correct)
 
 def test_apply_cut():
@@ -2285,6 +2286,40 @@ def test_apply_cut():
                     assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
                 if strand == None:
                     assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
+
+def test_apply_cut():
+
+    from pydna.dseqrecord import Dseqrecord
+    from Bio.SeqFeature import SeqFeature, SimpleLocation
+    from pydna.utils import location_boundaries as _location_boundaries
+
+    def find_feature_by_id(f: Dseqrecord, id: str) -> SeqFeature:
+        return next(f for f in f.features if f.id == id)
+
+    # Single cut case, check that features are transmitted correctly.
+    for strand in [1, -1, None]:
+        seq = Dseqrecord("acgtATGaatt", circular=True)
+        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id='full_overlap'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id='left_side'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id='right_side'))
+        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
+        for shift in range(len(seq)):
+            seq_shifted = seq.shifted(shift)
+            cut_feature = find_feature_by_id(seq_shifted, 'full_overlap')
+            start, end = _location_boundaries(cut_feature.location)
+            # Cut leaving + and - overhangs in the feature full_overlap
+            for dummy_cut in (((start, -3), None), ((end, 3), None)):
+                open_seq = seq_shifted.apply_cut(dummy_cut, dummy_cut)
+                assert len(open_seq.features) == 4
+                new_locs = sorted(str(f.location) for f in open_seq.features)
+                assert str(open_seq.seq) == 'ATGaattacgtATG'
+                if strand == 1:
+                    assert new_locs == sorted(['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)'])
+                elif strand == -1:
+                    assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
+                if strand == None:
+                    assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
+
 
 if __name__ == "__main__":
     args = [

@@ -558,9 +558,9 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>> assemblyobj.assemble_linear()
     [Contig(-231), Contig(-166), Contig(-36)]
     >>> assemblyobj.assemble_circular()[0].seguid()
-    'cdseguid-wK78IpjJH_L7ZuLelQxTniLWJCM'
+    'cdseguid=85t6tfcvWav0wnXEIb-lkUtrl4s'
     >>> (a+b+c).looped().seguid()
-    'cdseguid-wK78IpjJH_L7ZuLelQxTniLWJCM'
+    'cdseguid=85t6tfcvWav0wnXEIb-lkUtrl4s'
     >>> print(assemblyobj.assemble_circular()[0].figure())
      -|fa|36
     |     \\/

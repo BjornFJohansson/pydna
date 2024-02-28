@@ -398,7 +398,7 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a=SeqRecord("gattaca")
         >>> a.seguid() # original seguid is +bKGnebMkia5kNg/gF7IORXMnIU
-        'lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8'
+        'lsseguid=tp2jzeCM2e3W4yxtrrx09CMKa_8'
 
         References
         ----------
@@ -442,13 +442,13 @@ class SeqRecord(_SeqRecord):
         >>> from pydna.seqrecord import SeqRecord
         >>> a = SeqRecord("aa")
         >>> a.stamp()
-        'lsseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        'lsseguid=gBw0Jp907Tg_yX3jNgS4qQWttjU'
         >>> a.annotations["comment"][:41]
-        'pydna lsseguid-gBw0Jp907Tg_yX3jNgS4qQWttj'
+        'pydna lsseguid=gBw0Jp907Tg_yX3jNgS4qQWttj'
         """
         chksum = self.seq.seguid()
         oldcomment = self.annotations.get("comment", "")
-        oldstamp = _re.findall(r"..seguid-\S{27}", oldcomment)
+        oldstamp = _re.findall(r"..seguid=\S{27}", oldcomment)
         if oldstamp and oldstamp[0] == chksum:
             return _pretty_str(oldstamp[0])
         elif oldstamp:

@@ -205,7 +205,7 @@ def test_dna2949():
         f.read()
     seqlist = parse("dna2943.gb", ds=True)
     assert len(seqlist) == 1
-    assert seqlist[0].seguid() == "ldseguid-tcr0i2HXHK6X58PiOAfSr4iieuQ"
+    assert seqlist[0].seguid() == "ldseguid=ScLoSddUf2c0GIAGpvIi33nLvFY"
 
 
 if __name__ == "__main__":

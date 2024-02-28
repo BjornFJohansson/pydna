@@ -205,7 +205,7 @@ def test_primer_Design():
 
     asm = Assembly(frags)
 
-    assert asm.assemble_linear()[0].seguid() == "ldseguid-oXyobB7W4-lC4bEkMtJb0RYTp6A"
+    assert asm.assemble_linear()[0].seguid() == "ldseguid=WEE7xDdKIPkrEBPcSDsuAJIJVnY"
 
     frags = assembly_fragments([primer_design(r) for r in (a, b, c, a)])
 
@@ -213,7 +213,7 @@ def test_primer_Design():
 
     asm = Assembly((a2, frags[1], frags[2]))
 
-    assert asm.assemble_circular()[0].seguid() == "cdseguid-wK78IpjJH_L7ZuLelQxTniLWJCM"
+    assert asm.assemble_circular()[0].seguid() == "cdseguid=85t6tfcvWav0wnXEIb-lkUtrl4s"
 
 
 def test_primer_Design_with_linker():
@@ -237,7 +237,7 @@ def test_primer_Design_with_linker():
 
     assert (b + l + c).looped().seguid() == asm2.assemble_circular()[0].seguid()
 
-    assert (b + l + c).looped().seguid() == "cdseguid-MslYwLEOJgzyLGpOmtKow3Vkqhk"
+    assert (b + l + c).looped().seguid() == "cdseguid=LqQ1_uMp2AmEZ_L2I1_njIMkVDc"
 
 
 def test_primer_Design_given_fw_primer():

@@ -113,13 +113,13 @@ class Seq(_Seq):
         >>> from pydna.seq import Seq
         >>> a = Seq("aa")
         >>> a.seguid()
-        'lsseguid-gBw0Jp907Tg_yX3jNgS4qQWttjU'
+        'lsseguid=gBw0Jp907Tg_yX3jNgS4qQWttjU'
 
         References
         ----------
         .. [#] http://wiki.christophchamp.com/index.php/SEGUID
         """
-        return _lsseguid(self._data.decode("utf8").upper(), table="{IUPAC}")
+        return _lsseguid(self._data.decode("utf8").upper(), alphabet="{IUPAC}")
 
     def __getitem__(self, key):
         result = super().__getitem__(key)

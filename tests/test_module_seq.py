@@ -4,7 +4,7 @@ from pydna.seq import Seq
 
 
 def test_seguid():
-    assert Seq("gattaca").seguid() == "lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8"
+    assert Seq("gattaca").seguid() == "lsseguid=tp2jzeCM2e3W4yxtrrx09CMKa_8"
 
 
 def test_gc():

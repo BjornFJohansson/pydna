@@ -1332,9 +1332,12 @@ class Dseq(_Seq):
     def seguid(self):
         """SEGUID checksum for the sequence."""
         if self.circular:
-            cs = _cdseguid(self.watson.upper(), self.crick.upper(), table="{IUPAC}")
+            cs = _cdseguid(self.watson.upper(), self.crick.upper(), alphabet="{IUPAC}")
         else:
-            cs = _ldseguid(self.watson.upper(), self.crick.upper(), self.ovhg, table="{IUPAC}")
+            """docstring."""
+            w = f"{self.ovhg*'-'}{self.watson}{'-'*(-self.ovhg+len(self.crick)-len(self.watson))}".upper()
+            c = f"{'-'*(self.ovhg+len(self.watson)-len(self.crick))}{self.crick}{-self.ovhg*'-'}".upper()
+            cs = _ldseguid(w, c, alphabet="{IUPAC}")
         return cs
 
     def isblunt(self):
@@ -1453,7 +1456,7 @@ class Dseq(_Seq):
         - For enzymes that cut twice, it checks that at least one possibility is valid
         """
 
-        assert cutsite != None, "cutsite is None"
+        assert cutsite is not None, "cutsite is None"
 
         enz = cutsite[1]
         watson, crick, ovhg = self.get_cut_parameters(cutsite, True)
@@ -1488,6 +1491,7 @@ class Dseq(_Seq):
                 if self.circular:
                     end_of_recognition_site %= len(self)
                 recognition_site = self[start_of_recognition_site:end_of_recognition_site]
+
                 if (len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0):
                     return False
 
@@ -1547,6 +1551,7 @@ class Dseq(_Seq):
         """
 
         if len(enzymes) == 1 and isinstance(enzymes[0], _RestrictionBatch):
+
                 # argument is probably a RestrictionBatch
                 enzymes = [e for e in enzymes[0]]
 

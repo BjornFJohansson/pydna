@@ -101,7 +101,7 @@ def test_initialization():
     with pytest.raises(TypeError):
         obj * 2.3
 
-    assert obj.seguid() == "ldseguid-S4AfmFCoHYVrWNQ_d7-lVVF2t20"
+    assert obj.seguid() == "ldseguid=ydezQsYTZgUCcb3-adxMaq_Xf8g"
 
     assert obj == Dseq("a", "t", circular=False)
 
@@ -392,8 +392,8 @@ def test_dseq():
     """
     ).strip()
     assert repr(b2) == rpr
-    assert b2.seguid() == "ldseguid-bQo37tU28RKLr-E16Hz8KRzxQUA"
-    assert b2.rc().seguid() == "ldseguid-bQo37tU28RKLr-E16Hz8KRzxQUA"
+    assert b2.seguid() == "ldseguid=F0z-LxHZqAK3HvqQiqjM7A28daE"
+    assert b2.rc().seguid() == "ldseguid=F0z-LxHZqAK3HvqQiqjM7A28daE"
 
     b3 = Dseq("GGATCC", "ggatcccc", 2)
     assert b3._data == b"ggGGATCC"
@@ -444,13 +444,13 @@ def test_dseq():
 
     assert frag1 + frag2 == obj
 
-    assert obj.seguid() == "ldseguid-OOGLt7exRUoYTRfnMBOA4gxPI-E"
+    assert obj.seguid() == "ldseguid=qvssQpZe_4SlasGZYdKJSkuvQtc"
 
-    assert frag1.seguid() == "ldseguid-23qkfTm1B_7UG9UHPkwuzrlpqVc"
-    assert frag2.seguid() == "ldseguid-G7daDxAHVK_FCUW9hS1OlsjXv2c"
+    assert frag1.seguid() == "ldseguid=jcVhCJ9Aa8aIQdBlkSU_XHTWmDc"
+    assert frag2.seguid() == "ldseguid=SO1HxaZPDpcj-QffzS-mfF6_eag"
 
-    assert frag1.rc().seguid() == "ldseguid-23qkfTm1B_7UG9UHPkwuzrlpqVc"
-    assert frag2.rc().seguid() == "ldseguid-G7daDxAHVK_FCUW9hS1OlsjXv2c"
+    assert frag1.rc().seguid() == "ldseguid=jcVhCJ9Aa8aIQdBlkSU_XHTWmDc"
+    assert frag2.rc().seguid() == "ldseguid=SO1HxaZPDpcj-QffzS-mfF6_eag"
 
     obj = Dseq("tagcgtagctgtagtatgtgatctggtcta", "tagaccagatcacatactacagctacgcta")
     assert repr(obj) == "Dseq(-30)\ntagcgtagctgtagtatgtgatctggtcta\natcgcatcgacatcatacactagaccagat"
@@ -578,6 +578,7 @@ def test_Dseq_slicing2():
 
     a = Dseq("aaGGATCCnnnnnnnnnGAATTCccc", circular=True)
     # TODO: address this test change Related to https://github.com/BjornFJohansson/pydna/issues/78
+
     assert (
         a.cut(
             EcoRI,
@@ -589,6 +590,7 @@ def test_Dseq_slicing2():
             EcoRI,
             KpnI,
         )
+
     )
 
 
@@ -614,6 +616,7 @@ def test_Dseq___getitem__():
     str_seq = str(s)
     for shift in range(len(s)):
         assert str(s[shift : shift]) == str_seq[shift:] + str_seq[:shift]
+
 
 
 def test_cut_circular():
@@ -835,6 +838,7 @@ def test_apply_cut():
 
     # A cut where one side is None leaves that side intact
     EcoRI_cut = ((3, -4), None)
+
     assert seq.apply_cut(None, EcoRI_cut) == Dseq.from_full_sequence_and_overhangs('aaGAATT', watson_ovhg=-4, crick_ovhg=0)
     assert seq.apply_cut(EcoRI_cut, None) == Dseq.from_full_sequence_and_overhangs('AATTCaa', watson_ovhg=0, crick_ovhg=-4)
 
@@ -856,6 +860,7 @@ def test_apply_cut():
     EcoRI_cut_2 = ((11, -4), None)
     assert seq.apply_cut(EcoRI_cut, EcoRI_cut_2) == Dseq.from_full_sequence_and_overhangs('AATTCaaGAATT', watson_ovhg=-4, crick_ovhg=-4)
 
+
     # Overlapping cuts should return an error
     seq = Dseq('aaGAATTCaa', circular=True)
     first_cuts = [
@@ -865,6 +870,7 @@ def test_apply_cut():
         ((9, -8), None),
         ((8, 8), None),
         ]
+
     overlapping_cuts = [
         ((4, -4), None),
         ((2, -4), None),
@@ -925,6 +931,7 @@ def test_cutsite_is_valid():
         for shift in range(len(seq)):
             dseq_shifted = dseq.shifted(shift)
             cutsite, = dseq_shifted.get_cutsites([enz])
+
             assert dseq_shifted.cutsite_is_valid(cutsite)
 
     # Works for overhangs
@@ -977,6 +984,7 @@ def test_cutsite_is_valid():
     dseq = Dseq.from_full_sequence_and_overhangs('AAAAAAAAAAAAAGCCGGCAAAAAAAAAAAA', 0, 16)
     assert len(dseq.get_cutsites([NmeDI])) == 0
 
+
 def test_get_cutsite_pairs():
     from pydna.dseq import Dseq
 
@@ -1003,6 +1011,7 @@ def test_get_cutsite_pairs():
 
     # Two cuts on circular seq return 2 fragments
     assert dseq.get_cutsite_pairs([1, 2]) == [(1, 2), (2, 1)]
+
 
 def test_get_cut_parameters():
 
