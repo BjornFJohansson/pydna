@@ -149,7 +149,7 @@ __license__ = "BSD"
 __maintainer__ = "Björn Johansson"
 __email__ = "bjorn_johansson@bio.uminho.pt"
 __status__ = "Development"  # "Production" #"Prototype"
-__version__ = "6.0.0-a.24.post.17+b7b559bd66"
+__version__ = "0.0.0"
 
 
 # create config directory
