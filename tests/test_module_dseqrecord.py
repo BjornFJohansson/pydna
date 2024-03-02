@@ -800,9 +800,9 @@ def test_Dseqrecord_cutting_adding_2():
     for enz in enzymes:
         for f in a:
             b, c, d = f.cut(enz)
-            print(b.seq.__repr__())
-            print(c.seq.__repr__())
-            print(d.seq.__repr__())
+            #print(b.seq.__repr__())
+            #print(c.seq.__repr__())
+            #print(d.seq.__repr__())
             e = b + c + d
             assert str(e.seq).lower() == str(f.seq).lower()
 
@@ -1622,7 +1622,7 @@ def test_figure():
     assert b25.extract_feature(0).seq == feat
 
 
-@pytest.mark.xfail(reason="issue #78")
+# @pytest.mark.xfail(reason="issue #78")
 def test_jan_glx():
     # Thanks to https://github.com/jan-glx
     from Bio.Restriction import NdeI, BamHI
@@ -1634,11 +1634,11 @@ def test_jan_glx():
     # assert puc19.seguid() == "n-NZfWfjHgA7wKoEBU6zfoXib_0"
     # puc19.write("pUC19_M77789.gb")
     puc19 = read("pUC19_M77789.gb")
-    assert puc19.seguid() == "cdseguid=zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+    assert puc19.seguid() == "cdseguid=mCC0B3UMZfgLyh3Pl574MVjm30U"
     insert, bb = puc19.cut(NdeI, BamHI)  # Note the order !
 
     puc19_ = (bb + insert).looped().synced(puc19)
-    assert puc19_.seguid() == "cdseguid=zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+    assert puc19_.seguid() == "cdseguid=mCC0B3UMZfgLyh3Pl574MVjm30U"
 
     # Some features are lost because they spanned the cutting sites in puc19.
     assert puc19_.extract_feature(0).seq == puc19.extract_feature(2).seq
