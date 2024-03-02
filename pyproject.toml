@@ -16,7 +16,7 @@ classifiers = [
   "Topic :: Education",
   "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
-description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
+# description = "Representing double stranded DNA and functions for simulating cloning and homologous recombination between DNA molecules."
 dynamic = ["version"]
 name = "pydna"
 readme = "README.md"
@@ -71,9 +71,7 @@ enable = true
 style = "semver"
 vcs = "git"
 [tool.poetry-dynamic-versioning.substitution]
-folders = [
-  {path = "src"},
-]
+files = ["src/pydna/__init__.py"]
 [tool.poetry.group.test] # This part can be left out
 [tool.poetry.group.test.dependencies]
 coverage = ">=7.1.0"
