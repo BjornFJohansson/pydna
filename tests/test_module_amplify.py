@@ -601,8 +601,8 @@ def test_pcr():
     )
 
     for key, tst in enumerate(raw):
-        print(tst[0], pcr(tst[1:]).seguid(), tst[0] in pcr(tst[1:]).seguid())
-        # assert tst[0] in pcr(tst[1:]).seguid()
+        #print(tst[0], pcr(tst[1:]).seguid(), tst[0] in pcr(tst[1:]).seguid())
+        assert tst[0] in pcr(tst[1:]).seguid()
 
 
 def test_shifts():
