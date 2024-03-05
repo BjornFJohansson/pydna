@@ -20,17 +20,27 @@ from copy import deepcopy as _deepcopy
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 import xml.etree.ElementTree as _et
 
+# "^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
+# "(?:^>.+\n^(?:^[^>]+?)(?=\n\n|>|^LOCUS|ID))|(?:(?:^LOCUS|ID)(?:(?:.|\n)+?)^//)"
 
-def embl_gb_fasta(raw, ds, path=None):
-    # regex = r"^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
-    regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|" r"LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
-    "(?:^>.+\n^(?:^[^>]+?)(?=\n\n|>|^LOCUS|ID))|(?:(?:^LOCUS|ID)(?:(?:.|\n)+?)^//)"
+gb_fasta_embl_regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
 
+# The gb_fasta_embl_regex is meant to be able to extract sequences from
+# text where sequences are mixed with other contents as well
+# use https://regex101.com to get an idea how it works.
+
+
+def extract_from_text(text):
+    return _re.findall(gb_fasta_embl_regex, _textwrap.dedent(str(text) + "\n\n"), flags=_re.MULTILINE)
+
+
+def embl_gb_fasta(text, ds, path=None):
+
+    chunks = extract_from_text(text)
     result_list = []
 
-    rawseqs = _re.findall(regex, _textwrap.dedent(str(raw) + "\n\n"), flags=_re.MULTILINE)
-    for rawseq in rawseqs:
-        handle = _io.StringIO(rawseq)
+    for chunk in chunks:
+        handle = _io.StringIO(chunk)
         circular = False
         try:
             parsed = _SeqIO.read(handle, "embl")
@@ -47,7 +57,7 @@ def embl_gb_fasta(raw, ds, path=None):
                 except ValueError:
                     parsed = ""
         handle.close()
-        if "circular" in rawseq.splitlines()[0].lower().split():
+        if "circular" in chunk.splitlines()[0].lower().split():
             # hack to pick up topology from malformed files
             circular = True
         if parsed:
