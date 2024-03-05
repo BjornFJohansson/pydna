@@ -165,7 +165,39 @@ By default python and pip are not on the PATH. You can re-install Python and sel
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octocat:.
 I am happy to collaborate on new features or bugfixes.
 
-![----]( http://bit.ly/coloredline)
+We use [pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks) to help with source code formatting.
+Prior to each commit, a series of checks and source code formatters are run (see `.pre-commit-config.yaml` file below).
+This can modify the commited code, which might have to be added again.
+
+A good practice is to run `pre-commit run --all-files` before committing.
+
+The `.pre-commit-config.yaml` file located in the root of the repository has the following content:
+
+
+```
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: no-commit-to-branch
+    args: [--branch, master]
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: debug-statements
+  - id: fix-encoding-pragma
+  - id: mixed-line-ending
+- repo: https://github.com/ambv/black
+  rev: 24.2.0
+  hooks:
+  - id: black
+- repo: https://github.com/PyCQA/flake8
+  rev: 7.0.0
+  hooks:
+  - id: flake8
+exclude: scripts/|docs/|tests/
+```
+
 
 ## Minimal installation dependencies
 
