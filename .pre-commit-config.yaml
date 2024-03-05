@@ -11,7 +11,7 @@ repos:
   - id: fix-encoding-pragma
   - id: mixed-line-ending
 - repo: https://github.com/ambv/black
-  rev: 23.12.1
+  rev: 24.2.0
   hooks:
   - id: black
 - repo: https://github.com/PyCQA/flake8
