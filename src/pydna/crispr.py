@@ -27,7 +27,7 @@ class _cas(ABC):
     fst3 = 0
 
     def __init__(self, protospacer):
-        self.protospacer = protospacer
+        self.protospacer = protospacer.upper()
         self.compsite = re.compile(
             f"(?=(?P<watson>{protospacer}{self.pam}))|(?=(?P<crick>{rc(self.pam)}{rc(protospacer)}))", re.UNICODE
         )
