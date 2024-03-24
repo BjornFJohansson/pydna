@@ -119,8 +119,9 @@ class Amplicon(_Dseqrecord):
         faz = tp[fp.position - fp._fp : fp.position].seq
         raz = tp[rp.position : rp.position + rp._fp].seq
         sp3 = " " * (len(fp.seq) + 3)
-        fzc = tp.seq.rc()[::-1][fp.position - fp._fp : fp.position]
-        rzc = tp.seq.rc()[::-1][rp.position : rp.position + rp._fp]
+        # breakpoint()
+        fzc = tp.seq.crick[::-1][fp.position - fp._fp : fp.position]
+        rzc = tp.seq.crick[::-1][rp.position : rp.position + rp._fp]
         f = f"""
             {" " *ft}5{faz}...{raz}3
              {sp3}{"|" * rp._fp}

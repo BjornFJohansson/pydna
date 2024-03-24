@@ -191,6 +191,7 @@ def test_cut_around_and_religate():
     ]
 
     for s in seqs:
+        print(s)
         sek, enz, lin = s
         for i in range(len(sek)):
             zek = sek[i:] + sek[:i]
@@ -591,6 +592,7 @@ def test_Dseq_slicing2():
 
 
 def test_Dseq___getitem__():
+    # test the slicing
     from pydna.dseq import Dseq
 
     s = Dseq("GGATCC", circular=False)
@@ -603,7 +605,6 @@ def test_Dseq___getitem__():
     assert s[5:1:-1] == Dseq("CCTA")
 
     assert t[5:1] == Dseq("CG")
-
     assert s[9:1] == Dseq("")
     assert t[9:1] == Dseq("")
 
