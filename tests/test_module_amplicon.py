@@ -36,9 +36,15 @@ def test_amplicon():
         |||||||||||||||||||||||
        3atgtgagtggcagatagtaatag...gctgacatagtagactatcgtg5"""
 
+    ctemplate = template.looped()
+    cann = Anneal((p1, p2), ctemplate)
+
+    cprod = cann.products[0]
+    assert repr(cprod) == "Amplicon(57)"
+
     import textwrap
 
-    assert prod.figure() == textwrap.dedent(fig)
+    assert prod.figure() == cprod.figure() == textwrap.dedent(fig)
 
     # assert prod.program() == prod.taq_program()
 
