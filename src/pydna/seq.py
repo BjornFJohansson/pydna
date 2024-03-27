@@ -84,7 +84,7 @@ class Seq(_Seq):
         x.add_row(val)
         return x
 
-    def orfs(self, minsize=30):
+    def orfs2(self, minsize=30):
         """docstring."""
         orf = _re.compile(f"ATG(?:...){{{minsize},}}?(?:TAG|TAA|TGA)", flags=_re.IGNORECASE)
         start = 0
@@ -95,10 +95,19 @@ class Seq(_Seq):
             match = orf.search(s, pos=start)
             if match:
                 matches.append(slice(match.start(), match.end()))
-                start = start + match.start() + 1
+                start = match.start() + 1
             else:
                 break
         return sorted([self[sl] for sl in matches], key=len, reverse=True)
+
+    def orfs(self, minsize=100):
+        dna = self._data.decode("ASCII")
+        from pydna.utils import three_frame_orfs
+
+        orfs = []
+        for frame, x, y in three_frame_orfs(dna, limit=minsize):
+            orfs.append((x, y))
+        return orfs
 
     def seguid(self):
         """Url safe SEGUID [#]_ for the sequence.
