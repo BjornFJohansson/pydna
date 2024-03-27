@@ -1120,7 +1120,7 @@ class Dseqrecord(_SeqRecord):
 
     def orfs(self, minsize=30):
         """docstring."""
-        return tuple(Dseqrecord(s) for s in self.seq.orfs(minsize=minsize))
+        return tuple(Dseqrecord(self[x:y]) for x, y in self.seq.orfs(minsize=minsize))
 
     def orfs_to_features(self, minsize=30):
         """docstring."""
