@@ -27,6 +27,7 @@ import itertools
 import random
 import subprocess as _subprocess
 from bisect import bisect as _bisect
+from math import ceil as _ceil
 
 from pydna.codon import weights as _weights
 from pydna.codon import rare_codons as _rare_codons
@@ -46,7 +47,8 @@ def three_frame_orfs(
     stopcodons: tuple[str, ...] = ("TAG", "TAA", "TGA"),
 ):
     """Overlapping orfs in three frames."""
-    limit /= 3
+    # breakpoint()
+    limit = _ceil(limit / 3) - 1
     dna = dna.upper()
 
     orfs = []
@@ -66,7 +68,7 @@ def three_frame_orfs(
             else:
                 if stopindex - startindex >= limit:
                     orfs.append((frame, startindex * 3 + frame, (stopindex + 1) * 3 + frame))
-
+                # print(stopindex, startindex, limit)
     return orfs
 
 
