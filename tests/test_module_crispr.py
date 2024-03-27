@@ -23,17 +23,24 @@ def test_crispr():
     """
     )
 
-    containing_sgRNA = Dseqrecord("GTTACTTTACCCGACGTCCCgttttagagctagaaatagcaagttaaaataagg")
 
-    target = Dseqrecord("GTTACTTTACCCGACGTCCCaGG")
 
-    assert [f.seq for f in target.cut([cas9(ps) for ps in protospacer(containing_sgRNA)])] == [a, b]
-    assert [f.seq for f in target.cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [a, b]
-    assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA)])] == [b.rc(), a.rc()]
-    assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [
-        b.rc(),
-        a.rc(),
-    ]
+    sgr_text = "GTTACTTTACCCGACGTCCCgttttagagctagaaatagcaagttaaaataagg"
+    target = "GTTACTTTACCCGACGTCCCaGG"
+
+    for sg, tgt in [(sgr_text, target),
+                    (sgr_text.upper(), target.lower()),
+                    (sgr_text.lower(), target.upper())]:
+        containing_sgRNA = Dseqrecord(sgr_text)
+        target = Dseqrecord(target)
+
+        assert [f.seq for f in target.cut([cas9(ps) for ps in protospacer(containing_sgRNA)])] == [a, b]
+        assert [f.seq for f in target.cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [a, b]
+        assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA)])] == [b.rc(), a.rc()]
+        assert [f.seq for f in target.rc().cut([cas9(ps) for ps in protospacer(containing_sgRNA.rc())])] == [
+            b.rc(),
+            a.rc(),
+        ]
 
 
 if __name__ == "__main__":
