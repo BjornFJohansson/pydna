@@ -11,6 +11,7 @@ import os as _os
 import re as _re
 import io as _io
 import textwrap as _textwrap
+from itertools import pairwise
 from Bio import SeqIO as _SeqIO
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
@@ -30,13 +31,35 @@ gb_fasta_embl_regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)
 # use https://regex101.com to get an idea how it works.
 
 
+# def extract_from_text(text):
+#     return _re.finditer(gb_fasta_embl_regex, _textwrap.dedent(str(text) + "\n\n"), flags=_re.MULTILINE)
+
+
 def extract_from_text(text):
-    return _re.findall(gb_fasta_embl_regex, _textwrap.dedent(str(text) + "\n\n"), flags=_re.MULTILINE)
+    data = _textwrap.dedent(str(text))
+    mos = list(_re.finditer(gb_fasta_embl_regex, data + "\n\n", flags=_re.MULTILINE))
+
+    class mo(object):
+
+        def start(self):
+            return len(data)
+
+        def end(self):
+            return 0
+
+    mofirst = molast = mo()
+
+    gaps = []
+
+    for mo1, mo2 in pairwise([mofirst] + mos + [molast]):
+        gaps.append(data[mo1.end() : mo2.start()])
+
+    return [mo.group(0) for mo in mos], gaps
 
 
 def embl_gb_fasta(text, ds, path=None):
 
-    chunks = extract_from_text(text)
+    chunks, gaps = extract_from_text(text)
     result_list = []
 
     for chunk in chunks:
