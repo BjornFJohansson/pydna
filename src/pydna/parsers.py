@@ -11,7 +11,7 @@ import os as _os
 import re as _re
 import io as _io
 import textwrap as _textwrap
-from itertools import pairwise
+
 from Bio import SeqIO as _SeqIO
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
@@ -20,6 +20,19 @@ from pydna.amplify import pcr as _pcr
 from copy import deepcopy as _deepcopy
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 import xml.etree.ElementTree as _et
+
+try:
+    from itertools import pairwise as _pairwise
+except ImportError:
+
+    def _pairwise(iterable):
+        # pairwise('ABCDEFG') → AB BC CD DE EF FG
+        iterator = iter(iterable)
+        a = next(iterator, None)
+        for b in iterator:
+            yield a, b
+            a = b
+
 
 # "^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
 # "(?:^>.+\n^(?:^[^>]+?)(?=\n\n|>|^LOCUS|ID))|(?:(?:^LOCUS|ID)(?:(?:.|\n)+?)^//)"
@@ -51,7 +64,7 @@ def extract_from_text(text):
 
     gaps = []
 
-    for mo1, mo2 in pairwise([mofirst] + mos + [molast]):
+    for mo1, mo2 in _pairwise([mofirst] + mos + [molast]):
         gaps.append(data[mo1.end() : mo2.start()])
 
     return [mo.group(0) for mo in mos], gaps
