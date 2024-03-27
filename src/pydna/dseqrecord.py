@@ -1122,6 +1122,27 @@ class Dseqrecord(_SeqRecord):
         """docstring."""
         return tuple(Dseqrecord(s) for s in self.seq.orfs(minsize=minsize))
 
+    def orfs_to_features(self, minsize=30):
+        """docstring."""
+        features = []
+        for strand, s in ((1, self.seq), (-1, self.seq.rc())):
+            for x, y in s.orfs(minsize=minsize):
+                orf = self[x:y]
+                features.append(
+                    _SeqFeature(
+                        _SimpleLocation(x, y, strand=strand),
+                        type="CDS",
+                        qualifiers={
+                            "note": f"{y-x}bp {(y-x)//3}aa",
+                            "checksum": orf.seguid(),
+                            "codon_start": 1,
+                            "transl_table": 11,
+                            "translation": str(orf.seq[x:y].translate())[:-1],
+                        },
+                    )
+                )
+        return features
+
     def _copy_to_clipboard(self, sequence_format):
         """docstring."""
         from pyperclip import copy
