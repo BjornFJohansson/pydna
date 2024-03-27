@@ -43,8 +43,10 @@ _complement_table = _maketrans(_ambiguous_dna_complement)
 def three_frame_orfs(
     dna: str,
     limit: int = 100,
-    startcodons: tuple[str, ...] = ("ATG",),
-    stopcodons: tuple[str, ...] = ("TAG", "TAA", "TGA"),
+    startcodons: tuple = ("ATG",),
+    stopcodons: tuple = ("TAG", "TAA", "TGA"),
+    # startcodons: tuple[str, ...] = ("ATG",),
+    # stopcodons: tuple[str, ...] = ("TAG", "TAA", "TGA"),
 ):
     """Overlapping orfs in three frames."""
     # breakpoint()
