@@ -26,6 +26,7 @@ import re
 import itertools
 import random
 import subprocess as _subprocess
+from bisect import bisect as _bisect
 
 from pydna.codon import weights as _weights
 from pydna.codon import rare_codons as _rare_codons
@@ -36,6 +37,37 @@ from Bio.SeqFeature import CompoundLocation as _cl
 _module_logger = _logging.getLogger("pydna." + __name__)
 _ambiguous_dna_complement.update({"U": "A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
+
+
+def three_frame_orfs(
+    dna: str,
+    limit: int = 100,
+    startcodons: tuple[str, ...] = ("ATG",),
+    stopcodons: tuple[str, ...] = ("TAG", "TAA", "TGA"),
+):
+    """Overlapping orfs in three frames."""
+    limit /= 3
+    dna = dna.upper()
+
+    orfs = []
+
+    for frame in (0, 1, 2):
+
+        codons = [dna[i : i + 3] for i in range(frame, len(dna), 3)]
+
+        startdindices = [i for i, cd in enumerate(codons) if cd in startcodons]
+        stopdindices = [i for i, cd in enumerate(codons) if cd in stopcodons]
+
+        for startindex in startdindices:
+            try:
+                stopindex = stopdindices[_bisect(stopdindices, startindex)]
+            except IndexError:
+                pass
+            else:
+                if stopindex - startindex >= limit:
+                    orfs.append((frame, startindex * 3 + frame, (stopindex + 1) * 3 + frame))
+
+    return orfs
 
 
 def shift_location(original_location, shift, lim):
