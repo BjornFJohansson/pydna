@@ -29,7 +29,7 @@ jobs:
 
     - name: Install this Python package
       run: |
-        pip install .[pydivsufsort]
+        pip install .
 
     - name: Session information
       run: |
@@ -42,7 +42,7 @@ jobs:
 
     - name: Deploy to GitHub pages 🚀
       if: github.event_name != 'pull_request'
-      uses: JamesIves/github-pages-deploy-action@v4.5.0
+      uses: JamesIves/github-pages-deploy-action@v4.6.0
       with:
         clean: false
         branch: gh-pages
