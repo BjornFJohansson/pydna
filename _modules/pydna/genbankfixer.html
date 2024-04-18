@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.genbankfixer &mdash; pydna 0.0.0.post1+da3e7e9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=ab0fd0ff"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pydna
+          </a>
+              <div class="version">
+                0.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../pydna.html">pydna</a></li>
+      <li class="breadcrumb-item active">pydna.genbankfixer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pydna.genbankfixer</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2013-2023 by Björn Johansson.  All rights reserved.</span>
+<span class="c1"># This code is part of the pydna distribution and governed by its</span>
+<span class="c1"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c1"># as part of this package.</span>
+<span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+<span class="c1"># doctest: +SKIP</span>
+<span class="c1"># doctest: +IGNORE_EXCEPTION_DETAIL</span>
+<span class="sd">&quot;&quot;&quot;This module provides the :func:`gbtext_clean` function which can clean up broken Genbank files enough to</span>
+<span class="sd">pass the BioPython Genbank parser</span>
+
+<span class="sd">Almost all of this code was lifted from BioJSON (https://github.com/levskaya/BioJSON) by Anselm Levskaya.</span>
+<span class="sd">The original code was not accompanied by any software licence. This parser is based on pyparsing.</span>
+
+<span class="sd">There are some modifications to deal with fringe cases.</span>
+
+<span class="sd">The parser first produces JSON as an intermediate format which is then formatted back into a</span>
+<span class="sd">string in Genbank format.</span>
+
+<span class="sd">The parser is not complete, so some fields do not survive the roundtrip (see below).</span>
+<span class="sd">This should not be a difficult fix. The returned result has two properties,</span>
+<span class="sd">.jseq which is the intermediate JSON produced by the parser and .gbtext</span>
+<span class="sd">which is the formatted genbank string.&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">re</span> <span class="k">as</span> <span class="nn">_re</span>
+<span class="kn">import</span> <span class="nn">pyparsing</span> <span class="k">as</span> <span class="nn">_pp</span>
+
+<span class="n">GoodLocus</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;LOCUS&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;-_().&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;bp&quot;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;seqtype&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;circular&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;topology&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Optional</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;   &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;divcode&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d</span><span class="si">{2}</span><span class="s2">)-(\S</span><span class="si">{3}</span><span class="s2">)-(\d</span><span class="si">{4}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Older versions of ApE don&#39;t include a LOCUS name! Need separate def for this case:</span>
+<span class="n">BrokenLocus1</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;LOCUS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;bp&quot;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;seqtype&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;circular&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;topology&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Optional</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;   &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;divcode&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d</span><span class="si">{2}</span><span class="s2">)-(\S</span><span class="si">{3}</span><span class="s2">)-(\d</span><span class="si">{4}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># LOCUS       YEplac181	5741 bp 	DNA	SYN</span>
+<span class="n">BrokenLocus2</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;LOCUS&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;-_().&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;bp&quot;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;seqtype&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Optional</span><span class="p">(</span>
+        <span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;circular&quot;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;topology&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Optional</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;   &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;divcode&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d</span><span class="si">{2}</span><span class="s2">)-(\S</span><span class="si">{3}</span><span class="s2">)-(\d</span><span class="si">{4}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">BrokenLocus3</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;LOCUS&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;-_().&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;bp&quot;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;seqtype&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Optional</span><span class="p">(</span>
+        <span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;circular&quot;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;topology&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;divcode&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Optional</span><span class="p">(</span>
+        <span class="n">_pp</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d</span><span class="si">{2}</span><span class="s2">)-(\S</span><span class="si">{3}</span><span class="s2">)-(\d</span><span class="si">{4}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;19-MAR-1970&quot;</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">LocusEntry</span> <span class="o">=</span> <span class="n">GoodLocus</span> <span class="o">|</span> <span class="n">BrokenLocus1</span> <span class="o">|</span> <span class="n">BrokenLocus2</span> <span class="o">|</span> <span class="n">BrokenLocus3</span>
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># Generic Entry</span>
+
+<span class="c1"># this catches everything but the FEATURES and SEQUENCE entries, really should add parsing code for</span>
+<span class="c1"># ACCESSION, COMMENTS, REFERENCE, ORGANISM, etc.</span>
+<span class="c1"># (Though these entries are generally useless when it comes to hacking on DNA)</span>
+
+<span class="c1"># All entries in a genbank file headed by an all-caps title with no space between start-of-line and title</span>
+<span class="n">CapWord</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span><span class="p">)</span>
+<span class="c1"># after titled line, all subsequent lines have to have at least one space in front of them</span>
+<span class="c1"># this is how we split up the genbank record</span>
+<span class="n">SpacedLine</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">White</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">CharsNotIn</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">LineEnd</span><span class="p">()</span>
+<span class="c1"># HeaderLine = CapWord + CharsNotIn(&quot;\n&quot;) + LineEnd()</span>
+<span class="n">GenericEntry</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span>
+    <span class="n">CapWord</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CharsNotIn</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">LineEnd</span><span class="p">()</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">ZeroOrMore</span><span class="p">(</span><span class="n">SpacedLine</span><span class="p">))</span>
+<span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;generics&quot;</span><span class="p">,</span> <span class="n">listAllMatches</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># Definition Entry</span>
+<span class="c1"># SuppressedSpacedLine =  Suppress(White(min=1)) + CharsNotIn(&quot;\n&quot;) + LineEnd()</span>
+<span class="c1"># DefinitionEntry =  Suppress(Literal(&quot;DEFINITION&quot;)) + Combine(CharsNotIn(&quot;\n&quot;) + LineEnd() + ZeroOrMore( SuppressedSpacedLine ))</span>
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># GenBank Feature Table Parser</span>
+
+<span class="c1"># ==== Genbank Location String Parser</span>
+<span class="c1">#</span>
+<span class="c1"># a string of slices w. functional modifiers that go at most two levels deep</span>
+<span class="c1"># single position is just a number i.e. 23423</span>
+<span class="c1"># slice is N1..N2  w. N1&lt;N2</span>
+<span class="c1"># i.e.</span>
+<span class="c1"># 23..88  --&gt; seq[23:89] in python syntax (genbank uses inclusive slicing)</span>
+<span class="c1"># 234..555</span>
+<span class="c1"># complement(234..434) --&gt; rc(seq[234:435])</span>
+<span class="c1"># join(23..343,454..666,777..999) --&gt; seq[23:344]+seq[454:667]+seq[777:1000]</span>
+<span class="c1"># complement(join(23..343,454..666,777..999))</span>
+<span class="c1"># join(complement(34..123),complement(333..565))</span>
+<span class="c1">#</span>
+<span class="c1"># additionally the slices can have ambiguous locs like &lt;454..999 or 232..&gt;331</span>
+<span class="c1"># also note the dumb 34.38 fuzzy slice notation</span>
+<span class="c1"># i.e. &lt;45..900  says the real feature starts &quot;somewhere&quot; before pos 45</span>
+<span class="c1">#       45.48 says feature somewhere between bases 45-&gt;48</span>
+<span class="c1"># lot of weird annotations best avoided because they connote ~useless knowledge for synthetic design</span>
+<span class="c1">#</span>
+<span class="c1"># if you don&#39;t know where something is, don&#39;t use it or guess and move on</span>
+
+<span class="n">LPAREN</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
+<span class="n">RPAREN</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+<span class="n">SEP</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">))</span>
+
+<span class="c1"># recognize numbers w. &lt; &amp; &gt; uncertainty specs, then strip the &lt;&gt; chars to make it fixed</span>
+<span class="n">gbIndex</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;&lt;&gt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)))</span>
+<span class="n">SimpleSlice</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">gbIndex</span> <span class="o">+</span> <span class="n">SEP</span> <span class="o">+</span> <span class="n">gbIndex</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">gbIndex</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="p">[[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]]</span>
+<span class="p">)</span>
+
+<span class="c1"># recursive def for nested function syntax:  f( g(), g() )</span>
+<span class="n">complexSlice</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Forward</span><span class="p">()</span>
+<span class="p">(</span>
+    <span class="n">complexSlice</span>
+    <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;complement&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;join&quot;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">LPAREN</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">delimitedList</span><span class="p">(</span><span class="n">complexSlice</span><span class="p">)</span> <span class="o">|</span> <span class="n">_pp</span><span class="o">.</span><span class="n">delimitedList</span><span class="p">(</span><span class="n">SimpleSlice</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">RPAREN</span>
+<span class="p">)</span>
+<span class="n">featLocation</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">SimpleSlice</span> <span class="o">|</span> <span class="n">complexSlice</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="parseGBLoc">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.parseGBLoc">[docs]</a>
+<span class="k">def</span> <span class="nf">parseGBLoc</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;retwingles parsed genbank location strings, assumes no joins of RC and FWD sequences&quot;&quot;&quot;</span>
+    <span class="n">strand</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">locationlist</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># see if there are any complement operators</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">entry</span> <span class="o">==</span> <span class="s2">&quot;complement&quot;</span><span class="p">:</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">locationlist</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="c1"># return locationlist and strand spec</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="s2">&quot;location&quot;</span><span class="p">,</span> <span class="n">locationlist</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="n">strand</span><span class="p">]]</span></div>
+
+
+
+<span class="n">featLocation</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">parseGBLoc</span><span class="p">)</span>
+
+<span class="c1"># ==== Genbank Feature Key-Value Pairs</span>
+
+
+<div class="viewcode-block" id="strip_multiline">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.strip_multiline">[docs]</a>
+<span class="k">def</span> <span class="nf">strip_multiline</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">whitespace</span> <span class="o">=</span> <span class="n">_re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[</span><span class="se">\n</span><span class="s2">]</span><span class="si">{1}</span><span class="s2">[ ]+&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">whitespace</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="toInt">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.toInt">[docs]</a>
+<span class="k">def</span> <span class="nf">toInt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+
+<span class="c1"># Quoted KeyVal:   /key=&quot;value&quot;</span>
+<span class="n">QuoteFeaturekeyval</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;_-&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">QuotedString</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="n">multiline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">strip_multiline</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># UnQuoted KeyVal: /key=value  (I&#39;m assuming it doesn&#39;t do multilines this way? wrong! ApE does store long labels this way! sigh.)</span>
+<span class="c1"># NoQuoteFeaturekeyval = Group(Suppress(&#39;/&#39;) + Word(alphas+nums+&quot;_-&quot;) + Suppress(&#39;=&#39;) + OneOrMore(CharsNotIn(&quot;\n&quot;)) )</span>
+<span class="n">keyvalspacedline</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">White</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">CharsNotIn</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CharsNotIn</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">LineEnd</span><span class="p">()</span>
+<span class="n">NoQuoteFeaturekeyval</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;_-&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">CharsNotIn</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">LineEnd</span><span class="p">()</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">ZeroOrMore</span><span class="p">(</span><span class="n">keyvalspacedline</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Special Case for Numerical Vals:  /bases=12  OR  /bases=&quot;12&quot;</span>
+<span class="n">NumFeaturekeyval</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;_-&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">toInt</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">))</span>
+    <span class="o">|</span> <span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">toInt</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Key Only KeyVal: /pseudo</span>
+<span class="c1"># post-parse convert it into a pair to resemble the structure of the first three cases i.e. [pseudo, True]</span>
+<span class="n">FlagFeaturekeyval</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;_-&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="p">[[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="kc">True</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">Feature</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">alphas</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">nums</span> <span class="o">+</span> <span class="s2">&quot;_-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]]])</span>
+    <span class="o">+</span> <span class="n">featLocation</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;location&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">NumFeaturekeyval</span> <span class="o">|</span> <span class="n">QuoteFeaturekeyval</span> <span class="o">|</span> <span class="n">NoQuoteFeaturekeyval</span> <span class="o">|</span> <span class="n">FlagFeaturekeyval</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">FeaturesEntry</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;FEATURES&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;Location/Qualifiers&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">Feature</span><span class="p">))</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># GenBank Sequence Parser</span>
+
+<span class="c1"># sequence is just a column-spaced big table of dna nucleotides</span>
+<span class="c1"># should it recognize full IUPAC alphabet?  NCBI uses n for unknown region</span>
+<span class="n">Sequence</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">nums</span><span class="p">))</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;ACGTacgtNn&quot;</span><span class="p">)))</span>
+
+<span class="c1"># Group(  ) hides the setResultsName names def&#39;d inside, such that one needs to first access this group and then access the dict of contents inside</span>
+<span class="n">SequenceEntry</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;ORIGIN&quot;</span><span class="p">))</span> <span class="o">+</span> <span class="n">Sequence</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">l_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">setResultsName</span><span class="p">(</span><span class="s2">&quot;sequence&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># Final GenBank Parser</span>
+
+<span class="c1"># GB files with multiple records split by &quot;//&quot; sequence at beginning of line</span>
+<span class="n">GBEnd</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">)</span>
+
+<span class="c1"># Begin w. LOCUS, slurp all entries, then stop at the end!</span>
+<span class="n">GB</span> <span class="o">=</span> <span class="n">LocusEntry</span> <span class="o">+</span> <span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">FeaturesEntry</span> <span class="o">|</span> <span class="n">SequenceEntry</span> <span class="o">|</span> <span class="n">GenericEntry</span><span class="p">)</span> <span class="o">+</span> <span class="n">GBEnd</span>
+
+<span class="c1"># NCBI often returns sets of GB files</span>
+<span class="n">multipleGB</span> <span class="o">=</span> <span class="n">_pp</span><span class="o">.</span><span class="n">OneOrMore</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">GB</span><span class="p">))</span>
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># End Genbank Parser</span>
+<span class="c1"># ===============================================================================</span>
+
+
+<span class="c1"># ===============================================================================</span>
+<span class="c1"># Main JSON Conversion Routine</span>
+
+
+<div class="viewcode-block" id="strip_indent">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.strip_indent">[docs]</a>
+<span class="k">def</span> <span class="nf">strip_indent</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">whitespace</span> <span class="o">=</span> <span class="n">_re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[</span><span class="se">\n</span><span class="s2">]</span><span class="si">{1}</span><span class="s2">(COMMENT){0,1}[ ]+&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">whitespace</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="concat_dict">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.concat_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">concat_dict</span><span class="p">(</span><span class="n">dlist</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;more or less dict(list of string pairs) but merges</span>
+<span class="sd">    vals with the same keys so no duplicates occur</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">newdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">dlist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">newdict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">newdict</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">newdict</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">strip_indent</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">newdict</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">strip_indent</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">newdict</span></div>
+
+
+
+<div class="viewcode-block" id="toJSON">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.toJSON">[docs]</a>
+<span class="k">def</span> <span class="nf">toJSON</span><span class="p">(</span><span class="n">gbkstring</span><span class="p">):</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">multipleGB</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">gbkstring</span><span class="p">)</span>
+
+    <span class="n">jseqlist</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">:</span>
+        <span class="c1"># for item in seq.asList():</span>
+        <span class="c1">#    print(item)</span>
+
+        <span class="c1"># import sys;sys.exit(42)</span>
+
+        <span class="c1"># Print to STDOUT some details (useful for long multi-record parses)</span>
+        <span class="c1"># print(seq[&#39;name&#39;], &quot;:  length:&quot;, len(seq[&#39;sequence&#39;]) , &quot; #features:&quot; , len(seq[&#39;features&#39;].asList()))</span>
+
+        <span class="c1"># build JSON object</span>
+
+        <span class="n">nl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;features&quot;</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">asList</span><span class="p">())):</span>
+                <span class="n">dct</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="c1"># print(key, a[key])</span>
+                    <span class="n">dct</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">dct</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">nl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
+
+        <span class="c1"># import sys;sys.exit(42)</span>
+
+        <span class="c1"># print(list(map(dict, hej))[2][&quot;codon_start&quot;])</span>
+
+        <span class="n">jseq</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;__format__&quot;</span><span class="p">:</span> <span class="s2">&quot;jseq v0.1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;seqtype&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;seqtype&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;divcode&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;divcode&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;topology&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;topology&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;sequence&quot;</span><span class="p">:</span> <span class="n">seq</span><span class="p">[</span><span class="s2">&quot;sequence&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="n">nl</span><span class="p">,</span>
+            <span class="s2">&quot;annotations&quot;</span><span class="p">:</span> <span class="n">concat_dict</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="s2">&quot;generics&quot;</span><span class="p">]),</span>
+        <span class="p">}</span>
+        <span class="n">jseqlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jseq</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">jseqlist</span></div>
+
+
+
+<div class="viewcode-block" id="wrapstring">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.wrapstring">[docs]</a>
+<span class="k">def</span> <span class="nf">wrapstring</span><span class="p">(</span><span class="n">str_</span><span class="p">,</span> <span class="n">rowstart</span><span class="p">,</span> <span class="n">rowend</span><span class="p">,</span> <span class="n">padfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wraps the provided string in lines of length rowend-rowstart</span>
+<span class="sd">    and padded on the left by rowstart.</span>
+<span class="sd">    -&gt; if padfirst is false the first line is not padded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rowlen</span> <span class="o">=</span> <span class="n">rowend</span> <span class="o">-</span> <span class="n">rowstart</span>
+    <span class="n">leftpad</span> <span class="o">=</span> <span class="n">rowstart</span>
+    <span class="n">wrappedstr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># no wrapping needed, single line</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span> <span class="o">/</span> <span class="n">rowlen</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">padfirst</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">leftpad</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">str_</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">str_</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="c1"># multiple lines so wrap:</span>
+    <span class="k">for</span> <span class="n">linenum</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span> <span class="o">/</span> <span class="n">rowlen</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">linenum</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">padfirst</span><span class="p">:</span>
+            <span class="n">wrappedstr</span> <span class="o">+=</span> <span class="n">str_</span><span class="p">[</span><span class="n">linenum</span> <span class="o">*</span> <span class="n">rowlen</span> <span class="p">:</span> <span class="p">(</span><span class="n">linenum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">rowlen</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wrappedstr</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">leftpad</span> <span class="o">+</span> <span class="n">str_</span><span class="p">[</span><span class="n">linenum</span> <span class="o">*</span> <span class="n">rowlen</span> <span class="p">:</span> <span class="p">(</span><span class="n">linenum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">rowlen</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="c1">#    if str_.startswith(&quot;/translation=&quot;):</span>
+    <span class="c1">#        print(str_)</span>
+    <span class="c1">#        print(wrappedstr)</span>
+    <span class="c1">#        print(&quot;.................................&quot;)</span>
+    <span class="k">return</span> <span class="n">wrappedstr</span></div>
+
+
+
+<div class="viewcode-block" id="locstr">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.locstr">[docs]</a>
+<span class="k">def</span> <span class="nf">locstr</span><span class="p">(</span><span class="n">locs</span><span class="p">,</span> <span class="n">strand</span><span class="p">):</span>
+    <span class="s2">&quot;genbank formatted location string, assumes no join&#39;d combo of rev and fwd seqs&quot;</span>
+    <span class="c1"># slice format is like: 1..10,20..30,101..200</span>
+    <span class="n">locstr</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">((</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;..&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">locs</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">locstr</span> <span class="o">=</span> <span class="s2">&quot;join(&quot;</span> <span class="o">+</span> <span class="n">locstr</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">strand</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">locstr</span> <span class="o">=</span> <span class="s2">&quot;complement(&quot;</span> <span class="o">+</span> <span class="n">locstr</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">return</span> <span class="n">locstr</span></div>
+
+
+
+<div class="viewcode-block" id="originstr">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.originstr">[docs]</a>
+<span class="k">def</span> <span class="nf">originstr</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+    <span class="s2">&quot;formats dna sequence as broken, numbered lines ala genbank&quot;</span>
+    <span class="n">wordlen</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">rowlen</span> <span class="o">=</span> <span class="n">wordlen</span> <span class="o">*</span> <span class="n">cols</span>
+    <span class="n">outstr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">linenum</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="o">/</span> <span class="n">rowlen</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">linenum</span> <span class="o">*</span> <span class="n">rowlen</span>
+        <span class="c1"># position of string for this row, then six blocks of dna</span>
+        <span class="n">outstr</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))[</span><span class="o">-</span><span class="mi">9</span><span class="p">:]</span>
+            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="o">+</span> <span class="n">sequence</span><span class="p">[</span><span class="n">pos</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">10</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="o">+</span> <span class="n">sequence</span><span class="p">[</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">10</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">20</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="o">+</span> <span class="n">sequence</span><span class="p">[</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">20</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">30</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="o">+</span> <span class="n">sequence</span><span class="p">[</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">30</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">40</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="o">+</span> <span class="n">sequence</span><span class="p">[</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">40</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">50</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="o">+</span> <span class="n">sequence</span><span class="p">[</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">50</span> <span class="p">:</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">60</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">outstr</span></div>
+
+
+
+<div class="viewcode-block" id="toGB">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.toGB">[docs]</a>
+<span class="k">def</span> <span class="nf">toGB</span><span class="p">(</span><span class="n">jseq</span><span class="p">):</span>
+    <span class="s2">&quot;parses json jseq data and prints out ApE compatible genbank&quot;</span>
+
+    <span class="c1"># construct the LOCUS header string</span>
+    <span class="c1">#  LOCUS format:</span>
+    <span class="c1">#    Positions  Contents</span>
+    <span class="c1">#    ---------  --------</span>
+    <span class="c1">#    00:06      LOCUS</span>
+    <span class="c1">#    06:12      spaces</span>
+    <span class="c1">#    12:??      Locus name</span>
+    <span class="c1">#    ??:??      space</span>
+    <span class="c1">#    ??:40      Length of sequence, right-justified</span>
+    <span class="c1">#    40:44      space, bp, space</span>
+    <span class="c1">#    44:47      Blank, ss-, ds-, ms-</span>
+    <span class="c1">#    47:54      Blank, DNA, RNA, tRNA, mRNA, uRNA, snRNA, cDNA</span>
+    <span class="c1">#    54:55      space</span>
+    <span class="c1">#    55:63      Blank (implies linear), linear or circular</span>
+    <span class="c1">#    63:64      space</span>
+    <span class="c1">#    64:67      The division code (e.g. BCT, VRL, INV)</span>
+    <span class="c1">#    67:68      space</span>
+    <span class="c1">#    68:79      Date, in the form dd-MMM-yyyy (e.g., 15-MAR-1991)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;default&quot;</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;100&quot;</span>
+    <span class="n">seqtype</span> <span class="o">=</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;seqtype&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;DNA&quot;</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ds-&quot;</span><span class="p">,</span> <span class="s2">&quot;ss-&quot;</span><span class="p">,</span> <span class="s2">&quot;ms-&quot;</span><span class="p">]:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">seqtype</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">p</span>
+            <span class="n">seqtype</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">break</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span> <span class="ow">or</span> <span class="s2">&quot;ds-&quot;</span>
+    <span class="n">topology</span> <span class="o">=</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;topology&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;linear&quot;</span>
+    <span class="n">divcode</span> <span class="o">=</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;divcode&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;   &quot;</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;19-MAR-1970&quot;</span>
+
+    <span class="n">locusstr</span> <span class="o">=</span> <span class="s2">&quot;LOCUS       </span><span class="si">{name:&lt;24}</span><span class="s2"> </span><span class="si">{size:&gt;4}</span><span class="s2"> bp </span><span class="si">{prefix}{seqtype:&lt;4}</span><span class="s2">    </span><span class="si">{topology:&lt;8}</span><span class="s2"> </span><span class="si">{divcode}</span><span class="s2"> </span><span class="si">{date}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
+        <span class="n">seqtype</span><span class="o">=</span><span class="n">seqtype</span><span class="p">,</span>
+        <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
+        <span class="n">divcode</span><span class="o">=</span><span class="n">divcode</span><span class="p">,</span>
+        <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># All these fields are left empty</span>
+    <span class="n">gbprops</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;DEFINITION  .</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;ACCESSION   </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;VERSION     </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;SOURCE      .</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;ORGANISM  .</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;COMMENT     </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;COMMENT     ApEinfo:methylated:1</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;FEATURES             Location/Qualifiers</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># build the feature table</span>
+    <span class="n">featuresstr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;features&quot;</span> <span class="ow">in</span> <span class="n">jseq</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]:</span>
+            <span class="n">fstr</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">5</span>
+                <span class="o">+</span> <span class="n">feat</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">16</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]))</span>
+                <span class="o">+</span> <span class="n">wrapstring</span><span class="p">(</span><span class="n">locstr</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">],</span> <span class="n">feat</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]),</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;location&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">]:</span>
+                    <span class="c1"># ApE idiosyncrasy: don&#39;t wrap val in quotation marks</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span>
+                        <span class="s2">&quot;ApEinfo_label&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;ApEinfo_fwdcolor&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;ApEinfo_revcolor&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+                    <span class="p">]:</span>
+                        <span class="n">fstr</span> <span class="o">+=</span> <span class="n">wrapstring</span><span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+                    <span class="c1"># standard: wrap val in quotes</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fstr</span> <span class="o">+=</span> <span class="n">wrapstring</span><span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+            <span class="n">featuresstr</span> <span class="o">+=</span> <span class="n">fstr</span>
+
+    <span class="c1"># the spaced, numbered sequence</span>
+    <span class="n">gborigin</span> <span class="o">=</span> <span class="s2">&quot;ORIGIN</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">originstr</span><span class="p">(</span><span class="n">jseq</span><span class="p">[</span><span class="s2">&quot;sequence&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;//</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="n">locusstr</span> <span class="o">+</span> <span class="n">gbprops</span> <span class="o">+</span> <span class="n">featuresstr</span> <span class="o">+</span> <span class="n">gborigin</span></div>
+
+
+
+<div class="viewcode-block" id="gbtext_clean">
+<a class="viewcode-back" href="../../index.html#pydna.genbankfixer.gbtext_clean">[docs]</a>
+<span class="k">def</span> <span class="nf">gbtext_clean</span><span class="p">(</span><span class="n">gbtext</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function takes a string containing **one** genbank sequence</span>
+<span class="sd">    in Genbank format and returns a named tuple containing two fields,</span>
+<span class="sd">    the gbtext containing a string with the corrected genbank sequence and</span>
+<span class="sd">    jseq which contains the JSON intermediate.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; s = &#39;&#39;&#39;LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013</span>
+<span class="sd">    ... DEFINITION  .</span>
+<span class="sd">    ... ACCESSION</span>
+<span class="sd">    ... VERSION</span>
+<span class="sd">    ... SOURCE      .</span>
+<span class="sd">    ...   ORGANISM  .</span>
+<span class="sd">    ... COMMENT</span>
+<span class="sd">    ... COMMENT     ApEinfo:methylated:1</span>
+<span class="sd">    ... ORIGIN</span>
+<span class="sd">    ...         1 aaa</span>
+<span class="sd">    ... //&#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; from pydna.readers import read</span>
+<span class="sd">    &gt;&gt;&gt; read(s)  # doctest: +SKIP</span>
+<span class="sd">    /home/bjorn/anaconda3/envs/bjorn36/lib/python3.6/site-packages/Bio/GenBank/Scanner.py:1388: BiopythonParserWarning: Malformed LOCUS line found - is this correct?</span>
+<span class="sd">    :&#39;LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013\\n&#39;</span>
+<span class="sd">      &quot;correct?\\n:%r&quot; % line, BiopythonParserWarning)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">      File &quot;/home/bjorn/python_packages/pydna/pydna/readers.py&quot;, line 48, in read</span>
+<span class="sd">        results = results.pop()</span>
+<span class="sd">    IndexError: pop from empty list</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    During handling of the above exception, another exception occurred:</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">      File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="sd">      File &quot;/home/bjorn/python_packages/pydna/pydna/readers.py&quot;, line 50, in read</span>
+<span class="sd">        raise ValueError(&quot;No sequences found in data:\\n({})&quot;.format(data[:79]))</span>
+<span class="sd">    ValueError: No sequences found in data:</span>
+<span class="sd">    (LOCUS       New_DNA      3 bp    DNA   CIRCULAR SYN        19-JUN-2013</span>
+<span class="sd">    DEFINITI)</span>
+<span class="sd">    &gt;&gt;&gt; from pydna.genbankfixer import gbtext_clean</span>
+<span class="sd">    &gt;&gt;&gt; s2, j2 = gbtext_clean(s)</span>
+<span class="sd">    &gt;&gt;&gt; print(s2)</span>
+<span class="sd">    LOCUS       New_DNA                    3 bp ds-DNA     circular SYN 19-JUN-2013</span>
+<span class="sd">    DEFINITION  .</span>
+<span class="sd">    ACCESSION</span>
+<span class="sd">    VERSION</span>
+<span class="sd">    SOURCE      .</span>
+<span class="sd">    ORGANISM  .</span>
+<span class="sd">    COMMENT</span>
+<span class="sd">    COMMENT     ApEinfo:methylated:1</span>
+<span class="sd">    FEATURES             Location/Qualifiers</span>
+<span class="sd">    ORIGIN</span>
+<span class="sd">            1 aaa</span>
+<span class="sd">    //</span>
+<span class="sd">    &gt;&gt;&gt; s3 = read(s2)</span>
+<span class="sd">    &gt;&gt;&gt; s3</span>
+<span class="sd">    Dseqrecord(o3)</span>
+<span class="sd">    &gt;&gt;&gt; print(s3.format())</span>
+<span class="sd">    LOCUS       New_DNA                    3 bp    DNA     circular SYN 19-JUN-2013</span>
+<span class="sd">    DEFINITION  .</span>
+<span class="sd">    ACCESSION   New_DNA</span>
+<span class="sd">    VERSION     New_DNA</span>
+<span class="sd">    KEYWORDS    .</span>
+<span class="sd">    SOURCE</span>
+<span class="sd">      ORGANISM  .</span>
+<span class="sd">                .</span>
+<span class="sd">    COMMENT</span>
+<span class="sd">                ApEinfo:methylated:1</span>
+<span class="sd">    FEATURES             Location/Qualifiers</span>
+<span class="sd">    ORIGIN</span>
+<span class="sd">            1 aaa</span>
+<span class="sd">    //&quot;&quot;&quot;</span>
+
+    <span class="n">jseqlist</span> <span class="o">=</span> <span class="n">toJSON</span><span class="p">(</span><span class="n">gbtext</span><span class="p">)</span>
+    <span class="n">jseq</span> <span class="o">=</span> <span class="n">jseqlist</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span> <span class="k">as</span> <span class="n">_namedtuple</span>
+    <span class="kn">from</span> <span class="nn">pydna._pretty</span> <span class="kn">import</span> <span class="n">pretty_str</span> <span class="k">as</span> <span class="n">_pretty_str</span>
+
+    <span class="n">Result</span> <span class="o">=</span> <span class="n">_namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="s2">&quot;gbtext jseq&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">_pretty_str</span><span class="p">(</span><span class="n">toGB</span><span class="p">(</span><span class="n">jseq</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">jseq</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
