@@ -12,11 +12,12 @@ from pydna.amplify import pcr, Anneal
 
 def test_set_primer_footprint():
     f, r = parse_primers(
-        """>ForwardPrimer
-                            gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-                            >ReversePrimer
-                            tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -35,11 +36,12 @@ def test_set_primer_footprint():
 
 def test_string_arguments():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-                            gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-                            >ReversePrimer
-                            tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -55,11 +57,12 @@ def test_Seq_arguments():
     from Bio.Seq import Seq
 
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-                            gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-                            >ReversePrimer
-                            tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -75,11 +78,12 @@ def test_Dseq_arguments():
     from pydna.dseq import Dseq
 
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-                            gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-                            >ReversePrimer
-                            tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -98,11 +102,12 @@ def test_wrong_argument_type():
 
 def test_no_primers_anneal():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-                             gctacta
+        """
+        >ForwardPrimer
+        gctacta
 
-                             >ReversePrimer
-                             tgtggtt"""
+        >ReversePrimer
+        tgtggtt"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -117,11 +122,12 @@ def test_no_primers_anneal():
 
 def test_no_fwdprimer_anneal():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-                             gctact
+        """
+        >ForwardPrimer
+        gctact
 
-                             >ReversePrimer
-                             tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -136,11 +142,12 @@ def test_no_fwdprimer_anneal():
 
 def test_no_revprimer_anneal():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-                             gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-                             >ReversePrimer
-                             tgtggtt"""
+        >ReversePrimer
+        tgtggtt"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -155,11 +162,12 @@ def test_no_revprimer_anneal():
 
 def test_Primer_arguments():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-           gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-           >ReversePrimer
-           tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -173,11 +181,12 @@ def test_Primer_arguments():
 
 def test_feature_label():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-           gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-           >ReversePrimer
-           tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -192,11 +201,12 @@ def test_feature_label():
 
 def test_feature_note():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-           gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-           >ReversePrimer
-           tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -215,11 +225,12 @@ def test_feature_note():
 
 def test_Amplicon_argument():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-           gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-           >ReversePrimer
-           tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -239,11 +250,12 @@ def test_Amplicon_argument():
 
 def test_pcr_not_specific():
     f0, r0 = parse_primers(
-        """>ForwardPrimer
-           gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-           >ReversePrimer
-           tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t0 = Dseqrecord("gctactacacacgtactgactgtgctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
@@ -258,11 +270,12 @@ def test_pcr_not_specific():
 
 def test_too_short_primers():
     f, r = parse_primers(
-        """>ForwardPrimer
-           gctactacacacgtactgactg
+        """
+        >ForwardPrimer
+        gctactacacacgtactgactg
 
-           >ReversePrimer
-           tgtggttactgactctatcttg"""
+        >ReversePrimer
+        tgtggttactgactctatcttg"""
     )
 
     t = Dseqrecord("gctactacacacgtactgactgcctccaagatagagtcagtaaccaca")
