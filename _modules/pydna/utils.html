@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.utils &mdash; pydna 0.0.0.post1+da3e7e9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=ab0fd0ff"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pydna
+          </a>
+              <div class="version">
+                0.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../pydna.html">pydna</a></li>
+      <li class="breadcrumb-item active">pydna.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pydna.utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2013-2023 by Björn Johansson.  All rights reserved.</span>
+<span class="c1"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c1"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c1"># as part of this package.</span>
+<span class="sd">&quot;&quot;&quot;Miscellaneous functions.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">Bio.Data.IUPACData</span> <span class="kn">import</span> <span class="n">ambiguous_dna_complement</span> <span class="k">as</span> <span class="n">_ambiguous_dna_complement</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">_maketrans</span>
+<span class="kn">import</span> <span class="nn">shelve</span> <span class="k">as</span> <span class="nn">_shelve</span>
+<span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+<span class="kn">import</span> <span class="nn">re</span> <span class="k">as</span> <span class="nn">_re</span>
+<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
+<span class="kn">import</span> <span class="nn">base64</span> <span class="k">as</span> <span class="nn">_base64</span>
+<span class="kn">import</span> <span class="nn">pickle</span> <span class="k">as</span> <span class="nn">_pickle</span>
+<span class="kn">import</span> <span class="nn">hashlib</span> <span class="k">as</span> <span class="nn">_hashlib</span>
+<span class="kn">import</span> <span class="nn">keyword</span> <span class="k">as</span> <span class="nn">_keyword</span>
+<span class="kn">import</span> <span class="nn">collections</span> <span class="k">as</span> <span class="nn">_collections</span>
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">_itertools</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
+
+<span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">_sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">_subprocess</span>
+<span class="kn">from</span> <span class="nn">bisect</span> <span class="kn">import</span> <span class="n">bisect</span> <span class="k">as</span> <span class="n">_bisect</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span> <span class="k">as</span> <span class="n">_ceil</span>
+
+<span class="kn">from</span> <span class="nn">pydna.codon</span> <span class="kn">import</span> <span class="n">weights</span> <span class="k">as</span> <span class="n">_weights</span>
+<span class="kn">from</span> <span class="nn">pydna.codon</span> <span class="kn">import</span> <span class="n">rare_codons</span> <span class="k">as</span> <span class="n">_rare_codons</span>
+
+<span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">SimpleLocation</span> <span class="k">as</span> <span class="n">_sl</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">CompoundLocation</span> <span class="k">as</span> <span class="n">_cl</span>
+
+<span class="n">_module_logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pydna.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_ambiguous_dna_complement</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;U&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">})</span>
+<span class="n">_complement_table</span> <span class="o">=</span> <span class="n">_maketrans</span><span class="p">(</span><span class="n">_ambiguous_dna_complement</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="three_frame_orfs">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.three_frame_orfs">[docs]</a>
+<span class="k">def</span> <span class="nf">three_frame_orfs</span><span class="p">(</span>
+    <span class="n">dna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">startcodons</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATG&quot;</span><span class="p">,),</span>
+    <span class="n">stopcodons</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TAG&quot;</span><span class="p">,</span> <span class="s2">&quot;TAA&quot;</span><span class="p">,</span> <span class="s2">&quot;TGA&quot;</span><span class="p">),</span>
+    <span class="c1"># startcodons: tuple[str, ...] = (&quot;ATG&quot;,),</span>
+    <span class="c1"># stopcodons: tuple[str, ...] = (&quot;TAG&quot;, &quot;TAA&quot;, &quot;TGA&quot;),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Overlapping orfs in three frames.&quot;&quot;&quot;</span>
+    <span class="c1"># breakpoint()</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">_ceil</span><span class="p">(</span><span class="n">limit</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">dna</span> <span class="o">=</span> <span class="n">dna</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="n">orfs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+
+        <span class="n">codons</span> <span class="o">=</span> <span class="p">[</span><span class="n">dna</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dna</span><span class="p">),</span> <span class="mi">3</span><span class="p">)]</span>
+
+        <span class="n">startdindices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">codons</span><span class="p">)</span> <span class="k">if</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">startcodons</span><span class="p">]</span>
+        <span class="n">stopdindices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">codons</span><span class="p">)</span> <span class="k">if</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">stopcodons</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">startindex</span> <span class="ow">in</span> <span class="n">startdindices</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">stopindex</span> <span class="o">=</span> <span class="n">stopdindices</span><span class="p">[</span><span class="n">_bisect</span><span class="p">(</span><span class="n">stopdindices</span><span class="p">,</span> <span class="n">startindex</span><span class="p">)]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">stopindex</span> <span class="o">-</span> <span class="n">startindex</span> <span class="o">&gt;=</span> <span class="n">limit</span><span class="p">:</span>
+                    <span class="n">orfs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">frame</span><span class="p">,</span> <span class="n">startindex</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">stopindex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">frame</span><span class="p">))</span>
+                <span class="c1"># print(stopindex, startindex, limit)</span>
+    <span class="k">return</span> <span class="n">orfs</span></div>
+
+
+
+<div class="viewcode-block" id="shift_location">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.shift_location">[docs]</a>
+<span class="k">def</span> <span class="nf">shift_location</span><span class="p">(</span><span class="n">original_location</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">lim</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="n">newparts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">strand</span> <span class="o">=</span> <span class="n">original_location</span><span class="o">.</span><span class="n">strand</span>
+
+    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">original_location</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+        <span class="n">new_start</span> <span class="o">=</span> <span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">%</span> <span class="n">lim</span>
+        <span class="n">new_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">end</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">%</span> <span class="n">lim</span> <span class="ow">or</span> <span class="n">lim</span>
+        <span class="n">old_start</span><span class="p">,</span> <span class="n">old_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">newparts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">newparts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">end</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newparts</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># The &quot;join with old&quot; cases are for features with multiple parts</span>
+        <span class="c1"># in which consecutive parts do not have any bases between them.</span>
+        <span class="c1"># This type of feature is generated to represent a feature that</span>
+        <span class="c1"># spans the origin of a circular sequence. See more details in</span>
+        <span class="c1"># https://github.com/BjornFJohansson/pydna/issues/195</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">newparts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_sl</span><span class="p">(</span><span class="n">new_start</span><span class="p">,</span> <span class="n">new_start</span><span class="p">,</span> <span class="n">strand</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="c1"># Join with old, case 1</span>
+        <span class="k">elif</span> <span class="n">strand</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">old_end</span> <span class="o">==</span> <span class="n">new_start</span><span class="p">:</span>
+            <span class="n">part</span> <span class="o">=</span> <span class="n">newparts</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">part</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="n">new_end</span>
+            <span class="n">new_start</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">start</span>
+        <span class="c1"># Join with old, case 2</span>
+        <span class="k">elif</span> <span class="n">strand</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">old_start</span> <span class="o">==</span> <span class="n">new_end</span><span class="p">:</span>
+            <span class="n">part</span> <span class="o">=</span> <span class="n">newparts</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">part</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">new_start</span>
+            <span class="n">new_end</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">end</span>
+        <span class="k">if</span> <span class="n">new_start</span> <span class="o">&lt;</span> <span class="n">new_end</span><span class="p">:</span>
+            <span class="n">newparts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_sl</span><span class="p">(</span><span class="n">new_start</span><span class="p">,</span> <span class="n">new_end</span><span class="p">,</span> <span class="n">strand</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parttuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">_sl</span><span class="p">(</span><span class="n">new_start</span><span class="p">,</span> <span class="n">lim</span><span class="p">,</span> <span class="n">strand</span><span class="p">),</span> <span class="n">_sl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">new_end</span><span class="p">,</span> <span class="n">strand</span><span class="p">))</span>
+            <span class="n">newparts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parttuple</span> <span class="k">if</span> <span class="n">strand</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">parttuple</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">newloc</span> <span class="o">=</span> <span class="n">_cl</span><span class="p">(</span><span class="n">newparts</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">newloc</span><span class="p">,</span> <span class="o">*</span><span class="n">n</span> <span class="o">=</span> <span class="n">newparts</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">newloc</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_location</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">newloc</span></div>
+
+
+
+<span class="c1"># def shift_feature(feature, shift, lim):</span>
+<span class="c1">#     &quot;&quot;&quot;Return a new feature with shifted location.&quot;&quot;&quot;</span>
+<span class="c1">#     # TODO: Missing tests</span>
+<span class="c1">#     new_location = shift_location(feature.location, shift, lim)</span>
+<span class="c1">#     new_feature = _deepcopy(feature)</span>
+<span class="c1">#     new_feature.location = new_location</span>
+<span class="c1">#     return new_feature</span>
+
+
+<div class="viewcode-block" id="shift_feature">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.shift_feature">[docs]</a>
+<span class="k">def</span> <span class="nf">shift_feature</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">lim</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a new feature with shifted location.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Missing tests</span>
+    <span class="n">new_location</span> <span class="o">=</span> <span class="n">shift_location</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">lim</span><span class="p">)</span>
+    <span class="n">new_feature</span> <span class="o">=</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+    <span class="n">new_feature</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">new_location</span>
+    <span class="k">return</span> <span class="n">new_feature</span></div>
+
+
+
+<span class="c1"># def smallest_rotation(s):</span>
+<span class="c1">#     &quot;&quot;&quot;Smallest rotation of a string.</span>
+
+<span class="c1">#     Algorithm described in Pierre Duval, Jean. 1983. Factorizing Words</span>
+<span class="c1">#     over an Ordered Alphabet. Journal of Algorithms &amp; Computational Technology</span>
+<span class="c1">#     4 (4) (December 1): 363–381. and Algorithms on strings and sequences based</span>
+<span class="c1">#     on Lyndon words, David Eppstein 2011.</span>
+<span class="c1">#     https://gist.github.com/dvberkel/1950267</span>
+
+<span class="c1">#     Examples</span>
+<span class="c1">#     --------</span>
+<span class="c1">#     &gt;&gt;&gt; from pydna.utils import smallest_rotation</span>
+<span class="c1">#     &gt;&gt;&gt; smallest_rotation(&quot;taaa&quot;)</span>
+<span class="c1">#     &#39;aaat&#39;</span>
+
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     prev, rep = None, 0</span>
+<span class="c1">#     ds = _array(&quot;u&quot;, 2 * s)</span>
+<span class="c1">#     lens, lends = len(s), len(ds)</span>
+<span class="c1">#     old = 0</span>
+<span class="c1">#     k = 0</span>
+<span class="c1">#     w = &quot;&quot;</span>
+<span class="c1">#     while k &lt; lends:</span>
+<span class="c1">#         i, j = k, k + 1</span>
+<span class="c1">#         while j &lt; lends and ds[i] &lt;= ds[j]:</span>
+<span class="c1">#             i = (ds[i] == ds[j]) and i + 1 or k</span>
+<span class="c1">#             j += 1</span>
+<span class="c1">#         while k &lt; i + 1:</span>
+<span class="c1">#             k += j - i</span>
+<span class="c1">#             prev = w</span>
+<span class="c1">#             w = ds[old:k]</span>
+<span class="c1">#             old = k</span>
+<span class="c1">#             if w == prev:</span>
+<span class="c1">#                 rep += 1</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 prev, rep = w, 1</span>
+<span class="c1">#             if len(w) * rep == lens:</span>
+<span class="c1">#                 return &quot;&quot;.join(w * rep)</span>
+
+
+<div class="viewcode-block" id="smallest_rotation">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.smallest_rotation">[docs]</a>
+<span class="k">def</span> <span class="nf">smallest_rotation</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Smallest rotation of a string.</span>
+
+<span class="sd">    Algorithm described in Pierre Duval, Jean. 1983. Factorizing Words</span>
+<span class="sd">    over an Ordered Alphabet. Journal of Algorithms &amp; Computational Technology</span>
+<span class="sd">    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based</span>
+<span class="sd">    on Lyndon words, David Eppstein 2011.</span>
+<span class="sd">    https://gist.github.com/dvberkel/1950267</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pydna.utils import smallest_rotation</span>
+<span class="sd">    &gt;&gt;&gt; smallest_rotation(&quot;taaa&quot;)</span>
+<span class="sd">    &#39;aaat&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pydivsufsort</span> <span class="kn">import</span> <span class="n">min_rotation</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="n">min_rotation</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;ascii&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="cai">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.cai">[docs]</a>
+<span class="k">def</span> <span class="nf">cai</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">organism</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sce&quot;</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">_weights</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">cai2</span> <span class="kn">import</span> <span class="n">CAI</span> <span class="k">as</span> <span class="n">_CAI</span>
+
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">_CAI</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">organism</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="rarecodons">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.rarecodons">[docs]</a>
+<span class="k">def</span> <span class="nf">rarecodons</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">organism</span><span class="o">=</span><span class="s2">&quot;sce&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="n">rare</span> <span class="o">=</span> <span class="n">_rare_codons</span><span class="p">[</span><span class="n">organism</span><span class="p">]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">slices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">3</span>
+        <span class="n">trip</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">trip</span> <span class="ow">in</span> <span class="n">rare</span><span class="p">:</span>
+            <span class="n">slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">slices</span></div>
+
+
+
+<div class="viewcode-block" id="express">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.express">[docs]</a>
+<span class="k">def</span> <span class="nf">express</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">organism</span><span class="o">=</span><span class="s2">&quot;sce&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.</span>
+
+<span class="sd">    **NOT IMPLEMENTED YET**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># x = _PrettyTable([&quot;cds&quot;, &quot;len&quot;, &quot;cai&quot;, &quot;gc&quot;, &quot;sta&quot;, &quot;stp&quot;, &quot;n-end&quot;] + _rare_codons[organism] + [&quot;rare&quot;])</span>
+    <span class="c1"># val = []</span>
+
+    <span class="c1"># val.append(f&quot;{self._data.upper().decode(&#39;ASCII&#39;)[:3]}...&quot; f&quot;{self._data.upper().decode(&#39;ASCII&#39;)[-3:]}&quot;)</span>
+    <span class="c1"># val.append(len(self) / 3)</span>
+    <span class="c1"># val.append(cai(organism))</span>
+    <span class="c1"># val.append(gc())</span>
+    <span class="c1"># val.append(startcodon())</span>
+    <span class="c1"># val.append(stopcodon())</span>
+    <span class="c1"># val.append(_n_end[organism].get(_seq3(self[3:6].translate())))</span>
+    <span class="c1"># s = self._data.upper().decode(&quot;ASCII&quot;)</span>
+    <span class="c1"># trps = [s[i * 3 : i * 3 + 3] for i in range(0, len(s) // 3)]</span>
+    <span class="c1"># tot = 0</span>
+    <span class="c1"># for cdn in _rare_codons[organism]:</span>
+    <span class="c1">#     cnt = trps.count(cdn)</span>
+    <span class="c1">#     tot += cnt</span>
+    <span class="c1">#     val.append(cnt)</span>
+    <span class="c1"># val.append(round(tot / len(trps), 3))</span>
+    <span class="c1"># x.add_row(val)</span>
+    <span class="c1"># return x</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+
+<div class="viewcode-block" id="open_folder">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.open_folder">[docs]</a>
+<span class="k">def</span> <span class="nf">open_folder</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="n">pth</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">_sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+        <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;open&quot;</span><span class="p">,</span> <span class="n">pth</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;xdg-open&quot;</span><span class="p">,</span> <span class="n">pth</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;no cache to open.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="rc">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.rc">[docs]</a>
+<span class="k">def</span> <span class="nf">rc</span><span class="p">(</span><span class="n">sequence</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reverse complement.</span>
+
+<span class="sd">    accepts mixed DNA/RNA</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">sequence</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">_complement_table</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="complement">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.complement">[docs]</a>
+<span class="k">def</span> <span class="nf">complement</span><span class="p">(</span><span class="n">sequence</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Complement.</span>
+
+<span class="sd">    accepts mixed DNA/RNA</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">sequence</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">_complement_table</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="memorize">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.memorize">[docs]</a>
+<span class="k">def</span> <span class="nf">memorize</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cache functions and classes.</span>
+
+<span class="sd">    see pydna.download</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrappee</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#### memorizer ####&quot;</span><span class="p">)</span>
+            <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cache filename                   = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;os.environ[&#39;pydna_cached_funcs&#39;] = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cache filename not among cached functions, made it new!&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">_base64</span><span class="o">.</span><span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="n">_hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)))</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+            <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;key = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="n">_shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+                <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_data_dir&quot;</span><span class="p">],</span> <span class="n">identifier_from_string</span><span class="p">(</span><span class="n">filename</span><span class="p">)),</span>
+                <span class="n">writeback</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;no result for key </span><span class="si">%s</span><span class="s2"> in shelve </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">key</span><span class="p">,</span>
+                    <span class="n">identifier_from_string</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;made it new!&quot;</span><span class="p">)</span>
+                <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;saved result under key </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;found </span><span class="si">%s</span><span class="s2"> in cache&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">return</span> <span class="n">wrappee</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<div class="viewcode-block" id="identifier_from_string">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.identifier_from_string">[docs]</a>
+<span class="k">def</span> <span class="nf">identifier_from_string</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a valid python identifier.</span>
+
+<span class="sd">    based on the argument s or an empty string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">_re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">_re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[^0-9a-zA-Z_]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span> <span class="ow">or</span> <span class="n">_keyword</span><span class="o">.</span><span class="n">iskeyword</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;_</span><span class="si">{s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="flatten">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.flatten">[docs]</a>
+<span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens an iterable of iterables.</span>
+
+<span class="sd">    Down to str, bytes, bytearray or any of the pydna or Biopython seq objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">_collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="s2">&quot;reverse_complement&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="seq31">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.seq31">[docs]</a>
+<span class="k">def</span> <span class="nf">seq31</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Turn a three letter code protein sequence into one with one letter code.</span>
+
+<span class="sd">    The single input argument &#39;seq&#39; should be a protein sequence using single</span>
+<span class="sd">    letter codes, as a python string.</span>
+
+<span class="sd">    This function returns the amino acid sequence as a string using the one</span>
+<span class="sd">    letter amino acid codes. Output follows the IUPAC standard (including</span>
+<span class="sd">    ambiguous characters B for &quot;Asx&quot;, J for &quot;Xle&quot; and X for &quot;Xaa&quot;, and also U</span>
+<span class="sd">    for &quot;Sel&quot; and O for &quot;Pyl&quot;) plus &quot;Ter&quot; for a terminator given as an</span>
+<span class="sd">    asterisk.</span>
+
+<span class="sd">    Any unknown</span>
+<span class="sd">    character (including possible gap characters), is changed into &#39;Xaa&#39;.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from Bio.SeqUtils import seq3</span>
+<span class="sd">    &gt;&gt;&gt; seq3(&quot;MAIVMGRWKGAR*&quot;)</span>
+<span class="sd">    &#39;MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer&#39;</span>
+<span class="sd">    &gt;&gt;&gt; from pydna.utils import seq31</span>
+<span class="sd">    &gt;&gt;&gt; seq31(&#39;MetAlaIleValMetGlyArgTrpLysGlyAlaArgTer&#39;)</span>
+<span class="sd">    &#39;M  A  I  V  M  G  R  W  K  G  A  R  *&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">threecode</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Ala&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Asx&quot;</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Cys&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Asp&quot;</span><span class="p">:</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Glu&quot;</span><span class="p">:</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Phe&quot;</span><span class="p">:</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Gly&quot;</span><span class="p">:</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;His&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ile&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Lys&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Leu&quot;</span><span class="p">:</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Met&quot;</span><span class="p">:</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Asn&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Pro&quot;</span><span class="p">:</span> <span class="s2">&quot;P&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Gln&quot;</span><span class="p">:</span> <span class="s2">&quot;Q&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Arg&quot;</span><span class="p">:</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ser&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Thr&quot;</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Val&quot;</span><span class="p">:</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Trp&quot;</span><span class="p">:</span> <span class="s2">&quot;W&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Tyr&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Glx&quot;</span><span class="p">:</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Xaa&quot;</span><span class="p">:</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ter&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Sel&quot;</span><span class="p">:</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Pyl&quot;</span><span class="p">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Xle&quot;</span><span class="p">:</span> <span class="s2">&quot;J&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">nr_of_codons</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">sequence</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="p">:</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_of_codons</span><span class="p">)]</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">padding</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">threecode</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="randomRNA">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.randomRNA">[docs]</a>
+<span class="k">def</span> <span class="nf">randomRNA</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">maxlength</span> <span class="ow">and</span> <span class="n">maxlength</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">triangular</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="s2">&quot;GAUC&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)])</span></div>
+
+
+
+<div class="viewcode-block" id="randomDNA">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.randomDNA">[docs]</a>
+<span class="k">def</span> <span class="nf">randomDNA</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">maxlength</span> <span class="ow">and</span> <span class="n">maxlength</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">triangular</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="s2">&quot;GATC&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)])</span></div>
+
+
+
+<div class="viewcode-block" id="randomORF">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.randomORF">[docs]</a>
+<span class="k">def</span> <span class="nf">randomORF</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="n">length</span> <span class="o">-=</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">maxlength</span> <span class="ow">and</span> <span class="n">maxlength</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">triangular</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)))</span>
+
+    <span class="n">cdns</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;TTT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TTC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TTA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TTG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TCT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TCC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TCA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TCG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TAT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TAC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TGT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TGC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TGG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CTT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CTC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CTA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CTG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CCT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CCC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CCA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CCG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CAT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CAC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CAA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CAG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CGT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CGC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CGA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CGG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ATT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ATC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ATA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ATG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ACT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ACC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ACA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ACG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AAT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AAC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AAA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AAG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AGT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AGC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AGA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AGG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GTT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GTA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GTG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GCT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GCC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GCA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GCG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GAT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GAC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GAA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GAG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GGT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GGC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GGA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GGG&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">starts</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATG&quot;</span><span class="p">,)</span>
+    <span class="n">stops</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TAA&quot;</span><span class="p">,</span> <span class="s2">&quot;TAG&quot;</span><span class="p">,</span> <span class="s2">&quot;TGA&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">cdns</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)])</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">stops</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="randomprot">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.randomprot">[docs]</a>
+<span class="k">def</span> <span class="nf">randomprot</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">maxlength</span> <span class="ow">and</span> <span class="n">maxlength</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">triangular</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">maxlength</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="s2">&quot;ACDEFGHIKLMNPQRSTVWY&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)])</span></div>
+
+
+
+<div class="viewcode-block" id="eq">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.eq">[docs]</a>
+<span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare two or more DNA sequences for equality.</span>
+
+<span class="sd">    Compares two or more DNA sequences for equality i.e. if they</span>
+<span class="sd">    represent the same double stranded DNA molecule.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    args : iterable</span>
+<span class="sd">        iterable containing sequences</span>
+<span class="sd">        args can be strings, Biopython Seq or SeqRecord, Dseqrecord</span>
+<span class="sd">        or dsDNA objects.</span>
+<span class="sd">    circular : bool, optional</span>
+<span class="sd">        Consider all molecules circular or linear</span>
+<span class="sd">    linear : bool, optional</span>
+<span class="sd">        Consider all molecules circular or linear</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eq : bool</span>
+<span class="sd">        Returns True or False</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Compares two or more DNA sequences for equality i.e. if they</span>
+<span class="sd">    represent the same DNA molecule.</span>
+
+<span class="sd">    Two linear sequences are considiered equal if either:</span>
+
+<span class="sd">    1. They have the same sequence (case insensitive)</span>
+<span class="sd">    2. One sequence is the reverse complement of the other</span>
+
+<span class="sd">    Two circular sequences are considered equal if they are circular</span>
+<span class="sd">    permutations meaning that they have the same length and:</span>
+
+<span class="sd">    1. One sequence can be found in the concatenation of the other sequence with itself.</span>
+<span class="sd">    2. The reverse complement of one sequence can be found in the concatenation of the other sequence with itself.</span>
+
+<span class="sd">    The topology for the comparison can be set using one of the keywords</span>
+<span class="sd">    linear or circular to True or False.</span>
+
+<span class="sd">    If circular or linear is not set, it will be deduced from the topology of</span>
+<span class="sd">    each sequence for sequences that have a linear or circular attribute</span>
+<span class="sd">    (like Dseq and Dseqrecord).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pydna.dseqrecord import Dseqrecord</span>
+<span class="sd">    &gt;&gt;&gt; from pydna.utils import eq</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;,&quot;TTT&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;,&quot;TTT&quot;,&quot;tTt&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;aaa&quot;,&quot;AAA&quot;,&quot;TTT&quot;,&quot;tTt&quot;, linear=True)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;Taaa&quot;,&quot;aTaa&quot;, linear = True)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;Taaa&quot;,&quot;aTaa&quot;, circular = True)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; a=Dseqrecord(&quot;Taaa&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; b=Dseqrecord(&quot;aTaa&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,circular=True)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; a=a.looped()</span>
+<span class="sd">    &gt;&gt;&gt; b=b.looped()</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,circular=False)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,linear=True)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; eq(a,b,linear=False)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;ggatcc&quot;,&quot;GGATCC&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;ggatcca&quot;,&quot;GGATCCa&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; eq(&quot;ggatcca&quot;,&quot;tGGATCC&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># flatten</span>
+
+    <span class="n">topology</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s2">&quot;linear&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s2">&quot;circular&quot;</span>
+    <span class="k">elif</span> <span class="s2">&quot;circular&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;circular&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s2">&quot;circular&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;circular&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">topology</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">arg</span><span class="o">.</span><span class="n">circular</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s2">&quot;circular&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sequences have different topologies&quot;</span><span class="p">)</span>
+        <span class="n">topology</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">topology</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span>
+        <span class="k">elif</span> <span class="n">topology</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="s2">&quot;circular&quot;</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">seq</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s2">&quot;seq&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    <span class="n">args_string_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">watson</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s2">&quot;watson&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">set</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">args_string_list</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">same</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">topology</span> <span class="o">==</span> <span class="s2">&quot;circular&quot;</span><span class="p">:</span>
+        <span class="c1"># force circular comparison of all given sequences</span>
+        <span class="k">for</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="n">_itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">args_string_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">s1</span> <span class="ow">in</span> <span class="n">s2</span> <span class="o">+</span> <span class="n">s2</span> <span class="ow">or</span> <span class="n">rc</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">s2</span> <span class="o">+</span> <span class="n">s2</span><span class="p">):</span>
+                <span class="n">same</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">topology</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
+        <span class="c1"># force linear comparison of all given sequences</span>
+        <span class="k">for</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="n">_itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">args_string_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">s1</span> <span class="o">==</span> <span class="n">s2</span> <span class="ow">or</span> <span class="n">s1</span> <span class="o">==</span> <span class="n">rc</span><span class="p">(</span><span class="n">s2</span><span class="p">)):</span>
+                <span class="n">same</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">same</span></div>
+
+
+
+<span class="c1"># def cuts_overlap(left_cut, right_cut, seq_len):</span>
+<span class="c1">#     # Special cases:</span>
+<span class="c1">#     if left_cut is None or right_cut is None or left_cut == right_cut:</span>
+<span class="c1">#         return False</span>
+
+<span class="c1">#     # This block of code would not be necessary if the cuts were</span>
+<span class="c1">#     # initially represented like this</span>
+<span class="c1">#     (left_watson, left_ovhg), _ = left_cut</span>
+<span class="c1">#     (right_watson, right_ovhg), _ = right_cut</span>
+<span class="c1">#     # Position of the cut on the crick strands on the left and right</span>
+<span class="c1">#     left_crick = left_watson - left_ovhg</span>
+<span class="c1">#     right_crick = right_watson - right_ovhg</span>
+<span class="c1">#     if left_crick &gt;= seq_len:</span>
+<span class="c1">#         left_crick -= seq_len</span>
+<span class="c1">#         left_watson -= seq_len</span>
+<span class="c1">#     if right_crick &gt;= seq_len:</span>
+<span class="c1">#         right_crick -= seq_len</span>
+<span class="c1">#         right_watson -= seq_len</span>
+
+<span class="c1">#     # Convert into ranges x and y and see if ranges overlap</span>
+<span class="c1">#     x = sorted([left_watson, left_crick])</span>
+<span class="c1">#     y = sorted([right_watson, right_crick])</span>
+<span class="c1">#     return (x[1] &gt; y[0]) != (y[1] &lt; x[0])</span>
+
+
+<span class="c1"># def location_boundaries(loc: _Union[_sl, _cl]):</span>
+<span class="c1">#     if loc.strand == -1:</span>
+<span class="c1">#         return loc.parts[-1].start, loc.parts[0].end</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         return loc.parts[0].start, loc.parts[-1].end</span>
+
+
+<div class="viewcode-block" id="cuts_overlap">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.cuts_overlap">[docs]</a>
+<span class="k">def</span> <span class="nf">cuts_overlap</span><span class="p">(</span><span class="n">left_cut</span><span class="p">,</span> <span class="n">right_cut</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">):</span>
+    <span class="c1"># Special cases:</span>
+    <span class="k">if</span> <span class="n">left_cut</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">right_cut</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">left_cut</span> <span class="o">==</span> <span class="n">right_cut</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># This block of code would not be necessary if the cuts were</span>
+    <span class="c1"># initially represented like this</span>
+    <span class="p">(</span><span class="n">left_watson</span><span class="p">,</span> <span class="n">left_ovhg</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">left_cut</span>
+    <span class="p">(</span><span class="n">right_watson</span><span class="p">,</span> <span class="n">right_ovhg</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">right_cut</span>
+    <span class="c1"># Position of the cut on the crick strands on the left and right</span>
+    <span class="n">left_crick</span> <span class="o">=</span> <span class="n">left_watson</span> <span class="o">-</span> <span class="n">left_ovhg</span>
+    <span class="n">right_crick</span> <span class="o">=</span> <span class="n">right_watson</span> <span class="o">-</span> <span class="n">right_ovhg</span>
+    <span class="k">if</span> <span class="n">left_crick</span> <span class="o">&gt;=</span> <span class="n">seq_len</span><span class="p">:</span>
+        <span class="n">left_crick</span> <span class="o">-=</span> <span class="n">seq_len</span>
+        <span class="n">left_watson</span> <span class="o">-=</span> <span class="n">seq_len</span>
+    <span class="k">if</span> <span class="n">right_crick</span> <span class="o">&gt;=</span> <span class="n">seq_len</span><span class="p">:</span>
+        <span class="n">right_crick</span> <span class="o">-=</span> <span class="n">seq_len</span>
+        <span class="n">right_watson</span> <span class="o">-=</span> <span class="n">seq_len</span>
+
+    <span class="c1"># Convert into ranges x and y and see if ranges overlap</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">left_watson</span><span class="p">,</span> <span class="n">left_crick</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">right_watson</span><span class="p">,</span> <span class="n">right_crick</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="location_boundaries">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.location_boundaries">[docs]</a>
+<span class="k">def</span> <span class="nf">location_boundaries</span><span class="p">(</span><span class="n">loc</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_sl</span><span class="p">,</span> <span class="n">_cl</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="n">loc</span><span class="o">.</span><span class="n">strand</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">loc</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">end</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">loc</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">end</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

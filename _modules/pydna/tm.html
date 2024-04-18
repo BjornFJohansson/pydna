@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.tm &mdash; pydna 0.0.0.post1+da3e7e9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=ab0fd0ff"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pydna
+          </a>
+              <div class="version">
+                0.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../pydna.html">pydna</a></li>
+      <li class="breadcrumb-item active">pydna.tm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pydna.tm</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2013-2023 by Björn Johansson.  All rights reserved.</span>
+<span class="c1"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c1"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c1"># as part of this package.</span>
+
+<span class="sd">&quot;&quot;&quot;This module provide functions for melting temperature calculations.&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">_math</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils</span> <span class="kn">import</span> <span class="n">MeltingTemp</span> <span class="k">as</span> <span class="n">_mt</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils</span> <span class="kn">import</span> <span class="n">gc_fraction</span> <span class="k">as</span> <span class="n">_GC</span>
+
+<span class="kn">import</span> <span class="nn">textwrap</span> <span class="k">as</span> <span class="nn">_textwrap</span>
+<span class="kn">from</span> <span class="nn">pydna._pretty</span> <span class="kn">import</span> <span class="n">pretty_str</span> <span class="k">as</span> <span class="n">_pretty_str</span>
+
+<span class="c1"># See the documentation for Bio.SeqUtils.MeltingTemp for more details</span>
+<span class="c1"># The 10X Taq Buffer with (NH4)2SO4 is commercialized by companies like</span>
+<span class="c1"># ThermoFisher, although we make it ourselves</span>
+<span class="c1"># 10X Buffer Composition</span>
+<span class="c1"># 750 mM Tris-HCl (pH 8.8 at 25°C),</span>
+<span class="c1"># 200 mM (NH4)2SO4,</span>
+<span class="c1"># 0.1% (v/v) Tween 20.</span>
+
+
+<div class="viewcode-block" id="tm_default">
+<a class="viewcode-back" href="../../index.html#pydna.tm.tm_default">[docs]</a>
+<span class="k">def</span> <span class="nf">tm_default</span><span class="p">(</span>
+    <span class="n">seq</span><span class="p">,</span>
+    <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">c_seq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">shift</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">nn_table</span><span class="o">=</span><span class="n">_mt</span><span class="o">.</span><span class="n">DNA_NN4</span><span class="p">,</span>  <span class="c1"># DNA_NN4: values from SantaLucia &amp; Hicks (2004)</span>
+    <span class="n">tmm_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">imm_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">de_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dnac1</span><span class="o">=</span><span class="mi">500</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># I assume 500 µM of each primer in the PCR mix</span>
+    <span class="n">dnac2</span><span class="o">=</span><span class="mi">500</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># This is what MELTING and Primer3Plus do</span>
+    <span class="n">selfcomp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">Na</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">K</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">Tris</span><span class="o">=</span><span class="mf">75.0</span><span class="p">,</span>  <span class="c1"># We use the 10X Taq Buffer with (NH4)2SO4 (above)</span>
+    <span class="n">Mg</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>  <span class="c1"># 1.5 mM Mg2+ is often seen in modern protocols</span>
+    <span class="n">dNTPs</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>  <span class="c1"># I assume 200 µM of each dNTP</span>
+    <span class="n">saltcorr</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>  <span class="c1"># Tm = 81.5 + 0.41(%GC) - 600/N + 16.6 x log[Na+]</span>
+    <span class="n">func</span><span class="o">=</span><span class="n">_mt</span><span class="o">.</span><span class="n">Tm_NN</span><span class="p">,</span>  <span class="c1"># Used by Primer3Plus to calculate the product Tm.</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">func</span><span class="p">(</span>
+        <span class="n">seq</span><span class="p">,</span>
+        <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span>
+        <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+        <span class="n">c_seq</span><span class="o">=</span><span class="n">c_seq</span><span class="p">,</span>
+        <span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span>
+        <span class="n">nn_table</span><span class="o">=</span><span class="n">nn_table</span><span class="p">,</span>
+        <span class="n">tmm_table</span><span class="o">=</span><span class="n">tmm_table</span><span class="p">,</span>
+        <span class="n">imm_table</span><span class="o">=</span><span class="n">imm_table</span><span class="p">,</span>
+        <span class="n">de_table</span><span class="o">=</span><span class="n">de_table</span><span class="p">,</span>
+        <span class="n">dnac1</span><span class="o">=</span><span class="n">dnac1</span><span class="p">,</span>
+        <span class="n">dnac2</span><span class="o">=</span><span class="n">dnac2</span><span class="p">,</span>
+        <span class="n">selfcomp</span><span class="o">=</span><span class="n">selfcomp</span><span class="p">,</span>
+        <span class="n">Na</span><span class="o">=</span><span class="n">Na</span><span class="p">,</span>
+        <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
+        <span class="n">Tris</span><span class="o">=</span><span class="n">Tris</span><span class="p">,</span>
+        <span class="n">Mg</span><span class="o">=</span><span class="n">Mg</span><span class="p">,</span>
+        <span class="n">dNTPs</span><span class="o">=</span><span class="n">dNTPs</span><span class="p">,</span>
+        <span class="n">saltcorr</span><span class="o">=</span><span class="n">saltcorr</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="tm_dbd">
+<a class="viewcode-back" href="../../index.html#pydna.tm.tm_dbd">[docs]</a>
+<span class="k">def</span> <span class="nf">tm_dbd</span><span class="p">(</span>
+    <span class="n">seq</span><span class="p">,</span>
+    <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">c_seq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">shift</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">nn_table</span><span class="o">=</span><span class="n">_mt</span><span class="o">.</span><span class="n">DNA_NN3</span><span class="p">,</span>
+    <span class="n">tmm_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">imm_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">de_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dnac1</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span>
+    <span class="n">dnac2</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span>
+    <span class="n">selfcomp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">Na</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">K</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">Tris</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">Mg</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">dNTPs</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">saltcorr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">func</span><span class="o">=</span><span class="n">_mt</span><span class="o">.</span><span class="n">Tm_NN</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">func</span><span class="p">(</span>
+        <span class="n">seq</span><span class="p">,</span>
+        <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span>
+        <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+        <span class="n">c_seq</span><span class="o">=</span><span class="n">c_seq</span><span class="p">,</span>
+        <span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span>
+        <span class="n">nn_table</span><span class="o">=</span><span class="n">nn_table</span><span class="p">,</span>
+        <span class="n">tmm_table</span><span class="o">=</span><span class="n">tmm_table</span><span class="p">,</span>
+        <span class="n">imm_table</span><span class="o">=</span><span class="n">imm_table</span><span class="p">,</span>
+        <span class="n">de_table</span><span class="o">=</span><span class="n">de_table</span><span class="p">,</span>
+        <span class="n">dnac1</span><span class="o">=</span><span class="n">dnac1</span><span class="p">,</span>
+        <span class="n">dnac2</span><span class="o">=</span><span class="n">dnac2</span><span class="p">,</span>
+        <span class="n">selfcomp</span><span class="o">=</span><span class="n">selfcomp</span><span class="p">,</span>
+        <span class="n">Na</span><span class="o">=</span><span class="n">Na</span><span class="p">,</span>
+        <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
+        <span class="n">Tris</span><span class="o">=</span><span class="n">Tris</span><span class="p">,</span>
+        <span class="n">Mg</span><span class="o">=</span><span class="n">Mg</span><span class="p">,</span>
+        <span class="n">dNTPs</span><span class="o">=</span><span class="n">dNTPs</span><span class="p">,</span>
+        <span class="n">saltcorr</span><span class="o">=</span><span class="n">saltcorr</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="tm_product">
+<a class="viewcode-back" href="../../index.html#pydna.tm.tm_product">[docs]</a>
+<span class="k">def</span> <span class="nf">tm_product</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="mf">0.050</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tm calculation for the amplicon.</span>
+
+<span class="sd">    according to:</span>
+
+<span class="sd">    Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal</span>
+<span class="sd">    ing temperature for DNA amplification in vitro</span>
+<span class="sd">    http://www.ncbi.nlm.nih.gov/pubmed/2243783</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="mf">81.5</span> <span class="o">+</span> <span class="mf">0.41</span> <span class="o">*</span> <span class="n">_GC</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="mf">16.6</span> <span class="o">*</span> <span class="n">_math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">-</span> <span class="mi">675</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+
+<div class="viewcode-block" id="ta_default">
+<a class="viewcode-back" href="../../index.html#pydna.tm.ta_default">[docs]</a>
+<span class="k">def</span> <span class="nf">ta_default</span><span class="p">(</span><span class="n">fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="n">tm_default</span><span class="p">,</span> <span class="n">tm_product</span><span class="o">=</span><span class="n">tm_product</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ta calculation.</span>
+
+<span class="sd">    according to:</span>
+
+<span class="sd">    Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal</span>
+<span class="sd">    ing temperature for DNA amplification in vitro</span>
+<span class="sd">    http://www.ncbi.nlm.nih.gov/pubmed/2243783</span>
+
+<span class="sd">    The formula described uses the length and GC content of the product and</span>
+<span class="sd">    salt concentration (monovalent cations)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="nb">min</span><span class="p">((</span><span class="n">tm</span><span class="p">(</span><span class="n">fp</span><span class="p">),</span> <span class="n">tm</span><span class="p">(</span><span class="n">rp</span><span class="p">)))</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="n">tm_product</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="mf">14.9</span></div>
+
+
+
+<div class="viewcode-block" id="ta_dbd">
+<a class="viewcode-back" href="../../index.html#pydna.tm.ta_dbd">[docs]</a>
+<span class="k">def</span> <span class="nf">ta_dbd</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">rp</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="n">tm_dbd</span><span class="p">,</span> <span class="n">tm_product</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">((</span><span class="n">tm</span><span class="p">(</span><span class="n">fp</span><span class="p">),</span> <span class="n">tm</span><span class="p">(</span><span class="n">rp</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">3</span></div>
+
+
+
+<div class="viewcode-block" id="program">
+<a class="viewcode-back" href="../../index.html#pydna.tm.program">[docs]</a>
+<span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="n">amplicon</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="n">tm_default</span><span class="p">,</span> <span class="n">ta</span><span class="o">=</span><span class="n">ta_default</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns a string containing a text representation of a suggested</span>
+<span class="sd">    PCR program using Taq or similar polymerase.</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">     |95°C|95°C               |    |tmf:59.5</span>
+<span class="sd">     |____|_____          72°C|72°C|tmr:59.7</span>
+<span class="sd">     |3min|30s  \ 59.1°C _____|____|60s/kb</span>
+<span class="sd">     |    |      \______/ 0:32|5min|GC 51%</span>
+<span class="sd">     |    |       30s         |    |1051bp</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">taq_extension_rate</span> <span class="o">=</span> <span class="mi">45</span>  <span class="c1"># seconds/kB PCR product length (1min/kb)</span>
+    <span class="n">extension_time_taq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">taq_extension_rate</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">amplicon</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span>
+    <span class="c1"># seconds</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        |95°C|95°C               |    |tmf:{tmf:.1f}</span>
+<span class="sd">        |____|_____          72°C|72°C|tmr:{tmr:.1f}</span>
+<span class="sd">        |3min|30s  \ {ta:.1f}°C _____|____|{rate}s/kb</span>
+<span class="sd">        |    |      \______/{0:2}:{1:0&gt;2}|5min|GC {GC}%</span>
+<span class="sd">        |    |       30s         |    |{size}bp</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">rate</span><span class="o">=</span><span class="n">taq_extension_rate</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+            <span class="n">ta</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span>
+                <span class="n">ta</span><span class="p">(</span>
+                    <span class="n">amplicon</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">,</span>
+                    <span class="n">amplicon</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                <span class="p">),</span>
+                <span class="mi">1</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">tmf</span><span class="o">=</span><span class="n">tm</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+            <span class="n">tmr</span><span class="o">=</span><span class="n">tm</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">),</span>
+            <span class="n">GC</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">gc</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+            <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">extension_time_taq</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+
+<span class="n">taq_program</span> <span class="o">=</span> <span class="n">program</span>
+
+
+<div class="viewcode-block" id="dbd_program">
+<a class="viewcode-back" href="../../index.html#pydna.tm.dbd_program">[docs]</a>
+<span class="k">def</span> <span class="nf">dbd_program</span><span class="p">(</span><span class="n">amplicon</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="n">tm_dbd</span><span class="p">,</span> <span class="n">ta</span><span class="o">=</span><span class="n">ta_dbd</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Text representation of a suggested PCR program.</span>
+
+<span class="sd">    Using a polymerase with a DNA binding domain such as Pfu-Sso7d.</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">     |98°C|98°C               |    |tmf:53.8</span>
+<span class="sd">     |____|_____          72°C|72°C|tmr:54.8</span>
+<span class="sd">     |30s |10s  \ 57.0°C _____|____|15s/kb</span>
+<span class="sd">     |    |      \______/ 0:15|5min|GC 51%</span>
+<span class="sd">     |    |       10s         |    |1051bp</span>
+
+
+<span class="sd">     |98°C|98°C      |    |tmf:82.5</span>
+<span class="sd">     |____|____      |    |tmr:84.4</span>
+<span class="sd">     |30s |10s \ 72°C|72°C|15s/kb</span>
+<span class="sd">     |    |     \____|____|GC 52%</span>
+<span class="sd">     |    |      3:45|5min|15058bp</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PfuSso7d_extension_rate</span> <span class="o">=</span> <span class="mi">15</span>  <span class="c1"># seconds/kB PCR product</span>
+    <span class="n">extension_time_PfuSso7d</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">PfuSso7d_extension_rate</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">amplicon</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span>  <span class="c1"># seconds</span>
+
+    <span class="c1"># The program returned is eaither a two step or three step progrem</span>
+    <span class="c1"># This depends on the tm and length of the primers in the</span>
+    <span class="c1"># original instructions from finnzyme. These do not seem to be</span>
+
+    <span class="c1"># Ta calculation for enzymes with dsDNA binding domains like phusion or Pfu-Sso7d</span>
+    <span class="c1"># https://www.finnzymes.fi/tm_determination.html</span>
+
+    <span class="n">tmf</span> <span class="o">=</span> <span class="n">tm</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">)</span>
+    <span class="n">tmr</span> <span class="o">=</span> <span class="n">tm</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">tmf</span> <span class="o">&gt;=</span> <span class="mf">69.0</span> <span class="ow">and</span> <span class="n">tmr</span> <span class="o">&gt;=</span> <span class="mf">69.0</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                              |98°C|98°C      |    |tmf:{tmf:.1f}</span>
+<span class="sd">                              |____|____      |    |tmr:{tmr:.1f}</span>
+<span class="sd">                              |30s |10s \ 72°C|72°C|{rate}s/kb</span>
+<span class="sd">                              |    |     \____|____|GC {GC_prod}%</span>
+<span class="sd">                              |    |     {0:2}:{1:0&gt;2}|5min|{size}bp</span>
+<span class="sd">                              &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">rate</span><span class="o">=</span><span class="n">PfuSso7d_extension_rate</span><span class="p">,</span>
+                <span class="n">tmf</span><span class="o">=</span><span class="n">tmf</span><span class="p">,</span>
+                <span class="n">tmr</span><span class="o">=</span><span class="n">tmr</span><span class="p">,</span>
+                <span class="n">GC_prod</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">gc</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+                <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">extension_time_PfuSso7d</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">_textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">             |98°C|98°C               |    |tmf:{tmf:.1f}</span>
+<span class="sd">             |____|_____          72°C|72°C|tmr:{tmr:.1f}</span>
+<span class="sd">             |30s |10s  \ {ta:.1f}°C _____|____|{rate}s/kb</span>
+<span class="sd">             |    |      \______/{0:2}:{1:0&gt;2}|5min|GC {GC}%</span>
+<span class="sd">             |    |       10s         |    |{size}bp</span>
+<span class="sd">             &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">rate</span><span class="o">=</span><span class="n">PfuSso7d_extension_rate</span><span class="p">,</span>
+                <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+                <span class="n">ta</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span>
+                    <span class="n">ta</span><span class="p">(</span>
+                        <span class="n">amplicon</span><span class="o">.</span><span class="n">forward_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">,</span>
+                        <span class="n">amplicon</span><span class="o">.</span><span class="n">reverse_primer</span><span class="o">.</span><span class="n">footprint</span><span class="p">,</span>
+                        <span class="n">amplicon</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">tmf</span><span class="o">=</span><span class="n">tmf</span><span class="p">,</span>
+                <span class="n">tmr</span><span class="o">=</span><span class="n">tmr</span><span class="p">,</span>
+                <span class="n">GC</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">amplicon</span><span class="o">.</span><span class="n">gc</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+                <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">extension_time_PfuSso7d</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+
+<span class="n">pfu_sso7d_program</span> <span class="o">=</span> <span class="n">dbd_program</span>
+
+
+<div class="viewcode-block" id="Q5">
+<a class="viewcode-back" href="../../index.html#pydna.tm.Q5">[docs]</a>
+<span class="k">def</span> <span class="nf">Q5</span><span class="p">(</span><span class="n">primer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;For Q5 Ta they take the lower of the two Tms and add 1C</span>
+<span class="sd">    (up to 72C). For Phusion they take the lower of the two</span>
+<span class="sd">    and add 3C (up to 72C).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+
+<div class="viewcode-block" id="tmbresluc">
+<a class="viewcode-back" href="../../index.html#pydna.tm.tmbresluc">[docs]</a>
+<span class="k">def</span> <span class="nf">tmbresluc</span><span class="p">(</span><span class="n">primer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">primerc</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span> <span class="n">saltc</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the tm for a primer using a formula adapted to polymerases</span>
+<span class="sd">    with a DNA binding domain, such as the Phusion polymerase.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    primer : string</span>
+<span class="sd">        primer sequence 5&#39;-3&#39;</span>
+
+<span class="sd">    primerc : float</span>
+<span class="sd">       primer concentration in nM), set to 500.0 nm by default.</span>
+
+<span class="sd">    saltc : float, optional</span>
+<span class="sd">       Monovalent cation concentration in mM, set to 50.0 mM by default.</span>
+
+<span class="sd">    thermodynamics : bool, optional</span>
+<span class="sd">        prints details of the thermodynamic data to stdout. For</span>
+<span class="sd">        debugging only.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tm : float</span>
+<span class="sd">        the tm of the primer</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_thermodynamic_data</span>
+
+    <span class="n">saltc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">saltc</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+    <span class="n">pri</span> <span class="o">=</span> <span class="n">primerc</span> <span class="o">/</span> <span class="mf">1e9</span>
+    <span class="n">dS</span> <span class="o">=</span> <span class="o">-</span><span class="mf">12.4</span>
+    <span class="n">dH</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3400</span>
+
+    <span class="n">STR</span> <span class="o">=</span> <span class="n">primer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">STR</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">STR</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">STR</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">dH</span> <span class="o">+=</span> <span class="n">_thermodynamic_data</span><span class="o">.</span><span class="n">dHBr</span><span class="p">[</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">97</span><span class="p">][</span><span class="n">n2</span> <span class="o">-</span> <span class="mi">97</span><span class="p">]</span>
+        <span class="n">dS</span> <span class="o">+=</span> <span class="n">_thermodynamic_data</span><span class="o">.</span><span class="n">dSBr</span><span class="p">[</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">97</span><span class="p">][</span><span class="n">n2</span> <span class="o">-</span> <span class="mi">97</span><span class="p">]</span>
+
+    <span class="n">tm</span> <span class="o">=</span> <span class="p">(</span><span class="n">dH</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.9872</span> <span class="o">*</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pri</span> <span class="o">/</span> <span class="mi">1600</span><span class="p">)</span> <span class="o">+</span> <span class="n">dS</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">16.6</span> <span class="o">*</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">saltc</span><span class="p">))</span> <span class="o">/</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> <span class="o">-</span> <span class="mf">273.15</span>
+
+    <span class="k">return</span> <span class="n">tm</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

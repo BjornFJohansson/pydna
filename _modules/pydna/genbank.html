@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.genbank &mdash; pydna 0.0.0.post1+da3e7e9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=ab0fd0ff"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pydna
+          </a>
+              <div class="version">
+                0.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../pydna.html">pydna</a></li>
+      <li class="breadcrumb-item active">pydna.genbank</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pydna.genbank</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2013-2023 by Björn Johansson.  All rights reserved.</span>
+<span class="c1"># This code is part of the Python-dna distribution and governed by its</span>
+<span class="c1"># license.  Please see the LICENSE.txt file that should have been included</span>
+<span class="c1"># as part of this package.</span>
+<span class="sd">&quot;&quot;&quot;This module provides a class for downloading sequences from genbank</span>
+<span class="sd">called Genbank and an function that does the same thing called genbank.</span>
+
+<span class="sd">The function can be used if the environmental variable **pydna_email** has</span>
+<span class="sd">been set to a valid email address. The easiest way to do this permanantly is to edit the</span>
+<span class="sd">`pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pydna.utils</span> <span class="kn">import</span> <span class="n">memorize</span> <span class="k">as</span> <span class="n">_memorize</span>
+<span class="kn">from</span> <span class="nn">pydna.genbankrecord</span> <span class="kn">import</span> <span class="n">GenbankRecord</span> <span class="k">as</span> <span class="n">_GenbankRecord</span>
+<span class="kn">from</span> <span class="nn">pydna.readers</span> <span class="kn">import</span> <span class="n">read</span> <span class="k">as</span> <span class="n">_read</span>
+
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">Entrez</span> <span class="k">as</span> <span class="n">_Entrez</span>
+<span class="kn">import</span> <span class="nn">re</span> <span class="k">as</span> <span class="nn">_re</span>
+<span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
+
+<span class="n">_module_logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pydna.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># TODO http://httpbin.org/ use for testing?</span>
+
+
+<div class="viewcode-block" id="Genbank">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.Genbank">[docs]</a>
+<span class="k">class</span> <span class="nc">Genbank</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to facilitate download from genbank. It is easier and</span>
+<span class="sd">    quicker to use the :func:`pydna.genbank.genbank` function directly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    users_email : string</span>
+<span class="sd">        Has to be a valid email address. You should always tell</span>
+<span class="sd">        Genbanks who you are, so that they can contact you.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; from pydna.genbank import Genbank</span>
+<span class="sd">    &gt;&gt;&gt; gb=Genbank(&quot;bjornjobb@gmail.com&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; rec = gb.nucleotide(&quot;LP002422.1&quot;)   # &lt;- entry from genbank</span>
+<span class="sd">    &gt;&gt;&gt; print(len(rec))</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users_email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;pydna&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}&quot;</span><span class="p">,</span> <span class="n">users_email</span><span class="p">,</span> <span class="n">_re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;email address </span><span class="si">{}</span><span class="s2"> is not valid.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">users_email</span><span class="p">))</span>
+
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#### Genbank ititiation ####&quot;</span><span class="p">)</span>
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Genbank initiated with email: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">users_email</span><span class="p">)</span>
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Genbank initiated with tool : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tool</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">users_email</span> <span class="o">==</span> <span class="s2">&quot;someone@example.com&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you have to set your email address in order to download from Genbank&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">users_email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool</span> <span class="o">=</span> <span class="n">tool</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method returns a short representation containing the email used to initiate.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;GenbankConnection(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+
+    <span class="nd">@_memorize</span><span class="p">(</span><span class="s2">&quot;pydna.genbank.Genbank.nucleotide&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">nucleotide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seq_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seq_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method downloads a genbank nuclotide record from genbank. This method is</span>
+<span class="sd">        cached by default. This can be controlled by editing the **pydna_cached_funcs** environment</span>
+<span class="sd">        variable. The best way to do this permanently is to edit the edit the</span>
+<span class="sd">        `pydna.ini` file. See the documentation of :func:`pydna.open_config_folder`</span>
+
+<span class="sd">        Item is a string containing one genbank accession number</span>
+<span class="sd">        for a nucleotide file. Genbank nucleotide accession numbers have this format:</span>
+
+<span class="sd">        | A12345   = 1 letter  + 5 numerals</span>
+<span class="sd">        | AB123456 = 2 letters + 6 numerals</span>
+
+<span class="sd">        The accession number is sometimes followed by a point and version number</span>
+
+<span class="sd">        | BK006936.2</span>
+
+<span class="sd">        Item can also contain optional interval information in the following formats:</span>
+
+<span class="sd">        | BK006936.2 REGION: complement(613900..615202)</span>
+<span class="sd">        | NM_005546 REGION: 1..100</span>
+<span class="sd">        | NM_005546 REGION: complement(1..100)</span>
+<span class="sd">        | 21614549:1-100</span>
+<span class="sd">        | 21614549:c100-1</span>
+<span class="sd">        | 21614549 1-100</span>
+<span class="sd">        | 21614549 c100-1</span>
+
+<span class="sd">        It is useful to set an interval for large genbank records to limit the download time.</span>
+<span class="sd">        The items above containing interval information and can be obtained directly by</span>
+<span class="sd">        looking up an entry in Genbank and setting the `Change region shown` on the</span>
+<span class="sd">        upper right side of the page. The `ACCESSION` line of the displayed Genbank</span>
+<span class="sd">        file will have the formatting shown.</span>
+
+<span class="sd">        Alternatively, seq_start and seq_stop can be set explicitly to the sequence intervals to be</span>
+<span class="sd">        downloaded.</span>
+
+<span class="sd">        If strand is 2. &quot;c&quot;, &quot;C&quot;, &quot;crick&quot;, &quot;Crick&quot;, &quot;antisense&quot;,&quot;Antisense&quot;,</span>
+<span class="sd">        &quot;2&quot;, 2, &quot;-&quot; or &quot;-1&quot;, the antisense (Crick) strand is returned, otherwise</span>
+<span class="sd">        the sense (Watson) strand is returned.</span>
+
+<span class="sd">        Result is returned as a :class:`pydna.genbankrecord.GenbankRecord` object.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        .. [#]   http://www.dsimb.inserm.fr/~fuchs/M2BI/AnalSeq/Annexes/Sequences/Accession_Numbers.htm</span>
+<span class="sd">        .. [#]   http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EFetch</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(REGION:\s(?P&lt;start&gt;\d+)\.\.(?P&lt;stop&gt;\d+))&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)),</span>
+            <span class="p">(</span>
+                <span class="mi">2</span><span class="p">,</span>
+                <span class="n">_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(REGION: complement\((?P&lt;start&gt;\d+)\.\.(?P&lt;stop&gt;\d+)\))&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(:|\s)(?P&lt;start&gt;\d+)-(?P&lt;stop&gt;\d+)&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(:|\s)c(?P&lt;start&gt;\d+)-(?P&lt;stop&gt;\d+)&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">strand_</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">seq_start</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
+                <span class="n">seq_stop</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;stop&quot;</span><span class="p">)</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">[:</span> <span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span>
+                <span class="n">strand</span> <span class="o">=</span> <span class="n">strand_</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">strand</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">strand</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;crick&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;antisense&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;-1&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="n">strand</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+                <span class="n">strand</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#### Genbank download ####&quot;</span><span class="p">)</span>
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;item  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;start </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">seq_start</span><span class="p">)</span>
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stop  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">seq_stop</span><span class="p">)</span>
+
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;strand  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">strand</span><span class="p">))</span>
+
+        <span class="n">_Entrez</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span>
+        <span class="n">_Entrez</span><span class="o">.</span><span class="n">tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool</span>
+
+        <span class="n">seq_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seq_start</span><span class="p">)</span> <span class="k">if</span> <span class="n">seq_start</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">seq_stop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seq_stop</span><span class="p">)</span> <span class="k">if</span> <span class="n">seq_stop</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Entrez.email  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_Entrez</span><span class="o">.</span><span class="n">efetch</span><span class="p">(</span>
+            <span class="n">db</span><span class="o">=</span><span class="s2">&quot;nuccore&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">rettype</span><span class="o">=</span><span class="s2">&quot;gbwithparts&quot;</span><span class="p">,</span>
+            <span class="n">seq_start</span><span class="o">=</span><span class="n">seq_start</span><span class="p">,</span>
+            <span class="n">seq_stop</span><span class="o">=</span><span class="n">seq_stop</span><span class="p">,</span>
+            <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+            <span class="n">retmode</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;text[:160]  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">[:</span><span class="mi">160</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">_GenbankRecord</span><span class="p">(</span><span class="n">_read</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">seq_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">seq_stop</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="genbank">
+<a class="viewcode-back" href="../../index.html#pydna.genbank.genbank">[docs]</a>
+<span class="k">def</span> <span class="nf">genbank</span><span class="p">(</span><span class="n">accession</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CS570233.1&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download a genbank nuclotide record.</span>
+
+<span class="sd">    This function takes the same paramenters as the</span>
+<span class="sd">    :func:pydna.genbank.Genbank.nucleotide method. The email address stored</span>
+<span class="sd">    in the `pydna_email` environment variable is used. The easiest way set</span>
+<span class="sd">    this permanantly is to edit the `pydna.ini` file.</span>
+<span class="sd">    See the documentation of :func:`pydna.open_config_folder`</span>
+
+<span class="sd">    if no accession is given, a `very short Genbank</span>
+<span class="sd">    entry &lt;https://www.ncbi.nlm.nih.gov/nuccore/CS570233.1&gt;`_</span>
+<span class="sd">    is used as an example (see below). This can be useful for testing the</span>
+<span class="sd">    connection to Genbank.</span>
+
+<span class="sd">    Please note that this result is also cached by default by settings in</span>
+<span class="sd">    the pydna.ini file.</span>
+<span class="sd">    See the documentation of :func:`pydna.open_config_folder`</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        LOCUS       CS570233                  14 bp    DNA     linear   PAT 18-MAY-2007</span>
+<span class="sd">        DEFINITION  Sequence 6 from Patent WO2007025016.</span>
+<span class="sd">        ACCESSION   CS570233</span>
+<span class="sd">        VERSION     CS570233.1</span>
+<span class="sd">        KEYWORDS    .</span>
+<span class="sd">        SOURCE      synthetic construct</span>
+<span class="sd">          ORGANISM  synthetic construct</span>
+<span class="sd">                    other sequences; artificial sequences.</span>
+<span class="sd">        REFERENCE   1</span>
+<span class="sd">          AUTHORS   Shaw,R.W. and Cottenoir,M.</span>
+<span class="sd">          TITLE     Inhibition of metallo-beta-lactamase by double-stranded dna</span>
+<span class="sd">          JOURNAL   Patent: WO 2007025016-A1 6 01-MAR-2007;</span>
+<span class="sd">                    Texas Tech University System (US)</span>
+<span class="sd">        FEATURES             Location/Qualifiers</span>
+<span class="sd">             source          1..14</span>
+<span class="sd">                             /organism=&quot;synthetic construct&quot;</span>
+<span class="sd">                             /mol_type=&quot;unassigned DNA&quot;</span>
+<span class="sd">                             /db_xref=&quot;taxon:32630&quot;</span>
+<span class="sd">                             /note=&quot;This is a 14bp aptamer inhibitor.&quot;</span>
+<span class="sd">        ORIGIN</span>
+<span class="sd">                1 atgttcctac atga</span>
+<span class="sd">        //</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_email&quot;</span><span class="p">)</span>
+    <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#### genbank function called ####&quot;</span><span class="p">)</span>
+    <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;email      </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+    <span class="n">_module_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;accession  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+    <span class="n">gb</span> <span class="o">=</span> <span class="n">Genbank</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gb</span><span class="o">.</span><span class="n">nucleotide</span><span class="p">(</span><span class="n">accession</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span><span class="p">)</span>
+    <span class="n">_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;pydna_cached_funcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
