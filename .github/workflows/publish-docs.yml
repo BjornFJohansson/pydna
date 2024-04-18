@@ -29,7 +29,7 @@ jobs:
 
     - name: Install this Python package
       run: |
-        pip install .[clipboard,download,express,gel]
+        python -m pip install .[clipboard,download,express,gel]
 
     - name: Session information
       run: |
