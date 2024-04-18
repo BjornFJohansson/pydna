@@ -299,7 +299,6 @@ class Dseq(_Seq):
         watson,
         crick=None,
         ovhg=None,
-        # linear=None,
         circular=False,
         pos=0,
     ):
@@ -1566,15 +1565,16 @@ class Dseq(_Seq):
         return sorted([cutsite for cutsite in out if self.cutsite_is_valid(cutsite)])
 
     def left_end_position(self) -> Tuple[int, int]:
-        """The index in the full sequence of the watson and crick start positions.
+        """
+        The index in the full sequence of the watson and crick start positions.
 
         full sequence (str(self)) for all three cases is AAA
+        ::
 
-        ```
-        AAA              AA               AAT
-         TT             TTT               TTT
-        Returns (0, 1)  Returns (1, 0)    Returns (0, 0)
-        ```
+            AAA              AA               AAT
+             TT             TTT               TTT
+            Returns (0, 1)  Returns (1, 0)    Returns (0, 0)
+
 
         """
         if self.ovhg > 0:

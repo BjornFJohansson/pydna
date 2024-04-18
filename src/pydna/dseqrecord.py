@@ -131,21 +131,12 @@ class Dseqrecord(_SeqRecord):
         self,
         record,
         *args,
-        # linear=None,
         circular=None,
         n=5e-14,  # mol ( = 0.05 pmol)
         **kwargs,
     ):
         _module_logger.info("### Dseqrecord initialized ###")
-        # _module_logger.info("argument linear = %s", linear)
         _module_logger.info("argument circular = %s", circular)
-
-        # if not (linear is None and circular is None):
-        #     circular = (bool(circular) and bool(linear) ^ bool(circular)
-        #                 or linear is False and circular is None)
-        #     linear = not circular
-
-        # _module_logger.info("linear = %s", linear)
         _module_logger.info("circular = %s", circular)
 
         if isinstance(record, str):
@@ -248,20 +239,12 @@ class Dseqrecord(_SeqRecord):
         cls,
         record: _SeqRecord,
         *args,
-        # linear=True,
-        circular=False,
+        circular=None,
         n=5e-14,
         **kwargs,
     ):
         obj = cls.__new__(cls)  # Does not call __init__
         obj._per_letter_annotations = record._per_letter_annotations
-        obj.seq = _Dseq.quick(
-            str(record.seq),
-            _rc(str(record.seq)),
-            ovhg=0,
-            # linear=linear,
-            circular=circular,
-        )
         obj.id = record.id
         obj.name = record.name
         obj.description = record.description
@@ -271,13 +254,10 @@ class Dseqrecord(_SeqRecord):
         obj.features = record.features
         obj.map_target = None
         obj.n = n
+        if circular is None:
+            circular = record.annotations.get("topology") == "circular"
+        obj.seq = _Dseq.quick(str(record.seq), _rc(str(record.seq)), ovhg=0, circular=circular)
         return obj
-
-    # @property
-    # def linear(self):
-    #     """The linear property can not be set directly.
-    #     Use :meth:`looped` or :meth:`tolinear`"""
-    #     return self.seq.linear
 
     @property
     def circular(self):
@@ -881,7 +861,7 @@ class Dseqrecord(_SeqRecord):
         return hash((str(self.seq).lower(), str(tuple(sorted(self.__dict__.items())))))
 
     def linearize(self, *enzymes):
-        """Similar to :func:`cut.
+        """Similar to `:func:cut`.
 
         Throws an exception if there is not excactly one cut
         i.e. none or more than one digestion products.
@@ -1118,26 +1098,27 @@ class Dseqrecord(_SeqRecord):
         lower.seq = lower.seq.lower()
         return lower
 
-    def orfs(self, minsize=30):
+    def orfs(self, minsize=300):
         """docstring."""
         return tuple(Dseqrecord(self[x:y]) for x, y in self.seq.orfs(minsize=minsize))
 
-    def orfs_to_features(self, minsize=30):
+    def orfs_to_features(self, minsize=300):
         """docstring."""
         features = []
         for strand, s in ((1, self.seq), (-1, self.seq.rc())):
             for x, y in s.orfs(minsize=minsize):
                 orf = self[x:y]
+                prt = orf.translate()
                 features.append(
                     _SeqFeature(
                         _SimpleLocation(x, y, strand=strand),
                         type="CDS",
                         qualifiers={
                             "note": f"{y-x}bp {(y-x)//3}aa",
-                            "checksum": orf.seguid(),
+                            "checksum": [orf.seguid() + " (DNA)", prt.seguid() + " (protein)"],
                             "codon_start": 1,
                             "transl_table": 11,
-                            "translation": str(orf.seq[x:y].translate())[:-1],
+                            "translation": str(prt.seq),
                         },
                     )
                 )

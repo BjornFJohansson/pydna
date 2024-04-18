@@ -127,7 +127,7 @@ Examples of pydna in use
 ------------------------
 
 See this repository for a collection of
- `examples <https://github.com/BjornFJohansson/pydna-examples>`_.
+ `examples <https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples?tab=readme-ov-file#pydna-examples>`_.
 
 """
 

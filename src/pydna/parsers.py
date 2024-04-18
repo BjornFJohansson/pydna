@@ -16,10 +16,11 @@ from Bio import SeqIO as _SeqIO
 from pydna.genbankfile import GenbankFile as _GenbankFile
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer
-from pydna.amplify import pcr as _pcr
-from copy import deepcopy as _deepcopy
-from Bio.SeqFeature import SeqFeature as _SeqFeature
-import xml.etree.ElementTree as _et
+
+# from pydna.amplify import pcr as _pcr
+# from copy import deepcopy as _deepcopy
+# from Bio.SeqFeature import SeqFeature as _SeqFeature
+# import xml.etree.ElementTree as _et
 
 try:
     from itertools import pairwise as _pairwise
@@ -37,80 +38,90 @@ except ImportError:
 # "^>.+?^(?=$|LOCUS|ID|>|\#)|^(?:LOCUS|ID).+?^//"
 # "(?:^>.+\n^(?:^[^>]+?)(?=\n\n|>|^LOCUS|ID))|(?:(?:^LOCUS|ID)(?:(?:.|\n)+?)^//)"
 
-gb_fasta_embl_regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
+# gb_fasta_embl_regex = r"(?:>.+\n^(?:^[^>]+?)(?=\n\n|>|LOCUS|ID))|(?:(?:LOCUS|ID)(?:(?:.|\n)+?)^//)"
+
+gb_fasta_embl_regex = r"(?:^>.+\n^(?:^[^>]+?)(?=\n\n|>|^LOCUS|^ID))|(?:(?:^LOCUS|^ID)(?:(?:.|\n)+?)^//)"
 
 # The gb_fasta_embl_regex is meant to be able to extract sequences from
 # text where sequences are mixed with other contents as well
 # use https://regex101.com to get an idea how it works.
 
 
-# def extract_from_text(text):
-#     return _re.finditer(gb_fasta_embl_regex, _textwrap.dedent(str(text) + "\n\n"), flags=_re.MULTILINE)
-
-
 def extract_from_text(text):
+    """docstring."""
     data = _textwrap.dedent(str(text))
     mos = list(_re.finditer(gb_fasta_embl_regex, data + "\n\n", flags=_re.MULTILINE))
 
-    class mo(object):
-
+    class Fakemo(object):
         def start(self):
             return len(data)
 
         def end(self):
             return 0
 
-    mofirst = molast = mo()
+    mofirst = molast = Fakemo()
 
     gaps = []
 
     for mo1, mo2 in _pairwise([mofirst] + mos + [molast]):
         gaps.append(data[mo1.end() : mo2.start()])
 
-    return [mo.group(0) for mo in mos], gaps
+    return tuple(mo.group(0) for mo in mos), tuple(gaps)
 
 
-def embl_gb_fasta(text, ds, path=None):
+def embl_gb_fasta(text):
+    """Parse embl, genbank or fasta format from text.
 
+    Returns list of Bio.SeqRecord.SeqRecord
+
+    annotations["molecule_type"]
+    annotations["topology"]
+
+    """
     chunks, gaps = extract_from_text(text)
     result_list = []
+    # topology = "linear"
 
     for chunk in chunks:
         handle = _io.StringIO(chunk)
-        circular = False
+        # circular = False
+        first_line = chunk.splitlines()[0].lower().split()
         try:
             parsed = _SeqIO.read(handle, "embl")
         except ValueError:
             handle.seek(0)
             try:
                 parsed = _SeqIO.read(handle, "genbank")
-                if "circular" in str(parsed.annotations.get("topology")).lower():
-                    circular = True
             except ValueError:
                 handle.seek(0)
                 try:
                     parsed = _SeqIO.read(handle, "fasta")
                 except ValueError:
-                    parsed = ""
+                    handle.close()
+                    continue
+                else:
+                    # hack to pick up molecule_type from FASTA header line
+                    if "protein" in first_line:
+                        parsed.annotations["molecule_type"] = "protein"
+                        parsed.annotations["topology"] = "linear"
+                    else:
+                        parsed.annotations["molecule_type"] = "DNA"
+            # else:
+            #     if _re.match(r"LOCUS\s+(\S+)\s+(\S+)\s+aa", " ".join(first_line)):
+            #         parsed.annotations["molecule_type"] = "protein"
+            #         parsed.annotations["topology"] = "linear"
         handle.close()
-        if "circular" in chunk.splitlines()[0].lower().split():
-            # hack to pick up topology from malformed files
-            circular = True
-        if parsed:
-            # TODO: clean up !
-            nfs = [_SeqFeature() for f in parsed.features]
-            for f, nf in zip(parsed.features, nfs):
-                nf.__dict__ = _deepcopy(f.__dict__)
-            parsed.features = nfs
-            if ds and path:
-                result_list.append(_GenbankFile.from_SeqRecord(parsed, circular=circular, path=path))
-            elif ds:
-                result_list.append(_Dseqrecord.from_SeqRecord(parsed, circular=circular))
-            else:
-                parsed.annotations.update({"molecule_type": "DNA"})
-                result_list.append(parsed)
-
-    return result_list
+        # hack to pick up topology from FASTA and malformed gb files
+        first_line = chunk.splitlines()[0].lower().split()
+        parsed.annotations["topology"] = "linear"
+        if "circular" in first_line:
+            parsed.annotations["topology"] = "circular"
+        # assert parsed.annotations.get("topology"), "topology must be set"
+        assert parsed.annotations.get("molecule_type"), "molecule_type  must be set"
+        if not parsed.annotations.get("molecule_type"):
+            print(parsed)
+        result_list.append(parsed)
+    return tuple(result_list)
 
 
 def parse(data, ds=True):
@@ -177,27 +188,24 @@ def parse(data, ds=True):
             # item was a readable text file, seqences are parsed from the file
             path = item
         finally:
-            sequences.extend(embl_gb_fasta(raw, ds, path))
+            newsequences = embl_gb_fasta(raw)
+            # nfs = [_SeqFeature() for f in parsed.features]
+            # for f, nf in zip(parsed.features, nfs):
+            #     nf.__dict__ = _deepcopy(f.__dict__)
+            # parsed.features = nfs
+            for s in newsequences:
+                if ds and path:
+                    sequences.append(_GenbankFile.from_SeqRecord(s, path=path))
+                elif ds:
+                    sequences.append(_Dseqrecord.from_SeqRecord(s))
+                else:
+                    sequences.append(s)
     return sequences
 
 
 def parse_primers(data):
     """docstring."""
     return [_Primer(x) for x in parse(data, ds=False)]
-
-
-def parse_assembly_xml(data):
-    """docstring."""
-    root = _et.fromstring(data)
-    results = []
-    for child in root:
-        if child.tag == "amplicon":
-            fp, rp, tmpl, *rest = parse(child.text)
-            results.append(_pcr(_Primer(fp), _Primer(rp), tmpl, limit=min((len(fp), len(rp)))))
-        elif child.tag == "fragment":
-            f, *rest = parse(child.text)
-            results.append(f)
-    return results
 
 
 if __name__ == "__main__":
