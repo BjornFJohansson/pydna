@@ -33,6 +33,7 @@ class Seq(_Seq):
     """docstring."""
 
     def translate(self, *args, stop_symbol="*", to_stop=False, cds=False, gap="-", **kwargs):
+        """Translate.."""
         p = super().translate(*args, stop_symbol=stop_symbol, to_stop=to_stop, cds=cds, gap=gap, **kwargs)
         return ProteinSeq(p._data)
 

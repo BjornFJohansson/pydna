@@ -8,10 +8,10 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "pydna"
-copyright = "2022, Björn F. Johansson"
+copyright = "2024, Björn F. Johansson"
 author = "Björn F. Johansson"
-
-import sys, os
+import os
+import sys
 
 # contents of docs/conf.py
 from importlib.metadata import version
@@ -25,6 +25,8 @@ version = ".".join(release.split(".")[:3])
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
@@ -41,6 +43,9 @@ intersphinx_mapping = {
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+autodoc_member_order = 'bysource'
+autodoc_preserve_defaults = True
 
 numpydoc_show_class_members = False
 
