@@ -53,7 +53,7 @@ from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
 from pydna.common_sub_strings import common_sub_strings
 
-# from pydna.common_sub_strings import terminal_overlap
+from pydna.common_sub_strings import terminal_overlap
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 import networkx as _nx
 from copy import deepcopy as _deepcopy
@@ -65,6 +65,9 @@ import logging as _logging
 from pydna.threading_timer_decorator_exit import exit_after
 
 _module_logger = _logging.getLogger("pydna." + __name__)
+
+
+terminal_overlap
 
 
 class Assembly(object):  # , metaclass=_Memoize):

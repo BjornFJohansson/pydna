@@ -1,0 +1,49 @@
+on: [push, pull_request]
+
+name: "Documentation Status"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    if: "! contains(github.event.head_commit.message, '[ci skip]')"
+
+    timeout-minutes: 10
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install sphinx numpydoc sphinx-autobuild sphinx-rtd-theme
+
+    - name: Install this Python package
+      run: |
+        python -m pip install .[clipboard,download,express,gel]
+
+    - name: Session information
+      run: |
+        python --version
+
+    - name: Build documentation
+      run: |
+        cd docs
+        make html
+
+    - name: Deploy to GitHub pages 🚀
+      if: github.event_name != 'pull_request'
+      uses: JamesIves/github-pages-deploy-action@v4.6.0
+      with:
+        clean: false
+        branch: gh-pages
+        folder: docs/_build/html
