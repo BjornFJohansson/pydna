@@ -2,7 +2,7 @@
 
 | [![Tests & Coverage](https://github.com/BjornFJohansson/pydna/actions/workflows/pydna_test_and_coverage_workflow.yml/badge.svg?branch=dev_bjorn)](https://github.com/BjornFJohansson/pydna/actions/workflows/pydna_test_and_coverage_workflow.yml) | [![codecov](https://codecov.io/gh/BjornFJohansson/pydna/branch/master/graph/badge.svg)](https://codecov.io/gh/BjornFJohansson/pydna/branch/master) | [![PyPI version](https://badge.fury.io/py/pydna.svg)](https://badge.fury.io/py/pydna)                                                  | [![Google group : pydna](https://img.shields.io/badge/Google%20Group-pydna-blue.svg)](https://groups.google.com/g/pydna)              |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest)                                                                                                                 | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna) | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers) |
+| [![Documentation Status](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml/badge.svg)](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml)                                                      | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna) | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers) |
 
 
 
@@ -12,7 +12,8 @@ state of documentation in the scientific literature :radioactive:.
 
 
 The pydna python package provide a human-readable formal descriptions of :dna: cloning and genetic assembly
-strategies in Python :snake: which allow for simulation and verification. Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+strategies in Python :snake: which allow for simulation and verification.
+Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
 
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
@@ -40,7 +41,7 @@ DNA molecule constructions.
 
 Start by looking at the [cookbook](https://github.com/BjornFJohansson/pydna/blob/master/docs/cookbook/cookbook.ipynb).
 
-Some simple examples can be found  [here](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
+Some simple examples can be found [here](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
 
 For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
 
@@ -53,7 +54,8 @@ See below for documentation.
 ## Usage
 
 Most pydna functionality is implemented as methods for the double stranded DNA sequence record
-classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page) [Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
+classes Dseq and Dseqrecord, which are subclasses of the [Biopython](http://biopython.org/wiki/Main_Page)
+[Seq](http://biopython.org/wiki/Seq) and [SeqRecord](http://biopython.org/wiki/SeqRecord) classes.
 
 These classes make PCR primer design, PCR simulation and cut-and-paste cloning very simple:
 
@@ -81,7 +83,7 @@ DNA sequences are downloaded from Genbank by accession numbers that are guarante
     lin_vector = vector.linearize(EcoRV)
     rec_vec =  ( lin_vector + pcr_prod ).looped()
 
-Another use case for pydna in the automatic generation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) examples for teaching purposes. These examples
+Another use case for pydna in the automatic generation of [sub cloning](http://en.wikipedia.org/wiki/Subcloning) examples for teaching purposes.
 
 Feedback & suggestions are very welcome! Please post a message in the [google group](https://groups.google.com/d/forum/pydna) for pydna if you need help or have problems, questions or comments :sos:.
 
@@ -104,7 +106,6 @@ In Cold Spring Harbor Laboratory (p. 2021.01.17.427048). [DOI](https://doi.org/1
 
 [An Automated Protein Synthesis Pipeline with Transcriptic and Snakemake](http://blog.booleanbiotech.com/transcriptic_protein_synthesis_pipeline.html)
 
-
 and other projects on [github](https://github.com/BjornFJohansson/pydna/network/dependents?package_id=UGFja2FnZS01MjQ2MjYzNQ%3D%3D)
 
 ![----]( http://bit.ly/coloredline)
@@ -115,9 +116,7 @@ There is an open access paper in BMC Bioinformatics describing pydna:
 
 Please reference the above paper:
 
-
 Pereira, F., Azevedo, F., Carvalho, Â., Ribeiro, G. F., Budde, M. W., & Johansson, B. (2015). Pydna: a simulation and documentation tool for DNA assembly strategies using python. BMC Bioinformatics, 16(142), 142.
-
 
 When using pydna.
 
@@ -125,9 +124,13 @@ When using pydna.
 
 ## Documentation :page_with_curl:
 
-Documentation is built using [Sphinx](http://www.sphinx-doc.org/) from [docstrings](https://www.python.org/dev/peps/pep-0257/)
-in the code and displayed at readthedocs [![Documentation Status](https://readthedocs.org/projects/pydna/badge/?version=latest)](http://pydna.readthedocs.io/?badge=latest).
-The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
+Documentation can be found [here](https://bjornfjohansson.github.io/pydna). It is built using [Sphinx](http://www.sphinx-doc.org/) from [docstrings](https://www.python.org/dev/peps/pep-0257/)
+using a GitHub [action](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml).
+The [numpy](www.numpy.org) [docstring format](https://numpy.org/doc/stable/dev/howto-docs.html#docstring-intro) is used.
+
+
+
+
 
 ![----]( http://bit.ly/coloredline)
 
@@ -165,40 +168,6 @@ By default python and pip are not on the PATH. You can re-install Python and sel
 Pydna is developed on [Github](https://github.com/BjornFJohansson/pydna) :octocat:.
 I am happy to collaborate on new features or bugfixes.
 
-We use [pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks) to help with source code formatting.
-Prior to each commit, a series of checks and source code formatters are run (see `.pre-commit-config.yaml` file below).
-This can modify the commited code, which might have to be added again.
-
-A good practice is to run `pre-commit run --all-files` before committing.
-
-The `.pre-commit-config.yaml` file located in the root of the repository has the following content:
-
-
-```
-repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
-  hooks:
-  - id: no-commit-to-branch
-    args: [--branch, master]
-  - id: check-yaml
-  - id: end-of-file-fixer
-  - id: trailing-whitespace
-  - id: debug-statements
-  - id: fix-encoding-pragma
-  - id: mixed-line-ending
-- repo: https://github.com/ambv/black
-  rev: 24.2.0
-  hooks:
-  - id: black
-- repo: https://github.com/PyCQA/flake8
-  rev: 7.0.0
-  hooks:
-  - id: flake8
-exclude: scripts/|docs/|tests/
-```
-
-
 ## Minimal installation dependencies
 
 The list below is the minimal requirements for installing pydna.
@@ -228,14 +197,15 @@ Enables the `pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard()` and `pydna.dseq
 These methods will put a copy the sequence on the clipboard in either Genbank (gb) or fasta format.
 
 
-| Dependency                                          | Function in pydna                                      |
-| --------------------------------------------------- | ------------------------------------------------------ |
-| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard                             |
+| Dependency                                          | Function in pydna                      |
+| --------------------------------------------------- | -------------------------------------- |
+| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard             |
 
-### download
+### `download`
 
 Pyparsing enables the `pydna.genbankfixer.gbtext_clean()` function that can automatically
-correct malformed sequence files in Genbank format. These are often found online, so this option also installs requests to enable the  `pydna.genbankfixer.download.download_text()` function which can be used to get cleaned up text from a URL.
+correct malformed sequence files in Genbank format. These are often found online, so this
+option also installs requests to enable the  `pydna.genbankfixer.download.download_text()` function which can be used to get cleaned up text from a URL.
 
 
 | Dependency                                          | Function in pydna                                      |
@@ -243,7 +213,7 @@ correct malformed sequence files in Genbank format. These are often found online
 | [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
 | [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
 
-### express
+### `express`
 
 This option enables the `pydna.utils.cai()` function and the `cai()` method
 available from subclasses of `pydna.seqrecord.SeqRecord`, such as
@@ -251,7 +221,7 @@ available from subclasses of `pydna.seqrecord.SeqRecord`, such as
 
 | [cai2](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
 
-### gel
+### `gel`
 
 Scipy, matplotlib and pillow (PIL) enable the generation of gel images. Numpy is also
 needed, but usually installed as a dependency of biopython.
