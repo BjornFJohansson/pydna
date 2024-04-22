@@ -1,3 +1,0 @@
-# MANIFEST.in
-# This tells distutils what files to distribute.
-graft src
