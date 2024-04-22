@@ -1,7 +1,7 @@
 Welcome to pydna's documentation!
 =================================
 
-Stuff
+Stuff & other stuff
 
 
 
