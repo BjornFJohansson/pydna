@@ -126,7 +126,11 @@ When using pydna.
 
 Documentation can be found [here](https://bjornfjohansson.github.io/pydna). It is built using [Sphinx](http://www.sphinx-doc.org/) from [docstrings](https://www.python.org/dev/peps/pep-0257/)
 using a GitHub [action](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml).
-The [numpy](www.numpy.org) [docstring format](https://github.com/numpy/numpy/blob/release/doc/HOWTO_DOCUMENT.rst.txt) is used.
+The [numpy](www.numpy.org) [docstring format](https://numpy.org/doc/stable/dev/howto-docs.html#docstring-intro) is used.
+
+
+
+
 
 ![----]( http://bit.ly/coloredline)
 
@@ -197,10 +201,11 @@ These methods will put a copy the sequence on the clipboard in either Genbank (g
 | --------------------------------------------------- | -------------------------------------- |
 | [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard             |
 
-### download
+### `download`
 
 Pyparsing enables the `pydna.genbankfixer.gbtext_clean()` function that can automatically
-correct malformed sequence files in Genbank format. These are often found online, so this option also installs requests to enable the  `pydna.genbankfixer.download.download_text()` function which can be used to get cleaned up text from a URL.
+correct malformed sequence files in Genbank format. These are often found online, so this
+option also installs requests to enable the  `pydna.genbankfixer.download.download_text()` function which can be used to get cleaned up text from a URL.
 
 
 | Dependency                                          | Function in pydna                                      |
@@ -208,7 +213,7 @@ correct malformed sequence files in Genbank format. These are often found online
 | [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
 | [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
 
-### express
+### `express`
 
 This option enables the `pydna.utils.cai()` function and the `cai()` method
 available from subclasses of `pydna.seqrecord.SeqRecord`, such as
@@ -216,7 +221,7 @@ available from subclasses of `pydna.seqrecord.SeqRecord`, such as
 
 | [cai2](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
 
-### gel
+### `gel`
 
 Scipy, matplotlib and pillow (PIL) enable the generation of gel images. Numpy is also
 needed, but usually installed as a dependency of biopython.
