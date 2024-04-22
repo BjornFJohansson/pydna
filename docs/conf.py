@@ -12,7 +12,7 @@ copyright = "2024, Björn F. Johansson"
 author = "Björn F. Johansson"
 import os
 import sys
-
+sys.path.insert(0, os.path.abspath("../src/pydna"))
 # contents of docs/conf.py
 from importlib.metadata import version
 
