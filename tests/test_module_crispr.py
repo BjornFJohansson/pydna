@@ -35,6 +35,8 @@ def test_crispr():
         a.rc(),
     ]
 
+    assert target.cut(cas9("GTTACTTTACCCGACGTCCC")) == target.cut(cas9("GTTACTTTACCCGACGTCCC".lower()))
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
