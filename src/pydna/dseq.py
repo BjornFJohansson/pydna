@@ -1680,7 +1680,7 @@ class Dseq(_Seq):
 
         """
         if _cuts_overlap(left_cut, right_cut, len(self)):
-            raise ValueError("Cuts overlap")
+            raise ValueError("Cuts by {} {} overlap.".format(left_cut[1], right_cut[1]))
 
         left_watson, left_crick, ovhg_left = self.get_cut_parameters(left_cut, True)
         right_watson, right_crick, _ = self.get_cut_parameters(right_cut, False)
