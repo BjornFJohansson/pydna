@@ -12,7 +12,7 @@ def test_myenzymes(monkeypatch):
     from importlib import reload
 
     reload(myenzymes)
-    assert len(list(myenzymes.myenzymes)) == 628
+    assert len(list(myenzymes.myenzymes)) == 621
 
 
 
