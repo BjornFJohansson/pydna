@@ -15,6 +15,7 @@ within the file specified.
 """
 
 import os as _os
+import re as _re
 from Bio.Restriction import AllEnzymes as _AllEnzymes
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 import logging as _logging
@@ -38,7 +39,8 @@ except IOError:
 except Exception:
     _module_logger.warning(_traceback.format_exc())
 
-myenzymes = _RestrictionBatch([e for e in _AllEnzymes if str(e).lower() in _text.lower()])
+
+myenzymes = _RestrictionBatch([e for e in _AllEnzymes if str(e).lower() in _re.split(r"\W+", _text.lower())])
 
 if __name__ == "__main__":
     cache = _os.getenv("pydna_cache")
