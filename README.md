@@ -273,6 +273,7 @@ Please direct pull requests towards the `dev_bjorn` branch.
 
     ```bash
     # If you want the virtual environment to be created in this folder
+    # (this is now the default, see `poetry.toml`)
     poetry config virtualenvs.in-project true
 
     # Install dependencies (extras are required for tests to pass)
