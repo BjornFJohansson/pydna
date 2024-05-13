@@ -264,7 +264,7 @@ or by `pip install pyparsing requests cai2 scipy matplotlib pillow`
 
 ## Contributing
 
-Please direct pull requests towards the `develop` branch.
+Please direct pull requests towards the `dev_bjorn` branch.
 
 
 ### Local development
@@ -281,16 +281,17 @@ Please direct pull requests towards the `develop` branch.
     # Activate virtual environment
     poetry shell
     ```
-
 2. Make your changes.
 3. Add the necessary tests in `tests/`.
 4. Run the tests from the root directory with `python run_test.py`.
+5. Install `pre-commit` hooks if you haven't by running `pre-commit install`. `pre-commit` should be available in the environment, since it is installed by poetry.
+6. Make a PR.
 
 #### Building the documentation locally
 
 Below the commands to run a local sphinx server that auto-updated when files are changed.
 
-```
+```bash
 # Install docs dependency group
 poetry install --with docs
 
