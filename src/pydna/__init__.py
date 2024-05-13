@@ -139,6 +139,7 @@ import logging as _logging
 import logging.handlers as _handlers
 import appdirs as _appdirs
 import configparser as _configparser
+import tempfile as _tempfile
 from pydna._pretty import PrettyTable as _PrettyTable
 
 
@@ -183,8 +184,15 @@ if _ini_path.exists():
     _parser.read(_ini_path)
 else:  # otherwise it is created with default settings
     _parser["main"] = default_ini
-    with open(_ini_path, "w", encoding="utf-8") as f:  # TODO needs encoding?
-        _parser.write(f)
+    _temp_ini_file = _tempfile.NamedTemporaryFile(dir=_ini_path.parent, delete=False)
+    _temp_ini_path = _Path(_temp_ini_file.name)
+    try:
+        _temp_ini_file.close()
+        with _temp_ini_path.open("w", encoding="utf-8") as f:  # TODO needs encoding?
+            _parser.write(f)
+        _temp_ini_path.replace(_ini_path)
+    finally:
+        _temp_ini_path.unlink(missing_ok=True)
 
 # pydna related environmental variables are set
 # from pydna.ini if they are not set already
