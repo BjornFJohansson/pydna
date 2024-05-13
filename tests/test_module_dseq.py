@@ -827,6 +827,7 @@ def test_left_end_position():
 
 def test_apply_cut():
     from pydna.dseq import Dseq
+    from Bio.Restriction import EcoRI, BamHI
 
     seq = Dseq('aaGAATTCaa', circular=False)
 
@@ -876,23 +877,23 @@ def test_apply_cut():
     # Overlapping cuts should return an error
     seq = Dseq('aaGAATTCaa', circular=True)
     first_cuts = [
-        ((3, -4), None),
-        ((7, 4), None),
+        ((3, -4), BamHI),
+        ((7, 4), BamHI),
         # Spanning the origin
-        ((9, -8), None),
-        ((8, 8), None),
+        ((9, -8), BamHI),
+        ((8, 8), BamHI),
     ]
 
     overlapping_cuts = [
-        ((4, -4), None),
-        ((2, -4), None),
-        ((2, -6), None),
-        ((8, 4), None),
-        ((6, 4), None),
-        ((8, 6), None),
+        ((4, -4), EcoRI),
+        ((2, -4), EcoRI),
+        ((2, -6), EcoRI),
+        ((8, 4), EcoRI),
+        ((6, 4), EcoRI),
+        ((8, 6), EcoRI),
         # Spanning the origin
-        ((7, -8), None),
-        ((6, 8), None),
+        ((7, -8), EcoRI),
+        ((6, 8), EcoRI),
     ]
 
     for first_cut in first_cuts:
@@ -900,7 +901,7 @@ def test_apply_cut():
             try:
                 seq.apply_cut(first_cut, second_cut)
             except ValueError as e:
-                assert e.args[0] == 'Cuts overlap'
+                assert e.args[0] == 'Cuts by BamHI EcoRI overlap.'
             else:
                 print(first_cut, second_cut)
                 assert False, 'Expected ValueError'
