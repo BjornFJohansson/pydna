@@ -475,5 +475,41 @@ def test_shift_location():
         assert shift_location(shift_location(loc, 1, 6), -1, 6) == loc
 
 
+def test_locations_overlap():
+    from pydna.utils import locations_overlap, shift_location
+    from Bio.SeqFeature import SimpleLocation
+
+    # exact        =====          |
+    # greater    =========        |
+    # inner         ==            |
+    # right         =====         |
+    # left        =====           |
+    # main         =====          |
+    #         -----------------------------------------
+    #         0123456789
+    main_overlap = SimpleLocation(5, 10)
+    inner_overlap = SimpleLocation(6, 8)
+    right_overlap = SimpleLocation(6, 11)
+    left_overlap = SimpleLocation(4, 9)
+    exact_overlap = SimpleLocation(5, 10)
+    greater_overlap = SimpleLocation(3, 12)
+    no_overlap_left = SimpleLocation(0, 5)
+    no_overlap_right = SimpleLocation(11, 15)
+
+    overlapping_locations = [inner_overlap, right_overlap, left_overlap, exact_overlap, greater_overlap]
+    non_overlapping_locations = [no_overlap_left, no_overlap_right]
+
+    for shift in range(20):
+        main_shifted = shift_location(main_overlap, shift, 20)
+        for loc in overlapping_locations:
+            loc_shifted = shift_location(loc, shift, 20)
+            assert locations_overlap(main_shifted, loc_shifted, 20)
+        for loc in non_overlapping_locations:
+            loc_shifted = shift_location(loc, shift, 20)
+            assert not locations_overlap(main_shifted, loc_shifted, 20)
+
+
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
