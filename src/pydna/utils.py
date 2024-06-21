@@ -704,6 +704,31 @@ def location_boundaries(loc: _Union[_sl, _cl]):
         return loc.parts[0].start, loc.parts[-1].end
 
 
+def locations_overlap(loc1: _Union[_sl, _cl], loc2: _Union[_sl, _cl], seq_len):
+    start1, end1 = location_boundaries(loc1)
+    start2, end2 = location_boundaries(loc2)
+
+    boundaries1 = [(start1, end1)]
+    boundaries2 = [(start2, end2)]
+
+    if start1 > end1:
+        boundaries1 = [
+            [start1, end1 + seq_len],
+            [start1 - seq_len, end1],
+        ]
+    if start2 > end2:
+        boundaries2 = [
+            [start2, end2 + seq_len],
+            [start2 - seq_len, end2],
+        ]
+
+    for b1, b2 in _itertools.product(boundaries1, boundaries2):
+        if b1[0] < b2[1] and b1[1] > b2[0]:
+            return True
+
+    return False
+
+
 if __name__ == "__main__":
     cached = _os.getenv("pydna_cached_funcs", "")
     _os.environ["pydna_cached_funcs"] = ""
