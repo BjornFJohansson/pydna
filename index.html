@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to pydna’s documentation! &mdash; pydna 0.0.0.post1+afeb69d documentation</title>
+  <title>Welcome to pydna’s documentation! &mdash; pydna 0.0.0.post1+7da9281 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=47bab4fc"></script>
+        <script src="_static/documentation_options.js?v=0954bdf1"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -389,7 +389,6 @@
 <li><a class="reference internal" href="#pydna.utils.eq"><code class="docutils literal notranslate"><span class="pre">eq()</span></code></a></li>
 <li><a class="reference internal" href="#pydna.utils.cuts_overlap"><code class="docutils literal notranslate"><span class="pre">cuts_overlap()</span></code></a></li>
 <li><a class="reference internal" href="#pydna.utils.location_boundaries"><code class="docutils literal notranslate"><span class="pre">location_boundaries()</span></code></a></li>
-<li><a class="reference internal" href="#pydna.utils.locations_overlap"><code class="docutils literal notranslate"><span class="pre">locations_overlap()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -625,7 +624,7 @@ in <strong>pydna.ini</strong> file or the pydna_cached_funcs environment variabl
 <section id="module-pydna.dseq">
 <span id="pydna-dseq-module"></span><h2>pydna.dseq module<a class="headerlink" href="#module-pydna.dseq" title="Link to this heading"></a></h2>
 <p>Provides the Dseq class for handling double stranded DNA sequences.</p>
-<p>Dseq is a subclass of <a class="reference external" href="https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.Seq" title="(in Biopython v1.83)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code></a>. The Dseq class
+<p>Dseq is a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code>. The Dseq class
 is mostly useful as a part of the <a class="reference internal" href="#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord</span></code></a> class
 which can hold more meta data.</p>
 <p>The Dseq class support the notion of circular and linear DNA topology.</p>
@@ -4146,14 +4145,14 @@ nicer output in the IPython shell.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pydna.seqrecord.SeqRecord">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.seqrecord.</span></span><span class="sig-name descname"><span class="pre">SeqRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'description'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/seqrecord.html#SeqRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seqrecord.SeqRecord" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqRecord.html#Bio.SeqRecord.SeqRecord" title="(in Biopython v1.83)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeqRecord</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SeqRecord</span></code></p>
 <p>A subclass of the Biopython SeqRecord class.</p>
 <p>Has a number of extra methods and uses
 the <code class="xref py py-class docutils literal notranslate"><span class="pre">pydna._pretty_str.pretty_str</span></code> class instread of str for a
 nicer output in the IPython shell.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pydna.seqrecord.SeqRecord.from_Bio_SeqRecord">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_Bio_SeqRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqRecord.html#Bio.SeqRecord.SeqRecord" title="(in Biopython v1.83)"><span class="pre">SeqRecord</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/seqrecord.html#SeqRecord.from_Bio_SeqRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seqrecord.SeqRecord.from_Bio_SeqRecord" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_Bio_SeqRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SeqRecord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/seqrecord.html#SeqRecord.from_Bio_SeqRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seqrecord.SeqRecord.from_Bio_SeqRecord" title="Link to this definition"></a></dt>
 <dd><p>Creates a pydnaSeqRecord from a Biopython SeqRecord.</p>
 </dd></dl>
 
@@ -4947,12 +4946,7 @@ each sequence for sequences that have a linear or circular attribute
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pydna.utils.location_boundaries">
-<span class="sig-prename descclassname"><span class="pre">pydna.utils.</span></span><span class="sig-name descname"><span class="pre">location_boundaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqFeature.html#Bio.SeqFeature.SimpleLocation" title="(in Biopython v1.83)"><span class="pre">SimpleLocation</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqFeature.html#Bio.SeqFeature.CompoundLocation" title="(in Biopython v1.83)"><span class="pre">CompoundLocation</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/utils.html#location_boundaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.utils.location_boundaries" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pydna.utils.locations_overlap">
-<span class="sig-prename descclassname"><span class="pre">pydna.utils.</span></span><span class="sig-name descname"><span class="pre">locations_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqFeature.html#Bio.SeqFeature.SimpleLocation" title="(in Biopython v1.83)"><span class="pre">SimpleLocation</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqFeature.html#Bio.SeqFeature.CompoundLocation" title="(in Biopython v1.83)"><span class="pre">CompoundLocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqFeature.html#Bio.SeqFeature.SimpleLocation" title="(in Biopython v1.83)"><span class="pre">SimpleLocation</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://biopython.org/docs/latest/api/Bio.SeqFeature.html#Bio.SeqFeature.CompoundLocation" title="(in Biopython v1.83)"><span class="pre">CompoundLocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/utils.html#locations_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.utils.locations_overlap" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pydna.utils.</span></span><span class="sig-name descname"><span class="pre">location_boundaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SimpleLocation</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">CompoundLocation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/utils.html#location_boundaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.utils.location_boundaries" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
