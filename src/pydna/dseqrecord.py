@@ -482,15 +482,12 @@ class Dseqrecord(_SeqRecord):
 
         """
 
-        s = super().format(f).strip()
-
-        if f in ("genbank", "gb"):
-            if self.circular:
-                return _pretty_str(s[:55] + "circular" + s[63:])
-            else:
-                return _pretty_str(s[:55] + "linear  " + s[63:])
+        record = _copy.deepcopy(self)
+        if f in ("genbank", "gb") and self.circular:
+            record.annotations["topology"] = "circular"
         else:
-            return _pretty_str(s).strip()
+            record.annotations["topology"] = "linear"
+        return _SeqRecord.format(record, f).strip()
 
     def write(self, filename=None, f="gb"):
         """Writes the Dseqrecord to a file using the format f, which must
@@ -1114,7 +1111,7 @@ class Dseqrecord(_SeqRecord):
                         _SimpleLocation(x, y, strand=strand),
                         type="CDS",
                         qualifiers={
-                            "note": f"{y-x}bp {(y-x)//3}aa",
+                            "note": f"{y - x}bp {(y - x) // 3}aa",
                             "checksum": [orf.seguid() + " (DNA)", prt.seguid() + " (protein)"],
                             "codon_start": 1,
                             "transl_table": 11,
@@ -1153,8 +1150,8 @@ class Dseqrecord(_SeqRecord):
 
         ovhg = self.seq.ovhg + len(self.seq.watson) - len(self.seq.crick)
 
-        w = f"{self.seq.ovhg*chr(32)}{self.seq.watson}{-ovhg*chr(32)}"
-        c = f"{-self.seq.ovhg*chr(32)}{self.seq.crick[::-1]}{ovhg*chr(32)}"
+        w = f"{self.seq.ovhg * chr(32)}{self.seq.watson}{-ovhg * chr(32)}"
+        c = f"{-self.seq.ovhg * chr(32)}{self.seq.crick[::-1]}{ovhg * chr(32)}"
 
         if strand == 1:
             s1, s2 = w, c
