@@ -340,9 +340,7 @@ class Dseq(_Seq):
 
             else:  # ovhg given
                 if ovhg == 0:
-                    if len(watson) == len(crick):
-                        self._data = bytes(watson, encoding="ASCII")
-                    elif len(watson) > len(crick):
+                    if len(watson) >= len(crick):
                         self._data = bytes(watson, encoding="ASCII")
                     else:
                         self._data = bytes(
@@ -1334,8 +1332,8 @@ class Dseq(_Seq):
             cs = _cdseguid(self.watson.upper(), self.crick.upper(), alphabet="{DNA-extended}")
         else:
             """docstring."""
-            w = f"{self.ovhg*'-'}{self.watson}{'-'*(-self.ovhg+len(self.crick)-len(self.watson))}".upper()
-            c = f"{'-'*(self.ovhg+len(self.watson)-len(self.crick))}{self.crick}{-self.ovhg*'-'}".upper()
+            w = f"{self.ovhg * '-'}{self.watson}{'-' * (-self.ovhg + len(self.crick) - len(self.watson))}".upper()
+            c = f"{'-' * (self.ovhg + len(self.watson) - len(self.crick))}{self.crick}{-self.ovhg * '-'}".upper()
             cs = _ldseguid(w, c, alphabet="{DNA-extended}")
         return cs
 
