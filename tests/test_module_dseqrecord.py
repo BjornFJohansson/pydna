@@ -21,6 +21,7 @@ def test_orfs():
     for orf, ln in zip(s.orfs(1002), lens):
         assert len(orf) == ln
 
+
 def test_cas9():
     from pydna.dseqrecord import Dseqrecord
 
@@ -434,6 +435,15 @@ def test_format():
     s = Dseqrecord("GGATCC", circular=False)
     s.format("fasta")
 
+    # A long sequence name is properly handled
+    s.name = "A" * 45
+    genbank_str = s.format("genbank")
+    locus_line = genbank_str.split("\n")[0]
+    assert (
+        locus_line
+        == "LOCUS       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 6 bp    DNA     linear   UNK 01-JAN-1980"
+    )
+
 
 def test_write():
     from unittest.mock import patch
@@ -673,7 +683,9 @@ def test_cut_add():
 
     a = Dseqrecord("GGATCCtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGGATCC").seq
     b = a.cut(BamHI)[1]
-    c = Dseqrecord("nCTGCAGtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGAATTCn").seq
+    c = Dseqrecord(
+        "nCTGCAGtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtGAATTCn"
+    ).seq
     f, d, l = c.cut((EcoRI, PstI))
 
     pUC19 = read("pUC19.gb")
@@ -808,9 +820,9 @@ def test_Dseqrecord_cutting_adding_2():
     for enz in enzymes:
         for f in a:
             b, c, d = f.cut(enz)
-            #print(b.seq.__repr__())
-            #print(c.seq.__repr__())
-            #print(d.seq.__repr__())
+            # print(b.seq.__repr__())
+            # print(c.seq.__repr__())
+            # print(d.seq.__repr__())
             e = b + c + d
             assert str(e.seq).lower() == str(f.seq).lower()
 
@@ -2264,26 +2276,26 @@ def test_apply_cut():
     # Single cut case, check that features are transmitted correctly.
     for strand in [1, -1, None]:
         seq = Dseqrecord("acgtATGaatt", circular=True)
-        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id='full_overlap'))
-        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id='left_side'))
-        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id='right_side'))
-        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id="full_overlap"))
+        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id="left_side"))
+        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id="right_side"))
+        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id="throughout"))
         for shift in range(len(seq)):
             seq_shifted = seq.shifted(shift)
-            cut_feature = find_feature_by_id(seq_shifted, 'full_overlap')
+            cut_feature = find_feature_by_id(seq_shifted, "full_overlap")
             start, end = _location_boundaries(cut_feature.location)
             # Cut leaving + and - overhangs in the feature full_overlap
             for dummy_cut in (((start, -3), None), ((end, 3), None)):
                 open_seq = seq_shifted.apply_cut(dummy_cut, dummy_cut)
                 assert len(open_seq.features) == 4
                 new_locs = sorted(str(f.location) for f in open_seq.features)
-                assert str(open_seq.seq) == 'ATGaattacgtATG'
+                assert str(open_seq.seq) == "ATGaattacgtATG"
                 if strand == 1:
-                    assert new_locs == sorted(['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)'])
+                    assert new_locs == sorted(["[0:3](+)", "[0:4](+)", "[11:14](+)", "[10:14](+)"])
                 elif strand == -1:
-                    assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
+                    assert new_locs == sorted(["[0:3](-)", "[0:4](-)", "[11:14](-)", "[10:14](-)"])
                 if strand == None:
-                    assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
+                    assert new_locs == sorted(["[0:3]", "[0:4]", "[11:14]", "[10:14]"])
 
 
 def test_apply_cut():
@@ -2298,26 +2310,26 @@ def test_apply_cut():
     # Single cut case, check that features are transmitted correctly.
     for strand in [1, -1, None]:
         seq = Dseqrecord("acgtATGaatt", circular=True)
-        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id='full_overlap'))
-        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id='left_side'))
-        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id='right_side'))
-        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id='throughout'))
+        seq.features.append(SeqFeature(SimpleLocation(4, 7, strand), id="full_overlap"))
+        seq.features.append(SeqFeature(SimpleLocation(3, 7, strand), id="left_side"))
+        seq.features.append(SeqFeature(SimpleLocation(4, 8, strand), id="right_side"))
+        seq.features.append(SeqFeature(SimpleLocation(3, 10, strand), id="throughout"))
         for shift in range(len(seq)):
             seq_shifted = seq.shifted(shift)
-            cut_feature = find_feature_by_id(seq_shifted, 'full_overlap')
+            cut_feature = find_feature_by_id(seq_shifted, "full_overlap")
             start, end = _location_boundaries(cut_feature.location)
             # Cut leaving + and - overhangs in the feature full_overlap
             for dummy_cut in (((start, -3), None), ((end, 3), None)):
                 open_seq = seq_shifted.apply_cut(dummy_cut, dummy_cut)
                 assert len(open_seq.features) == 4
                 new_locs = sorted(str(f.location) for f in open_seq.features)
-                assert str(open_seq.seq) == 'ATGaattacgtATG'
+                assert str(open_seq.seq) == "ATGaattacgtATG"
                 if strand == 1:
-                    assert new_locs == sorted(['[0:3](+)', '[0:4](+)', '[11:14](+)', '[10:14](+)'])
+                    assert new_locs == sorted(["[0:3](+)", "[0:4](+)", "[11:14](+)", "[10:14](+)"])
                 elif strand == -1:
-                    assert new_locs == sorted(['[0:3](-)', '[0:4](-)', '[11:14](-)', '[10:14](-)'])
+                    assert new_locs == sorted(["[0:3](-)", "[0:4](-)", "[11:14](-)", "[10:14](-)"])
                 if strand == None:
-                    assert new_locs == sorted(['[0:3]', '[0:4]', '[11:14]', '[10:14]'])
+                    assert new_locs == sorted(["[0:3]", "[0:4]", "[11:14]", "[10:14]"])
 
 
 if __name__ == "__main__":
