@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pydna.design &mdash; pydna 0.0.0.post1+7747787 documentation</title>
+  <title>pydna.design &mdash; pydna 0.0.0.post1+8b12daf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=9967f3b4"></script>
+        <script src="../../_static/documentation_options.js?v=1cf07049"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -98,13 +98,52 @@
 <span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span> <span class="k">as</span> <span class="n">_Dseqrecord</span>
 <span class="kn">from</span> <span class="nn">pydna.primer</span> <span class="kn">import</span> <span class="n">Primer</span> <span class="k">as</span> <span class="n">_Primer</span>
 <span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
+<span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">_operator</span>
 
 <span class="n">_module_logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pydna.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="get_tm_and_primer">
+<a class="viewcode-back" href="../../index.html#pydna.design.get_tm_and_primer">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tm_and_primer</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">tm_func</span><span class="p">,</span> <span class="n">starting_temp</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;returns a string&quot;&quot;&quot;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">starting_temp</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">limit</span>
+    <span class="n">tlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">seq</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">starting_temp</span> <span class="o">&lt;</span> <span class="n">target_tm</span><span class="p">:</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">_operator</span><span class="o">.</span><span class="n">le</span>
+        <span class="n">increment</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">_operator</span><span class="o">.</span><span class="n">ge</span>
+        <span class="n">increment</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">while</span> <span class="n">condition</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">target_tm</span><span class="p">):</span>
+        <span class="n">length</span> <span class="o">+=</span> <span class="n">increment</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">seq</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tm_func</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;=</span> <span class="n">tlen</span> <span class="ow">or</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">tmps</span> <span class="o">=</span> <span class="n">tm_func</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ps</span><span class="p">))</span>
+    <span class="n">_module_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(((</span><span class="n">p</span><span class="p">,</span> <span class="n">tmp</span><span class="p">),</span> <span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">tmps</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">((</span><span class="nb">abs</span><span class="p">(</span><span class="n">target_tm</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">),</span> <span class="n">p</span><span class="p">),</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">target_tm</span> <span class="o">-</span> <span class="n">tmps</span><span class="p">),</span> <span class="n">ps</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_tm_and_primer_with_estimate">
+<a class="viewcode-back" href="../../index.html#pydna.design.get_tm_and_primer_with_estimate">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tm_and_primer_with_estimate</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">tm_func</span><span class="p">,</span> <span class="n">estimate_function</span><span class="p">):</span>
+    <span class="n">first_temp</span><span class="p">,</span> <span class="n">first_guess</span> <span class="o">=</span> <span class="n">get_tm_and_primer</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">estimate_function</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_tm_and_primer</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">first_guess</span><span class="p">),</span> <span class="n">tm_func</span><span class="p">,</span> <span class="n">first_temp</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="primer_design">
 <a class="viewcode-back" href="../../index.html#pydna.design.primer_design">[docs]</a>
-<span class="k">def</span> <span class="nf">primer_design</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">target_tm</span><span class="o">=</span><span class="mf">55.0</span><span class="p">,</span> <span class="n">tm_func</span><span class="o">=</span><span class="n">_tm_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">primer_design</span><span class="p">(</span>
+    <span class="n">template</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">target_tm</span><span class="o">=</span><span class="mf">55.0</span><span class="p">,</span> <span class="n">tm_func</span><span class="o">=</span><span class="n">_tm_default</span><span class="p">,</span> <span class="n">estimate_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function designs a forward primer and a reverse primer for PCR amplification</span>
 <span class="sd">    of a given template sequence.</span>
 
@@ -194,21 +233,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">design</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;returns a string&quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">length</span> <span class="o">=</span> <span class="n">limit</span>
-        <span class="n">tlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">seq</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
-        <span class="k">while</span> <span class="n">tmp</span> <span class="o">&lt;</span> <span class="n">target_tm</span><span class="p">:</span>
-            <span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">seq</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tm_func</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;=</span> <span class="n">tlen</span><span class="p">:</span>
-                <span class="k">break</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">tmps</span> <span class="o">=</span> <span class="n">tm_func</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ps</span><span class="p">))</span>
-        <span class="n">_module_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(((</span><span class="n">p</span><span class="p">,</span> <span class="n">tmp</span><span class="p">),</span> <span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">tmps</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">((</span><span class="nb">abs</span><span class="p">(</span><span class="n">target_tm</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">),</span> <span class="n">p</span><span class="p">),</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">target_tm</span> <span class="o">-</span> <span class="n">tmps</span><span class="p">),</span> <span class="n">ps</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">estimate_function</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_tm_and_primer_with_estimate</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">tm_func</span><span class="p">,</span> <span class="n">estimate_function</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_tm_and_primer</span><span class="p">(</span><span class="n">target_tm</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">tm_func</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rp</span><span class="p">:</span>
         <span class="n">_module_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;no primer given, design forward primer:&quot;</span><span class="p">)</span>
