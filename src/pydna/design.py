@@ -25,12 +25,13 @@ from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer
 import logging as _logging
 import operator as _operator
+from typing import Tuple
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
-def get_tm_and_primer(target_tm, template, limit, tm_func, starting_temp=0) -> tuple[float, str]:
-    """returns a string"""
+def get_tm_and_primer(target_tm, template, limit, tm_func, starting_temp=0) -> Tuple[float, str]:
+    """returns a tuple (temp, primer)"""
     tmp = starting_temp
     length = limit
     tlen = len(template)
