@@ -24,11 +24,44 @@ from pydna.amplify import pcr as _pcr
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 from pydna.primer import Primer as _Primer
 import logging as _logging
+import operator as _operator
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
-def primer_design(template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=_tm_default, **kwargs):
+def get_tm_and_primer(target_tm, template, limit, tm_func, starting_temp=0) -> tuple[float, str]:
+    """returns a string"""
+    tmp = starting_temp
+    length = limit
+    tlen = len(template)
+    p = str(template.seq[:length])
+
+    if starting_temp < target_tm:
+        condition = _operator.le
+        increment = 1
+    else:
+        condition = _operator.ge
+        increment = -1
+    while condition(tmp, target_tm):
+        length += increment
+        p = str(template.seq[:length])
+        tmp = tm_func(p)
+        if length >= tlen or length == 0:
+            break
+    ps = p[:-1]
+    tmps = tm_func(str(ps))
+    _module_logger.debug(((p, tmp), (ps, tmps)))
+    return min((abs(target_tm - tmp), p), (abs(target_tm - tmps), ps))
+
+
+def get_tm_and_primer_with_estimate(target_tm, template, limit, tm_func, estimate_function):
+    first_temp, first_guess = get_tm_and_primer(target_tm, template, limit, estimate_function)
+    return get_tm_and_primer(target_tm, template, len(first_guess), tm_func, first_temp)
+
+
+def primer_design(
+    template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=_tm_default, estimate_function=None, **kwargs
+):
     """This function designs a forward primer and a reverse primer for PCR amplification
     of a given template sequence.
 
@@ -118,21 +151,10 @@ def primer_design(template, fp=None, rp=None, limit=13, target_tm=55.0, tm_func=
     """
 
     def design(target_tm, template):
-        """returns a string"""
-        tmp = 0
-        length = limit
-        tlen = len(template)
-        p = str(template.seq[:length])
-        while tmp < target_tm:
-            length += 1
-            p = str(template.seq[:length])
-            tmp = tm_func(p)
-            if length >= tlen:
-                break
-        ps = p[:-1]
-        tmps = tm_func(str(ps))
-        _module_logger.debug(((p, tmp), (ps, tmps)))
-        return min((abs(target_tm - tmp), p), (abs(target_tm - tmps), ps))[1]
+        if estimate_function:
+            return get_tm_and_primer_with_estimate(target_tm, template, limit, tm_func, estimate_function)[1]
+        else:
+            return get_tm_and_primer(target_tm, template, limit, tm_func)[1]
 
     if not fp and not rp:
         _module_logger.debug("no primer given, design forward primer:")
