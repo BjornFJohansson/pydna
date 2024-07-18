@@ -4,20 +4,29 @@ repos:
   hooks:
   - id: no-commit-to-branch
     args: [--branch, master]
+    exclude: scripts/|docs/|tests/
   - id: check-yaml
+    exclude: scripts/|docs/|tests/
   - id: end-of-file-fixer
+    exclude: scripts/|docs/|tests/
   - id: trailing-whitespace
+    exclude: scripts/|docs/|tests/
   - id: debug-statements
+    exclude: scripts/|docs/|tests/
   - id: fix-encoding-pragma
+    exclude: scripts/|docs/|tests/
   - id: mixed-line-ending
+    exclude: scripts/|docs/|tests/
 - repo: https://github.com/ambv/black
   rev: 24.2.0
   hooks:
   - id: black
+    exclude: scripts/|docs/|tests/
 - repo: https://github.com/PyCQA/flake8
   rev: 7.0.0
   hooks:
   - id: flake8
+    exclude: scripts/|docs/|tests/
 - repo: local
   hooks:
     - id: nbstripout
@@ -26,5 +35,3 @@ repos:
         python -m nbstripout --keep-output $@
       language: system
       files: \.ipynb$
-
-exclude: scripts/|docs/|tests/
