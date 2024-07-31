@@ -309,5 +309,42 @@ def test_too_short_template():
     assert primer_design(fragment) == Amplicon("")
 
 
+def test_get_tm_and_primer_from_above_and_below():
+    """Starting from higher and lower lengths gives the same value"""
+    from pydna.design import _design_primer
+    from pydna.tm import tm_default
+
+    for f in frags:
+        for temp in [40, 45, 50, 55]:
+            assert _design_primer(temp, f, 13, tm_default) == _design_primer(temp, f, 13, tm_default, 40)
+
+
+def test_use_estimate_function():
+    from pydna.design import primer_design
+    from pydna.tm import tm_default
+
+    def tm_alt_lower(*args):
+        return tm_default(*args) - 10
+
+    def tm_alt_upper(*args):
+        return tm_default(*args) + 10
+
+    for f in frags:
+        for temp in [40, 45, 50, 55]:
+            amp_lower_with_estimate = primer_design(
+                f, target_tm=temp, tm_func=tm_alt_lower, estimate_function=tm_default
+            )
+            amp_lower_no_estimate = primer_design(f, target_tm=temp, tm_func=tm_alt_lower)
+
+            assert amp_lower_with_estimate == amp_lower_no_estimate
+
+            amp_upper_with_estimate = primer_design(
+                f, target_tm=temp, tm_func=tm_alt_upper, estimate_function=tm_default
+            )
+            amp_upper_no_estimate = primer_design(f, target_tm=temp, tm_func=tm_alt_upper)
+
+            assert amp_upper_with_estimate == amp_upper_no_estimate
+
+
 if __name__ == "__main__":
     pytest.cmdline.main([__file__, "-v", "-s"])

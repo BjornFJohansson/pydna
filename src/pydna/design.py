@@ -30,34 +30,44 @@ from typing import Tuple
 _module_logger = _logging.getLogger("pydna." + __name__)
 
 
-def get_tm_and_primer(target_tm, template, limit, tm_func, starting_temp=0) -> Tuple[float, str]:
+def _design_primer(
+    target_tm: float, template: _Dseqrecord, limit: int, tm_func, starting_length: int = 0
+) -> Tuple[float, str]:
     """returns a tuple (temp, primer)"""
-    tmp = starting_temp
-    length = limit
+
+    if starting_length < limit:
+        starting_length = limit
+
+    length = starting_length
     tlen = len(template)
+
+    tmp = tm_func(str(template.seq[:length]))
+
     p = str(template.seq[:length])
 
-    if starting_temp < target_tm:
+    if tmp < target_tm:
         condition = _operator.le
         increment = 1
     else:
         condition = _operator.ge
         increment = -1
     while condition(tmp, target_tm):
+        prev_temp = tmp
+        prev_primer = p
         length += increment
         p = str(template.seq[:length])
         tmp = tm_func(p)
-        if length >= tlen or length == 0:
+        if length >= tlen:
             break
-    ps = p[:-1]
-    tmps = tm_func(str(ps))
-    _module_logger.debug(((p, tmp), (ps, tmps)))
-    return min((abs(target_tm - tmp), p), (abs(target_tm - tmps), ps))
+        # Never go below the limit
+        if length < limit:
+            return template.seq[:limit]
 
-
-def get_tm_and_primer_with_estimate(target_tm, template, limit, tm_func, estimate_function):
-    first_temp, first_guess = get_tm_and_primer(target_tm, template, limit, estimate_function)
-    return get_tm_and_primer(target_tm, template, len(first_guess), tm_func, first_temp)
+    _module_logger.debug(((p, tmp), (prev_primer, prev_temp)))
+    if abs(target_tm - tmp) < abs(target_tm - prev_temp):
+        return p
+    else:
+        return prev_primer
 
 
 def primer_design(
@@ -71,11 +81,20 @@ def primer_design(
     The optional fp and rp arguments can contain an existing primer for the sequence (either the forward or reverse primer).
     One or the other primers can be specified, not both (since then there is nothing to design!, use the pydna.amplify.pcr function instead).
 
+    The limit argument is the minimum length of the primer. The default value is 13.
+
     If one of the primers is given, the other primer is designed to match in terms of Tm.
     If both primers are designed, they will be designed to target_tm
 
     tm_func is a function that takes an ascii string representing an oligonuceotide as argument and returns a float.
     Some useful functions can be found in the :mod:`pydna.tm` module, but can be substituted for a custom made function.
+
+    estimate_function is a tm_func-like function that is used to get a first guess for the primer design, that is then used as starting
+    point for the final result. This is useful when the tm_func function is slow to calculate (e.g. it relies on an
+    external API, such as the NEB primer design API). The estimate_function should be faster than the tm_func function.
+    The default value is `None`.
+    To use the default `tm_func` as estimate function to get the NEB Tm faster, you can do:
+    `primer_design(dseqr, target_tm=55, tm_func=tm_neb, estimate_function=tm_default)`.
 
     The function returns a pydna.amplicon.Amplicon class instance. This object has
     the object.forward_primer and object.reverse_primer properties which contain the designed primers.
@@ -153,9 +172,10 @@ def primer_design(
 
     def design(target_tm, template):
         if estimate_function:
-            return get_tm_and_primer_with_estimate(target_tm, template, limit, tm_func, estimate_function)[1]
+            first_guess = _design_primer(target_tm, template, limit, estimate_function)
+            return _design_primer(target_tm, template, limit, tm_func, len(first_guess))
         else:
-            return get_tm_and_primer(target_tm, template, limit, tm_func)[1]
+            return _design_primer(target_tm, template, limit, tm_func)
 
     if not fp and not rp:
         _module_logger.debug("no primer given, design forward primer:")
