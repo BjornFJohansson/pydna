@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pydna.tm &mdash; pydna 0.0.0.post1+2329540 documentation</title>
+  <title>pydna.tm &mdash; pydna 0.0.0.post1+f156549 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=b2485cbe"></script>
+        <script src="../../_static/documentation_options.js?v=f1a969c5"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -88,6 +88,7 @@
 
 <span class="kn">import</span> <span class="nn">textwrap</span> <span class="k">as</span> <span class="nn">_textwrap</span>
 <span class="kn">from</span> <span class="nn">pydna._pretty</span> <span class="kn">import</span> <span class="n">pretty_str</span> <span class="k">as</span> <span class="n">_pretty_str</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="c1"># See the documentation for Bio.SeqUtils.MeltingTemp for more details</span>
 <span class="c1"># The 10X Taq Buffer with (NH4)2SO4 is commercialized by companies like</span>
@@ -427,6 +428,56 @@
     <span class="n">tm</span> <span class="o">=</span> <span class="p">(</span><span class="n">dH</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.9872</span> <span class="o">*</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pri</span> <span class="o">/</span> <span class="mi">1600</span><span class="p">)</span> <span class="o">+</span> <span class="n">dS</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">16.6</span> <span class="o">*</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">saltc</span><span class="p">))</span> <span class="o">/</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> <span class="o">-</span> <span class="mf">273.15</span>
 
     <span class="k">return</span> <span class="n">tm</span></div>
+
+
+
+<div class="viewcode-block" id="tm_neb">
+<a class="viewcode-back" href="../../index.html#pydna.tm.tm_neb">[docs]</a>
+<span class="k">def</span> <span class="nf">tm_neb</span><span class="p">(</span><span class="n">primer</span><span class="p">,</span> <span class="n">conc</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">prodcode</span><span class="o">=</span><span class="s2">&quot;q5-0&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates a single primers melting temp from NEB.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    primer1 : str</span>
+<span class="sd">    conc : float</span>
+<span class="sd">    prodcode : str</span>
+<span class="sd">        find product codes on nebswebsite: https://tmapi.neb.com/docs/productcodes</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tm : int</span>
+<span class="sd">        primer melting temperature</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://tmapi.neb.com/tm&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;seq1&quot;</span><span class="p">:</span> <span class="n">primer</span><span class="p">,</span> <span class="s2">&quot;conc&quot;</span><span class="p">:</span> <span class="n">conc</span><span class="p">,</span> <span class="s2">&quot;prodcode&quot;</span><span class="p">:</span> <span class="n">prodcode</span><span class="p">}</span>
+
+    <span class="c1"># Mimic a browser request with this headers</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s2">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Accept-Encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;gzip, deflate, br&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Accept-Language&quot;</span><span class="p">:</span> <span class="s2">&quot;en-US,en;q=0.5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Connection&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-alive&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Referer&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Could not connect to NEB API.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+    <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;tm1&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span></div>
 
 
 

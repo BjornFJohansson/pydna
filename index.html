@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to pydna’s documentation! &mdash; pydna 0.0.0.post1+2329540 documentation</title>
+  <title>Welcome to pydna’s documentation! &mdash; pydna 0.0.0.post1+f156549 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=b2485cbe"></script>
+        <script src="_static/documentation_options.js?v=f1a969c5"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -365,6 +365,7 @@
 <li><a class="reference internal" href="#pydna.tm.pfu_sso7d_program"><code class="docutils literal notranslate"><span class="pre">pfu_sso7d_program()</span></code></a></li>
 <li><a class="reference internal" href="#pydna.tm.Q5"><code class="docutils literal notranslate"><span class="pre">Q5()</span></code></a></li>
 <li><a class="reference internal" href="#pydna.tm.tmbresluc"><code class="docutils literal notranslate"><span class="pre">tmbresluc()</span></code></a></li>
+<li><a class="reference internal" href="#pydna.tm.tm_neb"><code class="docutils literal notranslate"><span class="pre">tm_neb()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-pydna.utils">pydna.utils module</a><ul>
@@ -3043,16 +3044,23 @@ the <code class="xref py py-class docutils literal notranslate"><span class="pre
 </ul>
 <dl class="py function">
 <dt class="sig sig-object py" id="pydna.design.primer_design">
-<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">primer_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">55.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_tm_default</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/design.html#primer_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.primer_design" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">primer_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">55.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_tm_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/design.html#primer_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.primer_design" title="Link to this definition"></a></dt>
 <dd><p>This function designs a forward primer and a reverse primer for PCR amplification
 of a given template sequence.</p>
 <p>The template argument is a Dseqrecord object or equivalent containing the template sequence.</p>
 <p>The optional fp and rp arguments can contain an existing primer for the sequence (either the forward or reverse primer).
 One or the other primers can be specified, not both (since then there is nothing to design!, use the pydna.amplify.pcr function instead).</p>
+<p>The limit argument is the minimum length of the primer. The default value is 13.</p>
 <p>If one of the primers is given, the other primer is designed to match in terms of Tm.
 If both primers are designed, they will be designed to target_tm</p>
 <p>tm_func is a function that takes an ascii string representing an oligonuceotide as argument and returns a float.
 Some useful functions can be found in the <a class="reference internal" href="#module-pydna.tm" title="pydna.tm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.tm</span></code></a> module, but can be substituted for a custom made function.</p>
+<p>estimate_function is a tm_func-like function that is used to get a first guess for the primer design, that is then used as starting
+point for the final result. This is useful when the tm_func function is slow to calculate (e.g. it relies on an
+external API, such as the NEB primer design API). The estimate_function should be faster than the tm_func function.
+The default value is <cite>None</cite>.
+To use the default <cite>tm_func</cite> as estimate function to get the NEB Tm faster, you can do:
+<cite>primer_design(dseqr, target_tm=55, tm_func=tm_neb, estimate_function=tm_default)</cite>.</p>
 <p>The function returns a pydna.amplicon.Amplicon class instance. This object has
 the object.forward_primer and object.reverse_primer properties which contain the designed primers.</p>
 <dl class="field-list simple">
@@ -4706,6 +4714,27 @@ debugging only.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.tm_neb">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">tm_neb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prodcode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'q5-0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/tm.html#tm_neb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.tm_neb" title="Link to this definition"></a></dt>
+<dd><p>Calculates a single primers melting temp from NEB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>primer1</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>)</p></li>
+<li><p><strong>conc</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>)</p></li>
+<li><p><strong>prodcode</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – find product codes on nebswebsite: <a class="reference external" href="https://tmapi.neb.com/docs/productcodes">https://tmapi.neb.com/docs/productcodes</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tm</strong> – primer melting temperature</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
