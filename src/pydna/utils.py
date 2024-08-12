@@ -19,11 +19,8 @@ import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
 from copy import deepcopy as _deepcopy
-from typing import Union as _Union
 
 import sys as _sys
-import re
-import itertools
 import random
 import subprocess as _subprocess
 from bisect import bisect as _bisect
@@ -34,6 +31,11 @@ from pydna.codon import rare_codons as _rare_codons
 
 from Bio.SeqFeature import SimpleLocation as _sl
 from Bio.SeqFeature import CompoundLocation as _cl
+
+from typing import Union as _Union, TypeVar as _TypeVar, List as _List
+
+# For functions that take str or bytes as input and return str or bytes as output, matching the input type
+StrOrBytes = _TypeVar("StrOrBytes", str, bytes)
 
 _module_logger = _logging.getLogger("pydna." + __name__)
 _ambiguous_dna_complement.update({"U": "A"})
@@ -256,7 +258,7 @@ def open_folder(pth):
             return "no cache to open."
 
 
-def rc(sequence: str):
+def rc(sequence: StrOrBytes) -> StrOrBytes:
     """Reverse complement.
 
     accepts mixed DNA/RNA
@@ -332,7 +334,7 @@ def identifier_from_string(s: str) -> str:
     return s
 
 
-def flatten(*args):
+def flatten(*args) -> _List:
     """Flattens an iterable of iterables.
 
     Down to str, bytes, bytearray or any of the pydna or Biopython seq objects

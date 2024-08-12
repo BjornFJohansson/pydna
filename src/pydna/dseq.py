@@ -22,7 +22,7 @@ import sys as _sys
 import math as _math
 
 from pydna.seq import Seq as _Seq
-from Bio.Seq import _translate_str
+from Bio.Seq import _translate_str, _SeqAbstractBaseClass
 
 from pydna._pretty import pretty_str as _pretty_str
 from seguid import ldseguid as _ldseguid
@@ -36,7 +36,23 @@ from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 from Bio.Restriction import RestrictionBatch as _RestrictionBatch
 from Bio.Restriction import CommOnly
 
-from typing import Tuple
+from typing import (
+    TYPE_CHECKING,
+    List as _List,
+    Tuple as _Tuple,
+    Union as _Union,
+    TypeVar as _TypeVar,
+    Iterable as _Iterable,
+)
+
+if TYPE_CHECKING:
+    from Bio.Restriction import AbstractCut as _AbstractCut
+
+
+# To represent any subclass of Dseq
+DseqType = _TypeVar("DseqType", bound="Dseq")
+EnzymesType = _TypeVar("EnzymesType", _RestrictionBatch, _Iterable["_AbstractCut"], "_AbstractCut")
+CutSiteType = _Tuple[_Tuple[int, int], _Union["_AbstractCut", None]]
 
 
 class Dseq(_Seq):
@@ -296,24 +312,24 @@ class Dseq(_Seq):
 
     def __init__(
         self,
-        watson,
-        crick=None,
+        watson: _Union[str, bytes],
+        crick: _Union[str, bytes, None] = None,
         ovhg=None,
         circular=False,
         pos=0,
     ):
+        if isinstance(watson, bytes):
+            watson = watson.decode("ASCII")
+        if isinstance(crick, bytes):
+            crick = crick.decode("ASCII")
+
         if crick is None:
-            if ovhg is None:
-                crick = _rc(watson)
-                ovhg = 0
-                try:
-                    self._data = bytes(watson, encoding="ASCII")
-                except TypeError:
-                    self._data = watson
-                    watson = watson.decode("ASCII")
-                    crick = crick.decode("ASCII")
-            else:  # ovhg given, but no crick strand
+            if ovhg is not None:
                 raise ValueError("ovhg defined without crick strand!")
+            crick = _rc(watson)
+            ovhg = 0
+            self._data = bytes(watson, encoding="ASCII")
+
         else:  # crick strand given
             if ovhg is None:  # ovhg not given
                 olaps = _common_sub_strings(
@@ -321,14 +337,18 @@ class Dseq(_Seq):
                     str(_rc(crick).lower()),
                     int(_math.log(len(watson)) / _math.log(4)),
                 )
-                try:
-                    F, T, L = olaps[0]
-                except IndexError:
+                if len(olaps) == 0:
                     raise ValueError("Could not anneal the two strands." " Please provide ovhg value")
-                ovhgs = [ol[1] - ol[0] for ol in olaps if ol[2] == L]
-                if len(ovhgs) > 1:
+
+                # We extract the positions and length of the first (longest) overlap, since
+                # common_sub_strings sorts the overlaps by length.
+                pos_watson, pos_crick, longest_olap_length = olaps[0]
+
+                # We see if there is another overlap of the same length
+                if any(olap[2] >= longest_olap_length for olap in olaps[1:]):
                     raise ValueError("More than one way of annealing the" " strands. Please provide ovhg value")
-                ovhg = T - F
+
+                ovhg = pos_crick - pos_watson
 
                 sns = (ovhg * " ") + _pretty_str(watson)
                 asn = (-ovhg * " ") + _pretty_str(_rc(crick))
@@ -510,7 +530,7 @@ class Dseq(_Seq):
     #     Use :meth:`looped` to create a circular Dseq object"""
     #     return self._circular
 
-    def mw(self):
+    def mw(self) -> float:
         """This method returns the molecular weight of the DNA molecule
         in g/mol. The following formula is used::
 
@@ -529,7 +549,7 @@ class Dseq(_Seq):
             + 79.0
         )
 
-    def upper(self):
+    def upper(self: DseqType) -> DseqType:
         """Return an upper case copy of the sequence.
 
         >>> from pydna.dseq import Dseq
@@ -562,7 +582,7 @@ class Dseq(_Seq):
             pos=self.pos,
         )
 
-    def lower(self):
+    def lower(self: DseqType) -> DseqType:
         """Return a lower case copy of the sequence.
 
         >>> from pydna.dseq import Dseq
@@ -594,7 +614,7 @@ class Dseq(_Seq):
             pos=self.pos,
         )
 
-    def find(self, sub, start=0, end=_sys.maxsize):
+    def find(self, sub: _Union[_SeqAbstractBaseClass, str, bytes], start=0, end=_sys.maxsize) -> int:
         """This method behaves like the python string method of the same name.
 
         Returns an integer, the index of the first occurrence of substring
@@ -638,7 +658,7 @@ class Dseq(_Seq):
 
         return (_pretty_str(self) + _pretty_str(self)).find(sub, start, end)
 
-    def __getitem__(self, sl):
+    def __getitem__(self, sl: slice) -> "Dseq":
         """Returns a subsequence. This method is used by the slice notation"""
 
         if not self.circular:
@@ -679,7 +699,7 @@ class Dseq(_Seq):
 
                 return Dseq(w, c, ovhg=0)  # , linear=True)
 
-    def __eq__(self, other):
+    def __eq__(self, other: DseqType) -> bool:
         """Compare to another Dseq object OR an object that implements
         watson, crick and ovhg properties. This comparison is case
         insensitive.
@@ -775,7 +795,7 @@ class Dseq(_Seq):
                 )
             )
 
-    def reverse_complement(self, inplace=False):
+    def reverse_complement(self) -> "Dseq":
         """Dseq object where watson and crick have switched places.
 
         This represents the same double stranded sequence.
@@ -805,7 +825,7 @@ class Dseq(_Seq):
 
     rc = reverse_complement  # alias for reverse_complement
 
-    def shifted(self, shift):
+    def shifted(self: DseqType, shift: int) -> DseqType:
         """Shifted version of a circular Dseq object."""
         if not self.circular:
             raise TypeError("DNA is not circular.")
@@ -815,7 +835,7 @@ class Dseq(_Seq):
         else:
             return (self[shift:] + self[:shift]).looped()
 
-    def looped(self):
+    def looped(self: DseqType) -> DseqType:
         """Circularized Dseq object.
 
         This can only be done if the two ends are compatible,
@@ -856,11 +876,11 @@ class Dseq(_Seq):
 
         """
         if self.circular:
-            return self
+            return _copy.deepcopy(self)
         type5, sticky5 = self.five_prime_end()
         type3, sticky3 = self.three_prime_end()
         if type5 == type3 and str(sticky5) == str(_rc(sticky3)):
-            nseq = Dseq.quick(
+            nseq = self.__class__.quick(
                 self.watson,
                 self.crick[-self.ovhg :] + self.crick[: -self.ovhg],
                 ovhg=0,
@@ -872,7 +892,7 @@ class Dseq(_Seq):
         else:
             raise TypeError("DNA cannot be circularized.\n" "5' and 3' sticky ends not compatible!")
 
-    def tolinear(self):  # pragma: no cover
+    def tolinear(self: DseqType) -> DseqType:  # pragma: no cover
         """Returns a blunt, linear copy of a circular Dseq object. This can
         only be done if the Dseq object is circular, otherwise a
         TypeError is raised.
@@ -904,11 +924,11 @@ class Dseq(_Seq):
         )
         if not self.circular:
             raise TypeError("DNA is not circular.\n")
-        selfcopy = _copy.copy(self)
+        selfcopy = _copy.deepcopy(self)
         selfcopy.circular = False
         return selfcopy  # self.__class__(self.watson, linear=True)
 
-    def five_prime_end(self):
+    def five_prime_end(self) -> _Tuple[str, str]:
         """Returns a tuple describing the structure of the 5' end of
         the DNA fragment
 
@@ -958,7 +978,7 @@ class Dseq(_Seq):
             type_ = "blunt"
         return type_, sticky
 
-    def three_prime_end(self):
+    def three_prime_end(self) -> _Tuple[str, str]:
         """Returns a tuple describing the structure of the 5' end of
         the DNA fragment
 
@@ -1005,11 +1025,11 @@ class Dseq(_Seq):
             type_ = "blunt"
         return type_, sticky
 
-    def watson_ovhg(self):
+    def watson_ovhg(self) -> int:
         """Returns the overhang of the watson strand at the three prime."""
         return len(self.watson) - len(self.crick) + self.ovhg
 
-    def __add__(self, other):
+    def __add__(self: DseqType, other: DseqType) -> DseqType:
         """Simulates ligation between two DNA fragments.
 
         Add other Dseq object at the end of the sequence.
@@ -1042,24 +1062,24 @@ class Dseq(_Seq):
         if self_type == other_type and str(self_tail) == str(_rc(other_tail)):
             answer = Dseq.quick(self.watson + other.watson, other.crick + self.crick, self.ovhg)
         elif not self:
-            answer = _copy.copy(other)
+            answer = _copy.deepcopy(other)
         elif not other:
-            answer = _copy.copy(self)
+            answer = _copy.deepcopy(self)
         else:
             raise TypeError("sticky ends not compatible!")
         return answer
 
-    def __mul__(self, number):
+    def __mul__(self: DseqType, number: int) -> DseqType:
         if not isinstance(number, int):
             raise TypeError("TypeError: can't multiply Dseq by non-int of type {}".format(type(number)))
         if number <= 0:
             return self.__class__("")
-        new = _copy.copy(self)
+        new = _copy.deepcopy(self)
         for i in range(number - 1):
             new += self
         return new
 
-    def _fill_in_five_prime(self, nucleotides):
+    def _fill_in_five_prime(self: DseqType, nucleotides: str) -> str:
         stuffer = ""
         type, se = self.five_prime_end()
         if type == "5'":
@@ -1070,7 +1090,7 @@ class Dseq(_Seq):
                     break
         return self.crick + stuffer, self.ovhg + len(stuffer)
 
-    def _fill_in_three_prime(self, nucleotides):
+    def _fill_in_three_prime(self: DseqType, nucleotides: str) -> str:
         stuffer = ""
         type, se = self.three_prime_end()
         if type == "5'":
@@ -1081,7 +1101,7 @@ class Dseq(_Seq):
                     break
         return self.watson + stuffer
 
-    def fill_in(self, nucleotides=None):
+    def fill_in(self, nucleotides: _Union[None, str] = None) -> "Dseq":
         """Fill in of five prime protruding end with a DNA polymerase
         that has only DNA polymerase activity (such as exo-klenow [#]_)
         and any combination of A, G, C or T. Default are all four
@@ -1138,20 +1158,21 @@ class Dseq(_Seq):
         .. [#] http://en.wikipedia.org/wiki/Klenow_fragment#The_exo-_Klenow_fragment
 
         """
-        if not nucleotides:
+        if nucleotides is None:
             nucleotides = "GATCRYWSMKHBVDN"
+
         nucleotides = set(nucleotides.lower() + nucleotides.upper())
         crick, ovhg = self._fill_in_five_prime(nucleotides)
         watson = self._fill_in_three_prime(nucleotides)
         return Dseq(watson, crick, ovhg)
 
-    def transcribe(self):
+    def transcribe(self) -> _Seq:
         return _Seq(self.watson).transcribe()
 
-    def translate(self, table="Standard", stop_symbol="*", to_stop=False, cds=False, gap="-"):
+    def translate(self, table="Standard", stop_symbol="*", to_stop=False, cds=False, gap="-") -> _Seq:
         return _Seq(_translate_str(str(self), table, stop_symbol, to_stop, cds, gap=gap))
 
-    def mung(self):
+    def mung(self) -> "Dseq":
         """
         Simulates treatment a nuclease with 5'-3' and 3'-5' single
         strand specific exonuclease activity (such as mung bean nuclease [#]_)
@@ -1194,7 +1215,7 @@ class Dseq(_Seq):
         """
         return Dseq(self.watson[max(0, -self.ovhg) : min(len(self.watson), len(self.crick) - self.ovhg)])
 
-    def T4(self, nucleotides=None):
+    def T4(self, nucleotides=None) -> "Dseq":
         """Fill in five prime protruding ends and chewing back
         three prime protruding ends by a DNA polymerase providing both
         5'-3' DNA polymerase activity and 3'-5' nuclease acitivty
@@ -1275,58 +1296,58 @@ class Dseq(_Seq):
 
     t4 = T4  # alias for the T4 method.
 
-    def exo1_front(self, n=1):
+    def exo1_front(self: DseqType, n=1) -> DseqType:
         """5'-3' resection at the start (left side) of the molecule."""
         d = _copy.deepcopy(self)
         d.ovhg += n
         d.watson = d.watson[n:]
         return d
 
-    def exo1_end(self, n=1):
+    def exo1_end(self: DseqType, n=1) -> DseqType:
         """5'-3' resection at the end (right side) of the molecule."""
         d = _copy.deepcopy(self)
         d.crick = d.crick[n:]
         return d
 
-    def no_cutters(self, batch: _RestrictionBatch = None):
+    def no_cutters(self, batch: _Union[_RestrictionBatch, None] = None) -> _RestrictionBatch:
         """Enzymes in a RestrictionBatch not cutting sequence."""
-        if not batch:
+        if batch is None:
             batch = CommOnly
         ana = batch.search(self)
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if not sitelist}
         return _RestrictionBatch(ncut)
 
-    def unique_cutters(self, batch: _RestrictionBatch = None):
+    def unique_cutters(self, batch: _Union[_RestrictionBatch, None] = None) -> _RestrictionBatch:
         """Enzymes in a RestrictionBatch cutting sequence once."""
-        if not batch:
+        if batch is None:
             batch = CommOnly
         return self.n_cutters(n=1, batch=batch)
 
     once_cutters = unique_cutters  # alias for unique_cutters
 
-    def twice_cutters(self, batch: _RestrictionBatch = None):
+    def twice_cutters(self, batch: _Union[_RestrictionBatch, None] = None) -> _RestrictionBatch:
         """Enzymes in a RestrictionBatch cutting sequence twice."""
-        if not batch:
+        if batch is None:
             batch = CommOnly
         return self.n_cutters(n=2, batch=batch)
 
-    def n_cutters(self, n=3, batch: _RestrictionBatch = None):
+    def n_cutters(self, n=3, batch: _Union[_RestrictionBatch, None] = None) -> _RestrictionBatch:
         """Enzymes in a RestrictionBatch cutting n times."""
-        if not batch:
+        if batch is None:
             batch = CommOnly
         ana = batch.search(self)
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if len(sitelist) == n}
         return _RestrictionBatch(ncut)
 
-    def cutters(self, batch: _RestrictionBatch = None):
+    def cutters(self, batch: _Union[_RestrictionBatch, None] = None) -> _RestrictionBatch:
         """Enzymes in a RestrictionBatch cutting sequence at least once."""
-        if not batch:
+        if batch is None:
             batch = CommOnly
         ana = batch.search(self)
         ncut = {enz: sitelist for (enz, sitelist) in ana.items() if sitelist}
         return _RestrictionBatch(ncut)
 
-    def seguid(self):
+    def seguid(self) -> str:
         """SEGUID checksum for the sequence."""
         if self.circular:
             cs = _cdseguid(self.watson.upper(), self.crick.upper(), alphabet="{DNA-extended}")
@@ -1337,7 +1358,7 @@ class Dseq(_Seq):
             cs = _ldseguid(w, c, alphabet="{DNA-extended}")
         return cs
 
-    def isblunt(self):
+    def isblunt(self) -> bool:
         """isblunt.
 
         Return True if Dseq is linear and blunt and
@@ -1377,7 +1398,7 @@ class Dseq(_Seq):
         """
         return self.ovhg == 0 and len(self.watson) == len(self.crick) and not self.circular
 
-    def cas9(self, RNA: str):
+    def cas9(self, RNA: str) -> _Tuple[slice, ...]:
         """docstring."""
         bRNA = bytes(RNA, "ASCII")
         slices = []
@@ -1388,14 +1409,14 @@ class Dseq(_Seq):
         slices = tuple(slice(x, y, 1) for x, y in zip(cuts, cuts[1:]))
         return slices
 
-    def terminal_transferase(self, nucleotides="a"):
+    def terminal_transferase(self, nucleotides="a") -> "Dseq":
         """docstring."""
         ovhg = self.ovhg
         if self.ovhg >= 0:
             ovhg += len(nucleotides)
         return Dseq(self.watson + nucleotides, self.crick + nucleotides, ovhg)
 
-    def cut(self, *enzymes):
+    def cut(self: DseqType, *enzymes: EnzymesType) -> _Tuple[DseqType, ...]:
         """Returns a list of linear Dseq fragments produced in the digestion.
         If there are no cuts, an empty list is returned.
 
@@ -1445,7 +1466,7 @@ class Dseq(_Seq):
         cutsite_pairs = self.get_cutsite_pairs(cutsites)
         return tuple(self.apply_cut(*cs) for cs in cutsite_pairs)
 
-    def cutsite_is_valid(self, cutsite):
+    def cutsite_is_valid(self, cutsite: CutSiteType) -> bool:
         """Returns False if:
         - Cut positions fall outside the sequence (could be moved to Biopython)
         - Overhang is not double stranded
@@ -1477,7 +1498,7 @@ class Dseq(_Seq):
             end_of_recognition_site %= len(self)
         recognition_site = self[start_of_recognition_site:end_of_recognition_site]
         if len(recognition_site) == 0 or recognition_site.ovhg != 0 or recognition_site.watson_ovhg() != 0:
-            if enz.scd5 is None:
+            if enz is None or enz.scd5 is None:
                 return False
             else:
                 # For enzymes that cut twice, this might be referring to the second one
@@ -1494,7 +1515,7 @@ class Dseq(_Seq):
 
         return True
 
-    def get_cutsites(self, *enzymes):
+    def get_cutsites(self: DseqType, *enzymes: EnzymesType) -> _List[CutSiteType]:
         """Returns a list of cutsites, represented represented as `((cut_watson, ovhg), enz)`:
 
         - `cut_watson` is a positive integer contained in `[0,len(seq))`, where `seq` is the sequence
@@ -1511,11 +1532,11 @@ class Dseq(_Seq):
         Parameters
         ----------
 
-        enzymes : Union[_RestrictionBatch,list[_RestrictionType]]
+        enzymes : Union[_RestrictionBatch,list[_AbstractCut]]
 
         Returns
         -------
-        list[tuple[tuple[int,int], _RestrictionType]]
+        list[tuple[tuple[int,int], _AbstractCut]]
 
         Examples
         --------
@@ -1562,7 +1583,7 @@ class Dseq(_Seq):
 
         return sorted([cutsite for cutsite in out if self.cutsite_is_valid(cutsite)])
 
-    def left_end_position(self) -> Tuple[int, int]:
+    def left_end_position(self) -> _Tuple[int, int]:
         """
         The index in the full sequence of the watson and crick start positions.
 
@@ -1579,7 +1600,7 @@ class Dseq(_Seq):
             return self.ovhg, 0
         return 0, -self.ovhg
 
-    def right_end_position(self) -> Tuple[int, int]:
+    def right_end_position(self) -> _Tuple[int, int]:
         """The index in the full sequence of the watson and crick end positions.
 
         full sequence (str(self)) for all three cases is AAA
@@ -1595,7 +1616,7 @@ class Dseq(_Seq):
             return len(self) + self.watson_ovhg(), len(self)
         return len(self), len(self) - self.watson_ovhg()
 
-    def get_cut_parameters(self, cut: tuple, is_left: bool):
+    def get_cut_parameters(self, cut: _Union[CutSiteType, None], is_left: bool) -> _Tuple[int, int, int]:
         """For a given cut expressed as ((cut_watson, ovhg), enz), returns
         a tuple (cut_watson, cut_crick, ovhg).
 
@@ -1622,15 +1643,15 @@ class Dseq(_Seq):
         # In the right end, the overhang does not matter
         return *self.right_end_position(), self.watson_ovhg()
 
-    def apply_cut(self, left_cut, right_cut):
+    def apply_cut(self, left_cut: CutSiteType, right_cut: CutSiteType) -> "Dseq":
         """Extracts a subfragment of the sequence between two cuts.
 
         For more detail see the documentation of get_cutsite_pairs.
 
         Parameters
         ----------
-        left_cut : Union[tuple[tuple[int,int], _RestrictionType], None]
-        right_cut: Union[tuple[tuple[int,int], _RestrictionType], None]
+        left_cut : Union[tuple[tuple[int,int], _AbstractCut], None]
+        right_cut: Union[tuple[tuple[int,int], _AbstractCut], None]
 
         Returns
         -------
@@ -1689,7 +1710,9 @@ class Dseq(_Seq):
             ovhg=ovhg_left,
         )
 
-    def get_cutsite_pairs(self, cutsites):
+    def get_cutsite_pairs(
+        self, cutsites: _List[CutSiteType]
+    ) -> _List[_Tuple[_Union[None, CutSiteType], _Union[None, CutSiteType]]]:
         """Returns pairs of cutsites that render the edges of the resulting fragments.
 
         A fragment produced by restriction is represented by a tuple of length 2 that
@@ -1705,11 +1728,11 @@ class Dseq(_Seq):
 
         Parameters
         ----------
-        cutsites : list[tuple[tuple[int,int], _RestrictionType]]
+        cutsites : list[tuple[tuple[int,int], _AbstractCut]]
 
         Returns
         -------
-        list[tuple[tuple[tuple[int,int], _RestrictionType]|None],tuple[tuple[int,int], _RestrictionType]|None]
+        list[tuple[tuple[tuple[int,int], _AbstractCut]|None],tuple[tuple[int,int], _AbstractCut]|None]
 
         Examples
         --------
