@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pydna.utils &mdash; pydna 0.0.0.post1+f156549 documentation</title>
+  <title>pydna.utils &mdash; pydna 0.0.0.post1+787d00c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=f1a969c5"></script>
+        <script src="../../_static/documentation_options.js?v=c612eb08"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -93,11 +93,8 @@
 <span class="kn">import</span> <span class="nn">collections</span> <span class="k">as</span> <span class="nn">_collections</span>
 <span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">_itertools</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
 
 <span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">_sys</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">_subprocess</span>
 <span class="kn">from</span> <span class="nn">bisect</span> <span class="kn">import</span> <span class="n">bisect</span> <span class="k">as</span> <span class="n">_bisect</span>
@@ -108,6 +105,11 @@
 
 <span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">SimpleLocation</span> <span class="k">as</span> <span class="n">_sl</span>
 <span class="kn">from</span> <span class="nn">Bio.SeqFeature</span> <span class="kn">import</span> <span class="n">CompoundLocation</span> <span class="k">as</span> <span class="n">_cl</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span><span class="p">,</span> <span class="n">TypeVar</span> <span class="k">as</span> <span class="n">_TypeVar</span><span class="p">,</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
+
+<span class="c1"># For functions that take str or bytes as input and return str or bytes as output, matching the input type</span>
+<span class="n">StrOrBytes</span> <span class="o">=</span> <span class="n">_TypeVar</span><span class="p">(</span><span class="s2">&quot;StrOrBytes&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span>
 
 <span class="n">_module_logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pydna.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_ambiguous_dna_complement</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;U&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">})</span>
@@ -356,7 +358,7 @@
 
 <div class="viewcode-block" id="rc">
 <a class="viewcode-back" href="../../index.html#pydna.genbank.rc">[docs]</a>
-<span class="k">def</span> <span class="nf">rc</span><span class="p">(</span><span class="n">sequence</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">rc</span><span class="p">(</span><span class="n">sequence</span><span class="p">:</span> <span class="n">StrOrBytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StrOrBytes</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reverse complement.</span>
 
 <span class="sd">    accepts mixed DNA/RNA</span>
@@ -444,7 +446,7 @@
 
 <div class="viewcode-block" id="flatten">
 <a class="viewcode-back" href="../../index.html#pydna.genbank.flatten">[docs]</a>
-<span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens an iterable of iterables.</span>
 
 <span class="sd">    Down to str, bytes, bytearray or any of the pydna or Biopython seq objects</span>

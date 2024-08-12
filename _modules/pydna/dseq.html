@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pydna.dseq &mdash; pydna 0.0.0.post1+f156549 documentation</title>
+  <title>pydna.dseq &mdash; pydna 0.0.0.post1+787d00c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=f1a969c5"></script>
+        <script src="../../_static/documentation_options.js?v=c612eb08"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -96,7 +96,7 @@
 <span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">_math</span>
 
 <span class="kn">from</span> <span class="nn">pydna.seq</span> <span class="kn">import</span> <span class="n">Seq</span> <span class="k">as</span> <span class="n">_Seq</span>
-<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">_translate_str</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">_translate_str</span><span class="p">,</span> <span class="n">_SeqAbstractBaseClass</span>
 
 <span class="kn">from</span> <span class="nn">pydna._pretty</span> <span class="kn">import</span> <span class="n">pretty_str</span> <span class="k">as</span> <span class="n">_pretty_str</span>
 <span class="kn">from</span> <span class="nn">seguid</span> <span class="kn">import</span> <span class="n">ldseguid</span> <span class="k">as</span> <span class="n">_ldseguid</span>
@@ -110,7 +110,23 @@
 <span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">RestrictionBatch</span> <span class="k">as</span> <span class="n">_RestrictionBatch</span>
 <span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">CommOnly</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span><span class="p">,</span>
+    <span class="n">Tuple</span> <span class="k">as</span> <span class="n">_Tuple</span><span class="p">,</span>
+    <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span><span class="p">,</span>
+    <span class="n">TypeVar</span> <span class="k">as</span> <span class="n">_TypeVar</span><span class="p">,</span>
+    <span class="n">Iterable</span> <span class="k">as</span> <span class="n">_Iterable</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">AbstractCut</span> <span class="k">as</span> <span class="n">_AbstractCut</span>
+
+
+<span class="c1"># To represent any subclass of Dseq</span>
+<span class="n">DseqType</span> <span class="o">=</span> <span class="n">_TypeVar</span><span class="p">(</span><span class="s2">&quot;DseqType&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;Dseq&quot;</span><span class="p">)</span>
+<span class="n">EnzymesType</span> <span class="o">=</span> <span class="n">_TypeVar</span><span class="p">(</span><span class="s2">&quot;EnzymesType&quot;</span><span class="p">,</span> <span class="n">_RestrictionBatch</span><span class="p">,</span> <span class="n">_Iterable</span><span class="p">[</span><span class="s2">&quot;_AbstractCut&quot;</span><span class="p">],</span> <span class="s2">&quot;_AbstractCut&quot;</span><span class="p">)</span>
+<span class="n">CutSiteType</span> <span class="o">=</span> <span class="n">_Tuple</span><span class="p">[</span><span class="n">_Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">_Union</span><span class="p">[</span><span class="s2">&quot;_AbstractCut&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
 
 
 <div class="viewcode-block" id="Dseq">
@@ -372,24 +388,24 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">watson</span><span class="p">,</span>
-        <span class="n">crick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">watson</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="n">crick</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">ovhg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">circular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">watson</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">watson</span> <span class="o">=</span> <span class="n">watson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crick</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">crick</span> <span class="o">=</span> <span class="n">crick</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">crick</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ovhg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">crick</span> <span class="o">=</span> <span class="n">_rc</span><span class="p">(</span><span class="n">watson</span><span class="p">)</span>
-                <span class="n">ovhg</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">watson</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">watson</span>
-                    <span class="n">watson</span> <span class="o">=</span> <span class="n">watson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
-                    <span class="n">crick</span> <span class="o">=</span> <span class="n">crick</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># ovhg given, but no crick strand</span>
+            <span class="k">if</span> <span class="n">ovhg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ovhg defined without crick strand!&quot;</span><span class="p">)</span>
+            <span class="n">crick</span> <span class="o">=</span> <span class="n">_rc</span><span class="p">(</span><span class="n">watson</span><span class="p">)</span>
+            <span class="n">ovhg</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">watson</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># crick strand given</span>
             <span class="k">if</span> <span class="n">ovhg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># ovhg not given</span>
                 <span class="n">olaps</span> <span class="o">=</span> <span class="n">_common_sub_strings</span><span class="p">(</span>
@@ -397,14 +413,18 @@
                     <span class="nb">str</span><span class="p">(</span><span class="n">_rc</span><span class="p">(</span><span class="n">crick</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span>
                     <span class="nb">int</span><span class="p">(</span><span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">watson</span><span class="p">))</span> <span class="o">/</span> <span class="n">_math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span>
                 <span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">F</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">L</span> <span class="o">=</span> <span class="n">olaps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">olaps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not anneal the two strands.&quot;</span> <span class="s2">&quot; Please provide ovhg value&quot;</span><span class="p">)</span>
-                <span class="n">ovhgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ol</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ol</span> <span class="ow">in</span> <span class="n">olaps</span> <span class="k">if</span> <span class="n">ol</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">L</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ovhgs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+
+                <span class="c1"># We extract the positions and length of the first (longest) overlap, since</span>
+                <span class="c1"># common_sub_strings sorts the overlaps by length.</span>
+                <span class="n">pos_watson</span><span class="p">,</span> <span class="n">pos_crick</span><span class="p">,</span> <span class="n">longest_olap_length</span> <span class="o">=</span> <span class="n">olaps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># We see if there is another overlap of the same length</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">olap</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">longest_olap_length</span> <span class="k">for</span> <span class="n">olap</span> <span class="ow">in</span> <span class="n">olaps</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;More than one way of annealing the&quot;</span> <span class="s2">&quot; strands. Please provide ovhg value&quot;</span><span class="p">)</span>
-                <span class="n">ovhg</span> <span class="o">=</span> <span class="n">T</span> <span class="o">-</span> <span class="n">F</span>
+
+                <span class="n">ovhg</span> <span class="o">=</span> <span class="n">pos_crick</span> <span class="o">-</span> <span class="n">pos_watson</span>
 
                 <span class="n">sns</span> <span class="o">=</span> <span class="p">(</span><span class="n">ovhg</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">watson</span><span class="p">)</span>
                 <span class="n">asn</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">ovhg</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="n">_rc</span><span class="p">(</span><span class="n">crick</span><span class="p">))</span>
@@ -600,7 +620,7 @@
 
 <div class="viewcode-block" id="Dseq.mw">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.mw">[docs]</a>
-    <span class="k">def</span> <span class="nf">mw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This method returns the molecular weight of the DNA molecule</span>
 <span class="sd">        in g/mol. The following formula is used::</span>
 
@@ -622,7 +642,7 @@
 
 <div class="viewcode-block" id="Dseq.upper">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.upper">[docs]</a>
-    <span class="k">def</span> <span class="nf">upper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">upper</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an upper case copy of the sequence.</span>
 
 <span class="sd">        &gt;&gt;&gt; from pydna.dseq import Dseq</span>
@@ -658,7 +678,7 @@
 
 <div class="viewcode-block" id="Dseq.lower">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.lower">[docs]</a>
-    <span class="k">def</span> <span class="nf">lower</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lower</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a lower case copy of the sequence.</span>
 
 <span class="sd">        &gt;&gt;&gt; from pydna.dseq import Dseq</span>
@@ -693,7 +713,7 @@
 
 <div class="viewcode-block" id="Dseq.find">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.find">[docs]</a>
-    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">_sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_SeqAbstractBaseClass</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">_sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This method behaves like the python string method of the same name.</span>
 
 <span class="sd">        Returns an integer, the index of the first occurrence of substring</span>
@@ -738,7 +758,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">_pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">_pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sl</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sl</span><span class="p">:</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a subsequence. This method is used by the slice notation&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
@@ -779,7 +799,7 @@
 
                 <span class="k">return</span> <span class="n">Dseq</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># , linear=True)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare to another Dseq object OR an object that implements</span>
 <span class="sd">        watson, crick and ovhg properties. This comparison is case</span>
 <span class="sd">        insensitive.</span>
@@ -877,7 +897,7 @@
 
 <div class="viewcode-block" id="Dseq.reverse_complement">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.reverse_complement">[docs]</a>
-    <span class="k">def</span> <span class="nf">reverse_complement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reverse_complement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dseq object where watson and crick have switched places.</span>
 
 <span class="sd">        This represents the same double stranded sequence.</span>
@@ -910,7 +930,7 @@
 
 <div class="viewcode-block" id="Dseq.shifted">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.shifted">[docs]</a>
-    <span class="k">def</span> <span class="nf">shifted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">shifted</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shifted version of a circular Dseq object.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;DNA is not circular.&quot;</span><span class="p">)</span>
@@ -923,7 +943,7 @@
 
 <div class="viewcode-block" id="Dseq.looped">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.looped">[docs]</a>
-    <span class="k">def</span> <span class="nf">looped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">looped</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Circularized Dseq object.</span>
 
 <span class="sd">        This can only be done if the two ends are compatible,</span>
@@ -964,11 +984,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">return</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">type5</span><span class="p">,</span> <span class="n">sticky5</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">five_prime_end</span><span class="p">()</span>
         <span class="n">type3</span><span class="p">,</span> <span class="n">sticky3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">three_prime_end</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">type5</span> <span class="o">==</span> <span class="n">type3</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">sticky5</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">_rc</span><span class="p">(</span><span class="n">sticky3</span><span class="p">)):</span>
-            <span class="n">nseq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="o">.</span><span class="n">quick</span><span class="p">(</span>
+            <span class="n">nseq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">quick</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">watson</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">crick</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span> <span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">crick</span><span class="p">[:</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span><span class="p">],</span>
                 <span class="n">ovhg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -983,7 +1003,7 @@
 
 <div class="viewcode-block" id="Dseq.tolinear">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.tolinear">[docs]</a>
-    <span class="k">def</span> <span class="nf">tolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">tolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a blunt, linear copy of a circular Dseq object. This can</span>
 <span class="sd">        only be done if the Dseq object is circular, otherwise a</span>
 <span class="sd">        TypeError is raised.</span>
@@ -1015,14 +1035,14 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;DNA is not circular.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">selfcopy</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">selfcopy</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">selfcopy</span><span class="o">.</span><span class="n">circular</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">selfcopy</span>  <span class="c1"># self.__class__(self.watson, linear=True)</span></div>
 
 
 <div class="viewcode-block" id="Dseq.five_prime_end">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.five_prime_end">[docs]</a>
-    <span class="k">def</span> <span class="nf">five_prime_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">five_prime_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a tuple describing the structure of the 5&#39; end of</span>
 <span class="sd">        the DNA fragment</span>
 
@@ -1075,7 +1095,7 @@
 
 <div class="viewcode-block" id="Dseq.three_prime_end">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.three_prime_end">[docs]</a>
-    <span class="k">def</span> <span class="nf">three_prime_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">three_prime_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a tuple describing the structure of the 5&#39; end of</span>
 <span class="sd">        the DNA fragment</span>
 
@@ -1125,12 +1145,12 @@
 
 <div class="viewcode-block" id="Dseq.watson_ovhg">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.watson_ovhg">[docs]</a>
-    <span class="k">def</span> <span class="nf">watson_ovhg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">watson_ovhg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the overhang of the watson strand at the three prime.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watson</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">crick</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulates ligation between two DNA fragments.</span>
 
 <span class="sd">        Add other Dseq object at the end of the sequence.</span>
@@ -1163,24 +1183,24 @@
         <span class="k">if</span> <span class="n">self_type</span> <span class="o">==</span> <span class="n">other_type</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">self_tail</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">_rc</span><span class="p">(</span><span class="n">other_tail</span><span class="p">)):</span>
             <span class="n">answer</span> <span class="o">=</span> <span class="n">Dseq</span><span class="o">.</span><span class="n">quick</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watson</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">watson</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">crick</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">crick</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="n">answer</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">other</span><span class="p">:</span>
-            <span class="n">answer</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;sticky ends not compatible!&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">answer</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;TypeError: can&#39;t multiply Dseq by non-int of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">number</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">number</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">new</span> <span class="o">+=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="nf">_fill_in_five_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_fill_in_five_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">nucleotides</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">stuffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="nb">type</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">five_prime_end</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;5&#39;&quot;</span><span class="p">:</span>
@@ -1191,7 +1211,7 @@
                     <span class="k">break</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">crick</span> <span class="o">+</span> <span class="n">stuffer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">stuffer</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_fill_in_three_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_fill_in_three_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">nucleotides</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">stuffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="nb">type</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">three_prime_end</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;5&#39;&quot;</span><span class="p">:</span>
@@ -1204,7 +1224,7 @@
 
 <div class="viewcode-block" id="Dseq.fill_in">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.fill_in">[docs]</a>
-    <span class="k">def</span> <span class="nf">fill_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fill_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill in of five prime protruding end with a DNA polymerase</span>
 <span class="sd">        that has only DNA polymerase activity (such as exo-klenow [#]_)</span>
 <span class="sd">        and any combination of A, G, C or T. Default are all four</span>
@@ -1261,8 +1281,9 @@
 <span class="sd">        .. [#] http://en.wikipedia.org/wiki/Klenow_fragment#The_exo-_Klenow_fragment</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">nucleotides</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">nucleotides</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">nucleotides</span> <span class="o">=</span> <span class="s2">&quot;GATCRYWSMKHBVDN&quot;</span>
+
         <span class="n">nucleotides</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nucleotides</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">nucleotides</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
         <span class="n">crick</span><span class="p">,</span> <span class="n">ovhg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_in_five_prime</span><span class="p">(</span><span class="n">nucleotides</span><span class="p">)</span>
         <span class="n">watson</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_in_three_prime</span><span class="p">(</span><span class="n">nucleotides</span><span class="p">)</span>
@@ -1271,19 +1292,19 @@
 
 <div class="viewcode-block" id="Dseq.transcribe">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.transcribe">[docs]</a>
-    <span class="k">def</span> <span class="nf">transcribe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">transcribe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_Seq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watson</span><span class="p">)</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Dseq.translate">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.translate">[docs]</a>
-    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="s2">&quot;Standard&quot;</span><span class="p">,</span> <span class="n">stop_symbol</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">to_stop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="s2">&quot;Standard&quot;</span><span class="p">,</span> <span class="n">stop_symbol</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">to_stop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_Seq</span><span class="p">(</span><span class="n">_translate_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">table</span><span class="p">,</span> <span class="n">stop_symbol</span><span class="p">,</span> <span class="n">to_stop</span><span class="p">,</span> <span class="n">cds</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="n">gap</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Dseq.mung">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.mung">[docs]</a>
-    <span class="k">def</span> <span class="nf">mung</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mung</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Simulates treatment a nuclease with 5&#39;-3&#39; and 3&#39;-5&#39; single</span>
 <span class="sd">        strand specific exonuclease activity (such as mung bean nuclease [#]_)</span>
@@ -1329,7 +1350,7 @@
 
 <div class="viewcode-block" id="Dseq.T4">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.T4">[docs]</a>
-    <span class="k">def</span> <span class="nf">T4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">T4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill in five prime protruding ends and chewing back</span>
 <span class="sd">        three prime protruding ends by a DNA polymerase providing both</span>
 <span class="sd">        5&#39;-3&#39; DNA polymerase activity and 3&#39;-5&#39; nuclease acitivty</span>
@@ -1413,7 +1434,7 @@
 
 <div class="viewcode-block" id="Dseq.exo1_front">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.exo1_front">[docs]</a>
-    <span class="k">def</span> <span class="nf">exo1_front</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">exo1_front</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;5&#39;-3&#39; resection at the start (left side) of the molecule.&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">ovhg</span> <span class="o">+=</span> <span class="n">n</span>
@@ -1423,7 +1444,7 @@
 
 <div class="viewcode-block" id="Dseq.exo1_end">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.exo1_end">[docs]</a>
-    <span class="k">def</span> <span class="nf">exo1_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">exo1_end</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DseqType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;5&#39;-3&#39; resection at the end (right side) of the molecule.&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">crick</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">crick</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span>
@@ -1432,9 +1453,9 @@
 
 <div class="viewcode-block" id="Dseq.no_cutters">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.no_cutters">[docs]</a>
-    <span class="k">def</span> <span class="nf">no_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_RestrictionBatch</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">no_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_RestrictionBatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_RestrictionBatch</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enzymes in a RestrictionBatch not cutting sequence.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">CommOnly</span>
         <span class="n">ana</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ncut</span> <span class="o">=</span> <span class="p">{</span><span class="n">enz</span><span class="p">:</span> <span class="n">sitelist</span> <span class="k">for</span> <span class="p">(</span><span class="n">enz</span><span class="p">,</span> <span class="n">sitelist</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ana</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">sitelist</span><span class="p">}</span>
@@ -1443,9 +1464,9 @@
 
 <div class="viewcode-block" id="Dseq.unique_cutters">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.unique_cutters">[docs]</a>
-    <span class="k">def</span> <span class="nf">unique_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_RestrictionBatch</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">unique_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_RestrictionBatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_RestrictionBatch</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enzymes in a RestrictionBatch cutting sequence once.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">CommOnly</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cutters</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span></div>
 
@@ -1454,18 +1475,18 @@
 
 <div class="viewcode-block" id="Dseq.twice_cutters">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.twice_cutters">[docs]</a>
-    <span class="k">def</span> <span class="nf">twice_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_RestrictionBatch</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">twice_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_RestrictionBatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_RestrictionBatch</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enzymes in a RestrictionBatch cutting sequence twice.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">CommOnly</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cutters</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Dseq.n_cutters">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.n_cutters">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_RestrictionBatch</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">n_cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_RestrictionBatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_RestrictionBatch</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enzymes in a RestrictionBatch cutting n times.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">CommOnly</span>
         <span class="n">ana</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ncut</span> <span class="o">=</span> <span class="p">{</span><span class="n">enz</span><span class="p">:</span> <span class="n">sitelist</span> <span class="k">for</span> <span class="p">(</span><span class="n">enz</span><span class="p">,</span> <span class="n">sitelist</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ana</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sitelist</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span><span class="p">}</span>
@@ -1474,9 +1495,9 @@
 
 <div class="viewcode-block" id="Dseq.cutters">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.cutters">[docs]</a>
-    <span class="k">def</span> <span class="nf">cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_RestrictionBatch</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cutters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_RestrictionBatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_RestrictionBatch</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enzymes in a RestrictionBatch cutting sequence at least once.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">CommOnly</span>
         <span class="n">ana</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ncut</span> <span class="o">=</span> <span class="p">{</span><span class="n">enz</span><span class="p">:</span> <span class="n">sitelist</span> <span class="k">for</span> <span class="p">(</span><span class="n">enz</span><span class="p">,</span> <span class="n">sitelist</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ana</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">sitelist</span><span class="p">}</span>
@@ -1485,7 +1506,7 @@
 
 <div class="viewcode-block" id="Dseq.seguid">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.seguid">[docs]</a>
-    <span class="k">def</span> <span class="nf">seguid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">seguid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;SEGUID checksum for the sequence.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
             <span class="n">cs</span> <span class="o">=</span> <span class="n">_cdseguid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watson</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">crick</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">alphabet</span><span class="o">=</span><span class="s2">&quot;{DNA-extended}&quot;</span><span class="p">)</span>
@@ -1499,7 +1520,7 @@
 
 <div class="viewcode-block" id="Dseq.isblunt">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.isblunt">[docs]</a>
-    <span class="k">def</span> <span class="nf">isblunt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">isblunt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;isblunt.</span>
 
 <span class="sd">        Return True if Dseq is linear and blunt and</span>
@@ -1542,7 +1563,7 @@
 
 <div class="viewcode-block" id="Dseq.cas9">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.cas9">[docs]</a>
-    <span class="k">def</span> <span class="nf">cas9</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RNA</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cas9</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RNA</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
         <span class="n">bRNA</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">RNA</span><span class="p">,</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
         <span class="n">slices</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1556,7 +1577,7 @@
 
 <div class="viewcode-block" id="Dseq.terminal_transferase">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.terminal_transferase">[docs]</a>
-    <span class="k">def</span> <span class="nf">terminal_transferase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">terminal_transferase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleotides</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;docstring.&quot;&quot;&quot;</span>
         <span class="n">ovhg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ovhg</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -1566,7 +1587,7 @@
 
 <div class="viewcode-block" id="Dseq.cut">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">enzymes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="o">*</span><span class="n">enzymes</span><span class="p">:</span> <span class="n">EnzymesType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="n">DseqType</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of linear Dseq fragments produced in the digestion.</span>
 <span class="sd">        If there are no cuts, an empty list is returned.</span>
 
@@ -1619,7 +1640,7 @@
 
 <div class="viewcode-block" id="Dseq.cutsite_is_valid">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.cutsite_is_valid">[docs]</a>
-    <span class="k">def</span> <span class="nf">cutsite_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutsite</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cutsite_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutsite</span><span class="p">:</span> <span class="n">CutSiteType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns False if:</span>
 <span class="sd">        - Cut positions fall outside the sequence (could be moved to Biopython)</span>
 <span class="sd">        - Overhang is not double stranded</span>
@@ -1651,7 +1672,7 @@
             <span class="n">end_of_recognition_site</span> <span class="o">%=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">recognition_site</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">start_of_recognition_site</span><span class="p">:</span><span class="n">end_of_recognition_site</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">recognition_site</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">recognition_site</span><span class="o">.</span><span class="n">ovhg</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">recognition_site</span><span class="o">.</span><span class="n">watson_ovhg</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">enz</span><span class="o">.</span><span class="n">scd5</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">enz</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">enz</span><span class="o">.</span><span class="n">scd5</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># For enzymes that cut twice, this might be referring to the second one</span>
@@ -1671,7 +1692,7 @@
 
 <div class="viewcode-block" id="Dseq.get_cutsites">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.get_cutsites">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cutsites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">enzymes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_cutsites</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">DseqType</span><span class="p">,</span> <span class="o">*</span><span class="n">enzymes</span><span class="p">:</span> <span class="n">EnzymesType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">CutSiteType</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of cutsites, represented represented as `((cut_watson, ovhg), enz)`:</span>
 
 <span class="sd">        - `cut_watson` is a positive integer contained in `[0,len(seq))`, where `seq` is the sequence</span>
@@ -1688,11 +1709,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
-<span class="sd">        enzymes : Union[_RestrictionBatch,list[_RestrictionType]]</span>
+<span class="sd">        enzymes : Union[_RestrictionBatch,list[_AbstractCut]]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list[tuple[tuple[int,int], _RestrictionType]]</span>
+<span class="sd">        list[tuple[tuple[int,int], _AbstractCut]]</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1742,7 +1763,7 @@
 
 <div class="viewcode-block" id="Dseq.left_end_position">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.left_end_position">[docs]</a>
-    <span class="k">def</span> <span class="nf">left_end_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">left_end_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The index in the full sequence of the watson and crick start positions.</span>
 
@@ -1762,7 +1783,7 @@
 
 <div class="viewcode-block" id="Dseq.right_end_position">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.right_end_position">[docs]</a>
-    <span class="k">def</span> <span class="nf">right_end_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">right_end_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The index in the full sequence of the watson and crick end positions.</span>
 
 <span class="sd">        full sequence (str(self)) for all three cases is AAA</span>
@@ -1781,7 +1802,7 @@
 
 <div class="viewcode-block" id="Dseq.get_cut_parameters">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.get_cut_parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cut_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">is_left</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_cut_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">CutSiteType</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">is_left</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;For a given cut expressed as ((cut_watson, ovhg), enz), returns</span>
 <span class="sd">        a tuple (cut_watson, cut_crick, ovhg).</span>
 
@@ -1811,15 +1832,15 @@
 
 <div class="viewcode-block" id="Dseq.apply_cut">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.apply_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">apply_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_cut</span><span class="p">,</span> <span class="n">right_cut</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">apply_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_cut</span><span class="p">:</span> <span class="n">CutSiteType</span><span class="p">,</span> <span class="n">right_cut</span><span class="p">:</span> <span class="n">CutSiteType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Dseq&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts a subfragment of the sequence between two cuts.</span>
 
 <span class="sd">        For more detail see the documentation of get_cutsite_pairs.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        left_cut : Union[tuple[tuple[int,int], _RestrictionType], None]</span>
-<span class="sd">        right_cut: Union[tuple[tuple[int,int], _RestrictionType], None]</span>
+<span class="sd">        left_cut : Union[tuple[tuple[int,int], _AbstractCut], None]</span>
+<span class="sd">        right_cut: Union[tuple[tuple[int,int], _AbstractCut], None]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1881,7 +1902,9 @@
 
 <div class="viewcode-block" id="Dseq.get_cutsite_pairs">
 <a class="viewcode-back" href="../../index.html#pydna.dseq.Dseq.get_cutsite_pairs">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cutsite_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutsites</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_cutsite_pairs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">cutsites</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="n">CutSiteType</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">_Tuple</span><span class="p">[</span><span class="n">_Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">CutSiteType</span><span class="p">],</span> <span class="n">_Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">CutSiteType</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns pairs of cutsites that render the edges of the resulting fragments.</span>
 
 <span class="sd">        A fragment produced by restriction is represented by a tuple of length 2 that</span>
@@ -1897,11 +1920,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cutsites : list[tuple[tuple[int,int], _RestrictionType]]</span>
+<span class="sd">        cutsites : list[tuple[tuple[int,int], _AbstractCut]]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list[tuple[tuple[tuple[int,int], _RestrictionType]|None],tuple[tuple[int,int], _RestrictionType]|None]</span>
+<span class="sd">        list[tuple[tuple[tuple[int,int], _AbstractCut]|None],tuple[tuple[int,int], _AbstractCut]|None]</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
