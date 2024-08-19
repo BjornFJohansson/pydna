@@ -1,0 +1,8 @@
+LOCUS       example_sequence          25 bp ds-DNA     circular     13-AUG-2024
+DEFINITION  .
+FEATURES             Location/Qualifiers
+     misc_feature    24..4
+                     /label="example_annotation"
+ORIGIN
+        1 GCTTCACCAA GTCCTTGGAA CAGAT
+//
