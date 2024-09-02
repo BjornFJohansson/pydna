@@ -1,0 +1,228 @@
+LOCUS       MW879727                5594 bp    DNA     circular SYN 12-JUN-2021
+DEFINITION  Cloning vector pMB1_MmPylRS/AfTyrRS.p-I-Phe, complete sequence.
+ACCESSION   MW879727
+VERSION     MW879727.1
+KEYWORDS    .
+SOURCE      Cloning vector pMB1_MmPylRS/AfTyrRS.p-I-Phe
+  ORGANISM  Cloning vector pMB1_MmPylRS/AfTyrRS.p-I-Phe
+            other sequences; artificial sequences; vectors.
+REFERENCE   1  (bases 1 to 5594)
+  AUTHORS   Robertson,W.E., Funke,L.F.H., de la Torre,D., Fredens,J.,
+            Elliott,T.S., Spinck,M., Christova,Y., Cervettini,D., Boge,F.L.,
+            Liu,K.C., Buse,S., Maslen,S., Salmond,G.P.C. and Chin,J.W.
+  TITLE     Sense Codon Reassignment Enables Viral Resistance and Encoded
+            Polymer Synthesis
+  JOURNAL   Science (2021) In press
+REFERENCE   2  (bases 1 to 5594)
+  AUTHORS   Robertson,W.E., Funke,L.F.H., de la Torre,D., Fredens,J.,
+            Elliott,T.S., Spinck,M., Christova,Y., Cervettini,D., Boge,F.L.,
+            Liu,K.C., Buse,S., Maslen,S., Salmond,G.P.C. and Chin,J.W.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (06-APR-2021) Protein and Nucleic Acid Chemistry, MRC
+            Laboratory of Molecular Biology, Francis Crick Avenue, Cambridge,
+            Cambridgeshire CB2 0QH, United Kingdom
+COMMENT     ##Assembly-Data-START##
+            Sequencing Technology :: Sanger dideoxy sequencing
+            ##Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..5594
+                     /organism="Cloning vector pMB1_MmPylRS/AfTyrRS.p-I-Phe"
+                     /mol_type="other DNA"
+                     /db_xref="taxon:2842480"
+     regulatory      293..340
+                     /regulatory_class="terminator"
+                     /note="transcription terminator for bacteriophage T7 RNA
+                     polymerase; T7 terminator"
+     CDS             complement(511..1326)
+                     /note="confers resistance to kanamycin in bacteria or G418
+                     (Geneticin(R)) in eukaryotes; KanR"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="aminoglycoside phosphotransferase"
+                     /protein_id="QWF36674.1"
+                     /translation="MSHIQRETSCSRPRLNSNMDADLYGYKWARDNVGQSGATIYRLY
+                     GKPDAPELFLKHGKGSVANDVTDEMVRLNWLTEFMPLPTIKHFIRTPDDAWLLTTAIP
+                     GKTAFQVLEEYPDSGENIVDALAVFLRRLHSIPVCNCPFNSDRVFRLAQAQSRMNNGL
+                     VDASDFDDERNGWPVEQVWKEMHKLLPFSPDSVVTHGDFSLDNLIFDEGKLIGCIDVG
+                     RVGIADRYQDLAILWNCLGEFSPSLQKRLFQKYGIDNPDMNKLQFHLMLDEFF"
+     misc_feature    601..603
+                     /note="TCA to AGT"
+     misc_feature    727..729
+                     /note="TCA to AGT"
+     misc_feature    751..753
+                     /note="TCA to AGT"
+     misc_feature    760..762
+                     /note="TCA to AGT"
+     misc_feature    865..867
+                     /note="TCA to AGT"
+     misc_feature    928..930
+                     /note="TCG to AGC"
+     misc_feature    979..981
+                     /note="TCA to AGT"
+     misc_feature    1219..1221
+                     /note="TCA to AGT"
+     gene            complement(1327..1418)
+                     /gene="bla"
+     regulatory      complement(1327..1418)
+                     /regulatory_class="promoter"
+                     /gene="bla"
+                     /note="AmpR promoter"
+     rep_origin      complement(1482..1972)
+                     /note="pMB1 origin of replication (clockwise) (RNAII -35
+                     to RNA/DNA switch point); label: pMB1 ori"
+                     /direction=LEFT
+     gene            2155..2180
+                     /gene="glnS"
+     regulatory      2155..2180
+                     /regulatory_class="promoter"
+                     /gene="glnS"
+                     /note="GlnS promoter"
+     CDS             2222..3589
+                     /note="MmPylRS; from Methanosarcina mazei"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="PylRS"
+                     /protein_id="QWF36675.1"
+                     /translation="MMDKKPLNTLISATGLWMSRTGTIHKIKHHEVSRSKIYIEMACG
+                     DHLVVNNSRSSRTARALRHHKYRKTCKRCRVSDEDLNKFLTKANEDQTSVKVKVVSAP
+                     TRTKKAMPKSVARAPKPLENTEAAQAQPSGSKFSPAIPVSTQESVSVPASVSTSISSI
+                     STGATASALVKGNTNPITSMSAPVQASAPALTKSQTDRLEVLLNPKDEISLNSGKPFR
+                     ELESELLSRRKKDLQQIYAEERENYLGKLEREITRFFVDRGFLEIKSPILIPLEYIER
+                     MGIDNDTELSKQIFRVDKNFCLRPMLAPNLYNYLRKLDRALPDPIKIFEIGPCYRKES
+                     DGKEHLEEFTMLNFCQMGSGCTRENLESIITDFLNHLGIDFKIVGDSCMVYGDTLDVM
+                     HGDLELSSAVVGPIPLDREWGIDKPWIGAGFGLERLLKVKHDFKNIKRAARSESYYNG
+                     ISTNL"
+     CDS             3639..4610
+                     /note="AfTyrRS(Y36I-L69M-H74L-Q116E-D165T-I166G); from
+                     Archaeoglobus fulgidus DSM 4304; accepts p-I-Phe as
+                     substrate"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="TyrRS mutant (Y36I-L69M-H74L-Q116E-D165T-I166G)"
+                     /protein_id="QWF36676.1"
+                     /translation="MDITEKLRLITRNAEEVVTEEELRQLIETKEKPRAIVGYEPSGE
+                     IHLGHMMTVQKLMDLQEAGFEIIVMLADILAYLNEKGTFEEIAEVADYNKKVFIALGL
+                     DESRAKFVLGSEYELSRDYVLDVLKMARITTLNRARRSMDEVSRRKEDPMVSQMIYPL
+                     MQALTGAHLGVDLAVGGIDQRKIHMLARENLPRLGYSSPVCLHTPILVGLDGQKMSSS
+                     KGNYISVRDPPEEVERKIRKAYCPAGVVEENPILDIAKYHILPRFGKIVVERDAKVGG
+                     DVEYASFEELAEDFKSGQLHPGRLKIAVAKYLNMLLEDARKRLGVSV"
+     misc_feature    4230..4232
+                     /note="TCG to AGC"
+     misc_feature    4287..4289
+                     /note="TCG to AGC"
+     misc_feature    4308..4310
+                     /note="TCA to AGT"
+     misc_feature    4482..4484
+                     /note="TCA to AGT"
+     regulatory      5143..5193
+                     /regulatory_class="promoter"
+                     /note="lpp promoter"
+     tRNA            5200..5271
+                     /product="tRNA-Ser"
+                     /note="pylToptserU(CGA)"
+     tRNA            5311..5385
+                     /product="tRNA-Tyr"
+                     /note="Af tRNA TyrA01(CUA)"
+     gene            5392..5420
+                     /gene="rrnC"
+     regulatory      5392..5420
+                     /regulatory_class="terminator"
+                     /gene="rrnC"
+                     /note="rrnC term"
+ORIGIN      
+        1 gaatggtgca tgcaaggagc ccgagatgcg ccgcgtgcgg ctgctggaga tggcggacgc
+       61 gatggatatg ttctggcggc cgcataatgc ttaagtcgaa cagaaagtaa tcgtattgta
+      121 cacggccgca taatcgaaat taaattggat atcggcaggc cacgcgatcg ctgacgtcgg
+      181 taccctcgag tctggtaaag aaaccgctgc tgcgaaattt gaacgccagc acatggactc
+      241 gtctactagc gcagcttaat taacctaggc tgctgccacc gctgagcaat aactagcata
+      301 accccttggg gcctctaaac gggtcttgag gggttttttg ctgaaacctc aggcatttga
+      361 gaagcacacg gtcacactgc ttccggtagt caataaaccg gtaaaccagc aatagacata
+      421 agcggctatt taacgaccct gccctgaacc gacgaccggg tcatcgtggc cggatcttgc
+      481 ggcccctcgg cttgaacgaa ttgttagaca ttagaaaaac tcatcgagca tcaaatgaaa
+      541 ctgcaattta ttcatatcag gattatcaat accatatttt tgaaaaagcc gtttctgtaa
+      601 actaggagaa aactcaccga ggcagttcca taggatggca agatcctggt atcggtctgc
+      661 gattccgact cgtccaacat caatacaacc tattaatttc ccctcgtcaa aaataaggtt
+      721 atcaagactg aaatcaccat gagtgacgac actatccgga ctgaatggca aaagtttatg
+      781 catttctttc cagacttgtt caacaggcca gccattacgc tcgtcatcaa aatcactcgc
+      841 atcaaccaaa ccgttattca ttcgactttg cgcctgagcg agacgaaata cgcggtcgct
+      901 gttaaaagga caattacaaa caggaatgct atgcaaccgg cgcaggaaca ctgccagcgc
+      961 atcaacaata ttttcaccac tatcaggata ttcttctaat acctggaatg ctgttttccc
+     1021 ggggatcgca gtggtgagta accatgcatc atcaggagta cggataaaat gcttgatggt
+     1081 cggaagaggc ataaattccg tcagccagtt tagtctgacc atctcatctg taacatcatt
+     1141 ggcaacgcta cctttgccat gtttcagaaa caactctggc gcatcgggct tcccatacaa
+     1201 tcgatagatt gtcgcaccac tttgcccgac attatcgcga gcccatttat acccatataa
+     1261 atcagcatcc atgttggaat ttaatcgcgg cctagagcaa gacgtttccc gttgaatatg
+     1321 gctcatactc ttcctttttc aatattattg aagcatttat cagggttatt gtctcatgag
+     1381 cggatacata tttgaatgta tttagaaaaa taaacaaata gctagcgagc aaaaggccag
+     1441 caaaaggcca ggaaccgtaa aaaggccgcg ttgctggcgt ttttccatag gctccgcccc
+     1501 cctgacgagc atcacaaaaa tcgacgctca agtcagaggt ggcgaaaccc gacaggacta
+     1561 taaagatacc aggcgtttcc ccctggaagc tccctcgtgc gctctcctgt tccgaccctg
+     1621 ccgcttaccg gatacctgtc cgcctttctc ccttcgggaa gcgtggcgct ttctcatagc
+     1681 tcacgctgta ggtatctcag ttcggtgtag gtcgttcgct ccaagctggg ctgtgtgcac
+     1741 gaaccccccg ttcagcccga ccgctgcgcc ttatccggta actatcgtct tgagtccaac
+     1801 ccggtaagac acgacttatc gccactggca gcagccactg gtaacaggat tagcagagcg
+     1861 aggtatgtag gcggtgctac agagttcttg aagtggtggc ctaactacgg ctacactaga
+     1921 aggacagtat ttggtatctg cgctctgctg aagccagtta ccttcggaaa aagagttggt
+     1981 agctcttgat ccggcaaaca aaccaccgct ggtagcggtg gttttttttg tttgcaagca
+     2041 gcagattacg cgcagaaaaa aaggatctca agaagatcct ttgatctttt ctacggggtc
+     2101 tgacgctcag tggaacgaaa actcacgtta agggattttg gggatcctcg ggagttgtca
+     2161 gcctgtcccg cttataagat catacgccgt tatacgttgt ttacgctttg aggaatccca
+     2221 tatgatggac aaaaaaccgc tgaacaccct gatctctgct accggtctgt ggatgtctcg
+     2281 taccggtacc atccacaaaa tcaaacacca cgaagtttct cgttctaaaa tctacatcga
+     2341 aatggcttgc ggtgaccacc tggttgttaa caactctcgt tcttctcgta ccgctcgtgc
+     2401 tctgcgtcac cacaaatacc gtaaaacctg caaacgttgc cgtgtttctg acgaagacct
+     2461 gaacaaattc ctgaccaaag ctaacgaaga ccagacctct gttaaagtta aagttgtttc
+     2521 tgctccgacc cgtaccaaaa aagctatgcc gaaatctgtt gctcgtgctc cgaaaccgct
+     2581 ggaaaacacc gaagctgctc aggctcagcc gtctggttct aaattctctc cggctatccc
+     2641 ggtttctacc caggaatctg tttctgttcc ggcttctgtt tctacctcta tctcttctat
+     2701 ctctaccggt gctaccgctt ctgctctggt taaaggtaac accaacccga tcacctctat
+     2761 gtctgctccg gttcaggctt ctgctccggc tctgaccaaa tctcagaccg accgtctgga
+     2821 agttctgctg aacccgaaag acgaaatctc tctgaactct ggtaaaccgt tccgtgaact
+     2881 ggaatctgaa ctgctgtctc gtcgtaaaaa agacttacaa cagatctacg ctgaagaacg
+     2941 tgaaaactac ctgggtaaac tggaacgtga aatcacgcgt ttcttcgttg accgtggttt
+     3001 cctggaaatc aaatctccga tcctgatccc gctggaatac atcgaacgta tgggtatcga
+     3061 caacgacacc gaactgtcta aacagatctt ccgtgttgac aaaaacttct gcctgcgtcc
+     3121 gatgctggct ccgaacctgt acaactacct gcgtaaactg gaccgtgctc tgccggaccc
+     3181 gatcaaaatc ttcgaaatcg gtccgtgcta ccgtaaagaa tctgacggta aagaacacct
+     3241 ggaagaattc accatgctga acttctgcca gatgggttct ggttgcaccc gtgaaaacct
+     3301 ggaatctatc atcaccgact tcctgaacca cctgggtatc gacttcaaaa tcgttggtga
+     3361 ctcttgcatg gtttacggtg acaccctgga cgttatgcac ggtgacctgg aactgtcttc
+     3421 tgctgttgtt ggtccgatcc cgctggaccg tgaatggggt atcgacaaac cgtggatcgg
+     3481 tgctggtttc ggtctggaac gtctgctgaa agttaaacac gacttcaaaa acatcaaacg
+     3541 tgctgctcgt tctgaatctt actacaacgg tatctctacc aacctgtaac ctattgaagg
+     3601 gttgctaaga ataacaagat caaataagga ggttttttat ggacattacg gaaaaactgc
+     3661 gcttgattac gcgcaacgcg gaggaagtcg taacagaaga agagttgcgt cagttgattg
+     3721 aaacaaaaga aaaaccccgt gcaattgtag gctatgaacc aagtggcgag atccatttag
+     3781 gtcatatgat gaccgtccag aaactgatgg atttacaaga ggcgggattt gagattattg
+     3841 tcatgcttgc ggacatcctg gcatacttga atgaaaaagg tacattcgag gagattgccg
+     3901 aagtggcaga ctacaataaa aaagtcttca ttgcattagg acttgacgaa agccgcgcca
+     3961 aattcgtctt gggtagcgaa tatgagctga gccgtgacta cgtgttagac gtgttaaaga
+     4021 tggcccgtat cactacgctt aatcgtgcgc gtcgcagcat ggatgaggtc agccgccgca
+     4081 aggaagatcc aatggtttcc caaatgattt acccgcttat gcaggcactg acgggggctc
+     4141 atttaggagt ggaccttgcc gtaggtggaa tcgaccaacg taagatccat atgctggcgc
+     4201 gcgaaaacct gcctcgcttg ggatatagta gcccggtgtg tttacatacg ccgattctgg
+     4261 tggggttaga cggacaaaag atgagtagca gtaagggaaa ttacattagt gttcgtgatc
+     4321 ctccagaaga ggtggagcgt aaaatccgta aagcttattg cccggcagga gtggtcgagg
+     4381 agaatccgat tctggatatt gccaagtatc acattttgcc ccgttttggt aagatcgtag
+     4441 tagagcgcga tgctaaggtg ggaggggacg ttgaatacgc gagtttcgag gaattggcag
+     4501 aagactttaa gtctggtcag ctgcatccag ggaggttaaa gatcgcggtc gctaaatatt
+     4561 tgaatatgct gttggaggat gcccgtaaac gtctgggcgt gtctgtttaa ggaggacatc
+     4621 ctgccgtttc aaacgctaaa ttgcctgatg cgctacgctt atcaggccta catgatctct
+     4681 gcaatatatt gagtttgcgt gcttttgtag gccggataag gcgttcacgc cgcatccggc
+     4741 aagaaacagc aaacaatcca aaacgccgcg ttcggcggtc gacacagatg taggtgttcc
+     4801 acagggtagc cagcagcatc ctgcgatgca gatccggaac ataatggtgc agggcgcttg
+     4861 tttcggcgtg ggtatggtgg caggccccgt ggccggggga ctgttgggcg ctgccggcac
+     4921 ctgtcctacg agttgcatga taaagaagac agtcataagt gcggcgacga tagtcatgcc
+     4981 ccgcgcccac cggaaggagc taccggcagc ggtgcggact gttgtaactc agaataagaa
+     5041 atgaggccgc tcatggcgtt ctgttgcccg tctcactggt gaaaagaaaa acaaccctgg
+     5101 cgccgcttct ttgagcgaac gatcaaaaat aagtggcgcc ccatcaaaaa aatattctca
+     5161 acataaaaaa ctttgtgtaa tacttgtaac gctagatctg gaaacgtgat catgtagatc
+     5221 gaacggtctc gaaaaccgtt cagtggggtt agattcccca cgtttccgcc aaattttgca
+     5281 cccagcaaac ttggtacgta aacgcatcgt cccgccctag ctcagaggta gagcgtgctt
+     5341 ctctaaaaag catggtcccc ggttcaaatc ctgggggcgg gaccaactag tatccttagc
+     5401 gaaagctaag gatttttttt aagcttggca ctggccgtcg ttttacaacg tcgtgactgg
+     5461 gaaaaccctg gcgttaccca acttaatcgc cttgcagcac atcccccttt cgccagacgc
+     5521 tctcccttat gcgactcctg cattaggaag cagcccagta gtaggttgag gccgttgagc
+     5581 accgccgccg caag
+//
+
