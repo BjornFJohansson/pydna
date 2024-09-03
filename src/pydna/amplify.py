@@ -521,7 +521,7 @@ tatcgactgtatcatctgatagcac")
         return anneal_primers.products[0]
     elif len(anneal_primers.products) == 0:
         raise ValueError(f"No PCR product! {anneal_primers.report()}")
-    raise ValueError("PCR not specific! {format(anneal_primers.report()}")
+    raise ValueError(f"PCR not specific! {format(anneal_primers.report())}")
 
 
 if __name__ == "__main__":
