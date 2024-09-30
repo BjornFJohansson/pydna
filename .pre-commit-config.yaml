@@ -26,3 +26,4 @@ repos:
         python -m nbstripout --keep-output $@
       language: system
       files: \.ipynb$
+      exclude: tests/
