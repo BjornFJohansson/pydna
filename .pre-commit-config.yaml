@@ -18,4 +18,12 @@ repos:
   rev: 7.0.0
   hooks:
   - id: flake8
-exclude: scripts/|docs/|tests/
+- repo: local
+  hooks:
+    - id: nbstripout
+      name: nbstripout with keep-output
+      entry: |
+        python -m nbstripout --keep-output $@
+      language: system
+      files: \.ipynb$
+      exclude: tests/

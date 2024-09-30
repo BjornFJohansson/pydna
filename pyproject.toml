@@ -93,6 +93,7 @@ pre-commit = [
   { version = ">3.6", python = ">=3.9" },
   { version = "<3.6", python = "<3.9" },
 ]
+nbstripout = "^0.7.1"
 
 [tool.pytest.ini_options]
 minversion = "6.0.2"
