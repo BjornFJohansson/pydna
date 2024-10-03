@@ -1,4 +1,4 @@
-LOCUS       AJ001614_1              5762 bp ds-DNA     circular     11-JUL-2012
+LOCUS       AJ001614_1              5762 bp    ds-DNA  circular UNK 11-JUL-2012
 DEFINITION  Escherichia coli plasmid pCAPs.
 ACCESSION   AJ001614
 VERSION     AJ001614.1  GI:2769261
@@ -20,62 +20,57 @@ REFERENCE   2  (bases 1 to 3128)
   TITLE     Direct Submission
   JOURNAL   Submitted (15-SEP-1997) Schlieper D., Institute of Genetics,
             University of Cologne, Weyertal 121, Cologne, 50931, GERMANY
-COMMENT
 COMMENT     ApEinfo:methylated:1
+            pydna cdseguid=oWyz8EF-LXEuzTc1nodipu_zdK4 2024-06-11T18:43:02
 FEATURES             Location/Qualifiers
      gene            complement(315..947)
                      /gene="crp"
-                     /label=crp
+                     /label="crp"
      CDS             complement(315..947)
                      /product="catabolite gene activator protein"
-                     /codon_start="1"
-                     /transl_table="11"
+                     /codon_start=1
+                     /transl_table=11
                      /note="artificially mutated crp; cyclic AMP receptor
                      protein"
                      /db_xref="GI:2769262"
                      /experiment="experimental evidence, no additional details
                      recorded"
-                     /translation="MVLGKPQTDPTLEWFLSHCHIHKYPSKSTLIHQGEKAETLYYIV
-                     K
-                     GSVAVLIKDEEGKEMILSYLNQGDFIGELGLFEEGQERSAWVRAKTACEVAEISYKKF
-                     R
-                     QLIQVNPDILMRLSAQMARRLQVTSEKVGNLAFLDVSGRIAQTLLNLAKQPDAMTHPD
-                     G MQIKITRQEIGQIVGCSRQTVGRILKMLEDQNLISAHGKTIVVYGTR"
+                     /translation="MVLGKPQTDPTLEWFLSHCHIHKYPSKSTLIHQGEKAETLYYIVK
+                     GSVAVLIKDEEGKEMILSYLNQGDFIGELGLFEEGQERSAWVRAKTACEVAEISYKKFR
+                     QLIQVNPDILMRLSAQMARRLQVTSEKVGNLAFLDVSGRIAQTLLNLAKQPDAMTHPDG
+                     MQIKITRQEIGQIVGCSRQTVGRILKMLEDQNLISAHGKTIVVYGTR"
                      /gene="crp"
                      /protein_id="CAA04867.1"
-                     /label=catabolite gene activator protein
+                     /label="catabolite gene activator protein"
      gene            complement(4706..5566)
                      /gene="Amp"
-                     /label=Amp
+                     /label="Amp"
      gene            complement(2057..2860)
                      /gene="ura3"
-                     /label=ura3
+                     /label="ura3"
      CDS             complement(2057..2860)
                      /product="orotidine-5'-phosphate decarboxylase"
-                     /codon_start="1"
-                     /transl_table="11"
+                     /codon_start=1
+                     /transl_table=11
                      /db_xref="GI:84570490"
-                     /translation="MSKATYKERAATHPSPVAAKLFNIMHEKQTNLCASLDVRTTKEL
-                     L
-                     ELVEALGPKICLLKTHVDILTDFSMEGTVKPLKALSAKYNFLLFEDRKFADIGNTVKL
-                     Q
-                     YSAGVYRIAEWADITNAHGVVGPGIVSGLKQAAEEVTKEPRGLLMLAELSCKGSLSTG
-                     E
-                     YTKGTVDIAKSDKDFVIGFIAQRDMGGRDEGYDWLIMTPGVGLDDKGDALGQQYRTVD
-                     D VVSTGSDIIIVGRGLFAKGRDAKVEGERYRKAGWEAYLRRCGQQN"
+                     /translation="MSKATYKERAATHPSPVAAKLFNIMHEKQTNLCASLDVRTTKELL
+                     ELVEALGPKICLLKTHVDILTDFSMEGTVKPLKALSAKYNFLLFEDRKFADIGNTVKLQ
+                     YSAGVYRIAEWADITNAHGVVGPGIVSGLKQAAEEVTKEPRGLLMLAELSCKGSLSTGE
+                     YTKGTVDIAKSDKDFVIGFIAQRDMGGRDEGYDWLIMTPGVGLDDKGDALGQQYRTVDD
+                     VVSTGSDIIIVGRGLFAKGRDAKVEGERYRKAGWEAYLRRCGQQN"
                      /gene="ura3"
                      /protein_id="BAE72675.1"
-                     /label=orotidine-5'-phosphate decarboxylase
+                     /label="orotidine-5'-phosphate decarboxylase"
      rep_origin      complement(1295..1977)
-                     /label=ColE1 origin
+                     /label="ColE1 origin"
      gene            complement(join(1979..2649,2698..3086))
-                     /label=URA3
+                     /label="URA3"
      misc_feature    complement(3109..4560)
-                     /label=2micron
-     misc_feature    complement(2669..2669)
-                     /label=c>t to remove EcoRV
-     misc_feature    1278..1278
-                     /label=G or C pCAPs/pSU0
+                     /label="2micron"
+     misc_feature    complement(2669)
+                     /label="c>t to remove EcoRV"
+     misc_feature    1278
+                     /label="G or C pCAPs/pSU0"
 ORIGIN
         1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
        61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
