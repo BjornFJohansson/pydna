@@ -63,20 +63,23 @@ jobs:
 
       # Enforce pre-commit hooks ===========================
       - name: Get changed files
+        if: (matrix.codecov)
         id: changed-files
         uses: tj-actions/changed-files@v45
 
       - uses: actions/cache@v4
+        if: (matrix.codecov)
         id: cache-precommit
         with:
           path: ~/.cache/pre-commit
           key: ${{ runner.os }}-precommit-hooks-v2-${{ hashFiles('**/.pre-commit-config.yaml') }}
 
       - name: Installing pre-commit hooks (cached)
-        if: steps.cache-precommit.outputs.cache-hit != 'true'
+        if: (matrix.codecov) && (steps.cache-precommit.outputs.cache-hit != 'true')
         run: poetry run pre-commit install --install-hooks
 
       - name: Run style checking via pre-commit
+        if: (matrix.codecov)
         run: poetry run pre-commit run --files ${{ steps.changed-files.outputs.all_changed_files }}
       # ======================================================
 
