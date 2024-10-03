@@ -197,9 +197,9 @@ Enables the `pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard()` and `pydna.dseq
 These methods will put a copy the sequence on the clipboard in either Genbank (gb) or fasta format.
 
 
-| Dependency                                          | Function in pydna                      |
-| --------------------------------------------------- | -------------------------------------- |
-| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard             |
+| Dependency                                          | Function in pydna          |
+| --------------------------------------------------- | -------------------------- |
+| [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard |
 
 ### `download`
 
@@ -208,10 +208,10 @@ correct malformed sequence files in Genbank format. These are often found online
 option also installs requests to enable the  `pydna.genbankfixer.download.download_text()` function which can be used to get cleaned up text from a URL.
 
 
-| Dependency                                          | Function in pydna                                      |
-| --------------------------------------------------- | ------------------------------------------------------ |
-| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer      |
-| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download                 |
+| Dependency                                          | Function in pydna                                 |
+| --------------------------------------------------- | ------------------------------------------------- |
+| [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer |
+| [requests](https://pypi.org/project/requests)       | download sequences with pydna.download            |
 
 ### `express`
 
@@ -227,11 +227,11 @@ Scipy, matplotlib and pillow (PIL) enable the generation of gel images. Numpy is
 needed, but usually installed as a dependency of biopython.
 
 
-| Dependency                                          | Function in pydna                                      |
-| --------------------------------------------------- | ------------------------------------------------------ |
-| [scipy](https://www.scipy.org)                      | gel simulation with pydna.gel                          |
-| [matplotlib](http://matplotlib.org)                 | “                                                      |
-| [pillow](https://github.com/python-pillow/Pillow)   | “                                                      |
+| Dependency                                        | Function in pydna             |
+| ------------------------------------------------- | ----------------------------- |
+| [scipy](https://www.scipy.org)                    | gel simulation with pydna.gel |
+| [matplotlib](http://matplotlib.org)               | “                             |
+| [pillow](https://github.com/python-pillow/Pillow) | “                             |
 
 
 ## Requirements for running tests, coverage and profiling
@@ -266,10 +266,35 @@ or by `pip install pyparsing requests cai2 scipy matplotlib pillow`
 
 Please direct pull requests towards the `dev_bjorn` branch.
 
+### Fork the repository and set up a dev branch
+
+Fork the entire repository (not just the `master` branch by unticking the "Copy the `master` branch only" box)
+
+<img src="docs/_static/create-fork.png" alt="Fork repository" width="400">
+
+Create your branch starting from `dev_bjorn`, and if your changes are related to an issue, call the branch `issue_<number>`.
+
+```bash
+# Clone the repository
+git clone https://github.com/<your-username>/pydna.git
+
+# Change to the repository directory
+cd pydna
+
+# Go to the dev_bjorn branch
+git checkout -b dev_bjorn
+
+# Pull the current version of dev_bjorn
+git pull origin dev_bjorn
+
+# Create your own branch
+git checkout -b issue_<number>
+```
+
 
 ### Local development
 
-1. Use [Poetry](https://pypi.org/project/poetry) to install dependencies and activate virtual environment.
+1. Use [Poetry](https://python-poetry.org/docs/#installation) to install dependencies and activate virtual environment.
 
     ```bash
     # If you want the virtual environment to be created in this folder
@@ -285,8 +310,11 @@ Please direct pull requests towards the `dev_bjorn` branch.
 2. Make your changes.
 3. Add the necessary tests in `tests/`.
 4. Run the tests from the root directory with `python run_test.py`.
+   > **TIP:** You can run a particular test file with `pytest -vs test_file.py` (`-v` for verbose and `-s` to see print statements in the test). If you want to run just a single test, you can use `pytest -vs -k test_name`, where `test_name` is the name of the test function.
 5. Install `pre-commit` hooks if you haven't by running `pre-commit install`. `pre-commit` should be available in the environment, since it is installed by poetry.
-6. Make a PR.
+   > **TIP:** The hooks are a series of checks that will be run before you commit your code. If any of the checks fail, the commit will not be allowed. Some of them auto-fix the code (e.g., `black` formatting), so you can simply do `git add .` and commit again.
+6. Push the changes to your fork
+7. From your fork,make a PR towards the branch `dev_bjorn` in the original repository.
 
 #### Building the documentation locally
 
