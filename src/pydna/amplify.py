@@ -17,7 +17,7 @@ from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
 
 # from pydna.utils import memorize as _memorize
-from pydna.utils import rc as _rc
+from pydna.utils import rc as _rc, shift_feature as _shift_feature
 from pydna.amplicon import Amplicon as _Amplicon
 from pydna.primer import Primer as _Primer
 from pydna.seqrecord import SeqRecord as _SeqRecord
@@ -351,6 +351,8 @@ class Anneal(object):  # ), metaclass=_Memoize):
                     feats = self.template[
                         fp.position - fp._fp : rp.position + rp._fp
                     ].features  # Save features covered by primers
+                    shift_amount = len(fp.tail)
+                    feats = [_shift_feature(f, shift_amount, None) for f in feats]
                     tpl = self.template
                 else:
                     continue

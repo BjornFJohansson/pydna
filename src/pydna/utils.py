@@ -80,6 +80,8 @@ def shift_location(original_location, shift, lim):
     """docstring."""
     newparts = []
     strand = original_location.strand
+    if lim is None:
+        lim = _sys.maxsize
 
     for part in original_location.parts:
         new_start = (part.start + shift) % lim
