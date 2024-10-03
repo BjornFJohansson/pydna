@@ -1,11 +1,12 @@
 LOCUS       5060bp_PCR_prod         5052 bp    DNA     circular UNK 05-DEC-2014
-DEFINITION  Product__
+DEFINITION  Product__.
 ACCESSION   5060bp mkmplch2TIMEFQ5OLSf8Vy8dyJw
 VERSION     5060bp mkmplch2TIMEFQ5OLSf8Vy8dyJw
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=KjMnBl3im4i8Z2wZiClqiiV7ovw 2024-06-11T18:40:13
 FEATURES             Location/Qualifiers
      source          join(5057..5060,1..332)
                      /mol_type="other DNA"

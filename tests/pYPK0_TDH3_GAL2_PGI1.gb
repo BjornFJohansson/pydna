@@ -4,9 +4,10 @@ DEFINITION  pYPK0_TDH3_GAL2_PGI1
 ACCESSION   id
 VERSION     id
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=iHpAg9I26WMob7spVI9X08JGw8I 2024-06-11T18:28:02
 FEATURES             Location/Qualifiers
      primer_bind     363..391
                      /label="577"

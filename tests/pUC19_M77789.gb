@@ -31,6 +31,7 @@ REFERENCE   4  (bases 1 to 2686)
             Frelinghuysen Road, Piscataway, NJ 08854, USA
   REMARK    Sequence update by submitter
 COMMENT     On Jan 12, 2000 this sequence version replaced M77789.1.
+            pydna cdseguid=mCC0B3UMZfgLyh3Pl574MVjm30U 2024-06-11T18:40:49
 FEATURES             Location/Qualifiers
      source          1..2686
                      /organism="Cloning vector pUC19"

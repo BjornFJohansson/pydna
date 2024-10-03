@@ -1,11 +1,12 @@
 LOCUS       .                      11452 bp    DNA     circular UNK 16-JAN-2013
-DEFINITION  _BglII
+DEFINITION  _BglII.
 ACCESSION   <unknown id>
 VERSION     <unknown id>
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I 2024-06-11T18:40:26
 FEATURES             Location/Qualifiers
      misc_binding    308..313
                      /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}

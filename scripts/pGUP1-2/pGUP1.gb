@@ -3,9 +3,10 @@ DEFINITION  cSEGUID_0R8hr15t-psjHVuuTj_JufGxOPg_2019-08-15T08:24:21.800130.
 ACCESSION   pGUP1_2
 VERSION     pGUP1_2
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=QiK2pH9yioTPfSobUTLz4CPiNzY 2024-06-11T18:53:31
 FEATURES             Location/Qualifiers
      misc_feature    40..483
                      /label="GAL1p"

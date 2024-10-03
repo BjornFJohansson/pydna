@@ -1,11 +1,12 @@
-LOCUS       T5_pr_6HIsTag_3HRV3C_MyProtein_8XNLS_fake 6162 bp    DNA     circular UNK 01-JAN-1980
+LOCUS       T5_pr_6HIsTag_3HRV3C_MyProtein_8XNLS_fake 6circular  DNA     circular UNK 01-JAN-1980
 DEFINITION  test_fake.
 ACCESSION   test_fake
 VERSION     test_fake
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=cJQ-aN4c5sLYq7FcNLKr5ZVSdSM 2024-06-11T18:43:13
 FEATURES             Location/Qualifiers
 ORIGIN
         1 acctgtagta atctggcctt cgggtccgcc attataacga cagcggagtc tagaggtatg

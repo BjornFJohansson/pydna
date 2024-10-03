@@ -1,53 +1,55 @@
-LOCUS       pAG25                   3704 bp ds-DNA     circular     19-JUL-2012
+LOCUS       pAG25                   3704 bp    ds-DNA  circular UNK 19-JUL-2012
+DEFINITION  .
 ACCESSION   pAG25
 VERSION     pAG25
 KEYWORDS    .
 SOURCE      Unknown
   ORGANISM  Unknown Unclassified. . . .
+            .
 REFERENCE   1  (bases 1 to 3704)
   AUTHORS   Self
   JOURNAL   Unpublished.
-COMMENT
 COMMENT     ApEinfo:methylated:1
+            pydna cdseguid=fr1hZnJ7fD2jq1duicYVWOmtC5Q 2024-06-11T18:53:26
 FEATURES             Location/Qualifiers
      misc_feature    73..451
                      /product="TEF-PRO"
                      /gene="TEF-PRO"
-                     /label=TEF-PRO
-                     /ApEinfo_fwdcolor=#ffffe0
-                     /ApEinfo_revcolor=#61fb80
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="TEF-PRO"
+                     /ApEinfo_fwdcolor="#ffffe0"
+                     /ApEinfo_revcolor="#61fb80"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      CDS             452..1024
                      /product="Nourseothricin acetyltransferase"
                      /gene="nat1"
-                     /label=Nourseothricin acetyltransferase
-                     /ApEinfo_fwdcolor=#3ec01b
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="Nourseothricin acetyltransferase"
+                     /ApEinfo_fwdcolor="#3ec01b"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      misc_feature    1025..1264
                      /product="TEF-TER"
                      /gene="TEF-TER"
-                     /label=TEF-TER
-                     /ApEinfo_fwdcolor=#ffffe0
-                     /ApEinfo_revcolor=#61fb80
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="TEF-TER"
+                     /ApEinfo_fwdcolor="#ffffe0"
+                     /ApEinfo_revcolor="#61fb80"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      CDS             complement(2370..3230)
                      /product="AmpR"
                      /gene="AmpR"
-                     /label=AmpR
-                     /ApEinfo_fwdcolor=#3ec01b
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="AmpR"
+                     /ApEinfo_fwdcolor="#3ec01b"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      misc_feature    150..178
-                     /label=hej
-                     /ApEinfo_fwdcolor=cyan
-                     /ApEinfo_revcolor=green
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="hej"
+                     /ApEinfo_fwdcolor="cyan"
+                     /ApEinfo_revcolor="green"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
 ORIGIN
         1 gccgccagct gaagcttcgt acgctgcagg tcgacggatc cccgggttaa ttaaggcgcg
        61 ccagatctgt ttagcttgcc ttgtccccgc cgggtcaccc ggccagcgac atggaggccc
