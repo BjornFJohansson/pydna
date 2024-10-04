@@ -3,9 +3,10 @@ DEFINITION  description.
 ACCESSION   id
 VERSION     id
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=QiK2pH9yioTPfSobUTLz4CPiNzY 2024-06-11T18:53:31
 FEATURES             Location/Qualifiers
      misc_feature    40..483
                      /label="GAL1p"

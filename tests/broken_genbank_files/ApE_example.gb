@@ -1,11 +1,13 @@
-LOCUS                  New_DNA        2963 bp ds-DNA   linear       13-JAN-2011
+LOCUS       New_DNA                 2963 bp    DNA     linear   UNK 13-JAN-2011
 DEFINITION  .
-ACCESSION
-VERSION
-SOURCE      .
+ACCESSION   New_DNA
+VERSION     New_DNA
+KEYWORDS    .
+SOURCE
   ORGANISM  .
-COMMENT
+            .
 COMMENT     ApEinfo:methylated:1
+            pydna ldseguid=2oLvuMsAc-fgAISC7b3XJBuejGI 2024-06-11T18:40:52
 FEATURES             Location/Qualifiers
      source          complement(1..2963)
                      /organism="Danio rerio"
@@ -14,43 +16,43 @@ FEATURES             Location/Qualifiers
                      /chromosome="23"
                      /clone="DKEY-18F23"
                      /clone_lib="DanioKey"
-                     /label=source:Danio rerio
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
+                     /label="source:Danio rerio"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
      misc_feature    complement(1..2963)
                      /note="annotated region of clone"
-                     /label=annotated region of clone
-                     /ApEinfo_fwdcolor=#908e8e
-                     /ApEinfo_revcolor=#908e8e
+                     /label="annotated region of clone"
+                     /ApEinfo_fwdcolor="#908e8e"
+                     /ApEinfo_revcolor="#908e8e"
      gene            1..2963
                      /gene="tuba1"
                      /locus_tag="DKEY-18F23.3-001"
-                     /label=tuba1
-                     /ApEinfo_fwdcolor=#c05e55
-                     /ApEinfo_revcolor=#c05e55
+                     /label="tuba1"
+                     /ApEinfo_fwdcolor="#c05e55"
+                     /ApEinfo_revcolor="#c05e55"
      mRNA            join(1..114,1289..1511,1611..1759,1862..2963)
                      /gene="tuba1"
                      /locus_tag="DKEY-18F23.3-001"
                      /product="tubulin, alpha 1"
                      /note="match: cDNAs: Em:AF029250.1; match: ESTs:
                      Em:CN838895.1 Em:CO924442.1"
-                     /label=tubulin, alpha 1
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-     polyA_site      2963..2963
+                     /label="tubulin, alpha 1"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+     polyA_site      2963
                      /gene="tuba1"
                      /locus_tag="DKEY-18F23.3-001"
-                     /label=tuba1(1)
-                     /ApEinfo_label=tuba1
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
+                     /label="tuba1(1)"
+                     /ApEinfo_label="tuba1"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
      polyA_signal    2945..2950
                      /gene="tuba1"
                      /locus_tag="DKEY-18F23.3-001"
-                     /label=tuba1(2)
-                     /ApEinfo_label=tuba1
-                     /ApEinfo_fwdcolor=#c9898e
-                     /ApEinfo_revcolor=#c9898e
+                     /label="tuba1(2)"
+                     /ApEinfo_label="tuba1"
+                     /ApEinfo_fwdcolor="#c9898e"
+                     /ApEinfo_revcolor="#c9898e"
      CDS             join(112..114,1289..1511,1611..1759,1862..2836)
                      /gene="tuba1"
                      /locus_tag="DKEY-18F23.3-001"
@@ -59,18 +61,18 @@ FEATURES             Location/Qualifiers
                      /product="tubulin, alpha 1"
                      /protein_id="CAX12931.1"
                      /db_xref="GI:220678413"
-                     /translation="MRECISIHVGQAGVQIGNACWELYCLEHGIQPDGQMPSDKTIGG
-                     GDDSFNTFFSETGAGKHVPRAVFVDLEPTVIDEVRTGTYRQLFHPEQLITGKEDAANN
-                     YARGHYTIGKELIDLVLDRVRKLSDQCTGLQGFLVFHSFGGGTGSGFTSLLMERLSVD
-                     YGKKSKLEFSIYPAPQVSTAVVEPYNSILTTHTTLEHSDCAFMVDNEAIYDICRRNLD
-                     IERPTYTNLNRLISQIVSSITASLRFDGALNVDLTEFQTNLVPYPRIHFPLATYAPVI
-                     SAEKAYHEQLSVSEITNACFEPANQMVKCDPRHGKYMACCLLYRGDVVPKDVNAAIAT
-                     IKTKRTIQFVDWCPTGFKVGINYQPPTVVPGGDLAKVQRAVCMLSNTTAIAEAWARLD
-                     HKFDLMYAKRAFVHWYVGEGMEEGEFSEAREDMAALEKDYEEVGAESVEGEDEGEEY"
-                     /label=tubulin, alpha 1(1)
-                     /ApEinfo_label=tubulin, alpha 1
-                     /ApEinfo_fwdcolor=#e8ff00
-                     /ApEinfo_revcolor=#e8ff00
+                     /translation="MRECISIHVGQAGVQIGNACWELYCLEHGIQPDGQMPSDKTIGGG
+                     DDSFNTFFSETGAGKHVPRAVFVDLEPTVIDEVRTGTYRQLFHPEQLITGKEDAANNYA
+                     RGHYTIGKELIDLVLDRVRKLSDQCTGLQGFLVFHSFGGGTGSGFTSLLMERLSVDYGK
+                     KSKLEFSIYPAPQVSTAVVEPYNSILTTHTTLEHSDCAFMVDNEAIYDICRRNLDIERP
+                     TYTNLNRLISQIVSSITASLRFDGALNVDLTEFQTNLVPYPRIHFPLATYAPVISAEKA
+                     YHEQLSVSEITNACFEPANQMVKCDPRHGKYMACCLLYRGDVVPKDVNAAIATIKTKRT
+                     IQFVDWCPTGFKVGINYQPPTVVPGGDLAKVQRAVCMLSNTTAIAEAWARLDHKFDLMY
+                     AKRAFVHWYVGEGMEEGEFSEAREDMAALEKDYEEVGAESVEGEDEGEEY"
+                     /label="tubulin, alpha 1(1)"
+                     /ApEinfo_label="tubulin, alpha 1"
+                     /ApEinfo_fwdcolor="#e8ff00"
+                     /ApEinfo_revcolor="#e8ff00"
 ORIGIN
         1 acttcattct ctcaccagac tcataaaagt cgagtgtgag agcgtttata acagaaaaac
        61 cgaaggctat cctattcata attgccattc atcgaaaata cacatttgaa aatggtgagt

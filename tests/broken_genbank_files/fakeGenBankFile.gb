@@ -6,6 +6,7 @@ KEYWORDS    .
 SOURCE      .
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=cJQ-aN4c5sLYq7FcNLKr5ZVSdSM 2024-06-11T18:43:13
 FEATURES             Location/Qualifiers
 ORIGIN
         1 acctgtagta atctggcctt cgggtccgcc attataacga cagcggagtc tagaggtatg
