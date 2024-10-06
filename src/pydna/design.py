@@ -41,7 +41,7 @@ def _design_primer(
     length = starting_length
     tlen = len(template)
 
-    tmp = tm_func(str(template.seq[:length]))
+    tmp = max(0, tm_func(str(template.seq[:length])))
 
     p = str(template.seq[:length])
 
