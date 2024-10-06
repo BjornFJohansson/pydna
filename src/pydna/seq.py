@@ -24,6 +24,7 @@ import re as _re
 from Bio.Seq import Seq as _Seq
 from pydna._pretty import PrettyTable as _PrettyTable
 
+from typing import List as _List, Optional as _Optional, Tuple as _Tuple
 import logging as _logging
 
 _module_logger = _logging.getLogger("pydna." + __name__)
@@ -32,26 +33,34 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 class Seq(_Seq):
     """docstring."""
 
-    def translate(self, *args, stop_symbol="*", to_stop=False, cds=False, gap="-", **kwargs):
+    def translate(
+        self,
+        *args,
+        stop_symbol: str = "*",
+        to_stop: bool = False,
+        cds: bool = False,
+        gap: str = "-",
+        **kwargs,
+    ) -> "ProteinSeq":
         """Translate.."""
         p = super().translate(*args, stop_symbol=stop_symbol, to_stop=to_stop, cds=cds, gap=gap, **kwargs)
         return ProteinSeq(p._data)
 
-    def gc(self):
+    def gc(self) -> float:
         """Return GC content."""
         return round(_GC(self._data.upper().decode("ASCII")), 3)
 
-    def cai(self, organism="sce"):
+    def cai(self, organism: str = "sce") -> float:
         """docstring."""
         from pydna.utils import cai as _cai
 
         return _cai(self._data.upper().decode("ASCII"), organism=organism)
 
-    def rarecodons(self, organism="sce"):
+    def rarecodons(self, organism: str = "sce") -> _List[slice]:
         """docstring."""
         rare = _rare_codons[organism]
         s = self._data.upper().decode("ASCII")
-        slices = []
+        slices: _List[slice] = []
         for i in range(0, len(self) // 3):
             x, y = i * 3, i * 3 + 3
             trip = s[x:y]
@@ -59,15 +68,15 @@ class Seq(_Seq):
                 slices.append(slice(x, y, 1))
         return slices
 
-    def startcodon(self, organism="sce"):
+    def startcodon(self, organism: str = "sce") -> _Optional[float]:
         """docstring."""
         return _start[organism].get(self._data.upper().decode("ASCII")[:3])
 
-    def stopcodon(self, organism="sce"):
+    def stopcodon(self, organism: str = "sce") -> _Optional[float]:
         """docstring."""
         return _stop[organism].get(self._data.upper().decode("ASCII")[-3:])
 
-    def express(self, organism="sce"):
+    def express(self, organism: str = "sce") -> _PrettyTable:
         """docstring."""
         x = _PrettyTable(["cds", "len", "cai", "gc", "sta", "stp", "n-end"] + _rare_codons[organism] + ["rare"])
         val = []
@@ -92,11 +101,11 @@ class Seq(_Seq):
         x.add_row(val)
         return x
 
-    def orfs2(self, minsize=30):
+    def orfs2(self, minsize: int = 30) -> _List[str]:
         """docstring."""
         orf = _re.compile(f"ATG(?:...){{{minsize},}}?(?:TAG|TAA|TGA)", flags=_re.IGNORECASE)
         start = 0
-        matches = []
+        matches: _List[slice] = []
         s = self._data.decode("ASCII")
 
         while True:
@@ -108,16 +117,13 @@ class Seq(_Seq):
                 break
         return sorted([self[sl] for sl in matches], key=len, reverse=True)
 
-    def orfs(self, minsize=100):
+    def orfs(self, minsize: int = 100) -> _List[_Tuple[int, int]]:
         dna = self._data.decode("ASCII")
         from pydna.utils import three_frame_orfs
 
-        orfs = []
-        for frame, x, y in three_frame_orfs(dna, limit=minsize):
-            orfs.append((x, y))
-        return orfs
+        return [(x, y) for frame, x, y in three_frame_orfs(dna, limit=minsize)]
 
-    def seguid(self):
+    def seguid(self) -> str:
         """Url safe SEGUID [#]_ for the sequence.
 
         This checksum is the same as seguid but with base64.urlsafe
@@ -178,7 +184,7 @@ class ProteinSeq(_Seq):
     def back_transcribe(self):
         raise NotImplementedError("Not defined for protein.")
 
-    def seguid(self):
+    def seguid(self) -> str:
         """Url safe SEGUID [#]_ for the sequence.
 
         This checksum is the same as seguid but with base64.urlsafe
@@ -207,17 +213,17 @@ class ProteinSeq(_Seq):
             pass
         return result
 
-    def _pa(self):
+    def _pa(self) -> ProteinAnalysis:
         # breakpoint()
         return ProteinAnalysis(self._data.decode("ascii"))
 
-    def molecular_weight(self):
+    def molecular_weight(self) -> float:
         return self._pa().molecular_weight()
 
-    def pI(self):
+    def pI(self) -> float:
         return self._pa().isoelectric_point()
 
-    def instability_index(self):
+    def instability_index(self) -> float:
         """
         Instability index according to Guruprasad et al.
 
