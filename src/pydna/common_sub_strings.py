@@ -18,7 +18,7 @@ the original code was covered by an MIT licence."""
 from operator import itemgetter as _itemgetter
 from typing import List as _List, Tuple as _Tuple
 
-Match = _Tuple[int, int, int]
+Match = _Tuple[int, int, int]  # (x_start, y_start, length)
 
 # def _kark_sort(s, SA, n, K):
 #     def radixpass(a, b, r, s, n, k):
@@ -314,7 +314,7 @@ Match = _Tuple[int, int, int]
 #     return match
 
 
-def common_sub_strings(stringx: str, stringy: str, limit=25) -> _List[Match]:
+def common_sub_strings(stringx: str, stringy: str, limit: int = 25) -> _List[Match]:
     """
     Finds all common substrings between stringx and stringy, and returns
     them sorted by length.
@@ -344,7 +344,7 @@ def common_sub_strings(stringx: str, stringy: str, limit=25) -> _List[Match]:
     return matches
 
 
-def terminal_overlap(stringx: str, stringy: str, limit=15) -> _List[Match]:
+def terminal_overlap(stringx: str, stringy: str, limit: int = 15) -> _List[Match]:
     """Finds the the flanking common substrings between stringx and stringy
     longer than limit. This means that the results only contains substrings
     that starts or ends at the the ends of stringx and stringy.
