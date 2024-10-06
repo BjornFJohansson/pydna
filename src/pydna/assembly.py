@@ -43,6 +43,7 @@ The NetworkX package is used to trace linear and circular paths through the
 graph.
 """
 import os as _os
+from Bio.SeqFeature import SeqFeature as _SeqFeature
 from Bio.SeqFeature import ExactPosition as _ExactPosition
 from Bio.SeqFeature import SimpleLocation as _SimpleLocation
 from Bio.SeqFeature import CompoundLocation as _CompoundLocation
@@ -51,12 +52,19 @@ from pydna.utils import rc as _rc
 # from pydna.utils import memorize as _memorize
 from pydna._pretty import pretty_str as _pretty_str
 from pydna.contig import Contig as _Contig
-from pydna.common_sub_strings import common_sub_strings
+from pydna.common_sub_strings import common_sub_strings, Match as _Match
 
-from pydna.common_sub_strings import terminal_overlap
 from pydna.dseqrecord import Dseqrecord as _Dseqrecord
 import networkx as _nx
+
 from copy import deepcopy as _deepcopy
+from typing import (
+    Callable as _Callable,
+    Dict as _Dict,
+    List as _List,
+    NamedTuple as _NamedTuple,
+    TypedDict as _TypedDict,
+)
 import itertools as _itertools
 import logging as _logging
 
@@ -65,9 +73,6 @@ import logging as _logging
 from pydna.threading_timer_decorator_exit import exit_after
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-
-
-terminal_overlap
 
 
 class Assembly(object):  # , metaclass=_Memoize):
@@ -115,36 +120,37 @@ class Assembly(object):  # , metaclass=_Memoize):
 
     """
 
-    def __init__(self, frags=None, limit=25, algorithm=common_sub_strings):
+    def __init__(
+        self,
+        frags: _List[_Dseqrecord],
+        limit: int = 25,
+        algorithm: _Callable[[str, str, int], _List[_Match]] = common_sub_strings,
+    ) -> None:
         # Fragments is a string subclass with some extra properties
         # The order of the fragments has significance
-        fragments = []
-        for f in frags:
-            fragments.append(
-                {
-                    "upper": str(f.seq).upper(),
-                    "mixed": str(f.seq),
-                    "name": f.name,
-                    "features": f.features,
-                    "nodes": [],
-                }
-            )
+        fragments: _List[_FragmentDict] = [
+            {
+                "upper": str(f.seq).upper(),
+                "mixed": str(f.seq),
+                "name": f.name,
+                "features": f.features,
+                "nodes": [],
+            }
+            for f in frags
+        ]
 
         # rcfragments is a dict with fragments as keys and the reverse
         # complement as value
-        rcfragments = dict(
-            (
-                f["mixed"],
-                {
-                    "upper": str(frc.seq).upper(),
-                    "mixed": str(frc.seq),
-                    "name": frc.name,
-                    "features": frc.features,
-                    "nodes": [],
-                },
-            )
+        rcfragments: _Dict[str, _FragmentDict] = {
+            f["mixed"]: {
+                "upper": str(frc.seq).upper(),
+                "mixed": str(frc.seq),
+                "name": frc.name,
+                "features": frc.features,
+                "nodes": [],
+            }
             for f, frc in zip(fragments, (f.rc() for f in frags))
-        )
+        }
         # The nodemap dict holds nodes and their reverse complements
         nodemap = {
             "begin": "end",
@@ -175,8 +181,8 @@ class Assembly(object):  # , metaclass=_Memoize):
                 # case.
                 node = first["upper"][start_in_first : start_in_first + length]
 
-                first["nodes"].append((start_in_first, length, node))
-                secnd["nodes"].append((start_in_secnd, length, node))
+                first["nodes"].append(_NodeTuple(start_in_first, length, node))
+                secnd["nodes"].append(_NodeTuple(start_in_secnd, length, node))
 
                 # The same node exists between the reverse complements of
                 # first and secnd
@@ -187,8 +193,8 @@ class Assembly(object):  # , metaclass=_Memoize):
                 start_in_secrc = len(secnd["upper"]) - start_in_secnd - length
                 # noderc is the reverse complement of node
                 noderc = firrc["upper"][start_in_firrc : start_in_firrc + length]
-                firrc["nodes"].append((start_in_firrc, length, noderc))
-                secrc["nodes"].append((start_in_secrc, length, noderc))
+                firrc["nodes"].append(_NodeTuple(start_in_firrc, length, noderc))
+                secrc["nodes"].append(_NodeTuple(start_in_secrc, length, noderc))
                 nodemap[node] = noderc
 
             # first is also compared to the rc of secnd
@@ -196,16 +202,16 @@ class Assembly(object):  # , metaclass=_Memoize):
 
             for start_in_first, start_in_secrc, length in matches:
                 node = first["upper"][start_in_first : start_in_first + length]
-                first["nodes"].append((start_in_first, length, node))
-                secrc["nodes"].append((start_in_secrc, length, node))
+                first["nodes"].append(_NodeTuple(start_in_first, length, node))
+                secrc["nodes"].append(_NodeTuple(start_in_secrc, length, node))
 
                 start_in_firrc, start_in_secnd = (
                     len(first["upper"]) - start_in_first - length,
                     len(secnd["upper"]) - start_in_secrc - length,
                 )
                 noderc = firrc["upper"][start_in_firrc : start_in_firrc + length]
-                firrc["nodes"].append((start_in_firrc, length, noderc))
-                secnd["nodes"].append((start_in_secnd, length, noderc))
+                firrc["nodes"].append(_NodeTuple(start_in_firrc, length, noderc))
+                secnd["nodes"].append(_NodeTuple(start_in_secnd, length, noderc))
                 nodemap[node] = noderc
 
         # A directed graph class that can store multiedges.
@@ -475,7 +481,7 @@ class Assembly(object):  # , metaclass=_Memoize):
             reverse=True,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> _pretty_str:
         # https://pyformat.info
         return _pretty_str(
             "Assembly\n"
@@ -509,6 +515,20 @@ circular_results = (
     _Dseqrecord("acgatCAtgctccTAAattctgcGAGG", name="abc", circular=True),
     _Dseqrecord("ggagcaTGatcgtCCTCgcagaatTTA", name="abc_rc", circular=True),
 )
+
+
+class _NodeTuple(_NamedTuple):
+    start: int
+    length: int
+    shared_seq: str  # uppercase
+
+
+class _FragmentDict(_TypedDict):
+    upper: str
+    mixed: str
+    name: str
+    features: _List[_SeqFeature]
+    nodes: _List[_NodeTuple]
 
 
 if __name__ == "__main__":
