@@ -30,11 +30,14 @@ repos:
         "requirements.txt",
         "--with",
         "dev",
+        "--with",
         "test",
+        "--with",
         "docs",
         "-E",
         "clipboard download express gel",
       ]
+      files: 'requirements.txt'
 
 - repo: local
   hooks:
