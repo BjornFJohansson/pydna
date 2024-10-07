@@ -36,14 +36,6 @@ Pydna has been designed with the goal of being understandable for biologists wit
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
 
-Start by looking at the [cookbook](https://github.com/BjornFJohansson/pydna/blob/master/docs/cookbook/cookbook.ipynb).
-
-Some simple examples can be found [here](https://github.com/MetabolicEngineeringGroupCBMA/pydna-examples#pydna-examples).
-
-For more elaborate use, look at some assembly strategies of D-xylose metabolic pathways [MetabolicEngineeringGroupCBMA/ypk-xylose-pathways](https://github.com/MetabolicEngineeringGroupCBMA/ypk-xylose-pathways#pereira-et-al-2016).
-
-See below for documentation.
-
 ## Acknowledgement 🤝
 
 If you use pydna in your research, please reference the paper:
@@ -417,27 +409,48 @@ git checkout -b issue_<number>
 
 ### Local development 💻
 
-1. Use [Poetry](https://python-poetry.org/docs/#installation) to install dependencies and activate virtual environment.
+#### Preferred method (using `poetry`)
 
-    ```bash
-    # If you want the virtual environment to be created in this folder
-    # (this is now the default, see `poetry.toml`)
-    poetry config virtualenvs.in-project true
+This is the preferred method to develop on pydna, so if you plan to contribute regularly, it's worth taking this route. If you
+encounter any issues, create an issue on GitHub and we will be able to help.
 
-    # Install dependencies (extras are required for tests to pass)
-    poetry install --all-extras
+Use [Poetry](https://python-poetry.org/docs/#installation) to install dependencies and activate virtual environment. This is necessary
+if you want to edit the project dependencies.
 
-    # Activate virtual environment
-    poetry shell
-    ```
-2. Make your changes.
-3. Add the necessary tests in `tests/`.
-4. Run the tests from the root directory with `python run_test.py`.
+```bash
+# If you want the virtual environment to be created in this folder
+# (this is now the default, see `poetry.toml`)
+poetry config virtualenvs.in-project true
+
+# Install dependencies (extras are required for tests to pass)
+poetry install --all-extras
+
+# Activate virtual environment
+poetry shell
+
+# Install pre-commit hooks
+poetry run pre-commit install
+```
+
+#### Alternative method (using `pip`)
+
+TODO
+
+#### Contributing code 💻
+
+1. Make your changes.
+2. Add the necessary tests in `tests/`.
+3. Run the tests from the root directory with `python run_test.py`.
    > **TIP:** You can run a particular test file with `pytest -vs test_file.py` (`-v` for verbose and `-s` to see print statements in the test). If you want to run just a single test, you can use `pytest -vs -k test_name`, where `test_name` is the name of the test function.
-5. Install `pre-commit` hooks if you haven't by running `pre-commit install`. `pre-commit` should be available in the environment, since it is installed by poetry.
+4. Install `pre-commit` hooks if you haven't by running `pre-commit install`. `pre-commit` should be available in the environment, since it is installed by poetry.
    > **TIP:** The hooks are a series of checks that will be run before you commit your code. If any of the checks fail, the commit will not be allowed. Some of them auto-fix the code (e.g., `black` formatting), so you can simply do `git add .` and commit again.
-6. Push the changes to your fork
-7. From your fork,make a PR towards the branch `dev_bjorn` in the original repository.
+5. Push the changes to your fork
+
+### Creating a PR 🔗
+
+ * From your fork, make a PR towards the branch `dev_bjorn` in the original repository.
+ * Mention the issue number in the PR description (e.g., `Closes #123`).
+ * Remember to click the "Allow edits from maintainers" checkbox so that we can make some changes to the PR if necessary.
 
 ### Continuous integration 🤖
 
