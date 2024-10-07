@@ -18,6 +18,24 @@ repos:
   rev: 7.0.0
   hooks:
   - id: flake8
+# Make a requirements.txt with poetry every time you commit
+- repo: https://github.com/python-poetry/poetry
+  rev: 1.8.3
+  hooks:
+    - id: poetry-export
+      args: [
+        "-f",
+        "requirements.txt",
+        "--output",
+        "requirements.txt",
+        "--with",
+        "dev",
+        "test",
+        "docs",
+        "-E",
+        "clipboard download express gel",
+      ]
+
 - repo: local
   hooks:
     - id: nbstripout
