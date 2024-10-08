@@ -614,13 +614,12 @@ def test_pcr():
     )
 
     for key, tst in enumerate(raw):
-        #print(tst[0], pcr(tst[1:]).seguid(), tst[0] in pcr(tst[1:]).seguid())
+        # print(tst[0], pcr(tst[1:]).seguid(), tst[0] in pcr(tst[1:]).seguid())
         assert tst[0] in pcr(tst[1:]).seguid()
 
 
 def test_shifts():
     from pydna.parsers import parse
-    from pydna.parsers import parse_primers
     from pydna.amplify import pcr
 
     # from pydna.amplify import nopcr
@@ -780,6 +779,25 @@ def test_shifts():
     actacacacgtactgactGcctccaagatagagtcagtaaccacagct"""
     )
     f = pcr(f, r, t)
+
+
+def test_annotation():
+    """
+    Test that annotations are correctly added to the amplicon in primers with tails
+    https://github.com/BjornFJohansson/pydna/issues/279
+    """
+    from pydna.amplify import pcr
+    from pydna.dseqrecord import Dseqrecord
+
+    dsr = Dseqrecord("ATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAAAAAGATAAT")
+    dsr.add_feature(x=0, y=60, type="gene", label="my_gene")  # We add a feature to highlight the sequence as a gene
+
+    forward_primer = "ccccggatccATGCAAACAGTAATGATGGA"
+    reverse_primer = "ttttggatccATTATCTTTTTCAGCAATAGAATCA"
+
+    pcr_product = pcr(forward_primer, reverse_primer, dsr)
+
+    assert pcr_product.features[0].location.extract(pcr_product).seq == dsr.seq
 
 
 if __name__ == "__main__":

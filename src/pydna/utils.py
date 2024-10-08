@@ -81,6 +81,8 @@ def shift_location(original_location, shift, lim):
     newparts = []
     strand = original_location.strand
     if lim is None:
+        if min(original_location) + shift < 0:
+            raise ValueError("Shift moves location below zero, use a `lim` to loop around if sequence is circular.")
         lim = _sys.maxsize
 
     for part in original_location.parts:

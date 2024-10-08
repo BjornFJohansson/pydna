@@ -407,7 +407,6 @@ def test_smallest_rotation():
 
 
 def test_memorize(monkeypatch):
-    import pytest
     from unittest import mock
 
     from pydna.utils import memorize as _memorize
@@ -474,6 +473,33 @@ def test_shift_location():
         loc = SimpleLocation(0, 2, strand)
         assert shift_location(shift_location(loc, 1, 6), -1, 6) == loc
 
+    # Shifting location on circular sequence
+    for strand in (1, -1, None):
+        loc = SimpleLocation(0, 4, strand)
+        assert shift_location(loc, 1, 6) == SimpleLocation(1, 5, strand)
+        if strand == -1:
+            assert shift_location(loc, -1, 6) == SimpleLocation(0, 3, strand) + SimpleLocation(5, 6, strand)
+        else:
+            assert shift_location(loc, -1, 6) == SimpleLocation(5, 6, strand) + SimpleLocation(0, 3, strand)
+
+    # Shifting ignoring the sequence length
+    # See https://github.com/BjornFJohansson/pydna/issues/281
+    for strand in (1, -1, None):
+        loc = SimpleLocation(4, 6, strand)
+        assert shift_location(loc, 1000, None) == SimpleLocation(1004, 1006, strand)
+        assert shift_location(loc, -4, None) == SimpleLocation(0, 2, strand)
+        try:
+            shift_location(loc, -1000, None)
+            raise AssertionError("Shift below zero should raise ValueError")
+        except ValueError:
+            pass
+
+        composed_loc = SimpleLocation(2, 4, strand) + SimpleLocation(5, 6, strand)
+        assert shift_location(composed_loc, 1000, None) == SimpleLocation(1002, 1004, strand) + SimpleLocation(
+            1005, 1006, strand
+        )
+        assert shift_location(composed_loc, -2, None) == SimpleLocation(0, 2, strand) + SimpleLocation(3, 4, strand)
+
 
 def test_locations_overlap():
     from pydna.utils import locations_overlap, shift_location
@@ -507,8 +533,6 @@ def test_locations_overlap():
         for loc in non_overlapping_locations:
             loc_shifted = shift_location(loc, shift, 20)
             assert not locations_overlap(main_shifted, loc_shifted, 20)
-
-
 
 
 if __name__ == "__main__":
