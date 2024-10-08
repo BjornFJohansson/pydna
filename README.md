@@ -237,10 +237,6 @@ product, *rest = asm.assemble_circular()
 product.figure()
 
 ```
-
-
-
-
      -|fragment_A|13
     |             \/
     |             /\
@@ -253,9 +249,6 @@ product.figure()
     |                                         13-
     |                                            |
      --------------------------------------------
-
-
-
 
 ```python
 # Or show the final sequence:
@@ -409,13 +402,14 @@ git checkout -b issue_<number>
 
 ### Local development 💻
 
-#### Preferred method (using `poetry`)
+#### Preferred method (using `poetry`) 🧙‍♂️
 
 This is the preferred method to develop on pydna, so if you plan to contribute regularly, it's worth taking this route. If you
-encounter any issues, create an issue on GitHub and we will be able to help.
+encounter any issues setting up the dev environment, create an issue on GitHub and we will be able to help.
 
 Use [Poetry](https://python-poetry.org/docs/#installation) to install dependencies and activate virtual environment. This is necessary
-if you want to edit the project dependencies.
+if you want to edit the project dependencies. Install poetry using [pipx](https://github.com/pypa/pipx) following poetry's installation instructions, do not install it
+in the system python or the project environment.
 
 ```bash
 # If you want the virtual environment to be created in this folder
@@ -432,9 +426,26 @@ poetry shell
 poetry run pre-commit install
 ```
 
-#### Alternative method (using `pip`)
+#### Alternative method (using `pip`) 🐍
 
-TODO
+Use this for a small contribution or if you don't manage to set up the dev environment.
+
+```bash
+# Create a new virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
+source .venv/bin/activate
+
+# Install all dependencies (library deps + dev and test requirements)
+pip install -r requirements.txt
+
+# Install the project as editable dependency
+pip install -e .
+
+# Install the pre-commit hooks
+pre-commit install
+```
 
 #### Contributing code 💻
 
@@ -442,8 +453,8 @@ TODO
 2. Add the necessary tests in `tests/`.
 3. Run the tests from the root directory with `python run_test.py`.
    > **TIP:** You can run a particular test file with `pytest -vs test_file.py` (`-v` for verbose and `-s` to see print statements in the test). If you want to run just a single test, you can use `pytest -vs -k test_name`, where `test_name` is the name of the test function.
-4. Install `pre-commit` hooks if you haven't by running `pre-commit install`. `pre-commit` should be available in the environment, since it is installed by poetry.
-   > **TIP:** The hooks are a series of checks that will be run before you commit your code. If any of the checks fail, the commit will not be allowed. Some of them auto-fix the code (e.g., `black` formatting), so you can simply do `git add .` and commit again.
+4. Before committing, install `pre-commit` hooks if you haven't by running `pre-commit install`. `pre-commit` should be available in the environment regardless of the method you use to set up the dev environment.
+   > **TIP:** The hooks are a series of checks that will be run before you commit your code. If any of the checks fail, the commit will not be allowed. Some of them auto-fix the code (e.g., `black` formatting), so you can simply do `git add .` and commit again. Others like `flake8` will prevent the commit to happen until the code is compliant.  For instance, if you import a module in a file and not use it, `flake8` will complain. For a full list of checks, see `.pre-commit-config.yaml`.
 5. Push the changes to your fork
 
 ### Creating a PR 🔗
