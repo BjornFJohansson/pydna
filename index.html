@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to pydna’s documentation! &mdash; pydna 0.0.0.post1+91b3dd0 documentation</title>
+  <title>Welcome to pydna’s documentation! &mdash; pydna 0.0.0.post1+30792a3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=7ab3649f" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d5e8d14d"></script>
+      <script src="_static/documentation_options.js?v=56418661"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -3150,7 +3150,7 @@ substituted for a custom made function.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pydna.design.assembly_fragments">
-<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">assembly_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlink</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/design.html#assembly_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.assembly_fragments" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">assembly_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlink</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/design.html#assembly_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.assembly_fragments" title="Link to this definition"></a></dt>
 <dd><p>This function return a list of <a class="reference internal" href="#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> objects where
 primers have been modified with tails so that the fragments can be fused in
 the order they appear in the list by for example Gibson assembly or homologous
@@ -3419,6 +3419,7 @@ Amplicon1         Amplicon3
 <li><p><strong>f</strong> (list of <a class="reference internal" href="#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> and other Dseqrecord like objects) – list Amplicon and Dseqrecord object for which fusion primers should be constructed.</p></li>
 <li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Length of required overlap between fragments.</p></li>
 <li><p><strong>maxlink</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum length of spacer sequences that may be present in f. These will be included in tails for designed primers.</p></li>
+<li><p><strong>circular</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, the assembly is circular. If False, the assembly is linear.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -3483,7 +3484,9 @@ Amplicon1         Amplicon3
 <dl class="py function">
 <dt class="sig sig-object py" id="pydna.design.circular_assembly_fragments">
 <span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">circular_assembly_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlink</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydna/design.html#circular_assembly_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.circular_assembly_fragments" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Equivalent to <cite>assembly_fragments</cite> with <cite>circular=True</cite>.</p>
+<p>Deprecated, kept for backward compatibility. Use <cite>assembly_fragments</cite> with <cite>circular=True</cite> instead.</p>
+</dd></dl>
 
 </section>
 <section id="module-pydna.download">
