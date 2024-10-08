@@ -236,7 +236,7 @@ def primer_design(
     return prod
 
 
-def assembly_fragments(f, overlap=35, maxlink=40):
+def assembly_fragments(f, overlap=35, maxlink=40, circular=False):
     """This function return a list of :mod:`pydna.amplicon.Amplicon` objects where
     primers have been modified with tails so that the fragments can be fused in
     the order they appear in the list by for example Gibson assembly or homologous
@@ -563,6 +563,9 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     maxlink : int, optional
         Maximum length of spacer sequences that may be present in f. These will be included in tails for designed primers.
 
+    circular : bool, optional
+        If True, the assembly is circular. If False, the assembly is linear.
+
     Returns
     -------
     seqs : list of :mod:`pydna.amplicon.Amplicon` and other Dseqrecord like objects :mod:`pydna.amplicon.Amplicon` objects
@@ -620,6 +623,15 @@ def assembly_fragments(f, overlap=35, maxlink=40):
     >>>
 
     """
+
+    # Recursive call for circular assemblies
+    if circular:
+        fragments = assembly_fragments(f + f[0:1], overlap=overlap, maxlink=maxlink, circular=False)
+
+        if hasattr(fragments[0], "template"):
+            fragments[0] = _pcr((fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0].template)
+        return fragments[:-1]
+
     # sanity check for arguments
     nf = [item for item in f if len(item) > maxlink]
     if not all(hasattr(i[0], "template") or hasattr(i[1], "template") for i in zip(nf, nf[1:])):
@@ -742,11 +754,19 @@ def assembly_fragments(f, overlap=35, maxlink=40):
 
 
 def circular_assembly_fragments(f, overlap=35, maxlink=40):
-    fragments = assembly_fragments(f + f[0:1], overlap=overlap, maxlink=maxlink)
+    """
+    Equivalent to `assembly_fragments` with `circular=True`.
 
-    if hasattr(fragments[0], "template"):
-        fragments[0] = _pcr((fragments[-1].forward_primer, fragments[0].reverse_primer), fragments[0].template)
-    return fragments[:-1]
+    Deprecated, kept for backward compatibility. Use `assembly_fragments` with `circular=True` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "The circular_assembly_fragments function is deprecated. Use assembly_fragments with circular=True instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return assembly_fragments(f, overlap=overlap, maxlink=maxlink, circular=True)
 
 
 if __name__ == "__main__":
