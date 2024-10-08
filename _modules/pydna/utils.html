@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pydna.utils &mdash; pydna 0.0.0.post1+4c2d929 documentation</title>
+  <title>pydna.utils &mdash; pydna 0.0.0.post1+9b33d56 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=7ab3649f" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3355f9a2"></script>
+      <script src="../../_static/documentation_options.js?v=52e8c8b5"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -155,6 +155,8 @@
     <span class="n">newparts</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">strand</span> <span class="o">=</span> <span class="n">original_location</span><span class="o">.</span><span class="n">strand</span>
     <span class="k">if</span> <span class="n">lim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">original_location</span><span class="p">)</span> <span class="o">+</span> <span class="n">shift</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Shift moves location below zero, use a `lim` to loop around if sequence is circular.&quot;</span><span class="p">)</span>
         <span class="n">lim</span> <span class="o">=</span> <span class="n">_sys</span><span class="o">.</span><span class="n">maxsize</span>
 
     <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">original_location</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
