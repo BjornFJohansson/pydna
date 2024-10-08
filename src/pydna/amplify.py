@@ -431,7 +431,7 @@ class Anneal(object):  # ), metaclass=_Memoize):
     report = __str__
 
 
-def pcr(*args, **kwargs):
+def pcr(*args, **kwargs) -> _Amplicon:
     """pcr is a convenience function for the Anneal class to simplify its
     usage, especially from the command line. If more than one or no PCR
     product is formed, a ValueError is raised.
