@@ -146,6 +146,8 @@ pcr_product.figure()
             3TACGTTTGTCATTACTACCT...ACTAAGATAACGACTTTTTCTATTA5
 ```
 
+
+
 ```python
 # If we want to see the sequence more clearly, we can turn it into a `Dseqrecord`
 pcr_product = Dseqrecord(pcr_product)
