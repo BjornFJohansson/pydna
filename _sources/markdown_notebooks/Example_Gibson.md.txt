@@ -1,0 +1,101 @@
+# Example of a Gibson Assembly in pydna
+> Visit the full library documentation [here](https://bjornfjohansson.github.io/pydna/)
+
+This example showcases a workflow of modelling Gibson assembly to clone gene fragments into plasmids for synthetic biology. The biological example is sourced [here](https://www.nature.com/articles/nmeth.1318#MOESM319), from the original Gibson assembly paper. This example constructs a synthetic pCC1BAC plasmid by joining sequence fragments from Ruminiclostridium (Clostridium) cellulolyticum. The R. cellulolyticum fragments joined are termed F1, F2, and F3, as in the paper.
+
+Source files can be found alongside this notebook, if you would like to follow along. Annotations are made alongside the code to describe key steps.
+
+
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/Example_Gibson.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+
+```python
+# Install pydna (only when running on Colab)
+import sys
+if 'google.colab' in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+```
+
+
+```python
+# Importing all necessary classes and methods
+
+from pydna.parsers import parse
+from pydna.tm import tm_default
+from pydna.amplify import pcr
+from pydna.dseqrecord import Dseqrecord
+from pydna.assembly import Assembly
+```
+
+
+```python
+# Parsing the files
+
+pCC1BAC_path = "./pCC1BAC.gb"
+gene_path = "./R_cellulolyticum.fasta"
+pCC1BAC_docs = parse(pCC1BAC_path)
+gene_docs = parse(gene_path)
+
+# Printing the parsed files
+
+print(pCC1BAC_docs[0].format("gb"))
+# print(gene_docs[0].format("fasta"))
+```
+
+
+```python
+# Importing pre-designed primers for the PylRS insert fragment. 
+
+F1_For = "GCAGCTTCAAGTCCTGCAAACAAGGTGTACCAGGATCGTT" #Remember that all sequnces are written from 5'-3'
+F1_Rev = "GATTTCAGTGTAGTTAGGGCCAGTTGAATTCAAACCTGCC"
+F2_For = "GGCAGGTTTGAATTCAACTGGCCCTAACTACACTGAAATC"
+F2_Rev = "CTTGGTGCCATCAGCATTGTTCTCTGTACCGCCCACTGTC"
+F3_For = "GACAGTGGGCGGTACAGAGAACAATGCTGATGGCACCAAG"
+F3_Rev = "CAGTTGAATAATCATGTGTTCCTGCGGCAAATGCAGTACC"
+BACF1_For = "AACGATCCTGGTACACCTTGTTTGCAGGACTTGAAGCTGCgcggccgcgatcctctagagtcgacctg"
+BACF3_Rev = "GGTACTGCATTTGCCGCAGGAACACATGATTATTCAACTGgcggccgccgggtaccgagctcgaattc"
+```
+
+
+```python
+# (Optional) Checking that the primer Tm are matching
+
+print(tm_default(F1_For)) # F1_For and F1_Rev have been used as examples here
+print(tm_default(F1_Rev))
+```
+
+
+```python
+# Checking primer specificity using the pcr function. An error message is returned if otherwise.
+
+pcr_product_F1 = pcr(F1_For, F1_Rev, gene_docs[0], limit=40)
+pcr_product_F2 = pcr(F2_For, F2_Rev, gene_docs[0], limit=40)
+pcr_product_F3 = pcr(F3_For, F3_Rev, gene_docs[0], limit=40)
+pcr_product_BAC = pcr(BACF1_For, BACF3_Rev, pCC1BAC_docs[0], limit=69)
+
+# Printing out the PCR results
+
+print(pcr_product_F1.format("gb"))
+print(pcr_product_F2.format("gb"))
+print(pcr_product_F3.format("gb"))
+print(pcr_product_BAC.format("fasta"))
+
+```
+
+
+```python
+# Performing the Gibson Assembly. Note that the assembly class parameters should be given as a list.
+
+assembled = Assembly([Dseqrecord(pcr_product_F1), Dseqrecord(pcr_product_F2), Dseqrecord(pcr_product_F3), Dseqrecord(pcr_product_BAC)])
+assembled_circ = assembled.assemble_circular()
+
+# Printing out the Gibson Assembly product
+print(assembled_circ[0])
+```

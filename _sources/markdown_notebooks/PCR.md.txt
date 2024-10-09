@@ -1,0 +1,269 @@
+# How to Perform a Polymerase Chain Reaction (PCR)
+
+> Visit the full library documentation [here](https://bjornfjohansson.github.io/pydna/)
+
+This page walks you through how to perform a PCR, and design PCR primers, using `pydna`. A PCR amplifies a specific stretch of DNA defined by the primers, and it is critical to ensure primer binding specificity and appropriate primer melting temperature (tm) through careful design. `pydna` provides tools for quick modelling of PCR to check for correct PCR products, and methods for calculating tm and primer design, as performed in other popular web servcies (e.g Primer3Plus). 
+
+## Modelling PCR with Known Primers
+
+To perform PCR, `pydna` provides the `anneal` class and the `pcr` method to quickly generate expected primer products, on a `Dseqrecord` object. The `pcr` method needs only the forward and reverse primers, and the sequence. The primers must be passed from the 5' to the 3' end, following biological convention. More information on `Dseqrecord` and importing DNA sequences can be found in the other guide pages. 
+  
+The following example uses a 300+ bp custom sample circular DNA, containing an example gene that we would like to clone. 18 bp forward and reverse primers have been provided. 
+
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/PCR.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+
+```python
+# Install pydna (only when running on Colab)
+import sys
+if 'google.colab' in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+```
+
+
+```python
+from pydna.amplify import pcr
+from pydna.dseqrecord import Dseqrecord
+from pydna.parsers import parse
+
+#Importing GenBank file containing sample sequence 
+path = "./sample_seq.gb"
+record = parse(path)[0]
+
+#Defining forward and reverse primers
+fwd_primer = "ATTCCTGCAGAGTACATC"
+rvs_primer = "ACCATCCGAAGATATCTT"
+
+#Performing PCR
+pcr_product = pcr(fwd_primer, rvs_primer, record)
+
+#Printing results
+pcr_product.format("gb")
+```
+
+
+
+
+    LOCUS       45bp_PCR_prod             45 bp    DNA     linear   UNK 01-JAN-1980
+    DEFINITION  pcr_product_description_description.
+    ACCESSION   45bp
+    VERSION     45bp
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+         gene            1..45
+                         /label="example_gene"
+         primer_bind     1..18
+                         /label="name"
+                         /PCR_conditions="primer sequence:ATTCCTGCAGAGTACATC"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+         primer_bind     complement(28..45)
+                         /label="name"
+                         /PCR_conditions="primer sequence:ACCATCCGAAGATATCTT"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+    ORIGIN
+            1 attcctgcag agtacatcaa ttctatgaag atatcttcgg atggt
+    //
+
+
+
+The `pcr` method then returns a `Amplicon` class object (to model a PCR product), a subclass of `Dseqrecord` with some extra methods (e.g `.figure`. See "Other ways of visualising the PCR products" section below). All the features inside the PCR product has been retained. Note how the example gene has been retained as a feature in `pcr_product`. In addition, two new features have been added to the record to indicate the forward and reverse primer binding regions.
+
+`pydna` also allows modelling for PCR with extra bases on the 5' end of primers. This functionality is useful for modelling molecular cloning with multiple steps, where you might want to add different restriction sites to PCR products and ensure that the right sequences have been replicated.
+
+For instance, to make sure that I can add a HindIII restriction site (AAGCTT) at the end of my `example_gene` without accidental hybridisation with other parts of the circular sequence, I can perform PCR in the `pydna` package like so.
+
+
+```python
+fwd_primer = "AAGCTTATTCCTGCAGAGTACATC"
+rvs_primer = "AAGCTTACCATCCGAAGATATCTT"
+
+#Performing PCR
+pcr_product_HindIII = pcr(fwd_primer, rvs_primer, record)
+
+#Printing results
+pcr_product_HindIII.format("gb")
+```
+
+
+
+
+    LOCUS       57bp_PCR_prod             57 bp    DNA     linear   UNK 01-JAN-1980
+    DEFINITION  pcr_product_description_description.
+    ACCESSION   57bp
+    VERSION     57bp
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+         primer_bind     1..21
+                         /label="name"
+                         /PCR_conditions="primer sequence:AAGCTTATTCCTGCAGAGTACATC"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+         gene            4..48
+                         /label="example_gene"
+         primer_bind     complement(31..48)
+                         /label="name"
+                         /PCR_conditions="primer sequence:AAGCTTACCATCCGAAGATATCTT"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+    ORIGIN
+            1 aagcttattc ctgcagagta catcaattct atgaagatat cttcggatgg taagctt
+    //
+
+
+
+For more information on restriction digests and ligation, please refer to the Restriction and Ligation page.  
+
+## Other ways of visualising the PCR products 
+
+In addition to the normal `print` function and the `.format()` method (More information can be found in Dseq and Importing_Seqs pages, respectively), pcr products can also be visualized in other ways.
+
+We can check the sequence of the pcr products alone using the `.seq` attribute on a PCR product:
+
+
+```python
+print(pcr_product.seq)
+```
+
+    ATTCCTGCAGAGTACATCAATTCTATGAAGATATCTTCGGATGGT
+
+
+We can also visualize the pcr products as a figure, using the `.figure` method.
+
+
+```python
+print(pcr_product.figure())
+```
+
+    5ATTCCTGCAGAGTACATC...AAGATATCTTCGGATGGT3
+                          ||||||||||||||||||
+                         3TTCTATAGAAGCCTACCA5
+    5ATTCCTGCAGAGTACATC3
+     ||||||||||||||||||
+    3TAAGGACGTCTCATGTAG...TTCTATAGAAGCCTACCA5
+
+
+# Designing Primers and Calculating Tm in pydna
+
+`pydna` also provides the `primer_design` method to design primer sequences based on the desired pcr product and the template sequence's melting temperature (Tm). The `primer_design` method can be imported from the `pydna.design` module, and needs the user to supply the PCR template sequence (as a `Dseqrecord` object) and the Tm. The template sequence should be given as the first parameter, and the Tm give through the `target_tm=` argument, as demonstrated below. If you have no specific Tm in mind, the method uses the default Tm of 55 degrees celcius.
+
+Note that in the following example below, I used zero-based indexing on the `Dseqrecord` to find the sequence of my example gene, of which I would like to clone via PCR. Please refer to the `Dseq` page for more information on how to index a sequence. 
+
+
+
+```python
+from pydna.design import primer_design
+
+#Designing the primers
+primers = primer_design(record[6:51], target_tm=50.0)
+
+#Printing the output
+print(primers.format("gb"))
+```
+
+    LOCUS       example_gene              45 bp    DNA     linear   UNK 01-JAN-1980
+    DEFINITION  pcr_product_f45 example_gene_r45 example_gene.
+    ACCESSION   example_gene
+    VERSION     example_gene
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+         gene            1..45
+                         /label="example_gene"
+         primer_bind     1..16
+                         /label="f45"
+                         /PCR_conditions="primer sequence:ATTCCTGCAGAGTACA"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+         primer_bind     complement(29..45)
+                         /label="r45"
+                         /PCR_conditions="primer sequence:ACCATCCGAAGATATCT"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+    ORIGIN
+            1 attcctgcag agtacatcaa ttctatgaag atatcttcgg atggt
+    //
+
+
+The formula for primer design in `pydna` is based on the Tm formula from Rychlik et al (1990), found [here](http://www.ncbi.nlm.nih.gov/pubmed/2243783). Additional information on calculating Tm can be found in the "Calculating Tm" section below.
+
+The forward and reverse primer sequences are printed in the features list of the `Amplicon` object. Note how the feature representing the example gene is retained, as appropriate.  
+
+If you already have a forward / reverse primer, `primer_design` also allows this information to be taken as arguments. `fp` specifies the forward primer, `rp` specifies the reverse primers. `fp` and `rp` can be should be given as `Primer` class objects, which should be imported from `pydna` too.  
+
+For instance, if I already have a forward primer containing an EcoRI restriction site, and I aim to to generate a reverse primer of a similar Tm, I can apply the following code:  
+
+
+```python
+from pydna.primer import Primer
+
+forward_primer = Primer("GAATTCATTCCTGCAGAGTACATCA", id="forward_primer")
+
+primers_sixfive = primer_design(record[6:51], fp = forward_primer)
+
+print(primers_sixfive.format("gb"))
+```
+
+    LOCUS       example_gene              51 bp    DNA     linear   UNK 01-JAN-1980
+    DEFINITION  pcr_product_forward_primer example_gene_r45 example_gene.
+    ACCESSION   example_gene
+    VERSION     example_gene
+    KEYWORDS    .
+    SOURCE      .
+      ORGANISM  .
+                .
+    FEATURES             Location/Qualifiers
+         gene            1..45
+                         /label="example_gene"
+         primer_bind     1..19
+                         /label="f45"
+                         /PCR_conditions="primer sequence:GAATTCATTCCTGCAGAGTACATCA"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+         primer_bind     complement(26..45)
+                         /label="r45"
+                         /PCR_conditions="primer sequence:ACCATCCGAAGATATCTTCA"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+    ORIGIN
+            1 gaattcattc ctgcagagta catcaattct atgaagatat cttcggatgg t
+    //
+
+
+## Calculating Tm
+
+`pydna` comes with some functions to calculate Tms. The default function `tm_default` used is the previously mentioned one by Rychlik et al (1990), which takes a string as input. Another function derive from the Tm calculation adapted for primers using polymerases with a DNA binding domain (e.g Phusion polymerase). The default values for Tm calculation, including primer concentration, buffer strengths, and more, can also be modified through arguments in the `tm_default` method. Please refer to the `pydna.tm` module docstring for more information. An example is provided with a pair of primers; the temperature is given in degrees celcius.
+
+
+```python
+from pydna.tm import tm_default
+
+# Example Tm calculation for a pair of primers
+primer_f = "ATTCCTGCAGAGTACATCA"
+primer_r = "ACCATCCGAAGATATCTTCA"
+tm_f = tm_default(primer_f)
+tm_r = tm_default(primer_r)
+
+print(tm_f)
+print(tm_r)
+```
+
+    55.901005046706075
+    55.841913263215304
+

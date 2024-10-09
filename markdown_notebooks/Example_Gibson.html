@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example of a Gibson Assembly in pydna &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=945798ad" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_contents.html">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example of a Gibson Assembly in pydna</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_notebooks/Example_Gibson.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-of-a-gibson-assembly-in-pydna">
+<h1>Example of a Gibson Assembly in pydna<a class="headerlink" href="#example-of-a-gibson-assembly-in-pydna" title="Permalink to this heading"></a></h1>
+<blockquote>
+<div><p>Visit the full library documentation <a class="reference external" href="https://bjornfjohansson.github.io/pydna/">here</a></p>
+</div></blockquote>
+<p>This example showcases a workflow of modelling Gibson assembly to clone gene fragments into plasmids for synthetic biology. The biological example is sourced <a class="reference external" href="https://www.nature.com/articles/nmeth.1318#MOESM319">here</a>, from the original Gibson assembly paper. This example constructs a synthetic pCC1BAC plasmid by joining sequence fragments from Ruminiclostridium (Clostridium) cellulolyticum. The R. cellulolyticum fragments joined are termed F1, F2, and F3, as in the paper.</p>
+<p>Source files can be found alongside this notebook, if you would like to follow along. Annotations are made alongside the code to describe key steps.</p>
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/Example_Gibson.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Install pydna (only when running on Colab)
+import sys
+if &#39;google.colab&#39; in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importing all necessary classes and methods</span>
+
+<span class="kn">from</span> <span class="nn">pydna.parsers</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">pydna.tm</span> <span class="kn">import</span> <span class="n">tm_default</span>
+<span class="kn">from</span> <span class="nn">pydna.amplify</span> <span class="kn">import</span> <span class="n">pcr</span>
+<span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="kn">from</span> <span class="nn">pydna.assembly</span> <span class="kn">import</span> <span class="n">Assembly</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parsing the files</span>
+
+<span class="n">pCC1BAC_path</span> <span class="o">=</span> <span class="s2">&quot;./pCC1BAC.gb&quot;</span>
+<span class="n">gene_path</span> <span class="o">=</span> <span class="s2">&quot;./R_cellulolyticum.fasta&quot;</span>
+<span class="n">pCC1BAC_docs</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">pCC1BAC_path</span><span class="p">)</span>
+<span class="n">gene_docs</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">gene_path</span><span class="p">)</span>
+
+<span class="c1"># Printing the parsed files</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">pCC1BAC_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
+<span class="c1"># print(gene_docs[0].format(&quot;fasta&quot;))</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importing pre-designed primers for the PylRS insert fragment. </span>
+
+<span class="n">F1_For</span> <span class="o">=</span> <span class="s2">&quot;GCAGCTTCAAGTCCTGCAAACAAGGTGTACCAGGATCGTT&quot;</span> <span class="c1">#Remember that all sequnces are written from 5&#39;-3&#39;</span>
+<span class="n">F1_Rev</span> <span class="o">=</span> <span class="s2">&quot;GATTTCAGTGTAGTTAGGGCCAGTTGAATTCAAACCTGCC&quot;</span>
+<span class="n">F2_For</span> <span class="o">=</span> <span class="s2">&quot;GGCAGGTTTGAATTCAACTGGCCCTAACTACACTGAAATC&quot;</span>
+<span class="n">F2_Rev</span> <span class="o">=</span> <span class="s2">&quot;CTTGGTGCCATCAGCATTGTTCTCTGTACCGCCCACTGTC&quot;</span>
+<span class="n">F3_For</span> <span class="o">=</span> <span class="s2">&quot;GACAGTGGGCGGTACAGAGAACAATGCTGATGGCACCAAG&quot;</span>
+<span class="n">F3_Rev</span> <span class="o">=</span> <span class="s2">&quot;CAGTTGAATAATCATGTGTTCCTGCGGCAAATGCAGTACC&quot;</span>
+<span class="n">BACF1_For</span> <span class="o">=</span> <span class="s2">&quot;AACGATCCTGGTACACCTTGTTTGCAGGACTTGAAGCTGCgcggccgcgatcctctagagtcgacctg&quot;</span>
+<span class="n">BACF3_Rev</span> <span class="o">=</span> <span class="s2">&quot;GGTACTGCATTTGCCGCAGGAACACATGATTATTCAACTGgcggccgccgggtaccgagctcgaattc&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># (Optional) Checking that the primer Tm are matching</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">tm_default</span><span class="p">(</span><span class="n">F1_For</span><span class="p">))</span> <span class="c1"># F1_For and F1_Rev have been used as examples here</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tm_default</span><span class="p">(</span><span class="n">F1_Rev</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Checking primer specificity using the pcr function. An error message is returned if otherwise.</span>
+
+<span class="n">pcr_product_F1</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F1_For</span><span class="p">,</span> <span class="n">F1_Rev</span><span class="p">,</span> <span class="n">gene_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">pcr_product_F2</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F2_For</span><span class="p">,</span> <span class="n">F2_Rev</span><span class="p">,</span> <span class="n">gene_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">pcr_product_F3</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F3_For</span><span class="p">,</span> <span class="n">F3_Rev</span><span class="p">,</span> <span class="n">gene_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">pcr_product_BAC</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">BACF1_For</span><span class="p">,</span> <span class="n">BACF3_Rev</span><span class="p">,</span> <span class="n">pCC1BAC_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">69</span><span class="p">)</span>
+
+<span class="c1"># Printing out the PCR results</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_F1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_F2</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_F3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_BAC</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">))</span>
+
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Performing the Gibson Assembly. Note that the assembly class parameters should be given as a list.</span>
+
+<span class="n">assembled</span> <span class="o">=</span> <span class="n">Assembly</span><span class="p">([</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_F1</span><span class="p">),</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_F2</span><span class="p">),</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_F3</span><span class="p">),</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_BAC</span><span class="p">)])</span>
+<span class="n">assembled_circ</span> <span class="o">=</span> <span class="n">assembled</span><span class="o">.</span><span class="n">assemble_circular</span><span class="p">()</span>
+
+<span class="c1"># Printing out the Gibson Assembly product</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">assembled_circ</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+# Implementation of Oligonucleotide-based CRISPR-Cas9 toolbox for efficient engineering of Komagataella phaffii 
+
+
+In this example we wanted to give a real life intuition on how to use the module in practice. 
+
+For this purpose we have chosen to use the oligonucleotide-based CRISPR-Cas9 toolbox that i described 
+here by Strucko et al 2024, in the industrially relevant K. phaffi production organism: 
+
+https://academic.oup.com/femsyr/article/doi/10.1093/femsyr/foae026/7740463?login=false 
+
+
+```python
+from IPython.display import Image
+Image(url="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/femsyr/24/10.1093_femsyr_foae026/1/m_foae026fig3.jpeg?Expires=1730974846&Signature=iBKvkhkUn1823IljQ~1uFEnKO0VqWrwiXADvCwQLz6Yv8yDEAFkgt~tsLrXKFTmGYIq3ZINcj5a5yNgs4cP4NeCvRcQh7Ad~1ZejIwNrjqw51CJhGcZWPzz~NDr93QVLZZd2Re41cJNFKFmEu756KxrHQxwKTQe2QPMPfiKBvhvo8J28PERj3vNjZ3LQRsFp9qUPpdsZEyWIiNY92jsuy448YyuaGCgaC2ExGDLeuArTEJmq8gtb0QnTPV0dEdtoxIfZpgavdvO~QyqikjCLj6hebUYU1lH7StuS8oqCQE82CXO0IUcjYF6m2Lb0evXhqdLDQe90M-NrKjzNRmBA0A__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
+```
+
+
+
+
+<img src="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/femsyr/24/10.1093_femsyr_foae026/1/m_foae026fig3.jpeg?Expires=1730974846&Signature=iBKvkhkUn1823IljQ~1uFEnKO0VqWrwiXADvCwQLz6Yv8yDEAFkgt~tsLrXKFTmGYIq3ZINcj5a5yNgs4cP4NeCvRcQh7Ad~1ZejIwNrjqw51CJhGcZWPzz~NDr93QVLZZd2Re41cJNFKFmEu756KxrHQxwKTQe2QPMPfiKBvhvo8J28PERj3vNjZ3LQRsFp9qUPpdsZEyWIiNY92jsuy448YyuaGCgaC2ExGDLeuArTEJmq8gtb0QnTPV0dEdtoxIfZpgavdvO~QyqikjCLj6hebUYU1lH7StuS8oqCQE82CXO0IUcjYF6m2Lb0evXhqdLDQe90M-NrKjzNRmBA0A__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA"/>
+
+
+
+Figure 1. oligo assisted repair in K. phaffi. 
+
+
+- Basically we can make two cuts in the genome, and repair it with an oligo (Figure 1A, 1B).
+
+
+- We can start by loading in our target. Here we have integrated LAC12 in our K. phaffi strain but want to knock it out. 
+
+
+- Let's see how this can be implemented in pydna
+
+
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/Example_CRISPR.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+
+```python
+# Install pydna (only when running on Colab)
+import sys
+if 'google.colab' in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+```
+
+### Import the gene we are going to work with
+
+
+```python
+from pydna.dseqrecord import Dseqrecord
+from pydna.crispr import cas9, protospacer
+from pydna.genbank import Genbank
+
+# initalize your favourite gene
+gb = Genbank("myself@email.com") # Tell Genbank who you are!
+gene = gb.nucleotide("X06997") # Kluyveromyces lactis LAC12 gene for lactose permease that have been integrated into K. phaffi
+target_dseq = Dseqrecord(gene)
+print(target_dseq)
+
+```
+
+    Dseqrecord
+    circular: False
+    size: 7127
+    ID: X06997.1
+    Name: X06997
+    Description: Kluyveromyces lactis LAC12 gene for lactose permease
+    Number of features: 8
+    /molecule_type=DNA
+    /topology=linear
+    /data_file_division=PLN
+    /date=25-JUL-2016
+    /accessions=['X06997']
+    /sequence_version=1
+    /keywords=['lactose permease', 'unidentified reading frame']
+    /source=Kluyveromyces lactis
+    /organism=Kluyveromyces lactis
+    /taxonomy=['Eukaryota', 'Fungi', 'Dikarya', 'Ascomycota', 'Saccharomycotina', 'Saccharomycetes', 'Saccharomycetales', 'Saccharomycetaceae', 'Kluyveromyces']
+    /references=[Reference(title='Primary structure of the lactose permease gene from the yeast Kluyveromyces lactis. Presence of an unusual transcript structure', ...), Reference(title='Direct Submission', ...)]
+    /comment=the sequence submitted starts from the 5'end of LAC4 gene but goes
+    to the opposite direction; therefore, base number 1 is -1199 of
+    LAC4 gene; for LAC4 gene seq. see
+    Mol. Cell. Biol. (1987)7,4369-4376.
+    Dseq(-7127)
+    GCGA..TTCG
+    CGCT..AAGC
+
+
+Next we have chosen some guides and can add them to our cas9 enzymes and simulate the cuts.
+
+
+```python
+
+# Choose guides
+guides =  ["CCCTAAGTCCTTTGAAGATT", "TATTATTTTGAGGTGCTTTA"]
+
+# Create an enzyme object with the protospacer
+enzyme = cas9(guides[0])
+
+# Simulate the cut with enzyme1
+print('cutting with guide 1:', target_dseq.cut(enzyme))
+
+# Create an enzyme from the protospacer
+enzyme2 = cas9(guides[1])
+
+# Simulate the cut with enzyme2
+print('cutting with guide 2:', target_dseq.cut(enzyme2))
+```
+
+    cutting with guide 1: (Dseqrecord(-135), Dseqrecord(-6992))
+    cutting with guide 2: (Dseqrecord(-6793), Dseqrecord(-334))
+
+
+With these guides I would be able to generate a stable KO with a repair 60/90mer oligo.
+
+
+```python
+repair_oligo = target_dseq.cut(enzyme)[0][-45:]+target_dseq.cut(enzyme2)[-1][:45]
+repair_oligo.name = 'My repair oligo for this experiment'
+print(f'{repair_oligo.name} : {repair_oligo.seq} ')
+print(f'{repair_oligo.name} length : {len(repair_oligo.seq)} ')
+```
+
+    My repair oligo for this experiment : AGGTGAACACACTCTGATGTAGTGCAGTCCCTAAGTCCTTTGAAGTTACGGACTCCTCGACCGATGCCCTTGAGAGCCTTCAACCCAGTC 
+    My repair oligo for this experiment length : 90 
+
+
+The final edit gene would look like this in a case of homologous recombination. 
+
+
+
+```python
+from pydna.assembly import Assembly
+
+my_KO = Assembly((target_dseq.cut(enzyme)[0],repair_oligo, target_dseq.cut(enzyme2)[-1]), limit = 20 )
+my_assembly_KO, *rest = my_KO.assemble_linear()
+my_assembly_KO
+```
+
+
+
+
+<pre>name|45
+     \/
+     /\
+     45|My repair oligo for this experiment|45
+                                            \/
+                                            /\
+                                            45|name</pre>
+
+

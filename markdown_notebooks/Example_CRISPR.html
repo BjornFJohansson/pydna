@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implementation of Oligonucleotide-based CRISPR-Cas9 toolbox for efficient engineering of Komagataella phaffii &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=945798ad" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_contents.html">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Implementation of Oligonucleotide-based CRISPR-Cas9 toolbox for efficient engineering of Komagataella phaffii</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_notebooks/Example_CRISPR.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="implementation-of-oligonucleotide-based-crispr-cas9-toolbox-for-efficient-engineering-of-komagataella-phaffii">
+<h1>Implementation of Oligonucleotide-based CRISPR-Cas9 toolbox for efficient engineering of Komagataella phaffii<a class="headerlink" href="#implementation-of-oligonucleotide-based-crispr-cas9-toolbox-for-efficient-engineering-of-komagataella-phaffii" title="Permalink to this heading"></a></h1>
+<p>In this example we wanted to give a real life intuition on how to use the module in practice.</p>
+<p>For this purpose we have chosen to use the oligonucleotide-based CRISPR-Cas9 toolbox that i described
+here by Strucko et al 2024, in the industrially relevant K. phaffi production organism:</p>
+<p>https://academic.oup.com/femsyr/article/doi/10.1093/femsyr/foae026/7740463?login=false</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/femsyr/24/10.1093_femsyr_foae026/1/m_foae026fig3.jpeg?Expires=1730974846&amp;Signature=iBKvkhkUn1823IljQ~1uFEnKO0VqWrwiXADvCwQLz6Yv8yDEAFkgt~tsLrXKFTmGYIq3ZINcj5a5yNgs4cP4NeCvRcQh7Ad~1ZejIwNrjqw51CJhGcZWPzz~NDr93QVLZZd2Re41cJNFKFmEu756KxrHQxwKTQe2QPMPfiKBvhvo8J28PERj3vNjZ3LQRsFp9qUPpdsZEyWIiNY92jsuy448YyuaGCgaC2ExGDLeuArTEJmq8gtb0QnTPV0dEdtoxIfZpgavdvO~QyqikjCLj6hebUYU1lH7StuS8oqCQE82CXO0IUcjYF6m2Lb0evXhqdLDQe90M-NrKjzNRmBA0A__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/femsyr/24/10.1093_femsyr_foae026/1/m_foae026fig3.jpeg?Expires=1730974846&Signature=iBKvkhkUn1823IljQ~1uFEnKO0VqWrwiXADvCwQLz6Yv8yDEAFkgt~tsLrXKFTmGYIq3ZINcj5a5yNgs4cP4NeCvRcQh7Ad~1ZejIwNrjqw51CJhGcZWPzz~NDr93QVLZZd2Re41cJNFKFmEu756KxrHQxwKTQe2QPMPfiKBvhvo8J28PERj3vNjZ3LQRsFp9qUPpdsZEyWIiNY92jsuy448YyuaGCgaC2ExGDLeuArTEJmq8gtb0QnTPV0dEdtoxIfZpgavdvO~QyqikjCLj6hebUYU1lH7StuS8oqCQE82CXO0IUcjYF6m2Lb0evXhqdLDQe90M-NrKjzNRmBA0A__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA"/>
+<p>Figure 1. oligo assisted repair in K. phaffi.</p>
+<ul class="simple">
+<li><p>Basically we can make two cuts in the genome, and repair it with an oligo (Figure 1A, 1B).</p></li>
+<li><p>We can start by loading in our target. Here we have integrated LAC12 in our K. phaffi strain but want to knock it out.</p></li>
+<li><p>Let’s see how this can be implemented in pydna</p></li>
+</ul>
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/Example_CRISPR.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Install pydna (only when running on Colab)
+import sys
+if &#39;google.colab&#39; in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+</pre></div>
+</div>
+<section id="import-the-gene-we-are-going-to-work-with">
+<h2>Import the gene we are going to work with<a class="headerlink" href="#import-the-gene-we-are-going-to-work-with" title="Permalink to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="kn">from</span> <span class="nn">pydna.crispr</span> <span class="kn">import</span> <span class="n">cas9</span><span class="p">,</span> <span class="n">protospacer</span>
+<span class="kn">from</span> <span class="nn">pydna.genbank</span> <span class="kn">import</span> <span class="n">Genbank</span>
+
+<span class="c1"># initalize your favourite gene</span>
+<span class="n">gb</span> <span class="o">=</span> <span class="n">Genbank</span><span class="p">(</span><span class="s2">&quot;myself@email.com&quot;</span><span class="p">)</span> <span class="c1"># Tell Genbank who you are!</span>
+<span class="n">gene</span> <span class="o">=</span> <span class="n">gb</span><span class="o">.</span><span class="n">nucleotide</span><span class="p">(</span><span class="s2">&quot;X06997&quot;</span><span class="p">)</span> <span class="c1"># Kluyveromyces lactis LAC12 gene for lactose permease that have been integrated into K. phaffi</span>
+<span class="n">target_dseq</span> <span class="o">=</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">target_dseq</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Dseqrecord
+circular: False
+size: 7127
+ID: X06997.1
+Name: X06997
+Description: Kluyveromyces lactis LAC12 gene for lactose permease
+Number of features: 8
+/molecule_type=DNA
+/topology=linear
+/data_file_division=PLN
+/date=25-JUL-2016
+/accessions=[&#39;X06997&#39;]
+/sequence_version=1
+/keywords=[&#39;lactose permease&#39;, &#39;unidentified reading frame&#39;]
+/source=Kluyveromyces lactis
+/organism=Kluyveromyces lactis
+/taxonomy=[&#39;Eukaryota&#39;, &#39;Fungi&#39;, &#39;Dikarya&#39;, &#39;Ascomycota&#39;, &#39;Saccharomycotina&#39;, &#39;Saccharomycetes&#39;, &#39;Saccharomycetales&#39;, &#39;Saccharomycetaceae&#39;, &#39;Kluyveromyces&#39;]
+/references=[Reference(title=&#39;Primary structure of the lactose permease gene from the yeast Kluyveromyces lactis. Presence of an unusual transcript structure&#39;, ...), Reference(title=&#39;Direct Submission&#39;, ...)]
+/comment=the sequence submitted starts from the 5&#39;end of LAC4 gene but goes
+to the opposite direction; therefore, base number 1 is -1199 of
+LAC4 gene; for LAC4 gene seq. see
+Mol. Cell. Biol. (1987)7,4369-4376.
+Dseq(-7127)
+GCGA..TTCG
+CGCT..AAGC
+</pre></div>
+</div>
+<p>Next we have chosen some guides and can add them to our cas9 enzymes and simulate the cuts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="c1"># Choose guides</span>
+<span class="n">guides</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;CCCTAAGTCCTTTGAAGATT&quot;</span><span class="p">,</span> <span class="s2">&quot;TATTATTTTGAGGTGCTTTA&quot;</span><span class="p">]</span>
+
+<span class="c1"># Create an enzyme object with the protospacer</span>
+<span class="n">enzyme</span> <span class="o">=</span> <span class="n">cas9</span><span class="p">(</span><span class="n">guides</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># Simulate the cut with enzyme1</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cutting with guide 1:&#39;</span><span class="p">,</span> <span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme</span><span class="p">))</span>
+
+<span class="c1"># Create an enzyme from the protospacer</span>
+<span class="n">enzyme2</span> <span class="o">=</span> <span class="n">cas9</span><span class="p">(</span><span class="n">guides</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Simulate the cut with enzyme2</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cutting with guide 2:&#39;</span><span class="p">,</span> <span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme2</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cutting with guide 1: (Dseqrecord(-135), Dseqrecord(-6992))
+cutting with guide 2: (Dseqrecord(-6793), Dseqrecord(-334))
+</pre></div>
+</div>
+<p>With these guides I would be able to generate a stable KO with a repair 60/90mer oligo.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">repair_oligo</span> <span class="o">=</span> <span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">45</span><span class="p">:]</span><span class="o">+</span><span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme2</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">45</span><span class="p">]</span>
+<span class="n">repair_oligo</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;My repair oligo for this experiment&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">repair_oligo</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> : </span><span class="si">{</span><span class="n">repair_oligo</span><span class="o">.</span><span class="n">seq</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">repair_oligo</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> length : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">repair_oligo</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>My repair oligo for this experiment : AGGTGAACACACTCTGATGTAGTGCAGTCCCTAAGTCCTTTGAAGTTACGGACTCCTCGACCGATGCCCTTGAGAGCCTTCAACCCAGTC 
+My repair oligo for this experiment length : 90 
+</pre></div>
+</div>
+<p>The final edit gene would look like this in a case of homologous recombination.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydna.assembly</span> <span class="kn">import</span> <span class="n">Assembly</span>
+
+<span class="n">my_KO</span> <span class="o">=</span> <span class="n">Assembly</span><span class="p">((</span><span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span><span class="n">repair_oligo</span><span class="p">,</span> <span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme2</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">20</span> <span class="p">)</span>
+<span class="n">my_assembly_KO</span><span class="p">,</span> <span class="o">*</span><span class="n">rest</span> <span class="o">=</span> <span class="n">my_KO</span><span class="o">.</span><span class="n">assemble_linear</span><span class="p">()</span>
+<span class="n">my_assembly_KO</span>
+</pre></div>
+</div>
+<pre>name|45
+     \/
+     /\
+     45|My repair oligo for this experiment|45
+                                            \/
+                                            /\
+                                            45|name</pre>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

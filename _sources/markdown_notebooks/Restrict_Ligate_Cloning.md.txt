@@ -1,0 +1,209 @@
+# Restriction and Ligation 
+> Visit the full library documentation [here](https://bjornfjohansson.github.io/pydna/)
+
+In this page, we explore how to use pydna to cut, ligate, circularise DNA sequences. pydna works in conjugation with the `Bio.Restriction` module to apply a vast variety of restriction enzymes for cutting, whose module documentations can be found [here](https://biopython.org/DIST/docs/cookbook/Restriction.html).
+
+## Cutting with one or more restriction enzymes
+
+Restriction enzymes recognise specific DNA sequences and cut them, leaving sticky ends or blunt ends. To cut a sequence using `pydna`, we can use the `cut` method on a `Dseqrecord` object. Here is an example showing how to use the `cut` method to genenrate EcoRI restriction digests. The record includes a 338bp circular sequence, with an example gene feature.
+
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/Restrict_Ligate_Cloning.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+
+```python
+# Install pydna (only when running on Colab)
+import sys
+if 'google.colab' in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+```
+
+
+```python
+from pydna.dseqrecord import Dseqrecord
+from pydna.parsers import parse
+from Bio.Restriction import EcoRI
+
+# Create a Dseqrecord with your FASTA/GenBank file
+path = "./sample_seq.gb"
+record = parse(path)[0]
+
+# Cut with a single enzyme
+cut_records = record.cut(EcoRI)
+
+# Display the resulting fragments
+for frag in cut_records:
+    print(frag)
+```
+
+    Dseqrecord
+    circular: False
+    size: 338
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 1
+    /molecule_type=DNA
+    Dseq(-338)
+    AATTCTTC..TGTG    
+        GAAG..ACACTTAA
+
+
+The circular `Dseqrecord` is cut into a linear `Dseqrecord` object, since there is only one EcoRI recognition site. `Dseqrecord` also shows the 5' sticky end after cutting.
+
+The sequence can also be cut with multiple restriction enzymes, into multiple linear DNA sequences. We can simply import all the restriction enzymes, and use the cut method as normal.
+
+
+```python
+from Bio.Restriction import EcoRV
+
+# Cut with a multiple enzymes
+multi_cut_records = record.cut(EcoRI, EcoRV)
+
+# Display the resulting fragments
+for frag in multi_cut_records:
+    print()
+    print(frag)
+    print()
+```
+
+    
+    Dseqrecord
+    circular: False
+    size: 51
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 0
+    /molecule_type=DNA
+    Dseq(-51)
+    ATCT..TGTG    
+    TAGA..ACACTTAA
+    
+    
+    Dseqrecord
+    circular: False
+    size: 214
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 0
+    /molecule_type=DNA
+    Dseq(-214)
+    AATTCTTC..TGAT
+        GAAG..ACTA
+    
+    
+    Dseqrecord
+    circular: False
+    size: 73
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 0
+    /molecule_type=DNA
+    Dseq(-73)
+    ATCT..AGAT
+    TAGA..TCTA
+    
+
+
+There are two EcoRV recognition sites in `sample_seq`, and coupled with the one EcoRI recognition site, three DNA fragments are returned. Note how `Dseqrecord` returns the blunt end after EcoRV cuts. 
+
+You can model any, and and number of, enzymes with the `cut` method and `Bio.Restriction` module. This makes `pydna` a quick and powerful method to plan your molecular cloning experiments, for instance to check the restriction digests of a 10kb plasmid with multiple enzymes. `cut` is also a method of the `Dseq` class, so `Dseq`s can be used as well. 
+
+## Ligating fragments
+
+After cutting a DNA sequence, you can ligate the fragments back together in `pydna` using the `+` operator on `Dseqrecord` or `Dseq` objects. Ligation can occur via complementary sticky ends or blunt ends. For instance, we can select the first and second fragments from `multi_cut_records` via indexing, and then ligate sticky ends produced by EcoRI to make a single linear sequence.
+
+
+```python
+ligated_product = multi_cut_records[0] + multi_cut_records[1]
+print(ligated_product)
+```
+
+    Dseqrecord
+    circular: False
+    size: 261
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 0
+    /molecule_type=DNA
+    Dseq(-261)
+    ATCT..TGAT
+    TAGA..ACTA
+
+
+We can also join blunt ends in a similar way. Note that the sticky-ends must be a perfect match to join. If  `+` ligation (or any other method, really) doesn't work, make sure that:
+
+1. you are indeed performing the operation on `Dseqrecord` objects, as opposed to other data types (e.g lists, strings, etc)
+2. `Dseqrecord` and the correct enzyme name (with correct roman numeral spelling) has been imported. 
+
+## Circularizing fragments
+
+To circularize a cut DNA sequence use the `looped` method, which returns a new sequence object.
+
+🚨🚨 **VERY IMPORTANT** 🚨🚨 `.looped()` method does not act in place, so a new variable should be created to store the new circularised sequence, as shown in the following example.
+
+
+```python
+circular_record = ligated_product.looped()
+
+print('is ligated_product circular?', ligated_product.circular)
+print('is circular_record circular?', circular_record.circular)
+print()
+
+print(circular_record)
+```
+
+    is ligated_product circular? False
+    is circular_record circular? True
+    
+    Dseqrecord
+    circular: True
+    size: 261
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 0
+    /molecule_type=DNA
+    Dseq(o261)
+    ATCT..TGAT
+    TAGA..ACTA
+
+
+## Extra Notes: What happens to features when cutting/ligating?
+
+A feature is removed from a `Dseqrecord` if the features is truncated by the cut. For instance, the example_gene feature is removed from the record after cutting `record` with PstI, which has recognition site within example_gene.  within the cutand if the feature is completely within the cut, it is retained. 
+
+
+```python
+from Bio.Restriction import PstI
+
+cut_record2 = record.cut(PstI)
+
+print(cut_record2[0])
+
+```
+
+    Dseqrecord
+    circular: False
+    size: 222
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 0
+    /molecule_type=DNA
+    Dseq(-222)
+        GAGT..TAACTGCA
+    ACGTCTCA..ATTG    
+
+
+However, if a cut does not overlap with the feature, the feature is retained on the `Dseqrecord`. For instance, if we go back to the first example given by the EcoRI cut, example_gene has been retained after cutting. For more information on Features, please refer to the `Dseq_Feature` documentations.

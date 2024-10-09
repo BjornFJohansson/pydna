@@ -1,0 +1,176 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Model CRISPR-Cas9 Experiments in pydna &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=945798ad" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_contents.html">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to Model CRISPR-Cas9 Experiments in pydna</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_notebooks/CRISPR.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-model-crispr-cas9-experiments-in-pydna">
+<h1>How to Model CRISPR-Cas9 Experiments in pydna<a class="headerlink" href="#how-to-model-crispr-cas9-experiments-in-pydna" title="Permalink to this heading"></a></h1>
+<blockquote>
+<div><p>Visit the full library documentation <a class="reference external" href="https://bjornfjohansson.github.io/pydna/">here</a></p>
+</div></blockquote>
+<p>The pydna package can simulate CRISPR-Cas9 editing, which allows one to cut DNA sequences at specific sites using guide RNAs (gRNAs) that direct the Cas9 protein. This page will guide you through the process of using the <code class="docutils literal notranslate"><span class="pre">pydna.crispr</span></code> module to model a CRISPR-Cas9 cut on a DNA sequence.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pydna.crispr</span></code> module contains the <code class="docutils literal notranslate"><span class="pre">cas9</span></code> class to simulate the biological activites of the Cas9 protein and the guideRNA, which should be imported. In addtion, the <code class="docutils literal notranslate"><span class="pre">Dseqrecord</span></code> class has also been imported to generate an example target_sequence.</p>
+<a target="_blank" href="https://colab.research.google.com/github/BjornFJohansson/pydna/blob/dev_bjorn/docs/notebooks/CRISPR.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Install pydna (only when running on Colab)
+import sys
+if &#39;google.colab&#39; in sys.modules:
+    %%capture
+    # Install the current development version of pydna (comment to install pip version)
+    !pip install git+https://github.com/BjornFJohansson/pydna@dev_bjorn
+    # Install pip version instead (uncomment to install)
+    # !pip install pydna
+
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydna.crispr</span> <span class="kn">import</span> <span class="n">cas9</span><span class="p">,</span> <span class="n">protospacer</span>
+<span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+</pre></div>
+</div>
+<p>The target sequence and guideRNA (gRNA) sequence needs to be generated. Note the the sequence can be passed as a <code class="docutils literal notranslate"><span class="pre">Dseqrecord</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="kn">from</span> <span class="nn">pydna.crispr</span> <span class="kn">import</span> <span class="n">cas9</span><span class="p">,</span> <span class="n">protospacer</span>
+
+<span class="c1">#         &lt;----protospacer---&gt;&lt;-------scaffold-----------------&gt;</span>
+<span class="n">guide</span> <span class="o">=</span>  <span class="s2">&quot;GTTACTTTACCCGACGTCCCgttttagagctagaaatagcaagttaaaataagg&quot;</span>
+<span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;GTTACTTTACCCGACGTCCCaGG&quot;</span>
+<span class="c1">#                             &lt;-&gt;</span>
+<span class="c1">#                             PAM</span>
+
+<span class="c1"># Create an enzyme object with the protospacer</span>
+<span class="n">enzyme</span> <span class="o">=</span> <span class="n">cas9</span><span class="p">(</span><span class="s2">&quot;GTTACTTTACCCGACGTCCC&quot;</span><span class="p">)</span>
+
+<span class="n">target_dseq</span> <span class="o">=</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+<span class="c1"># Cut using the enzyme</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cutting with enzyme 1:&#39;</span><span class="p">,</span> <span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme</span><span class="p">))</span>
+
+
+<span class="c1"># Get the protospacer from the full gRNA sequence</span>
+<span class="n">gRNA_protospacers</span> <span class="o">=</span> <span class="n">protospacer</span><span class="p">(</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="n">guide</span><span class="p">),</span> <span class="n">cas</span><span class="o">=</span><span class="n">cas9</span><span class="p">)</span>
+<span class="c1"># Print the protospacer (it&#39;s a list because often plasmids contain multiple gRNAs)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;protospacer:&#39;</span><span class="p">,</span> <span class="n">gRNA_protospacers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">gRNA_protospacer</span> <span class="o">=</span> <span class="n">gRNA_protospacers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Create an enzyme from the protospacer</span>
+<span class="n">enzyme2</span> <span class="o">=</span> <span class="n">cas9</span><span class="p">(</span><span class="n">gRNA_protospacer</span><span class="p">)</span>
+
+<span class="c1"># Simulate the cut</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cutting with enzyme 2:&#39;</span><span class="p">,</span> <span class="n">target_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme2</span><span class="p">))</span>
+
+
+<span class="c1"># Note that without the PAM, the cut will not be made.</span>
+
+<span class="n">target_noPAM_dseq</span> <span class="o">=</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;GTTACTTTACCCGACGTCCCaaa&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cutting with no PAM in target:&quot;</span><span class="p">,</span> <span class="n">target_noPAM_dseq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">enzyme2</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cutting with enzyme 1: (Dseqrecord(-17), Dseqrecord(-6))
+protospacer: GTTACTTTACCCGACGTCCC
+cutting with enzyme 2: (Dseqrecord(-17), Dseqrecord(-6))
+cutting with no PAM in target: ()
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
