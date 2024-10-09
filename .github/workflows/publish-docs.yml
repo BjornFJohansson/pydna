@@ -41,7 +41,7 @@ jobs:
       run: |
         cd docs
         poetry run bash make_markdown_notebooks.sh
-        poetry runmake html
+        poetry run make html
 
     - name: Deploy to GitHub pages 🚀
       if: github.event_name != 'pull_request'
