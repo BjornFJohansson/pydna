@@ -38,6 +38,7 @@ jobs:
     - name: Build documentation
       run: |
         cd docs
+        bash make_markdown_notebooks.sh
         make html
 
     - name: Deploy to GitHub pages 🚀
