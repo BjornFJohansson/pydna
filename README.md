@@ -5,14 +5,10 @@
 | [![Documentation Status](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml/badge.svg)](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml)                                                      | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna) | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers) |
 
 
-Planning genetic constructs with many parts and assembly steps, such as recombinant
-metabolic pathways :petri_dish:, are often difficult to **properly** document as is evident from the poor
-state of documentation in the scientific literature :radioactive:.
-
-
-The pydna python package provide a human-readable formal descriptions of :dna: cloning and genetic assembly
-strategies in Python :snake: which allow for simulation and verification.
+Pydna is a python package that provides a human-readable formal descriptions of 🧬 cloning and genetic assembly strategies in Python 🐍 for simulation and verification.
 Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+
+Designing genetic constructs with many components and steps, like recombinant metabolic pathways 🧫, often makes accurate documentation difficult, as seen in the poor state of scientific literature ☢️
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
 
@@ -28,8 +24,7 @@ Pydna provides simulation of:
 - Golden gate assembly (in progress)
 
 
-Virtually any sub-cloning experiment can be described in pydna, and its execution yield
-the sequences of intermediate and final DNA molecules.
+Virtually any sub-cloning experiment can be described in pydna, and its execution yield the sequences of intermediate and final DNA molecules.
 
 Pydna has been designed with the goal of being understandable for biologists with only some basic understanding of Python.
 
