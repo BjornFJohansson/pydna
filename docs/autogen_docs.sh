@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 # Loop through all notebooks in the markdown_notebooks directory
 for notebook in notebooks/*.ipynb; do
     # Convert each notebook to markdown
@@ -8,6 +11,9 @@ done
 
 # Get module names
 all_modules=$(python -c "import pydna; import pkgutil; [print(name) for _, name, _ in pkgutil.iter_modules(pydna.__path__)]")
+
+# If the modules folder does not exist, create it
+mkdir -p modules
 
 # Create the root pydna.rst file
 echo "Creating pydna.rst"
