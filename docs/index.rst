@@ -19,7 +19,7 @@ Welcome to pydna's documentation!
 
    self
    installation
-   module_contents
+   modules/index
    getting_started
    example_gallery
 

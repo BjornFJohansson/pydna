@@ -1,10 +1,4 @@
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
 
 name: "Documentation Status"
 
@@ -46,11 +40,12 @@ jobs:
     - name: Build documentation
       run: |
         cd docs
-        poetry run bash make_markdown_notebooks.sh
+        poetry run bash autogen_docs.sh
         poetry run make html
 
     - name: Deploy to GitHub pages 🚀
-      if: github.event_name != 'pull_request'
+      # Deploy only when master changes
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: JamesIves/github-pages-deploy-action@v4.6.0
       with:
         clean: false
