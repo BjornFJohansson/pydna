@@ -4,15 +4,12 @@
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | [![Documentation Status](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml/badge.svg)](https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml)                                                      | [![GitHub issues](https://img.shields.io/github/issues/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/issues)                | [![Anaconda-Server Badge2](https://anaconda.org/bjornfjohansson/pydna/badges/license.svg)](https://anaconda.org/bjornfjohansson/pydna) | [![GitHub stars](https://img.shields.io/github/stars/BjornFJohansson/pydna.svg)](https://github.com/BjornFJohansson/pydna/stargazers) |
 
+<!-- docs/index.rst-start -->
 
-Planning genetic constructs with many parts and assembly steps, such as recombinant
-metabolic pathways :petri_dish:, are often difficult to **properly** document as is evident from the poor
-state of documentation in the scientific literature :radioactive:.
-
-
-The pydna python package provide a human-readable formal descriptions of :dna: cloning and genetic assembly
-strategies in Python :snake: which allow for simulation and verification.
+Pydna is a python package that provides a human-readable formal descriptions of 🧬 cloning and genetic assembly strategies in Python 🐍 for simulation and verification.
 Pydna can be used as [executable documentation](https://en.wikipedia.org/wiki/Literate_programming) for cloning.
+
+Designing genetic constructs with many components and steps, like recombinant metabolic pathways 🧫, often makes accurate documentation difficult, as seen in the poor state of scientific literature ☢️
 
 A cloning strategy expressed in pydna is **complete**, **unambiguous** and **stable**.
 
@@ -28,13 +25,14 @@ Pydna provides simulation of:
 - Golden gate assembly (in progress)
 
 
-Virtually any sub-cloning experiment can be described in pydna, and its execution yield
-the sequences of intermediate and final DNA molecules.
+Virtually any sub-cloning experiment can be described in pydna, and its execution yield the sequences of intermediate and final DNA molecules.
 
 Pydna has been designed with the goal of being understandable for biologists with only some basic understanding of Python.
 
 Pydna can formalize planning and sharing of cloning strategies and is especially useful for complex or combinatorial
 DNA molecule constructions.
+
+<!-- docs/index.rst-end -->
 
 ## Acknowledgement 🤝
 
@@ -289,12 +287,20 @@ rec_vec =  ( lin_vector + pcr_prod ).looped()
 
 ## Installation 📦
 
+<!-- docs/installation.rst-start -->
+
 By default, pydna is installed with minimal dependencies, but there are optional dependencies for additional functionality.
 
+
+### Optional dependencies
 <details>
 <summary>Click here to see optional dependencies</summary>
 
-### `clipboard`
+<!-- I did not make these headers because they mess up the sphinx docs by being inside of a collapsible section-->
+
+_________________
+
+**clipboard**
 
 Enables the `pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard()` and `pydna.dseqrecord.Dseqrecord.copy_fasta_to_clipboard()`
 
@@ -305,7 +311,9 @@ These methods will put a copy the sequence on the clipboard in either Genbank (g
 | --------------------------------------------------- | -------------------------- |
 | [pyperclip](https://pypi.python.org/pypi/pyperclip) | copy sequence to clipboard |
 
-### `download`
+_________________
+
+**download**
 
 Pyparsing enables the `pydna.genbankfixer.gbtext_clean()` function that can automatically
 correct malformed sequence files in Genbank format. These are often found online, so this
@@ -317,7 +325,9 @@ option also installs requests to enable the  `pydna.genbankfixer.download.downlo
 | [pyparsing](https://pypi.python.org/pypi/pyparsing) | fix corrupt Genbank files with pydna.genbankfixer |
 | [requests](https://pypi.org/project/requests)       | download sequences with pydna.download            |
 
-### `express`
+_________________
+
+**express**
 
 This option enables the `pydna.utils.cai()` function and the `cai()` method
 available from subclasses of `pydna.seqrecord.SeqRecord`, such as
@@ -325,7 +335,9 @@ available from subclasses of `pydna.seqrecord.SeqRecord`, such as
 
 | [cai2](https://pypi.python.org/pypi/cai2)           | codon adaptation index calculations in several modules |
 
-### `gel`
+_________________
+
+**gel**
 
 Scipy, matplotlib and pillow (PIL) enable the generation of gel images. Numpy is also
 needed, but usually installed as a dependency of biopython.
@@ -336,6 +348,8 @@ needed, but usually installed as a dependency of biopython.
 | [scipy](https://www.scipy.org)                    | gel simulation with pydna.gel |
 | [matplotlib](http://matplotlib.org)               | “                             |
 | [pillow](https://github.com/python-pillow/Pillow) | “                             |
+
+_________________
 
 </details>
 
@@ -366,6 +380,8 @@ poetry add pydna --extras "clipboard download express gel"
 poetry remove pydna
 poetry add pydna --extras "express gel"
 ```
+
+<!-- docs/installation.rst-end -->
 
 ## Contributing and feedback 🛠️
 
@@ -484,6 +500,8 @@ poetry install --with docs
 sphinx-autobuild --watch src/ docs docs/_build/html
 
 ```
+
+More info about how to contribute to the documentation can be found [here](docs/README.md)
 
 ## Release process 🚀
 
