@@ -50,31 +50,33 @@ class _cas(ABC):
 class cas9(_cas):
     """docstring.
 
-         |----size----------|
+    .. code-block::
 
-         ---protospacer------
-                          -fst3
-         fst5             |-|
-         |--------------|
-                             PAM
-    5-NNGGAAGAGTAATACACTA-AAANGGNN-3
-      ||||||||||||||||||| ||||||||
-    3-NNCCTTCTCATTATGTGAT-TTTNCCNN-5
-        ||||||||||||||||| |||
-      5-GGAAGAGTAATACACTA-AAAg-u-a-a-g-g  Scaffold
-        ---gRNA spacer---    u-a
-                             u-a
-                             u-a
-                             u-a
-                             a-u
-                             g-u-g
-                            a    a
-                             g-c-a
-                             c-g
-                             u-a
-                             a-u
-                            g   a  tetraloop
-                             a-a
+            |----size----------|
+
+            ---protospacer------
+                            -fst3
+            fst5             |-|
+            |--------------|
+                                PAM
+        5-NNGGAAGAGTAATACACTA-AAANGGNN-3
+        ||||||||||||||||||| ||||||||
+        3-NNCCTTCTCATTATGTGAT-TTTNCCNN-5
+            ||||||||||||||||| |||
+        5-GGAAGAGTAATACACTA-AAAg-u-a-a-g-g  Scaffold
+            ---gRNA spacer---    u-a
+                                u-a
+                                u-a
+                                u-a
+                                a-u
+                                g-u-g
+                                a    a
+                                g-c-a
+                                c-g
+                                u-a
+                                a-u
+                                g   a  tetraloop
+                                a-a
     """
 
     scaffold = "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGG"
