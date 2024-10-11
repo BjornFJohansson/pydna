@@ -5,11 +5,10 @@ Pydna
 Welcome to pydna's documentation!
 ---------------------------------
 
-
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
-   :start-after: (https://github.com/BjornFJohansson/pydna/stargazers) |
-   :end-before: ## Acknowledgement
+   :start-after: <!-- docs/index.rst-start -->
+   :end-before: <!-- docs/index.rst-end -->
 
 
 .. toctree::

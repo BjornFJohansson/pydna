@@ -501,6 +501,8 @@ sphinx-autobuild --watch src/ docs docs/_build/html
 
 ```
 
+More info about how to contribute to the documentation can be found [here](docs/README.md)
+
 ## Release process 🚀
 
 See the [releases](https://github.com/BjornFJohansson/pydna/releases) for changes and releases.
