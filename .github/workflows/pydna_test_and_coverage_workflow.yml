@@ -2,11 +2,11 @@ name: Tests & Coverage
 on:
   push:
     branches:
-      - '**'
-      - '!master'   # excludes master branch
-      - '!testpypi' # excludes testpypi branch
+      - "**"
+      - "!master" # excludes master branch
+      - "!testpypi" # excludes testpypi branch
     tags-ignore:
-      - '*.*'
+      - "*.*"
   pull_request: {}
 jobs:
   build:
@@ -14,20 +14,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'macos-latest', 'windows-latest' ]
+        os: ["macos-latest", "windows-latest"]
         python-version: ["3.12", "3.11", "3.10", "3.9", "3.8"]
         include:
-        - os: ubuntu-latest
-          python-version: "3.8"
-          codecov: true
-        - os: ubuntu-latest
-          python-version: "3.9"
-        - os: ubuntu-latest
-          python-version: "3.10"
-        - os: ubuntu-latest
-          python-version: "3.11"
-        - os: ubuntu-latest
-          python-version: "3.12"
+          - os: ubuntu-latest
+            python-version: "3.8"
+            codecov: true
+          - os: ubuntu-latest
+            python-version: "3.9"
+          - os: ubuntu-latest
+            python-version: "3.10"
+          - os: ubuntu-latest
+            python-version: "3.11"
+          - os: ubuntu-latest
+            python-version: "3.12"
     defaults:
       run:
         shell: bash
@@ -50,7 +50,7 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
-           virtualenvs.prefer-active-python: true
+          virtualenvs.prefer-active-python: true
 
       - name: 🔩 list Poetry settings
         run: poetry config --list
@@ -66,6 +66,8 @@ jobs:
         if: (matrix.codecov)
         id: changed-files
         uses: tj-actions/changed-files@v45
+        with:
+          since_last_remote_commit: true
 
       - uses: actions/cache@v4
         if: (matrix.codecov)
@@ -79,10 +81,13 @@ jobs:
         run: poetry run pre-commit install --install-hooks
 
       - name: Run style checking via pre-commit
-        if: (matrix.codecov)
-        run: poetry run pre-commit run --files ${{ steps.changed-files.outputs.all_changed_files }}
-      # ======================================================
+        if: (matrix.codecov && steps.changed-files.outputs.all_changed_files)
+        run: |
+          echo "Changed files:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n'
+          poetry run pre-commit run --files ${{ steps.changed-files.outputs.all_changed_files }}
 
+      # ======================================================
       - name: 🔼 Upload coverage to Codecov
         if: (matrix.codecov)
         uses: codecov/codecov-action@v4
