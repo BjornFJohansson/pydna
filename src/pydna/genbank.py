@@ -16,6 +16,7 @@ from pydna.genbankrecord import GenbankRecord as _GenbankRecord
 from pydna.readers import read as _read
 
 from Bio import Entrez as _Entrez
+from typing import Literal as _Literal, Optional as _Optional
 import re as _re
 import os as _os
 import logging as _logging
@@ -26,7 +27,7 @@ _module_logger = _logging.getLogger("pydna." + __name__)
 # TODO http://httpbin.org/ use for testing?
 
 
-class Genbank(object):
+class Genbank:
     """Class to facilitate download from genbank. It is easier and
     quicker to use the :func:`pydna.genbank.genbank` function directly.
 
@@ -46,7 +47,12 @@ class Genbank(object):
     1
     """
 
-    def __init__(self, users_email: str, *args, tool="pydna", **kwargs):
+    def __init__(
+        self,
+        users_email: str,
+        *,
+        tool: str = "pydna",
+    ) -> None:
         if not _re.match(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}", users_email, _re.IGNORECASE):
             raise ValueError("email address {} is not valid.".format(users_email))
 
@@ -59,12 +65,18 @@ class Genbank(object):
         self.email = users_email
         self.tool = tool
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """This method returns a short representation containing the email used to initiate."""
         return "GenbankConnection({})".format(self.email)
 
     @_memorize("pydna.genbank.Genbank.nucleotide")
-    def nucleotide(self, item: str, seq_start=None, seq_stop=None, strand=1):
+    def nucleotide(
+        self,
+        item: str,
+        seq_start: _Optional[int] = None,
+        seq_stop: _Optional[int] = None,
+        strand: _Literal[1, 2] = 1,
+    ) -> _GenbankRecord:
         """This method downloads a genbank nuclotide record from genbank. This method is
         cached by default. This can be controlled by editing the **pydna_cached_funcs** environment
         variable. The best way to do this permanently is to edit the edit the
@@ -145,9 +157,6 @@ class Genbank(object):
         _Entrez.email = self.email
         _Entrez.tool = self.tool
 
-        seq_start = int(seq_start) if seq_start else None
-        seq_stop = int(seq_stop) if seq_stop else None
-
         _module_logger.info("Entrez.email  %s", self.email)
         text = _Entrez.efetch(
             db="nuccore",
@@ -164,7 +173,7 @@ class Genbank(object):
         return _GenbankRecord(_read(text), item=item, start=seq_start, stop=seq_stop, strand=strand)
 
 
-def genbank(accession: str = "CS570233.1", *args, **kwargs):
+def genbank(accession: str = "CS570233.1", *args, **kwargs) -> _GenbankRecord:
     """
     Download a genbank nuclotide record.
 

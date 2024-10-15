@@ -34,5 +34,30 @@ def test_tms():
         tm.Q5(primer)
 
 
+def test_tm_neb():
+    from pydna import tm
+    import requests
+    from unittest.mock import patch
+
+    primer = "AGTCTAGTCTGTGTAGTTTCGACTAGTCTATCG"
+
+    assert type(tm.tm_neb(primer)) is int
+
+    # Test invalid sequence
+    with pytest.raises(requests.exceptions.HTTPError) as excinfo:
+        tm.tm_neb("blah")
+
+    assert "[Errno 400]" in str(excinfo.value)
+
+    # Test server down
+    with patch("requests.get") as mock_get:
+        mock_get.side_effect = requests.exceptions.ConnectionError()
+
+        with pytest.raises(requests.exceptions.ConnectionError) as excinfo:
+            tm.tm_neb("blah")
+
+        assert "Could not connect to NEB API" in str(excinfo.value)
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])

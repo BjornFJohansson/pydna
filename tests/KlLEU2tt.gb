@@ -1,27 +1,30 @@
-LOCUS       KlLEU2tt                 557 bp ds-DNA     linear       24-NOV-2012
+LOCUS       KlLEU2tt                 557 bp    ds-DNA  linear   UNK 24-NOV-2012
 DEFINITION  .
-ACCESSION
-VERSION
-SOURCE      .
+ACCESSION   KlLEU2tt
+VERSION     KlLEU2tt
+KEYWORDS    .
+SOURCE
   ORGANISM  .
+            .
 COMMENT     >557bp
-COMMENT     ApEinfo:methylated:1
+            ApEinfo:methylated:1
+            pydna ldseguid=P9x63swJk1IpZaAg0ytfL-Bx1Oc 2024-06-11T18:53:23
 FEATURES             Location/Qualifiers
      terminator      1..557
-                     /label=KlLEU2tt
-                     /ApEinfo_fwdcolor=#f8a669
-                     /ApEinfo_revcolor=#acffcb
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="KlLEU2tt"
+                     /ApEinfo_fwdcolor="#f8a669"
+                     /ApEinfo_revcolor="#acffcb"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
 ORIGIN
-        1 AGAGTCTTTT GTAACGACCC CGTCTCCACC AACTTGGTAT GCTTGAAATC TCAAGGCCAT
-       61 TACACATTCA GTTATGTGAA CGAAAGGTCT TTATTTAACG TAGCATAAAC TAAATAATAC
-      121 AGGTTCCGGT TAGCCTGCAA TGTGTTAAAT CTAAAGGAGC ATACCCAAAA TGAACTGAAG
-      181 ACAAGGAAAT TTGCTTGTCC AGATGTGATT GAGCATTTGA ACGTTAATAA CATAACATTT
-      241 TTATACTTAA CTATAGAAAG ACTTGTATAA AAACTGGCAA ACGAGATATT CTGAATATTG
-      301 GTGCATATTT CAGGTAGAAA AGCTTACAAA ACAATCTAAT CATAATATTG AGATGAAGAG
-      361 AAAGATAAAA GAAAAAACGA TAAGTCAGAT GAGATTATGA TTGTACTTTG AAATCGAGGA
-      421 ACAAAGTATA TACGGTAGTA GTTCCCCGAG TTATAACGGG AGATCATGTA AATTGAGAAA
-      481 CCAGATAAAG ATTTGGTATG CACTCTAGCA AGAAAATAAA ATGATGAATC TATGATATAG
-      541 ATCACTTTTG TTCCAGC
+        1 agagtctttt gtaacgaccc cgtctccacc aacttggtat gcttgaaatc tcaaggccat
+       61 tacacattca gttatgtgaa cgaaaggtct ttatttaacg tagcataaac taaataatac
+      121 aggttccggt tagcctgcaa tgtgttaaat ctaaaggagc atacccaaaa tgaactgaag
+      181 acaaggaaat ttgcttgtcc agatgtgatt gagcatttga acgttaataa cataacattt
+      241 ttatacttaa ctatagaaag acttgtataa aaactggcaa acgagatatt ctgaatattg
+      301 gtgcatattt caggtagaaa agcttacaaa acaatctaat cataatattg agatgaagag
+      361 aaagataaaa gaaaaaacga taagtcagat gagattatga ttgtactttg aaatcgagga
+      421 acaaagtata tacggtagta gttccccgag ttataacggg agatcatgta aattgagaaa
+      481 ccagataaag atttggtatg cactctagca agaaaataaa atgatgaatc tatgatatag
+      541 atcacttttg ttccagc
 //

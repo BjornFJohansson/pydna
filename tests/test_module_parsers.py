@@ -7,6 +7,107 @@ test parse
 import pytest
 
 
+def test_extract_from_text():
+
+    text = """\
+            >a
+            aaaa
+            LOCUS
+            //
+            >b
+            bbbbbb
+            ID
+            //
+            """
+    from pydna.parsers import extract_from_text
+    seqs, gaps = extract_from_text(text)
+    assert seqs == ('>a\naaaa\n', 'LOCUS\n//', '>b\nbbbbbb\n', 'ID\n//')
+    assert [g.strip() for g in gaps] == ['', '', '', '', '']
+    text = """\
+    comment 0
+    LOCUS a
+    //
+    comment 1
+    LOCUS b
+    //
+    comment 2
+    >c
+    ccccc
+
+    comment 3
+    >ddd
+    dddddd
+    ID e
+    //
+    comment 4
+    """
+    seqs, gaps = extract_from_text(text)
+    assert seqs == ('LOCUS a\n//', 'LOCUS b\n//', '>c\nccccc', '>ddd\ndddddd\n', 'ID e\n//')
+    assert tuple(g.strip() for g in gaps) == ('comment 0', 'comment 1', 'comment 2', 'comment 3', '', 'comment 4')
+
+
+
+    from pydna.parsers import embl_gb_fasta
+
+    text =  """\
+            LOCUS       New_linear_DNA             2 bp    DNA     linear       29-MAR-2024
+            DEFINITION  .
+            ACCESSION
+            VERSION
+            SOURCE      .
+              ORGANISM  .
+            ORIGIN
+                    1 aa
+            //
+            LOCUS       New_circular_DNA           2 bp    DNA     circular     29-MAR-2024
+            DEFINITION  .
+            ACCESSION
+            VERSION
+            SOURCE      .
+              ORGANISM  .
+            ORIGIN
+                    1 aa
+            //
+            """
+
+    lin, crc = embl_gb_fasta(text)
+
+    assert lin.annotations.get("topology") == "linear"
+
+    assert crc.annotations.get("topology") == "circular"
+
+    text =  """\
+            >a
+            aaa
+            >c
+            ccc
+            >g
+            ggg
+            >t
+            ttt
+            """
+
+    a,c,t,g = embl_gb_fasta(text)
+
+    assert [x.annotations.get("topology") for x in (a,c,g,t)] == ['linear', 'linear', 'linear', 'linear']
+
+    text =  """\
+            >a circular
+            aaa
+            >c circular
+            ccc
+            >g circular
+            ggg
+            >t circular
+            ttt
+            """
+
+    a,c,t,g = embl_gb_fasta(text)
+
+    assert [x.annotations.get("topology") for x in (a,c,g,t)] == ['circular', 'circular', 'circular', 'circular']
+
+
+
 def test_parse1():
     from pydna.parsers import parse
     from pydna.readers import read
@@ -75,19 +176,16 @@ def test_parse1():
     assert result.circular == False
 
     seqs = parse("RefDataBjorn.fas")
-
     assert len(seqs) == 771
     assert list(set([len(a) for a in seqs])) == [901]
-    pAG25 = read("pAG25.gb")
 
+    pAG25 = read("pAG25.gb")
     assert pAG25.circular == True
 
     pCAPs = read("pCAPs.gb")
-
     assert pCAPs.circular == True
 
     pUC19 = read("pUC19.gb")
-
     assert pUC19.circular == True
 
     input = """
@@ -97,6 +195,8 @@ def test_parse1():
     //
     """
     result = parse(input).pop()
+    assert str(result.seq) == "AAA"
+
     input = """
     ID   name?      standard; circular DNA; UNK; 100 BP.
     XX
@@ -121,6 +221,7 @@ def test_parse1():
     //
     """
     result = parse(input).pop()
+    assert str(result.seq) == "A"*100
 
 
 def test_parse2():
@@ -144,10 +245,17 @@ def test_parse2():
 
 def test_parse_primers():
     from pydna.parsers import parse_primers
-
     data = str(">1\n" "aaaa\n" ">2\n" "cccc\n")
     parse_primers(data)
 
+    f0, r0 = parse_primers("""
+                             >ForwardPrimer
+                             gctactacacacgtactgactg
+
+                             >ReversePrimer
+                             tgtggttactgactctatcttg""")
+    assert str(f0.seq) == 'gctactacacacgtactgactg'
+    assert str(r0.seq) == 'tgtggttactgactctatcttg'
 
 def test_parse_error():
     from pydna.parsers import parse
@@ -156,7 +264,6 @@ def test_parse_error():
 LOCUS
 DATA_IS_NOT_A_SEQUENCE
 //"""
-    parse(data)
     assert parse(data) == []
 
 
@@ -165,12 +272,12 @@ def test_parse_list():
 
     data = str(">1\n" "aaaa\n" ">2\n" "cccc\n")
 
-    parse_primers([data, data])
+    assert [str(x.seq) for x in parse_primers([data, data])] == ['aaaa', 'cccc', 'aaaa', 'cccc']
 
 
 def test_misc_parse():
-    from pydna.parsers import parse
 
+    from pydna.parsers import parse
     from Bio.SeqIO import read as BPread
     from Bio.SeqIO import parse as BPparse
 
@@ -206,6 +313,56 @@ def test_dna2949():
     seqlist = parse("dna2943.gb", ds=True)
     assert len(seqlist) == 1
     assert seqlist[0].seguid() == "ldseguid=ScLoSddUf2c0GIAGpvIi33nLvFY"
+
+def proteins():
+    from pydna.parsers import embl_gb_fasta
+    proteins = """\
+    >pdb|3VQM|V Chain V, C-terminal peptide from Small heat shock protein StHsp14.0
+    VIKIE
+
+    LOCUS       3VQM_W                     5 aa            linear   SYN 08-NOV-2023
+    DEFINITION  Chain W, C-terminal peptide from Small heat shock protein
+                StHsp14.0.
+    ACCESSION   3VQM_W
+    VERSION     3VQM_W
+    DBSOURCE    pdb: molecule 3VQM, chain W, release Nov 8, 2023;
+                deposition: Mar 26, 2012;
+                class: CHAPERONE;
+                source: Mmdb_id: 100300, Pdb_id 1: 3VQM;
+                Exp. method: X-ray Diffraction.
+    KEYWORDS    .
+    SOURCE      synthetic construct
+      ORGANISM  synthetic construct
+                other sequences; artificial sequences.
+    REFERENCE   1  (residues 1 to 5)
+      AUTHORS   Hanazono,Y., Takeda,K., Yohda,M. and Miki,K.
+      TITLE     Structural studies on the oligomeric transition of a small heat
+                shock protein, StHsp14.0
+      JOURNAL   J Mol Biol 422 (1), 100-108 (2012)
+       PUBMED   22613762
+    REFERENCE   2  (residues 1 to 5)
+      AUTHORS   Hanazono,Y., Takeda,K. and Miki,K.
+      TITLE     Direct Submission
+      JOURNAL   Submitted (26-MAR-2012)
+    COMMENT     Small heat shock protein hsp14.0 of C-terminal deletion variant
+                with C-terminal peptide.
+    FEATURES             Location/Qualifiers
+         source          1..5
+                         /organism="synthetic construct"
+                         /db_xref="taxon:32630"
+    ORIGIN
+            1 vikie
+    //
+    """
+
+
+    fa, gb = embl_gb_fasta(proteins)
+
+    assert fa.annotations["molecule_type"] == "protein"
+    assert gb.annotations["molecule_type"] == "protein"
+
+    assert fa.annotations["topology"] == "linear"
+    assert gb.annotations["topology"] == "linear"
 
 
 if __name__ == "__main__":

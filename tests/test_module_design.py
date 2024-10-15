@@ -220,24 +220,24 @@ def test_primer_Design_with_linker():
     """test_primer_design"""
 
     b = Dseqrecord("agctactgactattaggggttattctgatcatctgatctactatctgactgtactgatcta")
-    l = Dseqrecord("AAATTTCCCGGG")
+    linker = Dseqrecord("AAATTTCCCGGG")
     c = Dseqrecord("tctgatctactatctgactgtactgatctattgacactgtgatcattctagtgtattactc")
 
-    frags = assembly_fragments((primer_design(b), l, primer_design(c)))
+    frags = assembly_fragments((primer_design(b), linker, primer_design(c)))
 
     asm1 = Assembly(frags)
 
-    assert asm1.assemble_linear()[0].seguid(), (b + l + c).seguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
+    assert asm1.assemble_linear()[0].seguid(), (b + linker + c).seguid() == "l95igKB8iKAKrvvqE9CYksyNx40"
 
-    frags = assembly_fragments((primer_design(b), l, primer_design(c), primer_design(b)))
+    frags = assembly_fragments((primer_design(b), linker, primer_design(c), primer_design(b)))
 
     b2 = pcr(frags[-1].forward_primer, frags[0].reverse_primer, b)
 
     asm2 = Assembly((b2, frags[1], frags[2]))
 
-    assert (b + l + c).looped().seguid() == asm2.assemble_circular()[0].seguid()
+    assert (b + linker + c).looped().seguid() == asm2.assemble_circular()[0].seguid()
 
-    assert (b + l + c).looped().seguid() == "cdseguid=LqQ1_uMp2AmEZ_L2I1_njIMkVDc"
+    assert (b + linker + c).looped().seguid() == "cdseguid=LqQ1_uMp2AmEZ_L2I1_njIMkVDc"
 
 
 def test_primer_Design_given_fw_primer():
@@ -275,7 +275,7 @@ def test_primer_Design_multiple_products():
     from pydna import _PydnaWarning
 
     with pytest.warns(_PydnaWarning):
-        a = primer_design(b)
+        primer_design(b)
 
 
 def test_circular_assembly_fragments():
@@ -307,6 +307,65 @@ def test_too_short_template():
 
     fragment = Dseqrecord("GCCACCATGG")
     assert primer_design(fragment) == Amplicon("")
+
+
+def test_get_tm_and_primer_from_above_and_below():
+    """Starting from higher and lower lengths gives the same value"""
+    from pydna.design import _design_primer
+    from pydna.tm import tm_default
+
+    for f in frags:
+        for temp in [40, 45, 50, 55]:
+            assert _design_primer(temp, f, 13, tm_default) == _design_primer(temp, f, 13, tm_default, 40)
+
+
+def test_use_estimate_function():
+    from pydna.design import primer_design
+    from pydna.tm import tm_default
+
+    def tm_alt_lower(*args):
+        return tm_default(*args) - 10
+
+    def tm_alt_upper(*args):
+        return tm_default(*args) + 10
+
+    for f in frags:
+        for temp in [40, 45, 50, 55]:
+            amp_lower_with_estimate = primer_design(
+                f, target_tm=temp, tm_func=tm_alt_lower, estimate_function=tm_default
+            )
+            amp_lower_no_estimate = primer_design(f, target_tm=temp, tm_func=tm_alt_lower)
+
+            assert amp_lower_with_estimate == amp_lower_no_estimate
+
+            amp_upper_with_estimate = primer_design(
+                f, target_tm=temp, tm_func=tm_alt_upper, estimate_function=tm_default
+            )
+            amp_upper_no_estimate = primer_design(f, target_tm=temp, tm_func=tm_alt_upper)
+
+            assert amp_upper_with_estimate == amp_upper_no_estimate
+
+
+def test_primer_design_correct_value():
+    from pydna.tm import tm_default
+
+    for original_target_tm in range(60, 65):
+        for frag in frags:
+            amp = primer_design(frag, target_tm=original_target_tm, limit=15)
+            fwd, rvs = amp.primers()
+            possible_fwd = [Primer(frag[0:i].seq) for i in range(15, 40)]
+            possible_rvs = [Primer(frag[-i:].reverse_complement().seq) for i in range(15, 40)]
+
+            # Finds the closest forward primer
+            fwd_diff = [abs(tm_default(f.seq) - original_target_tm) for f in possible_fwd]
+            correct_fwd = possible_fwd[fwd_diff.index(min(fwd_diff))]
+            assert str(fwd.seq) == str(correct_fwd.seq)
+
+            # Uses that primers Tm as the target Tm for the reverse primer
+            new_target_tm = tm_default(correct_fwd.seq)
+            rvs_diff = [abs(tm_default(f.seq) - new_target_tm) for f in possible_rvs]
+            correct_rvs = possible_rvs[rvs_diff.index(min(rvs_diff))]
+            assert str(rvs.seq) == str(correct_rvs.seq)
 
 
 if __name__ == "__main__":

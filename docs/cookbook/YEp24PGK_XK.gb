@@ -3,9 +3,10 @@ DEFINITION  description.
 ACCESSION   id
 VERSION     id
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I 2024-06-11T18:43:04
 FEATURES             Location/Qualifiers
      rep_origin      530..1690
                      /note="2 micron origin"

@@ -1,31 +1,32 @@
-LOCUS       3128bp__1               3128 bp ds-DNA     circular     25-JUL-2012
-DEFINITION  Primers lowgc_f lowgc_r
+LOCUS       3128bp__1               3128 bp    ds-DNA  circular UNK 25-JUL-2012
+DEFINITION  Primers lowgc_f lowgc_r.
 ACCESSION   3128bp 7pPxy/bQvs4+7CaOgiywQVzUFDc
 VERSION     3128bp 7pPxy/bQvs4+7CaOgiywQVzUFDc
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  . .
-COMMENT
+            .
 COMMENT     ApEinfo:methylated:1
+            pydna cdseguid=QgX5Kemmodj2J2eL57KdF-vtyFQ 2024-06-11T18:40:55
 FEATURES             Location/Qualifiers
-     rep_origin      757..757
-                     /direction="BOTH"
-                     /label=rep_origin
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+     rep_origin      757
+                     /direction=BOTH
+                     /label="rep_origin"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      gene            complement(1516..2376)
                      /gene="bla"
-                     /label=bla
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="bla"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      CDS             complement(1516..2376)
                      /product="beta-lactamase"
-                     /codon_start="1"
-                     /transl_table="11"
+                     /codon_start=1
+                     /transl_table=11
                      /db_xref="GI:2769263"
                      /db_xref="GOA:Q79DR3"
                      /db_xref="HSSP:P62593"
@@ -33,35 +34,31 @@ FEATURES             Location/Qualifiers
                      /db_xref="InterPro:IPR001466"
                      /db_xref="InterPro:IPR012338"
                      /db_xref="UniProtKB/TrEMBL:Q79DR3"
-                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGY
-                     I
-                     ELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEY
-                     S
-                     PVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDR
-                     W
-                     EPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRS
-                     A
-                     LPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGA
-                     S LIKHW"
+                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYI
+                     ELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEYS
+                     PVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRW
+                     EPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSA
+                     LPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGAS
+                     LIKHW"
                      /gene="bla"
                      /protein_id="CAA04868.1"
-                     /label=beta-lactamase
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="beta-lactamase"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      primer_bind     1..57
-                     /label=lowgc_f
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="lowgc_f"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      primer_bind     complement(3083..3128)
-                     /label=lowgc_r
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="lowgc_r"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
 ORIGIN
         1 tttcactagt tacttgtagt cgacgtgcca tctgtgcaga caaacgcatc aggatatccg
        61 gatttacctg aatcaattgg cgaaattttt tgtacgaaat ttcagccact tcacaggcgg

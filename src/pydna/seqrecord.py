@@ -18,7 +18,7 @@ nicer output in the IPython shell.
 from Bio.SeqFeature import SeqFeature as _SeqFeature
 from pydna._pretty import pretty_str as _pretty_str
 
-# from pydna.utils import seguid as _seg
+from pydna.seq import ProteinSeq as _ProteinSeq
 from pydna.common_sub_strings import common_sub_strings as _common_sub_strings
 
 from Bio.Data.CodonTable import TranslationError as _TranslationError
@@ -170,6 +170,11 @@ class SeqRecord(_SeqRecord):
             return False
         else:
             return True
+
+    def translate(self):
+        """docstring."""
+        p = super().translate()
+        return ProteinSeqRecord(_ProteinSeq(p.seq[:-1]))
 
     def add_colors_to_features_for_ape(self):
         """Assign colors to features.
@@ -672,6 +677,39 @@ class SeqRecord(_SeqRecord):
         with open(pth, "wb") as f:
             _pickle.dump(self, f, protocol=protocol)
         return _pretty_str(pth)
+
+
+class ProteinSeqRecord(SeqRecord):
+
+    def reverse_complement(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    rc = reverse_complement
+
+    def isorf(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    def gc(self):
+        raise NotImplementedError("Not defined for protein.")
+
+    def cai(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    def rarecodons(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    def startcodon(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    def stopcodon(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    def express(self, *args, **kwargs):
+        raise NotImplementedError("Not defined for protein.")
+
+    def __format__(self, format):
+        """docstring."""
+        return _pretty_str(_SeqRecord.__format__(self, format))
 
 
 if __name__ == "__main__":

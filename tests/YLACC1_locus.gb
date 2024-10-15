@@ -29,6 +29,7 @@ COMMENT     ##Genome-Assembly-Data-START##
             Genome Coverage        :: 645.0x
             Sequencing Technology  :: Oxford Nanopore MiniION; Illumina MiSeq
             ##Genome-Assembly-Data-END##
+            pydna ldseguid=5bi0XVRyqLKaSkRKDqs1bvxnHtQ 2024-06-11T18:43:02
 FEATURES             Location/Qualifiers
      source          1..7267
                      /organism="Yarrowia lipolytica"

@@ -14,6 +14,7 @@ from Bio.SeqUtils import gc_fraction as _GC
 
 import textwrap as _textwrap
 from pydna._pretty import pretty_str as _pretty_str
+import requests
 
 # See the documentation for Bio.SeqUtils.MeltingTemp for more details
 # The 10X Taq Buffer with (NH4)2SO4 is commercialized by companies like
@@ -327,6 +328,53 @@ def tmbresluc(primer: str, *args, primerc=500.0, saltc=50, **kwargs):
     tm = (dH / (1.9872 * _math.log(pri / 1600) + dS) + (16.6 * _math.log(saltc)) / _math.log(10)) - 273.15
 
     return tm
+
+
+def tm_neb(primer, conc=0.5, prodcode="q5-0"):
+    """Calculates a single primers melting temp from NEB.
+
+    Parameters
+    ----------
+    primer1 : str
+    conc : float
+    prodcode : str
+        find product codes on nebswebsite: https://tmapi.neb.com/docs/productcodes
+
+    Returns
+    -------
+    tm : int
+        primer melting temperature
+
+    """
+
+    url = "https://tmapi.neb.com/tm"
+
+    params = {"seq1": primer, "conc": conc, "prodcode": prodcode}
+
+    # Mimic a browser request with this headers
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Connection": "keep-alive",
+        "Referer": "https://example.com",
+    }
+
+    try:
+        res = requests.get(url, params=params, headers=headers)
+    except requests.exceptions.ConnectionError as e:
+        raise requests.exceptions.ConnectionError("Could not connect to NEB API.") from e
+    if res.status_code != 200:
+        if "error" in res.json():
+            raise requests.exceptions.HTTPError(res.status_code, res.json()["error"])
+        else:
+            raise requests.exceptions.HTTPError(res.status_code, res.text)  # pragma: no cover
+    r = res.json()
+    if r["success"]:
+        return r["data"]["tm1"]
+    else:
+        raise requests.exceptions.HTTPError(r["error"])
 
 
 if __name__ == "__main__":

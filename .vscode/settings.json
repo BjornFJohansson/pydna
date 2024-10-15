@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true,
+        "**/__pycache__": true
+    },
+    // Set flake8 path
+    "flake8.path": [".venv/bin/flake8"],
+    "black-formatter.path": [".venv/bin/black"],
+    "python.defaultInterpreterPath": ".venv/bin/python",
+}

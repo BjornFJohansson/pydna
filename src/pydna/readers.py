@@ -38,12 +38,15 @@ def read(data, ds=True):
 
     """
 
-    results = _parse(data, ds)
     try:
-        results = results.pop()
-    except IndexError:
-        raise ValueError(f"No sequences found in data:\n({str(data)[:79]})")
-    return results
+        (result,) = _parse(data, ds)
+    except ValueError as err:
+        if "too many" in str(err):
+            print(f"More than one sequence found in data:\n({str(data)[:79]})")
+        elif "not enough" in str(err):
+            print(f"No sequence found in data:\n({str(data)[:79]})")
+        raise
+    return result
 
 
 def read_primer(data):

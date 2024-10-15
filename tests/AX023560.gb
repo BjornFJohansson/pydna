@@ -10,8 +10,8 @@ REFERENCE   1
   AUTHORS   Barth,G., Juretzek,T. and Mauersberger,S.
   TITLE     Recombinant haploid or diploid yarrowia lipolytica cells for the
             functional heterologous expression of cytochrome p450 systems
-  JOURNAL   Patent: WO 0003008-A2 15 20-JAN-2000;
-            UNIV DRESDEN TECH (DE)
+  JOURNAL   Patent: WO 0003008-A2 15 20-JAN-2000; UNIV DRESDEN TECH (DE)
+COMMENT     pydna ldseguid=lK2adN3XneMRstV7IbyXuM9lXrM 2024-06-11T18:53:23
 FEATURES             Location/Qualifiers
      source          1..8601
                      /organism="synthetic construct"
@@ -19,8 +19,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="taxon:32630"
      promoter        8094..8600
                      /note="Promotor des GAL10-Gens aus Saccharomyces
-                     cerevisiae;
-                     ringf rmig geschlossene DNA aus Saccharomyces
+                     cerevisiae; ringf rmig geschlossene DNA aus Saccharomyces
                      cerevisiae/E. coli auf der Basis des 2 -Plasmid yEP51.
                      Plasmid yEP5117a"
 ORIGIN

@@ -3,9 +3,10 @@ DEFINITION  .
 ACCESSION   <unknown id>
 VERSION     <unknown id>
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=Rszaoc76OKSdw6Q78zj2RZzmR0I 2024-06-11T18:43:04
 FEATURES             Location/Qualifiers
      rep_origin      530..1690
                      /note="2 micron origin"
@@ -13,8 +14,8 @@ FEATURES             Location/Qualifiers
                      /gene="URA3"
      CDS             2507..3310
                      /product="URA3"
-                     /codon_start="1"
-                     /transl_table="11"
+                     /codon_start=1
+                     /transl_table=11
                      /db_xref="GI:448967491"
                      /translation="MSKATYKERAATHPSPVAAKLFNIMHEKQTNLCASLDVRTTKELL
                      ELVEALGPKICLLKTHVDILTDFSMEGTVKPLKALSAKYNFLLFEDRKFADIGNTVKLQ
@@ -31,8 +32,8 @@ FEATURES             Location/Qualifiers
                      /gene="tet"
      CDS             7178..8368
                      /product="tetracyclin resistance protein"
-                     /codon_start="1"
-                     /transl_table="11"
+                     /codon_start=1
+                     /transl_table=11
                      /note="pBR322 marker"
                      /db_xref="GI:448967489"
                      /translation="MKSNNALIVILGTVTLDAVGIGLVMPVLPGLLRDIVHSDSIASHY
@@ -48,8 +49,8 @@ FEATURES             Location/Qualifiers
                      /gene="bla"
      CDS             complement(10387..11247)
                      /product="beta-lactamase"
-                     /codon_start="1"
-                     /transl_table="11"
+                     /codon_start=1
+                     /transl_table=11
                      /note="ampicillin resistance protein"
                      /db_xref="GI:448967490"
                      /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYI

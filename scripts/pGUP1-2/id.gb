@@ -1,11 +1,12 @@
-LOCUS       name                    9981 bp    DNA              UNK 01-JAN-1980
+LOCUS       name                    9981 bp    DNA     linear   UNK 01-JAN-1980
 DEFINITION  description.
 ACCESSION   id
 VERSION     id
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna ldseguid=b2DEChNCkwy9dW0AnoEgNyJBVyo 2024-06-11T18:43:13
 FEATURES             Location/Qualifiers
      misc_feature    40..483
                      /label="GAL1p"

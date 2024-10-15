@@ -3,9 +3,10 @@ DEFINITION  description.
 ACCESSION   id
 VERSION     id
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna ldseguid=ScLoSddUf2c0GIAGpvIi33nLvFY 2024-06-11T18:40:49
 FEATURES             Location/Qualifiers
 ORIGIN
         1 atcggaagac aacggaggta gtggtggcgg aggtagtatg gaaaagcatt tgcccttgat

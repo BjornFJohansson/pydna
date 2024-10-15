@@ -1,12 +1,13 @@
 LOCUS       na                     13267 bp    DNA     circular UNK 03-JUN-2015
-DEFINITION  cSEGUID_yljyOOnc6_A44a08BJ3D0AKiBfk_2015-06-03T16:31:35.142760
+DEFINITION  cSEGUID_yljyOOnc6_A44a08BJ3D0AKiBfk_2015-06-03T16:31:35.142760.
 ACCESSION   -
 VERSION     -
-DBLINK      BioProject:PRJNA43747
+DBLINK      BioProject: PRJNA43747
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=yaHeF7laGhmHj-xDD4hp_l9qtFw 2024-06-11T18:53:13
 FEATURES             Location/Qualifiers
      overlap         363..486
                      /note="olp_GqXRnFdj0bUssSD9FyJPEMLnbh0"

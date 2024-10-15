@@ -3,9 +3,10 @@ DEFINITION  .
 ACCESSION   <unknown id>
 VERSION     <unknown id>
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=c48cBUb3wF-Sdhzh0Tlprp-0CEg 2024-06-11T18:43:06
 FEATURES             Location/Qualifiers
      primer_bind     433..456
                      /note="167_pCAPSfw"
@@ -84,7 +85,7 @@ FEATURES             Location/Qualifiers
                      /note="GIN11 gene; complete sequence, homology to X element
                      of telomere ARS"
                      /gene="GIN11"
-                     /citation="[1]"
+                     /citation=[1]
                      /experiment="experimental evidence, no additional details
                      recorded"
                      /phenotype="growth inhibitory effect when overexpressed"
@@ -107,9 +108,9 @@ FEATURES             Location/Qualifiers
                      /label="ura3"
      CDS             complement(6861..7664)
                      /product="orotidine-5'-phosphate decarboxylase"
-                     /codon_start="1"
+                     /codon_start=1
                      /label="orotidine-5'-phosphate decarboxylase"
-                     /transl_table="11"
+                     /transl_table=11
                      /db_xref="GI:84570490"
                      /translation="MSKATYKERAATHPSPVAAKLFNIMHEKQTNLCASLDVRTTKELL
                      ELVEALGPKICLLKTHVDILTDFSMEGTVKPLKALSAKYNFLLFEDRKFADIGNTVKLQ

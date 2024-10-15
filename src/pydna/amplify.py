@@ -17,7 +17,7 @@ from pydna._pretty import pretty_str as _pretty_str
 from pydna.utils import flatten as _flatten
 
 # from pydna.utils import memorize as _memorize
-from pydna.utils import rc as _rc
+from pydna.utils import rc as _rc, shift_feature as _shift_feature
 from pydna.amplicon import Amplicon as _Amplicon
 from pydna.primer import Primer as _Primer
 from pydna.seqrecord import SeqRecord as _SeqRecord
@@ -351,6 +351,8 @@ class Anneal(object):  # ), metaclass=_Memoize):
                     feats = self.template[
                         fp.position - fp._fp : rp.position + rp._fp
                     ].features  # Save features covered by primers
+                    shift_amount = len(fp.tail)
+                    feats = [_shift_feature(f, shift_amount, None) for f in feats]
                     tpl = self.template
                 else:
                     continue
@@ -429,7 +431,7 @@ class Anneal(object):  # ), metaclass=_Memoize):
     report = __str__
 
 
-def pcr(*args, **kwargs):
+def pcr(*args, **kwargs) -> _Amplicon:
     """pcr is a convenience function for the Anneal class to simplify its
     usage, especially from the command line. If more than one or no PCR
     product is formed, a ValueError is raised.
@@ -521,7 +523,7 @@ tatcgactgtatcatctgatagcac")
         return anneal_primers.products[0]
     elif len(anneal_primers.products) == 0:
         raise ValueError(f"No PCR product! {anneal_primers.report()}")
-    raise ValueError("PCR not specific! {format(anneal_primers.report()}")
+    raise ValueError(f"PCR not specific! {format(anneal_primers.report())}")
 
 
 if __name__ == "__main__":

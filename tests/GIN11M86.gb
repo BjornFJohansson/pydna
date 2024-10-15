@@ -19,12 +19,13 @@ REFERENCE   2  (bases 1 to 860)
   AUTHORS   Akada,R.
   TITLE     Direct Submission
   JOURNAL   Submitted (02-FEB-1994) Rinji Akada, Faculty of Engineering,
-            Yamaguchi University, Dept. of Applied Chem. and Chemical Eng.;
-            2557 Tokiwadai, Ube, Yamaguchi 755, Japan
+            Yamaguchi University, Dept. of Applied Chem. and Chemical Eng.; 2557
+            Tokiwadai, Ube, Yamaguchi 755, Japan
             (E-mail:rinji@po.cc.yamaguchi-u.ac.jp, Tel:81-836-35-9932,
             Fax:81-836-35-9933)
 COMMENT     On Apr 23, 1999 this sequence version replaced gi:457579.
             Sequence updated (20-Apr-1999).
+            pydna ldseguid=7AaBcuMevA0H8IU0VqN3CFaAY0E 2024-06-11T18:53:23
 FEATURES             Location/Qualifiers
      source          1..860
                      /organism="Saccharomyces cerevisiae"
@@ -39,8 +40,8 @@ FEATURES             Location/Qualifiers
                      /gene="GIN11"
                      /experiment="experimental evidence, no additional details
                      recorded"
-                     /note="GIN11 gene; complete sequence, homology to X
-                     element of telomere ARS"
+                     /note="GIN11 gene; complete sequence, homology to X element
+                     of telomere ARS"
                      /citation=[1]
                      /phenotype="growth inhibitory effect when overexpressed"
      misc_feature    433..444
@@ -54,7 +55,7 @@ ORIGIN
       241 acttttaaaa ataagattgc agatcagggc aaaacaagta gcaaatcata gcaagagacc
       301 ctgatttttg tgacataaat atttttactt ctgtgttagg ttaacttttt atgtaactgt
       361 aaatggaata gagttgaggg gatagtgccc acaagtcaat atgtttattt tgtaaagttg
-      421 aaagataatt atttttatgC tCaggtgatt ttggtgttga attttctgta atattaacat
+      421 aaagataatt atttttatgc tcaggtgatt ttggtgttga attttctgta atattaacat
       481 aagagtaata cattgagtgg ttagtatatg gtgtaaaagt ggtataacgc atgtattaag
       541 agcagttata caatatttgg ggccgctgaa tgagatatag atattaaaat gtggataatc
       601 atgggcttta tgggtaaatg gaacagggta tagaccactg aggcaagtgc cgtgcataat

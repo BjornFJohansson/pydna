@@ -1,7 +1,7 @@
-LOCUS       pUC19                   2686 bp    DNA     circular     18-OCT-2007
+LOCUS       pUC19                   2686 bp    DNA     circular UNK 18-OCT-2007
 DEFINITION  Cloning vector pUC19, complete sequence.
-ACCESSION
-VERSION
+ACCESSION   pUC19
+VERSION     pUC19
 KEYWORDS    .
 SOURCE      Cloning vector pUC19
   ORGANISM  Cloning vector pUC19
@@ -12,6 +12,7 @@ REFERENCE   1  (bases 1 to 2686)
   JOURNAL   Submitted (18-OCT-2007) Research Department, New England Biolabs,
             240 County Road, Ipswich, MA 01938, USA
 COMMENT     See also GenBank accession L09137.
+            pydna cdseguid=mCC0B3UMZfgLyh3Pl574MVjm30U 2024-06-11T18:40:55
 FEATURES             Location/Qualifiers
      source          1..2686
                      /organism="Cloning vector pUC19"
@@ -22,18 +23,18 @@ FEATURES             Location/Qualifiers
                      /gene="lacZalpha"
                      /codon_start=1
                      /product="beta-galactosidase alpha fragment"
-                     /translation="MTMITPSLHACRSTLEDPRVPSSNSLAVVLQRRDWENPGVTQLN
-                     RLAAHPPFASWRNSEEARTDRPSQQLRSLNGEWRLMRYFLLTHLCGISHRIWCTLSTI
-                     CSDAA"
+                     /translation="MTMITPSLHACRSTLEDPRVPSSNSLAVVLQRRDWENPGVTQLNR
+                     LAAHPPFASWRNSEEARTDRPSQQLRSLNGEWRLMRYFLLTHLCGISHRIWCTLSTICS
+                     DAA"
      misc_feature    396..452
                      /gene="lacZalpha"
                      /note="multiple cloning site (EcoRI-HindIII)"
      -10_signal      complement(514..519)
-                     /note="Plac promoter (drives lacZalpha;
-                     counter-clockwise); TATGTT"
+                     /note="Plac promoter (drives lacZalpha; counter-clockwise);
+                     TATGTT"
      -35_signal      complement(538..543)
-                     /note="Plac promoter (drives lacZalpha;
-                     counter-clockwise); TTTACA"
+                     /note="Plac promoter (drives lacZalpha; counter-clockwise);
+                     TTTACA"
      protein_bind    complement(563..575)
                      /note="CAP protein binding site"
                      /bound_moiety="catabolite activator protein (CAP)"
@@ -59,21 +60,20 @@ FEATURES             Location/Qualifiers
                      /note="ampR (confers resistance to ampicillin)"
                      /codon_start=1
                      /product="beta-lactamase"
-                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGY
-                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVE
-                     YSPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRL
-                     DRWEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPL
-                     LRSALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIA
-                     EIGASLIKHW"
+                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYI
+                     ELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEYS
+                     PVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRW
+                     EPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSA
+                     LPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGAS
+                     LIKHW"
      sig_peptide     complement(2418..2486)
                      /gene="bla"
-                     /note="required for secretion to the periplasm; cleaved
-                     off to form the mature beta-lactamase protein."
+                     /note="required for secretion to the periplasm; cleaved off
+                     to form the mature beta-lactamase protein."
      -10_signal      complement(2530..2535)
                      /note="bla promoter (counter-clockwise); GAGACA"
      -35_signal      complement(2551..2556)
                      /note="bla promoter (counter-clockwise); TTCAAA"
-BASE COUNT      667 a    675 c    685 g    659 t
 ORIGIN
         1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
        61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg

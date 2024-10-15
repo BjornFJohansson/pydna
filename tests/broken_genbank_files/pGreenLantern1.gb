@@ -1,11 +1,12 @@
 LOCUS       pGreenLantern1          5032 bp    DNA     circular UNK 21-NOV-2016
-DEFINITION  @
+DEFINITION  @.
 ACCESSION   -
 VERSION     -
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=6aQYj1jGyCAyzAoQf2dyXZIpxlA 2024-06-11T18:53:12
 FEATURES             Location/Qualifiers
      source          4314..5030
                      /db_xref="taxon:32630"

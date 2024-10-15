@@ -6,7 +6,7 @@ KEYWORDS    .
 SOURCE      Cloning vector pWSK29
   ORGANISM  Cloning vector pWSK29
             other sequences; artificial sequences; vectors.
-REFERENCE   1  (sites)
+REFERENCE   1
   AUTHORS   Wang,R.F. and Kushner,S.R.
   TITLE     Construction of versatile low-copy-number vectors for cloning,
             sequencing and gene expression in Escherichia coli
@@ -17,6 +17,7 @@ REFERENCE   2  (bases 1 to 5434)
   TITLE     Direct Submission
   JOURNAL   Submitted (01-AUG-1997) Genetics, University of Georgia, Life
             Sciences Bldg., Athens, GA 30602, USA
+COMMENT     pydna cdseguid=nRF3y2ySM5lxRpoQ9P6nWBC5JvI 2024-06-11T18:53:17
 FEATURES             Location/Qualifiers
      source          1..5434
                      /organism="Cloning vector pWSK29"
@@ -34,12 +35,12 @@ FEATURES             Location/Qualifiers
                      /product="beta-lactamase"
                      /protein_id="AAB81041.1"
                      /db_xref="GI:2522427"
-                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGY
-                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVE
-                     YSPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRL
-                     DRWEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPL
-                     LRSALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIA
-                     EIGASLIKHW"
+                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYI
+                     ELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEYS
+                     PVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRW
+                     EPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSA
+                     LPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGAS
+                     LIKHW"
      misc_difference 519
                      /note="pBluescript II SK(+)"
                      /replace="a"
@@ -63,12 +64,12 @@ FEATURES             Location/Qualifiers
                      /product="replication initiation protein"
                      /protein_id="AAB81042.1"
                      /db_xref="GI:2522428"
-                     /translation="MSELVVFKANELAISRYDLTEHETKLILCCVALLNPTIENPTRK
-                     ERTVSFTYNQYAQMMNISRENAYGVLAKATRELMTRTVEIRNPLVKGFEIFQWTNYAK
-                     FSSEKLELVFSEEILPYLFQLKKFIKYNLEHVKSFENKYSMRIYEWLLKELTQKKTHK
-                     ANIEISLDEFKFMLMLENNYHEFKRLNQWVLKPISKDLNTYSNMKLVVDKRGRPTDTL
-                     IFQVELDRQMDLVTELENNQIKMNGDKIPTTITSDSYLHNGLRKTLHDALTAKIQLTS
-                     FEAKFLSDMQSKYDLNGSFSWLTQKQRTTLENILAKYGRI"
+                     /translation="MSELVVFKANELAISRYDLTEHETKLILCCVALLNPTIENPTRKE
+                     RTVSFTYNQYAQMMNISRENAYGVLAKATRELMTRTVEIRNPLVKGFEIFQWTNYAKFS
+                     SEKLELVFSEEILPYLFQLKKFIKYNLEHVKSFENKYSMRIYEWLLKELTQKKTHKANI
+                     EISLDEFKFMLMLENNYHEFKRLNQWVLKPISKDLNTYSNMKLVVDKRGRPTDTLIFQV
+                     ELDRQMDLVTELENNQIKMNGDKIPTTITSDSYLHNGLRKTLHDALTAKIQLTSFEAKF
+                     LSDMQSKYDLNGSFSWLTQKQRTTLENILAKYGRI"
      misc_difference 4376
                      /note="pSC101"
                      /replace="g"
@@ -87,7 +88,7 @@ FEATURES             Location/Qualifiers
      misc_feature    5271..5431
                      /note="originates from pLG339; contains portion of tn903
                      (kanamycin resistance transposon)"
-ORIGIN      
+ORIGIN
         1 tctgacgctc agtggaacga aaactcacgt taagggattt tggtcatgag attatcaaaa
        61 aggatcttca cctagatcct tttaaattaa aaatgaagtt ttaaatcaat ctaaagtata
       121 tatgagtaaa cttggtctga cagttaccaa tgcttaatca gtgaggcacc tatctcagcg

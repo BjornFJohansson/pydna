@@ -1,5 +1,5 @@
 LOCUS       AJ001614_1              3128 bp    DNA     circular UNK 10-JUL-2012
-DEFINITION  Escherichia coli plasmid pCAPs with AjiI
+DEFINITION  Escherichia coli plasmid pCAPs with AjiI.
 ACCESSION   AJ001614
 VERSION     AJ001614.1  GI:2769261
 KEYWORDS    ampicillin resistance; beta-lactamase; bla gene; catabolite gene
@@ -20,17 +20,17 @@ REFERENCE   2  (bases 1 to 3128)
   TITLE     Direct Submission
   JOURNAL   Submitted (15-SEP-1997) Schlieper D., Institute of Genetics,
             University of Cologne, Weyertal 121, Cologne, 50931, GERMANY
-COMMENT
-            ApEinfo:methylated:1
+COMMENT     ApEinfo:methylated:1
+            pydna cdseguid=IFLMpKpCGZio0R0YkGSfqPaKKiw 2024-06-11T18:40:55
 FEATURES             Location/Qualifiers
      gene            complement(315..947)
                      /gene="crp"
                      /label="crp"
      CDS             complement(315..947)
                      /product="catabolite gene activator protein"
-                     /codon_start="1"
+                     /codon_start=1
                      /label="catabolite gene activator protein"
-                     /transl_table="11"
+                     /transl_table=11
                      /note="artificially mutated crp; cyclic AMP receptor
                      protein"
                      /db_xref="GI:2769262"
@@ -43,16 +43,16 @@ FEATURES             Location/Qualifiers
                      /gene="crp"
                      /protein_id="CAA04867.1"
      rep_origin      1313
-                     /direction="BOTH"
+                     /direction=BOTH
                      /label="rep_origin"
      gene            complement(2072..2932)
                      /gene="bla"
                      /label="bla"
      CDS             complement(2072..2932)
                      /product="beta-lactamase"
-                     /codon_start="1"
+                     /codon_start=1
                      /label="beta-lactamase"
-                     /transl_table="11"
+                     /transl_table=11
                      /db_xref="GI:2769263"
                      /db_xref="GOA:Q79DR3"
                      /db_xref="HSSP:P62593"

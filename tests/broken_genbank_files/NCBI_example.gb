@@ -7,8 +7,8 @@ KEYWORDS    MGC.
 SOURCE      Danio rerio (zebrafish)
   ORGANISM  Danio rerio
             Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
-            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
-            Cypriniformes; Cyprinidae; Danio.
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi; Cypriniformes;
+            Cyprinidae; Danio.
 REFERENCE   1  (bases 1 to 1466)
   AUTHORS   Strausberg,R.L., Feingold,E.A., Grouse,L.H., Derge,J.G.,
             Klausner,R.D., Collins,F.S., Wagner,L., Shenmen,C.M., Schuler,G.D.,
@@ -18,16 +18,16 @@ REFERENCE   1  (bases 1 to 1466)
             Stapleton,M., Soares,M.B., Bonaldo,M.F., Casavant,T.L.,
             Scheetz,T.E., Brownstein,M.J., Usdin,T.B., Toshiyuki,S.,
             Carninci,P., Prange,C., Raha,S.S., Loquellano,N.A., Peters,G.J.,
-            Abramson,R.D., Mullahy,S.J., Bosak,S.A., McEwan,P.J.,
-            McKernan,K.J., Malek,J.A., Gunaratne,P.H., Richards,S.,
-            Worley,K.C., Hale,S., Garcia,A.M., Gay,L.J., Hulyk,S.W.,
-            Villalon,D.K., Muzny,D.M., Sodergren,E.J., Lu,X., Gibbs,R.A.,
-            Fahey,J., Helton,E., Ketteman,M., Madan,A., Rodrigues,S.,
-            Sanchez,A., Whiting,M., Madan,A., Young,A.C., Shevchenko,Y.,
-            Bouffard,G.G., Blakesley,R.W., Touchman,J.W., Green,E.D.,
-            Dickson,M.C., Rodriguez,A.C., Grimwood,J., Schmutz,J., Myers,R.M.,
-            Butterfield,Y.S., Krzywinski,M.I., Skalska,U., Smailus,D.E.,
-            Schnerch,A., Schein,J.E., Jones,S.J. and Marra,M.A.
+            Abramson,R.D., Mullahy,S.J., Bosak,S.A., McEwan,P.J., McKernan,K.J.,
+            Malek,J.A., Gunaratne,P.H., Richards,S., Worley,K.C., Hale,S.,
+            Garcia,A.M., Gay,L.J., Hulyk,S.W., Villalon,D.K., Muzny,D.M.,
+            Sodergren,E.J., Lu,X., Gibbs,R.A., Fahey,J., Helton,E., Ketteman,M.,
+            Madan,A., Rodrigues,S., Sanchez,A., Whiting,M., Madan,A.,
+            Young,A.C., Shevchenko,Y., Bouffard,G.G., Blakesley,R.W.,
+            Touchman,J.W., Green,E.D., Dickson,M.C., Rodriguez,A.C.,
+            Grimwood,J., Schmutz,J., Myers,R.M., Butterfield,Y.S.,
+            Krzywinski,M.I., Skalska,U., Smailus,D.E., Schnerch,A., Schein,J.E.,
+            Jones,S.J. and Marra,M.A.
   CONSRTM   Mammalian Gene Collection Program Team
   TITLE     Generation and initial analysis of more than 15,000 full-length
             human and mouse cDNA sequences
@@ -50,12 +50,12 @@ COMMENT     Contact: MGC help desk
             Contact:  (Dickson, Mark) mcd@paxil.stanford.edu
             Dickson, M., Schmutz, J., Grimwood, J., Rodriquez, A., and Myers,
             R. M.
-
             Clone distribution: MGC clone distribution information can be found
             through the I.M.A.G.E. Consortium/LLNL at: http://image.llnl.gov
             Series: IRAK Plate: 165 Row: c Column: 3
             This clone was selected for full length sequencing because it
             passed the following selection criteria: matched mRNA gi: 37748472.
+            pydna ldseguid=_GHnVotdYSxAKX2bAUIa10ZZDhE 2024-06-11T18:40:52
 FEATURES             Location/Qualifiers
      source          1..1466
                      /organism="Danio rerio"
@@ -88,9 +88,9 @@ FEATURES             Location/Qualifiers
                      /db_xref="GI:46329548"
                      /db_xref="GeneID:336121"
                      /db_xref="ZFIN:ZDB-GENE-030804-3"
-                     /translation="MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNP
-                     TEAELQDMINEVDADGNGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYIS
-                     AAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTAK"
+                     /translation="MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPT
+                     EAELQDMINEVDADGNGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAA
+                     ELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTAK"
 ORIGIN
         1 gtggactgtt gttctgtgtg gaaatacatc tgctaaaaca gcgcgatggc tgaccagttg
        61 acagaagagc agatcgccga attcaaagag gctttctcac tctttgataa agacggtgat

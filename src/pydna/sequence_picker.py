@@ -18,7 +18,7 @@ email = _os.getenv("pydna_email")
 tool = "pydna"
 
 
-def genbank_accession(s: str):
+def genbank_accession(s: str) -> Dseqrecord:
     """docstring."""
     s = Dseqrecord(s)
 

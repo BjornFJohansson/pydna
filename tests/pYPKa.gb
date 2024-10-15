@@ -1,12 +1,13 @@
 LOCUS       pYPKa                   3128 bp    DNA     circular UNK 08-MAY-2015
 DEFINITION  Product_568_pCAPsAjiIR (22-mer)_567_pCAPsAjiIF (23-mer)
-            cSEGUID_aV1eIrzOiCjvw01yvKkxDXHKLMk_2015-05-08T16:41:28.034624
+            cSEGUID_aV1eIrzOiCjvw01yvKkxDXHKLMk_2015-05-08T16:41:28.034624.
 ACCESSION   3128bp TmU_6uVdgKq5aQhTpHux7dVk9J8
 VERSION     3128bp TmU_6uVdgKq5aQhTpHux7dVk9J8
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=IFLMpKpCGZio0R0YkGSfqPaKKiw 2024-06-11T18:53:36
 FEATURES             Location/Qualifiers
      primer_bind     complement(558..578)
                      /note="567_pCAPsAjiIF"
