@@ -1516,7 +1516,7 @@ class Dseq(_Seq):
         return True
 
     def get_cutsites(self: DseqType, *enzymes: EnzymesType) -> _List[CutSiteType]:
-        """Returns a list of cutsites, represented represented as `((cut_watson, ovhg), enz)`:
+        """Returns a list of cutsites, represented as `((cut_watson, ovhg), enz)`:
 
         - `cut_watson` is a positive integer contained in `[0,len(seq))`, where `seq` is the sequence
           that will be cut. It represents the position of the cut on the watson strand, using the full
