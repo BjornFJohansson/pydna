@@ -22,8 +22,15 @@ def test_user():
     """
     )
 
-    user = USER()
-    assert a.cut(user)[1] == result_a
+    print(result_a)
+
+    us = USER(size=4)
+    print(us.products(a)[0])
+    assert us.products(a)[0] == result_a
+
+
+def test_many_user_sites():
+    pass
 
 
 if __name__ == "__main__":
