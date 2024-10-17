@@ -87,6 +87,7 @@ class USER:
         #       or should we just return the first cut site? -> Match
         #       >>> Dseq("CGTCGCuCACACGT")
         #
+        self.ovhgs = list()
         results = list()
         for forward in [True, False]:
             # Not using watson and crick, because the cut coordinates are with respect to the
