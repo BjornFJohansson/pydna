@@ -87,6 +87,8 @@ class USER:
         #       or should we just return the first cut site? -> Match
         #       >>> Dseq("CGTCGCuCACACGT")
         #
+
+        # Clear overhangs every time the search function is called
         self.ovhgs = list()
         results = list()
         for forward in [True, False]:
