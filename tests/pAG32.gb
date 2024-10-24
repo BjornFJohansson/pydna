@@ -1,48 +1,49 @@
-LOCUS       pAG32                   4160 bp ds-DNA     circular     26-NOV-2012
-DEFINITION
+LOCUS       pAG32                   4160 bp    ds-DNA  circular UNK 26-NOV-2012
+DEFINITION  .
 ACCESSION   pAG32
 VERSION     pAG32
 KEYWORDS    .
 SOURCE      Unknown
   ORGANISM  Unknown Unclassified. . . .
+            .
 REFERENCE   1  (bases 1 to 4160)
   AUTHORS   Self
   JOURNAL   Unpublished.
-COMMENT
 COMMENT     ApEinfo:methylated:1
+            pydna cdseguid=0RLCd_8WmkRtWyxPzLlpKNOc8tk 2024-06-11T18:53:30
 FEATURES             Location/Qualifiers
      misc_feature    91..458
                      /product="TEF-PRO"
                      /gene="TEF-PRO"
-                     /label=TEF-PRO
-                     /ApEinfo_fwdcolor=#00ff69
-                     /ApEinfo_revcolor=green
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="TEF-PRO"
+                     /ApEinfo_fwdcolor="#00ff69"
+                     /ApEinfo_revcolor="green"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      CDS             459..1487
                      /product="hygromycin B phosphotransferase"
                      /gene="hph"
-                     /label=hygromycin B phosphotransferase
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="hygromycin B phosphotransferase"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      misc_feature    1488..1727
                      /product="TEF-TER"
                      /gene="TEF-TER"
-                     /label=TEF-TER
-                     /ApEinfo_fwdcolor=#00ff69
-                     /ApEinfo_revcolor=green
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="TEF-TER"
+                     /ApEinfo_fwdcolor="#00ff69"
+                     /ApEinfo_revcolor="green"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
      CDS             complement(2833..3693)
                      /product="AmpR"
                      /gene="AmpR"
-                     /label=AmpR
-                     /ApEinfo_fwdcolor=pink
-                     /ApEinfo_revcolor=pink
-                     /ApEinfo_graphicformat=arrow_data {{0 1 2 0 0 -1} {} 0}
-                     width 5 offset 0
+                     /label="AmpR"
+                     /ApEinfo_fwdcolor="pink"
+                     /ApEinfo_revcolor="pink"
+                     /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
+                     width 5 offset 0"
 ORIGIN
         1 gaacgcggcc gccagctgaa gcttcgtacg ctgcaggtcg acggatcccc gggttaatta
        61 aggcgcgcca gatctgttta gcttgccttg tccccgccgg gtcacccggc cagcgacatg

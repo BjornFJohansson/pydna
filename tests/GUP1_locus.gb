@@ -1,11 +1,12 @@
 LOCUS       .                       3683 bp    DNA     linear   UNK 10-JAN-2013
-DEFINITION  GUP1_locus
+DEFINITION  GUP1_locus.
 ACCESSION   <unknown id>
 VERSION     <unknown id>
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna ldseguid=2pk-W7lWMNwkVe-mOiV9LiE_rXA 2024-06-11T18:43:07
 FEATURES             Location/Qualifiers
      rep_origin      complement(383..604)
                      /note="ARS716; Autonomously Replicating Sequence"
@@ -36,7 +37,7 @@ FEATURES             Location/Qualifiers
                      [Evidence IMP] [PMID 18036137]"
                      /GO_function="GO:0015293 - symporter activity [Evidence
                      IEA]"
-                     /codon_start="1"
+                     /codon_start=1
                      /locus_tag="YGL084C"
                      /note="Plasma membrane protein involved in remodeling GPI
                      anchors; member of the MBOAT family of putative
@@ -94,7 +95,7 @@ FEATURES             Location/Qualifiers
                      IEA]"
                      /GO_function="GO:0003676 - nucleic acid binding [Evidence
                      IEA]"
-                     /codon_start="1"
+                     /codon_start=1
                      /locus_tag="YGL085W"
                      /note="hypothetical protein; mutant has long chronological
                      lifespan; has homology to Staphylococcus aureus nuclease;

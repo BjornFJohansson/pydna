@@ -21,6 +21,7 @@ REFERENCE   2  (bases 1 to 1136)
   JOURNAL   Submitted (11-JUN-1991) T. Kristensen, Dept of Mol Biology,
             University of Aarhus, C F Mollers Alle 130, DK-8000 Aarhus C,
             DENMARK
+COMMENT     pydna ldseguid=jzdRtkmFvWmQe91rNsVY9oifWB8 2024-06-11T18:43:13
 FEATURES             Location/Qualifiers
      source          1..1136
                      /organism="Bos taurus"
@@ -40,13 +41,13 @@ FEATURES             Location/Qualifiers
                      /db_xref="InterPro:IPR015104"
                      /db_xref="InterPro:IPR016060"
                      /db_xref="UniProtKB/Swiss-Prot:P17690"
-                     /translation="PALVLLLGFLCHVAIAGRTCPKPDELPFSTVVPLKRTYEPGEQI
-                     VFSCQPGYVSRGGIRRFTCPLTGLWPINTLKCMPRVCPFAGILENGTVRYTTFEYPNT
-                     ISFSCHTGFYLKGASSAKCTEEGKWSPDLPVCAPITCPPPPIPKFASLSVYKPLAGNN
-                     SFYGSKAVFKCLPHHAMFGNDTVTCTEHGNWTQLPECREVRCPFPSRPDNGFVNHPAN
-                     PVLYYKDTATFGCHETYSLDGPEEVECSKFGNWSAQPSCKASCKLSIKRATVIYEGER
-                     VAIQNKFKNGMLHGQKVSFFCKHKEKKCSYTEDAQCIDGTIEIPKCFKEHSSLAFWKT
-                     DASDVKPC"
+                     /translation="PALVLLLGFLCHVAIAGRTCPKPDELPFSTVVPLKRTYEPGEQIV
+                     FSCQPGYVSRGGIRRFTCPLTGLWPINTLKCMPRVCPFAGILENGTVRYTTFEYPNTIS
+                     FSCHTGFYLKGASSAKCTEEGKWSPDLPVCAPITCPPPPIPKFASLSVYKPLAGNNSFY
+                     GSKAVFKCLPHHAMFGNDTVTCTEHGNWTQLPECREVRCPFPSRPDNGFVNHPANPVLY
+                     YKDTATFGCHETYSLDGPEEVECSKFGNWSAQPSCKASCKLSIKRATVIYEGERVAIQN
+                     KFKNGMLHGQKVSFFCKHKEKKCSYTEDAQCIDGTIEIPKCFKEHSSLAFWKTDASDVK
+                     PC"
      sig_peptide     <1..48
                      /gene="beta-2-gpI"
      mat_peptide     49..1026

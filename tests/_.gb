@@ -2,11 +2,12 @@ LOCUS       .                      19114 bp    DNA     circular UNK 05-MAR-2015
 DEFINITION  .
 ACCESSION   <unknown id>
 VERSION     <unknown id>
-DBLINK      BioProject:PRJNA43747
+DBLINK      BioProject: PRJNA43747
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=SCGooeNvFeoekY__dmacINuUAhs 2024-06-11T18:53:46
 FEATURES             Location/Qualifiers
      overlap         363..524
                      /note="olp_TMr1vCYKndLNHy6HjaT2Gz37tVU"

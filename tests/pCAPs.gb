@@ -21,6 +21,7 @@ REFERENCE   2  (bases 1 to 3128)
   TITLE     Direct Submission
   JOURNAL   Submitted (15-SEP-1997) Schlieper D., Institute of Genetics,
             University of Cologne, Weyertal 121, Cologne, 50931, GERMANY
+COMMENT     pydna cdseguid=zhHqWumz6QRMyNmtS749GvEbvJk 2024-06-11T18:53:30
 FEATURES             Location/Qualifiers
      gene            complement(315..947)
                      /gene="crp"
@@ -35,10 +36,10 @@ FEATURES             Location/Qualifiers
                      /product="catabolite gene activator protein"
                      /protein_id="CAA04867.1"
                      /db_xref="GI:2769262"
-                     /translation="MVLGKPQTDPTLEWFLSHCHIHKYPSKSTLIHQGEKAETLYYIV
-                     KGSVAVLIKDEEGKEMILSYLNQGDFIGELGLFEEGQERSAWVRAKTACEVAEISYKK
-                     FRQLIQVNPDILMRLSAQMARRLQVTSEKVGNLAFLDVSGRIAQTLLNLAKQPDAMTH
-                     PDGMQIKITRQEIGQIVGCSRQTVGRILKMLEDQNLISAHGKTIVVYGTR"
+                     /translation="MVLGKPQTDPTLEWFLSHCHIHKYPSKSTLIHQGEKAETLYYIVK
+                     GSVAVLIKDEEGKEMILSYLNQGDFIGELGLFEEGQERSAWVRAKTACEVAEISYKKFR
+                     QLIQVNPDILMRLSAQMARRLQVTSEKVGNLAFLDVSGRIAQTLLNLAKQPDAMTHPDG
+                     MQIKITRQEIGQIVGCSRQTVGRILKMLEDQNLISAHGKTIVVYGTR"
      rep_origin      1313
                      /direction=BOTH
      gene            complement(2072..2932)
@@ -56,12 +57,12 @@ FEATURES             Location/Qualifiers
                      /db_xref="InterPro:IPR001466"
                      /db_xref="InterPro:IPR012338"
                      /db_xref="UniProtKB/TrEMBL:Q79DR3"
-                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGY
-                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVE
-                     YSPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRL
-                     DRWEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPL
-                     LRSALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIA
-                     EIGASLIKHW"
+                     /translation="MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYI
+                     ELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEYS
+                     PVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRW
+                     EPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSA
+                     LPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGAS
+                     LIKHW"
 ORIGIN
         1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
        61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
@@ -71,9 +72,9 @@ ORIGIN
       301 ccactccgac gggattaacg agtgccgtaa acgacgatgg ttttaccgtg tgcggagatc
       361 aggttctgat cctcgagcat cttaagaatt cgtcccacgg tttgtctaga gcagccgaca
       421 atctggccaa tttcctgacg ggtaattttg atttgcatgc cgtccgggtg agtcatagcg
-      481 tctggttgtt ttgccagatt cagcagagtc tgtgcaatgc ggccgctGAC GTCgaggaac
+      481 tctggttgtt ttgccagatt cagcagagtc tgtgcaatgc ggccgctgac gtcgaggaac
       541 gccaggttgc ccactttctc actagtgacc tgcagccggc gcgccatctg tgcagacaaa
-      601 cgcatcagGA TATCcggatt tacctgaatc aattggcgaa attttttgta cgaaatttca
+      601 cgcatcagga tatccggatt tacctgaatc aattggcgaa attttttgta cgaaatttca
       661 gccacttcac aggcggtttt cgcacgtacc catgcgctac gttcctggcc ctcttcaaac
       721 aggcccagtt cgccaataaa atcaccctga ttcagatagg agaggatcat ttctttaccc
       781 tcttcgtctt tgatcagcac tgccacagag cctttaacga tgtagtacag cgtttccgct

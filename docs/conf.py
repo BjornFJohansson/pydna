@@ -7,14 +7,16 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import os
+import sys
+from importlib.metadata import version
+
 project = "pydna"
-copyright = "2022, Björn F. Johansson"
+copyright = "2024, Björn F. Johansson"
 author = "Björn F. Johansson"
 
-import sys, os
-
+sys.path.insert(0, os.path.abspath("../src/pydna"))
 # contents of docs/conf.py
-from importlib.metadata import version
 
 release = version("pydna")
 # for example take major/minor
@@ -25,7 +27,10 @@ version = ".".join(release.split(".")[:3])
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
+    "myst_parser",  # Allows to use markdown files instead of rst
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "numpydoc",
@@ -39,8 +44,17 @@ intersphinx_mapping = {
     "python": ("http://docs.python.org/3.8", None),
 }
 
+# Settings to support markdown files
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
+
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+autodoc_member_order = "bysource"
+autodoc_preserve_defaults = True
 
 numpydoc_show_class_members = False
 
@@ -61,3 +75,10 @@ texinfo_documents = [
         "Miscellaneous",
     ),
 ]
+
+# Add custom css
+html_css_files = [
+    "custom.css",
+]
+
+html_favicon = "_static/favicon.ico"

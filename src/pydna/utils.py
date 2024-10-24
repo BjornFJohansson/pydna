@@ -19,13 +19,12 @@ import keyword as _keyword
 import collections as _collections
 import itertools as _itertools
 from copy import deepcopy as _deepcopy
-from typing import Union as _Union
 
 import sys as _sys
-import re
-import itertools
 import random
 import subprocess as _subprocess
+from bisect import bisect as _bisect
+from math import ceil as _ceil
 
 from pydna.codon import weights as _weights
 from pydna.codon import rare_codons as _rare_codons
@@ -33,15 +32,58 @@ from pydna.codon import rare_codons as _rare_codons
 from Bio.SeqFeature import SimpleLocation as _sl
 from Bio.SeqFeature import CompoundLocation as _cl
 
+from typing import Union as _Union, TypeVar as _TypeVar, List as _List
+
+# For functions that take str or bytes as input and return str or bytes as output, matching the input type
+StrOrBytes = _TypeVar("StrOrBytes", str, bytes)
+
 _module_logger = _logging.getLogger("pydna." + __name__)
 _ambiguous_dna_complement.update({"U": "A"})
 _complement_table = _maketrans(_ambiguous_dna_complement)
+
+
+def three_frame_orfs(
+    dna: str,
+    limit: int = 100,
+    startcodons: tuple = ("ATG",),
+    stopcodons: tuple = ("TAG", "TAA", "TGA"),
+    # startcodons: tuple[str, ...] = ("ATG",),
+    # stopcodons: tuple[str, ...] = ("TAG", "TAA", "TGA"),
+):
+    """Overlapping orfs in three frames."""
+    # breakpoint()
+    limit = _ceil(limit / 3) - 1
+    dna = dna.upper()
+
+    orfs = []
+
+    for frame in (0, 1, 2):
+
+        codons = [dna[i : i + 3] for i in range(frame, len(dna), 3)]
+
+        startdindices = [i for i, cd in enumerate(codons) if cd in startcodons]
+        stopdindices = [i for i, cd in enumerate(codons) if cd in stopcodons]
+
+        for startindex in startdindices:
+            try:
+                stopindex = stopdindices[_bisect(stopdindices, startindex)]
+            except IndexError:
+                pass
+            else:
+                if stopindex - startindex >= limit:
+                    orfs.append((frame, startindex * 3 + frame, (stopindex + 1) * 3 + frame))
+                # print(stopindex, startindex, limit)
+    return orfs
 
 
 def shift_location(original_location, shift, lim):
     """docstring."""
     newparts = []
     strand = original_location.strand
+    if lim is None:
+        if min(original_location) + shift < 0:
+            raise ValueError("Shift moves location below zero, use a `lim` to loop around if sequence is circular.")
+        lim = _sys.maxsize
 
     for part in original_location.parts:
         new_start = (part.start + shift) % lim
@@ -220,7 +262,7 @@ def open_folder(pth):
             return "no cache to open."
 
 
-def rc(sequence: str):
+def rc(sequence: StrOrBytes) -> StrOrBytes:
     """Reverse complement.
 
     accepts mixed DNA/RNA
@@ -296,7 +338,7 @@ def identifier_from_string(s: str) -> str:
     return s
 
 
-def flatten(*args):
+def flatten(*args) -> _List:
     """Flattens an iterable of iterables.
 
     Down to str, bytes, bytearray or any of the pydna or Biopython seq objects
@@ -666,6 +708,31 @@ def location_boundaries(loc: _Union[_sl, _cl]):
         return loc.parts[-1].start, loc.parts[0].end
     else:
         return loc.parts[0].start, loc.parts[-1].end
+
+
+def locations_overlap(loc1: _Union[_sl, _cl], loc2: _Union[_sl, _cl], seq_len):
+    start1, end1 = location_boundaries(loc1)
+    start2, end2 = location_boundaries(loc2)
+
+    boundaries1 = [(start1, end1)]
+    boundaries2 = [(start2, end2)]
+
+    if start1 > end1:
+        boundaries1 = [
+            [start1, end1 + seq_len],
+            [start1 - seq_len, end1],
+        ]
+    if start2 > end2:
+        boundaries2 = [
+            [start2, end2 + seq_len],
+            [start2 - seq_len, end2],
+        ]
+
+    for b1, b2 in _itertools.product(boundaries1, boundaries2):
+        if b1[0] < b2[1] and b1[1] > b2[0]:
+            return True
+
+    return False
 
 
 if __name__ == "__main__":

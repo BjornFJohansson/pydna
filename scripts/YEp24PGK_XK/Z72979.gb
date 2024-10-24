@@ -1,6 +1,6 @@
 LOCUS       Z72979                  3140 bp    DNA     linear   PLN 11-AUG-1997
 DEFINITION  S.cerevisiae chromosome VII reading frame ORF YGR194c.
-ACCESSION   Z72979 Y13135
+ACCESSION   Z72979
 VERSION     Z72979.1  GI:1323344
 KEYWORDS    .
 SOURCE      Saccharomyces cerevisiae (baker's yeast)
@@ -19,6 +19,7 @@ REFERENCE   2  (bases 1 to 3140)
             European yeast chromosome VII sequencing project. MIPS at the
             Max-Planck-Institut fuer Biochemie, Am Klopferspitz 18a D-82152
             Martinsried, FRG; E-mail: Mewes@mips.embnet.org
+COMMENT     pydna ldseguid=ExETv-5seNCsdMPGFMcNiPC3sAE 2024-06-11T18:53:17
 FEATURES             Location/Qualifiers
      source          1..3140
                      /organism="Saccharomyces cerevisiae"
@@ -36,18 +37,18 @@ FEATURES             Location/Qualifiers
                      /db_xref="InterPro:IPR018485"
                      /db_xref="SGD:S000003426"
                      /db_xref="UniProtKB/Swiss-Prot:P42826"
-                     /translation="MLCSVIQRQTREVSNTMSLDSYYLGFDLSTQQLKCLAINQDLKI
-                     VHSETVEFEKDLPHYHTKKGVYIHGDTIECPVAMWLEALDLVLSKYREAKFPLNKVMA
-                     VSGSCQQHGSVYWSSQAESLLEQLNKKPEKDLLHYVSSVAFARQTAPNWQDHSTAKQC
-                     QEFEECIGGPEKMAQLTGSRAHFRFTGPQILKIAQLEPEAYEKTKTISLVSNFLTSIL
-                     VGHLVELEEADACGMNLYDIRERKFSDELLHLIDSSSKDKTIRQKLMRAPMKNLIAGT
-                     ICKYFIEKYGFNTNCKVSPMTGDNLATICSLPLRKNDVLVSLGTSTTVLLVTDKYHPS
-                     PNYHLFIHPTLPNHYMGMICYCNGSLARERIRDELNKERENNYEKTNDWTLFNQAVLD
-                     DSESSENELGVYFPLGEIVPSVKAINKRVIFNPKTGMIEREVAKFKDKRHDAKNIVES
-                     QALSCRVRISPLLSDSNASSQQRLNEDTIVKFDYDESPLRDYLNKRPERTFFVGGASK
-                     NDAIVKKFAQVIGATKGNFRLETPNSCALGGCYKAMWSLLYDSNKIAVPFDKFLNDNF
-                     PWHVMESISDVDNENWDRYNSKIVPLSELEKTLI"
-ORIGIN      
+                     /translation="MLCSVIQRQTREVSNTMSLDSYYLGFDLSTQQLKCLAINQDLKIV
+                     HSETVEFEKDLPHYHTKKGVYIHGDTIECPVAMWLEALDLVLSKYREAKFPLNKVMAVS
+                     GSCQQHGSVYWSSQAESLLEQLNKKPEKDLLHYVSSVAFARQTAPNWQDHSTAKQCQEF
+                     EECIGGPEKMAQLTGSRAHFRFTGPQILKIAQLEPEAYEKTKTISLVSNFLTSILVGHL
+                     VELEEADACGMNLYDIRERKFSDELLHLIDSSSKDKTIRQKLMRAPMKNLIAGTICKYF
+                     IEKYGFNTNCKVSPMTGDNLATICSLPLRKNDVLVSLGTSTTVLLVTDKYHPSPNYHLF
+                     IHPTLPNHYMGMICYCNGSLARERIRDELNKERENNYEKTNDWTLFNQAVLDDSESSEN
+                     ELGVYFPLGEIVPSVKAINKRVIFNPKTGMIEREVAKFKDKRHDAKNIVESQALSCRVR
+                     ISPLLSDSNASSQQRLNEDTIVKFDYDESPLRDYLNKRPERTFFVGGASKNDAIVKKFA
+                     QVIGATKGNFRLETPNSCALGGCYKAMWSLLYDSNKIAVPFDKFLNDNFPWHVMESISD
+                     VDNENWDRYNSKIVPLSELEKTLI"
+ORIGIN
         1 ttttgaattt ttccctcgag atgatttaac aataacctag ctctttcaat gctctcttat
        61 attctcactg gaaagcgcta atttgatttg tctctctcgt tgctggtcgc tcaccctttc
       121 ataaattgtt ttttactctt catttattga ttttactttt tgtcattttc cgaacgggga
@@ -102,4 +103,3 @@ ORIGIN
      3061 ggtcccactg gtaaaatcta ttaacatata aaaagattta caaaaaaact ttagtgccat
      3121 aactacagca ggatcatcat
 //
-

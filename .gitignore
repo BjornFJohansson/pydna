@@ -36,6 +36,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.venv/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -65,6 +66,8 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+docs/markdown_notebooks
+docs/modules/
 
 # PyBuilder
 target/

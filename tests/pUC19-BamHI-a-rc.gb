@@ -1,10 +1,14 @@
-LOCUS       pUC19_a                 2772 bp ds-DNA     circular     18-OCT-2012
+LOCUS       pUC19_a                 2772 bp    ds-DNA  circular UNK 18-OCT-2012
 DEFINITION  .
-SOURCE      .
+ACCESSION   pUC19_a
+VERSION     pUC19_a
+KEYWORDS    .
+SOURCE
   ORGANISM  .
-COMMENT
-COMMENT
+            .
 COMMENT     ApEinfo:methylated:1
+            pydna cdseguid=eUUhRCQYV5M0ff66VXnU7FjdLRo 2024-06-11T18:27:57
+FEATURES             Location/Qualifiers
 ORIGIN
         1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
        61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
@@ -12,9 +16,9 @@ ORIGIN
       181 accatatgcg gtgtgaaata ccgcacagat gcgtaaggag aaaataccgc atcaggcgcc
       241 attcgccatt caggctgcgc aactgttggg aagggcgatc ggtgcgggcc tcttcgctat
       301 tacgccagct ggcgaaaggg ggatgtgctg caaggcgatt aagttgggta acgccagggt
-      361 tttcccagtc acgacgttgt aaaacgacgg ccagtgaatt cgagctcggt acccggGGAT
-      421 CCacgcgcat atatatataa ttatagagag taccgatgat gagcagcaga atagatcagt
-      481 acgctacgat gatagtagat gaGGATCCtc tagagtcgac ctgcaggcat gcaagcttgg
+      361 tttcccagtc acgacgttgt aaaacgacgg ccagtgaatt cgagctcggt acccggggat
+      421 ccacgcgcat atatatataa ttatagagag taccgatgat gagcagcaga atagatcagt
+      481 acgctacgat gatagtagat gaggatcctc tagagtcgac ctgcaggcat gcaagcttgg
       541 cgtaatcatg gtcatagctg tttcctgtgt gaaattgtta tccgctcaca attccacaca
       601 acatacgagc cggaagcata aagtgtaaag cctggggtgc ctaatgagtg agctaactca
       661 cattaattgc gttgcgctca ctgcccgctt tccagtcggg aaacctgtcg tgccagctgc

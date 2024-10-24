@@ -3,9 +3,10 @@ DEFINITION  .
 ACCESSION   <unknown id>
 VERSION     <unknown id>
 KEYWORDS    .
-SOURCE      .
+SOURCE
   ORGANISM  .
             .
+COMMENT     pydna cdseguid=QiK2pH9yioTPfSobUTLz4CPiNzY 2024-06-11T18:43:02
 FEATURES             Location/Qualifiers
      misc_recomb     242..275
                      /ApEinfo_graphicformat="arrow_data {{0 1 2 0 0 -1} {} 0}
