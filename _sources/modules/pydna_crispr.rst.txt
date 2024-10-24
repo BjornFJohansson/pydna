@@ -1,0 +1,7 @@
+pydna.crispr
+==========
+
+.. automodule:: pydna.crispr
+    :members:
+    :undoc-members:
+    :show-inheritance:

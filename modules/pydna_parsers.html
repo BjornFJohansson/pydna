@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.parsers &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.primer" href="pydna_primer.html" />
+    <link rel="prev" title="pydna.myprimers" href="pydna_myprimers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.parsers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.parsers.extract_from_text"><code class="docutils literal notranslate"><span class="pre">extract_from_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.parsers.embl_gb_fasta"><code class="docutils literal notranslate"><span class="pre">embl_gb_fasta()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.parsers.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.parsers.parse_primers"><code class="docutils literal notranslate"><span class="pre">parse_primers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.parsers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_parsers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydna-parsers">
+<h1>pydna.parsers<a class="headerlink" href="#pydna-parsers" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-pydna.parsers"></span><p>Provides two functions, parse and parse_primers</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.parsers.extract_from_text">
+<span class="sig-prename descclassname"><span class="pre">pydna.parsers.</span></span><span class="sig-name descname"><span class="pre">extract_from_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/parsers.html#extract_from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.parsers.extract_from_text" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.parsers.embl_gb_fasta">
+<span class="sig-prename descclassname"><span class="pre">pydna.parsers.</span></span><span class="sig-name descname"><span class="pre">embl_gb_fasta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/parsers.html#embl_gb_fasta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.parsers.embl_gb_fasta" title="Permalink to this definition"></a></dt>
+<dd><p>Parse embl, genbank or fasta format from text.</p>
+<p>Returns list of Bio.SeqRecord.SeqRecord</p>
+<p>annotations[“molecule_type”]
+annotations[“topology”]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.parsers.parse">
+<span class="sig-prename descclassname"><span class="pre">pydna.parsers.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/parsers.html#parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.parsers.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return <em>all</em> DNA sequences found in data.</p>
+<p>If no sequences are found, an empty list is returned. This is a greedy
+function, use carefully.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>string</em><em> or </em><em>iterable</em>) – <p>The data parameter is a string containing:</p>
+<ol class="arabic simple">
+<li><p>an absolute path to a local file.
+The file will be read in text
+mode and parsed for EMBL, FASTA
+and Genbank sequences. Can be
+a string or a Path object.</p></li>
+<li><p>a string containing one or more
+sequences in EMBL, GENBANK,
+or FASTA format. Mixed formats
+are allowed.</p></li>
+<li><p>data can be a list or other iterable where the elements are 1 or 2</p></li>
+</ol>
+</p></li>
+<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If True double stranded <code class="xref py py-class docutils literal notranslate"><span class="pre">Dseqrecord</span></code> objects are returned.
+If False single stranded <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord</span></code> <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> objects are
+returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>contains Dseqrecord or SeqRecord objects</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://biopython.org/wiki/SeqRecord">http://biopython.org/wiki/SeqRecord</a></p>
+</aside>
+</aside>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.parsers.parse_primers">
+<span class="sig-prename descclassname"><span class="pre">pydna.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_primers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/parsers.html#parse_primers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.parsers.parse_primers" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_myprimers.html" class="btn btn-neutral float-left" title="pydna.myprimers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_primer.html" class="btn btn-neutral float-right" title="pydna.primer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

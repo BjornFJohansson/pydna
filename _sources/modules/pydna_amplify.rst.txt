@@ -1,0 +1,7 @@
+pydna.amplify
+==========
+
+.. automodule:: pydna.amplify
+    :members:
+    :undoc-members:
+    :show-inheritance:

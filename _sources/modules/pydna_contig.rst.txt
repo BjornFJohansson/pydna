@@ -1,0 +1,7 @@
+pydna.contig
+==========
+
+.. automodule:: pydna.contig
+    :members:
+    :undoc-members:
+    :show-inheritance:

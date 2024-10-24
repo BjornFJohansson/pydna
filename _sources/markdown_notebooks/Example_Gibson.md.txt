@@ -32,28 +32,77 @@ from pydna.tm import tm_default
 from pydna.amplify import pcr
 from pydna.dseqrecord import Dseqrecord
 from pydna.assembly import Assembly
+from pydna.genbank import Genbank
+from pydna.gel import gel
+from pydna.ladders import GeneRuler_1kb_plus
+
 ```
 
 
 ```python
-# Parsing the files
-
-pCC1BAC_path = "./pCC1BAC.gb"
-gene_path = "./R_cellulolyticum.fasta"
-pCC1BAC_docs = parse(pCC1BAC_path)
-gene_docs = parse(gene_path)
-
-# Printing the parsed files
-
-print(pCC1BAC_docs[0].format("gb"))
-# print(gene_docs[0].format("fasta"))
+# Reading the R. cellulolyticum genome from GenBank
+gb = Genbank("example@example.com")
+genome = gb.nucleotide("CP001348.1")
+# Print the info of the genome
+genome.annotations
 ```
+
+
+
+
+    {'molecule_type': 'DNA',
+     'topology': 'circular',
+     'data_file_division': 'BCT',
+     'date': '25-AUG-2017',
+     'accessions': ['CP001348', 'AAVC01000000', 'AAVC01000001-AAVC01000121'],
+     'sequence_version': 1,
+     'keywords': [''],
+     'source': 'Ruminiclostridium cellulolyticum H10',
+     'organism': 'Ruminiclostridium cellulolyticum H10',
+     'taxonomy': ['Bacteria',
+      'Bacillota',
+      'Clostridia',
+      'Eubacteriales',
+      'Oscillospiraceae',
+      'Ruminiclostridium'],
+     'references': [Reference(title='Complete sequence of Clostridium cellulolyticum H10', ...),
+      Reference(title='Direct Submission', ...)],
+     'comment': 'URL -- http://www.jgi.doe.gov\nJGI Project ID: 4002584\nSource DNA and bacteria available from Jizhong Zhou\n(jzhou@rccc.ou.edu)\nContacts: Jizhong Zhou (jzhou@rccc.ou.edu)\n          David Bruce (microbe@cuba.jgi-psf.org)\nAnnotation done by JGI-ORNL and JGI-PGF\nFinishing done by JGI-LANL\nFinished microbial genomes have been curated to close all gaps with\ngreater than 98% coverage of at least two independent clones. Each\nbase pair has a minimum q (quality) value of 30 and the total error\nrate is less than one per 50000.\nThe JGI and collaborators endorse the principles for the\ndistribution and use of large scale sequencing data adopted by the\nlarger genome sequencing community and urge users of this data to\nfollow them. it is our intention to publish the work of this\nproject in a timely fashion and we welcome collaborative\ninteraction on the project and analysis.\n(http://www.genome.gov/page.cfm?pageID=10506376).'}
+
+
+
+
+```python
+# Reading the plasmid
+vector = parse("./pCC1BAC.gb")[0]
+vector.annotations
+```
+
+
+
+
+    {'molecule_type': 'DNA',
+     'topology': 'circular',
+     'data_file_division': 'SYN',
+     'date': '29-AUG-2024',
+     'accessions': ['.'],
+     'keywords': [''],
+     'source': 'synthetic DNA construct',
+     'organism': 'synthetic DNA construct',
+     'taxonomy': [],
+     'references': [Reference(title='Direct Submission', ...),
+      Reference(title='Direct Submission', ...),
+      Reference(title='Direct Submission', ...),
+      Reference(title='Direct Submission', ...)],
+     'comment': 'SGRef: number: 1; type: "Journal Article"; journalName: "Submitted\n(23-AUG-2007) 726 Post Road, Madison, WI 53713, USA"\nSGRef: number: 2; type: "Journal Article"\nSGRef: number: 3; type: "Journal Article"'}
+
+
 
 
 ```python
 # Importing pre-designed primers for the PylRS insert fragment. 
 
-F1_For = "GCAGCTTCAAGTCCTGCAAACAAGGTGTACCAGGATCGTT" #Remember that all sequnces are written from 5'-3'
+F1_For = "GCAGCTTCAAGTCCTGCAAACAAGGTGTACCAGGATCGTT"
 F1_Rev = "GATTTCAGTGTAGTTAGGGCCAGTTGAATTCAAACCTGCC"
 F2_For = "GGCAGGTTTGAATTCAACTGGCCCTAACTACACTGAAATC"
 F2_Rev = "CTTGGTGCCATCAGCATTGTTCTCTGTACCGCCCACTGTC"
@@ -65,29 +114,50 @@ BACF3_Rev = "GGTACTGCATTTGCCGCAGGAACACATGATTATTCAACTGgcggccgccgggtaccgagctcgaatt
 
 
 ```python
-# (Optional) Checking that the primer Tm are matching
+# Getting the PCR products from the genome (might take a while since the genome is large)
 
-print(tm_default(F1_For)) # F1_For and F1_Rev have been used as examples here
-print(tm_default(F1_Rev))
+pcr_product_F1 = pcr(F1_For, F1_Rev, genome, limit=20)
+pcr_product_F2 = pcr(F2_For, F2_Rev, genome, limit=20)
+pcr_product_F3 = pcr(F3_For, F3_Rev, genome, limit=20)
+pcr_product_BAC = pcr(BACF1_For, BACF3_Rev, vector, limit=20)
+
+# Printing out the PCR fragment sizes
+print(len(pcr_product_F1))
+print(len(pcr_product_F2))
+print(len(pcr_product_F3))
+print(len(pcr_product_BAC))
+
 ```
+
+    5210
+    5384
+    5172
+    8221
+
 
 
 ```python
-# Checking primer specificity using the pcr function. An error message is returned if otherwise.
-
-pcr_product_F1 = pcr(F1_For, F1_Rev, gene_docs[0], limit=40)
-pcr_product_F2 = pcr(F2_For, F2_Rev, gene_docs[0], limit=40)
-pcr_product_F3 = pcr(F3_For, F3_Rev, gene_docs[0], limit=40)
-pcr_product_BAC = pcr(BACF1_For, BACF3_Rev, pCC1BAC_docs[0], limit=69)
-
-# Printing out the PCR results
-
-print(pcr_product_F1.format("gb"))
-print(pcr_product_F2.format("gb"))
-print(pcr_product_F3.format("gb"))
-print(pcr_product_BAC.format("fasta"))
-
+# Making a gel to show the PCR products
+im = gel(
+    [
+        GeneRuler_1kb_plus,
+        [pcr_product_F1],
+        [pcr_product_F2],
+        [pcr_product_F3],
+        [pcr_product_BAC],
+    ]
+)
+im.rotate(90, expand=1)
 ```
+
+
+
+
+    
+![png](Example_Gibson_files/Example_Gibson_8_0.png)
+    
+
+
 
 
 ```python
@@ -99,3 +169,16 @@ assembled_circ = assembled.assemble_circular()
 # Printing out the Gibson Assembly product
 print(assembled_circ[0])
 ```
+
+    Dseqrecord
+    circular: True
+    size: 23827
+    ID: id
+    Name: name
+    Description: description
+    Number of features: 28
+    /molecule_type=DNA
+    Dseq(o23827)
+    GCAG..ccgc
+    CGTC..ggcg
+

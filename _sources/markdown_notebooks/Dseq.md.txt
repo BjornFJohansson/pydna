@@ -348,7 +348,7 @@ sequence_with_overhangs[2:]
 
 
     Dseq(-8)
-     acgt
+     acgttcc
     atgcaagg
 
 

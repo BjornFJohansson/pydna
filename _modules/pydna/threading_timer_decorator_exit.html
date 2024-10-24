@@ -1,20 +1,22 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pydna.threading_timer_decorator_exit &mdash; pydna 0.0.0.post1+9d112d7 documentation</title>
+  <title>pydna.threading_timer_decorator_exit &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=a051be83" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=5088634e"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -39,8 +41,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_gallery.html">Example gallery</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -98,14 +107,14 @@
 <span class="kn">import</span> <span class="nn">_thread</span> <span class="k">as</span> <span class="nn">thread</span>
 
 
-<span class="k">def</span> <span class="nf">cdquit</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+<div class="viewcode-block" id="cdquit"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.cdquit">[docs]</a><span class="k">def</span> <span class="nf">cdquit</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
     <span class="c1"># print to stderr, unbuffered in Python 2.</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> took too long&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn_name</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  <span class="c1"># Python 3 stderr is likely buffered.</span>
-    <span class="n">thread</span><span class="o">.</span><span class="n">interrupt_main</span><span class="p">()</span>  <span class="c1"># raises KeyboardInterrupt</span>
+    <span class="n">thread</span><span class="o">.</span><span class="n">interrupt_main</span><span class="p">()</span>  <span class="c1"># raises KeyboardInterrupt</span></div>
 
 
-<span class="k">def</span> <span class="nf">exit_after</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="exit_after"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.exit_after">[docs]</a><span class="k">def</span> <span class="nf">exit_after</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    use as decorator to exit process if</span>
 <span class="sd">    function takes longer than s seconds</span>
@@ -123,44 +132,44 @@
 
         <span class="k">return</span> <span class="n">inner</span>
 
-    <span class="k">return</span> <span class="n">outer</span>
+    <span class="k">return</span> <span class="n">outer</span></div>
 
 
-<span class="nd">@exit_after</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="a"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.a">[docs]</a><span class="nd">@exit_after</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">a</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span></div>
 
 
-<span class="nd">@exit_after</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class="viewcode-block" id="b"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.b">[docs]</a><span class="nd">@exit_after</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">b</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
-    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<span class="nd">@exit_after</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class="viewcode-block" id="c"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.c">[docs]</a><span class="nd">@exit_after</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">c</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
-    <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
 
 
-<span class="nd">@exit_after</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class="viewcode-block" id="d"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.d">[docs]</a><span class="nd">@exit_after</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">d</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;d started&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
 
-<span class="nd">@exit_after</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="viewcode-block" id="countdown"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.countdown">[docs]</a><span class="nd">@exit_after</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">countdown</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;countdown started&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;countdown finished&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;countdown finished&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../modules/pydna_threading_timer_decorator_exit.html#pydna.threading_timer_decorator_exit.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
     <span class="n">a</span><span class="p">()</span>
     <span class="n">b</span><span class="p">()</span>
     <span class="n">c</span><span class="p">()</span>
@@ -171,7 +180,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
     <span class="n">countdown</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">countdown</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This should not print!!!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This should not print!!!&quot;</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

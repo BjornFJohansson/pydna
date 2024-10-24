@@ -1,0 +1,7 @@
+pydna.fakeseq
+==========
+
+.. automodule:: pydna.fakeseq
+    :members:
+    :undoc-members:
+    :show-inheritance:

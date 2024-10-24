@@ -9,9 +9,10 @@
   <title>Example of a Plasmid Restriction/Ligation Cloning &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=945798ad" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
@@ -45,7 +46,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_contents.html">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
 </ul>
@@ -664,7 +665,7 @@ SOURCE      .
   ORGANISM  .
             .
 FEATURES             Location/Qualifiers
-     CDS             join(1..424,472..2243)
+     CDS             join(12..435,483..2254)
                      /gene=&quot;ase1&quot;
                      /locus_tag=&quot;SPOM_SPAPB1A10.09&quot;
                      /codon_start=1
@@ -684,13 +685,13 @@ FEATURES             Location/Qualifiers
                      QGANGSDSNMSSSPVSGNSNTPFNKFPNSVSRNTHFESKSPHPNYSRTPHETYSKASSK
                      NVPLSPPKQRVVNEHALNIMSEKLQRTNLKEQTPEMDIENSSQNLPFSPMKISPIRASP
                      VKTIPSSPSPTTNIFSAPLNNITNCTPMEDEWGEEGF&quot;
-     primer_bind     1..20
+     primer_bind     12..31
                      /label=&quot;name&quot;
                      /PCR_conditions=&quot;primer
                      sequence:ACCATGTCGACATGCAAACAGTAATGATGGA&quot;
                      /ApEinfo_fwdcolor=&quot;#baffa3&quot;
                      /ApEinfo_revcolor=&quot;#ffbaba&quot;
-     primer_bind     complement(2225..2243)
+     primer_bind     complement(2236..2254)
                      /label=&quot;name&quot;
                      /PCR_conditions=&quot;primer
                      sequence:GGCGCGCCATTAAAAGCCTTCTTCTCCC&quot;
@@ -851,7 +852,33 @@ FEATURES             Location/Qualifiers
      primer_bind     3859..3876
                      /label=&quot;SP6&quot;
                      /note=&quot;SP6 promoter, forward primer&quot;
-     primer_bind     complement(6131..6149)
+     CDS             join(3918..4341,4389..6160)
+                     /gene=&quot;ase1&quot;
+                     /locus_tag=&quot;SPOM_SPAPB1A10.09&quot;
+                     /codon_start=1
+                     /product=&quot;antiparallel microtubule cross-linking factor
+                     Ase1&quot;
+                     /protein_id=&quot;CAC21482.1&quot;
+                     /translation=&quot;MQTVMMDDIQSTDSIAEKDNHSNNESNFTWKAFREQVEKHFSKIE
+                     RLHQVLGTDGDNSSLFELFTTAMNAQLHEMEQCQKKLEDDCQQRIDSIRFLVSSLKLTD
+                     DTSSLKIESPLIQCLNRLSMVEGQYMAQYDQKLSTIKEMYHKLESYCNRLGSPFVLPDF
+                     ENSFLSDVSDAFTESLRGRINEAEKEIDARLEVINSFEEEILGLWSELGVEPADVPQYE
+                     QLLESHTNRPNDVYVTQELIDQLCKQKEVFSAEKEKRSDHLKSIQSEVSNLWNKLQVSP
+                     NEQSQFGDSSNINQENISLWETELEKLHQLKKEHLPIFLEDCRQQILQLWDSLFYSEEQ
+                     RKSFTPMYEDIITEQVLTAHENYIKQLEAEVSANKSFLSLINRYASLIEGKKELEASSN
+                     DASRLTQRGRRDPGLLLREEKIRKRLSRELPKVQSLLIPEITAWEERNGRTFLFYDEPL
+                     LKICQEATQPKSLYRSASAAANRPKTATTTDSVNRTPSQRGRVAVPSTPSVRSASRAMT
+                     SPRTPLPRVKNTQNPSRSISAEPPSATSTANRRHPTANRIDINARLNSASRSRSANMIR
+                     QGANGSDSNMSSSPVSGNSNTPFNKFPNSVSRNTHFESKSPHPNYSRTPHETYSKASSK
+                     NVPLSPPKQRVVNEHALNIMSEKLQRTNLKEQTPEMDIENSSQNLPFSPMKISPIRASP
+                     VKTIPSSPSPTTNIFSAPLNNITNCTPMEDEWGEEGF&quot;
+     primer_bind     3918..3937
+                     /label=&quot;name&quot;
+                     /PCR_conditions=&quot;primer
+                     sequence:ACCATGTCGACATGCAAACAGTAATGATGGA&quot;
+                     /ApEinfo_fwdcolor=&quot;#baffa3&quot;
+                     /ApEinfo_revcolor=&quot;#ffbaba&quot;
+     primer_bind     complement(6142..6160)
                      /label=&quot;name&quot;
                      /PCR_conditions=&quot;primer
                      sequence:GGCGCGCCATTAAAAGCCTTCTTCTCCC&quot;

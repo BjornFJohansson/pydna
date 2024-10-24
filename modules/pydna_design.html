@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.design &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.download" href="pydna_download.html" />
+    <link rel="prev" title="pydna.crispr" href="pydna_crispr.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.design.primer_design"><code class="docutils literal notranslate"><span class="pre">primer_design()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.design.assembly_fragments"><code class="docutils literal notranslate"><span class="pre">assembly_fragments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.design.circular_assembly_fragments"><code class="docutils literal notranslate"><span class="pre">circular_assembly_fragments()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_design.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydna-design">
+<h1>pydna.design<a class="headerlink" href="#pydna-design" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-pydna.design"></span><p>This module contain functions for primer design for various purposes.</p>
+<ul class="simple">
+<li><p>:func:primer_design for designing primers for a sequence or a matching primer for an existing primer. Returns an <code class="xref py py-class docutils literal notranslate"><span class="pre">Amplicon</span></code> object (same as the <code class="xref py py-mod docutils literal notranslate"><span class="pre">amplify</span></code> module returns).</p></li>
+<li><p>:func:assembly_fragments Adds tails to primers for a linear assembly through homologous recombination or Gibson assembly.</p></li>
+<li><p>:func:circular_assembly_fragments Adds tails to primers for a circular assembly through homologous recombination or Gibson assembly.</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.design.primer_design">
+<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">primer_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">55.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_tm_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/design.html#primer_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.primer_design" title="Permalink to this definition"></a></dt>
+<dd><p>This function designs a forward primer and a reverse primer for PCR amplification
+of a given template sequence.</p>
+<p>The template argument is a Dseqrecord object or equivalent containing the template sequence.</p>
+<p>The optional fp and rp arguments can contain an existing primer for the sequence (either the forward or reverse primer).
+One or the other primers can be specified, not both (since then there is nothing to design!, use the pydna.amplify.pcr function instead).</p>
+<p>The limit argument is the minimum length of the primer. The default value is 13.</p>
+<p>If one of the primers is given, the other primer is designed to match in terms of Tm.
+If both primers are designed, they will be designed to target_tm</p>
+<p>tm_func is a function that takes an ascii string representing an oligonuceotide as argument and returns a float.
+Some useful functions can be found in the <a class="reference internal" href="pydna_tm.html#module-pydna.tm" title="pydna.tm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.tm</span></code></a> module, but can be substituted for a custom made function.</p>
+<p>estimate_function is a tm_func-like function that is used to get a first guess for the primer design, that is then used as starting
+point for the final result. This is useful when the tm_func function is slow to calculate (e.g. it relies on an
+external API, such as the NEB primer design API). The estimate_function should be faster than the tm_func function.
+The default value is <cite>None</cite>.
+To use the default <cite>tm_func</cite> as estimate function to get the NEB Tm faster, you can do:
+<cite>primer_design(dseqr, target_tm=55, tm_func=tm_neb, estimate_function=tm_default)</cite>.</p>
+<p>The function returns a pydna.amplicon.Amplicon class instance. This object has
+the object.forward_primer and object.reverse_primer properties which contain the designed primers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template</strong> (<a class="reference internal" href="pydna_dseqrecord.html#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord"><em>pydna.dseqrecord.Dseqrecord</em></a>) – a Dseqrecord object. The only required argument.</p></li>
+<li><p><strong>fp</strong> (<a class="reference internal" href="pydna_primer.html#pydna.primer.Primer" title="pydna.primer.Primer"><em>pydna.primer.Primer</em></a><em>, </em><em>optional</em>) – optional pydna.primer.Primer objects containing one primer each.</p></li>
+<li><p><strong>rp</strong> (<a class="reference internal" href="pydna_primer.html#pydna.primer.Primer" title="pydna.primer.Primer"><em>pydna.primer.Primer</em></a><em>, </em><em>optional</em>) – optional pydna.primer.Primer objects containing one primer each.</p></li>
+<li><p><strong>target_tm</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – target tm for the primers, set to 55°C by default.</p></li>
+<li><p><strong>tm_func</strong> (<em>function</em>) – Function used for tm calculation. This function takes an ascii string
+representing an oligonuceotide as argument and returns a float.
+Some useful functions can be found in the <a class="reference internal" href="pydna_tm.html#module-pydna.tm" title="pydna.tm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.tm</span></code></a> module, but can be
+substituted for a custom made function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pydna_amplicon.html#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon">Amplicon</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">Dseqrecord(-64)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.design</span> <span class="kn">import</span> <span class="n">primer_design</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span> <span class="o">=</span> <span class="n">primer_design</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span>
+<span class="go">Amplicon(64)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span><span class="o">.</span><span class="n">forward_primer</span>
+<span class="go">f64 17-mer:5&#39;-atgactgctaacccttc-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span><span class="o">.</span><span class="n">reverse_primer</span>
+<span class="go">r64 18-mer:5&#39;-catcgtaagtttcgaacg-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ampl</span><span class="o">.</span><span class="n">figure</span><span class="p">())</span>
+<span class="go">5atgactgctaacccttc...cgttcgaaacttacgatg3</span>
+<span class="go">                     ||||||||||||||||||</span>
+<span class="go">                    3gcaagctttgaatgctac5</span>
+<span class="go">5atgactgctaacccttc3</span>
+<span class="go"> |||||||||||||||||</span>
+<span class="go">3tactgacgattgggaag...gcaagctttgaatgctac5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pf</span> <span class="o">=</span> <span class="s2">&quot;GGATCC&quot;</span> <span class="o">+</span> <span class="n">ampl</span><span class="o">.</span><span class="n">forward_primer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="s2">&quot;GGATCC&quot;</span> <span class="o">+</span> <span class="n">ampl</span><span class="o">.</span><span class="n">reverse_primer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pf</span>
+<span class="go">f64 23-mer:5&#39;-GGATCCatgactgct..ttc-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span>
+<span class="go">r64 24-mer:5&#39;-GGATCCcatcgtaag..acg-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.amplify</span> <span class="kn">import</span> <span class="n">pcr</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcr_prod</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">pr</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pcr_prod</span><span class="o">.</span><span class="n">figure</span><span class="p">())</span>
+<span class="go">      5atgactgctaacccttc...cgttcgaaacttacgatg3</span>
+<span class="go">                           ||||||||||||||||||</span>
+<span class="go">                          3gcaagctttgaatgctacCCTAGG5</span>
+<span class="go">5GGATCCatgactgctaacccttc3</span>
+<span class="go">       |||||||||||||||||</span>
+<span class="go">      3tactgacgattgggaag...gcaagctttgaatgctac5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pcr_prod</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
+<span class="go">GGATCCatgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatgGGATCC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.primer</span> <span class="kn">import</span> <span class="n">Primer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pf</span> <span class="o">=</span> <span class="n">Primer</span><span class="p">(</span><span class="s2">&quot;atgactgctaacccttccttggtgttg&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;myprimer&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span> <span class="o">=</span> <span class="n">primer_design</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">fp</span> <span class="o">=</span> <span class="n">pf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span><span class="o">.</span><span class="n">forward_primer</span>
+<span class="go">myprimer 27-mer:5&#39;-atgactgctaaccct..ttg-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ampl</span><span class="o">.</span><span class="n">reverse_primer</span>
+<span class="go">r64 32-mer:5&#39;-catcgtaagtttcga..atc-3&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.design.assembly_fragments">
+<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">assembly_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlink</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/design.html#assembly_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.assembly_fragments" title="Permalink to this definition"></a></dt>
+<dd><p>This function return a list of <a class="reference internal" href="pydna_amplicon.html#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> objects where
+primers have been modified with tails so that the fragments can be fused in
+the order they appear in the list by for example Gibson assembly or homologous
+recombination.</p>
+<p>Given that we have two linear <a class="reference internal" href="pydna_amplicon.html#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> objects a and b</p>
+<p>we can modify the reverse primer of a and forward primer of b with tails to allow
+fusion by fusion PCR, Gibson assembly or in-vivo homologous recombination.
+The basic requirements for the primers for the three techniques are the same.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">_________</span> <span class="n">a</span> <span class="n">_________</span>
+<span class="o">/</span>                     \
+<span class="n">agcctatcatcttggtctctgca</span>
+                  <span class="o">|||||</span>
+                 <span class="o">&lt;</span><span class="n">gacgt</span>
+<span class="n">agcct</span><span class="o">&gt;</span>
+<span class="o">|||||</span>
+<span class="n">tcggatagtagaaccagagacgt</span>
+
+                        <span class="n">__________</span> <span class="n">b</span> <span class="n">________</span>
+                       <span class="o">/</span>                     \
+                       <span class="n">TTTATATCGCATGACTCTTCTTT</span>
+                                         <span class="o">|||||</span>
+                                        <span class="o">&lt;</span><span class="n">AGAAA</span>
+                       <span class="n">TTTAT</span><span class="o">&gt;</span>
+                       <span class="o">|||||</span>
+                       <span class="n">AAATATAGCGTACTGAGAAGAAA</span>
+
+<span class="n">agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT</span>
+<span class="o">||||||||||||||||||||||||||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA</span>
+\<span class="n">___________________</span> <span class="n">c</span> <span class="n">______________________</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Design tailed primers incorporating a part of the next or previous fragment to be assembled.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgca</span>
+<span class="o">|||||||||||||||||||||||</span>
+                <span class="n">gagacgtAAATATA</span>
+
+<span class="o">|||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgt</span>
+
+                       <span class="n">TTTATATCGCATGACTCTTCTTT</span>
+                       <span class="o">|||||||||||||||||||||||</span>
+
+                <span class="n">ctctgcaTTTATAT</span>
+                       <span class="o">|||||||||||||||||||||||</span>
+                       <span class="n">AAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>PCR products with flanking sequences are formed in the PCR process.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgcaTTTATAT</span>
+<span class="o">||||||||||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgtAAATATA</span>
+                \<span class="n">____________</span><span class="o">/</span>
+
+                   <span class="n">identical</span>
+                   <span class="n">sequences</span>
+                 <span class="n">____________</span>
+                <span class="o">/</span>            \
+                <span class="n">ctctgcaTTTATATCGCATGACTCTTCTTT</span>
+                <span class="o">||||||||||||||||||||||||||||||</span>
+                <span class="n">gagacgtAAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>The fragments can be fused by any of the techniques mentioned earlier to form c:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT</span>
+<span class="o">||||||||||||||||||||||||||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>The first argument of this function is a list of sequence objects containing
+Amplicons and other similar objects.</p>
+<p><strong>At least every second sequence object needs to be an Amplicon</strong></p>
+<p>This rule exists because if a sequence object is that is not a PCR product
+is to be fused with another fragment, that other fragment needs to be an Amplicon
+so that the primer of the other object can be modified to include the whole stretch
+of sequence homology needed for the fusion. See the example below where a is a
+non-amplicon (a linear plasmid  vector for instance)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">_________</span> <span class="n">a</span> <span class="n">_________</span>           <span class="n">__________</span> <span class="n">b</span> <span class="n">________</span>
+<span class="o">/</span>                     \         <span class="o">/</span>                     \
+<span class="n">agcctatcatcttggtctctgca</span>   <span class="o">&lt;--&gt;</span>  <span class="n">TTTATATCGCATGACTCTTCTTT</span>
+<span class="o">|||||||||||||||||||||||</span>         <span class="o">|||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgt</span>                          <span class="o">&lt;</span><span class="n">AGAAA</span>
+                                <span class="n">TTTAT</span><span class="o">&gt;</span>
+                                <span class="o">|||||||||||||||||||||||</span>
+                          <span class="o">&lt;--&gt;</span>  <span class="n">AAATATAGCGTACTGAGAAGAAA</span>
+
+     <span class="n">agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT</span>
+     <span class="o">||||||||||||||||||||||||||||||||||||||||||||||</span>
+     <span class="n">tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA</span>
+     \<span class="n">___________________</span> <span class="n">c</span> <span class="n">______________________</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>In this case only the forward primer of b is fitted with a tail with a part a:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgca</span>
+<span class="o">|||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgt</span>
+
+                       <span class="n">TTTATATCGCATGACTCTTCTTT</span>
+                       <span class="o">|||||||||||||||||||||||</span>
+                                        <span class="o">&lt;</span><span class="n">AGAAA</span>
+         <span class="n">tcttggtctctgcaTTTATAT</span>
+                       <span class="o">|||||||||||||||||||||||</span>
+                       <span class="n">AAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>PCR products with flanking sequences are formed in the PCR process.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgcaTTTATAT</span>
+<span class="o">||||||||||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgtAAATATA</span>
+                \<span class="n">____________</span><span class="o">/</span>
+
+                   <span class="n">identical</span>
+                   <span class="n">sequences</span>
+                 <span class="n">____________</span>
+                <span class="o">/</span>            \
+                <span class="n">ctctgcaTTTATATCGCATGACTCTTCTTT</span>
+                <span class="o">||||||||||||||||||||||||||||||</span>
+                <span class="n">gagacgtAAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>The fragments can be fused by for example Gibson assembly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgcaTTTATAT</span>
+<span class="o">||||||||||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaacca</span>
+
+                             <span class="n">TCGCATGACTCTTCTTT</span>
+                <span class="o">||||||||||||||||||||||||||||||</span>
+                <span class="n">gagacgtAAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>to form c:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">agcctatcatcttggtctctgcaTTTATATCGCATGACTCTTCTTT</span>
+<span class="o">||||||||||||||||||||||||||||||||||||||||||||||</span>
+<span class="n">tcggatagtagaaccagagacgtAAATATAGCGTACTGAGAAGAAA</span>
+</pre></div>
+</div>
+<p>The first argument of this function is a list of sequence objects containing
+Amplicons and other similar objects.</p>
+<p>The overlap argument controls how many base pairs of overlap required between
+adjacent sequence fragments. In the junction between Amplicons, tails with the
+length of about half of this value is added to the two primers
+closest to the junction.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;       &lt;
+Amplicon1
+         Amplicon2
+         &gt;       &lt;
+
+         ⇣
+
+&gt;       &lt;-
+Amplicon1
+         Amplicon2
+        -&gt;       &lt;
+</pre></div>
+</div>
+<p>In the case of an Amplicon adjacent to a Dseqrecord object, the tail will
+be twice as long (1*overlap) since the
+recombining sequence is present entirely on this primer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Dseqrecd1
+         Amplicon1
+         &gt;       &lt;
+
+         ⇣
+
+Dseqrecd1
+         Amplicon1
+       --&gt;       &lt;
+</pre></div>
+</div>
+<p>Note that if the sequence of DNA fragments starts or stops with an Amplicon,
+the very first and very last prinmer will not be modified i.e. assembles are
+always assumed to be linear. There are simple tricks around that for circular
+assemblies depicted in the last two examples below.</p>
+<p>The maxlink arguments controls the cut off length for sequences that will be
+synhtesized by adding them to primers for the adjacent fragment(s). The
+argument list may contain short spacers (such as spacers between fusion proteins).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Example 1: Linear assembly of PCR products (pydna.amplicon.Amplicon class objects) ------
+
+&gt;       &lt;         &gt;       &lt;
+Amplicon1         Amplicon3
+         Amplicon2         Amplicon4
+         &gt;       &lt;         &gt;       &lt;
+
+                     ⇣
+                     pydna.design.assembly_fragments
+                     ⇣
+
+&gt;       &lt;-       -&gt;       &lt;-                      pydna.assembly.Assembly
+Amplicon1         Amplicon3
+         Amplicon2         Amplicon4     ➤  Amplicon1Amplicon2Amplicon3Amplicon4
+        -&gt;       &lt;-       -&gt;       &lt;
+
+Example 2: Linear assembly of alternating Amplicons and other fragments
+
+&gt;       &lt;         &gt;       &lt;
+Amplicon1         Amplicon2
+         Dseqrecd1         Dseqrecd2
+
+                     ⇣
+                     pydna.design.assembly_fragments
+                     ⇣
+
+&gt;       &lt;--     --&gt;       &lt;--                     pydna.assembly.Assembly
+Amplicon1         Amplicon2
+         Dseqrecd1         Dseqrecd2     ➤  Amplicon1Dseqrecd1Amplicon2Dseqrecd2
+
+Example 3: Linear assembly of alternating Amplicons and other fragments
+
+Dseqrecd1         Dseqrecd2
+         Amplicon1         Amplicon2
+         &gt;       &lt;       --&gt;       &lt;
+
+                     ⇣
+             pydna.design.assembly_fragments
+                     ⇣
+                                                  pydna.assembly.Assembly
+Dseqrecd1         Dseqrecd2
+         Amplicon1         Amplicon2     ➤  Dseqrecd1Amplicon1Dseqrecd2Amplicon2
+       --&gt;       &lt;--     --&gt;       &lt;
+
+Example 4: Circular assembly of alternating Amplicons and other fragments
+
+                 -&gt;       &lt;==
+Dseqrecd1         Amplicon2
+         Amplicon1         Dseqrecd1
+       --&gt;       &lt;-
+                     ⇣
+                     pydna.design.assembly_fragments
+                     ⇣
+                                                   pydna.assembly.Assembly
+                 -&gt;       &lt;==
+Dseqrecd1         Amplicon2                    -Dseqrecd1Amplicon1Amplicon2-
+         Amplicon1                       ➤    |                             |
+       --&gt;       &lt;-                            -----------------------------
+
+------ Example 5: Circular assembly of Amplicons
+
+&gt;       &lt;         &gt;       &lt;
+Amplicon1         Amplicon3
+         Amplicon2         Amplicon1
+         &gt;       &lt;         &gt;       &lt;
+
+                     ⇣
+                     pydna.design.assembly_fragments
+                     ⇣
+
+&gt;       &lt;=       -&gt;       &lt;-
+Amplicon1         Amplicon3
+         Amplicon2         Amplicon1
+        -&gt;       &lt;-       +&gt;       &lt;
+
+                     ⇣
+             make new Amplicon using the Amplicon1.template and
+             the last fwd primer and the first rev primer.
+                     ⇣
+                                                   pydna.assembly.Assembly
++&gt;       &lt;=       -&gt;       &lt;-
+ Amplicon1         Amplicon3                  -Amplicon1Amplicon2Amplicon3-
+          Amplicon2                      ➤   |                             |
+         -&gt;       &lt;-                          -----------------------------
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (list of <a class="reference internal" href="pydna_amplicon.html#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> and other Dseqrecord like objects) – list Amplicon and Dseqrecord object for which fusion primers should be constructed.</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Length of required overlap between fragments.</p></li>
+<li><p><strong>maxlink</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum length of spacer sequences that may be present in f. These will be included in tails for designed primers.</p></li>
+<li><p><strong>circular</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, the assembly is circular. If False, the assembly is linear.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>seqs</strong> –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Amplicon1</span><span class="p">,</span>
+ <span class="n">Amplicon2</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="pydna_amplicon.html#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> and other Dseqrecord like objects <a class="reference internal" href="pydna_amplicon.html#pydna.amplicon.Amplicon" title="pydna.amplicon.Amplicon"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.amplicon.Amplicon</span></code></a> objects</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.design</span> <span class="kn">import</span> <span class="n">primer_design</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">primer_design</span><span class="p">(</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;atgactgctaacccttccttggtgttgaacaagatcgacgacatttcgttcgaaacttacgatg&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">primer_design</span><span class="p">(</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;ccaaacccaccaggtaccttatgtaagtacttcaagtcgccagaagacttcttggtcaagttgcc&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">primer_design</span><span class="p">(</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;tgtactggtgctgaaccttgtatcaagttgggtgttgacgccattgccccaggtggtcgtttcgtt&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.design</span> <span class="kn">import</span> <span class="n">assembly_fragments</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># We would like a circular recombination, so the first sequence has to be repeated</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fa1</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fa2</span> <span class="o">=</span> <span class="n">assembly_fragments</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">a</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Since all fragments are Amplicons, we need to extract the rp of the 1st and fp of the last fragments.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.amplify</span> <span class="kn">import</span> <span class="n">pcr</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fa</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">fa2</span><span class="o">.</span><span class="n">forward_primer</span><span class="p">,</span> <span class="n">fa1</span><span class="o">.</span><span class="n">reverse_primer</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fc</span><span class="p">]</span>
+<span class="go">[Amplicon(100), Amplicon(101), Amplicon(102)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fa</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fb</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fc</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;fa fb fc&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.assembly</span> <span class="kn">import</span> <span class="n">Assembly</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">assemblyobj</span> <span class="o">=</span> <span class="n">Assembly</span><span class="p">([</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fc</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">assemblyobj</span>
+<span class="go">Assembly</span>
+<span class="go">fragments....: 100bp 101bp 102bp</span>
+<span class="go">limit(bp)....: 25</span>
+<span class="go">G.nodes......: 6</span>
+<span class="go">algorithm....: common_sub_strings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">assemblyobj</span><span class="o">.</span><span class="n">assemble_linear</span><span class="p">()</span>
+<span class="go">[Contig(-231), Contig(-166), Contig(-36)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">assemblyobj</span><span class="o">.</span><span class="n">assemble_circular</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">seguid</span><span class="p">()</span>
+<span class="go">&#39;cdseguid=85t6tfcvWav0wnXEIb-lkUtrl4s&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">+</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span><span class="o">.</span><span class="n">seguid</span><span class="p">()</span>
+<span class="go">&#39;cdseguid=85t6tfcvWav0wnXEIb-lkUtrl4s&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">assemblyobj</span><span class="o">.</span><span class="n">assemble_circular</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">figure</span><span class="p">())</span>
+<span class="go"> -|fa|36</span>
+<span class="go">|     \/</span>
+<span class="go">|     /\</span>
+<span class="go">|     36|fb|36</span>
+<span class="go">|           \/</span>
+<span class="go">|           /\</span>
+<span class="go">|           36|fc|36</span>
+<span class="go">|                 \/</span>
+<span class="go">|                 /\</span>
+<span class="go">|                 36-</span>
+<span class="go">|                    |</span>
+<span class="go"> --------------------</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.design.circular_assembly_fragments">
+<span class="sig-prename descclassname"><span class="pre">pydna.design.</span></span><span class="sig-name descname"><span class="pre">circular_assembly_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlink</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/design.html#circular_assembly_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.design.circular_assembly_fragments" title="Permalink to this definition"></a></dt>
+<dd><p>Equivalent to <cite>assembly_fragments</cite> with <cite>circular=True</cite>.</p>
+<p>Deprecated, kept for backward compatibility. Use <cite>assembly_fragments</cite> with <cite>circular=True</cite> instead.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_crispr.html" class="btn btn-neutral float-left" title="pydna.crispr" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_download.html" class="btn btn-neutral float-right" title="pydna.download" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

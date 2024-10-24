@@ -1,0 +1,7 @@
+pydna.fusionpcr
+==========
+
+.. automodule:: pydna.fusionpcr
+    :members:
+    :undoc-members:
+    :show-inheritance:

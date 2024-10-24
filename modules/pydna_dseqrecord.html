@@ -1,0 +1,874 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.dseqrecord &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.editor" href="pydna_editor.html" />
+    <link rel="prev" title="pydna.dseq" href="pydna_dseq.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.dseqrecord</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord"><code class="docutils literal notranslate"><span class="pre">Dseqrecord</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.from_string"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.from_SeqRecord"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.from_SeqRecord()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.circular"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.circular</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.m"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.m()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.extract_feature"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.extract_feature()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.add_feature"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.add_feature()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.seguid"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.seguid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.looped"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.looped()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.tolinear"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.tolinear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.terminal_transferase"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.terminal_transferase()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.format"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.format()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.write"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.find"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.find()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.find_aminoacids"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.find_aminoacids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.find_aa"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.find_aa()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.map_trace_files"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.map_trace_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.linearize"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.linearize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.no_cutters"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.no_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.unique_cutters"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.unique_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.once_cutters"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.once_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.twice_cutters"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.twice_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.n_cutters"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.n_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.cutters"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.number_of_cuts"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.number_of_cuts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.cas9"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.cas9()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.reverse_complement"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.reverse_complement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.rc"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.rc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.synced"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.synced()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.upper"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.upper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.lower"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.lower()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.orfs"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.orfs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.orfs_to_features"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.orfs_to_features()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.copy_gb_to_clipboard()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.copy_fasta_to_clipboard"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.copy_fasta_to_clipboard()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.figure"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.figure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.shifted"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.shifted()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.cut"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.apply_cut"><code class="docutils literal notranslate"><span class="pre">Dseqrecord.apply_cut()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.dseqrecord</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_dseqrecord.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydna-dseqrecord">
+<h1>pydna.dseqrecord<a class="headerlink" href="#pydna-dseqrecord" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-pydna.dseqrecord"></span><p>This module provides the <a class="reference internal" href="#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dseqrecord</span></code></a> class, for handling double stranded
+DNA sequences. The Dseqrecord holds sequence information in the form of a <a class="reference internal" href="pydna_dseq.html#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydna.dseq.Dseq</span></code></a>
+object. The Dseq and Dseqrecord classes are subclasses of Biopythons
+Seq and SeqRecord classes, respectively.</p>
+<p>The Dseq and Dseqrecord classes support the notion of circular and linear DNA topology.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.dseqrecord.</span></span><span class="sig-name descname"><span class="pre">Dseqrecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5e-14</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pydna_seqrecord.html#pydna.seqrecord.SeqRecord" title="pydna.seqrecord.SeqRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeqRecord</span></code></a></p>
+<p>Dseqrecord is a double stranded version of the Biopython SeqRecord <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> class.
+The Dseqrecord object holds a Dseq object describing the sequence.
+Additionally, Dseqrecord hold meta information about the sequence in the
+from of a list of SeqFeatures, in the same way as the SeqRecord does.</p>
+<p>The Dseqrecord can be initialized with a string, Seq, Dseq, SeqRecord
+or another Dseqrecord. The sequence information will be stored in a
+Dseq object in all cases.</p>
+<p>Dseqrecord objects can be read or parsed from sequences in FASTA, EMBL or Genbank formats.
+See the <a class="reference internal" href="pydna_readers.html#module-pydna.readers" title="pydna.readers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.readers</span></code></a> and <a class="reference internal" href="pydna_parsers.html#module-pydna.parsers" title="pydna.parsers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydna.parsers</span></code></a> modules for further information.</p>
+<p>There is a short representation associated with the Dseqrecord.
+<code class="docutils literal notranslate"><span class="pre">Dseqrecord(-3)</span></code> represents a linear sequence of length 2
+while <code class="docutils literal notranslate"><span class="pre">Dseqrecord(o7)</span></code>
+represents a circular sequence of length 7.</p>
+<p>Dseqrecord and Dseq share the same concept of length. This length can be larger
+than each strand alone if they are staggered as in the example below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;--</span> <span class="n">length</span> <span class="o">--&gt;</span>
+<span class="n">GATCCTTT</span>
+     <span class="n">AAAGCCTAG</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>record</strong> (<em>string</em><em>, </em><a class="reference internal" href="pydna_seq.html#pydna.seq.Seq" title="pydna.seq.Seq"><em>Seq</em></a><em>, </em><a class="reference internal" href="pydna_seqrecord.html#pydna.seqrecord.SeqRecord" title="pydna.seqrecord.SeqRecord"><em>SeqRecord</em></a><em>, </em><a class="reference internal" href="pydna_all.html#pydna.all.Dseq" title="pydna.all.Dseq"><em>Dseq</em></a><em> or </em><em>other Dseqrecord object</em>) – This data will be used to form the seq property</p></li>
+<li><p><strong>circular</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – True or False reflecting the shape of the DNA molecule</p></li>
+<li><p><strong>linear</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – True or False reflecting the shape of the DNA molecule</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://biopython.org/wiki/SeqRecord">http://biopython.org/wiki/SeqRecord</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.from_string">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5e-14</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.from_string" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.from_SeqRecord">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_SeqRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pydna_seqrecord.html#pydna.seqrecord.SeqRecord" title="pydna.seqrecord.SeqRecord"><span class="pre">SeqRecord</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5e-14</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.from_SeqRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.from_SeqRecord" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.circular">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">circular</span></span><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.circular" title="Permalink to this definition"></a></dt>
+<dd><p>The circular property can not be set directly.
+Use <a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.looped" title="pydna.dseqrecord.Dseqrecord.looped"><code class="xref py py-meth docutils literal notranslate"><span class="pre">looped()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.m">
+<span class="sig-name descname"><span class="pre">m</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.m" title="Permalink to this definition"></a></dt>
+<dd><p>This method returns the mass of the DNA molecule in grams. This is
+calculated as the product between the molecular weight of the Dseq object
+and the</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.extract_feature">
+<span class="sig-name descname"><span class="pre">extract_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.extract_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.extract_feature" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts a feature and creates a new Dseqrecord object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Indicates the feature to extract</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;atgtaa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">extract_feature</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseqrecord(-2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-2)</span>
+<span class="go">gt</span>
+<span class="go">ca</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.add_feature">
+<span class="sig-name descname"><span class="pre">add_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'misc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.add_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.add_feature" title="Permalink to this definition"></a></dt>
+<dd><p>Add a feature of type misc to the feature list of the sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Indicates start of the feature</p></li>
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Indicates end of the feature</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.seqrecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">SeqRecord</span><span class="p">(</span><span class="s2">&quot;atgtaa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">features</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">features</span>
+<span class="go">[SeqFeature(SimpleLocation(ExactPosition(2), ExactPosition(4), strand=1), type=&#39;misc&#39;, qualifiers=...)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.seguid">
+<span class="sig-name descname"><span class="pre">seguid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.seguid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.seguid" title="Permalink to this definition"></a></dt>
+<dd><p>Url safe SEGUID for the sequence.</p>
+<p>This checksum is the same as seguid but with base64.urlsafe
+encoding instead of the normal base64. This means that
+the characters + and / are replaced with - and _ so that
+the checksum can be part of a URL.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seguid</span><span class="p">()</span>
+<span class="go">&#39;ldseguid=TEwydy0ugvGXh3VJnVwgtxoyDQA&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.looped">
+<span class="sig-name descname"><span class="pre">looped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.looped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.looped" title="Permalink to this definition"></a></dt>
+<dd><p>Circular version of the Dseqrecord object.</p>
+<p>The underlying linear Dseq object has to have compatible ends.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseqrecord(o3)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="pydna_dseq.html#pydna.dseq.Dseq.looped" title="pydna.dseq.Dseq.looped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.looped</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.tolinear">
+<span class="sig-name descname"><span class="pre">tolinear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.tolinear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.tolinear" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a linear, blunt copy of a circular Dseqrecord object. The
+underlying Dseq object has to be circular.</p>
+<p>This method is deprecated, use slicing instead. See example below.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="n">circular</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseqrecord(o3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="p">[:]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.terminal_transferase">
+<span class="sig-name descname"><span class="pre">terminal_transferase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleotides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.terminal_transferase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.terminal_transferase" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.format" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the sequence as a string using a format supported by Biopython
+SeqIO <a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. Default is “gb” which is short for Genbank.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;02-FEB-2013&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
+<span class="go">LOCUS       name                       3 bp    DNA     linear   UNK 02-FEB-2013</span>
+<span class="go">DEFINITION  description.</span>
+<span class="go">ACCESSION   id</span>
+<span class="go">VERSION     id</span>
+<span class="go">KEYWORDS    .</span>
+<span class="go">SOURCE      .</span>
+<span class="go">  ORGANISM  .</span>
+<span class="go">            .</span>
+<span class="go">FEATURES             Location/Qualifiers</span>
+<span class="go">ORIGIN</span>
+<span class="go">        1 aaa</span>
+<span class="go">//</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://biopython.org/wiki/SeqIO">http://biopython.org/wiki/SeqIO</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes the Dseqrecord to a file using the format f, which must
+be a format supported by Biopython SeqIO for writing <a class="footnote-reference brackets" href="#id6" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. Default
+is “gb” which is short for Genbank. Note that Biopython SeqIO reads
+more formats than it writes.</p>
+<p>Filename is the path to the file where the sequece is to be
+written. The filename is optional, if it is not given, the
+description property (string) is used together with the format.</p>
+<p>If obj is the Dseqrecord object, the default file name will be:</p>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;obj.locus&gt;.&lt;f&gt;</span></code></p>
+<p>Where &lt;f&gt; is “gb” by default. If the filename already exists and
+AND the sequence it contains is different, a new file name will be
+used so that the old file is not lost:</p>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;obj.locus&gt;_NEW.&lt;f&gt;</span></code></p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://biopython.org/wiki/SeqIO">http://biopython.org/wiki/SeqIO</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.find" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.find_aminoacids">
+<span class="sig-name descname"><span class="pre">find_aminoacids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.find_aminoacids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.find_aminoacids" title="Permalink to this definition"></a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;atgtacgatcgtatgctggttatattttag&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;MYDRMLVIF*&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;RML&quot;</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;MMM&quot;</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">rc</span><span class="p">()</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;LKYNQHTIVH&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;QHT&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">rc</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;QHT&quot;</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slc</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find_aa</span><span class="p">(</span><span class="s2">&quot;RML&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slc</span>
+<span class="go">slice(9, 18, None)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="n">slc</span><span class="p">]</span>
+<span class="go">Dseqrecord(-9)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">slc</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span>
+<span class="go">Dseq(-9)</span>
+<span class="go">cgtatgctg</span>
+<span class="go">gcatacgac</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;RML&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.find_aa">
+<span class="sig-name descname"><span class="pre">find_aa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.find_aa" title="Permalink to this definition"></a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;atgtacgatcgtatgctggttatattttag&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;MYDRMLVIF*&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;RML&quot;</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;MMM&quot;</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">rc</span><span class="p">()</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;LKYNQHTIVH&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;QHT&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">rc</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;QHT&quot;</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slc</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find_aa</span><span class="p">(</span><span class="s2">&quot;RML&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slc</span>
+<span class="go">slice(9, 18, None)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="n">slc</span><span class="p">]</span>
+<span class="go">Dseqrecord(-9)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">slc</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span>
+<span class="go">Dseq(-9)</span>
+<span class="go">cgtatgctg</span>
+<span class="go">gcatacgac</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;RML&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.map_trace_files">
+<span class="sig-name descname"><span class="pre">map_trace_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.map_trace_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.map_trace_files" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.linearize">
+<span class="sig-name descname"><span class="pre">linearize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">enzymes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.linearize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.linearize" title="Permalink to this definition"></a></dt>
+<dd><p>Similar to <cite>:func:cut</cite>.</p>
+<p>Throws an exception if there is not excactly one cut
+i.e. none or more than one digestion products.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.no_cutters">
+<span class="sig-name descname"><span class="pre">no_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.no_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.no_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.unique_cutters">
+<span class="sig-name descname"><span class="pre">unique_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.unique_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.unique_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.once_cutters">
+<span class="sig-name descname"><span class="pre">once_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.once_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.once_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.twice_cutters">
+<span class="sig-name descname"><span class="pre">twice_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.twice_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.twice_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.n_cutters">
+<span class="sig-name descname"><span class="pre">n_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.n_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.n_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.cutters">
+<span class="sig-name descname"><span class="pre">cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.cutters" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.number_of_cuts">
+<span class="sig-name descname"><span class="pre">number_of_cuts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">enzymes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.number_of_cuts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.number_of_cuts" title="Permalink to this definition"></a></dt>
+<dd><p>The number of cuts by digestion with the Restriction enzymes
+contained in the iterable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.cas9">
+<span class="sig-name descname"><span class="pre">cas9</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RNA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.cas9"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.cas9" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.reverse_complement">
+<span class="sig-name descname"><span class="pre">reverse_complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.reverse_complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.reverse_complement" title="Permalink to this definition"></a></dt>
+<dd><p>Reverse complement.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;ggaatt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseqrecord(-6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">ggaatt</span>
+<span class="go">ccttaa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">aattcc</span>
+<span class="go">ttaagg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="pydna_dseq.html#pydna.dseq.Dseq.reverse_complement" title="pydna.dseq.Dseq.reverse_complement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.reverse_complement</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.rc">
+<span class="sig-name descname"><span class="pre">rc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.rc" title="Permalink to this definition"></a></dt>
+<dd><p>Reverse complement.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;ggaatt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseqrecord(-6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">ggaatt</span>
+<span class="go">ccttaa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">aattcc</span>
+<span class="go">ttaagg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="pydna_dseq.html#pydna.dseq.Dseq.reverse_complement" title="pydna.dseq.Dseq.reverse_complement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.reverse_complement</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.synced">
+<span class="sig-name descname"><span class="pre">synced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.synced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.synced" title="Permalink to this definition"></a></dt>
+<dd><p>This method returns a new circular sequence (Dseqrecord object), which has been rotated
+in such a way that there is maximum overlap between the sequence and
+ref, which may be a string, Biopython Seq, SeqRecord object or
+another Dseqrecord object.</p>
+<p>The reason for using this could be to rotate a new recombinant plasmid so
+that it starts at the same position after cloning. See the example below:</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;gaat&quot;</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(o4)</span>
+<span class="go">gaat</span>
+<span class="go">ctta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-4)</span>
+<span class="go">atga</span>
+<span class="go">tact</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">insert</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;CCC&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recombinant</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span><span class="o">+</span><span class="n">insert</span><span class="p">)</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recombinant</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(o7)</span>
+<span class="go">atgaCCC</span>
+<span class="go">tactGGG</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recombinant</span><span class="o">.</span><span class="n">synced</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(o7)</span>
+<span class="go">gaCCCat</span>
+<span class="go">ctGGGta</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.upper">
+<span class="sig-name descname"><span class="pre">upper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.upper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.upper" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an uppercase copy.
+&gt;&gt;&gt; from pydna.dseqrecord import Dseqrecord
+&gt;&gt;&gt; my_seq = Dseqrecord(“aAa”)
+&gt;&gt;&gt; my_seq.seq
+Dseq(-3)
+aAa
+tTt
+&gt;&gt;&gt; upper = my_seq.upper()
+&gt;&gt;&gt; upper.seq
+Dseq(-3)
+AAA
+TTT
+&gt;&gt;&gt;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dseqrecord object in uppercase</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord">Dseqrecord</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.lower" title="pydna.dseqrecord.Dseqrecord.lower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord.lower</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.lower">
+<span class="sig-name descname"><span class="pre">lower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.lower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.lower" title="Permalink to this definition"></a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aAa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aAa</span>
+<span class="go">tTt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upper</span> <span class="o">=</span> <span class="n">my_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upper</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">AAA</span>
+<span class="go">TTT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lower</span> <span class="o">=</span> <span class="n">my_seq</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lower</span>
+<span class="go">Dseqrecord(-3)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dseqrecord object in lowercase</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord">Dseqrecord</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pydna.dseqrecord.Dseqrecord.upper" title="pydna.dseqrecord.Dseqrecord.upper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord.upper</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.orfs">
+<span class="sig-name descname"><span class="pre">orfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.orfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.orfs" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.orfs_to_features">
+<span class="sig-name descname"><span class="pre">orfs_to_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.orfs_to_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.orfs_to_features" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard">
+<span class="sig-name descname"><span class="pre">copy_gb_to_clipboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.copy_gb_to_clipboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.copy_fasta_to_clipboard">
+<span class="sig-name descname"><span class="pre">copy_fasta_to_clipboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.copy_fasta_to_clipboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.copy_fasta_to_clipboard" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.figure">
+<span class="sig-name descname"><span class="pre">figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\x1b[48;5;11m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\x1b[0m'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.figure" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.shifted">
+<span class="sig-name descname"><span class="pre">shifted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.shifted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.shifted" title="Permalink to this definition"></a></dt>
+<dd><p>Circular Dseqrecord with a new origin &lt;shift&gt;.</p>
+<p>This only works on circular Dseqrecords. If we consider the following
+circular sequence:</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">GAAAT</span>&#160;&#160; <span class="pre">&lt;--</span> <span class="pre">watson</span> <span class="pre">strand</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">CTTTA</span>&#160;&#160; <span class="pre">&lt;--</span> <span class="pre">crick</span> <span class="pre">strand</span></code></div>
+</div>
+<p>The T and the G on the watson strand are linked together as well
+as the A and the C of the of the crick strand.</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">shift</span></code> is 1, this indicates a new origin at position 1:</p>
+<div class="line-block">
+<div class="line-block">
+<div class="line">new origin at the | symbol:</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">G|AAAT</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">C|TTTA</span></code></div>
+</div>
+<p>new sequence:</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">AAATG</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">TTTAC</span></code></div>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;aaat&quot;</span><span class="p">,</span><span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseqrecord(o4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(o4)</span>
+<span class="go">aaat</span>
+<span class="go">ttta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shifted</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseqrecord(o4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(o4)</span>
+<span class="go">aata</span>
+<span class="go">ttat</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">enzymes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.cut" title="Permalink to this definition"></a></dt>
+<dd><p>Digest a Dseqrecord object with one or more restriction enzymes.</p>
+<p>returns a list of linear Dseqrecords. If there are no cuts, an empty
+list is returned.</p>
+<p>See also <code class="xref py py-func docutils literal notranslate"><span class="pre">Dseq.cut()</span></code>
+:param enzymes: A Bio.Restriction.XXX restriction object or iterable of such.
+:type enzymes: enzyme object or iterable of such objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Dseqrecord_frags</strong> – list of Dseqrecord objects formed by the digestion</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="s2">&quot;ggatcc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">BamHI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">BamHI</span><span class="p">)</span>
+<span class="go">(Dseqrecord(-5), Dseqrecord(-5))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frag1</span><span class="p">,</span> <span class="n">frag2</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">BamHI</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frag1</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">g</span>
+<span class="go">cctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frag2</span><span class="o">.</span><span class="n">seq</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">gatcc</span>
+<span class="go">    g</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseqrecord.Dseqrecord.apply_cut">
+<span class="sig-name descname"><span class="pre">apply_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_cut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_cut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseqrecord.html#Dseqrecord.apply_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseqrecord.Dseqrecord.apply_cut" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_dseq.html" class="btn btn-neutral float-left" title="pydna.dseq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_editor.html" class="btn btn-neutral float-right" title="pydna.editor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

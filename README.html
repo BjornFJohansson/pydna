@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h1>
+<p>Documentation is built using <a class="reference external" href="http://www.sphinx-doc.org/">Sphinx</a> from <a class="reference external" href="https://www.python.org/dev/peps/pep-0257/">docstrings</a>
+using a GitHub <a class="reference external" href="https://github.com/BjornFJohansson/pydna/actions/workflows/publish-docs.yml">action</a>.
+The <a class="reference internal" href="#www.numpy.org"><span class="xref myst">numpy</span></a> <a class="reference external" href="https://numpy.org/doc/stable/dev/howto-docs.html#docstring-intro">docstring format</a> is used.</p>
+<p>Below the commands to run a local sphinx server that auto-updated when files are changed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install docs dependency group</span>
+poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span>docs
+
+<span class="c1"># Start the sphinx server to see docs live by default at http://127.0.0.1:8000/</span>
+sphinx-autobuild<span class="w"> </span>--watch<span class="w"> </span>src/<span class="w"> </span>docs<span class="w"> </span>docs/_build/html
+</pre></div>
+</div>
+<p>When you run the sphinx server live, it not always updates things if you make relevant changes (e.g. adding new pages,
+changing the css, etc.). To force an update, you can run the command below which deletes the existing build folder and
+then rebuilds it.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm<span class="w"> </span>-rf<span class="w"> </span>docs/_build/html<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sphinx-autobuild<span class="w"> </span>--watch<span class="w"> </span>src/<span class="w"> </span>docs<span class="w"> </span>docs/_build/html
+</pre></div>
+</div>
+<section id="adding-new-sections-to-the-documentation">
+<h2>Adding new sections to the documentation<a class="headerlink" href="#adding-new-sections-to-the-documentation" title="Permalink to this heading"></a></h2>
+<p>You can add new sections (equivalent to “Getting started” or “Example gallery”) by creating a new <code class="docutils literal notranslate"><span class="pre">.rst</span></code> or <code class="docutils literal notranslate"><span class="pre">.md</span></code> file in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder, and then adding a reference to it in the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">toctree::</span></code> directive in the <code class="docutils literal notranslate"><span class="pre">docs/index.rst</span></code> file.</p>
+</section>
+<section id="auto-generated-files">
+<h2>Auto-generated files<a class="headerlink" href="#auto-generated-files" title="Permalink to this heading"></a></h2>
+<p>The script <code class="docutils literal notranslate"><span class="pre">autogen_docs.sh</span></code> is run in the github action before creating the docs. If you want to reproduce locally, you
+should run it from the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+bash<span class="w"> </span>autogen_docs.sh
+</pre></div>
+</div>
+<ul>
+<li><p>It converts all notebooks in the <code class="docutils literal notranslate"><span class="pre">docs/notebooks</span></code> folder to <code class="docutils literal notranslate"><span class="pre">.md</span></code> in <code class="docutils literal notranslate"><span class="pre">docs/markdown_notebooks</span></code> (excluded from git)</p></li>
+<li><p>It creates all files in <code class="docutils literal notranslate"><span class="pre">docs/modules</span></code>, which are used to generate the API reference. For instance, it will create
+a <code class="docutils literal notranslate"><span class="pre">docs/modules/index.rst</span></code> file that starts like this:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="gh">Modules</span>
+<span class="gh">=======</span>
+
+<span class="p">..</span> <span class="ow">toctree</span><span class="p">::</span>
+   <span class="nc">:maxdepth:</span> 1
+   <span class="nc">:caption:</span> Modules:
+
+   pydna
+   pydna__pretty
+</pre></div>
+</div>
+<p>And then individual files for each module and submodule, e.g. <code class="docutils literal notranslate"><span class="pre">docs/modules/pydna.rst</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pydna</span>
+<span class="o">=====</span>
+
+<span class="o">..</span> <span class="n">automodule</span><span class="p">::</span> <span class="n">pydna</span>
+    <span class="p">:</span><span class="n">members</span><span class="p">:</span>
+    <span class="p">:</span><span class="n">undoc</span><span class="o">-</span><span class="n">members</span><span class="p">:</span>
+    <span class="p">:</span><span class="n">show</span><span class="o">-</span><span class="n">inheritance</span><span class="p">:</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="text-imported-from-readme-md">
+<h2>Text imported from README.md<a class="headerlink" href="#text-imported-from-readme-md" title="Permalink to this heading"></a></h2>
+<p>To avoid having to maintain the same text in multiple files, fragments of the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> are imported using the directive
+<code class="docutils literal notranslate"><span class="pre">include</span></code>. For instance, in the <code class="docutils literal notranslate"><span class="pre">installation.rst</span></code> file, you can find the code below. What this does is to import the text of the README.md file between the start and end markers, which are markdown comments and therefore not rendered.</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">include</span><span class="p">::</span> ../README.md
+   <span class="nc">:parser:</span> myst_parser.sphinx_
+   <span class="nc">:start-after:</span> <span class="nt">&lt;!-- docs/installation.rst-start --&gt;</span>
+   <span class="nc">:end-before:</span> <span class="nt">&lt;!-- docs/installation.rst-end --&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="including-notebooks-in-the-getting-started-and-example-sections">
+<h2>Including notebooks in the getting started and example sections<a class="headerlink" href="#including-notebooks-in-the-getting-started-and-example-sections" title="Permalink to this heading"></a></h2>
+<p>You can see the example of how to do this in the <code class="docutils literal notranslate"><span class="pre">getting_started.md</span></code> file. Note that the notebooks present in the <code class="docutils literal notranslate"><span class="pre">docs/notebooks</span></code> folder will automatically be converted to markdown in the <code class="docutils literal notranslate"><span class="pre">docs/markdown_notebooks</span></code> folder. So if you have a notebook <code class="docutils literal notranslate"><span class="pre">docs/notebooks/Example_Gibson.ipynb</span></code>, it will be converted to <code class="docutils literal notranslate"><span class="pre">docs/markdown_notebooks/Example_Gibson.md</span></code> and you can use that file path to make a link to it.</p>
+</section>
+<section id="custom-css">
+<h2>Custom CSS<a class="headerlink" href="#custom-css" title="Permalink to this heading"></a></h2>
+<p>For now, I have used css to make notebook outputs that are too long scrollable, and to add a small label <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">code</span></code> to the code cells and <code class="docutils literal notranslate"><span class="pre">output</span></code> to the output cells.</p>
+<p>For further customization, you can edit the <code class="docutils literal notranslate"><span class="pre">custom.css</span></code> file.</p>
+</section>
+<section id="misc">
+<h2>Misc<a class="headerlink" href="#misc" title="Permalink to this heading"></a></h2>
+<p>Other changes, such as changing the favicon, the css etc., can be made in the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> file. See the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/configuration.html">sphinx docs</a> and the <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html">sphinx-rtd-theme</a> docs for more information.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

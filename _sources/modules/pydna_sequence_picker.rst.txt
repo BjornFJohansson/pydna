@@ -1,0 +1,7 @@
+pydna.sequence_picker
+==========
+
+.. automodule:: pydna.sequence_picker
+    :members:
+    :undoc-members:
+    :show-inheritance:

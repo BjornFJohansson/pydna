@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.seq &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.seqrecord" href="pydna_seqrecord.html" />
+    <link rel="prev" title="pydna.readers" href="pydna_readers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.seq.Seq"><code class="docutils literal notranslate"><span class="pre">Seq</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.translate"><code class="docutils literal notranslate"><span class="pre">Seq.translate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.gc"><code class="docutils literal notranslate"><span class="pre">Seq.gc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.cai"><code class="docutils literal notranslate"><span class="pre">Seq.cai()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.rarecodons"><code class="docutils literal notranslate"><span class="pre">Seq.rarecodons()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.startcodon"><code class="docutils literal notranslate"><span class="pre">Seq.startcodon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.stopcodon"><code class="docutils literal notranslate"><span class="pre">Seq.stopcodon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.express"><code class="docutils literal notranslate"><span class="pre">Seq.express()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.orfs2"><code class="docutils literal notranslate"><span class="pre">Seq.orfs2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.orfs"><code class="docutils literal notranslate"><span class="pre">Seq.orfs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.seguid"><code class="docutils literal notranslate"><span class="pre">Seq.seguid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.reverse_complement"><code class="docutils literal notranslate"><span class="pre">Seq.reverse_complement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.Seq.rc"><code class="docutils literal notranslate"><span class="pre">Seq.rc()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.seq.ProteinSeq"><code class="docutils literal notranslate"><span class="pre">ProteinSeq</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.translate"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.translate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.complement"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.complement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.complement_rna"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.complement_rna()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.reverse_complement"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.reverse_complement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.rc"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.rc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.reverse_complement_rna"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.reverse_complement_rna()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.transcribe"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.transcribe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.back_transcribe"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.back_transcribe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.seguid"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.seguid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.molecular_weight"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.molecular_weight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.pI"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.pI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.seq.ProteinSeq.instability_index"><code class="docutils literal notranslate"><span class="pre">ProteinSeq.instability_index()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.seq</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_seq.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pydna.seq">
+<span id="pydna-seq"></span><h1>pydna.seq<a class="headerlink" href="#module-pydna.seq" title="Permalink to this heading"></a></h1>
+<p>A subclass of the Biopython SeqRecord class.</p>
+<p>Has a number of extra methods and uses
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">pydna._pretty_str.pretty_str</span></code> class instread of str for a
+nicer output in the IPython shell.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pydna.seq.Seq">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.seq.</span></span><span class="sig-name descname"><span class="pre">Seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytes" title="(in Python v3.8)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytearray" title="(in Python v3.8)"><span class="pre">bytearray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_SeqAbstractBaseClass</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SequenceDataAbstractBaseClass</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#dict" title="(in Python v3.8)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#Seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Seq</span></code></p>
+<p>docstring.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.translate">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'*'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.seq.ProteinSeq" title="pydna.seq.ProteinSeq"><span class="pre">ProteinSeq</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.translate" title="Permalink to this definition"></a></dt>
+<dd><p>Translate..</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.gc">
+<span class="sig-name descname"><span class="pre">gc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.gc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.gc" title="Permalink to this definition"></a></dt>
+<dd><p>Return GC content.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.cai">
+<span class="sig-name descname"><span class="pre">cai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sce'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.cai"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.cai" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.rarecodons">
+<span class="sig-name descname"><span class="pre">rarecodons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sce'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.List" title="(in Python v3.8)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#slice" title="(in Python v3.8)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.rarecodons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.rarecodons" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.startcodon">
+<span class="sig-name descname"><span class="pre">startcodon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sce'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.startcodon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.startcodon" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.stopcodon">
+<span class="sig-name descname"><span class="pre">stopcodon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sce'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.stopcodon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.stopcodon" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.express">
+<span class="sig-name descname"><span class="pre">express</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sce'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pydna__pretty.html#pydna._pretty.PrettyTable" title="pydna._pretty.PrettyTable"><span class="pre">PrettyTable</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.express"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.express" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.orfs2">
+<span class="sig-name descname"><span class="pre">orfs2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.List" title="(in Python v3.8)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.orfs2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.orfs2" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.orfs">
+<span class="sig-name descname"><span class="pre">orfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.List" title="(in Python v3.8)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.orfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.orfs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.seguid">
+<span class="sig-name descname"><span class="pre">seguid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.seguid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.seguid" title="Permalink to this definition"></a></dt>
+<dd><p>Url safe SEGUID <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for the sequence.</p>
+<p>This checksum is the same as seguid but with base64.urlsafe
+encoding instead of the normal base64. This means that
+the characters + and / are replaced with - and _ so that
+the checksum can be part of a URL.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;aa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seguid</span><span class="p">()</span>
+<span class="go">&#39;lsseguid=gBw0Jp907Tg_yX3jNgS4qQWttjU&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://wiki.christophchamp.com/index.php/SEGUID">http://wiki.christophchamp.com/index.php/SEGUID</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.reverse_complement">
+<span class="sig-name descname"><span class="pre">reverse_complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#Seq.reverse_complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.Seq.reverse_complement" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse complement as a DNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>Any U in the sequence is treated as a T:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;AATCG&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">reverse_complement_rna</span></code> returns an RNA sequence:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;UCG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">reverse_complement</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with
+<code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.Seq.rc">
+<span class="sig-name descname"><span class="pre">rc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydna.seq.Seq.rc" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse complement as a DNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>Any U in the sequence is treated as a T:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;AATCG&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">reverse_complement_rna</span></code> returns an RNA sequence:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;UCG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">reverse_complement</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with
+<code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.seq.</span></span><span class="sig-name descname"><span class="pre">ProteinSeq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytes" title="(in Python v3.8)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytearray" title="(in Python v3.8)"><span class="pre">bytearray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_SeqAbstractBaseClass</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SequenceDataAbstractBaseClass</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#dict" title="(in Python v3.8)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Seq</span></code></p>
+<p>docstring.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.translate">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.translate" title="Permalink to this definition"></a></dt>
+<dd><p>Turn a nucleotide sequence into a protein sequence by creating a new sequence object.</p>
+<p>This method will translate DNA or RNA sequences. It should not
+be used on protein sequences as any result will be biologically
+meaningless.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>- table - Which codon table to use?  This can be either a</em>) – (string), an NCBI identifier (integer), or a CodonTable
+object (useful for non-standard genetic codes).  This
+defaults to the “Standard” table.</p></li>
+<li><p><strong>string</strong> (<em>- stop_symbol - Single character</em>) – terminators.  This defaults to the asterisk, “*”.</p></li>
+<li><p><strong>for</strong> (<em>what to use</em>) – terminators.  This defaults to the asterisk, “*”.</p></li>
+<li><p><strong>Boolean</strong> (<em>- cds -</em>) – translation continuing on past any stop codons (translated as the
+specified stop_symbol).  If True, translation is terminated at
+the first in frame stop codon (and the stop_symbol is not
+appended to the returned protein sequence).</p></li>
+<li><p><strong>full</strong> (<em>defaults to False meaning do a</em>) – translation continuing on past any stop codons (translated as the
+specified stop_symbol).  If True, translation is terminated at
+the first in frame stop codon (and the stop_symbol is not
+appended to the returned protein sequence).</p></li>
+<li><p><strong>Boolean</strong> – this checks the sequence starts with a valid alternative start
+codon (which will be translated as methionine, M), that the
+sequence length is a multiple of three, and that there is a
+single in frame stop codon at the end (this will be excluded
+from the protein sequence, regardless of the to_stop option).
+If these tests fail, an exception is raised.</p></li>
+<li><p><strong>True</strong> (<em>indicates this is a complete CDS.  If</em>) – this checks the sequence starts with a valid alternative start
+codon (which will be translated as methionine, M), that the
+sequence length is a multiple of three, and that there is a
+single in frame stop codon at the end (this will be excluded
+from the protein sequence, regardless of the to_stop option).
+If these tests fail, an exception is raised.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>:param<span class="classifier">this checks the sequence starts with a valid alternative start</span></dt><dd><p>codon (which will be translated as methionine, M), that the
+sequence length is a multiple of three, and that there is a
+single in frame stop codon at the end (this will be excluded
+from the protein sequence, regardless of the to_stop option).
+If these tests fail, an exception is raised.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gaps.</strong> (<em>- gap - Single character string to denote symbol used for</em>) – Defaults to the minus sign.</p>
+</dd>
+</dl>
+<p>A <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object is returned if <code class="docutils literal notranslate"><span class="pre">translate</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code>
+object; a <code class="docutils literal notranslate"><span class="pre">MutableSeq</span></code> object is returned if <code class="docutils literal notranslate"><span class="pre">translate</span></code> is called
+pn a <code class="docutils literal notranslate"><span class="pre">MutableSeq</span></code> object.</p>
+<p>e.g. Using the standard table:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;GTGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;VAIVMGR*KGAR*&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">stop_symbol</span><span class="o">=</span><span class="s2">&quot;@&quot;</span><span class="p">)</span>
+<span class="go">Seq(&#39;VAIVMGR@KGAR@&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">to_stop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Seq(&#39;VAIVMGR&#39;)</span>
+</pre></div>
+</div>
+<p>Now using NCBI table 2, where TGA is not a stop codon:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Seq(&#39;VAIVMGRWKGAR*&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">to_stop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Seq(&#39;VAIVMGRWKGAR&#39;)</span>
+</pre></div>
+</div>
+<p>In fact, GTG is an alternative start codon under NCBI table 2, meaning
+this sequence could be a complete CDS:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Seq(&#39;MAIVMGRWKGAR&#39;)</span>
+</pre></div>
+</div>
+<p>It isn’t a valid CDS under NCBI table 1, due to both the start codon
+and also the in frame stop codons:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">Bio.Data.CodonTable.TranslationError</span>: <span class="n">First codon &#39;GTG&#39; is not a start codon</span>
+</pre></div>
+</div>
+<p>If the sequence has no in-frame stop codon, then the to_stop argument
+has no effect:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna2</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;TTGGCCATTGTAATGGGCCGC&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna2</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span>
+<span class="go">Seq(&#39;LAIVMGR&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna2</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">to_stop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Seq(&#39;LAIVMGR&#39;)</span>
+</pre></div>
+</div>
+<p>NOTE - Ambiguous codons like “TAN” or “NNN” could be an amino acid
+or a stop codon.  These are translated as “X”.  Any invalid codon
+(e.g. “TA?” or “T-A”) will throw a TranslationError.</p>
+<p>NOTE - This does NOT behave like the python string’s translate
+method.  For that use str(my_seq).translate(…) instead</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.complement">
+<span class="sig-name descname"><span class="pre">complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.complement" title="Permalink to this definition"></a></dt>
+<dd><p>Return the complement as a DNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;GCT&#39;)</span>
+</pre></div>
+</div>
+<p>Any U in the sequence is treated as a T:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;GCTAA&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">complement_rna</span></code> returns an RNA sequence:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;GCUAA&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;GCT&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">complement</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;GCT&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;GCT&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">complement_rna</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.complement_rna">
+<span class="sig-name descname"><span class="pre">complement_rna</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.complement_rna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.complement_rna" title="Permalink to this definition"></a></dt>
+<dd><p>Return the complement as an RNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;GCU&#39;)</span>
+</pre></div>
+</div>
+<p>Any T in the sequence is treated as a U:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;GCUAA&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">complement</span></code> returns a DNA sequence by default:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;GCT&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">complement_rna</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;GCU&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">complement_rna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;GCU&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;GCU&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">complement_rna</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.reverse_complement">
+<span class="sig-name descname"><span class="pre">reverse_complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.reverse_complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.reverse_complement" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse complement as a DNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>Any U in the sequence is treated as a T:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;AATCG&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">reverse_complement_rna</span></code> returns an RNA sequence:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;UCG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">reverse_complement</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with
+<code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.rc">
+<span class="sig-name descname"><span class="pre">rc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydna.seq.ProteinSeq.rc" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse complement as a DNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>Any U in the sequence is treated as a T:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;AATCG&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">reverse_complement_rna</span></code> returns an RNA sequence:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;UCG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">reverse_complement</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with
+<code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.reverse_complement_rna">
+<span class="sig-name descname"><span class="pre">reverse_complement_rna</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.reverse_complement_rna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.reverse_complement_rna" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse complement as an RNA sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;UCG&#39;)</span>
+</pre></div>
+</div>
+<p>Any T in the sequence is treated as a U:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGAUT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">Seq(&#39;AAUCG&#39;)</span>
+</pre></div>
+</div>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">reverse_complement</span></code> returns a DNA sequence:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="go">Seq(&#39;TCG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;CGA&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;UCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;CGA&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">reverse_complement_rna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;UCG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">MutableSeq(&#39;UCG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">reverse_complement_rna</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with
+<code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.transcribe">
+<span class="sig-name descname"><span class="pre">transcribe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.transcribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.transcribe" title="Permalink to this definition"></a></dt>
+<dd><p>Transcribe a DNA sequence into RNA and return the RNA sequence as a new Seq object.</p>
+<p>Following the usual convention, the sequence is interpreted as the
+coding strand of the DNA double helix, not the template strand. This
+means we can get the RNA sequence just by switching T to U.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span>
+<span class="go">Seq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span>
+<span class="go">Seq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">transcribe</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+<p>Trying to transcribe an RNA sequence has no effect.
+If you have a nucleotide sequence which might be DNA or RNA
+(or even a mixture), calling the transcribe method will ensure
+any T becomes U.</p>
+<p>Trying to transcribe a protein sequence will replace any
+T for Threonine with U for Selenocysteine, which has no
+biologically plausible rational.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_protein</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;MAIVMGRT&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_protein</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span>
+<span class="go">Seq(&#39;MAIVMGRU&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.back_transcribe">
+<span class="sig-name descname"><span class="pre">back_transcribe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.back_transcribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.back_transcribe" title="Permalink to this definition"></a></dt>
+<dd><p>Return the DNA sequence from an RNA sequence by creating a new Seq object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">messenger_rna</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">messenger_rna</span>
+<span class="go">Seq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">messenger_rna</span><span class="o">.</span><span class="n">back_transcribe</span><span class="p">()</span>
+<span class="go">Seq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="o">.</span><span class="n">back_transcribe</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="o">.</span><span class="n">back_transcribe</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">transcribe</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+<p>Trying to back-transcribe DNA has no effect, If you have a nucleotide
+sequence which might be DNA or RNA (or even a mixture), calling the
+back-transcribe method will ensure any U becomes T.</p>
+<p>Trying to back-transcribe a protein sequence will replace any U for
+Selenocysteine with T for Threonine, which is biologically meaningless.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_protein</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;MAIVMGRU&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_protein</span><span class="o">.</span><span class="n">back_transcribe</span><span class="p">()</span>
+<span class="go">Seq(&#39;MAIVMGRT&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.seguid">
+<span class="sig-name descname"><span class="pre">seguid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.seguid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.seguid" title="Permalink to this definition"></a></dt>
+<dd><p>Url safe SEGUID <a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> for the sequence.</p>
+<p>This checksum is the same as seguid but with base64.urlsafe
+encoding instead of the normal base64. This means that
+the characters + and / are replaced with - and _ so that
+the checksum can be part of a URL.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.seq</span> <span class="kn">import</span> <span class="n">ProteinSeq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ProteinSeq</span><span class="p">(</span><span class="s2">&quot;aa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">seguid</span><span class="p">()</span>
+<span class="go">&#39;lsseguid=gBw0Jp907Tg_yX3jNgS4qQWttjU&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://wiki.christophchamp.com/index.php/SEGUID">http://wiki.christophchamp.com/index.php/SEGUID</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.molecular_weight">
+<span class="sig-name descname"><span class="pre">molecular_weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.molecular_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.molecular_weight" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.pI">
+<span class="sig-name descname"><span class="pre">pI</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.pI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.pI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.seq.ProteinSeq.instability_index">
+<span class="sig-name descname"><span class="pre">instability_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/pydna/seq.html#ProteinSeq.instability_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.seq.ProteinSeq.instability_index" title="Permalink to this definition"></a></dt>
+<dd><p>Instability index according to Guruprasad et al.</p>
+<p>Value above 40 means the protein is has a short half life.</p>
+<p>Guruprasad K., Reddy B.V.B., Pandit M.W. Protein Engineering 4:155-161(1990).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_readers.html" class="btn btn-neutral float-left" title="pydna.readers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_seqrecord.html" class="btn btn-neutral float-right" title="pydna.seqrecord" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

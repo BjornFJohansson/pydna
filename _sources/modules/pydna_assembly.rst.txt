@@ -1,0 +1,7 @@
+pydna.assembly
+==========
+
+.. automodule:: pydna.assembly
+    :members:
+    :undoc-members:
+    :show-inheritance:

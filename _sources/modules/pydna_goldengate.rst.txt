@@ -1,0 +1,7 @@
+pydna.goldengate
+==========
+
+.. automodule:: pydna.goldengate
+    :members:
+    :undoc-members:
+    :show-inheritance:

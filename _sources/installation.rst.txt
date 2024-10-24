@@ -3,5 +3,5 @@ Installation
 
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
-   :start-after: ## Installation 📦
-   :end-before: ## Contributing and feedback 🛠️
+   :start-after: <!-- docs/installation.rst-start -->
+   :end-before: <!-- docs/installation.rst-end -->

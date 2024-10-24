@@ -598,7 +598,7 @@ print(pcr_product.format("gb"))
       ORGANISM  .
                 .
     FEATURES             Location/Qualifiers
-         CDS             join(1..424,472..2243)
+         CDS             join(12..435,483..2254)
                          /gene="ase1"
                          /locus_tag="SPOM_SPAPB1A10.09"
                          /codon_start=1
@@ -618,13 +618,13 @@ print(pcr_product.format("gb"))
                          QGANGSDSNMSSSPVSGNSNTPFNKFPNSVSRNTHFESKSPHPNYSRTPHETYSKASSK
                          NVPLSPPKQRVVNEHALNIMSEKLQRTNLKEQTPEMDIENSSQNLPFSPMKISPIRASP
                          VKTIPSSPSPTTNIFSAPLNNITNCTPMEDEWGEEGF"
-         primer_bind     1..20
+         primer_bind     12..31
                          /label="name"
                          /PCR_conditions="primer
                          sequence:ACCATGTCGACATGCAAACAGTAATGATGGA"
                          /ApEinfo_fwdcolor="#baffa3"
                          /ApEinfo_revcolor="#ffbaba"
-         primer_bind     complement(2225..2243)
+         primer_bind     complement(2236..2254)
                          /label="name"
                          /PCR_conditions="primer
                          sequence:GGCGCGCCATTAAAAGCCTTCTTCTCCC"
@@ -789,7 +789,33 @@ print(synthetic_vector.format("gb"))
          primer_bind     3859..3876
                          /label="SP6"
                          /note="SP6 promoter, forward primer"
-         primer_bind     complement(6131..6149)
+         CDS             join(3918..4341,4389..6160)
+                         /gene="ase1"
+                         /locus_tag="SPOM_SPAPB1A10.09"
+                         /codon_start=1
+                         /product="antiparallel microtubule cross-linking factor
+                         Ase1"
+                         /protein_id="CAC21482.1"
+                         /translation="MQTVMMDDIQSTDSIAEKDNHSNNESNFTWKAFREQVEKHFSKIE
+                         RLHQVLGTDGDNSSLFELFTTAMNAQLHEMEQCQKKLEDDCQQRIDSIRFLVSSLKLTD
+                         DTSSLKIESPLIQCLNRLSMVEGQYMAQYDQKLSTIKEMYHKLESYCNRLGSPFVLPDF
+                         ENSFLSDVSDAFTESLRGRINEAEKEIDARLEVINSFEEEILGLWSELGVEPADVPQYE
+                         QLLESHTNRPNDVYVTQELIDQLCKQKEVFSAEKEKRSDHLKSIQSEVSNLWNKLQVSP
+                         NEQSQFGDSSNINQENISLWETELEKLHQLKKEHLPIFLEDCRQQILQLWDSLFYSEEQ
+                         RKSFTPMYEDIITEQVLTAHENYIKQLEAEVSANKSFLSLINRYASLIEGKKELEASSN
+                         DASRLTQRGRRDPGLLLREEKIRKRLSRELPKVQSLLIPEITAWEERNGRTFLFYDEPL
+                         LKICQEATQPKSLYRSASAAANRPKTATTTDSVNRTPSQRGRVAVPSTPSVRSASRAMT
+                         SPRTPLPRVKNTQNPSRSISAEPPSATSTANRRHPTANRIDINARLNSASRSRSANMIR
+                         QGANGSDSNMSSSPVSGNSNTPFNKFPNSVSRNTHFESKSPHPNYSRTPHETYSKASSK
+                         NVPLSPPKQRVVNEHALNIMSEKLQRTNLKEQTPEMDIENSSQNLPFSPMKISPIRASP
+                         VKTIPSSPSPTTNIFSAPLNNITNCTPMEDEWGEEGF"
+         primer_bind     3918..3937
+                         /label="name"
+                         /PCR_conditions="primer
+                         sequence:ACCATGTCGACATGCAAACAGTAATGATGGA"
+                         /ApEinfo_fwdcolor="#baffa3"
+                         /ApEinfo_revcolor="#ffbaba"
+         primer_bind     complement(6142..6160)
                          /label="name"
                          /PCR_conditions="primer
                          sequence:GGCGCGCCATTAAAAGCCTTCTTCTCCC"

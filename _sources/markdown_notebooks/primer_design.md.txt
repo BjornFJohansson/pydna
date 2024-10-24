@@ -1,0 +1,298 @@
+# Primer design in pydna
+
+You can use `pydna` for primer design in different contexts, let's start with some basic primer functionalities.
+
+## Checking the Tm of a primer
+
+Primer design in pydna is very flexible, and supports different methods. For typical use-cases, we recommend using `tm_default`, which uses the method `Bio.SeqUtils.MeltingTemp` from biopython, nearest neighbor thermodynamics values from [SantaLucia & Hicks (2004)](https://pubmed.ncbi.nlm.nih.gov/15139820/) and common values for nucleotide concentration, salt concentration, etc. You can of course change those settings. For a full dive check `src/pydna/tm.py`.
+
+
+```python
+from pydna.tm import tm_default
+
+# The primers from the readme example
+print(tm_default("ATGCAAACAGTAATGATGGA"))
+print(tm_default("ATTATCTTTTTCAGCAATAGAATCA"))
+
+```
+
+    55.047602641480864
+    54.55481807340169
+
+
+### Using NEB Tm calculator
+
+If you are used to the NEB Tm calculator, and you want to use it programmatically, you can do so as well. The function takes three arguments:
+
+- `primer`: The primer sequence.
+- `conc`: The primer concentration.
+- `prodcode`: The product code, which you can find on [NEB's website](https://tmapi.neb.com/docs/productcodes).
+
+> **NOTE:** When you call the function, it will make a request to the NEB server. This makes it much slower than using the builtin methods. In addition, we cannot guarantee that the NEB server will always be available, nor that the calculations that they use will not change in the future, since the code is not available.
+
+
+```python
+from pydna.tm import tm_neb
+
+print(tm_neb("ATGCAAACAGTAATGATGGA", 0.5, "q5-0"))
+print(tm_neb("ATTATCTTTTTCAGCAATAGAATCA", 0.5, "q5-0"))
+
+```
+
+    59
+    57
+
+
+## Designing primers for PCR
+
+Let's use pydna to amplify a region from a DNA sequence. You can use the `primer_design` function to design primers for a given target Tm (`target_tm`) and indicate a minimum primer hybridization length in basepairs (`limit`).
+
+
+```python
+from pydna.dseqrecord import Dseqrecord
+from Bio.SeqFeature import SeqFeature, SimpleLocation
+from pydna.design import primer_design
+
+dna = Dseqrecord("ggttcaATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAATAAcatttacatca")
+
+# Let's add a feature representing the CDS
+dna.features.append(SeqFeature(SimpleLocation(start=6, end=60), type="CDS"))
+
+# To design the primer, we extract the template sequence we want to amplify, and use the `primer_design` method.
+template = dna.features[0].location.extract(dna)
+
+# We get an amplicon object (a subclass of Dseqrecord), that also contains extra info
+# of where the primers align etc.
+amplicon = primer_design(template, target_tm=60.0, limit=15)
+
+# We extract the primers
+fwd_primer, rvs_primer = amplicon.primers()
+
+# We print the Tms
+print("Forward primer Tm:", tm_default(fwd_primer.seq))
+print("Forward primer sequence:", fwd_primer.seq)
+print()
+print("Reverse primer Tm:", tm_default(rvs_primer.seq))
+print("Reverse primer sequence:", rvs_primer.seq)
+```
+
+    Forward primer Tm: 59.71997924024873
+    Forward primer sequence: ATGCAAACAGTAATGATGGATGAC
+    
+    Reverse primer Tm: 60.22377911083646
+    Reverse primer sequence: TTATTCAGCAATAGAATCAGTGCTTTG
+
+
+### Special primers
+
+We saw an example where we simply want to amplify a region of DNA. But what if we want to design primers for a specific restriction enzyme, or for Gibson Assembly? That's also easy.
+
+#### Restriction enzyme
+
+Simply append the sequence you want at the 5' end of the primers.
+
+
+```python
+from Bio.Restriction import EcoRI
+fwd_primer_EcoRI = 'ttGAATTC' + fwd_primer
+# You can also do it like this!
+rvs_primer_EcoRI = 'tt' + EcoRI.site + rvs_primer
+
+print(fwd_primer_EcoRI.seq)
+print(rvs_primer_EcoRI.seq)
+
+```
+
+    ttGAATTCATGCAAACAGTAATGATGGATGAC
+    ttGAATTCTTATTCAGCAATAGAATCAGTGCTTTG
+
+
+> **Edge case:** Some recognition sites contain ambiguous bases, for instance `Bst4CI` cuts at site `ACNGT`, where `N` can be any nucleotide. In that case, you can use the dictionary provided by biopython (`from Bio.Data.IUPACData import ambiguous_dna_values`) to produce a concrete DNA sequence you can use in real life.
+
+#### Gibson Assembly
+
+To design primers for Gibson Assembly, you can use the `assembly_fragments` function.
+
+##### Linear Gibson Assembly
+
+
+```python
+from pydna.design import assembly_fragments
+# Let's imagine we want to join these two sequences together linearly with Gibson Assembly
+seq1 = Dseqrecord('ATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAAAAAGATAAT')
+seq2 = Dseqrecord('CACTCTAATAATGAATCTAACTTTACTTGGAAAGCGTTTCGTGAACAAGTGGAAAAGCAT')
+
+# First, we design primers for each fragment, as before:
+pre_amplicon1 = primer_design(seq1, target_tm=60.0, limit=15)
+pre_amplicon2 = primer_design(seq2, target_tm=60.0, limit=15)
+
+# Then, we use the `assembly_fragments` function to design primers for Gibson Assembly
+amplicon1, amplicon2 = assembly_fragments([pre_amplicon1, pre_amplicon2], overlap=10)
+
+# We print the primers:
+fwd_1, rvs_1 = amplicon1.primers()
+fwd_2, rvs_2 = amplicon2.primers()
+
+print('Primers for fragment 1:')
+print(fwd_1.seq)
+print(rvs_1.seq)
+print()
+print('Primers for fragment 2:')
+print(fwd_2.seq)
+print(rvs_2.seq)
+print()
+
+# The amplicons contain the PCR products (note the overlap between the two fragments)
+print('PCR product 1:')
+print(amplicon1.seq)
+print()
+print('PCR product 2:')
+print(amplicon2.seq)
+print()
+
+print('Overlap')
+print(amplicon1.seq)
+print(' '*55,amplicon2.seq, sep='')
+
+```
+
+    Primers for fragment 1:
+    ATGCAAACAGTAATGATGGATGAC
+    GAGTGATTATCTTTTTCAGCAATAGAATCAGTGC
+    
+    Primers for fragment 2:
+    ATAATCACTCTAATAATGAATCTAACTTTACTTGGAAA
+    ATGCTTTTCCACTTGTTCACG
+    
+    PCR product 1:
+    ATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAAAAAGATAATCACTC
+    
+    PCR product 2:
+    ATAATCACTCTAATAATGAATCTAACTTTACTTGGAAAGCGTTTCGTGAACAAGTGGAAAAGCAT
+    
+    Overlap
+    ATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAAAAAGATAATCACTC
+                                                           ATAATCACTCTAATAATGAATCTAACTTTACTTGGAAAGCGTTTCGTGAACAAGTGGAAAAGCAT
+
+
+Once you have the amplicons, you can use `Assembly` to join them together (see the `Gibson` notebook for more details)
+
+
+```python
+from pydna.assembly import Assembly
+from pydna.common_sub_strings import terminal_overlap
+
+
+assembly = Assembly([amplicon1, amplicon2], limit=10, algorithm=terminal_overlap)
+product = assembly.assemble_linear()[0]
+print(product.figure())
+
+print()
+
+print(Dseqrecord(product).figure())
+
+
+```
+
+    65bp_PCR_prod|10
+                  \/
+                  /\
+                  10|65bp_PCR_prod
+    
+    Dseqrecord(-120)
+    [48;5;11mATGCAAACAGTAATGATGGATGAC[0mATTCAAAGCACTGATTCTATTGCTGAAAAAGATAATCACTCTAATAATGAATCTAACTTTACTTGGAAAGCGTTTCGTGAACAAGTGGAAAAGCAT
+    TACGTTTGTCATTACTACCTACTGTAAGTTTCGTGACTAAGATAACGACTTTTTCTATTAGTGAGATTATTACTTAGATTGAAATGAACCTTTCGCAAAGCACTTGTTCACCTTTTCGTA
+
+
+##### Circular Gibson Assembly
+
+
+```python
+# We use the `assembly_fragments` function with `circular=True`
+amplicon1, amplicon2 = assembly_fragments([pre_amplicon1, pre_amplicon2], overlap=10, circular=True)
+
+# We print the primers:
+fwd_1, rvs_1 = amplicon1.primers()
+fwd_2, rvs_2 = amplicon2.primers()
+
+print('Primers for fragment 1:')
+print(fwd_1.seq)
+print(rvs_1.seq)
+print()
+print('Primers for fragment 2:')
+print(fwd_2.seq)
+print(rvs_2.seq)
+print()
+
+assembly = Assembly([amplicon1, amplicon2], limit=10, algorithm=terminal_overlap)
+
+# Here we use assemble_circular!
+product = assembly.assemble_circular()[0]
+print(product.figure())
+
+print()
+
+print(Dseqrecord(product).figure())
+```
+
+    Primers for fragment 1:
+    AGCATATGCAAACAGTAATGATGGATGAC
+    GAGTGATTATCTTTTTCAGCAATAGAATCAGTGC
+    
+    Primers for fragment 2:
+    ATAATCACTCTAATAATGAATCTAACTTTACTTGGAAA
+    TGCATATGCTTTTCCACTTGTTCACG
+    
+     -|70bp_PCR_prod|10
+    |                \/
+    |                /\
+    |                10|70bp_PCR_prod|10
+    |                                 \/
+    |                                 /\
+    |                                 10-
+    |                                    |
+     ------------------------------------
+    
+    Dseqrecord(o120)
+    AGCAT[48;5;11mATGCAAACAGTAATGATGGATGAC[0mATTCAAAGCACTGATTCTATTGCTGAAAAAGATAATCACTCTAATAATGAATCTAACTTTACTTGGAAAGCGTTTCGTGAACAAGTGGAAA
+    TCGTATACGTTTGTCATTACTACCTACTGTAAGTTTCGTGACTAAGATAACGACTTTTTCTATTAGTGAGATTATTACTTAGATTGAAATGAACCTTTCGCAAAGCACTTGTTCACCTTT
+
+
+#### Adding spacers / linkers to Gibson Assembly primers
+
+In this case, you can pass a list of `Amplicons` and `Dseqrecords` to the `assembly_fragments` function. The `amplicons` will be used as the fragments to assemble, and the `dseqrecords` will be used as spacers between the fragments, as long as they are shorter than the argument `maxlink`.
+
+
+```python
+# We create two spacers as dseqrecords
+spacer1 = Dseqrecord('aaa')
+spacer2 = Dseqrecord('ttt')
+
+amplicon1, amplicon2 = assembly_fragments([pre_amplicon1, spacer1, pre_amplicon2, spacer2], overlap=10, circular=True)
+
+assembly = Assembly([amplicon1, amplicon2], limit=10, algorithm=terminal_overlap)
+
+# Here we use assemble_circular!
+product = assembly.assemble_circular()[0]
+
+# See the linkers that have been added
+print()
+print(Dseqrecord(product).seq)
+print(4*' ', '^^^', 60*' ', '^^^', sep='')
+
+
+```
+
+    
+    GCATtttATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAAAAAGATAATaaaCACTCTAATAATGAATCTAACTTTACTTGGAAAGCGTTTCGTGAACAAGTGGAAAA
+        ^^^                                                            ^^^
+
+
+#### Summary of assembly_fragments behaviour
+
+The behaviour is summarised in the following graphics for linear and circular assembly.
+
+![assembly_fragments behaviour](../_static/assembly_fragment_slide_linear.png)
+![assembly_fragments behaviour](../_static/assembly_fragment_slide_circular.png)
+
+

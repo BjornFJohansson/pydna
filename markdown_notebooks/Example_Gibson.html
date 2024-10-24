@@ -9,9 +9,10 @@
   <title>Example of a Gibson Assembly in pydna &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=945798ad" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
@@ -45,7 +46,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_contents.html">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
 </ul>
@@ -102,24 +103,63 @@ if &#39;google.colab&#39; in sys.modules:
 <span class="kn">from</span> <span class="nn">pydna.amplify</span> <span class="kn">import</span> <span class="n">pcr</span>
 <span class="kn">from</span> <span class="nn">pydna.dseqrecord</span> <span class="kn">import</span> <span class="n">Dseqrecord</span>
 <span class="kn">from</span> <span class="nn">pydna.assembly</span> <span class="kn">import</span> <span class="n">Assembly</span>
+<span class="kn">from</span> <span class="nn">pydna.genbank</span> <span class="kn">import</span> <span class="n">Genbank</span>
+<span class="kn">from</span> <span class="nn">pydna.gel</span> <span class="kn">import</span> <span class="n">gel</span>
+<span class="kn">from</span> <span class="nn">pydna.ladders</span> <span class="kn">import</span> <span class="n">GeneRuler_1kb_plus</span>
+
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parsing the files</span>
-
-<span class="n">pCC1BAC_path</span> <span class="o">=</span> <span class="s2">&quot;./pCC1BAC.gb&quot;</span>
-<span class="n">gene_path</span> <span class="o">=</span> <span class="s2">&quot;./R_cellulolyticum.fasta&quot;</span>
-<span class="n">pCC1BAC_docs</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">pCC1BAC_path</span><span class="p">)</span>
-<span class="n">gene_docs</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">gene_path</span><span class="p">)</span>
-
-<span class="c1"># Printing the parsed files</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">pCC1BAC_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
-<span class="c1"># print(gene_docs[0].format(&quot;fasta&quot;))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reading the R. cellulolyticum genome from GenBank</span>
+<span class="n">gb</span> <span class="o">=</span> <span class="n">Genbank</span><span class="p">(</span><span class="s2">&quot;example@example.com&quot;</span><span class="p">)</span>
+<span class="n">genome</span> <span class="o">=</span> <span class="n">gb</span><span class="o">.</span><span class="n">nucleotide</span><span class="p">(</span><span class="s2">&quot;CP001348.1&quot;</span><span class="p">)</span>
+<span class="c1"># Print the info of the genome</span>
+<span class="n">genome</span><span class="o">.</span><span class="n">annotations</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;molecule_type&#39;: &#39;DNA&#39;,
+ &#39;topology&#39;: &#39;circular&#39;,
+ &#39;data_file_division&#39;: &#39;BCT&#39;,
+ &#39;date&#39;: &#39;25-AUG-2017&#39;,
+ &#39;accessions&#39;: [&#39;CP001348&#39;, &#39;AAVC01000000&#39;, &#39;AAVC01000001-AAVC01000121&#39;],
+ &#39;sequence_version&#39;: 1,
+ &#39;keywords&#39;: [&#39;&#39;],
+ &#39;source&#39;: &#39;Ruminiclostridium cellulolyticum H10&#39;,
+ &#39;organism&#39;: &#39;Ruminiclostridium cellulolyticum H10&#39;,
+ &#39;taxonomy&#39;: [&#39;Bacteria&#39;,
+  &#39;Bacillota&#39;,
+  &#39;Clostridia&#39;,
+  &#39;Eubacteriales&#39;,
+  &#39;Oscillospiraceae&#39;,
+  &#39;Ruminiclostridium&#39;],
+ &#39;references&#39;: [Reference(title=&#39;Complete sequence of Clostridium cellulolyticum H10&#39;, ...),
+  Reference(title=&#39;Direct Submission&#39;, ...)],
+ &#39;comment&#39;: &#39;URL -- http://www.jgi.doe.gov\nJGI Project ID: 4002584\nSource DNA and bacteria available from Jizhong Zhou\n(jzhou@rccc.ou.edu)\nContacts: Jizhong Zhou (jzhou@rccc.ou.edu)\n          David Bruce (microbe@cuba.jgi-psf.org)\nAnnotation done by JGI-ORNL and JGI-PGF\nFinishing done by JGI-LANL\nFinished microbial genomes have been curated to close all gaps with\ngreater than 98% coverage of at least two independent clones. Each\nbase pair has a minimum q (quality) value of 30 and the total error\nrate is less than one per 50000.\nThe JGI and collaborators endorse the principles for the\ndistribution and use of large scale sequencing data adopted by the\nlarger genome sequencing community and urge users of this data to\nfollow them. it is our intention to publish the work of this\nproject in a timely fashion and we welcome collaborative\ninteraction on the project and analysis.\n(http://www.genome.gov/page.cfm?pageID=10506376).&#39;}
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reading the plasmid</span>
+<span class="n">vector</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;./pCC1BAC.gb&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">annotations</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;molecule_type&#39;: &#39;DNA&#39;,
+ &#39;topology&#39;: &#39;circular&#39;,
+ &#39;data_file_division&#39;: &#39;SYN&#39;,
+ &#39;date&#39;: &#39;29-AUG-2024&#39;,
+ &#39;accessions&#39;: [&#39;.&#39;],
+ &#39;keywords&#39;: [&#39;&#39;],
+ &#39;source&#39;: &#39;synthetic DNA construct&#39;,
+ &#39;organism&#39;: &#39;synthetic DNA construct&#39;,
+ &#39;taxonomy&#39;: [],
+ &#39;references&#39;: [Reference(title=&#39;Direct Submission&#39;, ...),
+  Reference(title=&#39;Direct Submission&#39;, ...),
+  Reference(title=&#39;Direct Submission&#39;, ...),
+  Reference(title=&#39;Direct Submission&#39;, ...)],
+ &#39;comment&#39;: &#39;SGRef: number: 1; type: &quot;Journal Article&quot;; journalName: &quot;Submitted\n(23-AUG-2007) 726 Post Road, Madison, WI 53713, USA&quot;\nSGRef: number: 2; type: &quot;Journal Article&quot;\nSGRef: number: 3; type: &quot;Journal Article&quot;&#39;}
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importing pre-designed primers for the PylRS insert fragment. </span>
 
-<span class="n">F1_For</span> <span class="o">=</span> <span class="s2">&quot;GCAGCTTCAAGTCCTGCAAACAAGGTGTACCAGGATCGTT&quot;</span> <span class="c1">#Remember that all sequnces are written from 5&#39;-3&#39;</span>
+<span class="n">F1_For</span> <span class="o">=</span> <span class="s2">&quot;GCAGCTTCAAGTCCTGCAAACAAGGTGTACCAGGATCGTT&quot;</span>
 <span class="n">F1_Rev</span> <span class="o">=</span> <span class="s2">&quot;GATTTCAGTGTAGTTAGGGCCAGTTGAATTCAAACCTGCC&quot;</span>
 <span class="n">F2_For</span> <span class="o">=</span> <span class="s2">&quot;GGCAGGTTTGAATTCAACTGGCCCTAACTACACTGAAATC&quot;</span>
 <span class="n">F2_Rev</span> <span class="o">=</span> <span class="s2">&quot;CTTGGTGCCATCAGCATTGTTCTCTGTACCGCCCACTGTC&quot;</span>
@@ -129,28 +169,41 @@ if &#39;google.colab&#39; in sys.modules:
 <span class="n">BACF3_Rev</span> <span class="o">=</span> <span class="s2">&quot;GGTACTGCATTTGCCGCAGGAACACATGATTATTCAACTGgcggccgccgggtaccgagctcgaattc&quot;</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># (Optional) Checking that the primer Tm are matching</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting the PCR products from the genome (might take a while since the genome is large)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">tm_default</span><span class="p">(</span><span class="n">F1_For</span><span class="p">))</span> <span class="c1"># F1_For and F1_Rev have been used as examples here</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tm_default</span><span class="p">(</span><span class="n">F1_Rev</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Checking primer specificity using the pcr function. An error message is returned if otherwise.</span>
+<span class="n">pcr_product_F1</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F1_For</span><span class="p">,</span> <span class="n">F1_Rev</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">pcr_product_F2</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F2_For</span><span class="p">,</span> <span class="n">F2_Rev</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">pcr_product_F3</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F3_For</span><span class="p">,</span> <span class="n">F3_Rev</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">pcr_product_BAC</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">BACF1_For</span><span class="p">,</span> <span class="n">BACF3_Rev</span><span class="p">,</span> <span class="n">vector</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
-<span class="n">pcr_product_F1</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F1_For</span><span class="p">,</span> <span class="n">F1_Rev</span><span class="p">,</span> <span class="n">gene_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
-<span class="n">pcr_product_F2</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F2_For</span><span class="p">,</span> <span class="n">F2_Rev</span><span class="p">,</span> <span class="n">gene_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
-<span class="n">pcr_product_F3</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">F3_For</span><span class="p">,</span> <span class="n">F3_Rev</span><span class="p">,</span> <span class="n">gene_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
-<span class="n">pcr_product_BAC</span> <span class="o">=</span> <span class="n">pcr</span><span class="p">(</span><span class="n">BACF1_For</span><span class="p">,</span> <span class="n">BACF3_Rev</span><span class="p">,</span> <span class="n">pCC1BAC_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">69</span><span class="p">)</span>
-
-<span class="c1"># Printing out the PCR results</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_F1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_F2</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_F3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;gb&quot;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">pcr_product_BAC</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">))</span>
+<span class="c1"># Printing out the PCR fragment sizes</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pcr_product_F1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pcr_product_F2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pcr_product_F3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pcr_product_BAC</span><span class="p">))</span>
 
 </pre></div>
 </div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>5210
+5384
+5172
+8221
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making a gel to show the PCR products</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">gel</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">GeneRuler_1kb_plus</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">pcr_product_F1</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">pcr_product_F2</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">pcr_product_F3</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">pcr_product_BAC</span><span class="p">],</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="png" src="../_images/Example_Gibson_8_0.png" /></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Performing the Gibson Assembly. Note that the assembly class parameters should be given as a list.</span>
 
 <span class="n">assembled</span> <span class="o">=</span> <span class="n">Assembly</span><span class="p">([</span><span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_F1</span><span class="p">),</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_F2</span><span class="p">),</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_F3</span><span class="p">),</span> <span class="n">Dseqrecord</span><span class="p">(</span><span class="n">pcr_product_BAC</span><span class="p">)])</span>
@@ -158,6 +211,19 @@ if &#39;google.colab&#39; in sys.modules:
 
 <span class="c1"># Printing out the Gibson Assembly product</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">assembled_circ</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Dseqrecord
+circular: True
+size: 23827
+ID: id
+Name: name
+Description: description
+Number of features: 28
+/molecule_type=DNA
+Dseq(o23827)
+GCAG..ccgc
+CGTC..ggcg
 </pre></div>
 </div>
 </section>

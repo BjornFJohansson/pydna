@@ -1,0 +1,7 @@
+pydna.myprimers
+==========
+
+.. automodule:: pydna.myprimers
+    :members:
+    :undoc-members:
+    :show-inheritance:

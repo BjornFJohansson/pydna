@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.myprimers &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.parsers" href="pydna_parsers.html" />
+    <link rel="prev" title="pydna.myenzymes" href="pydna_myenzymes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.myprimers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.myprimers.PrimerList"><code class="docutils literal notranslate"><span class="pre">PrimerList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.myprimers.PrimerList.accessed"><code class="docutils literal notranslate"><span class="pre">PrimerList.accessed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.myprimers.PrimerList.assign_numbers"><code class="docutils literal notranslate"><span class="pre">PrimerList.assign_numbers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.myprimers.PrimerList.pydna_code_from_list"><code class="docutils literal notranslate"><span class="pre">PrimerList.pydna_code_from_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.myprimers.PrimerList.open_folder"><code class="docutils literal notranslate"><span class="pre">PrimerList.open_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.myprimers.PrimerList.code"><code class="docutils literal notranslate"><span class="pre">PrimerList.code()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.myprimers.check_primer_numbers"><code class="docutils literal notranslate"><span class="pre">check_primer_numbers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.myprimers.undefined_sequence"><code class="docutils literal notranslate"><span class="pre">undefined_sequence()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.myprimers.find_duplicate_primers"><code class="docutils literal notranslate"><span class="pre">find_duplicate_primers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.myprimers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_myprimers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydna-myprimers">
+<h1>pydna.myprimers<a class="headerlink" href="#pydna-myprimers" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-pydna.myprimers"></span><p>Provides a practical way to access a list of primer sequences in a text file.</p>
+<p>The path of a text file can be specified in the pydna.ini file or by the
+´pydna_primers´ environment variable.</p>
+<p>The file is expected to contain sequences in FASTA, Genbank or EMBL formats or
+any format readable by the parse_primers function.</p>
+<p>The primer list is expected to follow the convension below. The primer name is
+expected to begin with the number.</p>
+<p>can have the format below for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="mi">2</span><span class="n">_third_primer</span>
+<span class="n">tgagtagtcgtagtcgtcgtat</span>
+
+<span class="o">&gt;</span><span class="mi">1</span><span class="n">_second_primer</span>
+<span class="n">tgatcgtcatgctgactatactat</span>
+
+<span class="o">&gt;</span><span class="mi">0</span><span class="n">_first_primer</span>
+<span class="n">ctaggatcgtagatctagctg</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>The primerlist funtion returns a list of <a class="reference internal" href="pydna_primer.html#pydna.primer.Primer" title="pydna.primer.Primer"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydna.primer.Primer</span></code></a> objects
+primerdict returns a dict where the key is the id of the object.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pydna.myprimers.PrimerList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.myprimers.</span></span><span class="sig-name descname"><span class="pre">PrimerList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initlist:</span> <span class="pre">~typing.Iterable</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pathlib.Path'&gt;)</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&quot;p&quot;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#PrimerList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.PrimerList" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/collections.html#collections.UserList" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserList</span></code></a></p>
+<p>Read a text file with primers.</p>
+<p>The primers can be of any format readable by the parse_primers
+function. Lines beginning with # are ignored. Path defaults to
+the path given by the pydna_primers environment variable.</p>
+<p>The primer list does not accept new primers. Use the
+assign_numbers_to_new_primers method and paste the new
+primers at the top of the list.</p>
+<p>The primer list remembers the numbers of accessed primers.
+The indices of accessed primers are stored in the .accessed
+property.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pydna.myprimers.PrimerList.accessed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accessed</span></span><a class="headerlink" href="#pydna.myprimers.PrimerList.accessed" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.myprimers.PrimerList.assign_numbers">
+<span class="sig-name descname"><span class="pre">assign_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#PrimerList.assign_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.PrimerList.assign_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Find new primers in lst.</p>
+<p>Returns a string containing new primers with their assigned
+numbers. This string can be copied and pasted to the primer
+text file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.myprimers.PrimerList.pydna_code_from_list">
+<span class="sig-name descname"><span class="pre">pydna_code_from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#PrimerList.pydna_code_from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.PrimerList.pydna_code_from_list" title="Permalink to this definition"></a></dt>
+<dd><p>Pydna code for a list of primer objects.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.myprimers.PrimerList.open_folder">
+<span class="sig-name descname"><span class="pre">open_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#PrimerList.open_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.PrimerList.open_folder" title="Permalink to this definition"></a></dt>
+<dd><p>Open folder where primer file is located.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.myprimers.PrimerList.code">
+<span class="sig-name descname"><span class="pre">code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydna.myprimers.PrimerList.code" title="Permalink to this definition"></a></dt>
+<dd><p>Pydna code for a list of primer objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.myprimers.check_primer_numbers">
+<span class="sig-prename descclassname"><span class="pre">pydna.myprimers.</span></span><span class="sig-name descname"><span class="pre">check_primer_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#check_primer_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.check_primer_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Find primers whose number do not match position in list.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.myprimers.undefined_sequence">
+<span class="sig-prename descclassname"><span class="pre">pydna.myprimers.</span></span><span class="sig-name descname"><span class="pre">undefined_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#undefined_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.undefined_sequence" title="Permalink to this definition"></a></dt>
+<dd><p>Primers in list with N or n instead of a sequence.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.myprimers.find_duplicate_primers">
+<span class="sig-prename descclassname"><span class="pre">pydna.myprimers.</span></span><span class="sig-name descname"><span class="pre">find_duplicate_primers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/myprimers.html#find_duplicate_primers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.myprimers.find_duplicate_primers" title="Permalink to this definition"></a></dt>
+<dd><p>Find a list of lists with duplicated primer sequences.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_myenzymes.html" class="btn btn-neutral float-left" title="pydna.myenzymes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_parsers.html" class="btn btn-neutral float-right" title="pydna.parsers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

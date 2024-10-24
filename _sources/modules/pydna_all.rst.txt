@@ -1,0 +1,7 @@
+pydna.all
+==========
+
+.. automodule:: pydna.all
+    :members:
+    :undoc-members:
+    :show-inheritance:

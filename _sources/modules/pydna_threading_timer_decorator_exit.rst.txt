@@ -1,0 +1,7 @@
+pydna.threading_timer_decorator_exit
+==========
+
+.. automodule:: pydna.threading_timer_decorator_exit
+    :members:
+    :undoc-members:
+    :show-inheritance:

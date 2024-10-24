@@ -1,0 +1,7 @@
+pydna.genbankfile
+==========
+
+.. automodule:: pydna.genbankfile
+    :members:
+    :undoc-members:
+    :show-inheritance:

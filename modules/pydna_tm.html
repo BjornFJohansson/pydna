@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.tm &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.user_cloning" href="pydna_user_cloning.html" />
+    <link rel="prev" title="pydna.threading_timer_decorator_exit" href="pydna_threading_timer_decorator_exit.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.tm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.tm_default"><code class="docutils literal notranslate"><span class="pre">tm_default()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.tm_dbd"><code class="docutils literal notranslate"><span class="pre">tm_dbd()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.tm_product"><code class="docutils literal notranslate"><span class="pre">tm_product()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.ta_default"><code class="docutils literal notranslate"><span class="pre">ta_default()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.ta_dbd"><code class="docutils literal notranslate"><span class="pre">ta_dbd()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.program"><code class="docutils literal notranslate"><span class="pre">program()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.taq_program"><code class="docutils literal notranslate"><span class="pre">taq_program()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.dbd_program"><code class="docutils literal notranslate"><span class="pre">dbd_program()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.pfu_sso7d_program"><code class="docutils literal notranslate"><span class="pre">pfu_sso7d_program()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.Q5"><code class="docutils literal notranslate"><span class="pre">Q5()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.tmbresluc"><code class="docutils literal notranslate"><span class="pre">tmbresluc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.tm.tm_neb"><code class="docutils literal notranslate"><span class="pre">tm_neb()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.tm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_tm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pydna.tm">
+<span id="pydna-tm"></span><h1>pydna.tm<a class="headerlink" href="#module-pydna.tm" title="Permalink to this heading"></a></h1>
+<p>This module provide functions for melting temperature calculations.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.tm_default">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">tm_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_seq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nn_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_mt.DNA_NN4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmm_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imm_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">de_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dnac1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dnac2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selfcomp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tris</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dNTPs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saltcorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_mt.Tm_NN</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#tm_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.tm_default" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.tm_dbd">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">tm_dbd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_seq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nn_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_mt.DNA_NN3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmm_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imm_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">de_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dnac1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dnac2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selfcomp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tris</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dNTPs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saltcorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_mt.Tm_NN</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#tm_dbd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.tm_dbd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.tm_product">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">tm_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.050</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#tm_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.tm_product" title="Permalink to this definition"></a></dt>
+<dd><p>Tm calculation for the amplicon.</p>
+<p>according to:</p>
+<p>Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+ing temperature for DNA amplification in vitro
+<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/2243783">http://www.ncbi.nlm.nih.gov/pubmed/2243783</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.ta_default">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">ta_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm_product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_product</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#ta_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.ta_default" title="Permalink to this definition"></a></dt>
+<dd><p>Ta calculation.</p>
+<p>according to:</p>
+<p>Rychlik, Spencer, and Rhoads, 1990, Optimization of the anneal
+ing temperature for DNA amplification in vitro
+<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/2243783">http://www.ncbi.nlm.nih.gov/pubmed/2243783</a></p>
+<p>The formula described uses the length and GC content of the product and
+salt concentration (monovalent cations)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.ta_dbd">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">ta_dbd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_dbd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm_product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#ta_dbd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.ta_dbd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.program">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">program</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplicon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ta_default</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.program" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a string containing a text representation of a suggested
+PCR program using Taq or similar polymerase.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|95°C|95°C               |    |tmf:59.5
+|____|_____          72°C|72°C|tmr:59.7
+|3min|30s  \ 59.1°C _____|____|60s/kb
+|    |      \______/ 0:32|5min|GC 51%
+|    |       30s         |    |1051bp
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.taq_program">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">taq_program</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplicon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ta_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydna.tm.taq_program" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a string containing a text representation of a suggested
+PCR program using Taq or similar polymerase.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|95°C|95°C               |    |tmf:59.5
+|____|_____          72°C|72°C|tmr:59.7
+|3min|30s  \ 59.1°C _____|____|60s/kb
+|    |      \______/ 0:32|5min|GC 51%
+|    |       30s         |    |1051bp
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.dbd_program">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">dbd_program</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplicon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_dbd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ta_dbd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#dbd_program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.dbd_program" title="Permalink to this definition"></a></dt>
+<dd><p>Text representation of a suggested PCR program.</p>
+<p>Using a polymerase with a DNA binding domain such as Pfu-Sso7d.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|98°C|98°C               |    |tmf:53.8
+|____|_____          72°C|72°C|tmr:54.8
+|30s |10s  \ 57.0°C _____|____|15s/kb
+|    |      \______/ 0:15|5min|GC 51%
+|    |       10s         |    |1051bp
+
+|98°C|98°C      |    |tmf:82.5
+|____|____      |    |tmr:84.4
+|30s |10s \ 72°C|72°C|15s/kb
+|    |     \____|____|GC 52%
+|    |      3:45|5min|15058bp
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.pfu_sso7d_program">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">pfu_sso7d_program</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplicon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tm_dbd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ta_dbd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydna.tm.pfu_sso7d_program" title="Permalink to this definition"></a></dt>
+<dd><p>Text representation of a suggested PCR program.</p>
+<p>Using a polymerase with a DNA binding domain such as Pfu-Sso7d.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|98°C|98°C               |    |tmf:53.8
+|____|_____          72°C|72°C|tmr:54.8
+|30s |10s  \ 57.0°C _____|____|15s/kb
+|    |      \______/ 0:15|5min|GC 51%
+|    |       10s         |    |1051bp
+
+|98°C|98°C      |    |tmf:82.5
+|____|____      |    |tmr:84.4
+|30s |10s \ 72°C|72°C|15s/kb
+|    |     \____|____|GC 52%
+|    |      3:45|5min|15058bp
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.Q5">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">Q5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#Q5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.Q5" title="Permalink to this definition"></a></dt>
+<dd><p>For Q5 Ta they take the lower of the two Tms and add 1C
+(up to 72C). For Phusion they take the lower of the two
+and add 3C (up to 72C).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.tmbresluc">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">tmbresluc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primerc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saltc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#tmbresluc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.tmbresluc" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the tm for a primer using a formula adapted to polymerases
+with a DNA binding domain, such as the Phusion polymerase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>primer</strong> (<em>string</em>) – primer sequence 5’-3’</p></li>
+<li><p><strong>primerc</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – primer concentration in nM), set to 500.0 nm by default.</p></li>
+<li><p><strong>saltc</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Monovalent cation concentration in mM, set to 50.0 mM by default.</p></li>
+<li><p><strong>thermodynamics</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – prints details of the thermodynamic data to stdout. For
+debugging only.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tm</strong> – the tm of the primer</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.tm.tm_neb">
+<span class="sig-prename descclassname"><span class="pre">pydna.tm.</span></span><span class="sig-name descname"><span class="pre">tm_neb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prodcode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'q5-0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/tm.html#tm_neb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.tm.tm_neb" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates a single primers melting temp from NEB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>primer1</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – </p></li>
+<li><p><strong>conc</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – </p></li>
+<li><p><strong>prodcode</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – find product codes on nebswebsite: <a class="reference external" href="https://tmapi.neb.com/docs/productcodes">https://tmapi.neb.com/docs/productcodes</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tm</strong> – primer melting temperature</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_threading_timer_decorator_exit.html" class="btn btn-neutral float-left" title="pydna.threading_timer_decorator_exit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_user_cloning.html" class="btn btn-neutral float-right" title="pydna.user_cloning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+Modules
+=======
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Modules:
+
+   pydna
+   pydna__pretty
+   pydna__thermodynamic_data
+   pydna_all
+   pydna_amplicon
+   pydna_amplify
+   pydna_assembly
+   pydna_codon
+   pydna_common_sub_strings
+   pydna_conftest
+   pydna_contig
+   pydna_crispr
+   pydna_design
+   pydna_download
+   pydna_dseq
+   pydna_dseqrecord
+   pydna_editor
+   pydna_fakeseq
+   pydna_fusionpcr
+   pydna_gateway
+   pydna_gel
+   pydna_genbank
+   pydna_genbankfile
+   pydna_genbankfixer
+   pydna_genbankrecord
+   pydna_goldengate
+   pydna_ladders
+   pydna_ligate
+   pydna_myenzymes
+   pydna_myprimers
+   pydna_parsers
+   pydna_primer
+   pydna_readers
+   pydna_seq
+   pydna_seqrecord
+   pydna_sequence_picker
+   pydna_threading_timer_decorator_exit
+   pydna_tm
+   pydna_user_cloning
+   pydna_utils

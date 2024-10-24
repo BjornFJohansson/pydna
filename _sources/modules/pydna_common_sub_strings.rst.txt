@@ -1,0 +1,7 @@
+pydna.common_sub_strings
+==========
+
+.. automodule:: pydna.common_sub_strings
+    :members:
+    :undoc-members:
+    :show-inheritance:

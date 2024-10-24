@@ -9,9 +9,10 @@
   <title>Installation &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=7ab3649f" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=945798ad" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a051be83" />
 
   
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6efefdf6"></script>
@@ -20,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module contents" href="module_contents.html" />
+    <link rel="next" title="Modules" href="modules/index.html" />
     <link rel="prev" title="Pydna" href="index.html" /> 
 </head>
 
@@ -47,15 +48,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Pydna</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#clipboard"><code class="docutils literal notranslate"><span class="pre">clipboard</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#download"><code class="docutils literal notranslate"><span class="pre">download</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#express"><code class="docutils literal notranslate"><span class="pre">express</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#gel"><code class="docutils literal notranslate"><span class="pre">gel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-with-pip">Installing with pip 🐍</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-with-poetry">Installing with poetry 🧙‍♂️</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="module_contents.html">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_gallery.html">Example gallery</a></li>
 </ul>
@@ -87,10 +85,13 @@
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
 <p>By default, pydna is installed with minimal dependencies, but there are optional dependencies for additional functionality.</p>
+<section id="optional-dependencies">
+<h2>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this heading"></a></h2>
 <details>
 <summary>Click here to see optional dependencies</summary>
-<section id="clipboard">
-<h2><code class="docutils literal notranslate"><span class="pre">clipboard</span></code><a class="headerlink" href="#clipboard" title="Permalink to this heading"></a></h2>
+<!-- I did not make these headers because they mess up the sphinx docs by being inside of a collapsible section-->
+<hr class="docutils" />
+<p><strong>clipboard</strong></p>
 <p>Enables the <code class="docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord.copy_gb_to_clipboard()</span></code> and <code class="docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord.copy_fasta_to_clipboard()</span></code></p>
 <p>These methods will put a copy the sequence on the clipboard in either Genbank (gb) or fasta format.</p>
 <table class="docutils align-default">
@@ -105,9 +106,8 @@
 </tr>
 </tbody>
 </table>
-</section>
-<section id="download">
-<h2><code class="docutils literal notranslate"><span class="pre">download</span></code><a class="headerlink" href="#download" title="Permalink to this heading"></a></h2>
+<hr class="docutils" />
+<p><strong>download</strong></p>
 <p>Pyparsing enables the <code class="docutils literal notranslate"><span class="pre">pydna.genbankfixer.gbtext_clean()</span></code> function that can automatically
 correct malformed sequence files in Genbank format. These are often found online, so this
 option also installs requests to enable the  <code class="docutils literal notranslate"><span class="pre">pydna.genbankfixer.download.download_text()</span></code> function which can be used to get cleaned up text from a URL.</p>
@@ -126,16 +126,14 @@ option also installs requests to enable the  <code class="docutils literal notra
 </tr>
 </tbody>
 </table>
-</section>
-<section id="express">
-<h2><code class="docutils literal notranslate"><span class="pre">express</span></code><a class="headerlink" href="#express" title="Permalink to this heading"></a></h2>
+<hr class="docutils" />
+<p><strong>express</strong></p>
 <p>This option enables the <code class="docutils literal notranslate"><span class="pre">pydna.utils.cai()</span></code> function and the <code class="docutils literal notranslate"><span class="pre">cai()</span></code> method
 available from subclasses of <code class="docutils literal notranslate"><span class="pre">pydna.seqrecord.SeqRecord</span></code>, such as
 <code class="docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord</span></code>.</p>
 <p>| <a class="reference external" href="https://pypi.python.org/pypi/cai2">cai2</a>           | codon adaptation index calculations in several modules |</p>
-</section>
-<section id="gel">
-<h2><code class="docutils literal notranslate"><span class="pre">gel</span></code><a class="headerlink" href="#gel" title="Permalink to this heading"></a></h2>
+<hr class="docutils" />
+<p><strong>gel</strong></p>
 <p>Scipy, matplotlib and pillow (PIL) enable the generation of gel images. Numpy is also
 needed, but usually installed as a dependency of biopython.</p>
 <table class="docutils align-default">
@@ -156,6 +154,7 @@ needed, but usually installed as a dependency of biopython.</p>
 </tr>
 </tbody>
 </table>
+<hr class="docutils" />
 </details>
 </section>
 <section id="installing-with-pip">
@@ -191,7 +190,7 @@ poetry<span class="w"> </span>add<span class="w"> </span>pydna<span class="w"> <
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Pydna" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="module_contents.html" class="btn btn-neutral float-right" title="Module contents" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules/index.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

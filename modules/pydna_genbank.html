@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.genbank &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.genbankfile" href="pydna_genbankfile.html" />
+    <link rel="prev" title="pydna.gel" href="pydna_gel.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseq.html">pydna.dseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.genbank</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.genbank.Genbank"><code class="docutils literal notranslate"><span class="pre">Genbank</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.genbank.Genbank.nucleotide"><code class="docutils literal notranslate"><span class="pre">Genbank.nucleotide()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.genbank.genbank"><code class="docutils literal notranslate"><span class="pre">genbank()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.genbank</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_genbank.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydna-genbank">
+<h1>pydna.genbank<a class="headerlink" href="#pydna-genbank" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-pydna.genbank"></span><p>This module provides a class for downloading sequences from genbank
+called Genbank and an function that does the same thing called genbank.</p>
+<p>The function can be used if the environmental variable <strong>pydna_email</strong> has
+been set to a valid email address. The easiest way to do this permanantly is to edit the
+<cite>pydna.ini</cite> file. See the documentation of <a class="reference internal" href="pydna.html#pydna.open_config_folder" title="pydna.open_config_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">pydna.open_config_folder()</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pydna.genbank.Genbank">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.genbank.</span></span><span class="sig-name descname"><span class="pre">Genbank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pydna'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/genbank.html#Genbank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.genbank.Genbank" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class to facilitate download from genbank. It is easier and
+quicker to use the <a class="reference internal" href="#pydna.genbank.genbank" title="pydna.genbank.genbank"><code class="xref py py-func docutils literal notranslate"><span class="pre">pydna.genbank.genbank()</span></code></a> function directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>users_email</strong> (<em>string</em>) – Has to be a valid email address. You should always tell
+Genbanks who you are, so that they can contact you.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.genbank</span> <span class="kn">import</span> <span class="n">Genbank</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gb</span><span class="o">=</span><span class="n">Genbank</span><span class="p">(</span><span class="s2">&quot;bjornjobb@gmail.com&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rec</span> <span class="o">=</span> <span class="n">gb</span><span class="o">.</span><span class="n">nucleotide</span><span class="p">(</span><span class="s2">&quot;LP002422.1&quot;</span><span class="p">)</span>   <span class="c1"># &lt;- entry from genbank</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rec</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.genbank.Genbank.nucleotide">
+<span class="sig-name descname"><span class="pre">nucleotide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydna.genbank.Genbank.nucleotide" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydna.genbank.genbank">
+<span class="sig-prename descclassname"><span class="pre">pydna.genbank.</span></span><span class="sig-name descname"><span class="pre">genbank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accession</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CS570233.1'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pydna_genbankrecord.html#pydna.genbankrecord.GenbankRecord" title="pydna.genbankrecord.GenbankRecord"><span class="pre">GenbankRecord</span></a></span></span><a class="reference internal" href="../_modules/pydna/genbank.html#genbank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.genbank.genbank" title="Permalink to this definition"></a></dt>
+<dd><p>Download a genbank nuclotide record.</p>
+<p>This function takes the same paramenters as the
+:func:pydna.genbank.Genbank.nucleotide method. The email address stored
+in the <cite>pydna_email</cite> environment variable is used. The easiest way set
+this permanantly is to edit the <cite>pydna.ini</cite> file.
+See the documentation of <a class="reference internal" href="pydna.html#pydna.open_config_folder" title="pydna.open_config_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">pydna.open_config_folder()</span></code></a></p>
+<p>if no accession is given, a <a class="reference external" href="https://www.ncbi.nlm.nih.gov/nuccore/CS570233.1">very short Genbank
+entry</a>
+is used as an example (see below). This can be useful for testing the
+connection to Genbank.</p>
+<p>Please note that this result is also cached by default by settings in
+the pydna.ini file.
+See the documentation of <a class="reference internal" href="pydna.html#pydna.open_config_folder" title="pydna.open_config_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">pydna.open_config_folder()</span></code></a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LOCUS</span>       <span class="n">CS570233</span>                  <span class="mi">14</span> <span class="n">bp</span>    <span class="n">DNA</span>     <span class="n">linear</span>   <span class="n">PAT</span> <span class="mi">18</span><span class="o">-</span><span class="n">MAY</span><span class="o">-</span><span class="mi">2007</span>
+<span class="n">DEFINITION</span>  <span class="n">Sequence</span> <span class="mi">6</span> <span class="kn">from</span> <span class="nn">Patent</span> <span class="n">WO2007025016</span><span class="o">.</span>
+<span class="n">ACCESSION</span>   <span class="n">CS570233</span>
+<span class="n">VERSION</span>     <span class="n">CS570233</span><span class="mf">.1</span>
+<span class="n">KEYWORDS</span>    <span class="o">.</span>
+<span class="n">SOURCE</span>      <span class="n">synthetic</span> <span class="n">construct</span>
+  <span class="n">ORGANISM</span>  <span class="n">synthetic</span> <span class="n">construct</span>
+            <span class="n">other</span> <span class="n">sequences</span><span class="p">;</span> <span class="n">artificial</span> <span class="n">sequences</span><span class="o">.</span>
+<span class="n">REFERENCE</span>   <span class="mi">1</span>
+  <span class="n">AUTHORS</span>   <span class="n">Shaw</span><span class="p">,</span><span class="n">R</span><span class="o">.</span><span class="n">W</span><span class="o">.</span> <span class="ow">and</span> <span class="n">Cottenoir</span><span class="p">,</span><span class="n">M</span><span class="o">.</span>
+  <span class="n">TITLE</span>     <span class="n">Inhibition</span> <span class="n">of</span> <span class="n">metallo</span><span class="o">-</span><span class="n">beta</span><span class="o">-</span><span class="n">lactamase</span> <span class="n">by</span> <span class="n">double</span><span class="o">-</span><span class="n">stranded</span> <span class="n">dna</span>
+  <span class="n">JOURNAL</span>   <span class="n">Patent</span><span class="p">:</span> <span class="n">WO</span> <span class="mi">2007025016</span><span class="o">-</span><span class="n">A1</span> <span class="mi">6</span> <span class="mi">01</span><span class="o">-</span><span class="n">MAR</span><span class="o">-</span><span class="mi">2007</span><span class="p">;</span>
+            <span class="n">Texas</span> <span class="n">Tech</span> <span class="n">University</span> <span class="n">System</span> <span class="p">(</span><span class="n">US</span><span class="p">)</span>
+<span class="n">FEATURES</span>             <span class="n">Location</span><span class="o">/</span><span class="n">Qualifiers</span>
+     <span class="n">source</span>          <span class="mf">1..14</span>
+                     <span class="o">/</span><span class="n">organism</span><span class="o">=</span><span class="s2">&quot;synthetic construct&quot;</span>
+                     <span class="o">/</span><span class="n">mol_type</span><span class="o">=</span><span class="s2">&quot;unassigned DNA&quot;</span>
+                     <span class="o">/</span><span class="n">db_xref</span><span class="o">=</span><span class="s2">&quot;taxon:32630&quot;</span>
+                     <span class="o">/</span><span class="n">note</span><span class="o">=</span><span class="s2">&quot;This is a 14bp aptamer inhibitor.&quot;</span>
+<span class="n">ORIGIN</span>
+        <span class="mi">1</span> <span class="n">atgttcctac</span> <span class="n">atga</span>
+<span class="o">//</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_gel.html" class="btn btn-neutral float-left" title="pydna.gel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_genbankfile.html" class="btn btn-neutral float-right" title="pydna.genbankfile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

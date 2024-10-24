@@ -1,0 +1,1406 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pydna.dseq &mdash; pydna 6.0.0a24.post17+b7b559bd66 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a051be83" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6efefdf6"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pydna.dseqrecord" href="pydna_dseqrecord.html" />
+    <link rel="prev" title="pydna.download" href="pydna_download.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pydna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pydna</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pydna.html">pydna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__pretty.html">pydna._pretty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna__thermodynamic_data.html">pydna._thermodynamic_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_all.html">pydna.all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplicon.html">pydna.amplicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_amplify.html">pydna.amplify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_assembly.html">pydna.assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_codon.html">pydna.codon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_common_sub_strings.html">pydna.common_sub_strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_conftest.html">pydna.conftest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_contig.html">pydna.contig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_crispr.html">pydna.crispr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_design.html">pydna.design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_download.html">pydna.download</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pydna.dseq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pydna.dseq.Dseq"><code class="docutils literal notranslate"><span class="pre">Dseq</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.trunc"><code class="docutils literal notranslate"><span class="pre">Dseq.trunc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.quick"><code class="docutils literal notranslate"><span class="pre">Dseq.quick()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.from_string"><code class="docutils literal notranslate"><span class="pre">Dseq.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.from_representation"><code class="docutils literal notranslate"><span class="pre">Dseq.from_representation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.from_full_sequence_and_overhangs"><code class="docutils literal notranslate"><span class="pre">Dseq.from_full_sequence_and_overhangs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.mw"><code class="docutils literal notranslate"><span class="pre">Dseq.mw()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.upper"><code class="docutils literal notranslate"><span class="pre">Dseq.upper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.lower"><code class="docutils literal notranslate"><span class="pre">Dseq.lower()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.find"><code class="docutils literal notranslate"><span class="pre">Dseq.find()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.reverse_complement"><code class="docutils literal notranslate"><span class="pre">Dseq.reverse_complement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.rc"><code class="docutils literal notranslate"><span class="pre">Dseq.rc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.shifted"><code class="docutils literal notranslate"><span class="pre">Dseq.shifted()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.looped"><code class="docutils literal notranslate"><span class="pre">Dseq.looped()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.tolinear"><code class="docutils literal notranslate"><span class="pre">Dseq.tolinear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.five_prime_end"><code class="docutils literal notranslate"><span class="pre">Dseq.five_prime_end()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.three_prime_end"><code class="docutils literal notranslate"><span class="pre">Dseq.three_prime_end()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.watson_ovhg"><code class="docutils literal notranslate"><span class="pre">Dseq.watson_ovhg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.fill_in"><code class="docutils literal notranslate"><span class="pre">Dseq.fill_in()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.transcribe"><code class="docutils literal notranslate"><span class="pre">Dseq.transcribe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.translate"><code class="docutils literal notranslate"><span class="pre">Dseq.translate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.mung"><code class="docutils literal notranslate"><span class="pre">Dseq.mung()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.T4"><code class="docutils literal notranslate"><span class="pre">Dseq.T4()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.t4"><code class="docutils literal notranslate"><span class="pre">Dseq.t4()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.exo1_front"><code class="docutils literal notranslate"><span class="pre">Dseq.exo1_front()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.exo1_end"><code class="docutils literal notranslate"><span class="pre">Dseq.exo1_end()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.no_cutters"><code class="docutils literal notranslate"><span class="pre">Dseq.no_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.unique_cutters"><code class="docutils literal notranslate"><span class="pre">Dseq.unique_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.once_cutters"><code class="docutils literal notranslate"><span class="pre">Dseq.once_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.twice_cutters"><code class="docutils literal notranslate"><span class="pre">Dseq.twice_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.n_cutters"><code class="docutils literal notranslate"><span class="pre">Dseq.n_cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.cutters"><code class="docutils literal notranslate"><span class="pre">Dseq.cutters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.seguid"><code class="docutils literal notranslate"><span class="pre">Dseq.seguid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.isblunt"><code class="docutils literal notranslate"><span class="pre">Dseq.isblunt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.cas9"><code class="docutils literal notranslate"><span class="pre">Dseq.cas9()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.terminal_transferase"><code class="docutils literal notranslate"><span class="pre">Dseq.terminal_transferase()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.cut"><code class="docutils literal notranslate"><span class="pre">Dseq.cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.cutsite_is_valid"><code class="docutils literal notranslate"><span class="pre">Dseq.cutsite_is_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.get_cutsites"><code class="docutils literal notranslate"><span class="pre">Dseq.get_cutsites()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.left_end_position"><code class="docutils literal notranslate"><span class="pre">Dseq.left_end_position()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.right_end_position"><code class="docutils literal notranslate"><span class="pre">Dseq.right_end_position()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.get_cut_parameters"><code class="docutils literal notranslate"><span class="pre">Dseq.get_cut_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.apply_cut"><code class="docutils literal notranslate"><span class="pre">Dseq.apply_cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pydna.dseq.Dseq.get_cutsite_pairs"><code class="docutils literal notranslate"><span class="pre">Dseq.get_cutsite_pairs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_dseqrecord.html">pydna.dseqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_editor.html">pydna.editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fakeseq.html">pydna.fakeseq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_fusionpcr.html">pydna.fusionpcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gateway.html">pydna.gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_gel.html">pydna.gel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbank.html">pydna.genbank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfile.html">pydna.genbankfile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankfixer.html">pydna.genbankfixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_genbankrecord.html">pydna.genbankrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_goldengate.html">pydna.goldengate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ladders.html">pydna.ladders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_ligate.html">pydna.ligate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myenzymes.html">pydna.myenzymes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_myprimers.html">pydna.myprimers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_parsers.html">pydna.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_primer.html">pydna.primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_readers.html">pydna.readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seq.html">pydna.seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_seqrecord.html">pydna.seqrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_sequence_picker.html">pydna.sequence_picker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_threading_timer_decorator_exit.html">pydna.threading_timer_decorator_exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_tm.html">pydna.tm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_user_cloning.html">pydna.user_cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydna_utils.html">pydna.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_gallery.html">Example gallery</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pydna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modules</a></li>
+      <li class="breadcrumb-item active">pydna.dseq</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pydna_dseq.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pydna.dseq">
+<span id="pydna-dseq"></span><h1>pydna.dseq<a class="headerlink" href="#module-pydna.dseq" title="Permalink to this heading"></a></h1>
+<p>Provides the Dseq class for handling double stranded DNA sequences.</p>
+<p>Dseq is a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code>. The Dseq class
+is mostly useful as a part of the <a class="reference internal" href="pydna_dseqrecord.html#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord</span></code></a> class
+which can hold more meta data.</p>
+<p>The Dseq class support the notion of circular and linear DNA topology.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pydna.dseq.</span></span><span class="sig-name descname"><span class="pre">Dseq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">watson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytes" title="(in Python v3.8)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crick</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytes" title="(in Python v3.8)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ovhg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pydna_seq.html#pydna.seq.Seq" title="pydna.seq.Seq"><code class="xref py py-class docutils literal notranslate"><span class="pre">Seq</span></code></a></p>
+<p>Dseq holds information for a double stranded DNA fragment.</p>
+<p>Dseq also holds information describing the topology of
+the DNA fragment (linear or circular).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>watson</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – a string representing the watson (sense) DNA strand.</p></li>
+<li><p><strong>crick</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – a string representing the crick (antisense) DNA strand.</p></li>
+<li><p><strong>ovhg</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – A positive or negative number to describe the stagger between the
+watson and crick strands.
+see below for a detailed explanation.</p></li>
+<li><p><strong>linear</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – True indicates that sequence is linear, False that it is circular.</p></li>
+<li><p><strong>circular</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – True indicates that sequence is circular, False that it is linear.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Dseq is a subclass of the Biopython Seq object. It stores two
+strings representing the watson (sense) and crick(antisense) strands.
+two properties called linear and circular, and a numeric value ovhg
+(overhang) describing the stagger for the watson and crick strand
+in the 5’ end of the fragment.</p>
+<p>The most common usage is probably to create a Dseq object as a
+part of a Dseqrecord object (see <a class="reference internal" href="pydna_dseqrecord.html#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord</span></code></a>).</p>
+<p>There are three ways of creating a Dseq object directly listed below, but you can also
+use the function Dseq.from_full_sequence_and_overhangs() to create a Dseq:</p>
+<p>Only one argument (string):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+</pre></div>
+</div>
+<p>The given string will be interpreted as the watson strand of a
+blunt, linear double stranded sequence object. The crick strand
+is created automatically from the watson strand.</p>
+<p>Two arguments (string, string):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gggaaat&quot;</span><span class="p">,</span><span class="s2">&quot;ttt&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-7)</span>
+<span class="go">gggaaat</span>
+<span class="go">   ttt</span>
+</pre></div>
+</div>
+<p>If both watson and crick are given, but not ovhg an attempt
+will be made to find the best annealing between the strands.
+There are limitations to this. For long fragments it is quite
+slow. The length of the annealing sequences have to be at least
+half the length of the shortest of the strands.</p>
+<p>Three arguments (string, string, ovhg=int):</p>
+<p>The ovhg parameter is an integer describing the length of the
+crick strand overhang in the 5’ end of the molecule.</p>
+<p>The ovhg parameter controls the stagger at the five prime end:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dsDNA</span>       <span class="n">overhang</span>
+
+  <span class="n">nnn</span><span class="o">...</span>    <span class="mi">2</span>
+<span class="n">nnnnn</span><span class="o">...</span>
+
+ <span class="n">nnnn</span><span class="o">...</span>    <span class="mi">1</span>
+<span class="n">nnnnn</span><span class="o">...</span>
+
+<span class="n">nnnnn</span><span class="o">...</span>    <span class="mi">0</span>
+<span class="n">nnnnn</span><span class="o">...</span>
+
+<span class="n">nnnnn</span><span class="o">...</span>   <span class="o">-</span><span class="mi">1</span>
+ <span class="n">nnnn</span><span class="o">...</span>
+
+<span class="n">nnnnn</span><span class="o">...</span>   <span class="o">-</span><span class="mi">2</span>
+  <span class="n">nnn</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>Example of creating Dseq objects with different amounts of stagger:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span> <span class="n">crick</span><span class="o">=</span><span class="s2">&quot;actta&quot;</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Dseq(-7)</span>
+<span class="go">agt</span>
+<span class="go">  attca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span><span class="n">crick</span><span class="o">=</span><span class="s2">&quot;actta&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">agt</span>
+<span class="go"> attca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span><span class="n">crick</span><span class="o">=</span><span class="s2">&quot;actta&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">agt</span>
+<span class="go">attca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span><span class="n">crick</span><span class="o">=</span><span class="s2">&quot;actta&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">Dseq(-5)</span>
+<span class="go"> agt</span>
+<span class="go">attca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span><span class="n">crick</span><span class="o">=</span><span class="s2">&quot;actta&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">  agt</span>
+<span class="go">attca</span>
+</pre></div>
+</div>
+<p>If the ovhg parameter is specified a crick strand also
+needs to be supplied, otherwise an exception is raised.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;/usr/local/lib/python2.7/dist-packages/pydna_/dsdna.py&quot;</span>, line <span class="m">169</span>, in <span class="n">__init__</span>
+<span class="w">    </span><span class="k">else</span><span class="p">:</span>
+<span class="gr">ValueError</span>: <span class="n">ovhg defined without crick strand!</span>
+</pre></div>
+</div>
+<p>The shape of the fragment is set by circular = True, False</p>
+<p>Note that both ends of the DNA fragment has to be compatible to set
+circular = True.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span><span class="s2">&quot;ttt&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span><span class="s2">&quot;ttt&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span><span class="s2">&quot;ttt&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">Dseq(-4)</span>
+<span class="go"> aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span><span class="s2">&quot;ttt&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">Dseq(-4)</span>
+<span class="go">aaa</span>
+<span class="go"> ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">,</span> <span class="n">circular</span> <span class="o">=</span> <span class="kc">True</span> <span class="p">,</span> <span class="n">ovhg</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">Dseq(o3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;tttcccc&quot;</span><span class="p">,</span><span class="s2">&quot;aaacccc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-11)</span>
+<span class="go">    tttcccc</span>
+<span class="go">ccccaaa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">ovhg</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;ccccttt&quot;</span><span class="p">,</span><span class="s2">&quot;ccccaaa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseq(-11)</span>
+<span class="go">ccccttt</span>
+<span class="go">    aaacccc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">ovhg</span>
+<span class="go">-4</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Coercing to string</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">&#39;ggggtttcccc&#39;</span>
+</pre></div>
+</div>
+<p>A Dseq object can be longer that either the watson or crick strands.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;--</span> <span class="n">length</span> <span class="o">--&gt;</span>
+<span class="n">GATCCTTT</span>
+     <span class="n">AAAGCCTAG</span>
+
+<span class="o">&lt;--</span> <span class="n">length</span> <span class="o">--&gt;</span>
+      <span class="n">GATCCTTT</span>
+<span class="n">AAAGCCCTA</span>
+</pre></div>
+</div>
+<p>The slicing of a linear Dseq object works mostly as it does for a string.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">=</span><span class="s2">&quot;ggatcc&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">&#39;a&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+<span class="go">&#39;at&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">&#39;gac&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">Dseq(-1)</span>
+<span class="go">a</span>
+<span class="go">t</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+<span class="go">Dseq(-2)</span>
+<span class="go">at</span>
+<span class="go">ta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">Dseq(-0)</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">gac</span>
+<span class="go">ctg</span>
+</pre></div>
+</div>
+<p>The slicing of a circular Dseq object has a slightly different meaning.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">=</span><span class="s2">&quot;ggAtCc&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span>
+<span class="go">Dseq(o6)</span>
+<span class="go">ggAtCc</span>
+<span class="go">ccTaGg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">CcggA</span>
+<span class="go">GgccT</span>
+</pre></div>
+</div>
+<p>The slice [X:X] produces an empty slice for a string, while this
+will return the linearized sequence starting at X:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">=</span><span class="s2">&quot;ggatcc&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span>
+<span class="go">Dseq(o6)</span>
+<span class="go">ggatcc</span>
+<span class="go">cctagg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">tccgga</span>
+<span class="go">aggcct</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="pydna_dseqrecord.html#pydna.dseqrecord.Dseqrecord" title="pydna.dseqrecord.Dseqrecord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseqrecord.Dseqrecord</span></code></a></p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.trunc">
+<span class="sig-name descname"><span class="pre">trunc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></em><a class="headerlink" href="#pydna.dseq.Dseq.trunc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.quick">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">quick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">watson</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crick</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ovhg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.quick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.quick" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.from_string">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.from_string" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.from_representation">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_representation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsdna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.from_representation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.from_representation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.from_full_sequence_and_overhangs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_full_sequence_and_overhangs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crick_ovhg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">watson_ovhg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.from_full_sequence_and_overhangs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.from_full_sequence_and_overhangs" title="Permalink to this definition"></a></dt>
+<dd><p>Create a linear Dseq object from a full sequence and the 3’ overhangs of each strand.</p>
+<p>The order of the parameters is like this because the 3’ overhang of the crick strand is the one
+on the left side of the sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>full_sequence</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The full sequence of the Dseq object.</p></li>
+<li><p><strong>crick_ovhg</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The overhang of the crick strand in the 3’ end. Equivalent to Dseq.ovhg.</p></li>
+<li><p><strong>watson_ovhg</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The overhang of the watson strand in the 5’ end.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Dseq object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq">Dseq</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="o">.</span><span class="n">from_full_sequence_and_overhangs</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">,</span> <span class="n">crick_ovhg</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">watson_ovhg</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">  AAAA</span>
+<span class="go">TTTT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="o">.</span><span class="n">from_full_sequence_and_overhangs</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">,</span> <span class="n">crick_ovhg</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">watson_ovhg</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">AAAAAA</span>
+<span class="go">  TT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="o">.</span><span class="n">from_full_sequence_and_overhangs</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">,</span> <span class="n">crick_ovhg</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">watson_ovhg</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">  AA</span>
+<span class="go">TTTTTT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="o">.</span><span class="n">from_full_sequence_and_overhangs</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">,</span> <span class="n">crick_ovhg</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">watson_ovhg</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Dseq(-6)</span>
+<span class="go">AAAA</span>
+<span class="go">  TTTT</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.mw">
+<span class="sig-name descname"><span class="pre">mw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.mw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.mw" title="Permalink to this definition"></a></dt>
+<dd><p>This method returns the molecular weight of the DNA molecule
+in g/mol. The following formula is used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MW</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="n">x</span> <span class="mf">313.2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="n">x</span> <span class="mf">304.2</span><span class="p">)</span> <span class="o">+</span>
+     <span class="p">(</span><span class="n">C</span> <span class="n">x</span> <span class="mf">289.2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">G</span> <span class="n">x</span> <span class="mf">329.2</span><span class="p">)</span> <span class="o">+</span>
+     <span class="p">(</span><span class="n">N</span> <span class="n">x</span> <span class="mf">308.9</span><span class="p">)</span> <span class="o">+</span> <span class="mf">79.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.upper">
+<span class="sig-name descname"><span class="pre">upper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.upper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.upper" title="Permalink to this definition"></a></dt>
+<dd><p>Return an upper case copy of the sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aAa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aAa</span>
+<span class="go">tTt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">AAA</span>
+<span class="go">TTT</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dseq object in uppercase</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq">Dseq</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pydna.dseq.Dseq.lower" title="pydna.dseq.Dseq.lower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.lower</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.lower">
+<span class="sig-name descname"><span class="pre">lower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.lower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.lower" title="Permalink to this definition"></a></dt>
+<dd><p>Return a lower case copy of the sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aAa&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aAa</span>
+<span class="go">tTt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_seq</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dseq object in lowercase</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq">Dseq</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pydna.dseq.Dseq.upper" title="pydna.dseq.Dseq.upper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.upper</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_SeqAbstractBaseClass</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bytes" title="(in Python v3.8)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_sys.maxsize</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.find" title="Permalink to this definition"></a></dt>
+<dd><p>This method behaves like the python string method of the same name.</p>
+<p>Returns an integer, the index of the first occurrence of substring
+argument sub in the (sub)sequence given by [start:end].</p>
+<p>Returns -1 if the subsequence is NOT found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub</strong> (<em>string</em><em> or </em><em>Seq object</em>) – a string or another Seq object to look for.</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – slice start.</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – slice end.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;atcgactgacgtgtt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span>
+<span class="go">Dseq(-15)</span>
+<span class="go">atcgactgacgtgtt</span>
+<span class="go">tagctgactgcacaa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;gac&quot;</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="n">watson</span><span class="o">=</span><span class="s2">&quot;agt&quot;</span><span class="p">,</span><span class="n">crick</span><span class="o">=</span><span class="s2">&quot;actta&quot;</span><span class="p">,</span><span class="n">ovhg</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span>
+<span class="go">Dseq(-7)</span>
+<span class="go">agt</span>
+<span class="go">  attca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;taa&quot;</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.reverse_complement">
+<span class="sig-name descname"><span class="pre">reverse_complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.reverse_complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.reverse_complement" title="Permalink to this definition"></a></dt>
+<dd><p>Dseq object where watson and crick have switched places.</p>
+<p>This represents the same double stranded sequence.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;catcgatc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">catcgatc</span>
+<span class="go">gtagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgatg</span>
+<span class="go">ctagctac</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.rc">
+<span class="sig-name descname"><span class="pre">rc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="headerlink" href="#pydna.dseq.Dseq.rc" title="Permalink to this definition"></a></dt>
+<dd><p>Dseq object where watson and crick have switched places.</p>
+<p>This represents the same double stranded sequence.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;catcgatc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">catcgatc</span>
+<span class="go">gtagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgatg</span>
+<span class="go">ctagctac</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.shifted">
+<span class="sig-name descname"><span class="pre">shifted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.shifted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.shifted" title="Permalink to this definition"></a></dt>
+<dd><p>Shifted version of a circular Dseq object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.looped">
+<span class="sig-name descname"><span class="pre">looped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.looped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.looped" title="Permalink to this definition"></a></dt>
+<dd><p>Circularized Dseq object.</p>
+<p>This can only be done if the two ends are compatible,
+otherwise a TypeError is raised.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;catcgatc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">catcgatc</span>
+<span class="go">gtagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span>
+<span class="go">Dseq(o8)</span>
+<span class="go">catcgatc</span>
+<span class="go">gtagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">catcgat</span>
+<span class="go"> tagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span>
+<span class="go">Dseq(o7)</span>
+<span class="go">catcgat</span>
+<span class="go">gtagcta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">catcga</span>
+<span class="go">  agctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">looped</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;/usr/local/lib/python2.7/dist-packages/pydna/dsdna.py&quot;</span>, line <span class="m">357</span>, in <span class="n">looped</span>
+<span class="w">    </span><span class="k">if</span> <span class="n">type5</span> <span class="o">==</span> <span class="n">type3</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">sticky5</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">rc</span><span class="p">(</span><span class="n">sticky3</span><span class="p">)):</span>
+<span class="gr">TypeError</span>: <span class="n">DNA cannot be circularized.</span>
+<span class="x">5&#39; and 3&#39; sticky ends not compatible!</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.tolinear">
+<span class="sig-name descname"><span class="pre">tolinear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.tolinear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.tolinear" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a blunt, linear copy of a circular Dseq object. This can
+only be done if the Dseq object is circular, otherwise a
+TypeError is raised.</p>
+<p>This method is deprecated, use slicing instead. See example below.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;catcgatc&quot;</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(o8)</span>
+<span class="go">catcgatc</span>
+<span class="go">gtagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[:]</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">catcgatc</span>
+<span class="go">gtagctag</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.five_prime_end">
+<span class="sig-name descname"><span class="pre">five_prime_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.five_prime_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.five_prime_end" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a tuple describing the structure of the 5’ end of
+the DNA fragment</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">five_prime_end</span><span class="p">()</span>
+<span class="go">(&#39;blunt&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-4)</span>
+<span class="go"> aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">five_prime_end</span><span class="p">()</span>
+<span class="go">(&quot;3&#39;&quot;, &#39;t&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-4)</span>
+<span class="go">aaa</span>
+<span class="go"> ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">five_prime_end</span><span class="p">()</span>
+<span class="go">(&quot;5&#39;&quot;, &#39;a&#39;)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pydna.dseq.Dseq.three_prime_end" title="pydna.dseq.Dseq.three_prime_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.three_prime_end</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.three_prime_end">
+<span class="sig-name descname"><span class="pre">three_prime_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.three_prime_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.three_prime_end" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a tuple describing the structure of the 5’ end of
+the DNA fragment</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">three_prime_end</span><span class="p">()</span>
+<span class="go">(&#39;blunt&#39;, &#39;&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-4)</span>
+<span class="go"> aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">three_prime_end</span><span class="p">()</span>
+<span class="go">(&quot;3&#39;&quot;, &#39;a&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">,</span> <span class="n">ovhg</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-4)</span>
+<span class="go">aaa</span>
+<span class="go"> ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">three_prime_end</span><span class="p">()</span>
+<span class="go">(&quot;5&#39;&quot;, &#39;t&#39;)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pydna.dseq.Dseq.five_prime_end" title="pydna.dseq.Dseq.five_prime_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydna.dseq.Dseq.five_prime_end</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.watson_ovhg">
+<span class="sig-name descname"><span class="pre">watson_ovhg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.watson_ovhg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.watson_ovhg" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the overhang of the watson strand at the three prime.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.fill_in">
+<span class="sig-name descname"><span class="pre">fill_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleotides</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.fill_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.fill_in" title="Permalink to this definition"></a></dt>
+<dd><p>Fill in of five prime protruding end with a DNA polymerase
+that has only DNA polymerase activity (such as exo-klenow <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>)
+and any combination of A, G, C or T. Default are all four
+nucleotides together.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nucleotides</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – </p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span> <span class="s2">&quot;ttt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">fill_in</span><span class="p">()</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">aaa</span>
+<span class="go">ttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;caaa&quot;</span><span class="p">,</span> <span class="s2">&quot;cttt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">caaa</span>
+<span class="go"> tttc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">fill_in</span><span class="p">()</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">caaag</span>
+<span class="go">gtttc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">fill_in</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">caaag</span>
+<span class="go">gtttc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">fill_in</span><span class="p">(</span><span class="s2">&quot;tac&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">caaa</span>
+<span class="go"> tttc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaac&quot;</span><span class="p">,</span> <span class="s2">&quot;tttg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Dseq(-5)</span>
+<span class="go"> aaac</span>
+<span class="go">gttt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">fill_in</span><span class="p">()</span>
+<span class="go">Dseq(-5)</span>
+<span class="go"> aaac</span>
+<span class="go">gttt</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Klenow_fragment#The_exo-_Klenow_fragment">http://en.wikipedia.org/wiki/Klenow_fragment#The_exo-_Klenow_fragment</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.transcribe">
+<span class="sig-name descname"><span class="pre">transcribe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pydna_seq.html#pydna.seq.Seq" title="pydna.seq.Seq"><span class="pre">Seq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.transcribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.transcribe" title="Permalink to this definition"></a></dt>
+<dd><p>Transcribe a DNA sequence into RNA and return the RNA sequence as a new Seq object.</p>
+<p>Following the usual convention, the sequence is interpreted as the
+coding strand of the DNA double helix, not the template strand. This
+means we can get the RNA sequence just by switching T to U.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span>
+<span class="go">Seq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coding_dna</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span>
+<span class="go">Seq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+</pre></div>
+</div>
+<p>The sequence is modified in-place and returned if inplace is True:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span> <span class="o">=</span> <span class="n">MutableSeq</span><span class="p">(</span><span class="s2">&quot;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span>
+<span class="go">MutableSeq(&#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39;)</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">Seq</span></code> objects are immutable, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised if
+<code class="docutils literal notranslate"><span class="pre">transcribe</span></code> is called on a <code class="docutils literal notranslate"><span class="pre">Seq</span></code> object with <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>.</p>
+<p>Trying to transcribe an RNA sequence has no effect.
+If you have a nucleotide sequence which might be DNA or RNA
+(or even a mixture), calling the transcribe method will ensure
+any T becomes U.</p>
+<p>Trying to transcribe a protein sequence will replace any
+T for Threonine with U for Selenocysteine, which has no
+biologically plausible rational.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_protein</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;MAIVMGRT&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_protein</span><span class="o">.</span><span class="n">transcribe</span><span class="p">()</span>
+<span class="go">Seq(&#39;MAIVMGRU&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.translate">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Standard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pydna_seq.html#pydna.seq.Seq" title="pydna.seq.Seq"><span class="pre">Seq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.translate" title="Permalink to this definition"></a></dt>
+<dd><p>Translate..</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.mung">
+<span class="sig-name descname"><span class="pre">mung</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.mung"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.mung" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates treatment a nuclease with 5’-3’ and 3’-5’ single
+strand specific exonuclease activity (such as mung bean nuclease <a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">ggatcc</span>    <span class="o">-&gt;</span>     <span class="n">gatcc</span>
+     <span class="n">ctaggg</span>          <span class="n">ctagg</span>
+
+     <span class="n">ggatcc</span>   <span class="o">-&gt;</span>      <span class="n">ggatc</span>
+    <span class="n">tcctag</span>            <span class="n">cctag</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;caaa&quot;</span><span class="p">,</span> <span class="s2">&quot;cttt&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span>
+<span class="n">Dseq</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">caaa</span>
+ <span class="n">tttc</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">mung</span><span class="p">()</span>
+<span class="n">Dseq</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">aaa</span>
+<span class="n">ttt</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;aaac&quot;</span><span class="p">,</span> <span class="s2">&quot;tttg&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span>
+<span class="n">Dseq</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>
+ <span class="n">aaac</span>
+<span class="n">gttt</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">mung</span><span class="p">()</span>
+<span class="n">Dseq</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">aaa</span>
+<span class="n">ttt</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Mung_bean_nuclease">http://en.wikipedia.org/wiki/Mung_bean_nuclease</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.T4">
+<span class="sig-name descname"><span class="pre">T4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleotides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.T4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.T4" title="Permalink to this definition"></a></dt>
+<dd><p>Fill in five prime protruding ends and chewing back
+three prime protruding ends by a DNA polymerase providing both
+5’-3’ DNA polymerase activity and 3’-5’ nuclease acitivty
+(such as T4 DNA polymerase). This can be done in presence of any
+combination of the four A, G, C or T. Removing one or more nucleotides
+can facilitate engineering of sticky ends. Default are all four nucleotides together.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nucleotides</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – </p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gatcgatc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgatc</span>
+<span class="go">ctagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">()</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgatc</span>
+<span class="go">ctagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgat</span>
+<span class="go"> tagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcga</span>
+<span class="go">  agctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcg</span>
+<span class="go">   gctag</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.t4">
+<span class="sig-name descname"><span class="pre">t4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleotides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="headerlink" href="#pydna.dseq.Dseq.t4" title="Permalink to this definition"></a></dt>
+<dd><p>Fill in five prime protruding ends and chewing back
+three prime protruding ends by a DNA polymerase providing both
+5’-3’ DNA polymerase activity and 3’-5’ nuclease acitivty
+(such as T4 DNA polymerase). This can be done in presence of any
+combination of the four A, G, C or T. Removing one or more nucleotides
+can facilitate engineering of sticky ends. Default are all four nucleotides together.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nucleotides</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – </p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gatcgatc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgatc</span>
+<span class="go">ctagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">()</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgatc</span>
+<span class="go">ctagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcgat</span>
+<span class="go"> tagctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcga</span>
+<span class="go">  agctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">T4</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+<span class="go">Dseq(-8)</span>
+<span class="go">gatcg</span>
+<span class="go">   gctag</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.exo1_front">
+<span class="sig-name descname"><span class="pre">exo1_front</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.exo1_front"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.exo1_front" title="Permalink to this definition"></a></dt>
+<dd><p>5’-3’ resection at the start (left side) of the molecule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.exo1_end">
+<span class="sig-name descname"><span class="pre">exo1_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DseqType</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.exo1_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.exo1_end" title="Permalink to this definition"></a></dt>
+<dd><p>5’-3’ resection at the end (right side) of the molecule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.no_cutters">
+<span class="sig-name descname"><span class="pre">no_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RestrictionBatch</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.no_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.no_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>Enzymes in a RestrictionBatch not cutting sequence.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.unique_cutters">
+<span class="sig-name descname"><span class="pre">unique_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RestrictionBatch</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.unique_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.unique_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>Enzymes in a RestrictionBatch cutting sequence once.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.once_cutters">
+<span class="sig-name descname"><span class="pre">once_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RestrictionBatch</span></span></span><a class="headerlink" href="#pydna.dseq.Dseq.once_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>Enzymes in a RestrictionBatch cutting sequence once.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.twice_cutters">
+<span class="sig-name descname"><span class="pre">twice_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RestrictionBatch</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.twice_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.twice_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>Enzymes in a RestrictionBatch cutting sequence twice.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.n_cutters">
+<span class="sig-name descname"><span class="pre">n_cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RestrictionBatch</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.n_cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.n_cutters" title="Permalink to this definition"></a></dt>
+<dd><p>Enzymes in a RestrictionBatch cutting n times.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.cutters">
+<span class="sig-name descname"><span class="pre">cutters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RestrictionBatch</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RestrictionBatch</span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.cutters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.cutters" title="Permalink to this definition"></a></dt>
+<dd><p>Enzymes in a RestrictionBatch cutting sequence at least once.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.seguid">
+<span class="sig-name descname"><span class="pre">seguid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.seguid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.seguid" title="Permalink to this definition"></a></dt>
+<dd><p>SEGUID checksum for the sequence.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.isblunt">
+<span class="sig-name descname"><span class="pre">isblunt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.isblunt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.isblunt" title="Permalink to this definition"></a></dt>
+<dd><p>isblunt.</p>
+<p>Return True if Dseq is linear and blunt and
+false if staggered or circular.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gat&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-3)</span>
+<span class="go">gat</span>
+<span class="go">cta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">isblunt</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gat&quot;</span><span class="p">,</span> <span class="s2">&quot;atcg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-4)</span>
+<span class="go"> gat</span>
+<span class="go">gcta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">isblunt</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gat&quot;</span><span class="p">,</span> <span class="s2">&quot;gatc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(-4)</span>
+<span class="go">gat</span>
+<span class="go">ctag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">isblunt</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;gat&quot;</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Dseq(o3)</span>
+<span class="go">gat</span>
+<span class="go">cta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">isblunt</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.cas9">
+<span class="sig-name descname"><span class="pre">cas9</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RNA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#slice" title="(in Python v3.8)"><span class="pre">slice</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.cas9"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.cas9" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.terminal_transferase">
+<span class="sig-name descname"><span class="pre">terminal_transferase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleotides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.terminal_transferase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.terminal_transferase" title="Permalink to this definition"></a></dt>
+<dd><p>docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">enzymes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EnzymesType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">DseqType</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.cut" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of linear Dseq fragments produced in the digestion.
+If there are no cuts, an empty list is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>enzymes</strong> (<em>enzyme object</em><em> or </em><em>iterable</em><em> of </em><em>such objects</em>) – A Bio.Restriction.XXX restriction objects or iterable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>frags</strong> – list of Dseq objects formed by the digestion</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span><span class="o">=</span><span class="n">Dseq</span><span class="p">(</span><span class="s2">&quot;ggatccnnngaattc&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span>
+<span class="go">Dseq(-15)</span>
+<span class="go">ggatccnnngaattc</span>
+<span class="go">cctaggnnncttaag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">BamHI</span><span class="p">,</span><span class="n">EcoRI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">BamHI</span><span class="p">))</span>
+<span class="go">&lt;class &#39;tuple&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">seq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">BamHI</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">frag</span><span class="p">))</span>
+<span class="go">Dseq(-5)</span>
+<span class="go">g</span>
+<span class="go">cctag</span>
+<span class="go">Dseq(-14)</span>
+<span class="go">gatccnnngaattc</span>
+<span class="go">    gnnncttaag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">EcoRI</span><span class="p">,</span> <span class="n">BamHI</span><span class="p">)</span> <span class="o">==</span>  <span class="n">seq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">BamHI</span><span class="p">,</span> <span class="n">EcoRI</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">EcoRI</span><span class="p">,</span> <span class="n">BamHI</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">+</span><span class="n">c</span>
+<span class="go">Dseq(-15)</span>
+<span class="go">ggatccnnngaattc</span>
+<span class="go">cctaggnnncttaag</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.cutsite_is_valid">
+<span class="sig-name descname"><span class="pre">cutsite_is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutsite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.cutsite_is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.cutsite_is_valid" title="Permalink to this definition"></a></dt>
+<dd><p>Returns False if:
+- Cut positions fall outside the sequence (could be moved to Biopython)
+- Overhang is not double stranded
+- Recognition site is not double stranded or is outside the sequence
+- For enzymes that cut twice, it checks that at least one possibility is valid</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.get_cutsites">
+<span class="sig-name descname"><span class="pre">get_cutsites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">enzymes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EnzymesType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.List" title="(in Python v3.8)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.get_cutsites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.get_cutsites" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of cutsites, represented represented as <cite>((cut_watson, ovhg), enz)</cite>:</p>
+<ul class="simple">
+<li><p><cite>cut_watson</cite> is a positive integer contained in <cite>[0,len(seq))</cite>, where <cite>seq</cite> is the sequence
+that will be cut. It represents the position of the cut on the watson strand, using the full
+sequence as a reference. By “full sequence” I mean the one you would get from <cite>str(Dseq)</cite>.</p></li>
+<li><p><cite>ovhg</cite> is the overhang left after the cut. It has the same meaning as <cite>ovhg</cite> in
+the <cite>Bio.Restriction</cite> enzyme objects, or pydna’s <cite>Dseq</cite> property.</p></li>
+<li><dl class="simple">
+<dt><cite>enz</cite> is the enzyme object. It’s not necessary to perform the cut, but can be</dt><dd><p>used to keep track of which enzyme was used.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Cuts are only returned if the recognition site and overhang are on the double-strand
+part of the sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>enzymes</strong> (<em>Union</em><em>[</em><em>_RestrictionBatch</em><em>,</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>[</em><em>_AbstractCut</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)">list</a>[<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a>,<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a>], _AbstractCut]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">EcoRI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s1">&#39;AAGAATTCAAGAATTC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">(</span><span class="n">EcoRI</span><span class="p">)</span>
+<span class="go">[((3, -4), EcoRI), ((11, -4), EcoRI)]</span>
+</pre></div>
+</div>
+<p><cite>cut_watson</cite> is defined with respect to the “full sequence”, not the
+watson strand:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="o">.</span><span class="n">from_full_sequence_and_overhangs</span><span class="p">(</span><span class="s1">&#39;aaGAATTCaa&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span>
+<span class="go">Dseq(-10)</span>
+<span class="go"> aGAATTCaa</span>
+<span class="go">ttCTTAAGtt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="go">[((3, -4), EcoRI)]</span>
+</pre></div>
+</div>
+<p>Cuts are only returned if the recognition site and overhang are on the double-strand
+part of the sequence.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="p">(</span><span class="s1">&#39;GAATTC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="go">[((1, -4), EcoRI)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dseq</span><span class="o">.</span><span class="n">from_full_sequence_and_overhangs</span><span class="p">(</span><span class="s1">&#39;GAATTC&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.left_end_position">
+<span class="sig-name descname"><span class="pre">left_end_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.left_end_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.left_end_position" title="Permalink to this definition"></a></dt>
+<dd><p>The index in the full sequence of the watson and crick start positions.</p>
+<p>full sequence (str(self)) for all three cases is AAA</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AAA</span>              <span class="n">AA</span>               <span class="n">AAT</span>
+ <span class="n">TT</span>             <span class="n">TTT</span>               <span class="n">TTT</span>
+<span class="n">Returns</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="n">Returns</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>    <span class="n">Returns</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.right_end_position">
+<span class="sig-name descname"><span class="pre">right_end_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.right_end_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.right_end_position" title="Permalink to this definition"></a></dt>
+<dd><p>The index in the full sequence of the watson and crick end positions.</p>
+<p>full sequence (str(self)) for all three cases is AAA</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">AAA</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">AA</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">AAA</span>
+<span class="pre">TT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">TTT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">TTT</span>
+<span class="pre">Returns</span> <span class="pre">(3,</span> <span class="pre">2)</span>&#160;&#160;&#160; <span class="pre">Returns</span> <span class="pre">(2,</span> <span class="pre">3)</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Returns</span> <span class="pre">(3,</span> <span class="pre">3)</span>
+<span class="pre">`</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.get_cut_parameters">
+<span class="sig-name descname"><span class="pre">get_cut_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#bool" title="(in Python v3.8)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.get_cut_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.get_cut_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>For a given cut expressed as ((cut_watson, ovhg), enz), returns
+a tuple (cut_watson, cut_crick, ovhg).</p>
+<ul class="simple">
+<li><p>cut_watson: see get_cutsites docs</p></li>
+<li><p>cut_crick: equivalent of cut_watson in the crick strand</p></li>
+<li><p>ovhg: see get_cutsites docs</p></li>
+</ul>
+<p>The cut can be None if it represents the left or right end of the sequence.
+Then it will return the position of the watson and crick ends with respect
+to the “full sequence”. The <cite>is_left</cite> parameter is only used in this case.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.apply_cut">
+<span class="sig-name descname"><span class="pre">apply_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_cut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_cut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq"><span class="pre">Dseq</span></a></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.apply_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.apply_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts a subfragment of the sequence between two cuts.</p>
+<p>For more detail see the documentation of get_cutsite_pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_cut</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>]</em><em>, </em><em>_AbstractCut</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>right_cut</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>]</em><em>, </em><em>_AbstractCut</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pydna.dseq.Dseq" title="pydna.dseq.Dseq">Dseq</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">EcoRI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s1">&#39;aaGAATTCaaGAATTCaa&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span> <span class="o">=</span> <span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span>
+<span class="go">[((3, -4), EcoRI), ((11, -4), EcoRI)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span> <span class="o">=</span> <span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsite_pairs</span><span class="p">(</span><span class="n">cutsites</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span>
+<span class="go">(None, ((3, -4), EcoRI))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="o">*</span><span class="n">p1</span><span class="p">)</span>
+<span class="go">Dseq(-7)</span>
+<span class="go">aaG</span>
+<span class="go">ttCTTAA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span>
+<span class="go">(((3, -4), EcoRI), ((11, -4), EcoRI))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="o">*</span><span class="n">p2</span><span class="p">)</span>
+<span class="go">Dseq(-12)</span>
+<span class="go">AATTCaaG</span>
+<span class="go">    GttCTTAA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p3</span>
+<span class="go">(((11, -4), EcoRI), None)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="o">*</span><span class="n">p3</span><span class="p">)</span>
+<span class="go">Dseq(-7)</span>
+<span class="go">AATTCaa</span>
+<span class="go">    Gtt</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s1">&#39;TTCaaGAA&#39;</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span> <span class="o">=</span> <span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span>
+<span class="go">[((6, -4), EcoRI)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pair</span> <span class="o">=</span> <span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsite_pairs</span><span class="p">(</span><span class="n">cutsites</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pair</span>
+<span class="go">(((6, -4), EcoRI), ((6, -4), EcoRI))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="o">*</span><span class="n">pair</span><span class="p">)</span>
+<span class="go">Dseq(-12)</span>
+<span class="go">AATTCaaG</span>
+<span class="go">    GttCTTAA</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pydna.dseq.Dseq.get_cutsite_pairs">
+<span class="sig-name descname"><span class="pre">get_cutsite_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutsites</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.List" title="(in Python v3.8)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.List" title="(in Python v3.8)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/typing.html#typing.Tuple" title="(in Python v3.8)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_AbstractCut</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pydna/dseq.html#Dseq.get_cutsite_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pydna.dseq.Dseq.get_cutsite_pairs" title="Permalink to this definition"></a></dt>
+<dd><p>Returns pairs of cutsites that render the edges of the resulting fragments.</p>
+<p>A fragment produced by restriction is represented by a tuple of length 2 that
+may contain cutsites or <cite>None</cite>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Two cutsites: represents the extraction of a fragment between those two
+cutsites, in that orientation. To represent the opening of a circular
+molecule with a single cutsite, we put the same cutsite twice.</p></li>
+<li><p><cite>None</cite>, cutsite: represents the extraction of a fragment between the left
+edge of linear sequence and the cutsite.</p></li>
+<li><p>cutsite, <cite>None</cite>: represents the extraction of a fragment between the cutsite
+and the right edge of a linear sequence.</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cutsites</strong> (<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>]</em><em>, </em><em>_AbstractCut</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)">list</a>[<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a>,<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a>], _AbstractCut]|None],<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>[<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a>,<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a>], _AbstractCut]|None]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Bio.Restriction</span> <span class="kn">import</span> <span class="n">EcoRI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydna.dseq</span> <span class="kn">import</span> <span class="n">Dseq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s1">&#39;aaGAATTCaaGAATTCaa&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span> <span class="o">=</span> <span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span>
+<span class="go">[((3, -4), EcoRI), ((11, -4), EcoRI)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsite_pairs</span><span class="p">(</span><span class="n">cutsites</span><span class="p">)</span>
+<span class="go">[(None, ((3, -4), EcoRI)), (((3, -4), EcoRI), ((11, -4), EcoRI)), (((11, -4), EcoRI), None)]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span> <span class="o">=</span> <span class="n">Dseq</span><span class="p">(</span><span class="s1">&#39;TTCaaGAA&#39;</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span> <span class="o">=</span> <span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsites</span><span class="p">([</span><span class="n">EcoRI</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cutsites</span>
+<span class="go">[((6, -4), EcoRI)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dseq</span><span class="o">.</span><span class="n">get_cutsite_pairs</span><span class="p">(</span><span class="n">cutsites</span><span class="p">)</span>
+<span class="go">[(((6, -4), EcoRI), ((6, -4), EcoRI))]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pydna_download.html" class="btn btn-neutral float-left" title="pydna.download" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pydna_dseqrecord.html" class="btn btn-neutral float-right" title="pydna.dseqrecord" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Björn F. Johansson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+pydna.editor
+==========
+
+.. automodule:: pydna.editor
+    :members:
+    :undoc-members:
+    :show-inheritance:

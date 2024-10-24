@@ -1,0 +1,7 @@
+pydna._pretty
+==========
+
+.. automodule:: pydna._pretty
+    :members:
+    :undoc-members:
+    :show-inheritance:
