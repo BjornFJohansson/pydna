@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 from pydna.dseq import Dseq
-from pydna.tm import tm_product
-from typing import List
 
 
 class USER:
@@ -34,11 +32,10 @@ class USER:
     """
 
     size = 6
-    pattern = f"([ACGT]{{{size-1}}}U)"
+    pattern = f"([ACGT]{{{size - 1}}}U)"
     site = "N" * (size - 1) + "U"
     fst5 = size + 1  # First 5' cut
     fst3 = None
-    ovhg = fst5 - 1  # This is a placeholder
 
     def __init__(self, size: int = 7, max_size: int = 11):
         """
@@ -48,9 +45,10 @@ class USER:
         self.fst5 = size + 1
         # TODO: Properly implement max_size, requires change in search function (finditer vs match)
         self.max_size = max_size
-        self.pattern = f"([ACGT]{{{size-1}}}U)"
-        self.site = f"N{{{size-1}}}U"
+        self.pattern = f"([ACGT]{{{size - 1}}}U)"
+        self.site = f"N{{{size - 1}}}U"
         self.compsite = re.compile(f"(?=(?P<USER>{self.pattern}))", re.UNICODE)
+        self.ovhgs = list()
         print("USER enzyme initialized with pattern size:", size)
 
     def search(self, dna, linear=True):
@@ -89,47 +87,38 @@ class USER:
         #       or should we just return the first cut site? -> Match
         #       >>> Dseq("CGTCGCuCACACGT")
         #
-        results = []
-        for mobj in self.compsite.finditer(dna.watson.upper()):
-            cut = mobj.start() + self.fst5
-            results.append(cut)
+
+        # Clear overhangs every time the search function is called
+        self.ovhgs = list()
+        results = list()
+        for forward in [True, False]:
+            # Not using watson and crick, because the cut coordinates are with respect to the
+            # "full sequence" (see "full sequence" in the cutsite_pairs notebook)
+            query_str = str(dna).upper() if forward else str(dna.reverse_complement()).upper()
+            matches = list(self.compsite.finditer(query_str))
+            if len(matches) > 1:
+                raise ValueError(f"Multiple USER sites found in the {('watson' if forward else 'crick')} sequence.")
+
+            for mobj in matches:
+                cut = mobj.start() + self.fst5
+                self.ovhgs.append(cut - 1)
+                if forward:
+                    results.append(cut)
+                else:
+                    results.append(len(dna) - cut + self.ovhgs[-1] + 2)
 
         return results
 
-    def products(self, dseq: Dseq) -> List[Dseq]:
+    @property
+    def ovhg(self):
         """
-        Generate USER products from the given Dseq.
-
-        Parameters
-        ----------
-        dseq : Dseq
-            The Dseq object representing the DNA sequence to generate USER products from.
-
-        Returns
-        -------
-        List[Dseq]
-            A list of Dseq objects representing the USER products.
-
+        Calculate the overhangs for the USER enzyme.
         """
-        results = []
-        # USER sites in the forward strand
-        for wcut in dseq.get_cutsites(self):
-            wcut = wcut[0][0]  # Get position
-            watson_user = dseq[wcut:]  # Get the sequence from the cutsite
-
-            # USER sites in the reverse strand
-            for ccut in Dseq(dseq.crick).get_cutsites(self):
-                ccut = ccut[0][0]  # Get position
-                crick_user = Dseq(dseq.crick)[ccut:]  # Get the sequence from the cutsite
-                result = Dseq(str(watson_user), crick=str(crick_user), ovhg=wcut)
-
-                # Calculate the Tm of the double stranded portion
-                ds_portion = dseq[wcut:-ccut]
-                tm = tm_product(ds_portion)
-                results.append((result, tm))
-
-        sorted_results = [x[0] for x in sorted(results, key=lambda x: x[1], reverse=True)]
-        return sorted_results
+        if len(self.ovhgs) == 0:
+            # This is a placeholder
+            return self.fst5 - 1
+        else:
+            return self.ovhgs.pop(0)
 
     def __repr__(self):
         return f"ssUSER({self.site})"
@@ -147,3 +136,11 @@ if __name__ == "__main__":
 
     doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
     _os.environ["pydna_cached_funcs"] = cached
+
+    # Minimal example
+    target = Dseq("AATTuCCGGaTTAA", "TTAAuCCGGaAATT")
+
+    usr = USER(2)
+
+    for seq in target.cut(usr):
+        print(repr(seq))
