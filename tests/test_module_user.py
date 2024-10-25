@@ -4,7 +4,7 @@
 import pytest
 
 
-def test_user():
+def test_user_enzyme():
     from pydna.user import USER
     from pydna.dseq import Dseq
 
@@ -22,11 +22,38 @@ def test_user():
     """
     )
 
-    print(result_a)
+    us = USER(size=4)
+    # print(a.cut(us)[1].__repr__())
+    # print(result_a)
+    assert a.cut(us)[1] == result_a
+
+
+def test_user_enzyme_short_motif():
+    """
+    A user site without enough upstream bases should not be recongnized.
+    """
+    from pydna.user import USER
+    from pydna.dseq import Dseq
+
+    a = Dseq.from_representation(
+        """\
+    AACGAuGTCGACTTAGATCTCACAGGCTTTTTTCAAGaCGGCCTTGAATTCAGTCATTTGGATCCGGCCGAT
+    TTGCTACAGCTGAATCTAGAGTGTCCGAAAAAAGTTCTGCCGGAACTTAAGTCAGTAAACCTAGGCCGGCuA
+    """
+    )
+
+    result_a = Dseq.from_representation(
+        """\
+          GTCGACTTAGATCTCACAGGCTTTTTTCAAGaCGGCCTTGAATTCAGTCATTTGGATCCGGCCGAT
+    TTGCTACAGCTGAATCTAGAGTGTCCGAAAAAAGTTCTGCCGGAACTTAAGTCAGTAAACCTAGGCCGGCuA
+    """
+    )
 
     us = USER(size=4)
-    print(us.products(a)[0])
-    assert us.products(a)[0] == result_a
+    # print(a.cut(us)[1].__repr__())
+    # print(a.cut(us)[1].reverse_complement())
+    # print(result_a)
+    assert a.cut(us)[1] == result_a
 
 
 def test_many_user_sites():
