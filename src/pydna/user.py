@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from pydna.dseq import Dseq
+from Bio.Restriction import BbvCI
 
 
 class USER:
@@ -34,7 +35,7 @@ class USER:
     size = 6
     pattern = f"([ACGT]{{{size - 1}}}U)"
     site = "N" * (size - 1) + "U"
-    fst5 = size + 1  # First 5' cut
+    fst5 = size  # First 5' cut
     fst3 = None
 
     def __init__(self, size: int = 7, max_size: int = 11):
@@ -42,7 +43,7 @@ class USER:
         Initialize a USER enzyme with a pattern size.
         """
         self.size = size
-        self.fst5 = size + 1
+        self.fst5 = size
         # TODO: Properly implement max_size, requires change in search function (finditer vs match)
         self.max_size = max_size
         self.pattern = f"([ACGT]{{{size - 1}}}U)"
@@ -100,12 +101,14 @@ class USER:
                 raise ValueError(f"Multiple USER sites found in the {('watson' if forward else 'crick')} sequence.")
 
             for mobj in matches:
-                cut = mobj.start() + self.fst5
+                cut = mobj.start() + self.fst5 + 1
                 self.ovhgs.append(cut - 1)
                 if forward:
                     results.append(cut)
                 else:
-                    results.append(len(dna) - cut + self.ovhgs[-1] + 2)
+                    results.append(
+                        len(dna) - cut + self.ovhgs[-1] + 2
+                    )  # - cut + self.ovhgs[-1] = - cut + cut - 1 = -1 ??
 
         return results
 
@@ -125,6 +128,73 @@ class USER:
 
     def __str__(self):
         return f"ssUSER({self.site})"
+
+
+class NtBbvCI:
+    def __init__(self, enzyme=BbvCI):
+        # Copy all the attributes from the enzyme
+        for key, value in enzyme.__dict__.items():
+            if key in ["compsite", "site", "charac", "size", "fst5", "fst3"]:
+                setattr(self, key, value)
+
+        self.pattern = self.site
+        self.compsite = re.compile(f"(?=(?P<NtBbvCI>{self.pattern}))", re.UNICODE)
+        self.ovhgs = list()
+
+    def search(self, dna, linear=True):
+        """
+        Search function for a nickase enzyme that returns cut sites in the sense strand only.
+
+        Parameters
+        ----------
+        dna : Dseq
+            Dseq object representing the DNA sequence to search for nickase site.
+        linear : bool, optional
+            If True, the search is performed on the input sequence.
+            If False, the search is performed on the sequence + sequence[1:]. (default is True)
+
+        Returns
+        -------
+        list
+            A list of the positions of the nickase target sites.
+
+        """
+
+        # Clear overhangs every time the search function is called
+        self.ovhgs = list()
+        results = list()
+        for forward in [False, True]:
+            # Not using watson and crick, because the cut coordinates are with respect to the
+            # "full sequence" (see "full sequence" in the cutsite_pairs notebook)
+            query_str = str(dna).upper() if forward else str(dna.reverse_complement()).upper()
+            matches = list(self.compsite.finditer(query_str))
+
+            for mobj in matches:
+                cut = mobj.start() + self.fst5 + 1
+                self.ovhgs.append(cut - 1)
+                if forward:
+                    results.append(cut)
+                else:
+                    results.append(len(dna) - cut + self.ovhgs[-1] + 2)
+
+        return results
+
+    @property
+    def ovhg(self):
+        """
+        Calculate the overhangs for a nickase enzyme.
+        """
+        if len(self.ovhgs) == 0:
+            # This is a placeholder
+            return self.fst5 - 1
+        else:
+            return self.ovhgs.pop(0)
+
+    def __repr__(self):
+        return f"NtBbvCI({self.site})"
+
+    def __str__(self):
+        return f"NtBbvCI({self.site})"
 
 
 if __name__ == "__main__":
