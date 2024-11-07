@@ -14,7 +14,6 @@ from Bio.SeqUtils import gc_fraction as _GC
 
 import textwrap as _textwrap
 from pydna._pretty import pretty_str as _pretty_str
-import requests
 
 # See the documentation for Bio.SeqUtils.MeltingTemp for more details
 # The 10X Taq Buffer with (NH4)2SO4 is commercialized by companies like
@@ -331,6 +330,8 @@ def tmbresluc(primer: str, *args, primerc=500.0, saltc=50, **kwargs):
 
 
 def tm_neb(primer, conc=0.5, prodcode="q5-0"):
+    import requests
+
     """Calculates a single primers melting temp from NEB.
 
     Parameters
