@@ -351,11 +351,13 @@ class Anneal(object):  # ), metaclass=_Memoize):
                     feats = self.template[
                         fp.position - fp._fp : rp.position + rp._fp
                     ].features  # Save features covered by primers
-                    shift_amount = len(fp.tail)
-                    feats = [_shift_feature(f, shift_amount, None) for f in feats]
                     tpl = self.template
                 else:
                     continue
+                # Shift features to the right if there was a tail
+                shift_amount = len(fp.tail)
+                feats = [_shift_feature(f, shift_amount, None) for f in feats]
+
                 if tpl.circular and fp.position == rp.position:
                     prd = _Dseqrecord(fp) + _Dseqrecord(rp).reverse_complement()
                 else:

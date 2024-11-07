@@ -799,6 +799,11 @@ def test_annotation():
 
     assert pcr_product.features[0].location.extract(pcr_product).seq == dsr.seq
 
+    # Also works in circular sequences
+    dsr_circ = dsr.looped()
+    pcr_product_circ = pcr(forward_primer, reverse_primer, dsr_circ)
+    assert str(pcr_product_circ.features[0].location.extract(pcr_product_circ).seq) == str(dsr_circ.seq)
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-vv", "-s"])
