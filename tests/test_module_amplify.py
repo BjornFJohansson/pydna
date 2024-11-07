@@ -788,6 +788,7 @@ def test_annotation():
     """
     from pydna.amplify import pcr
     from pydna.dseqrecord import Dseqrecord
+    from pydna.primer import Primer
 
     dsr = Dseqrecord("ATGCAAACAGTAATGATGGATGACATTCAAAGCACTGATTCTATTGCTGAAAAAGATAAT")
     dsr.add_feature(x=0, y=60, type="gene", label="my_gene")  # We add a feature to highlight the sequence as a gene
@@ -803,6 +804,33 @@ def test_annotation():
     dsr_circ = dsr.looped()
     pcr_product_circ = pcr(forward_primer, reverse_primer, dsr_circ)
     assert str(pcr_product_circ.features[0].location.extract(pcr_product_circ).seq) == str(dsr_circ.seq)
+
+    # Check that annotations are transmitted properly if the PCR product spans
+    # the origin in a circular sequence
+
+    vector = Dseqrecord(
+        "ATGCAAACAGTAATGATGGATGACACCAGCTTCATGAAATGGAACAGTGCCAGAAAAAACTTGAAGATGTTCAAAGCACTGATTCTATTGCTGAAAAAGATAAT",
+        circular=True,
+    )
+
+    vector.add_feature(17, 40, type_="test", label=["left"])
+    vector.add_feature(41, 90, type_="test", label=["right"])
+    vector.add_feature(17, 90, type_="test", label=["all"])
+    vector.add_feature(30, 60, type_="test", label=["middle"])
+
+    feature_seqs = set(str(f.location.extract(vector).seq) for f in vector.features)
+
+    for shift in range(len(vector)):
+        shifted_vector = vector.shifted(shift)
+
+        primer_f = Primer("acgtGGATGACACCAGCTTCAT")
+        primer_r = Primer("attacCAATAGAATCAGTGCTTTGAACA")
+
+        product = pcr(primer_f, primer_r, shifted_vector)
+
+        product_seqs = set(str(f.location.extract(product).seq) for f in product.features if f.type == "test")
+
+        assert product_seqs == feature_seqs, f"Shift {shift}"
 
 
 if __name__ == "__main__":
