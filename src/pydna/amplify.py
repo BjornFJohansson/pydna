@@ -344,9 +344,9 @@ class Anneal(object):  # ), metaclass=_Memoize):
                 if self.template.circular:
                     shift = fp.position - fp._fp
                     tpl = self.template.shifted(shift)  # shift template so that it starts where the fp starts anneling
-                    feats = tpl[: rp.position + rp._fp].features
                     fp.position = fp._fp  # New position of fp becomes the footprint length
                     rp.position = (rp.position - shift) % len(self.template)  # Shift the rp position as well
+                    feats = tpl[: rp.position + rp._fp].features
                 elif fp.position <= rp.position:  # pcr products only formed if fp anneals forward of rp
                     feats = self.template[
                         fp.position - fp._fp : rp.position + rp._fp
