@@ -116,15 +116,15 @@ def test_initialization():
 
     obj2 = Dseq("gata")
 
-    assert obj2.circular == False
+    assert obj2.circular is False
 
-    l = Dseq("gt")
-    c = l.looped()
+    ln = Dseq("gt")
+    c = ln.looped()
 
-    assert not l.circular
+    assert not ln.circular
     assert c.circular
 
-    assert Dseq("gt", circular=False) == l
+    assert Dseq("gt", circular=False) == ln
     assert Dseq("gt", circular=True) == c
 
     assert Dseq.from_string("A") == Dseq("A")
@@ -153,6 +153,9 @@ def test_initialization():
                                    """
     )
     assert obj3.ovhg == 1
+
+    assert Dseq.from_dsiupac("PEXIaaaQFZJ") == Dseq("GATCaaa", "CTAGttt", -4)
+    assert Dseq.from_dsiupac("QFZJaaaPEXI") == Dseq("aaaGATC", "tttCTAG", 4)
 
 
 def test_cut_around_and_religate():
@@ -218,7 +221,7 @@ def test_Dseq_cutting_adding():
         ovhg=0,
     )
 
-    f, d, l = c.cut((EcoRI, PstI))
+    f, d, l_ = c.cut((EcoRI, PstI))
 
     assert d.watson == "GtcatctactatcatcgtagcgtactgatctattctgctgctcatcatcggtactctctataattatatatatatgcgcgtG"
     assert d.crick == "AATTCacgcgcatatatatataattatagagagtaccgatgatgagcagcagaatagatcagtacgctacgatgatagtagatgaCTGCA"
@@ -554,11 +557,12 @@ def test_dseq():
 
 def test_Dseq_slicing():
     from pydna.dseq import Dseq
-    from pydna.readers import read
-    from pydna.utils import eq
 
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord as Srec
+    # from pydna.readers import read
+    # from pydna.utils import eq
+
+    # from Bio.Seq import Seq
+    # from Bio.SeqRecord import SeqRecord as Srec
     from Bio.Restriction import BamHI
 
     a = Dseq("ggatcc", "ggatcc", 0)
@@ -947,7 +951,7 @@ def test_apply_cut():
 def test_cutsite_is_valid():
 
     from pydna.dseq import Dseq
-    from Bio.Restriction import EcoRI, BsaI, PacI, NmeDI, Acc65I, NotI, BamHI, EcoRV
+    from Bio.Restriction import EcoRI, PacI, NmeDI, EcoRV
 
     # Works for circular case
     seqs = ["GAATTC", "TTAATTAAC", "GATATC"]
