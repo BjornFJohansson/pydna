@@ -38,7 +38,20 @@ from typing import Union as _Union, TypeVar as _TypeVar, List as _List
 StrOrBytes = _TypeVar("StrOrBytes", str, bytes)
 
 _module_logger = _logging.getLogger("pydna." + __name__)
-_ambiguous_dna_complement.update({"U": "A"})
+_ambiguous_dna_complement.update(
+    {
+        "U": "A",
+        "E": "F",  # A in top strand, complementary strand empty (dsIUPAC)
+        "I": "J",  # C "
+        "P": "Q",  # G "
+        "X": "Z",  # T "
+        "Z": "X",  # A in complementary strand, top strand empty (dsIUPAC)
+        "Q": "P",  # C "
+        "J": "I",  # G "
+        "F": "E",
+    }
+)  # T "
+
 _complement_table = _maketrans(_ambiguous_dna_complement)
 
 
