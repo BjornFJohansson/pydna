@@ -20,7 +20,8 @@ import itertools as _itertools
 import re as _re
 import sys as _sys
 import math as _math
-from inspect import cleandoc as _cleandoc
+
+# from inspect import cleandoc as _cleandoc
 
 from pydna.seq import Seq as _Seq
 from Bio.Seq import _translate_str, _SeqAbstractBaseClass
@@ -468,7 +469,7 @@ class Dseq(_Seq):
         ----tttCTAG
         """
         obj = cls.__new__(cls)  # Does not call __init__
-        dsdna = _cleandoc(dsdna)
+        # dsdna = _cleandoc(dsdna)
         ignore = "- |"
         w, c, *r = [ln for ln in dsdna.splitlines() if ln.strip(ignore)]
         ovhg = obj.ovhg = len(w) - len(w.lstrip(ignore)) - (len(c) - len(c.lstrip(ignore)))
