@@ -433,6 +433,30 @@ class Dseq(_Seq):
         return obj
 
     @classmethod
+    def from_dsiupac(cls, dsdna: str, *args, **kwargs):
+        obj = cls.__new__(cls)  # Does not call __init__
+        obj.circular = False
+        ds_to_ss_dct = {"P": "G", "E": "A", "X": "T", "I": "C"}
+        ds_to_ss_dct.update(dict((k.lower(), v.lower()) for k, v in ds_to_ss_dct.items()))
+        ds_to_ss_table = str.maketrans(ds_to_ss_dct)
+        keys = "".join(ds_to_ss_dct.keys())
+        if ovhg := len(dsdna) - len(dsdna.lstrip(keys)):
+            watson = dsdna.rstrip("FQJZfqjz")
+            crick = _rc(dsdna).rstrip("FQJZfqjz")
+        elif ovhg := -len(dsdna) + len(dsdna.lstrip("FQJZfqjz")):
+            watson = dsdna.lstrip("FQJZfqjz")
+            crick = _rc(dsdna).lstrip("FQJZfqjz")
+        obj.watson = _pretty_str(watson.translate(ds_to_ss_table))
+        obj.crick = _pretty_str(crick.translate(ds_to_ss_table))
+        obj.pos = 0
+        obj.ovhg = -ovhg
+        obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
+        wb = bytes(watson, encoding="ASCII")
+        cb = bytes(crick, encoding="ASCII")
+        obj._data = _rc(cb[-max(0, ovhg) or len(cb) :]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
+        return obj
+
+    @classmethod
     def from_representation(cls, dsdna: str, *args, **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
         w, c, *r = [ln for ln in dsdna.splitlines() if ln]
