@@ -20,6 +20,7 @@ import itertools as _itertools
 import re as _re
 import sys as _sys
 import math as _math
+from inspect import cleandoc as _cleandoc
 
 from pydna.seq import Seq as _Seq
 from Bio.Seq import _translate_str, _SeqAbstractBaseClass
@@ -434,11 +435,45 @@ class Dseq(_Seq):
 
     @classmethod
     def from_representation(cls, dsdna: str, *args, **kwargs):
+        """
+
+
+        Parameters
+        ----------
+        dsdna : str
+            A string containing a double stranded DNA representation.
+        *args : TYPE
+            DESCRIPTION.
+        **kwargs : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        obj : Dseq
+
+        Examples
+        --------
+
+        GATCaaa
+            tttCTAG
+
+        GATCaaa||||
+        ||||tttCTAG
+
+        GATCaaa----
+        ----tttCTAG
+
+        GATCaaa----
+        |||||||||||
+        ----tttCTAG
+        """
         obj = cls.__new__(cls)  # Does not call __init__
-        w, c, *r = [ln for ln in dsdna.splitlines() if ln]
-        ovhg = obj.ovhg = len(w) - len(w.lstrip()) - (len(c) - len(c.lstrip()))
-        watson = obj.watson = _pretty_str(w.strip())
-        crick = obj.crick = _pretty_str(c.strip()[::-1])
+        dsdna = _cleandoc(dsdna)
+        ignore = "- |"
+        w, c, *r = [ln for ln in dsdna.splitlines() if ln.strip(ignore)]
+        ovhg = obj.ovhg = len(w) - len(w.lstrip(ignore)) - (len(c) - len(c.lstrip(ignore)))
+        watson = obj.watson = _pretty_str(w.strip(ignore))
+        crick = obj.crick = _pretty_str(c.strip(ignore)[::-1])
         obj.circular = False
         # obj._linear = True
         obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
