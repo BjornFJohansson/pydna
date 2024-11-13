@@ -4,6 +4,13 @@
 import pytest
 
 
+def test_dsiupac():
+    from pydna.dseq import Dseq
+
+    assert Dseq.from_dsiupac("PEXIaaaQFZJ").to_dsiupac() == "PEXIaaaQFZJ"
+    assert Dseq.from_dsiupac("QFZJaaaPEXI").to_dsiupac() == "QFZJaaaPEXI"
+
+
 def test_cut1():
     from pydna.dseq import Dseq
 
