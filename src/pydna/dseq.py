@@ -436,11 +436,11 @@ class Dseq(_Seq):
     def from_dsiupac(cls, dsdna: str, *args, **kwargs):
         obj = cls.__new__(cls)  # Does not call __init__
         obj.circular = False
-        ds_to_ss_dct = {"P": "G", "E": "A", "X": "T", "I": "C"}
+        ds_to_ss_dct = {"P": "G", "E": "A", "X": "T", "I": "C", "Q": "C", "F": "T", "Z": "A", "J": "G"}
         ds_to_ss_dct.update(dict((k.lower(), v.lower()) for k, v in ds_to_ss_dct.items()))
         ds_to_ss_table = str.maketrans(ds_to_ss_dct)
-        keys = "".join(ds_to_ss_dct.keys())
-        if ovhg := len(dsdna) - len(dsdna.lstrip(keys)):
+        # keys = "".join(ds_to_ss_dct.keys())
+        if ovhg := len(dsdna) - len(dsdna.lstrip("PEXIpexi")):
             watson = dsdna.rstrip("FQJZfqjz")
             crick = _rc(dsdna).rstrip("FQJZfqjz")
         elif ovhg := -len(dsdna) + len(dsdna.lstrip("FQJZfqjz")):
@@ -451,9 +451,8 @@ class Dseq(_Seq):
         obj.pos = 0
         obj.ovhg = -ovhg
         obj.length = max(len(watson) + max(0, ovhg), len(crick) + max(0, -ovhg))
-        wb = bytes(watson, encoding="ASCII")
-        cb = bytes(crick, encoding="ASCII")
-        obj._data = _rc(cb[-max(0, ovhg) or len(cb) :]) + wb + _rc(cb[: max(0, len(cb) - ovhg - len(wb))])
+        obj._data = bytes(dsdna.translate(ds_to_ss_table), encoding="ASCII")
+        # breakpoint()
         return obj
 
     @classmethod
@@ -951,6 +950,38 @@ class Dseq(_Seq):
         selfcopy = _copy.deepcopy(self)
         selfcopy.circular = False
         return selfcopy  # self.__class__(self.watson, linear=True)
+
+    def to_dsiupac(self: DseqType) -> str:  # pragma: no cover
+        from Bio.Data.IUPACData import ambiguous_dna_complement as _ambiguous_dna_complement
+
+        y = "-" * -self.ovhg
+        x = "-" * self.ovhg
+        d = {(k, v): k for k, v in _ambiguous_dna_complement.items()}
+        d.update({(k, v.lower()): k for k, v in d})
+        d.update({(k.lower(), v): k.lower() for k, v in d})
+        d.update({(k.lower(), v.lower()): k.lower() for k, v in d})
+        d.update(
+            {
+                ("-", "G"): "Q",
+                ("-", "A"): "F",
+                ("-", "T"): "Z",
+                ("-", "C"): "J",
+                ("G", "-"): "P",
+                ("A", "-"): "E",
+                ("T", "-"): "X",
+                ("C", "-"): "I",
+                ("-", "g"): "q",
+                ("-", "a"): "f",
+                ("-", "t"): "z",
+                ("-", "c"): "j",
+                ("g", "-"): "p",
+                ("a", "-"): "e",
+                ("t", "-"): "x",
+                ("c", "-"): "i",
+            }
+        )
+
+        return "".join(d[t, b] for t, b in zip(f"{x}{self.watson}{y}", f"{y}{self.crick[::-1]}{x}"))
 
     def five_prime_end(self) -> _Tuple[str, str]:
         """Returns a tuple describing the structure of the 5' end of
