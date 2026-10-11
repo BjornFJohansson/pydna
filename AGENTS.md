@@ -25,7 +25,7 @@ may also be collected from `src/pydna`.
 
 ## Development Setup
 
-This project uses Poetry.
+This project uses uv.
 
 Common commands:
 
