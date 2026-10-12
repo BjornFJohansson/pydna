@@ -566,8 +566,6 @@ class AssemblySource(Source):
         """
         mismatches = [0]
         for inp in self.input:
-            if not isinstance(inp, AssemblyFragment) or inp.sequence.circular:
-                continue
             if inp.left_location is not None:
                 mismatches.append(location_boundaries(inp.left_location)[0])
             if inp.right_location is not None:
